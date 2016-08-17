@@ -1,0 +1,887 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Prolog,编程,语言," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Prolog 是一门声明式编程语言，也是最早成功的逻辑编程语言之一。只需提供 fact 和 inference，程序会替我们进行推断。甚至不需要知道怎么做，只要告诉计算机要做什么即可。比方说，用不到 20 行代码解决数独问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Prolog 快速入门">
+<meta property="og:url" content="http://wdxtub.com/2016/04/01/prolog-first-step/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="Prolog 是一门声明式编程语言，也是最早成功的逻辑编程语言之一。只需提供 fact 和 inference，程序会替我们进行推断。甚至不需要知道怎么做，只要告诉计算机要做什么即可。比方说，用不到 20 行代码解决数独问题。">
+<meta property="og:updated_time" content="2016-04-02T15:45:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Prolog 快速入门">
+<meta name="twitter:description" content="Prolog 是一门声明式编程语言，也是最早成功的逻辑编程语言之一。只需提供 fact 和 inference，程序会替我们进行推断。甚至不需要知道怎么做，只要告诉计算机要做什么即可。比方说，用不到 20 行代码解决数独问题。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Prolog 快速入门 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Prolog 快速入门
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-01T21:02:45+08:00" content="2016-04-01">
+              2016-04-01
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/01/prolog-first-step/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/01/prolog-first-step/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Prolog 是一门声明式编程语言，也是最早成功的逻辑编程语言之一。只需提供 fact 和 inference，程序会替我们进行推断。甚至不需要知道怎么做，只要告诉计算机要做什么即可。比方说，用不到 20 行代码解决数独问题。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h2><ul>
+<li>1972 年由 Alain Colmerauer 和 Phillipe Roussel 开发完成</li>
+<li>基于数据库，数据由逻辑规则和关系组成</li>
+<li>包含两个部分：一部分用于描述数据，另一部分用于查询数据</li>
+</ul>
+<p>在 Prolog 中，数据以逻辑规则的形式存在，下面是基本构建单元：</p>
+<ul>
+<li>事实：关于真实世界的基本断言（Babe 是一头猪，猪喜欢泥巴）</li>
+<li>规则：关于真实世界中的一些事实的推论（如果一个动物是猪，那么它喜欢泥巴）</li>
+<li>查询：关于真实世界的一个问题（Babe 喜欢泥巴吗）</li>
+</ul>
+<p>事实和规则被放入一个知识库(knowledge base)。Prolog 编译器将这个知识库编译成一种适于高效查询的形式。</p>
+<p>这里我们在 ubuntu 下做实验，直接 <code>sudo apt-get install gprolog</code> 即可</p>
+<h2 id="u7F16_u7A0B_u6A21_u578B"><a href="#u7F16_u7A0B_u6A21_u578B" class="headerlink" title="编程模型"></a>编程模型</h2><p>Prolog 中，一个词以小写字母开头，就是一个原子(atom)——类似于 Ruby 中的符号(symbol)的固定值，如果一个词以大写字母或下划线开头，那么它就是一个变量。变量的值可以改变，原则则不能。</p>
+<p>下面是一个简单的例子，先创建一个文件（比如 <code>friends.pl</code>），输入以下内容</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="atom">likes</span>(<span class="atom">wallace</span>, <span class="atom">cheese</span>).</span><br><span class="line"><span class="atom">likes</span>(<span class="atom">grommit</span>, <span class="atom">cheese</span>).</span><br><span class="line"><span class="atom">likes</span>(<span class="atom">wendolene</span>, <span class="atom">sheep</span>).</span><br><span class="line"></span><br><span class="line"><span class="atom">friend</span>(<span class="name">X</span>, <span class="name">Y</span>) :- \+(<span class="name">X</span> = <span class="name">Y</span>), <span class="atom">likes</span>(<span class="name">X</span>, <span class="name">Z</span>), <span class="atom">likes</span>(<span class="name">Y</span>, <span class="name">Z</span>).</span><br></pre></td></tr></table></figure>
+<p>上面这个文件就是由事实和规则组成的知识库。前三条语句是事实，最后一条语句是一个规则。<code>wallace</code>, <code>grommit</code> 和 <code>wendolene</code> 都是原子，翻译过来就是</p>
+<ul>
+<li><code>wallace</code> 喜欢 <code>cheese</code></li>
+<li><code>grommit</code> 喜欢 <code>cheese</code></li>
+<li><code>wendolene</code> 喜欢 <code>sheep</code></li>
+</ul>
+<p>具体执行时，先输入 <code>gprolog</code>，然后输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">| ?- [<span class="string">'friends.pl'</span>].compiling /home/parallels/Documents/friends.pl <span class="keyword">for</span> byte code.../home/parallels/Documents/friends.pl compiled, <span class="number">5</span> lines <span class="built_in">read</span> - <span class="number">976</span> bytes written, <span class="number">6</span> ms(<span class="number">1</span> ms) yes</span><br></pre></td></tr></table></figure>
+<p>除非 Prolog 在等待一个中间结果，否则都会用 <code>yes</code> 或者 <code>no</code> 来回应，这一句里文件加载成功，所以返回 <code>yes</code>。而 <code>| ?-</code> 是命令前面的提示符，类似于命令行前的 <code>$</code>，不过这么有个性的，我还是第一次见</p>
+<p>然后我们就可以让计算机自己进行逻辑推断了，比如：</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line">| ?- <span class="atom">likes</span>(<span class="atom">wallace</span>, <span class="atom">sheep</span>).<span class="atom">no</span></span><br></pre></td></tr></table></figure>
+<p>通过前面的条件我们知道，并不能推断出 wallace 喜欢 sheep，所以返回 no。</p>
+<blockquote>
+<p>基本推论和变量</p>
+</blockquote>
+<p>来测试以下前面的 <code>friend</code> 规则：</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line">| ?- <span class="atom">friend</span>(<span class="atom">wallace</span>, <span class="atom">wallace</span>).<span class="atom">no</span></span><br><span class="line">| ?- <span class="atom">friend</span>(<span class="atom">grommit</span>, <span class="atom">wallace</span>).<span class="atom">yes</span>| ?- <span class="atom">friend</span>(<span class="atom">wallace</span>, <span class="atom">grommit</span>).<span class="atom">yes</span></span><br></pre></td></tr></table></figure>
+<p>我们来用自然语言翻译一下 <code>friend</code> 规则</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="atom">friend</span>(<span class="name">X</span>, <span class="name">Y</span>) :- \+(<span class="name">X</span> = <span class="name">Y</span>), <span class="atom">likes</span>(<span class="name">X</span>, <span class="name">Z</span>), <span class="atom">likes</span>(<span class="name">Y</span>, <span class="name">Z</span>).</span><br></pre></td></tr></table></figure>
+<p>如果 <code>X</code> 和 <code>Y</code> 是朋友，那么 X 就不能与 Y 相同。<code>:-</code> 右边的称为子目标(subgoal)。<code>\+</code> 是逻辑取反操作，所以第一个子目标 <code>\+(X=Y)</code> 的意思是 <code>X</code> 不等于 <code>Y</code>。后面的 <code>likes</code> 语句表示如果 <code>X</code> 喜欢 <code>Z</code>，并且 <code>Y</code> 也喜欢 <code>Z</code>，所以后面的子目标就是在 <code>X</code> 不等于 <code>Y</code> 的情况下，他们还喜欢同一个 <code>Z</code>。我们可以试验以下其他的组合，来看看 prolog 的工作机制。</p>
+<p>上面的代码是一个具有三个变量 <code>X</code>, <code>Y</code> 和 <code>Z</code> 的 Prolog 规则，称为 <code>friend/2</code> 表示参数有 2 个，这个规则有三个子目标（条件）。只有都满足的时候，规则才为真。</p>
+<blockquote>
+<p>填空</p>
+</blockquote>
+<p>我们还可以利用 prolog 查询出所有可能的匹配，这时候我们就需要一个变量，打开一个新的文件 <code>food.pl</code>，并填入下面的代码：</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="atom">food_type</span>(<span class="atom">velveeta</span>, <span class="atom">cheese</span>).</span><br><span class="line"><span class="atom">food_type</span>(<span class="atom">ritz</span>, <span class="atom">cracker</span>).</span><br><span class="line"><span class="atom">food_type</span>(<span class="atom">spam</span>, <span class="atom">meat</span>).</span><br><span class="line"><span class="atom">food_type</span>(<span class="atom">sausage</span>, <span class="atom">meat</span>).</span><br><span class="line"><span class="atom">food_type</span>(<span class="atom">jolt</span>, <span class="atom">soda</span>).</span><br><span class="line"><span class="atom">food_type</span>(<span class="atom">twinkie</span>, <span class="atom">dessert</span>).</span><br><span class="line"></span><br><span class="line"><span class="atom">flavor</span>(<span class="atom">sweet</span>, <span class="atom">dessert</span>).</span><br><span class="line"><span class="atom">flavor</span>(<span class="atom">savory</span>, <span class="atom">meat</span>).</span><br><span class="line"><span class="atom">flavor</span>(<span class="atom">savory</span>, <span class="atom">cheese</span>).</span><br><span class="line"><span class="atom">flavor</span>(<span class="atom">sweet</span>, <span class="atom">soda</span>).</span><br><span class="line"></span><br><span class="line"><span class="atom">food_flavor</span>(<span class="name">X</span>, <span class="name">Y</span>) :- <span class="atom">food_type</span>(<span class="name">X</span>, <span class="name">Z</span>), <span class="atom">flavor</span>(<span class="name">Y</span>, <span class="name">Z</span>).</span><br></pre></td></tr></table></figure>
+<p>其中 <code>food_type(velveeta, cheese)</code> 意思是 <code>velveeta</code> 属于 <code>cheese</code> 类食物；而 <code>flavor(sweet, dessert)</code> 则表示 <code>sweet</code> 是 <code>dessert</code> 的味道。最后的规则的意思是如果食物 <code>X</code> 属于类别 <code>Z</code> 并且 <code>Z</code> 的味道是 <code>Y</code>，那么食物 <code>X</code> 具有 <code>food_flavor</code> <code>Y</code>。编译一下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">| ?- [<span class="string">'food.pl'</span>].compiling /home/parallels/Documents/food.pl <span class="keyword">for</span> byte code.../home/parallels/Documents/food.pl compiled, <span class="number">13</span> lines <span class="built_in">read</span> - <span class="number">1536</span> bytes written, <span class="number">5</span> msyes</span><br></pre></td></tr></table></figure>
+<p>然后我们来问几个问题</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">| ?- food_<span class="built_in">type</span>(What, meat).What = spam ? ;What = sausage ? ;no</span><br></pre></td></tr></table></figure>
+<p>这里 prolog 会先找到 <code>spam</code>，然后输入 <code>;</code>，prolog 就会继续寻找下一个，也就是返回 <code>sausage</code>，继续输入 <code>;</code>，会发现返回了 <code>no</code>，这表示在未经更多计算的情况下不能判断是否还有更多选项。</p>
+<p>另一个问题可以是 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">| ?- food_flavor(What, savory).What = velveeta ? ;What = spam ? ;What = sausage ? ;no</span><br></pre></td></tr></table></figure>
+<p>这里要注意 <code>food_flavor(X,Y)</code> 是一个规则，而不是事实，逻辑引擎会遍历所有使目标为真的可能组合。</p>
+<h2 id="u4E60_u9898"><a href="#u4E60_u9898" class="headerlink" title="习题"></a>习题</h2><h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://fengdidi.github.io/blog/2011/11/15/di-1zhang-pei-zhi-kai-fa-huan-jing/" target="_blank" rel="external">笨办法学Prolog</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Prolog/" rel="tag">#Prolog</a>
+          
+            <a href="/tags/编程/" rel="tag">#编程</a>
+          
+            <a href="/tags/语言/" rel="tag">#语言</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/01/io-first-step/" rel="next" title="Io 快速入门">
+                <i class="fa fa-chevron-left"></i> Io 快速入门
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/02/the-fun/" rel="prev" title="第十二周 - 正趣果上果">
+                第十二周 - 正趣果上果 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/01/prolog-first-step/"
+           data-title="Prolog 快速入门" data-url="http://wdxtub.com/2016/04/01/prolog-first-step/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u4ECB"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7F16_u7A0B_u6A21_u578B"><span class="nav-number">2.</span> <span class="nav-text">编程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898"><span class="nav-number">3.</span> <span class="nav-text">习题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

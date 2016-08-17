@@ -1,0 +1,835 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="完成了数据处理，我们就可以把清洗之后的数据导入数据库了，需要分别针对 MySQL 和 HBase 写两套代码。具体我们可以把数据库与前端分离，只要配置好能让前端来连接即可。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 Twitter 语料分析 6 MySQL 和 HBase 配置及测试">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-p6.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="完成了数据处理，我们就可以把清洗之后的数据导入数据库了，需要分别针对 MySQL 和 HBase 写两套代码。具体我们可以把数据库与前端分离，只要配置好能让前端来连接即可。">
+<meta property="og:image" content="http://wdxtub.com/images/14578035746426.jpg">
+<meta property="og:updated_time" content="2016-03-29T02:18:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 Twitter 语料分析 6 MySQL 和 HBase 配置及测试">
+<meta name="twitter:description" content="完成了数据处理，我们就可以把清洗之后的数据导入数据库了，需要分别针对 MySQL 和 HBase 写两套代码。具体我们可以把数据库与前端分离，只要配置好能让前端来连接即可。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 Twitter 语料分析 6 MySQL 和 HBase 配置及测试 | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>完成了数据处理，我们就可以把清洗之后的数据导入数据库了，需要分别针对 MySQL 和 HBase 写两套代码。具体我们可以把数据库与前端分离，只要配置好能让前端来连接即可。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u6570_u636E_u5E93_u8BBE_u8BA1"><a href="#u6570_u636E_u5E93_u8BBE_u8BA1" class="headerlink" title="数据库设计"></a>数据库设计</h2><p>我们需要做的很简单，就是返回某个用户用指定的 hashtag 发的 tweet，具体请求和响应的格式为：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">请求格式</span><br><span class="line"><span class="constant">GET</span> /q2?userid=uid&amp;hashtag=hashtag</span><br><span class="line"></span><br><span class="line">响应格式（如果有对应的推文）</span><br><span class="line"><span class="constant">TEAMID</span>,<span class="constant">TEAM_AWS_ACCOUNT_ID</span>\n</span><br><span class="line"><span class="constant">Sentiment_density1</span><span class="symbol">:Tweet_time1</span><span class="symbol">:Tweet_id1</span><span class="symbol">:Cencored_text1</span>\n</span><br><span class="line"><span class="constant">Sentiment_density2</span><span class="symbol">:Tweet_time2</span><span class="symbol">:Tweet_id2</span><span class="symbol">:Cencored_text2</span>\n</span><br><span class="line"><span class="constant">Sentiment_density3</span><span class="symbol">:Tweet_time3</span><span class="symbol">:Tweet_id3</span><span class="symbol">:Cencored_text3</span>\n</span><br><span class="line"></span><br><span class="line">响应格式（如果没有对应的推文）</span><br><span class="line"></span><br><span class="line"><span class="constant">TEAMID</span>,<span class="constant">TEAM_AWS_ACCOUNT_ID</span>\n</span><br><span class="line">\n</span><br></pre></td></tr></table></figure>
+<p>可以看到，实际要在数据库中检索的内容，就是 <code>userid</code> 和 <code>hashtag</code>，其他的列只需要按照格式建立对应的列即可（后面需要用来排序）。</p>
+<h3 id="MySQL_Schema"><a href="#MySQL_Schema" class="headerlink" title="MySQL Schema"></a>MySQL Schema</h3><p>一个可能的表格</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`q2`</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`q2`</span> (</span><br><span class="line">  <span class="string">`tweet_id`</span> <span class="built_in">BIGINT</span>(<span class="number">20</span>) <span class="keyword">UNSIGNED</span></span><br><span class="line">	<span class="string">`user_id`</span> <span class="built_in">BIGINT</span>(<span class="number">20</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">	<span class="string">`time`</span> <span class="built_in">char</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>, </span><br><span class="line">	<span class="string">`content`</span> <span class="built_in">varchar</span>(<span class="number">140</span>),</span><br><span class="line">	<span class="string">`score`</span> <span class="built_in">REAL</span>,</span><br><span class="line">	<span class="string">`hashtag`</span> <span class="built_in">varchar</span>(<span class="number">14</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> = utf8mb4 <span class="keyword">COLLATE</span> = utf8mb4_unicode_ci;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>索引要怎么建立</li>
+<li>导入数据时可以使用 MyISAM engine，导入数据时较快，增加 <code>key_buffer_size</code></li>
+</ul>
+<p>创建的时候可以直接命令执行（直接用的之前的命令，注意对应改）</p>
+<p><code>mysql -u root -pdb15319root song_db &lt; create_tables.sql</code></p>
+<h3 id="HBase_Table"><a href="#HBase_Table" class="headerlink" title="HBase Table"></a>HBase Table</h3><p>HBase 的设计主要是需要决定具体的 rowkey 是什么（需要是唯一的），可以考虑用不同的项拼成一个 rowkey，然后剩下的数据放在 column family 中。</p>
+<p>一个可能的设计是用 <code>tweet_id+user_id+hashtag</code> 作为 rowkey，具体怎么弄还要测试</p>
+<ul>
+<li>增加 BlockCache size</li>
+<li>增加第二个索引: Phoenix -&gt; converted index</li>
+</ul>
+<h2 id="u5BFC_u5165_u6570_u636E"><a href="#u5BFC_u5165_u6570_u636E" class="headerlink" title="导入数据"></a>导入数据</h2><h3 id="u9884_u5904_u7406"><a href="#u9884_u5904_u7406" class="headerlink" title="预处理"></a>预处理</h3><p>这里我们需要把 MapReduce 得到的结果合并、排序并处理成我们需要的形式。</p>
+<p>首先是把数据下载到机器（本地或者 EC2 都可以）上，我们的结果放在 <code>s3://housailei15619/alloutput/</code> 中，直接 <code>wget</code> 应该就可以：</p>
+<ul>
+<li><code>wget http://s3.amazonaws.com/housailei15619/alloutput/part-00000</code></li>
+<li><code>wget http://s3.amazonaws.com/housailei15619/alloutput/part-00001</code></li>
+<li><code>wget http://s3.amazonaws.com/housailei15619/alloutput/part-00002</code></li>
+</ul>
+<p>或者 aws s3 命令：</p>
+<ul>
+<li><code>aws s3 cp s3://housailei15619/alloutput/part-00000 ./</code></li>
+<li><code>aws s3 cp s3://housailei15619/alloutput/part-00001 ./</code></li>
+<li><code>aws s3 cp s3://housailei15619/alloutput/part-00002 ./</code></li>
+</ul>
+<p>这里也说一下如何配置 awscli（ubuntu 镜像，如果使用 Amazon Linux AMI 则已经预装）</p>
+<ul>
+<li>先安装 pip <code>sudo apt-get install python-pip</code></li>
+<li>然后安装 awscli <code>pip install awscli</code>（也可以直接 <code>sudo apt-get install awscli</code>）</li>
+<li>然后使用 <code>aws configure</code> 来进行配置，地区选择 us-east-1</li>
+</ul>
+<p>接下来需要做的事情如下：</p>
+<ol>
+<li>合并数据(bash)<ul>
+<li>比较简单，直接 <code>cat part-00000 part-00001 part-00002 &gt; origindata</code></li>
+</ul>
+</li>
+<li>按照指定列排序(bash)<ul>
+<li>需要用 sort 命令 <code>sort -t$&#39;\t&#39; -k2 origindata &gt; sorteddata</code></li>
+</ul>
+</li>
+<li>清洗数据 userid+hashtag 一致的项目<ul>
+<li>把 \” 这些都还原了</li>
+<li>把写好的文件传上去 <code>scp -i group2.pem ./Wash.java ubuntu@ec2-52-23-186-7.compute-1.amazonaws.com:~/</code></li>
+<li>取一小部分到本地测试 <code>scp -i group2.pem ubuntu@ec2-52-23-186-7.compute-1.amazonaws.com:~/test ./</code></li>
+</ul>
+</li>
+</ol>
+<p>开 <code>m4.large</code> 性能还算不错，处理五千多万条记录大概的时间是：</p>
+<p><img src="/images/14578035746426.jpg" alt="清洗数据耗时"></p>
+<p>得到的文件可能会变大，然后通过 aws s3 把处理好的文件放回去 s3，方便其他机器用</p>
+<ul>
+<li><code>aws s3 cp ./hbasedata s3://housailei15619/alloutput/</code></li>
+</ul>
+<p>测试之后发现可能会有重复的记录，可以用 <code>grep</code> 来看到底出了什么问题 <code>grep &quot;1000001233&quot; hbasedata | grep &quot;BabyyO&quot;</code></p>
+<h3 id="u5BFC_u5165_MySQL"><a href="#u5BFC_u5165_MySQL" class="headerlink" title="导入 MySQL"></a>导入 MySQL</h3><p>大概的语法是：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">date</span><br><span class="line">mysqlimport --local --fields-terminated-by=<span class="string">'\t'</span> --lines-terminated-by=<span class="string">'\n'</span> -uroot -proot --default-character-set=utf8mb4 dbname filename</span><br><span class="line">date</span><br></pre></td></tr></table></figure>
+<p>建立索引</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">date</span><br><span class="line">mysql -uroot -proot dbname <span class="operator">-e</span> <span class="string">"create index iname on tablename (column1, column2,..)"</span></span><br><span class="line">date</span><br></pre></td></tr></table></figure>
+<h3 id="u5BFC_u5165_HBase"><a href="#u5BFC_u5165_HBase" class="headerlink" title="导入 HBase"></a>导入 HBase</h3><p>需要使用 EMR 进行导入，具体参考 <a href="http://wdxtub.com/2016/02/22/cc-14/">云计算 第 14 课 文件 vs 数据库</a></p>
+<ol>
+<li>启动 EMR 集群：1 master &amp; 1 core <ul>
+<li>在创建页面中选择 “Go to advanced options”</li>
+<li>确保所有的实例都是 m4.large</li>
+<li>选择 AMI version 3.11.0 (hadoop version 2).</li>
+<li>移除所有的已有服务(Pig &amp; Hive)并选择安装 HBase version 0.94.</li>
+<li>指定 key-pair 以便 SSH 到 master 实例，ssh 的时候注意用户名是 hadoop</li>
+<li>不要忘记设置标签：<code>15619project:phase1</code>,<code>15619backend:hbase</code></li>
+<li>开启 “termination protection” 和 “keep-alive”</li>
+</ul>
+</li>
+<li>master 和 core 节点的安全组都允许所有流量，使用 Master public DNS 来进行连接</li>
+<li>ssh 到 master 节点之后，运行 <code>hadoop dfsadmin -report</code> 检查 HDFS 的状态</li>
+</ol>
+<p>这里我们用提供的 reference 来进行导入测试，注意需要先清理掉没有 hashtag 的内容，并且把数据组织成我们需要的形式（注意 hashtag 最后的 <code>\n</code>）。</p>
+<p>这里可以下载下来本地跑，或者新开一个服务器来处理。</p>
+<ul>
+<li>根据设计的表来处理数据</li>
+<li>用 awk 排序</li>
+<li>合并数据，直接得到答案</li>
+</ul>
+<p>开启之后连接上去 <code>ssh -i group2 hadoop@dns.compute-1.amazonaws.com</code></p>
+<p>然后用 <code>hdfs dfsadmin -report</code> 检查状态，一切正常之后就可以上传数据了，用如下命令即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir Q2</span><br><span class="line"><span class="built_in">cd</span> Q2</span><br><span class="line">scp -i group2.pem ./cdata hadoop@ec2-<span class="number">52</span>-<span class="number">91</span>-<span class="number">183</span>-<span class="number">102</span>.compute-<span class="number">1</span>.amazonaws.com:~/Q2/</span><br></pre></td></tr></table></figure>
+<p>然后创建对应的 HDFS 目录，再把 csv 文件移过去：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hadoop fs -mkdir /housailei</span><br><span class="line">hadoop fs -mkdir /housailei/csv</span><br><span class="line">hadoop fs -put ./cdata /housailei/csv/</span><br><span class="line"><span class="comment"># 查看</span></span><br><span class="line">hadoop fs -ls /housailei/csv/</span><br></pre></td></tr></table></figure>
+<p>然后进入 HBase Shell 操作 <code>hbase shell</code></p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">hbase(main):<span class="number">001</span>:<span class="number">0</span>&gt; create <span class="string">'q2db'</span>, &#123;NAME =&gt; <span class="string">'data'</span>, DATA_BLOCK_ENCODING =&gt; <span class="string">'FAST_DIFF'</span>, COMPRESSION =&gt; <span class="string">'SNAPPY'</span>, BLOCKSIZE =&gt; <span class="string">'131072'</span>, IN_MEMORY =&gt; <span class="string">'true'</span>, BLOCKCACHE =&gt; <span class="string">'true'</span>, BLOOMFILTER =&gt; <span class="string">'ROWCOL'</span>&#125;</span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span>&gt; <span class="keyword">list</span></span><br><span class="line">hbase(main):<span class="number">003</span>:<span class="number">0</span>&gt; describe <span class="string">'q2db'</span></span><br><span class="line">hbase(main):<span class="number">004</span>:<span class="number">0</span>&gt; <span class="keyword">exit</span></span><br></pre></td></tr></table></figure>
+<p>然后就需要具体的导入了，可能会遇到数据太大放不进去的问题，这时候放到挂载的目录下 <code>/mnt</code> 才行，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /mnt</span><br><span class="line">wget http://s3.amazonaws.com/housailei15619/alloutput/hbasedata</span><br><span class="line">aws s3 cp s3://housailei15619/alloutput/hbasedata ./</span><br><span class="line"></span><br><span class="line">hadoop fs -put ./hbasedata /housailei/csv/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里是处理完全部数据导入的时候的命令</span></span><br><span class="line"><span class="comment"># rowkey 直接是 userid+hashtag：</span></span><br><span class="line"><span class="comment"># 以 \t 为分隔符的话就不需要设定，这是默认的</span></span><br><span class="line">hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.bulk.output=/hfile_groupt1 -Dimporttsv.columns=HBASE_ROW_KEY,data:t q2db /housailei/csv/hbasedata</span><br><span class="line"></span><br><span class="line">hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /hfile_groupt1 q2db</span><br></pre></td></tr></table></figure>
+<p>完成之后测试一下 <code>hbase shell</code>：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">001</span>:<span class="number">0</span>&gt; scan <span class="string">'q2db'</span></span><br></pre></td></tr></table></figure>
+<p>如果导入错误的话，可以在 hbase shell 中 <code>disable &#39;q2db&#39;</code> 之后 <code>drop &#39;q2db&#39;</code> 来删除这个表，还要原来的 shell 中删除原来的数据文件 <code>hadoop fs -rm /housailei/csv/cdata</code></p>
+<p>重新导入的时候需要注意输出文件夹不能已存在，每次换新的就好。注意需要确保没有 <code>BAD_LINE</code> 才能继续。</p>
+<p>在 HBase 的 master node 中备份（注意需要创建好对应的文件夹）：<code>aws emr create-hbase-backup --cluster-id j-3CU55C20WQ5E4 --dir s3://housailei15619/backups/j-3CU55C20WQ5E4 --consistent</code> </p>
+<p>最后附送几条 hadoop 指令</p>
+<ul>
+<li><code>mapred job -list</code> 查看当前在执行的任务列表</li>
+<li><code>hadoop job -kill $jobId</code> 杀掉当前的任务</li>
+</ul>
+<h2 id="u524D_u7AEF_u8BBE_u8BA1"><a href="#u524D_u7AEF_u8BBE_u8BA1" class="headerlink" title="前端设计"></a>前端设计</h2><p>其实只需要写两个连接器用来连接对应的数据库，然后在 Undertow 的 handler 中对应调用即可。具体访问的方式同样可以参考 <a href="http://wdxtub.com/2016/02/22/cc-14/">云计算 第 14 课 文件 vs 数据库</a></p>
+<ul>
+<li>HBase 直接在 EMR 上做完，所以直接连接即可，不需要怎么配置</li>
+<li>MySQL 就需要自己安装和配置了</li>
+</ul>
+<p>需要把换行符换回来</p>
+<p>get ‘twitterdata’,’1000001233BabyyO’</p>
+<p>一些不错的测试用例：</p>
+<p>ec2-54-208-201-121.compute-1.amazonaws.com/q2?userid=1000001233&amp;hashtag=BabyyO</p>
+<ul>
+<li>各种字符 + 多行输出：<a href="http://q1-1848733628.us-east-1.elb.amazonaws.com/q2?userid=1000001233&amp;hashtag=BabyyO" target="_blank" rel="external">http://q1-1848733628.us-east-1.elb.amazonaws.com/q2?userid=1000001233&amp;hashtag=BabyyO</a></li>
+<li>各种字符 + 多行输出：<a href="http://q1-1848733628.us-east-1.elb.amazonaws.com/q2?userid=1000003579&amp;hashtag=niigata" target="_blank" rel="external">http://q1-1848733628.us-east-1.elb.amazonaws.com/q2?userid=1000003579&amp;hashtag=niigata</a></li>
+<li>各种字符 + 单行输出：<a href="http://q1-1848733628.us-east-1.elb.amazonaws.com/q2?userid=1000034468&amp;hashtag=الشباب" target="_blank" rel="external">http://q1-1848733628.us-east-1.elb.amazonaws.com/q2?userid=1000034468&amp;hashtag=الشباب</a></li>
+</ul>
+<p>更新前端命令：<code>scp -i ../group.pem -r ./* ubuntu@ec2-54-208-201-121.compute-1.amazonaws.com:~/undertow-server/</code></p>
+<p>注意 pom 文件的版本要正确，并且不能在本地连接，要在 ec2 上连接。</p>
+<p>可能还需要修改 java 虚拟机默认的堆的大小，在 <code>~/.bashrc</code> 中加入 <code>export MAVEN_OPTS=”-Xms14000m -Xmx14000m”</code> 并 <code>source .bashrc</code></p>
+<p>杀掉当前在跑的进程 <code>ps -ef | grep mvn</code> 然后 <code>kill pid</code>，然后去 <code>/etc/init.d</code> 文件夹下把开机启动脚本删除（因为队友建的镜像默认是开机启动的，不方便调试）</p>
+<p>启动 server <code>mvn clean; mvn compile; sudo mvn exec:java</code></p>
+<h2 id="u4F18_u5316_u6280_u5DE7"><a href="#u4F18_u5316_u6280_u5DE7" class="headerlink" title="优化技巧"></a>优化技巧</h2><h3 id="MySQL__u4F18_u5316"><a href="#MySQL__u4F18_u5316" class="headerlink" title="MySQL 优化"></a>MySQL 优化</h3><blockquote>
+<p>为查询缓存优化你的查询</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 查询缓存不开启</span></span><br><span class="line">$r = mysql_query(<span class="string">"SELECT username FROM user WHERE signup_date &gt;= CURDATE()"</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 开启查询缓存</span></span><br><span class="line">$today = date(<span class="string">"Y-m-d"</span>);</span><br><span class="line">$r = mysql_query(<span class="string">"SELECT username FROM user WHERE signup_date &gt;= '$today'"</span>);</span><br></pre></td></tr></table></figure>
+<p>上面两条SQL语句的差别就是 CURDATE() ，MySQL的查询缓存对这个函数不起作用。所以，像 NOW() 和 RAND() 或是其它的诸如此类的SQL函数都不会开启查询缓存，因为这些函数的返回是会不定的易变的。所以，你所需要的就是用一个变量来代替MySQL的函数，从而开启缓存。</p>
+<blockquote>
+<p>为搜索字段建索引</p>
+</blockquote>
+<p>索引并不一定就是给主键或是唯一的字段。如果在你的表中，有某个字段你总要会经常用来做搜索，那么，请为其建立索引吧。具体建立索引的方法前面有提过，这里不赘述。</p>
+<blockquote>
+<p>从 PROCEDURE ANALYSE() 取得建议</p>
+</blockquote>
+<p><a href="http://dev.mysql.com/doc/refman/5.0/en/procedure-analyse.html" target="_blank" rel="external">PROCEDURE ANALYSE()</a> 会让 MySQL 帮你去分析你的字段和其实际的数据，并会给你一些有用的建议。只有表中有实际的数据，这些建议才会变得有用，因为要做一些大的决定是需要有数据作为基础的。</p>
+<p>例如，如果你创建了一个 INT 字段作为你的主键，然而并没有太多的数据，那么，PROCEDURE ANALYSE()会建议你把这个字段的类型改成 MEDIUMINT 。或是你使用了一个 VARCHAR 字段，因为数据不多，你可能会得到一个让你把它改成 ENUM 的建议。这些建议，都是可能因为数据不够多，所以决策做得就不够准。</p>
+<p>一定要注意，这些只是建议，只有当你的表里的数据越来越多时，这些建议才会变得准确。一定要记住，你才是最终做决定的人。</p>
+<blockquote>
+<p>选择正确的存储引擎</p>
+</blockquote>
+<p>在 MySQL 中有两个存储引擎 MyISAM 和 InnoDB，每个引擎都有利有弊。</p>
+<p>MyISAM 适合于一些需要大量查询的应用，但其对于有大量写操作并不是很好。甚至你只是需要update一个字段，整个表都会被锁起来，而别的进程，就算是读进程都无法操作直到读操作完成。另外，MyISAM 对于 <code>SELECT COUNT(*)</code> 这类的计算是超快无比的。</p>
+<p>InnoDB 的趋势会是一个非常复杂的存储引擎，对于一些小的应用，它会比 MyISAM 还慢。他是它支持“行锁” ，于是在写操作比较多的时候，会更优秀。并且，他还支持更多的高级应用，比如：事务。</p>
+<blockquote>
+<p>参数配置</p>
+</blockquote>
+<p>打开配置文件 <code>vim /etc/my.cnf</code></p>
+<ul>
+<li>修改 <code>back_log</code> 参数值：由默认的50修改为500.（每个连接256kb,占用：125M）<ul>
+<li><code>back_log</code> 值指出在MySQL暂时停止回答新请求之前的短时间内多少个请求可以被存在堆栈中。也就是说，如果MySql的连接数据达到 <code>max_connections</code> 时，新来的请求将会被存在堆栈中，以等待某一连接释放资源，该堆栈的数量即<code>back_log</code>，如果等待连接的数量超过 <code>back_log</code>，将不被授予连接资源。</li>
+<li><code>back_log</code> 值不能超过TCP/IP连接的侦听队列的大小。若超过则无效，查看当前系统的TCP/IP连接的侦听队列的大小命令：<code>cat /proc/sys/net/ipv4/tcp_max_syn_backlog</code>。对于 Linux 系统推荐设置为小于 512 的整数。</li>
+<li><code>show variables like &#39;back_log&#39;;</code> 查看当前数量</li>
+</ul>
+</li>
+<li>修改 <code>max_connections</code> 参数值，由默认的151，修改为3000（750M）<ul>
+<li><code>max_connections</code> 是指MySql的最大连接数，如果服务器的并发连接请求量比较大，建议调高此值，以增加并行连接数量，当然这建立在机器能支撑的情况下，因为如果连接数越多，介于MySql会为每个连接提供连接缓冲区，就会开销越多的内存，所以要适当调整该值，不能盲目提高设值。可以过’conn%’通配符查看当前状态的连接数量，以定夺该值的大小。</li>
+<li>MySQL服务器允许的最大连接数16384；</li>
+<li>查看系统当前最大连接数 <code>show variables like &#39;max_connections&#39;;</code></li>
+</ul>
+</li>
+<li>修改 <code>thread_concurrency</code> 值<ul>
+<li><code>thread_concurrency</code> 的值的正确与否, 对mysql的性能影响很大, 在多个cpu(或多核)的情况下，错误设置了 <code>thread_concurrency</code> 的值, 会导致mysql不能充分利用多cpu(或多核), 出现同一时刻只能一个cpu(或核)在工作的情况。</li>
+<li><code>thread_concurrency</code> 应设为CPU核数的2倍. 比如有一个双核的CPU, 那<code>thread_concurrency</code> 的应该为4; 2个双核的cpu, thread_concurrency的值应为8.</li>
+</ul>
+</li>
+</ul>
+<h3 id="HBase__u4F18_u5316"><a href="#HBase__u4F18_u5316" class="headerlink" title="HBase 优化"></a>HBase 优化</h3><p>HBase 不能支持 where 条件、Order by 查询，只支持按照主键 Rowkey 和主键的 range 来查询，但是可以通过 HBase 提供的 API 进行条件过滤。</p>
+<p>HBase 的 Rowkey 是数据行的唯一标识，必须通过它进行数据行访问，目前有三种方式，单行键访问、行键范围访问、全表扫描访问。数据按行键的方式排序存储，依次按位比较，数值较大的排列在后，例如 int 方式的排序：1，10，100，11，12，2，20…，906，…。</p>
+<p>ColumnFamily 是“列族”，属于 schema 表，在建表时定义，每个列属于一个列族，列名用列族作为前缀“ColumnFamily：qualifier”，访问控制、磁盘和内存的使用统计都是在列族层面进行的。<br>Cell 是通过行和列确定的一个存储单元，值以字节码存储，没有类型。</p>
+<p>Timestamp 是区分不同版本 Cell 的索引，64 位整型。不同版本的数据按照时间戳倒序排列，最新的数据版本排在最前面。</p>
+<p>Hbase 在行方向上水平划分成 N 个 Region，每个表一开始只有一个 Region，数据量增多，Region 自动分裂为两个，不同 Region 分布在不同 Server 上，但同一个不会拆分到不同 Server。</p>
+<p>Region 按 ColumnFamily 划分成 Store，Store 为最小存储单元，用于保存一个列族的数据，每个 Store 包括内存中的 memstore 和持久化到 disk 上的 HFile。</p>
+<blockquote>
+<p>分配合适的内存给 RegionServer 服务</p>
+</blockquote>
+<p>在不影响其他服务的情况下，越大越好。例如在 HBase 的 conf 目录下的 hbase-env.sh 的最后添加 export HBASE_REGIONSERVER_OPTS=”-Xmx16000m $HBASE_REGIONSERVER_OPTS”<br>其中 16000m 为分配给 RegionServer 的内存大小。</p>
+<blockquote>
+<p>RegionServer 的请求处理 IO 线程数</p>
+</blockquote>
+<p>较少的 IO 线程适用于处理单次请求内存消耗较高的 Big Put 场景 (大容量单次 Put 或设置了较大 cache 的 Scan，均属于 Big Put) 或 ReigonServer 的内存比较紧张的场景。<br>较多的 IO 线程，适用于单次请求内存消耗低，TPS 要求 (每秒事务处理量 (TransactionPerSecond)) 非常高的场景。设置该值的时候，以监控内存为主要参考。<br>在 hbase-site.xml 配置文件中配置项为 hbase.regionserver.handler.count。</p>
+<p>200</p>
+<blockquote>
+<p>调整 Block Cache</p>
+</blockquote>
+<p>hfile.block.cache.size：RS的block cache的内存大小限制，默认值0.25，在偏向读的业务中，可以适当调大该值，具体配置时需试hbase集群服务的业务特征，结合memstore的内存占比进行综合考虑。</p>
+<blockquote>
+<p>名称优化</p>
+</blockquote>
+<p>列族名称尽量短，比如：“f”，并且尽量只有一个列族；</p>
+<blockquote>
+<p>硬件优化</p>
+</blockquote>
+<p>增加数据节点</p>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://coolshell.cn/articles/1846.html" target="_blank" rel="external">MySQL性能优化的最佳20+条经验</a></li>
+<li><a href="http://dev.mysql.com/doc/refman/5.1/en/myisam-storage-engine.html" target="_blank" rel="external">target=”_blank”MyISAM Storage Engine</a></li>
+<li><a href="http://dev.mysql.com/doc/refman/5.1/en/innodb.html" target="_blank" rel="external">InnoDB Storage Engine</a></li>
+<li><a href="http://5434718.blog.51cto.com/5424718/1207526" target="_blank" rel="external">MySQL性能优化之参数配置</a></li>
+<li><a href="https://blog.linuxeye.com/379.html" target="_blank" rel="external">MySQL性能调优my.cnf详解</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-HBase/" target="_blank" rel="external">HBase 数据库检索性能优化策略</a></li>
+<li><a href="http://blog.csdn.net/u010967382/article/details/38046821" target="_blank" rel="external">【甘道夫】HBase连接池 – HTablePool被Deprecated之后</a></li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-p6.html"
+           data-title="云计算 Twitter 语料分析 6 MySQL 和 HBase 配置及测试" data-url="http://wdxtub.com/vault/cc-p6.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

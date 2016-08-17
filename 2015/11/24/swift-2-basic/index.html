@@ -1,0 +1,1021 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Apple,Swift,元组,控制,类型,运算符," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="比较简单的部分会用要点的形式列出来，比较复杂和语言本身特性的，会单独提出来介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift2 学习笔记 2 - 基础">
+<meta property="og:url" content="http://wdxtub.com/2015/11/24/swift-2-basic/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="比较简单的部分会用要点的形式列出来，比较复杂和语言本身特性的，会单独提出来介绍">
+<meta property="og:updated_time" content="2015-11-29T22:22:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift2 学习笔记 2 - 基础">
+<meta name="twitter:description" content="比较简单的部分会用要点的形式列出来，比较复杂和语言本身特性的，会单独提出来介绍">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Swift2 学习笔记 2 - 基础 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Swift2 学习笔记 2 - 基础
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-11-24T17:38:49+08:00" content="2015-11-24">
+              2015-11-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/11/24/swift-2-basic/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/24/swift-2-basic/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>比较简单的部分会用要点的形式列出来，比较复杂和语言本身特性的，会单独提出来介绍</p>
+<a id="more"></a>
+<hr>
+<ul>
+<li>常量与变量<ul>
+<li>用 <code>let</code> 声明常量</li>
+<li>用 <code>var</code> 声明变量</li>
+<li>一行可以声明多个，用逗号隔开：<code>var x = 0.0, y = 0.0, z = 0.0</code></li>
+</ul>
+</li>
+<li>类型标注(冒号和空格加上类型名称)<ul>
+<li><code>var welcomeMessage: String</code></li>
+<li>一行可以声明多个：<code>var red, green, blue: Double</code></li>
+</ul>
+</li>
+<li>输出常量和变量<ul>
+<li>函数原型：<code>print(_:separator:terminator:)</code></li>
+<li>通常来说 <code>separator</code> 和 <code>terminator</code> 有默认值可以忽略，如果想要自定义，可以这样：<code>print(someValue, terminator: &quot;&quot;)</code> 这样就不会默认换行了</li>
+</ul>
+</li>
+<li>字符串插值 string interpolation<ul>
+<li>用反斜杠加一对括号</li>
+<li><code>print(&quot;The value is \(someValue)&quot;)</code></li>
+</ul>
+</li>
+<li>注释：<code>//</code> 和 <code>/* */</code></li>
+<li>分号不强制要求，但是为了美观还是加上，或者如果一行写两个语句，就一定要分号</li>
+<li>整数：Swift 提供了 8, 16, 32, 64 的有符号和无符号整数类型<ul>
+<li>如: UInt8, Int32 等</li>
+<li>整数范围: UInt8.min, UInt8.max，其他的类型类似</li>
+<li>32 位平台上，Int 和 Int32 长度相同</li>
+<li>64 位平台上，Int 和 Int64 长度相同</li>
+<li>统一使用 Int 可以提高代码的可复用性，避免不同类型数字之间的转换，并且匹配数字的类型推断</li>
+</ul>
+</li>
+<li>浮点数<ul>
+<li>Double 64 位浮点数</li>
+<li>Float 32 位浮点数</li>
+</ul>
+</li>
+<li>Swift 是一个类型安全的语言</li>
+<li>Swift 也会尽可能通过类型推断来选择合适的类型</li>
+<li>数值型字面量<ul>
+<li>十进制数：没有前缀</li>
+<li>二进制数：<code>0b</code></li>
+<li>八进制数：<code>0o</code></li>
+<li>十六进制数：<code>0x</code></li>
+</ul>
+</li>
+<li>类型转换<ul>
+<li>整数和浮点数转换必须显式指定类型</li>
+</ul>
+</li>
+<li>类型别名<ul>
+<li>用 <code>typealias</code> 关键字来定义，如 <code>typealias AudioSample = UInt16</code></li>
+</ul>
+</li>
+<li>布尔值：true 和 false</li>
+<li>元组<ul>
+<li>圆括号包起来的变量：<code>http404Error = (404, &quot;Not Found&quot;)</code></li>
+<li>分解元素内容 <code>let (statusCode, Message) = http404Error</code></li>
+<li>如果只需要用一部分，忽略的部分用下划线表示 <code>let (justCode, _) = http404Error</code></li>
+<li>还可以通过下标来访问元组的中单个元素，下标从零开始：<code>http404Error.0</code></li>
+<li>可以在定义元组的时候给元素命名，这样就可以通过名字来获取对应的值：<code>let http200Status = (statusCode: 200, description: &quot;OK&quot;)</code></li>
+<li>元组在临时组织值的时候很有用，但是并不适合创建复杂的数据结构</li>
+</ul>
+</li>
+<li>运算符<ul>
+<li>基本的就不提了，和其他语言差不多，这里就记录一些要点</li>
+<li><code>++</code> 前置的时候，先自增再返回</li>
+<li><code>++</code> 后置的时候，先返回再自增</li>
+<li><code>===</code> 恒等，<code>!==</code> 不恒等</li>
+<li>三目运算符 <code>(condition ? statement1 : statement2)</code><ul>
+<li>应该避免在一个组合语句中使用多个三目运算符</li>
+</ul>
+</li>
+<li>空合运算 (Nil Coalescing Operator)<ul>
+<li><code>(a ?? b)</code> 将对可选类型 a 进行空判断，如果 a 包含一个值就进行解封，否则就返回一个默认值 b。</li>
+<li>相当于下列代码的简短表示: <code>a != nil ? a! : b</code></li>
+</ul>
+</li>
+<li>区间运算符<ul>
+<li>闭区间运算符 ( a…b )，包括 a 也包括 b</li>
+<li>半开区间运算符 ( a…&lt;b )，包括 a 不包括 b</li>
+</ul>
+</li>
+<li>逻辑运算<ul>
+<li><code>!a</code>, <code>a&amp;&amp;b</code>, <code>a||b</code> </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>字符串是值类型 Strings are value types，也就是说操作的时候会创建一个新的副本<ul>
+<li>连接字符串和字符可以用 <code>+</code> 号，创建一个新的字符串</li>
+<li>字符串插值(String Interpolation)，如 <code>let message = &quot;\(multiplier) times 2.5 is \(Double(multiplier) * 2.5)&quot;</code></li>
+<li>Swift 的字符串完全兼容 Unicode</li>
+<li>计算字符数量，用字符串 characters 属性的 count 属性</li>
+<li><code>let string = &quot;Hello World&quot; ; print(string.characters.count)</code></li>
+<li>通过字符串索引 <code>startIndex</code>, <code>endIndex</code>, <code>startIndex.predecessor()</code>, <code>startIndex.succeessor()</code> 来访问，或者也可以通过下标访问</li>
+<li>调用 <code>insert(_:atIndex:)</code> 方法可以在一个字符串的指定索引插入一个字符。<ul>
+<li><code>var welcome = &quot;hello&quot;; welcome.insert(&quot;!&quot;, atIndex:welcome.endIndex)</code></li>
+</ul>
+</li>
+<li>删除字符或字符串 <code>removeAtIndex(_:)</code>, <code>removeRange(_:)</code></li>
+<li>比较字符串：<code>==</code>, <code>!=</code>, <code>hasPrefix(_:) / hasSuffix(_:)</code></li>
+<li>字符串 Unicode 表示形式</li>
+</ul>
+</li>
+<li>For 循环<ul>
+<li><code>for initialization; condition; increment { ... }</code></li>
+<li><code>for var variable in Collection { ... }</code></li>
+</ul>
+</li>
+<li>While 循环<ul>
+<li><code>while condition { ... }</code></li>
+<li><code>repeat { ... } while condition</code></li>
+</ul>
+</li>
+<li>if 和 switch 可以看概览中的代码例子</li>
+<li>控制转移语句 Control Transfer Statements<ul>
+<li>continue</li>
+<li>break</li>
+<li>fallthrough 在分支中加上这个关键字就会落入到下一个分支中，不会检查匹配条件，类似于 C 语言 switch case 没加 break 的效果</li>
+<li>return</li>
+<li>throw</li>
+<li>还可以利用标签来明确是 break 出哪个循环，这个在多重循环逻辑中比较有用</li>
+</ul>
+</li>
+</ul>
+<h1 id="u53EF_u9009_u7C7B_u578B"><a href="#u53EF_u9009_u7C7B_u578B" class="headerlink" title="可选类型"></a>可选类型</h1><p>使用可选类型(optionals)来处理值可能缺失的情况，可选类型的值有两种可能：1.有值，等于 x。2.没有值，等于nil。举个例子</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> possibleNumber = <span class="string">"123"</span></span><br><span class="line"><span class="keyword">let</span> convertedNumber = <span class="type">Int</span>(possibleNumber)</span><br></pre></td></tr></table></figure>
+<p><code>convertedNumber</code> 被推测为 <code>Int?</code> 类型，表示可能包含 Int 值，也可能不包含值。</p>
+<p>可以给可选变量赋值位 <code>nil</code> 来表示没有值，但 <code>nil</code> 不能用于非可选的常量和变量。如果声明一个可选常量或者变量但是没有赋值，会被自动设置为 <code>nil</code>。</p>
+<p>可以使用 if 语句和 nil 比较来判断一个可选值是否包含值。使用 <code>==</code> 或 <code>!=</code> 来执行比较。当确定可选类型确实包含值之后，可以在名字后面加一个感叹号来获取值，称为可选值的强制解析(forced unwrapping)。要注意的是使用 <code>!</code> 来获取一个不存在的可选值会导致运行时错误。</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> convertedNumber != <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"convertedNumber has an integer value of <span class="subst">\(convertedNumber!)</span>."</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="u53EF_u9009_u7ED1_u5B9A_optional_binding"><a href="#u53EF_u9009_u7ED1_u5B9A_optional_binding" class="headerlink" title="可选绑定 optional binding"></a>可选绑定 optional binding</h1><p>判断可选类型是否包含值，如果包含就把值赋给一个临时常量或者变量。可选绑定可以用在 if 和 while 语句中，这样就可以同时完成赋值和判断两个任务，如</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> constantName = someOptional &#123;</span><br><span class="line">	statements</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也可以在 if 语句中包含多个可选绑定，然后用 where 子句做布尔值判断，如</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> firstNumber = <span class="type">Int</span>(<span class="string">"4"</span>), secondeNumber = <span class="type">Int</span>(<span class="string">"42"</span>) <span class="keyword">where</span> firstNumber &lt; secondNumber &#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"<span class="subst">\(firstNumber)</span> &lt; <span class="subst">\(secondNumber)</span>"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// print "4 &lt; 42"</span></span><br></pre></td></tr></table></figure>
+<h1 id="u9519_u8BEF_u5904_u7406_error_handling"><a href="#u9519_u8BEF_u5904_u7406_error_handling" class="headerlink" title="错误处理 error handling"></a>错误处理 error handling</h1><p>一个函数可以通过在声明中添加 <code>throws</code> 关键词来抛出错误消息。当你的函数能抛出错误消息时，应该在表达式中前置 <code>try</code> 关键词</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">makeASandwich</span><span class="params">()</span></span> <span class="keyword">throws</span> &#123;</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">	<span class="keyword">try</span> makeASandwich()</span><br><span class="line">	eatASandwich()</span><br><span class="line">&#125; <span class="keyword">catch</span> <span class="type">Error</span>.<span class="type">OutOfCleanDishes</span> &#123;</span><br><span class="line">	washDishes()</span><br><span class="line">&#125; <span class="keyword">catch</span> <span class="type">Error</span>.<span class="type">MissingIngredients</span>(<span class="keyword">let</span> ingredients)&#123;</span><br><span class="line">	byGroceries(ingredients)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="u65AD_u8A00"><a href="#u65AD_u8A00" class="headerlink" title="断言"></a>断言</h1><p>在运行时判断一个逻辑条件是否为 <code>true</code>。全局 <code>assert(_:_file:line:)</code> 函数来写一个断言。</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> age = -<span class="number">3</span></span><br><span class="line"><span class="built_in">assert</span>(age &gt;= <span class="number">0</span>, <span class="string">"A person's age cannot be less than zero"</span>)</span><br><span class="line"><span class="comment">// 因为 age &lt; 0，所以断言会触发</span></span><br></pre></td></tr></table></figure>
+<p>适用情景</p>
+<ul>
+<li>整数类型的下标索引被传入一个自定义下标脚本实现，但是下标索引值可能太小或者太大</li>
+<li>需要给函数传入一个值，但是非法的值可能导致函数不能正常运行</li>
+<li>一个可选值现在是 nil，但是后面的代码运行需要一个非 nil 值。</li>
+</ul>
+<h1 id="u96C6_u5408_u7C7B_u578B__28Collection_Types_29"><a href="#u96C6_u5408_u7C7B_u578B__28Collection_Types_29" class="headerlink" title="集合类型 (Collection Types)"></a>集合类型 (Collection Types)</h1><p>Swift 语言提供 Arrays, Sets 和 Dictionaries 三种基本集合类型，存储的数据必须明确，不能把不正确的数据类型插入其中。</p>
+<p>在我们不需要改变集合大小的时候创建不可变集合是很好的习惯。这样 Swift 编译器可以优化我们创建的集合</p>
+<h2 id="u6570_u7EC4_Arrays"><a href="#u6570_u7EC4_Arrays" class="headerlink" title="数组 Arrays"></a>数组 Arrays</h2><p>会被桥接到 Foundation 中的 NSArray 类。应该遵循像 <code>Array&lt;Element&gt;</code> 这样的形式，其中 <code>Element</code> 是这个数组唯一允许存在的数据类型。也可以用 <code>[Element]</code> 这样的简单语法。</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建一个空数组</span></span><br><span class="line"><span class="keyword">var</span> someInts = [<span class="type">Int</span>]()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果代码上下文中已经提供了类型信息，可以使用一对空方括号来创建</span></span><br><span class="line">someInts.append(<span class="number">3</span>)</span><br><span class="line">someInts = []</span><br><span class="line"></span><br><span class="line"><span class="comment">// 带有默认值的数组</span></span><br><span class="line"><span class="keyword">var</span> threeDoubles = [<span class="type">Double</span>](<span class="built_in">count</span>: <span class="number">3</span>, repeatedValue: <span class="number">0.0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 两个数组相加创建一个数组</span></span><br><span class="line"><span class="keyword">var</span> anotherThreeDoubles = <span class="type">Array</span>(<span class="built_in">count</span>: <span class="number">3</span>, repeatedValue: <span class="number">2.5</span>)</span><br><span class="line"><span class="keyword">var</span> sixDoubles = threeDoubles + anotherThreeDoubles</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用字面量构造数组</span></span><br><span class="line"><span class="keyword">var</span> shoppingList: [<span class="type">String</span>] = [<span class="string">"Eggs"</span>, <span class="string">"Milk"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 可以使用数组中的只读属性 count 来获取数组中的数据项数量</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">"The shopping list contains <span class="subst">\(shoppingList.<span class="built_in">count</span>)</span> items."</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用布尔值属性 isEmpty 作为检察 count 属性的值是否为 0 的捷径</span></span><br><span class="line"><span class="keyword">if</span> shoppingList.isEmpty &#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"The shoppinglist is empty."</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 append(_:) 方法在数组后面添加数据项</span></span><br><span class="line">shoppingList.append(<span class="string">"Flour"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以直接用 += 来进行添加</span></span><br><span class="line">shoppingList += [<span class="string">"Baking Powder"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用下标来改变数据</span></span><br><span class="line">shoppingList[<span class="number">0</span>] = <span class="string">"Six eggs"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者范围批量替换</span></span><br><span class="line">shoppingList[<span class="number">4</span>...<span class="number">6</span>] = [<span class="string">"Bananas"</span>, <span class="string">"Apples"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 插入数据</span></span><br><span class="line">shoppingList.insert(<span class="string">"Maple Syrup"</span>, atIndex: <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除数据</span></span><br><span class="line"><span class="keyword">let</span> mapleSyrup = shoppingList.removeAtIndex(<span class="number">0</span>)</span><br><span class="line"><span class="keyword">let</span> apples = shoppingList.removeLast()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用 for-in 循环来遍历数组</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> shopppingList &#123;</span><br><span class="line">	<span class="built_in">print</span>(item)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用 `enumerate()` 方法来同时获取索引值和数据值</span></span><br><span class="line"><span class="keyword">for</span> (index, value) <span class="keyword">in</span> shoppingList.<span class="built_in">enumerate</span>()&#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"Item <span class="subst">\(String(index + <span class="number">1</span>)</span>): <span class="subst">\(Value)</span>"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u96C6_u5408_Sets"><a href="#u96C6_u5408_Sets" class="headerlink" title="集合 Sets"></a>集合 Sets</h2><p>每个元素只出现一次，元素顺序不重要，会被桥接到 Foundation 中的 NSSet 类。存在集合中的类型必须可哈希化。集合的语法是 <code>Set&lt;Element&gt;</code>，但集合没有等价的简化形式</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建空集合</span></span><br><span class="line"><span class="keyword">var</span> letters = <span class="type">Set</span>&lt;<span class="type">Character</span>&gt;()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果上下文提供了类型信息，创建空集合时可以简化</span></span><br><span class="line">letters.insert(<span class="string">"a"</span>)</span><br><span class="line">letters = [] <span class="comment">// 重新设为空，类型为 Set&lt;Character&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 用字面量声明集合</span></span><br><span class="line"><span class="keyword">var</span> favoriteGenres: <span class="type">Set</span>&lt;<span class="type">String</span>&gt; = [<span class="string">"Rock"</span>, <span class="string">"Classical"</span>, <span class="string">"Hip hop"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 因为用了字面量，其实类型的声明是可以省略的，上面的一句可以写为</span></span><br><span class="line"><span class="keyword">var</span> favoriteGenres: <span class="type">Set</span> = [<span class="string">"Rock"</span>, <span class="string">"Classical"</span>, <span class="string">"Hip hop"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用 count 获取元素数量</span></span><br><span class="line"><span class="built_in">print</span> (<span class="string">"I have <span class="subst">\(favoriteGenres.<span class="built_in">count</span>)</span> favorite music genres."</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用 isEmpty 来看集合是否为空</span></span><br><span class="line"><span class="keyword">if</span> favoriteGenres.isEmpty &#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"As far as music goes, I'm not picky."</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// insert(_:) 添加新元素</span></span><br><span class="line">favoriteGenres.insert(<span class="string">"Jazz"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// remove(_:) 删除元素，会返回被删除的值，如果不包含则返回 nil</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> removedGenre = favoriteGenres.remove(<span class="string">"Rock"</span>)&#123;</span><br><span class="line">	<span class="built_in">print</span> (<span class="string">"<span class="subst">\(removedGenre)</span>? I'm over it."</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// contains(_:) 检查是否包含一个特定的值</span></span><br><span class="line"><span class="keyword">if</span> favoriteGenres.<span class="built_in">contains</span>(<span class="string">"Funk"</span>) &#123;</span><br><span class="line">	<span class="built_in">print</span> (<span class="string">"I get up on the good foot"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历集合，用 for-in，用 sort() 方法可以返回一个有序集合</span></span><br><span class="line"><span class="keyword">for</span> genre <span class="keyword">in</span> favoriteGenres.<span class="built_in">sort</span>() &#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"<span class="subst">\(genre)</span>"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其他的一些集合操作</p>
+<ul>
+<li><code>intersect(_:)</code> 根据两个集合中都包含的值创建一个新的集合</li>
+<li><code>exclusiveOr(_:)</code> 在一个集合中但不在另一个集合中的值创建一个新的集合</li>
+<li><code>union(_:)</code> 两个集合的并集</li>
+<li><code>subtract(_:)</code> 两个集合的差集</li>
+<li><code>==</code> 判断集合相等</li>
+<li><code>isSubsetOf(_:)</code> 判断子集</li>
+<li><code>isSupersetOf(_:)</code> 判断超集</li>
+<li><code>isStrictSubsetOf(_:)</code> 判断严格子集</li>
+<li><code>isDisjointWith(_:)</code> 判断两个集合是否不含有相同的值</li>
+</ul>
+<h2 id="u5B57_u5178_Dictionary"><a href="#u5B57_u5178_Dictionary" class="headerlink" title="字典 Dictionary"></a>字典 Dictionary</h2><p>键值对，被桥接倒 Foundation 的 NSDictionary，语法为 <code>Dictionary&lt;Key, Value&gt;</code>。作为 key 的必须是 Hashable 的，可以用 <code>[Key: Value]</code> 这样的快捷形式去创建一个字典</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建空字典</span></span><br><span class="line"><span class="keyword">var</span> namesOfIntegers = [<span class="type">Int</span>: <span class="type">String</span>]()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果上下文提供了信息，可以简化</span></span><br><span class="line">namesOfIntegers[<span class="number">16</span>] = <span class="string">"sixteen"</span></span><br><span class="line">namesOfIntegers = [:] <span class="comment">// 设置为空字典</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 用字面量创建字典</span></span><br><span class="line"><span class="keyword">var</span> airports: [<span class="type">String</span>: <span class="type">String</span>] = [<span class="string">"YYZ"</span>: <span class="string">"Toronto Pearson"</span>, <span class="string">"DUB"</span>: <span class="string">"Dublin"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取字典中元素的数量</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">"The dictionary of airports contains <span class="subst">\(airports.<span class="built_in">count</span>)</span> items."</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 检查是否为空</span></span><br><span class="line"><span class="keyword">if</span> airports.isEmpty &#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"The airports dictionary is empty."</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下标添加新数据，如果已有对应的 key，会覆盖更新</span></span><br><span class="line"><span class="comment">// 用 updateValue(_:forKey:) 方法会返回更新前的值，可选类型，如果没有 key 的话会是 nil</span></span><br><span class="line">airports[<span class="string">"LHR"</span>] = <span class="string">"London"</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> oldValue = airports.updateValue(<span class="string">"Dublin Airport"</span>, forKey: <span class="string">"DUB"</span>)&#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"The Old value for DUB was <span class="subst">\(oldValue)</span>"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用下标给某个 key 赋值为 nil 可以删除这个元素</span></span><br><span class="line"><span class="comment">// 也可以用 removeValueForKey(_:)，方法会返回更新前的值，可选类型，如果没有 key 的话会是 nil</span></span><br><span class="line">airports[<span class="string">"APL"</span>] = <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 用 for-in 来遍历字典，会以 (key, value) 元组形式返回</span></span><br><span class="line"><span class="keyword">for</span> (airportCode, airportName) <span class="keyword">in</span> airports &#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"<span class="subst">\(airportCode)</span>: <span class="subst">\(airportName)</span>"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以单独用 keys 或者 values 属性来遍历，如果需要有序，可以用 sort() 方法</span></span><br><span class="line"><span class="keyword">for</span> airportCode <span class="keyword">in</span> airports.keys &#123;...&#125;</span><br><span class="line"><span class="keyword">for</span> airportName <span class="keyword">in</span> airports.values &#123;...&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Switch__u8BED_u53E5_u9AD8_u7EA7_u7528_u6CD5"><a href="#Switch__u8BED_u53E5_u9AD8_u7EA7_u7528_u6CD5" class="headerlink" title="Switch 语句高级用法"></a>Switch 语句高级用法</h1><p>switch 语句会尝试把某个值与若干个 pattern 进行匹配。每个 case 之间不需要用 break</p>
+<p>比较常见的用法是</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">switch</span> some value to consider &#123;</span><br><span class="line">	<span class="keyword">case</span> value <span class="number">1</span>:</span><br><span class="line">		respond to value <span class="number">1</span></span><br><span class="line">	<span class="keyword">case</span> value <span class="number">2</span>, value <span class="number">3</span>:</span><br><span class="line">		respond to value <span class="number">2</span> or <span class="number">3</span></span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		otherwise</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u533A_u95F4_u5339_u914D"><a href="#u533A_u95F4_u5339_u914D" class="headerlink" title="区间匹配"></a>区间匹配</h2><p>因为是匹配一个 pattern，所以也可以利用区间，如下</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> approximateCount = <span class="number">62</span></span><br><span class="line"><span class="keyword">switch</span> approximateCount &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"no"</span>)</span><br><span class="line">	<span class="keyword">case</span> <span class="number">1</span>..&lt;<span class="number">5</span>:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"a few"</span>)</span><br><span class="line">	<span class="keyword">case</span> <span class="number">5</span>..&lt;<span class="number">12</span>:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"several"</span>)</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"many"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u5143_u7EC4"><a href="#u5143_u7EC4" class="headerlink" title="元组"></a>元组</h2><p>可以使用元组来测试多个值。用下划线来匹配所有可能的值</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> somePoint (<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"><span class="keyword">switch</span> somePoint &#123;</span><br><span class="line">	<span class="keyword">case</span> (<span class="number">0</span>, <span class="number">0</span>):</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"origin"</span>)</span><br><span class="line">	<span class="keyword">case</span> (<span class="number">_</span>, <span class="number">0</span>):</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"x-axis"</span>)</span><br><span class="line">	<span class="keyword">case</span> (<span class="number">0</span>, <span class="number">_</span>):</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"y-zxis"</span>)</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"else"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u503C_u7ED1_u5B9A_Value_Bindings"><a href="#u503C_u7ED1_u5B9A_Value_Bindings" class="headerlink" title="值绑定 Value Bindings"></a>值绑定 Value Bindings</h2><p>允许将匹配的值帮动刀一个临时的常量或变量上，就可以在 case 分支里引用</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> anotherPoint = (<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line"><span class="keyword">switch</span> anotherPoint &#123;</span><br><span class="line">	<span class="keyword">case</span> (<span class="keyword">let</span> x, <span class="number">0</span>):</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"x-axis with value <span class="subst">\(x)</span>"</span>)</span><br><span class="line">	<span class="keyword">case</span> (<span class="number">0</span>, <span class="keyword">let</span> y):</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"y-axis with value <span class="subst">\(y)</span>"</span>)</span><br><span class="line">	<span class="keyword">case</span> <span class="keyword">let</span> (x, y):</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"else x:<span class="subst">\(x)</span> y:<span class="subst">\(y)</span>"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="where"><a href="#where" class="headerlink" title="where"></a>where</h2><p>case 分支模式可以使用 where 语句来判断额外的条件，例如</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> yetAnotherPoint = (<span class="number">1</span>, -<span class="number">1</span>)</span><br><span class="line"><span class="keyword">switch</span> yetAnotherPoint &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="keyword">let</span> (x, y) <span class="keyword">where</span> x == y:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"(<span class="subst">\(x)</span>, <span class="subst">\(y)</span>) is on the line x = y"</span>)</span><br><span class="line">	<span class="keyword">case</span> <span class="keyword">let</span> (x, y) <span class="keyword">where</span> x == -y:</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"(<span class="subst">\(x)</span>, <span class="subst">\(y)</span>) is on the line -x = y"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Guard__u8BED_u53E5"><a href="#Guard__u8BED_u53E5" class="headerlink" title="Guard 语句"></a>Guard 语句</h1><p>要求条件必须为真才执行之后的代码，而且一定要带有一个 else 分句，如果条件不为真则执行 else 分句中的代码</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">guard</span> <span class="keyword">let</span> name = person[<span class="string">"name"</span>] <span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"no name"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="u68C0_u6D4B_API__u7684_u53EF_u7528_u6027"><a href="#u68C0_u6D4B_API__u7684_u53EF_u7528_u6027" class="headerlink" title="检测 API 的可用性"></a>检测 API 的可用性</h1><p>最后一个参数 <code>*</code> 是必须的，用于处理未来的潜在平台，例如：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> #available(iOS <span class="number">9</span>, <span class="type">OSX</span> <span class="number">10.10</span>, *)&#123;</span><br><span class="line">	<span class="comment">//... new api</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="comment">//... old api </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Apple/" rel="tag">#Apple</a>
+          
+            <a href="/tags/Swift/" rel="tag">#Swift</a>
+          
+            <a href="/tags/元组/" rel="tag">#元组</a>
+          
+            <a href="/tags/控制/" rel="tag">#控制</a>
+          
+            <a href="/tags/类型/" rel="tag">#类型</a>
+          
+            <a href="/tags/运算符/" rel="tag">#运算符</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/23/swift-2-overview/" rel="next" title="Swift2 学习笔记 1 - 概述">
+                <i class="fa fa-chevron-left"></i> Swift2 学习笔记 1 - 概述
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/25/swift-2-advance/" rel="prev" title="Swift2 学习笔记 3 - 进阶">
+                Swift2 学习笔记 3 - 进阶 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/11/24/swift-2-basic/"
+           data-title="Swift2 学习笔记 2 - 基础" data-url="http://wdxtub.com/2015/11/24/swift-2-basic/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#u53EF_u9009_u7C7B_u578B"><span class="nav-number">1.</span> <span class="nav-text">可选类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u53EF_u9009_u7ED1_u5B9A_optional_binding"><span class="nav-number">2.</span> <span class="nav-text">可选绑定 optional binding</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u9519_u8BEF_u5904_u7406_error_handling"><span class="nav-number">3.</span> <span class="nav-text">错误处理 error handling</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u65AD_u8A00"><span class="nav-number">4.</span> <span class="nav-text">断言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u96C6_u5408_u7C7B_u578B__28Collection_Types_29"><span class="nav-number">5.</span> <span class="nav-text">集合类型 (Collection Types)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u6570_u7EC4_Arrays"><span class="nav-number">5.1.</span> <span class="nav-text">数组 Arrays</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u96C6_u5408_Sets"><span class="nav-number">5.2.</span> <span class="nav-text">集合 Sets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B57_u5178_Dictionary"><span class="nav-number">5.3.</span> <span class="nav-text">字典 Dictionary</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Switch__u8BED_u53E5_u9AD8_u7EA7_u7528_u6CD5"><span class="nav-number">6.</span> <span class="nav-text">Switch 语句高级用法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u533A_u95F4_u5339_u914D"><span class="nav-number">6.1.</span> <span class="nav-text">区间匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5143_u7EC4"><span class="nav-number">6.2.</span> <span class="nav-text">元组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u503C_u7ED1_u5B9A_Value_Bindings"><span class="nav-number">6.3.</span> <span class="nav-text">值绑定 Value Bindings</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#where"><span class="nav-number">6.4.</span> <span class="nav-text">where</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Guard__u8BED_u53E5"><span class="nav-number">7.</span> <span class="nav-text">Guard 语句</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u68C0_u6D4B_API__u7684_u53EF_u7528_u6027"><span class="nav-number">8.</span> <span class="nav-text">检测 API 的可用性</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

@@ -1,0 +1,738 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="在总体介绍了软件架构之后，这一讲主要介绍基本的概念，为之后的深入夯实基础。其中很多定义不是特别好翻译，就直接引用英文原文了。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="软件架构与设计 第 3 课 Basic Concepts">
+<meta property="og:url" content="http://wdxtub.com/vault/sad-3.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="在总体介绍了软件架构之后，这一讲主要介绍基本的概念，为之后的深入夯实基础。其中很多定义不是特别好翻译，就直接引用英文原文了。">
+<meta property="og:image" content="http://wdxtub.com/images/sad8.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/sad9.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/sad10.jpg">
+<meta property="og:updated_time" content="2016-01-22T20:36:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="软件架构与设计 第 3 课 Basic Concepts">
+<meta name="twitter:description" content="在总体介绍了软件架构之后，这一讲主要介绍基本的概念，为之后的深入夯实基础。其中很多定义不是特别好翻译，就直接引用英文原文了。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    软件架构与设计 第 3 课 Basic Concepts | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>在总体介绍了软件架构之后，这一讲主要介绍基本的概念，为之后的深入夯实基础。其中很多定义不是特别好翻译，就直接引用英文原文了。</p>
+<a id="more"></a>
+<hr>
+<p>什么是软件架构：A software system’s architecture is the set of <strong>principal design decisions</strong> about the system.</p>
+<p>主要包括：</p>
+<ul>
+<li>结构</li>
+<li>行为</li>
+<li>交互</li>
+<li>非功能属性 NFP</li>
+</ul>
+<p>什么叫做 <strong>Principal</strong>？</p>
+<p>意味着这个设计决定的架构状态，说明并不是所有的设计决定都是架构级别的；具体的标准就有软件开发的目标决定。</p>
+<p>从时间的角度来看，在每个给定的时间点，有且仅有一个架构，而架构本身也是在不断变化的。</p>
+<h2 id="Prescriptive_vs-_Descriptive_Architecture"><a href="#Prescriptive_vs-_Descriptive_Architecture" class="headerlink" title="Prescriptive vs. Descriptive Architecture"></a>Prescriptive vs. Descriptive Architecture</h2><p>这是一个比较重要的概念，所以给出英文原文：</p>
+<ul>
+<li>A system’s prescriptive architecture captures the design decisions made prior to the system’s construction.<ul>
+<li>It is the <strong>as-conceived</strong> or <strong>as-intended</strong> architecture</li>
+</ul>
+</li>
+<li>A system’s descriptive architecture describes how the system has been built<ul>
+<li>It is the <strong>as-implemented</strong> or <strong>as-realized</strong> architecture</li>
+</ul>
+</li>
+</ul>
+<p>对于这两个概念，可以这么理解，prescriptive 是指在没有开发之前进行的设计，如果用盖房子来做例子，就相当于设计图纸；而 decriptive 则是指在软件开发出来之后，我们用来描述的架构，等于是房子已经盖好了，我们通过观察得到的架构。</p>
+<p>这两种架构很多时候是不一样的，毕竟从纸上的设计到最终的制品，会有各种变化。当系统进化的时候，理想状况下首先修改 prescriptive architecture，而在实际生活中，通常就直接堆系统，也就是 descriptive architecture 进行改动了。有很多原因，例如：</p>
+<ul>
+<li>开发者马虎偷懒</li>
+<li>截止日期临近没有办法详细思考并撰写文档</li>
+<li>缺少 prescriptive architecture 的文档</li>
+<li>需要进行代码优化</li>
+<li>技术和工具支持不足</li>
+</ul>
+<h2 id="Architecural_Degradation__u67B6_u6784_u9000_u5316"><a href="#Architecural_Degradation__u67B6_u6784_u9000_u5316" class="headerlink" title="Architecural Degradation 架构退化"></a>Architecural Degradation 架构退化</h2><p>包含两个相关的概念：架构漂移 Architectural drift 和 架构腐烂 Architectural erosion.</p>
+<p>架构漂移指的是在 descriptive architecutre 中引入的重要设计决定没有包含在 prescriptive architecture 中，但是没有违背其设计决定。</p>
+<p>架构腐烂指的是在 descriptive architecutre 中引入的重要设计决定违背了 prescriptive architecture 中的设计决定。</p>
+<p>因为这种情况的发生，所以我们需要架构恢复，也就是实现层面上检查软件系统的架构，找出违背设计决定的地方并进行修正</p>
+<h2 id="Deployment__u90E8_u7F72"><a href="#Deployment__u90E8_u7F72" class="headerlink" title="Deployment 部署"></a>Deployment 部署</h2><p>就是把程序放到它应该运行并发挥作用的地方。需要考虑的问题有：</p>
+<ul>
+<li>可用的内存</li>
+<li>能源消耗</li>
+<li>需要的网络带宽</li>
+</ul>
+<p><img src="/images/sad8.jpg" alt="sad8"></p>
+<p>一个软件系统的架构通常不是，也不应该是一个单一庞大的组织，而应该是不同元素的组合和互动。</p>
+<h2 id="Components__u7EC4_u4EF6"><a href="#Components__u7EC4_u4EF6" class="headerlink" title="Components 组件"></a>Components 组件</h2><p>定义：</p>
+<ul>
+<li>封装了系统功能和/或数据的一个子集</li>
+<li>通过显式定义的接口来限制访问</li>
+<li>有明确定义的执行所需的上下文</li>
+</ul>
+<p>组件通常提供应用相关的服务</p>
+<h2 id="Connectors__u8FDE_u63A5_u5668"><a href="#Connectors__u8FDE_u63A5_u5668" class="headerlink" title="Connectors 连接器"></a>Connectors 连接器</h2><p>定义：连接器是影响和规范不同组件间交互的架构模块。</p>
+<p>在复杂的系统交互中，连接器的作用比组件本身还要大。在许多软件中连接器只是简单的过程调用或者共享数据访问，但更加复杂的连接器是存在的。</p>
+<p>Connectors typically provide application-independent interaction facilities.</p>
+<p>一些连接器的例子：</p>
+<ul>
+<li>过程调用连接器</li>
+<li>共享内存连接器</li>
+<li>消息传递连接器</li>
+<li>流连接器</li>
+<li>分布式连接器</li>
+<li>包装/适配连接器</li>
+</ul>
+<h2 id="Configurations__u914D_u7F6E"><a href="#Configurations__u914D_u7F6E" class="headerlink" title="Configurations 配置"></a>Configurations 配置</h2><p>定义：An architecural configuration, or topology, is a set of specific associations between the components and connectors of a software system’s architecture.</p>
+<p>一个例子：</p>
+<p><img src="/images/sad9.jpg" alt="sad9"></p>
+<h2 id="Architectural_Styles__u67B6_u6784_u98CE_u683C"><a href="#Architectural_Styles__u67B6_u6784_u98CE_u683C" class="headerlink" title="Architectural Styles 架构风格"></a>Architectural Styles 架构风格</h2><p>定义：</p>
+<p>An architectural style is a named collection of architectural design decisions that</p>
+<ul>
+<li>are applicable in a given development context</li>
+<li>constrain architecural design decisions that are specific to a particular system within that context</li>
+<li>elicit beneficial qualities in each resulting system</li>
+</ul>
+<h2 id="Architectural_Patterns__u67B6_u6784_u6A21_u5F0F"><a href="#Architectural_Patterns__u67B6_u6784_u6A21_u5F0F" class="headerlink" title="Architectural Patterns 架构模式"></a>Architectural Patterns 架构模式</h2><p>定义：</p>
+<p>An architectural pattern is a set of architectural design decisions that are applicable to a recurring design problem, and parameterized to account for different software development contexts in which that problem appears.</p>
+<p>在现代分布式系统中广泛应用三层(three-tiered)系统模式</p>
+<p><img src="/images/sad10.jpg" alt="sad10"></p>
+<ul>
+<li>Front Tier: 包含用户界面并以此访问系统服务。</li>
+<li>Middle Tier: 包含应用的主要功能</li>
+<li>Back Tier: 包含应用的数据和存储功能</li>
+</ul>
+<p>其他的一些概念：</p>
+<ul>
+<li>Architecture Model: An artifact documenting some or all of the architectural design decisions about a system</li>
+<li>Architecture Visualization: A way of depicting some or all of the architectural design decisions about a system to a stakeholder</li>
+<li>Architecture View: a subset of related architectural design decisions</li>
+</ul>
+<h2 id="Architectural_Processes__u67B6_u6784_u8FC7_u7A0B"><a href="#Architectural_Processes__u67B6_u6784_u8FC7_u7A0B" class="headerlink" title="Architectural Processes 架构过程"></a>Architectural Processes 架构过程</h2><ul>
+<li>架构设计</li>
+<li>架构建模与可视化</li>
+<li>架构驱动的系统设计</li>
+<li>架构驱动的系统实现</li>
+<li>架构驱动的系统部署，运行时重部署，以及灵活性</li>
+<li>针对非功能属性基于架构的设计，包括安全和信任</li>
+<li>架构适配</li>
+</ul>
+<h2 id="Stakeholders_in_a_System_u2019s_Architecture"><a href="#Stakeholders_in_a_System_u2019s_Architecture" class="headerlink" title="Stakeholders in a System’s Architecture"></a>Stakeholders in a System’s Architecture</h2><ul>
+<li>架构师</li>
+<li>开发者</li>
+<li>测试者</li>
+<li>管理者</li>
+<li>消费者</li>
+<li>用户</li>
+<li>销售者</li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/sad-3.html"
+           data-title="软件架构与设计 第 3 课 Basic Concepts" data-url="http://wdxtub.com/vault/sad-3.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

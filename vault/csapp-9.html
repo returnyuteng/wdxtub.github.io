@@ -1,0 +1,703 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="这一讲可谓是全书最实用的部分，介绍如何基于代码执行的机制，去优化我们的代码。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="深入理解计算机系统 第 9 课 Program Optimization">
+<meta property="og:url" content="http://wdxtub.com/vault/csapp-9.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="这一讲可谓是全书最实用的部分，介绍如何基于代码执行的机制，去优化我们的代码。">
+<meta property="og:image" content="http://wdxtub.com/images/14549871142268.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14549872807057.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14549903615932.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14549904790912.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14549905195484.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14549908658078.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14549910810612.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14549912099144.jpg">
+<meta property="og:updated_time" content="2016-04-20T19:40:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统 第 9 课 Program Optimization">
+<meta name="twitter:description" content="这一讲可谓是全书最实用的部分，介绍如何基于代码执行的机制，去优化我们的代码。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    深入理解计算机系统 第 9 课 Program Optimization | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>这一讲可谓是全书最实用的部分，介绍如何基于代码执行的机制，去优化我们的代码。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u901A_u7528_u4EE3_u7801_u4F18_u5316_u6280_u5DE7"><a href="#u901A_u7528_u4EE3_u7801_u4F18_u5316_u6280_u5DE7" class="headerlink" title="通用代码优化技巧"></a>通用代码优化技巧</h2><p>即使是常数项系数的操作，同样可能影响性能。性能的优化是一个多层级的过程：算法、数据表示、过程和循环，都是需要考虑的层次。于是，这就要求我们需要对系统有一定的了解，例如：</p>
+<ul>
+<li>程序是如何编译和执行的</li>
+<li>现代处理器和内存是如何工作的</li>
+<li>如何衡量程序的性能以及找出瓶颈</li>
+<li>如何保持代码模块化的前提下，提高程序性能</li>
+</ul>
+<p>最根源的优化是对编译器的优化，比方说再寄存器分配、代码排序和选择、死代码消除、效率提升等方面，都可以由编译器做一定的辅助工作。</p>
+<p>但是因为这毕竟是一个自动的过程，而代码本身可以非常多样，在不能改变程序行为的前提下，很多时候编译器的优化策略是趋于保守的。并且大部分用来优化的信息来自于过程和静态信息，很难充分进行动态优化。</p>
+<p>接下来会介绍一些我们自己需要注意的地方，而不是依赖处理器或者编译器来解决</p>
+<h3 id="u4EE3_u7801_u79FB_u52A8"><a href="#u4EE3_u7801_u79FB_u52A8" class="headerlink" title="代码移动"></a>代码移动</h3><p>如果一个表达式总是得到同样的结果，最好把它移动到循环外面，这样只需要计算一次。编译器有时候可以自动完成，比如说使用 <code>-O1</code> 优化。一个例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_row</span><span class="params">(<span class="keyword">double</span> *a, <span class="keyword">double</span> *b, <span class="keyword">long</span> i, <span class="keyword">long</span> n)</span></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> j;</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)&#123;</span><br><span class="line">        a[n*i + j] = b[j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里 <code>n*i</code> 是重复被计算的，可以放到循环外面</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">long</span> j;</span><br><span class="line"><span class="keyword">int</span> ni = n * i;</span><br><span class="line"><span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)&#123;</span><br><span class="line">    a[ni + j] = b[j];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="u51CF_u5C11_u8BA1_u7B97_u5F3A_u5EA6"><a href="#u51CF_u5C11_u8BA1_u7B97_u5F3A_u5EA6" class="headerlink" title="减少计算强度"></a>减少计算强度</h3><p>用更简单的表达式来完成用时较久的操作，例如 <code>16*x</code> 就可以用 <code>x &lt;&lt; 4</code> 代替，一个比较明显的例子是，可以把乘积转化位一系列的加法，如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">    <span class="keyword">int</span> ni = n * i;</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">        a[ni + j] = b[j];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以把 <code>n*i</code> 用加法代替，比如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> ni = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">        a[ni + j] = b[j];</span><br><span class="line">    ni += n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="u516C_u5171_u5B50_u8868_u8FBE_u5F0F"><a href="#u516C_u5171_u5B50_u8868_u8FBE_u5F0F" class="headerlink" title="公共子表达式"></a>公共子表达式</h3><p>可以重用部分表达式的计算结果，例如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Sum neighbors of i, j */</span></span><br><span class="line">up =    val[(i-<span class="number">1</span>)*n + j  ];</span><br><span class="line">down =  val[(i+<span class="number">1</span>)*n + j  ];</span><br><span class="line">left =  val[i*n     + j-<span class="number">1</span>];</span><br><span class="line">right = val[i*n     + j+<span class="number">1</span>];</span><br><span class="line">sum = up + down + left + right;</span><br></pre></td></tr></table></figure>
+<p>可以优化为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">long</span> inj = i*n + j;</span><br><span class="line">up =    val[inj - n];</span><br><span class="line">down =  val[inj + n];</span><br><span class="line">left =  val[inj - <span class="number">1</span>];</span><br><span class="line">right = val[inj + <span class="number">1</span>];</span><br><span class="line">sum = up + down + left + right;</span><br></pre></td></tr></table></figure>
+<p>虽然说，现代处理器对乘法也有很好的优化，但是从 3 次乘法优化到 1 次，总是不错的主意</p>
+<h2 id="u963B_u788D_u4EE3_u7801_u4F18_u5316_u7684_u56E0_u7D20"><a href="#u963B_u788D_u4EE3_u7801_u4F18_u5316_u7684_u56E0_u7D20" class="headerlink" title="阻碍代码优化的因素"></a>阻碍代码优化的因素</h2><h3 id="u8FC7_u7A0B_u8C03_u7528"><a href="#u8FC7_u7A0B_u8C03_u7528" class="headerlink" title="过程调用"></a>过程调用</h3><p>我们先来看一段代码，找找有什么问题：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lower1</span><span class="params">(<span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">size_t</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="built_in">strlen</span>(s); i++)</span><br><span class="line">        <span class="keyword">if</span> (s[i] &gt;= <span class="string">'A'</span> &amp;&amp; s[i] &lt;= <span class="string">'Z'</span>)</span><br><span class="line">            s[i] -= (<span class="string">'A'</span> - <span class="string">'a'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>问题在于，在字符串长度增加的时候，时间复杂度是二次方的！</p>
+<p><img src="/images/14549871142268.jpg" alt=""></p>
+<p>问题就在于，每次循环中都会调用一次 <code>strlen(s)</code>，而这个函数本身需要通过遍历字符串来取得长度，因此时间复杂度就成了二次方。</p>
+<p>可以怎么优化呢？简单，那么只计算一次就好了：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lower2</span><span class="params">(<span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">size_t</span> i;</span><br><span class="line">    <span class="keyword">size_t</span> len = <span class="built_in">strlen</span>(s);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; len; i++)</span><br><span class="line">        <span class="keyword">if</span> (s[i] &gt;= <span class="string">'A'</span> &amp;&amp; s[i] &lt;= <span class="string">'Z'</span>)</span><br><span class="line">            s[i] -= (<span class="string">'A'</span> - <span class="string">'a'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>于是曲线图就成了这样，变成线性时间：</p>
+<p><img src="/images/14549872807057.jpg" alt=""></p>
+<p>有的同学可能就问了，为什么编译器不能自动把这个过程调用给移到外面去呢？</p>
+<p>前面说过，编译器的策略必须是保守的，因为过程调用之后所发生的事情是不可控的，所以不能直接改变代码逻辑，比方说，假如 <code>strlen</code> 这个函数改变了字符串 <code>s</code> 的长度，那么每次都需要重新计算。如果移出去的话，就会导致问题。</p>
+<p>所以很多时候只能靠程序员自己进行代码优化。</p>
+<h3 id="u5185_u5B58_u95EE_u9898"><a href="#u5185_u5B58_u95EE_u9898" class="headerlink" title="内存问题"></a>内存问题</h3><p>接下来我们看另一段代码和由编译器生成的对应汇编：</p>
+<p><img src="/images/14549903615932.jpg" alt=""></p>
+<p>可以看到在汇编中，每次都会把 <code>b[i]</code> 存进去再读出来，为什么编译器会有这么奇怪的做法呢？</p>
+<p>因为有可能这里的 <code>a</code> 和 <code>b</code> 指向的是同一块内存地址，那么每次更新，都会使得值发生变化：</p>
+<p><img src="/images/14549904790912.jpg" alt=""></p>
+<p>但是中间过程是什么，实际上是没有必要存储起来的，所以我们引入一个临时变量，这样就可以消除 Memory Aliasing 的问题</p>
+<p><img src="/images/14549905195484.jpg" alt=""></p>
+<h2 id="u5904_u7406_u6761_u4EF6_u5206_u652F"><a href="#u5904_u7406_u6761_u4EF6_u5206_u652F" class="headerlink" title="处理条件分支"></a>处理条件分支</h2><p>这个问题，如果不是对处理器执行指令的机制有一定了解的话，可能会难以理解。</p>
+<p><img src="/images/14549908658078.jpg" alt=""></p>
+<p>现代处理器普遍采用超标量设计，也就是基于流水线来进行指令的处理，也就是说，当执行当前指令时，接下来要执行的几条指令已经进入流水线的处理流程了。</p>
+<p>这个很重要，对于顺序执行来说，不会有任何问题，但是对于条件分支来说，在跳转指令时可能会改变程序的走向，也就是说，之前载入的指令可能是无效的。这个时候就只能清空流水线，然后重新进行载入。处理器内部会采用称为『分支预测』的技术：</p>
+<p><img src="/images/14549910810612.jpg" alt=""></p>
+<p>比方说在一个循环中，根据预测，可能除了最后一次跳出循环的时候会判断错误之外，其他都是没有问题的。这就可以接受，但是如果处理器不停判断错误的话（比方说代码逻辑写得很奇怪），性能就会得到极大的拖累：</p>
+<p><img src="/images/14549912099144.jpg" alt=""></p>
+<p>分支问题有些时候会成为最主要的影响性能的因素，但有的时候其实很难避免。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>用好编译器及其不同的参数设定</li>
+<li>不要做蠢事<ul>
+<li>注意算法可能隐藏的低效</li>
+<li>写对编译器友好的代码，尤其是过程调用和内存引用</li>
+<li>注意内层循环</li>
+</ul>
+</li>
+<li>根据机器来优化代码<ul>
+<li>利用指令级并行</li>
+<li>避免不可以预测的分支</li>
+<li>有效利用缓存 </li>
+</ul>
+</li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/csapp-9.html"
+           data-title="深入理解计算机系统 第 9 课 Program Optimization" data-url="http://wdxtub.com/vault/csapp-9.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

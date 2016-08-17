@@ -1,0 +1,903 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="工作流,灵活,轻量,连接," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="去年一整年，在研究知识图谱的同时，结合极简主义的核心、GTD 的形式以及 Unix 的设计思想，摸索出了一套轻量级、跨平台、高度可定制并且与云服务融合的工作流程。在半年多的迭代优化后，工作流背后的整一套理论体系基本成形，各个模块和步骤也有了比较清晰的定义，在这里用尽量简短的篇幅，把这一整套方法，分享给大家。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="极简解构工作流">
+<meta property="og:url" content="http://wdxtub.com/2016/01/02/cloud-workflow/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="去年一整年，在研究知识图谱的同时，结合极简主义的核心、GTD 的形式以及 Unix 的设计思想，摸索出了一套轻量级、跨平台、高度可定制并且与云服务融合的工作流程。在半年多的迭代优化后，工作流背后的整一套理论体系基本成形，各个模块和步骤也有了比较清晰的定义，在这里用尽量简短的篇幅，把这一整套方法，分享给大家。">
+<meta property="og:image" content="http://wdxtub.com/images/cw1.jpg">
+<meta property="og:updated_time" content="2016-01-22T20:37:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="极简解构工作流">
+<meta name="twitter:description" content="去年一整年，在研究知识图谱的同时，结合极简主义的核心、GTD 的形式以及 Unix 的设计思想，摸索出了一套轻量级、跨平台、高度可定制并且与云服务融合的工作流程。在半年多的迭代优化后，工作流背后的整一套理论体系基本成形，各个模块和步骤也有了比较清晰的定义，在这里用尽量简短的篇幅，把这一整套方法，分享给大家。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 极简解构工作流 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                极简解构工作流
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-01-02T11:06:27+08:00" content="2016-01-02">
+              2016-01-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Thinking/" itemprop="url" rel="index">
+                    <span itemprop="name">Thinking</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/01/02/cloud-workflow/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/02/cloud-workflow/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>去年一整年，在研究知识图谱的同时，结合极简主义的核心、GTD 的形式以及 Unix 的设计思想，摸索出了一套轻量级、跨平台、高度可定制并且与云服务融合的工作流程。在半年多的迭代优化后，工作流背后的整一套理论体系基本成形，各个模块和步骤也有了比较清晰的定义，在这里用尽量简短的篇幅，把这一整套方法，分享给大家。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u603B_u4F53_u4ECB_u7ECD"><a href="#u603B_u4F53_u4ECB_u7ECD" class="headerlink" title="总体介绍"></a>总体介绍</h2><p>这套工作流的核心，在于『流』，也就是说，所有的一切，都是为了让信息在尽可能少的依赖和限制下自由流动。无论是不同的设备，不同的应用还是不同的形式，信息都应该能以最简单最自然的方式进行流动。并且，我也不希望整套工作流过分依赖某个步骤或者某个应用。</p>
+<p>流程是死的，但是思路的是活的。信息的流动与激荡，为的是一个目的：把杂乱无章的信息，通过一定的规则，转化为知识，或者更高层次，知识转化为思想。而这套工作流的意义在于，通过流程化处理，将琐碎耗时的机械操作交由计算机，我们只需要专注于信息、知识和思想本身。</p>
+<p>需要注意的是，本文介绍的工作流是针对我个人的生活学习习惯进行定制的，具体操作的时候，最好是根据个人的习惯进行调整，经过一段时间磨合稳定下来即可。而且在适应的过程中会发现这套工作流其实并不会『省事儿』，甚至很可能会更麻烦，因为它会强制你进行从前忽略或者遗忘的思考。但是一旦习惯并应用一段时间，就会发现它的强大之处。</p>
+<h2 id="u7406_u8BBA_u57FA_u7840"><a href="#u7406_u8BBA_u57FA_u7840" class="headerlink" title="理论基础"></a>理论基础</h2><p>先来了解一下知识架构，分为四层：</p>
+<ul>
+<li>总分类：有且仅有一个，是所有分类的父类</li>
+<li>领域大类：宏观意义上的学科划分，唯一直接父类是总分类，比如：自然科学、社会科学</li>
+<li>过渡类：再细一层的学科划分，因为有些边缘跨界学科隶属多个领域大类，所以可能有多个直接父类，比如：物理、生物医学、计算机科学</li>
+<li>本体类：每个过渡类下面的具体分类，这一层不会有明显的层级结构，而是以网状的形式进行组织</li>
+</ul>
+<p>如果上面的描述看起来比较复杂，简单来说可以这样理解，针对所有的信息，分类的时候深度不会超过三层。</p>
+<p>接下来是具体的工作流程，分为三个步骤：</p>
+<ol>
+<li>收集：RSS、书本、公众号订阅、知乎、微博、豆瓣等等</li>
+<li>完善：整理、精炼之后加入个人的知识库</li>
+<li>转化：根据不同的主题进行思考，把思考的结果写成文章，进行升华</li>
+</ol>
+<p>实践的时候可以用不同的时间单位，比方说每周进行一次『收集完善转化』的闭环。</p>
+<p>最后是知识的两种类型，一种是『可繁殖』的，一种是『不可繁殖』的。</p>
+<ul>
+<li>可繁殖：包括系统和方法论，是不同的概念和联系，称之为可繁殖，是因为可以举一反三不断演变出新的知识，比如：批判思考就属于可繁殖</li>
+<li>不可繁殖：指的是具体的知识点，知道就是知道，不知道就是不知道，需要积累，比如：多音字的读音</li>
+</ul>
+<p>平时我们见到的大多是不可繁殖的知识，而这套工作流的其中一个目的，就是帮助我们积累更多可繁殖的知识，并把它们的效用发挥到最大。</p>
+<h2 id="u8BBE_u8BA1_u54F2_u5B66"><a href="#u8BBE_u8BA1_u54F2_u5B66" class="headerlink" title="设计哲学"></a>设计哲学</h2><p>设计哲学主要有三点：极简、GTD 以及 Unix。</p>
+<ul>
+<li>极简：所用工具简单，适应性稳定性强，对环境的依赖少，关注信息本身，自动完成琐碎繁杂工作，与此同时保持高可拓展性</li>
+<li>GTD：规则化任务处理，尽量减少任务选择和切换时的消耗，断舍离，不陷入任务堆积的恶性循环中</li>
+<li>Unix：所有信息通过文本文件的方式进行流动，减少了不同步骤和模块间的耦合，每一个步骤和模块都可以根据自己的喜好进行定制</li>
+</ul>
+<h2 id="u5177_u4F53_u5B9E_u8DF5"><a href="#u5177_u4F53_u5B9E_u8DF5" class="headerlink" title="具体实践"></a>具体实践</h2><p>整个工作流的核心模块非常简单，就是一个文件夹，比如说叫做『Note』。这个文件夹里将会存放各种收集整理的笔记，不同的文件夹就是不同的笔记本，对应不同的类别；同一类别的信息保存成为文本文件，放置在同一个文件夹中。具体如下图所示：</p>
+<p><img src="/images/cw1.jpg" alt=""></p>
+<p>我们可以看到分成了几个大类：</p>
+<ul>
+<li>Inbox：存放所有收集来、未整理的信息。整理的过程，实际上就是清空这个文件夹的过程</li>
+<li>List：保存各种待办事项，比如：购物列表、阅读书单、写作计划等等</li>
+<li>剩下的文件夹就是不同的分类，里面有子文件夹进一步细分（具体的分类这里暂不详述）</li>
+</ul>
+<p>所有的笔记都以 Markdown 这个标记语法进行组织，Markdown 是一种非常简单的基于文本文件的标记语言，可以方便地生成样式精美的电子书，网页等。</p>
+<p>下面简单列出各个模块，大家就会有一个比较清晰的认识：</p>
+<ul>
+<li>备份/版本控制：Github, Dropbox, 百度云 等等</li>
+<li>网页查看：Github, Dropbox</li>
+<li>编辑器：系统自带编辑器, MWeb, Sublime, Visual Code, Atom, Vim, Emacs 等等</li>
+<li>查找：系统自带查找, 编辑器内置查找</li>
+<li>预览：系统自带编辑器, 编辑器插件</li>
+<li>分享：电子书, PPT, 网页, 文件本身</li>
+</ul>
+<p>一个基本的工作流程如下：</p>
+<ul>
+<li>在手机、电脑、网页、Kindle 上收藏的信息保存在 Inbox 中的不同文本文件里</li>
+<li>用编辑器打开对应的文件进行查看编辑和整理，放到对应类别的文件夹中</li>
+<li>查找的时候可以利用系统自带的查找功能进行关键字、文件名查找，或者用编辑器的查找功能</li>
+<li>汇总各种信息，结合不同主题进行文章写作，写完后可以用不同的方式进行分享</li>
+<li>因为文件夹都是在同步盘中，所有的文件都会自动备份到云端</li>
+<li>完成一阶段工作后 commit &amp; push 到 Github 上，这样就自动完成了版本控制</li>
+</ul>
+<p>不要小看这套流程，有很多突出的优点：</p>
+<ul>
+<li>打通了各个设备的界限。微信订阅号的文章可以统一发送到 Kindle 上，在Kindle 上阅读批注后可以统一导入到电脑中</li>
+<li>对操作系统和软件没有要求。整个工作流哪怕在一台全新的电脑上都可以快速展开，文件和文件夹是现代操作系统都有，系统也会自带编辑器和查找功能。唯一的区别就是，自己的电脑可以根据喜好进行配置，但是即使没有这些配置，整个工作流依然可以进行（比方说手头上没有自己电脑的时候）</li>
+<li>所有的信息可以通过网络进行访问，无论是 Github 还是 Dropbox 或者是其他的云盘服务，都可以在线查看，只要有网，无论是手机还是电脑，都可以随时访问全部的信息</li>
+<li>所有的内容保存在云端，可以方便进行场景的切换，比方说可以在手机上查看和编辑笔记，会自动同步到电脑上，随时可以切换到电脑继续刚才的工作</li>
+<li>自动备份冗余：版本控制，更新时间等等都由云端处理，无须自己费心</li>
+</ul>
+<p>篇幅所限，无法面面俱到，仅以此抛砖引玉。相信大家经过一段时间的适应和坚持，就能发现其中的奥妙所在。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/工作流/" rel="tag">#工作流</a>
+          
+            <a href="/tags/灵活/" rel="tag">#灵活</a>
+          
+            <a href="/tags/轻量/" rel="tag">#轻量</a>
+          
+            <a href="/tags/连接/" rel="tag">#连接</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/02/knowledge-graph-thinking/" rel="next" title="上帝怎么说话？-大话知识图谱">
+                <i class="fa fa-chevron-left"></i> 上帝怎么说话？-大话知识图谱
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/01/05/hexo-github-site/" rel="prev" title="静态博客 Github 并存指南">
+                静态博客 Github 并存指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/01/02/cloud-workflow/"
+           data-title="极简解构工作流" data-url="http://wdxtub.com/2016/01/02/cloud-workflow/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u4F53_u4ECB_u7ECD"><span class="nav-number">1.</span> <span class="nav-text">总体介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7406_u8BBA_u57FA_u7840"><span class="nav-number">2.</span> <span class="nav-text">理论基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BBE_u8BA1_u54F2_u5B66"><span class="nav-number">3.</span> <span class="nav-text">设计哲学</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5177_u4F53_u5B9E_u8DF5"><span class="nav-number">4.</span> <span class="nav-text">具体实践</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

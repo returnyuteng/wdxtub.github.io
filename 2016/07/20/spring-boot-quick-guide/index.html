@@ -1,0 +1,931 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,Spring,框架," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="最近因为项目的缘故，需要接触 Spring Boot，详细的介绍可以参考官方的文档，这里主要根据自己学习的实践进行简单分享。版本：1.3.6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot 快速入门指南">
+<meta property="og:url" content="http://wdxtub.com/2016/07/20/spring-boot-quick-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="最近因为项目的缘故，需要接触 Spring Boot，详细的介绍可以参考官方的文档，这里主要根据自己学习的实践进行简单分享。版本：1.3.6">
+<meta property="og:image" content="http://wdxtub.com/images/14690231603970.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14690231828809.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14690235181031.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14690236227465.jpg">
+<meta property="og:updated_time" content="2016-07-20T14:07:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Boot 快速入门指南">
+<meta name="twitter:description" content="最近因为项目的缘故，需要接触 Spring Boot，详细的介绍可以参考官方的文档，这里主要根据自己学习的实践进行简单分享。版本：1.3.6">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Spring Boot 快速入门指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Spring Boot 快速入门指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-20T21:56:47+08:00" content="2016-07-20">
+              2016-07-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/20/spring-boot-quick-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/20/spring-boot-quick-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近因为项目的缘故，需要接触 Spring Boot，详细的介绍可以参考官方的文档，这里主要根据自己学习的实践进行简单分享。版本：1.3.6</p>
+<a id="more"></a>
+<hr>
+<h2 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h2><p>Spring 框架是非常著名的 Java 开源框架，历经十多年的发展，整个生态系统已经非常完善甚至是繁杂，Spring Boot 正是为了解决这个问题而开发的，为 Spring 平台和第三方库提供了开箱即用的设置，只需要很少的配置就可以开始一个 Spring 项目。当然，建议使用 Java 8 来进行开发。</p>
+<p>Spring Boot 实际上走的是 Servlet 的路线，所以需要一个 Servlet 容器，什么 Tomcat/Jetty 都支持，比较意外的是居然还支持 Undertow（Undertow 大法好）。</p>
+<h2 id="u5B89_u88C5"><a href="#u5B89_u88C5" class="headerlink" title="安装"></a>安装</h2><p>简单粗暴直接上命令行，具体的简介参考注释</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 确定 Java 版本 </span></span><br><span class="line">dawang:~ dawang$ java -version</span><br><span class="line">java version <span class="string">"1.8.0_91"</span></span><br><span class="line">Java(TM) SE Runtime Environment (build <span class="number">1.8</span>.<span class="number">0</span>_91-b14)</span><br><span class="line">Java HotSpot(TM) <span class="number">64</span>-Bit Server VM (build <span class="number">25.91</span>-b14, mixed mode)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 Spring Boot CLI</span></span><br><span class="line"><span class="comment"># 这是第一条语句</span></span><br><span class="line">dawang:~ dawang$ brew tap pivotal/tap</span><br><span class="line">==&gt; Tapping pivotal/tap</span><br><span class="line">Cloning into <span class="string">'/usr/local/Library/Taps/pivotal/homebrew-tap'</span>...</span><br><span class="line">remote: Counting objects: <span class="number">16</span>, done.</span><br><span class="line">remote: Compressing objects: <span class="number">100</span>% (<span class="number">14</span>/<span class="number">14</span>), done.</span><br><span class="line">remote: Total <span class="number">16</span> (delta <span class="number">2</span>), reused <span class="number">5</span> (delta <span class="number">0</span>), pack-reused <span class="number">0</span></span><br><span class="line">Unpacking objects: <span class="number">100</span>% (<span class="number">16</span>/<span class="number">16</span>), done.</span><br><span class="line">Checking connectivity... done.</span><br><span class="line">Tapped <span class="number">9</span> formulae (<span class="number">50</span> files, <span class="number">46.1</span>K)</span><br><span class="line"><span class="comment"># 这是第二条语句</span></span><br><span class="line">dawang:~ dawang$ brew install springboot</span><br><span class="line">==&gt; Installing springboot from pivotal/tap</span><br><span class="line">==&gt; Downloading https://repo.spring.io/release/org/springframework/boot/spring-boot-cli/<span class="number">1.3</span>.<span class="number">6</span>.RELEASE/spring-boot-cli-<span class="number">1.3</span>.<span class="number">6</span>.RELEASE-bin.tar.</span><br><span class="line"><span class="comment">######################################################################## 100.0%</span></span><br><span class="line">==&gt; Caveats</span><br><span class="line">Bash completion has been installed to:</span><br><span class="line">  /usr/<span class="built_in">local</span>/etc/bash_completion.d</span><br><span class="line"></span><br><span class="line">zsh completion has been installed to:</span><br><span class="line">  /usr/<span class="built_in">local</span>/share/zsh/site-functions</span><br><span class="line">==&gt; Summary</span><br><span class="line">🍺  /usr/<span class="built_in">local</span>/Cellar/springboot/<span class="number">1.3</span>.<span class="number">6</span>.RELEASE: <span class="number">6</span> files, <span class="number">8.9</span>M, built <span class="keyword">in</span> <span class="number">4</span> minutes <span class="number">39</span> seconds</span><br></pre></td></tr></table></figure>
+<p>然后我们就可以试试看 Spring CLI 的强大威力了！创建一个名为 <code>app.groovy</code> 的文件</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@RestController</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ThisWillActuallyRun</span> &#123;</span></span><br><span class="line">    <span class="annotation">@RequestMapping</span>(<span class="string">"/"</span>)</span><br><span class="line">    String home() &#123;</span><br><span class="line">        <span class="string">"Hello World"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只需要运行 <code>spring run app.groovy</code> 即可！然而，在我的机器上并没有这么顺利，<code>spring</code> 已经被 ruby 无情占用，只好在 <code>.bashrc</code> 中新建一个别名 <code>alias springj=&quot;/usr/local/Cellar/springboot/1.3.6.RELEASE/bin/spring&quot;</code>，然后用 <code>springj run app.groovy</code> 运行。</p>
+<p>还不行！打开 <code>localhost:8080</code> 的时候发现机器启动着 nginx，所以要先把 nginx 关掉，具体的步骤是</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查找对应的进程号</span></span><br><span class="line">ps aux | grep nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送关闭信号</span></span><br><span class="line"><span class="built_in">kill</span> -QUIT [nginx 主进程 pid]</span><br></pre></td></tr></table></figure>
+<p>解决掉各种拦路虎，我们再次运行 <code>springj run app.groovy</code>，就可以在浏览器中见到 Hello World 了。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dawang$ springj run app.groovy</span><br><span class="line">Resolving dependencies.......</span><br><span class="line">  .   ____          _            __ _ _</span><br><span class="line"> /\\ / ___<span class="string">'_ __ _ _(_)_ __  __ _ \ \ \ \</span><br><span class="line">( ( )\___ | '</span>_ | <span class="string">'_| | '</span>_ \/ _` | \ \ \ \</span><br><span class="line"> \\/  ___)| |_)| | | | | || (_| |  ) ) ) )</span><br><span class="line">  <span class="string">'  |____| .__|_| |_|_| |_\__, | / / / /</span><br><span class="line"> =========|_|==============|___/=/_/_/_/</span><br><span class="line"> :: Spring Boot ::        (v1.3.6.RELEASE)</span></span><br></pre></td></tr></table></figure>
+<p>最后我们需要安装的有 <a href="https://gradle.org/" target="_blank" rel="external">Gradle</a> 和 <a href="https://www.jetbrains.com/idea/" target="_blank" rel="external">IntelliJ IDEA CE</a>，这里就不赘述了，安装好了我们就可以进行下一步了</p>
+<h2 id="Hello_World"><a href="#Hello_World" class="headerlink" title="Hello World"></a>Hello World</h2><p>在 <a href="http://start.spring.io/" target="_blank" rel="external">Spring INITIALIZR</a> 进行简单设置即可生成项目模板，如下图所示：</p>
+<p><img src="/images/14690231603970.jpg" alt=""></p>
+<p>然后我们把下载的文件解压并导入 IntelliJ 中，稍作等待即可。</p>
+<p><img src="/images/14690231828809.jpg" alt=""></p>
+<p>目录结构如上图所示，我们直接运行这个 <code>main</code> 函数看看，控制台中的输出为 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">  .   ____          _            __ _ _</span><br><span class="line"> /\\ / ___<span class="string">'_ __ _ _(_)_ __  __ _ \ \ \ \</span><br><span class="line">( ( )\___ | '</span>_ | <span class="string">'_| | '</span>_ \/ _` | \ \ \ \</span><br><span class="line"> \\/  ___)| |_)| | | | | || (_| |  ) ) ) )</span><br><span class="line">  <span class="string">'  |____| .__|_| |_|_| |_\__, | / / / /</span><br><span class="line"> =========|_|==============|___/=/_/_/_/</span><br><span class="line"> :: Spring Boot ::        (v1.3.6.RELEASE)</span><br><span class="line"></span><br><span class="line">2016-07-19 19:29:41.235  INFO 65812 --- [           main] wdx.helloworld.HellowordApplication      : Starting HellowordApplication on dawang.local with PID 65812 (/Users/dawang/Documents/DJI/Code/helloword/build/classes/main started by dawang in /Users/dawang/Documents/DJI/Code/helloword)</span><br><span class="line">2016-07-19 19:29:41.239  INFO 65812 --- [           main] wdx.helloworld.HellowordApplication      : No active profile set, falling back to default profiles: default</span><br><span class="line">2016-07-19 19:29:41.320  INFO 65812 --- [           main] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@545997b1: startup date [Tue Jul 19 19:29:41 CST 2016]; root of context hierarchy</span><br><span class="line">2016-07-19 19:29:42.336  INFO 65812 --- [           main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup</span><br><span class="line">2016-07-19 19:29:42.353  INFO 65812 --- [           main] wdx.helloworld.HellowordApplication      : Started HellowordApplication in 1.865 seconds (JVM running for 3.141)</span><br><span class="line">2016-07-19 19:29:42.354  INFO 65812 --- [       Thread-1] s.c.a.AnnotationConfigApplicationContext : Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@545997b1: startup date [Tue Jul 19 19:29:41 CST 2016]; root of context hierarchy</span><br><span class="line">2016-07-19 19:29:42.356  INFO 65812 --- [       Thread-1] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span></span><br></pre></td></tr></table></figure>
+<p>当然，因为我们的程序中没有做任何操作，也没有配合 Web 模块，所以加载 Spring 完成之后就结束了。</p>
+<p>我们看看项目对应的 <code>build.gradle</code>，其中只包含了两个模块：</p>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">	compile('org.springframework.<span class="keyword">boot</span>:spring-<span class="keyword">boot</span>-starter')</span><br><span class="line">	testCompile('org.springframework.<span class="keyword">boot</span>:spring-<span class="keyword">boot</span>-starter-<span class="keyword">test</span>')</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>spring-boot-starter</code>：核心模块，包括自动配置支持、日志和 YAML</li>
+<li><code>spring-boot-starter-test</code>：测试模块，包括 JUnit、Hamcrest、Mockito</li>
+</ul>
+<p>我们加入 <code>spring-boot-starter-web</code> 模块，对应的 <code>dependencies</code> 部分为</p>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">	compile('org.springframework.<span class="keyword">boot</span>:spring-<span class="keyword">boot</span>-starter')</span><br><span class="line">	compile('org.springframework.<span class="keyword">boot</span>:spring-<span class="keyword">boot</span>-starter-web')</span><br><span class="line">	testCompile('org.springframework.<span class="keyword">boot</span>:spring-<span class="keyword">boot</span>-starter-<span class="keyword">test</span>')</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在 <code>wdx.helloworld.web</code> 这个 package 中加入一个 <code>HelloController</code> 类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> wdx.helloworld.web;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * Created by dawang on 16/7/20.</span><br><span class="line"> */</span></span><br><span class="line"><span class="annotation">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@RequestMapping</span>(<span class="string">"/hello"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">index</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello World! This is wdxtub."</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再启动主程序，访问 <code>localhost:8080/hello</code> 时就可以看到结果了：</p>
+<p><img src="/images/14690235181031.jpg" alt=""></p>
+<p>然后我们编写一下对应的测试 <code>HellowordApplicationTests</code>（单词拼错了不要在意这些细节），注意需要引入一些 static 方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> wdx.helloworld;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.SpringApplicationConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.MediaType;</span><br><span class="line"><span class="keyword">import</span> org.springframework.mock.web.MockServletContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.web.WebAppConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.MockMvc;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.request.MockMvcRequestBuilders;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.web.servlet.setup.MockMvcBuilders;</span><br><span class="line"><span class="keyword">import</span> wdx.helloworld.web.HelloController;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.Matchers.equalTo;</span><br><span class="line"></span><br><span class="line"><span class="annotation">@RunWith</span>(SpringJUnit4ClassRunner.class)</span><br><span class="line"><span class="annotation">@SpringApplicationConfiguration</span>(classes = MockServletContext.class)</span><br><span class="line"><span class="annotation">@WebAppConfiguration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HellowordApplicationTests</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> MockMvc mvc;</span><br><span class="line"></span><br><span class="line">	<span class="annotation">@Before</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUp</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		mvc = MockMvcBuilders.standaloneSetup(<span class="keyword">new</span> HelloController()).build();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="annotation">@Test</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getHello</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		mvc.perform(MockMvcRequestBuilders.get(<span class="string">"/hello"</span>).accept(MediaType.APPLICATION_JSON))</span><br><span class="line">				.andExpect(status().isOk())</span><br><span class="line">                .andExpect(content().string(equalTo(<span class="string">"Hello World! This is wdxtub."</span>)));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>具体测试简单来说就是使用 <code>MockServletContext</code> 来创建一个新的 <code>WebApplicationContext</code>，然后我们就可以模拟访问 <code>localhost:8080/hello</code> 了，运行该测试，可以发现一切正常。</p>
+<p><img src="/images/14690236227465.jpg" alt=""></p>
+<p>至此，我们就了解了如何开始一个 Spring Boot 项目，并编写了一个简单的路由用来显示对应内容。接下来我们会更多介绍开发相关的其他知识。</p>
+<h2 id="Starter_POMs"><a href="#Starter_POMs" class="headerlink" title="Starter POMs"></a>Starter POMs</h2><p>简单来说，Starter POMs 是方便我们快速给应用添加功能的，只需要在 <code>build.gradle</code> 中包含对应的 starter，可以省去大量的配置和依赖管理，下面是一些常用的 starter</p>
+<ul>
+<li><code>spring-boot-starter</code>: 核心 Spring Boot starter，包括自动配置支持，日志和 YAML</li>
+<li><code>spring-boot-starter-actuator</code>: 监控和管理应用</li>
+<li><code>spring-boot-starter-remote-shell</code>: 添加远程 ssh shell 支持</li>
+<li><code>spring-boot-starter-amqp</code>: 高级消息队列协议，通过 <code>spring-rabbit</code> 实现</li>
+<li><code>spring-boot-starter-cloud-connectors</code>: 简化在云平台下服务的连接</li>
+<li><code>spring-boot-starter-elasticsearch</code>: 对 Elasticsearch 搜索和分析引擎的支持</li>
+<li><code>spring-boot-starter-data-jpa</code>: 对 Java 持久化 API 的支持，包括 <code>spring-data-jpa</code>, <code>spring-orm</code> 和 Hibernate</li>
+<li><code>spring-boot-starter-data-mongodb</code>: 对 MongoDB 的支持</li>
+<li><code>spring-boot-starter-mail</code>: 对 <code>javax.mail</code> 的支持</li>
+<li><code>spring-boot-starter-mobile</code>: 对 <code>spring-mobile</code> 的支持</li>
+<li><code>spring-boot-starter-redis</code>: 对 Redis 的支持</li>
+<li><code>spring-boot-starter-security</code>: 对 <code>spring-security</code> 的支持</li>
+<li><code>spring-boot-starter-test</code>: 对常用测试依赖的支持，包括 JUnit, Hamcrest 和 Mockito，还有 <code>spring-test</code> 模块</li>
+<li><code>spring-boot-starter-web</code>: 对全栈 web 开发的支持，包括 Tomcat 和 <code>spring-webmvc</code></li>
+<li><code>spring-boot-starter-websocket</code>: 对 WebSocket 开发的支持</li>
+<li><code>spring-boot-starter-ws</code>: 对 Spring Web Service 的支持</li>
+</ul>
+<p>如果想要切换容器和日志系统可以用下面的包</p>
+<ul>
+<li><code>spring-boot-starter-jetty</code>: 导入 Jetty HTTP 引擎</li>
+<li><code>spring-boot-starter-log4j</code>: 对 Log4J 日志系统的支持</li>
+<li><code>spring-boot-starter-logging</code>: 导入 Spring Boot 的默认日志系统</li>
+<li><code>spring-boot-starter-tomcat</code>: 导入 Spring Boot 的默认 HTTP 引擎</li>
+<li><code>spring-boot-starter-undertow</code>: 导入 Undertow HTTP 引擎</li>
+</ul>
+<p>更多社区贡献的 starter POMs 可以在 <a href="https://github.com/spring-projects/spring-boot/blob/master/spring-boot-starters/README.adoc" target="_blank" rel="external">这里</a> 查阅。</p>
+<h2 id="u7EC4_u7EC7_u4EE3_u7801_u6700_u4F73_u5B9E_u8DF5"><a href="#u7EC4_u7EC7_u4EE3_u7801_u6700_u4F73_u5B9E_u8DF5" class="headerlink" title="组织代码最佳实践"></a>组织代码最佳实践</h2><ul>
+<li>不要使用 <code>default package</code>，建议使用反转的域名来命名包</li>
+<li>把 <code>main</code> 应用类放在 <code>root package</code> 中，其他的类放在子包中，结构如下所示</li>
+</ul>
+<figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">wdx</span><br><span class="line"> +- helloworld</span><br><span class="line">   +- HelloworldApplication.java &lt;- main class</span><br><span class="line">   <span class="string">|</span></span><br><span class="line">   +- web</span><br><span class="line">   <span class="string">| +- HelloController.java</span></span><br><span class="line">   <span class="string">|</span></span><br><span class="line">   +- service</span><br><span class="line">   <span class="string">| +- CustomerService.java</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Spring Boot 提倡在代码中进行配置。通常定义了 <code>main</code> 方法的类是使用 <code>@Configuration</code> 注解的好地方</li>
+<li>不需要将所有的 <code>@Configufation</code> 放进一个单独的类中，可以使用 <code>@Import</code> 注解可以导入其他的配置类。也可以用 <code>@ComponentScan</code> 注解自动收集所有的组件，包括 <code>@Configuration</code> 类</li>
+<li>如果要使用基于 XML 的配置，也最好从 <code>@Configuration</code> 类开始，然后使用 <code>@ImportResource</code> 注解来加载 XML 配置文件</li>
+<li>Spring Boot 另一个很好的特性是会根据所添加的 jar 依赖来配置 Spring 应用，只需要简单把 <code>@EnableAutoConfiguration</code> 加入到 <code>@Configuration</code> 类即可</li>
+<li><code>SpringBootApplication</code> 注解默认等价于 <code>@Configuration</code>, <code>@EnableAutoConfiguration</code> 和 <code>ComponentScan</code> 这三个加起来的效果。</li>
+</ul>
+<h3 id="u6253_u5305_u8FD0_u884C"><a href="#u6253_u5305_u8FD0_u884C" class="headerlink" title="打包运行"></a>打包运行</h3><p>我们在终端中执行 <code>gradle assemble</code> 可以生成一个 jar 包，也可以直接执行这个 jar 包来启动整个应用，如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dawang:helloword dawang$ java -jar build/libs/helloword-<span class="number">0.0</span>.<span class="number">1</span>-SNAPSHOT.jar</span><br><span class="line"></span><br><span class="line">  .   ____          _            __ _ _</span><br><span class="line"> /\\ / ___<span class="string">'_ __ _ _(_)_ __  __ _ \ \ \ \</span><br><span class="line">( ( )\___ | '</span>_ | <span class="string">'_| | '</span>_ \/ _` | \ \ \ \</span><br><span class="line"> \\/  ___)| |_)| | | | | || (_| |  ) ) ) )</span><br><span class="line">  <span class="string">'  |____| .__|_| |_|_| |_\__, | / / / /</span><br><span class="line"> =========|_|==============|___/=/_/_/_/</span><br><span class="line"> :: Spring Boot ::        (v1.3.6.RELEASE)</span><br><span class="line"></span><br><span class="line">2016-07-20 13:11:01.859  INFO 36943 --- [           main] wdx.helloworld.HellowordApplication      : Starting HellowordApplication on dawang.local with PID 36943 (/Users/dawang/Documents/DJI/Code/helloword/build/libs/helloword-0.0.1-SNAPSHOT.jar started by dawang in /Users/dawang/Documents/DJI/Code/helloword)</span><br><span class="line">2016-07-20 13:11:01.864  INFO 36943 --- [           main] wdx.helloworld.HellowordApplication      : No active profile set, falling back to default profiles: default</span><br><span class="line">2016-07-20 13:11:01.960  INFO 36943 --- [           main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@67424e82: startup date [Wed Jul 20 13:11:01 CST 2016]; root of context hierarchy</span><br><span class="line">2016-07-20 13:11:03.727  INFO 36943 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 8080 (http)</span><br><span class="line">2016-07-20 13:11:03.750  INFO 36943 --- [           main] o.apache.catalina.core.StandardService   : Starting service Tomcat</span><br><span class="line">2016-07-20 13:11:03.752  INFO 36943 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.0.36</span><br><span class="line">2016-07-20 13:11:03.897  INFO 36943 --- [ost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext</span><br><span class="line">2016-07-20 13:11:03.897  INFO 36943 --- [ost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1943 ms</span><br><span class="line">2016-07-20 13:11:04.275  INFO 36943 --- [ost-startStop-1] o.s.b.c.e.ServletRegistrationBean        : Mapping servlet: '</span>dispatcherServlet<span class="string">' to [/]</span><br><span class="line">2016-07-20 13:11:04.282  INFO 36943 --- [ost-startStop-1] o.s.b.c.embedded.FilterRegistrationBean  : Mapping filter: '</span>characterEncodingFilter<span class="string">' to: [/*]</span><br><span class="line">2016-07-20 13:11:04.283  INFO 36943 --- [ost-startStop-1] o.s.b.c.embedded.FilterRegistrationBean  : Mapping filter: '</span>hiddenHttpMethodFilter<span class="string">' to: [/*]</span><br><span class="line">2016-07-20 13:11:04.283  INFO 36943 --- [ost-startStop-1] o.s.b.c.embedded.FilterRegistrationBean  : Mapping filter: '</span>httpPutFormContentFilter<span class="string">' to: [/*]</span><br><span class="line">2016-07-20 13:11:04.284  INFO 36943 --- [ost-startStop-1] o.s.b.c.embedded.FilterRegistrationBean  : Mapping filter: '</span>requestContextFilter<span class="string">' to: [/*]</span><br><span class="line">2016-07-20 13:11:04.658  INFO 36943 --- [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@67424e82: startup date [Wed Jul 20 13:11:01 CST 2016]; root of context hierarchy</span><br><span class="line">2016-07-20 13:11:04.751  INFO 36943 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "&#123;[/hello]&#125;" onto public java.lang.String wdx.helloworld.web.HelloController.index()</span><br><span class="line">2016-07-20 13:11:04.755  INFO 36943 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "&#123;[/error]&#125;" onto public org.springframework.http.ResponseEntity&lt;java.util.Map&lt;java.lang.String, java.lang.Object&gt;&gt; org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)</span><br><span class="line">2016-07-20 13:11:04.755  INFO 36943 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "&#123;[/error],produces=[text/html]&#125;" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)</span><br><span class="line">2016-07-20 13:11:04.810  INFO 36943 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]</span><br><span class="line">2016-07-20 13:11:04.810  INFO 36943 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]</span><br><span class="line">2016-07-20 13:11:04.875  INFO 36943 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]</span><br><span class="line">2016-07-20 13:11:05.028  INFO 36943 --- [           main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup</span><br><span class="line">2016-07-20 13:11:05.145  INFO 36943 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 8080 (http)</span><br><span class="line">2016-07-20 13:11:05.151  INFO 36943 --- [           main] wdx.helloworld.HellowordApplication      : Started HellowordApplication in 4.0 seconds (JVM running for 4.484)</span></span><br></pre></td></tr></table></figure>
+<p>当然，因为需要包含所有的依赖，整个 jar 包会比较大。如果想要开启远程调试，命令为 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=<span class="number">8000</span>,<span class="built_in">suspend</span>=n -jar build/libs/helloword-<span class="number">0.0</span>.<span class="number">1</span>-SNAPSHOT.jar</span><br></pre></td></tr></table></figure>
+<h3 id="Gradle__u8FD0_u884C"><a href="#Gradle__u8FD0_u884C" class="headerlink" title="Gradle 运行"></a>Gradle 运行</h3><p>当然我们也可以简单使用内置的 Gradle 脚本来运行，直接 <code>gradle bootRun</code> 即可。</p>
+<h3 id="u914D_u7F6E_Undertow"><a href="#u914D_u7F6E_Undertow" class="headerlink" title="配置 Undertow"></a>配置 Undertow</h3><p>如果想要用 Undertow 来替换默认的 Tomcat，也可以简单在 <code>build.gradle</code> 中进行配置，比如：</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line"><span class="keyword">configurations</span> &#123;</span><br><span class="line">    <span class="keyword">compile</span>.<span class="keyword">exclude</span> module: <span class="string">"spring-boot-starter-tomcat"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">	<span class="keyword">compile</span>(<span class="string">'org.springframework.boot:spring-boot-starter'</span>)</span><br><span class="line">	<span class="keyword">compile</span>(<span class="string">'org.springframework.boot:spring-boot-starter-web'</span>)</span><br><span class="line">    <span class="keyword">compile</span>(<span class="string">'org.springframework.boot:spring-boot-starter-undertow'</span>)</span><br><span class="line">	testCompile(<span class="string">'org.springframework.boot:spring-boot-starter-test'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后使用 <code>gradle bootRun</code> 即可。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>本文中我们简单了解了 Spring Boot 从安装到第一个简易项目的具体过程。当然，如果对 Spring 框架本身有一定了解的话就更好了，不少内容我也在云里雾里，只能慢慢学习咯。</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://www.gitbook.com/book/qbgbook/spring-boot-reference-guide-zh/details" target="_blank" rel="external">Spring Boot 参考指南</a></li>
+<li><a href="http://spring.io/" target="_blank" rel="external">Spring.io</a></li>
+<li><a href="http://spring.io/guides" target="_blank" rel="external">Spring 框架入门教程</a></li>
+<li><a href="http://start.spring.io/" target="_blank" rel="external">Spring INITIALIZR</a></li>
+<li><a href="http://blog.didispace.com/book/springboot/chapter1.html" target="_blank" rel="external">快速入门</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag">#Java</a>
+          
+            <a href="/tags/Spring/" rel="tag">#Spring</a>
+          
+            <a href="/tags/框架/" rel="tag">#框架</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/19/drone-thought-amazon/" rel="next" title="【聊聊无人机】陆 Amazon 的想法">
+                <i class="fa fa-chevron-left"></i> 【聊聊无人机】陆 Amazon 的想法
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/22/food-world/" rel="prev" title="天下美食">
+                天下美食 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/20/spring-boot-quick-guide/"
+           data-title="Spring Boot 快速入门指南" data-url="http://wdxtub.com/2016/07/20/spring-boot-quick-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u4ECB"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B89_u88C5"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello_World"><span class="nav-number">3.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Starter_POMs"><span class="nav-number">4.</span> <span class="nav-text">Starter POMs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7EC4_u7EC7_u4EE3_u7801_u6700_u4F73_u5B9E_u8DF5"><span class="nav-number">5.</span> <span class="nav-text">组织代码最佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u6253_u5305_u8FD0_u884C"><span class="nav-number">5.1.</span> <span class="nav-text">打包运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gradle__u8FD0_u884C"><span class="nav-number">5.2.</span> <span class="nav-text">Gradle 运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u914D_u7F6E_Undertow"><span class="nav-number">5.3.</span> <span class="nav-text">配置 Undertow</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Now that we have covered some of the theory behind virtualization, we can look at a few case studies. Specifically, we start out with an overview of current virtualization suites in the market, which">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 阅读材料 12 Virtualization Case Study">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-reading-12.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="Now that we have covered some of the theory behind virtualization, we can look at a few case studies. Specifically, we start out with an overview of current virtualization suites in the market, which">
+<meta property="og:image" content="http://wdxtub.com/images/14556011023821.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14556012979969.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14556013387645.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14556013776551.jpg">
+<meta property="og:updated_time" content="2016-03-03T17:50:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 阅读材料 12 Virtualization Case Study">
+<meta name="twitter:description" content="Now that we have covered some of the theory behind virtualization, we can look at a few case studies. Specifically, we start out with an overview of current virtualization suites in the market, which">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 阅读材料 12 Virtualization Case Study | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>Now that we have covered some of the theory behind virtualization, we can look at a few case studies. Specifically, we start out with an overview of current virtualization suites in the market, which includes a feature-wise comparison of VMWare, XenServer, HyperV and RHEV. Next, we will take a closer look at Amazon EC2 as a public IaaS provider and some of the design decisions made with respect to providing a general, broad-based public IaaS cloud service.</p>
+<a id="more"></a>
+<hr>
+<h2 id="A_Taxonomy_of_Virtualization_Suites"><a href="#A_Taxonomy_of_Virtualization_Suites" class="headerlink" title="A Taxonomy of Virtualization Suites"></a>A Taxonomy of Virtualization Suites</h2><p><strong>Virtualization Suites</strong></p>
+<p>We briefly survey some of the current and common virtualization software suites and distinguish between virtualization suites and hypervisors. Many vendors often use hypervisor and virtualization suite interchangeably. As discussed throughout this chapter, a hypervisor is primarily responsible for running multiple virtual machines (VMs) on a single physical host. A virtualization suite comprises various software components and individual hypervisors that enable the management of many physical hosts and VMs. A management component typically issues commands to the hypervisor to create, destroy, manage, and migrate VMs across multiple physical hosts.</p>
+<p>The table below shows our taxonomy of four virtualization suites, <a href="http://www.vmware.com/" target="_blank" rel="external">vSphere 5.1</a>, <a href="http://www.microsoft.com/en-us/server-cloud/hyper-v-server/default.aspx" target="_blank" rel="external">Hyper-V</a> , <a href="http://support.citrix.com/product/xens/v6.0/" target="_blank" rel="external">XenServer 6</a>, and <a href="http://www.redhat.com/promo/rhev3/" target="_blank" rel="external">RHEV 3</a>. We compare the suites in terms of multiple features, including the involved hypervisor, the virtualization type, the allowable maximum number of vCPUs per VM, the allowable maximum memory size per VM, and whether memory overcommitment, page sharing, and live migration are supported. In addition, we indicate whether the involved hypervisors contain device drivers, and we list some of the popular cloud vendors that utilize such hypervisors.</p>
+<p>To elaborate on some of the features, live migration allows running VMs to be seamlessly shifted from one physical machine to another. It enables many management features, such as maintenance, power-efficient dynamic server consolidation, and workload balancing, among others. Page Sharing refers to sharing identical memory pages across VMs. This renders effective when VMs use similar OS instances. Finally, some hypervisors eliminate device drivers entirely at guest OSs and provide direct communications between guest OSs and host OSs collocated with hypervisors (similar to what we discussed in the Section “Xen’s Approach to I/O Virtualization”).</p>
+<p><img src="/images/14556011023821.jpg" alt=""></p>
+<h2 id="Amazon_u2019s_Elastic_Compute_Cloud"><a href="#Amazon_u2019s_Elastic_Compute_Cloud" class="headerlink" title="Amazon’s Elastic Compute Cloud"></a>Amazon’s Elastic Compute Cloud</h2><p><strong>Amazon EC2</strong></p>
+<p>Amazon Elastic Compute Cloud (Amazon EC2) is a vital part of Amazon’s cloud computing platform, Amazon Web Services (AWS). On August 25, 2006, Amazon launched EC2, which together with Amazon Simple Storage Service (Amazon S3) marked a change in the way IT was done. Amazon EC2 is a highly reliable and scalable infrastructure as a service (IaaS) with a utility payment model. It allows users to rent virtual machines (VMs) and pay for the resources that they actually consume. Users can set up and configure everything in their VMs, ranging from the operating system to any application. Specifically, a user can boot an Amazon Machine Image (AMI) to create a VM, referred to in Amazon’s parlance as an instance. AMI is a virtual appliance (or a VM image) that contains the user’s operating system, applications, libraries, data, and associated configuration settings.</p>
+<p>Users can create EC2 instances either by using default AMIs prepackaged by Amazon or by developing their own AMIs using Amazon’s bundling tools. Default AMIs are preconfigured with an ever-growing list of operating systems, including Red Hat Enterprise Linux, Windows Server, and Ubuntu. A wide selection of free software provided by Amazon can also be directly incorporated into AMIs and executed over EC2 instances. For example, Amazon provides software for databases (e.g., Microsoft SQL), application servers (e.g., Tomcat Java Web Application), content management (e.g., MediaWiki), and business intelligence (e.g., Jasper Reports). Added to the wide assortment of free software, Amazon services (e.g., Amazon Relational Database Service, which supports MySQL, Oracle, and Microsoft SQL databases) can be further employed in conjunction with EC2 instances. Finally, users can always configure, install and run at any time any compatible software on EC2 instances, exactly as is the case with regular physical machines.</p>
+<p><strong>Amazon EC2 Virtualization Technology</strong></p>
+<p>Amazon EC2 demonstrates the power of cloud computing. Under the hood, it is a marvel of technology. As of March 2012, it was hosting around 7,100 server racks with a total of 454,400 blade servers, assuming 64 blade servers per rack. [1] Above its data centers, Amazon EC2 presents a true virtualization environment using the Xen hypervisor. Xen is a leading example of system virtualization, initially developed as part of the Xenoserver project at the Computer Laboratory, Cambridge University. [2] Currently, Xen is maintained by an open source community. [3] The goal of Xen is to provide IaaS with full isolation and minimal performance overhead on conventional hardware. As discussed previously in this unit, Xen is a native hypervisor that runs on bare metal at the most privileged CPU state. Amazon EC2 uses a highly customized version of Xen [4] to provision and isolate user instances rapidly, consolidate instances to improve system utilization, tolerate software and hardware failures by saving and migrating instances, apply system load balancing through live and seamless migration of instances, and more.</p>
+<p>Amazon EC2 instances can be created, launched, suspended, resumed, and terminated as needed. The instances are system VMs composed of virtualized (or paravirtualized) sets of physical resources, including CPU, memory, and I/O components. To create instances, Xen starts a highly privileged instance (domain 0) at a host OS out of which other user instances (domain U) can be instantiated with guest OSs (see Fig. 1.25). As host OSs, Novell’s SUSE Linux Enterprise Server, Solaris and Open-Solaris, NetBSD, Debian, and Ubuntu, among others, can be used. It is not known, however, which among these host OSs Amazon EC2 supports, but Linux, Solaris and OpenSolaris, FreeBSD, NetBSD, and others can be employed as guest OSs. Among the guest OSs that Amazon EC2 supports are Linux, OpenSolaris, and Windows Server 2003, [5] Amazon EC2’s guest OSs are run at a lesser privileged ring than the host OS and the hypervisor. Clearly, this helps isolate the hypervisor from guest OSs and guest OSs from each other, a key requirement on Amazon AWS’s cloud platform. Nonetheless, running guest OSs in unprivileged mode violates the usual assumption that OSs must run in system mode. To circumvent consequent ramifications, Xen applies a paravirtualized approach whereby guest OSs are modified to run at a downgraded privileged level. As a result, sensitive instructions are enforced to trap to the hypervisor for verification and execution. Linux instances (and most likely OpenSolaris) on Amazon EC2 use Xen’s paravirtualized mode, and it is conjectured also that Windows instances do so. [5] [6] Upon provisioning instances, Xen provides each instance with its own vCPU(s) and associated ISA. The complexity of this step depends entirely on the architecture of the underlying pCPU(s). To this end, it is not clear what vCPU scheduler Amazon EC2 applies, but Xen’s default scheduler is the Credit Scheduler (as discussed in the Resource Virtualization: CPU module). Amazon EC2 is thought to have a modified version of the Credit Scheduler. [5]</p>
+<p>Memory and I/O resources are virtualized in Xen in a way similar to that described in the Resource Virtualization: Memory module. First, Xen uses a two-level page mapping method. Second, the hardware page tables are allocated and managed by guest OSs, with a minimal involvement from the hypervisor. [5] Speciﬁcally, guest OSs can read directly from hardware page tables, but writes are intercepted and validated by the Xen hypervisor to ensure safety and isolation. For performance reasons, however, the guest OSs can batch write requests to amortize the overhead of passing by the hypervisor per every write request. Finally, with Xen, existing hardware I/O devices are not emulated as is typically done in fully virtualized environments. In contrast, I/O requests are always transferred from user instances to domain 0, and vice versa, using a shared memory communication paradigm as demonstrated in Fig. 1.25. At domain 0, device drivers of the host OS are borrowed to handle the I/O requests.</p>
+<p><strong>References</strong></p>
+<ol>
+<li>H. Liu (2012). “Amazon Data Center Size.” <a href="http://huanliu.wordpress.com/2012/03/13/amazon-data-center-size/" target="_blank" rel="external">http://huanliu.wordpress.com/2012/03/13/amazon-data-center-size/</a> March 2012.</li>
+<li>G. Coulouris, J. Dollimore, T. Kindberg, and G. Blair (May 2011). “Distributed Systems: Concepts and Design.” Addison-Wesley, 5 Edition.</li>
+<li>Xen Open Source Community. <a href="http://www.xen.org" target="_blank" rel="external">http://www.xen.org</a>.</li>
+<li>Amazon Elastic Compute Cloud. <a href="http://aws.amazon.com/ec2/" target="_blank" rel="external">http://aws.amazon.com/ec2/</a>.</li>
+<li>F. Zhou, M. Goel, P. Desnoyers, and R. Sundaram (March 2011). “Scheduler Vulnerabilities and Attacks in Cloud Computing.” arXiv:1103.0759v1 [cs.DC].</li>
+<li>C. Boulton (Serverwatch, 2007). “Novell.” Microsoft Outline Virtual Collaboration.</li>
+</ol>
+<h2 id="Amazon_EC2_Properties"><a href="#Amazon_EC2_Properties" class="headerlink" title="Amazon EC2 Properties"></a>Amazon EC2 Properties</h2><p>Amazon EC2 is designed using virutalization technology in order to meet certain performance, scalability, ﬂexibility, security, and reliability criteria.</p>
+<p><strong>Elasticity</strong></p>
+<p>In leveraging a major beneﬁt offered by virtualization, Amazon EC2 allows users to statically and dynamically scale up and down their EC2 clusters. In particular, users can always provision and deprovision virtual EC2 instances by manually starting and stopping any number of them using the AWS management console, the Amazon command line tools and/or the Amazon EC2 API. In addition, users can employ Amazon’s CloudWatch to monitor EC2 instances in realtime and automatically respond to changes in computing requirements. CloudWatch is an Amazon service that allows users to collect statistics about their cluster resource utilization, operational performance, and overall resource demand patterns. Metrics, such as CPU utilization, disk operations, and network trafﬁc, can be aggregated and fed to the Amazon’s Auto Scaling process enabled by CloudWatch. The Auto Scaling process can subsequently add or remove instances so that performance is maintained and costs are saved. In essence, Auto Scaling allows users to closely follow the demand curve of their applications and synergistically alter their EC2 clusters according to conditions they deﬁne (e.g., add three more instances to the cluster when the average CPU utilization exceeds 80%).</p>
+<p><strong>Scalability and Performance</strong></p>
+<p><img src="/images/14556012979969.jpg" alt=""></p>
+<p><img src="/images/14556013387645.jpg" alt=""></p>
+<p>Amazon EC2 instances can scale to more than 255 pCPUs per host, [1] 128 vCPUs per guest, 1TB of RAM per host, up to 1TB of RAM per unmodified guest, and 512GB of RAM per paravirtualized guest. [2] In addition, Amazon EC2 reduces the time needed to boot a fresh instance to seconds, thus expediting scalability as the needs for computing varies. To optimize performance, Amazon EC2 instances are provided in various resource capacities that can suit different application types, including CPU-intensive, memory-intensive, and I/O-intensive applications (see Table 1.2). The vCPU capacity of an instance is expressed in terms of elastic compute units (ECU). Amazon EC2 uses ECU as an abstraction of vCPU capacity, whereby one ECU provides the equivalence of a 1.0-1.2 GHz 2007 Opteron or 2007 Xeon processor. [3] Different instances with different ECUs provide different application runtimes. The performances of instances with identical type and ECUs may also vary as a result of what is called performance variation [4] [8] in cloud computing.</p>
+<p><strong>Flexibility</strong></p>
+<p>Amazon EC2 users are provided with complete control over EC2 instances, with a root access to each instance. They can create AMIs with software of their choice and apply many of Amazon services, including Amazon Simple Storage Service (Amazon S3), Amazon Relational Database Service (Amazon RDS), Amazon SimpleDB, and Amazon Simple Queue Service (Amazon SQS). These services and the various available Amazon EC2 instance types can jointly deliver effective solutions for computing, query processing, and provide storage across a wide range of applications. For example, users running I/O-intensive applications, such as data warehousing and Hadoop MapReduce, can exploit high-storage instances. On the other hand, for tightly coupled, network-intensive applications, users can utilize high-performance computing (HPC) clusters.</p>
+<p>In addition, users have the flexibility to choose among multiple storage types that can be associated with their EC2 instances. First, users can rent EC2 instances with local instance-store disks as root devices. Instance-store volumes are volatile storage and cannot survive stops and terminations. Second, elastic block storage (EBS) volumes can be attached to EC2 instances, which provide the instances with raw block devices. The block devices can then be formatted and mounted with any file system at EC2 instances. EBS volumes are persistent storage and can survive any EC2 instance state, including stops and terminations. EBS volumes of sizes from 1GB to 1TB can be defined, and RAID arrays can be created by combining two or more volumes. EBS volumes can even be attached or detached from instances while they are running. They can also be moved from one instance to another, thus remaining independent of any instance. Finally, applications running on EC2 instances can access Amazon S3 through a defined API. Amazon S3 is a storage that makes Web-scale computing easier for developers, whereby any amount of data can be stored and retrieved at any time and from anywhere on the Web. [5] [6]</p>
+<p><img src="/images/14556013776551.jpg" alt="Figure 3.33: Regions and availability zones in AWS cloud platform. Regions are geographically dispersed to avoid disasters. Availability zones are engineered as autonomous failure zones within regions."></p>
+<p>To this end, Amazon EC2 users do not only have the flexibility of choosing among many instance and storage types but have the capability of mapping elastic IP addresses to EC2 instances without a network administrator’s help or the need to wait for DNS to propagate new bindings. Elastic IP addresses are static IP addresses but tailored for the dynamicity of the cloud. For example, unlike a traditional static IP address, an elastic IP address enables tolerating an instance failure by programmatically remapping the address to any other healthy instance under the same user account. Thus, elastic IP addresses are associated with user accounts and not EC2 instances. Elastic IP addresses exist until explicitly removed and persist even when accounts have no current running instances.</p>
+<p><strong>Fault Tolerance</strong></p>
+<p>Amazon EC2 users are capable of placing instances and storing data at multiple locations represented as regions and availability zones. As shown in Figure 1.27, a region can consist of one or many availability zones, and an availability zone can consist of many blade servers. Regions are independent collections of AWS resources that are dispersed geographically to avoid catastrophic disasters. An availability zone is a distinct location in a region designed to act as an autonomous failure zone. Specifically, an availability zone does not share a physical infrastructure with other availability zones, thus limiting failures from transcending its own boundaries. Furthermore, when a failure occurs, automated AWS processes start moving customer traffic away from the affected zone. Consequently, applications that run in more than one availability zone across regions can inherently achieve higher availability and minimize downtime. Amazon EC2 guarantees 99.95% availability per each Region. [3]</p>
+<p>Last, EC2 instances that are attached to Amazon EBS volumes can attain improved durability over EC2 instances with local stores (or the so-called “ephemeral storage”). Amazon EBS volumes are replicated automatically in the backend of a single availability zone. Moreover, with Amazon EBS, point-in-time consistent snapshots of EBS volumes can be created and reserved in Amazon S3. Amazon S3 storage is automatically replicated across multiple availability zones, not only in a single availability zone. Amazon S3 helps maintain the durability of users’ data by quickly detecting and repairing losses. Amazon S3 is designed to provide 99.999999999% durability and 99.99% availability of data over a given year. [3] A snapshot of an EBS volume can also serve as the starting point for a new EBS volume in case the current one fails. Therefore, with the availability of regions and availability zones, the virtualized environment provided by Xen, and Amazon’s EBS and S3 services, Amazon EC2 users can achieve long-term protection, failure isolation, and reliability.</p>
+<p><strong>Security</strong></p>
+<p>Security in Amazon EC2 is provided at multiple levels. First, as pointed out earlier, EC2 instances are controlled completely by users. Users have full root access, or administrative control, over their instances, accounts, services, and applications. AWS does not have any access rights to user instances and cannot log into their guest OSs. [9] Second, Amazon EC2 provides a complete firewall solution, whereby the default state is to deny all incoming traffic to any user instance. Users must explicitly open ports for specific inbound traffic. Third, API calls to start/stop/terminate instances, alter firewall configurations, and perform other related functions are all signed by the user’s Amazon Secret Access Key. Without the Amazon Secret Access Key, API calls on Amazon EC2 instances cannot be made. Fourth, the virtualized environment provided by Xen provides a clear security separation between EC2 instances and the hypervisor as they run at different privileged modes. Fifth, the AWS firewall is placed in the hypervisor between the physical network interface and the virtual interfaces of instances. Hence, because packet requests are all privileged, they must trap to the hypervisor and accordingly pass through the AWS firewall. Consequently, any two communicating instances are treated as separate virtual machines on the Internet, even if they are placed on the same physical machine. Finally, because Amazon EBS volumes can be associated with EC2 instances, their accesses are restricted to the AWS accounts that created the volumes. This indirectly denies all other AWS accounts (and corresponding users) from viewing and accessing the volumes. We note, however, that this does not impact the flexibility of sharing data on the AWS cloud platform. In particular, users can still create Amazon S3 snapshots of their Amazon EBS volumes and share them with other AWS accounts/users. Nevertheless, only the users who own the volumes are allowed to delete or alter EBS snapshots.</p>
+<p><strong>References</strong></p>
+<ol>
+<li>Xen 4.1 Release Notes. <a href="http://wiki.xen.org/wiki/Xen" target="_blank" rel="external">http://wiki.xen.org/wiki/Xen</a> 4.1 Release Notes.</li>
+<li>Xen 4.0 Release Notes. <a href="http://wiki.xen.org/wiki/Xen" target="_blank" rel="external">http://wiki.xen.org/wiki/Xen</a> 4.0 Release Notes.</li>
+<li>Amazon Elastic Compute Cloud. <a href="http://aws.amazon.com/ec2/" target="_blank" rel="external">http://aws.amazon.com/ec2/</a>.</li>
+<li>B. Farley, V. Varadarajan, K. Bowers, A. Juels, T. Ristenpart, and M. Swift (2012). “More for Your Money: Exploiting Performance Heterogeneity in Public Clouds.” Heterogeneity in Public Clouds.</li>
+<li>S. Ghemawat, H. Gobioff, and S. T. Leung (Oct. 2003). “The Google File System.” SOSP.</li>
+<li>Hadoop. <a href="http://hadoop.apache.org/" target="_blank" rel="external">http://hadoop.apache.org/</a>.</li>
+<li>J. Dean and S. Ghemawat (Dec. 2004). “MapReduce: Simplified Data Processing On Large Clusters.” OSDI.</li>
+<li>M. S. Rehman and M. F. Sakr (Nov. 2010). “Initial Findings for Provisioning Variation in Cloud Computing.” CloudCom.</li>
+<li>Amazon (May 2011). “Amazon Web Services: Overview of Security Processes.” Amazon Whitepaper.</li>
+</ol>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><ul>
+<li>Many virtualization suites are available from multiple cloud vendors. They have differing architectures and features. Most suites support memory over commitment (which enhances server consolidation) as well as live migration (which allows VMs to be seamlessly moved across physical machines).</li>
+<li>Amazon’s Elastic Compute Cloud (EC2) is Amazon Web Services’ primary IaaS offering.</li>
+<li>Amazon Machine Images (AMIs) can be used to create a VM (or instance) in EC2. Dozens of AMIs are available for various environments and prebuilt software stacks.</li>
+<li>EC2 instances can be created, launched, stopped, resumed, and terminated as needed. EC2 is believed to be using Xen as the hypervisor. Amazon’s software completely automates the process of creating instances, configuring their network and storage, and making them accessible to the user.</li>
+<li>Amazon EC2 offers over 17 different instance types, each of which are configured with differing CPU, memory, local storage, and I/O specifications. EC2 instances typically boot in a minute to a few seconds, depending on the instance type, allowing for elastic scaling of compute resources on demand.</li>
+<li>EC2 instances are flexible to be configured in any way the user requires because the user has full administrator privileges to the OS running in the instance. Amazon’s Elastic Block Store (EBS) service allows for raw block devices to be provisioned and attached or detached to any instance. Amazon also allows for elastic IPs (fixed IP addresses) that can be attached to any instance. All of Amazon’s services can be programmatically accessed using APIs, which allows for automated resource control and management.</li>
+<li>EC2 instances can be launched in one of many regions and availability zones, allowing users to improve the fault tolerance and redundancy of their applications, if they wish to do so.</li>
+<li>EC2 instances are secured through Amazon’s own configurable firewall, called security groups. The OS running in an instance is exclusively under the user’s domain and cannot be accessed by Amazon. Furthermore, Amazon employs strict security practices with public-key authentication to provide access to instances as well as API interfaces to various AWS services.</li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-reading-12.html"
+           data-title="云计算 阅读材料 12 Virtualization Case Study" data-url="http://wdxtub.com/vault/cc-reading-12.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

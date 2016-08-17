@@ -1,0 +1,872 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="这节课我们来看看，如何利用 AWS 来进行并行处理，完成与上节课类似的文本处理任务。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 第 10 课 Parallel Programming using EMR">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-10.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="这节课我们来看看，如何利用 AWS 来进行并行处理，完成与上节课类似的文本处理任务。">
+<meta property="og:image" content="http://wdxtub.com/images/14537775895092.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14538337031959.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14538412976569.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14538416282891.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14538417094574.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14538425422610.jpg">
+<meta property="og:updated_time" content="2016-01-29T15:06:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 第 10 课 Parallel Programming using EMR">
+<meta name="twitter:description" content="这节课我们来看看，如何利用 AWS 来进行并行处理，完成与上节课类似的文本处理任务。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 第 10 课 Parallel Programming using EMR | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>这节课我们来看看，如何利用 AWS 来进行并行处理，完成与上节课类似的文本处理任务。</p>
+<a id="more"></a>
+<hr>
+<p>这周的主要任务有下面四个：</p>
+<ol>
+<li>探索一个大数据集</li>
+<li>利用 MapReduce 来处理一个大数据集</li>
+<li>使用 EMR(Elastic MapReduce) 在云上运行一个 MapReduce 工作</li>
+<li>理解使用诸如 MapReduce 这样的框架来处理大数据的优势</li>
+</ol>
+<p>注意！EMR 非常贵！所以从小的数据集开始。有两个部分要收钱：per-instance EMR 费用和实际的  EC2 实例费用。使用竞价实例来减小第二部分的花费。</p>
+<blockquote>
+<p>先使用 WordCount 的例子来熟悉如何设置 cluster。</p>
+</blockquote>
+<p>这次的的限额是 <code>$15</code>，大概就是有 2 次跑全数据的测试。</p>
+<p>任务和上一周的类似，用上个月的维基百科页面访问的数据来进行分析。我们先从上个 project 所做的 filtering 开始，然后把所有的 2015 年 12 月的页面访问数据聚合起来。取出那些最重要的记录并输出到一个小的输出文件中，然后做一些处理来得到真正有用的信息。</p>
+<p>上一次我们顺序处理了一个单一文件，但是没办法回答以下这些问题：</p>
+<ul>
+<li>2015 年 12 月最受欢迎的页面是哪个</li>
+<li>某个页面在某一天得到了多少点击</li>
+</ul>
+<p>如果想要回答这两个问题，我们必须：</p>
+<ul>
+<li>把所有的访问次数聚合起来，并且</li>
+<li>对每个我们感兴趣的文章，生成每天的页面访问时间轴</li>
+</ul>
+<p>为了处理这么大的一个数据集（压缩后 65 GB），我们会设置一个 Elastic MapReduce 工作来完成。需要写简单的 Map 和 Reduce 函数/程序。</p>
+<p>开始之前，最好先弄明白 <a href="https://aws.amazon.com/elasticmapreduce/pricing/" target="_blank" rel="external">EMR 怎么收费</a>。</p>
+<blockquote>
+<p>别忘了打上 Project: 1.2 的标签</p>
+</blockquote>
+<h2 id="Introduction_to_MapReduce"><a href="#Introduction_to_MapReduce" class="headerlink" title="Introduction to MapReduce"></a>Introduction to MapReduce</h2><p>MapReduce 是用许多机器来进行大数据处理的编程模型。Hadoop 是开源版本的 MapReduce 实现。Hadoop 把 MapReduce 当做一个分析引擎，并使用 Hadoop Distributed File System(HDFS) 来进行存储。HDFS 把数据集分成固定大小的块，分布式存放在不同的节点上。具体要执行的任务可以在不同的机器上并行处理。MapReduce 会把整个大任务分成不同的小的 map 和 reduce 任务。所有的 map 任务都在 map 阶段进行，所有的 reduce 任务都在 reduce 阶段进行。map 阶段可能有 1 个或多个任务，reduce 阶段可以有 0 个或多个 reduce 任务。</p>
+<p><img src="/images/14537775895092.jpg" alt="MapReduce 概览"></p>
+<p>上图描述了一个简化的，但是完整的 MapReduce 分析引擎。Map 任务在分布式 HDFS 块上执行，reduce 任务在 map 任务的输出上执行（标记为 intermediate output 或 partitions）。每个 map 任务处理一个或多个不同的 HDFS 块，每个 reduce 任务处理一个或多个 partitions。在一个典型的 MapReduce 程序中，在所有 HDFS 块上执行的 map 任务都是一样的，在所有的 partitions 上执行的 reduce 任务也是一样的。</p>
+<p><a href="https://youtu.be/1gBLqlMUQQk" target="_blank" rel="external">MapReduce 视频介绍</a></p>
+<p>要使用集群来进行计算，需要考虑以下问题：</p>
+<ul>
+<li>怎么样切分输入数据？</li>
+<li>怎么样分配不同的工作？</li>
+<li>怎么样协调所有的机器？</li>
+<li>怎么样汇总结果？</li>
+</ul>
+<p>有一些模型可以给我们一些帮助，如 MPI，但是只在消息传递阶段可以给我们帮助。这个时候，就要 MapReduce 出场了。先来看定义：</p>
+<blockquote>
+<p>MapReduce (Definition):<br>Programming model for processing large data sets with a parallel, distributed algorithm on a cluster.</p>
+</blockquote>
+<p>分步骤来描述的话就是：</p>
+<ul>
+<li>Map：提取出关注的数据</li>
+<li>Group by key：对这些数据排序和重组(sort and shuffle)</li>
+<li>Reduce：聚合，汇总，过滤或者转变(Aggregate, summarize, filter or transform)</li>
+<li>最后输出结果</li>
+</ul>
+<p>具体来看看每个阶段的细节。</p>
+<p>在 Map 阶段，需要为 mapper 准备好输入数据，也就是把大数据分割成小块并指派给各个 mapper。然后每个 mapper 就会在分到的数据块上完成指定的工作，之后输出键值对(key-value pair)。这里的键会用于之后的 shuffle 与 merge。Value 是从 mapper 发送到 reducer 的信息。</p>
+<p>在 Shuffle 阶段，会把 mapper 阶段得到的结果根据 key 来进行排序和分组。利用哈希的方式把 key 进行分隔然后指派到不同的 reducers 中，每个 key 只会被指派给 1 个 reducer。</p>
+<p>在 Reduce 阶段，每个 reducer 会处理 1 个或多个 key。这里的输入就是 mapper 的输出，也就是键值对，这里的输出就是我们需要的结果（可以编写不同的聚合逻辑）</p>
+<p>对于程序员来说，使用 MapReduce 这个编程模型，需要提供：</p>
+<ul>
+<li>Map 函数</li>
+<li>Reduce 函数</li>
+<li>输入和输出的位置</li>
+</ul>
+<p>而 MapReduce 框架会处理好：</p>
+<ul>
+<li>分隔输入数据</li>
+<li>在一组机器上运行程序</li>
+<li>执行 Group by key</li>
+<li>处理机器执行失败的情况</li>
+<li>管理必需的机器间交互</li>
+</ul>
+<p>那么所谓的『并行』，体现在哪里呢？首先，mapper 是并行执行的，同时 reducer 也是并行执行的。但是。reducer 必须在 mapper 执行完成之后才可以开始。</p>
+<p>MapReduce 的发展历程大概如下：</p>
+<ul>
+<li>1958: LISP and Lambda Functions in Functional Programming</li>
+<li>1995: Message Passing Interface(MPI) has Gather/Scatter functions</li>
+<li>2004: Google’s MapReduce Paper</li>
+<li>2006-2008: Apache Hadoop v1.0</li>
+<li>2013: YARN (Hadoop 2.0)</li>
+</ul>
+<p>那么要如何使用 Hadoop 的 MapReduce 呢？可以有以下几种方式：</p>
+<ul>
+<li>用 Java 写原生 MapReduce 程序：自定义 mapper 和 reducer</li>
+<li>Streaming  MapReduce 工作：使用任何可执行的程序来作为 mapper 和 reducer</li>
+<li>高层抽象：Pig, Hive 等</li>
+</ul>
+<p>Amazon 的 Elastic MapReduce 是一个 Hadoop 的 PaaS 实现，为的是快速申请 Hadoop 集群并利用 S3 来导入/导出数据。接下来通过一个简单的例子来感受一下 Elastic MapReduce 是怎么回事。</p>
+<h2 id="Example_EMR_Job_Flow_3A_Wordcount"><a href="#Example_EMR_Job_Flow_3A_Wordcount" class="headerlink" title="Example EMR Job Flow: Wordcount"></a>Example EMR Job Flow: Wordcount</h2><p>这里我们用 Java 来进行实现（Python 的就只提供视频地址）：<a href="https://youtu.be/fQAZoZCRqX0" target="_blank" rel="external">Java 版本视频教程</a> / <a href="https://youtu.be/htr6JH7UWNg" target="_blank" rel="external">Python 版本视频教程</a></p>
+<p>整个过程可以用如下的命令来大致描述：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat input | mapper_program | sort | reducer_program &gt; output</span><br></pre></td></tr></table></figure>
+<p>我们的输入是一个文本文件，里面是一篇英文的文章，我们的 mapper 程序如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"><span class="keyword">import</span> java.util.StringTokenizer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">wordcountMapper</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">            String input;</span><br><span class="line">            <span class="comment">// While we have input on stdin</span></span><br><span class="line">            <span class="keyword">while</span>((input = br.readline()) != <span class="keyword">null</span>)&#123;</span><br><span class="line">                StringTokenizer tokenizer = <span class="keyword">new</span> StringTokenizer(input);</span><br><span class="line">                <span class="keyword">while</span> (tokenizer.hasMoreTokens())&#123;</span><br><span class="line">                    String word = tokenizer.nextToken();</span><br><span class="line">                    System.out.println(word + <span class="string">"\t"</span> + <span class="string">"1"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span>(IOException io)&#123;</span><br><span class="line">                io.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后我们来看看 reducer 程序，这个比 mapper 稍微复杂一点：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"><span class="keyword">import</span> java.util.StringTokenizer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">wordcountReducer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">            String input;</span><br><span class="line">            String word = <span class="keyword">null</span>;</span><br><span class="line">            String currentWord = <span class="keyword">null</span></span><br><span class="line">            <span class="keyword">int</span> currentCount = <span class="number">0</span>;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">while</span> ((input = br.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    String[] parts = input.split(<span class="string">"\t"</span>);</span><br><span class="line">                    word = parts[<span class="number">0</span>];</span><br><span class="line">                    <span class="keyword">int</span> count = Integer.parseInt(parts[<span class="number">1</span>]);</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">// We have sorted input, so check if we have the same word</span></span><br><span class="line">                    <span class="keyword">if</span> (currentWord != <span class="keyword">null</span> &amp;&amp; currentWord.equals(word))&#123;</span><br><span class="line">                        currentCount++;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123; <span class="comment">// the word has changed</span></span><br><span class="line">                        <span class="keyword">if</span> (currentWord != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            System.out.println(currentWord + <span class="string">"\t"</span> + currentCount);</span><br><span class="line">                        &#125;</span><br><span class="line">                        currentWord = word;</span><br><span class="line">                        currentCount = count;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (NumberFormatException e) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (currentWord != <span class="keyword">null</span> &amp;&amp; currentWord.equals(word)) &#123;</span><br><span class="line">                System.out.println(currentWord + <span class="string">"\t"</span> + currentCount);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span>(IOException io) &#123;</span><br><span class="line">            io.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看结果的话命令为（注意需要先编译，上面给出的代码不包含头文件）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat input.txt | java wordcoutnMapper | sort | java wordcountReducer &gt; output</span><br></pre></td></tr></table></figure>
+<p>如果代码都准备好了，可以参考下面的视频，<a href="https://youtu.be/qbHs1HXuE1M" target="_blank" rel="external">在 EMR 上运行 Java Streaming Program</a></p>
+<p>从 S3 的 Bucket 获取数据，把 mapper 和 reducer 打包生成 jar 包并上传到 S3。然后到 Analytic 类别下的 EMR 选项。注意，运行 EMR 之前一定要在本地先测试！</p>
+<p>命令行生成 jar 包的过程（假设我们有 <code>wordcountMapper.java</code> 和 <code>wordcountReducer.java</code> 两个文件）：</p>
+<ol>
+<li>先编译 <code>javac wordcountMapper.java</code> 和 <code>javac wordcountReducer.java</code>，然后我们就有了对应的 <code>.class</code> 文件</li>
+<li>然后就可以打包了 <code>jar -cvf wordcount.jar *.class</code>，如果不是这么简单的情况，还是用 IDE 来打包比较方便</li>
+</ol>
+<p>用具体的步骤来描述就是（前面是英文这里参考中文界面）：</p>
+<ol>
+<li>在 AWS 管理控制台选择 <strong>分析</strong> 下的 <strong>EMR(Hadoop 托管框架)</strong></li>
+<li>然后选择 <strong>创建集群</strong>，这里我们不使用快速选项，而是『转到高级选项』</li>
+<li>配置页面要注意以下内容<ul>
+<li>起个名字</li>
+<li>输入 S3 地址，用来存储 log</li>
+<li>开启 logging 和 debugging</li>
+<li>bucket 名字最好值包含小写字母和数字，不要用 <code>.</code>，<code>-</code> 和大写字母</li>
+<li>软件配置中，选择 <code>emr-4.0.0</code>，除了 Hadoop 的那一项其他都可以不选</li>
+<li>硬件配置中，选择 <code>m3.xlarge</code>，1 个 master，2 个 core，不需要 task 节点</li>
+<li>选择一个之前已经创建过的安全组</li>
+<li>没有提到的一般不需要修改</li>
+</ul>
+</li>
+<li>注意要打好对应的标签。竞价实例可能没办法保证 tag，所以需要检查并添加上（当实例真正启动时）</li>
+<li>在添加步骤中，选择流程序，然后进行配置。输入 mapper 和 reducer 的执行命令 <code>java -cp wordcount.jav wordcountMapper</code> 和 <code>java -cp wordcount.jar wordcountReducer</code>。然后配置输入输出的地址（也可以在界面上选），这里注意输出的文件夹最好不存在，不然覆盖的时候可能会失败，在参数里设置 <code>-files s3://address for jar file</code>。最后选择失败时要执行的操作，这里选择 <code>terminate cluster</code> 比较好（省钱）。</li>
+<li>不要选择完成后自动终止，这样我们可以登录到机器上来查看任务详情，但是用完之后务必要手动关闭。</li>
+<li>检查无误后，点击创建实例之后就可以开始等待了。完成之后可以在 S3 里看到对应的输出，多个 reduce 会有多个结果，可能需要下载下来进行合并。</li>
+</ol>
+<h2 id="Writing_your_own_Mappers_and_Reducers"><a href="#Writing_your_own_Mappers_and_Reducers" class="headerlink" title="Writing your own Mappers and Reducers"></a>Writing your own Mappers and Reducers</h2><p>现在我们就来处理维基百科的数据集了，这里需要写自己的 mapper 和 reducer，在整整一个月的输入数据中，完成下面的任务：</p>
+<ol>
+<li>设计一个 MapReduce 的工作流，需要完成<ul>
+<li>根据上一个 project 的规则来过滤元素</li>
+<li>从 mapper 中读取输入的文件名。因为 日期/时间 的信息在文件名当中，所以 Hadoop 流会把文件名放在名为 <code>mapreduce_map_input_file</code> 这个环境变量中，每个 map 任务都可以访问。举个例子，python 中用 <code>os.environ[&quot;mapreduce_map_input_file&quot;]</code>，Java 中用 <code>System.getenv(&quot;mapreduce_map_input_file&quot;)</code></li>
+<li>把每小时的页面浏览记录聚合成每天的页面浏览记录</li>
+<li>计算每篇文章的总浏览记录</li>
+<li>对于浏览次数超过 100,000 的页面，用以下的格式进行输出 <code>[月总浏览量]\t[文章名称]\t[第一个日期的浏览量]\t[第二个日期的浏览量]......</code></li>
+</ul>
+</li>
+<li>设计并测试好了 MapReduce 工作流后，使用 EMR 跑 2015 年 12 月的全部数据<ul>
+<li>数据集可以在 <code>s3://cmucc-datasets/wikipediatraf/201512/</code> 找到</li>
+<li>记录下集群的配置以及运行时间（分钟位单位）</li>
+<li>在 S3 中只使用小写字母和数字，不然会失败</li>
+</ul>
+</li>
+<li>结果处理好之后，启动一个 <code>t1.micro</code> 实例 <code>ami-bcd8f8d6</code> 来提交成绩<ul>
+<li>把结果从 S3 下载到 这个实例中</li>
+<li>把输出融合成一个 output 文件</li>
+<li>用 <code>submitter</code> 来测试 mapper 和 reducer</li>
+</ul>
+</li>
+<li>完成 <code>runner.sh</code> 中的问题</li>
+<li>使用 <code>submitter</code> 来提交最终的答案 </li>
+</ol>
+<p>一些建议：</p>
+<ul>
+<li>用竞价实例很省钱</li>
+<li>只支持 Python 2.7 和 Java 1.7</li>
+<li>输出格式：<ul>
+<li>日期用 <code>yyyymmdd</code> 格式</li>
+<li>日期要按照时间顺序来 <code>20151201</code> 应该在 <code>20151202</code> 之前</li>
+<li>所有的页面浏览数据应该输出到一个文件中</li>
+</ul>
+</li>
+</ul>
+<p>一个简单的例子，每一行都必须有 31 天，即使那一天的访问量是 0：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">10</span>   Dopamine    <span class="number">20151201</span>:<span class="number">1</span>    <span class="number">20151202</span>:<span class="number">2</span>    <span class="number">20151203</span>:<span class="number">0</span>    <span class="number">20151204</span>:<span class="number">0</span>    <span class="number">20151205</span>:<span class="number">1</span>    <span class="number">20151206</span>:<span class="number">0</span>    <span class="number">20151207</span>:<span class="number">0</span>    <span class="number">20151208</span>:<span class="number">0</span>    <span class="number">20151209</span>:<span class="number">0</span>    <span class="number">20151210</span>:<span class="number">6</span>    <span class="number">20151211</span>:<span class="number">0</span>    <span class="number">20151212</span>:<span class="number">0</span>    <span class="number">20151213</span>:<span class="number">0</span>    <span class="number">20151214</span>:<span class="number">0</span>	<span class="number">20151215</span>:<span class="number">0</span>    <span class="number">20151216</span>:<span class="number">0</span>    <span class="number">20151217</span>:<span class="number">0</span>    <span class="number">20151218</span>:<span class="number">0</span>    <span class="number">20151219</span>:<span class="number">0</span>    <span class="number">20151220</span>:<span class="number">0</span>    <span class="number">20151221</span>:<span class="number">0</span>    <span class="number">20151222</span>:<span class="number">0</span>    <span class="number">20151223</span>:<span class="number">0</span>    <span class="number">20151224</span>:<span class="number">0</span>    <span class="number">20151225</span>:<span class="number">0</span>    <span class="number">20151226</span>:<span class="number">0</span>    <span class="number">20151227</span>:<span class="number">0</span>    <span class="number">20151228</span>:<span class="number">0</span>    <span class="number">20151229</span>:<span class="number">0</span>    <span class="number">20151230</span>:<span class="number">0</span>    <span class="number">20151231</span>:<span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>最后是 <a href="https://youtu.be/H0q5V4ApuU4" target="_blank" rel="external">EMR Troubleshooting</a></p>
+<ul>
+<li>访问 master public DNS:9100 可以访问日志</li>
+</ul>
+<h2 id="Grading"><a href="#Grading" class="headerlink" title="Grading"></a>Grading</h2><p>一些提交步骤的记录：</p>
+<ol>
+<li>文件夹位于 <code>/home/ubuntu/Project1_2</code>，有三个文件，可以编辑 <code>runner.sh</code> 和 <code>references</code></li>
+<li>如果完成了 mapper 和 reducer，可以通过 <code>submitter</code> 提交来测试<ul>
+<li><code>./submitter -a andrewid -l java</code> 或者 java 换成 python </li>
+</ul>
+</li>
+<li>结果中的第一行表示正确的 mapper 和 reducer</li>
+<li>得到结果后聚合成一个文件，名字是 output，然后需要完成 <code>runner.sh</code> 中的题目</li>
+<li>其他的要求和之前一样</li>
+</ol>
+<h2 id="u9879_u76EE_u65E5_u5FD7"><a href="#u9879_u76EE_u65E5_u5FD7" class="headerlink" title="项目日志"></a>项目日志</h2><h3 id="Mapper"><a href="#Mapper" class="headerlink" title="Mapper"></a>Mapper</h3><p>首先我们要理解清楚这次的任务是什么，说起来很简单，就是用 MapReduce 把上个项目的工作大概再做一次，借此理解 MapReduce 的编程模型。</p>
+<p>实话说，MapReduce 的模型是比较容易理解的，尤其是我们这个项目所用的流程序，唯一需要弄清楚的就是三个步骤：怎么输入，中间怎么处理，怎么输出。</p>
+<p>输入输出部分之前的 wordcount 的例子都有讲解，看一下代码应该就能弄明白，这里主要说说中间要怎么处理。</p>
+<p>在 MapReduce 中，一切的内容都要转换为键值对，那么我们就需要考虑，键值对的格式是什么，怎么样设计会方便我们处理。</p>
+<p>但是在设计之前，我们先大概想一下，具体需要些什么内容。我们需要：</p>
+<ul>
+<li>文章的日期</li>
+<li>文章的标题</li>
+<li>文章的访问量</li>
+</ul>
+<p>文章的标题和访问量就在传入的每一行数据中，这个方便处理，但是日期这里，因为是跟输入文件的文件名有关，所以我们得想个办法获取到。对，就是利用环境变量（前面有提到）：<code>String env = System.getenv(&quot;mapreduce_map_input_file&quot;);</code></p>
+<p>可以通过以下命令查看所有文件（如果配置了 aws cli tool ）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">aws s3 ls s3://cmucc-datasets/wikipediatraf/<span class="number">201512</span>/</span><br></pre></td></tr></table></figure>
+<p>然后获取到的路径大概是这样的格式：<code>s3://cmucc-datasets/wikipediatraf/201512/pagecounts-20151231-230000.gz</code>，所以需要做一些解析，取出我们需要的 <code>20151231</code> 这样的日期。然后结合之前的项目，过滤后输出即可。我得到的结果大概是这样的（我只用了很小很小的测试集），可以通过下面的命令在裁剪数据集：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">head -<span class="number">1000000</span> testdata &gt; smalltestdata</span><br></pre></td></tr></table></figure>
+<h3 id="Reducer"><a href="#Reducer" class="headerlink" title="Reducer"></a>Reducer</h3><p>Reducer 要做的工作稍微多一点，比方说要按照规定的格式进行输出，但是本质上和 example 中的逻辑是差不多多少的，毕竟 mapper 中已经把数据过滤得差不多了。这里要注意的就是数值累加即可。得到的数据差不多是这样（这里我修改了阈值来查看输出，如果你也是这样做的，请记得测试完改回去）</p>
+<p><img src="/images/14538337031959.jpg" alt=""></p>
+<h3 id="u4EE3_u7801_u6D4B_u8BD5"><a href="#u4EE3_u7801_u6D4B_u8BD5" class="headerlink" title="代码测试"></a>代码测试</h3><p>然后我们可以提交自己的 Mapper.java 和 Reducer.java，测试一下功能正确与否。（注意要把为了本地跑的部分测试代码注释掉，不然就过不了测试，感谢 @jiexing）</p>
+<p>启动一个 <code>t1.micro</code> 实例 <code>ami-bcd8f8d6</code>。记得打标签。</p>
+<p>先登录：<code>ssh -i demo.pem ubuntu@ec2-54-152-44-36.compute-1.amazonaws.com</code></p>
+<p>用下面的命令把文件复制到机器里：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp -i demo.pem ./Mapper.java ubuntu@ec2-<span class="number">54</span>-<span class="number">152</span>-<span class="number">44</span>-<span class="number">36</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line">scp -i demo.pem ./Reducer.java ubuntu@ec2-<span class="number">54</span>-<span class="number">152</span>-<span class="number">44</span>-<span class="number">36</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br></pre></td></tr></table></figure>
+<p>然后可以用下面的代码提交：<code>./submitter -a dawang -l java</code>。如果成功的话，应该可以看到第一栏得到 20 分，那么就可以进行下一步了。</p>
+<h3 id="EMR__u6D4B_u8BD5"><a href="#EMR__u6D4B_u8BD5" class="headerlink" title="EMR 测试"></a>EMR 测试</h3><p>首先是把对应的内容上传到 S3 中。当然这之前需要打包一下：<code>jar -cvf dawang.jar Mapper.java Reducer.java *.class</code>，然后准备创建 EMR 集群。如下</p>
+<p><img src="/images/14538412976569.jpg" alt=""></p>
+<p>然后我们多选择一点机器，然后设置一个竞价，如下图：</p>
+<p><img src="/images/14538416282891.jpg" alt=""></p>
+<p>然后设置一下日志和其他设定：</p>
+<p><img src="/images/14538417094574.jpg" alt=""></p>
+<p>然后就可以创建集群来跑一跑看了。这里记得在竞价实例创建之后，要手动给不同的机器打上标签（如果没有自动生成的话）。</p>
+<p>等待竞价实例启动，就可以监控了，如下图：</p>
+<p><img src="/images/14538425422610.jpg" alt=""></p>
+<p>然后果断失败了，因为我的 Java 版本是 1.8，需要切换到 1.7，具体参考<a href="http://chessman-126-com.iteye.com/blog/2162466" target="_blank" rel="external">这里</a></p>
+<p>简单来说就是：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vi ~/.bash_profile <span class="comment"># 输入以下内容  </span></span><br><span class="line"><span class="built_in">source</span> .bash_profile <span class="comment"># 生效新配置</span></span><br></pre></td></tr></table></figure>
+<p>内容是</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Mac默认 JDK 6（Mac默认自带了一个jdk6版本）</span></span><br><span class="line"><span class="built_in">export</span> JAVA_6_HOME=`/usr/libexec/java_home -v <span class="number">1.6</span>`</span><br><span class="line"><span class="comment"># 设置 JDK 7</span></span><br><span class="line"><span class="built_in">export</span> JAVA_7_HOME=`/usr/libexec/java_home -v <span class="number">1.7</span>`</span><br><span class="line"><span class="comment"># 设置 JDK 8</span></span><br><span class="line"><span class="built_in">export</span> JAVA_8_HOME=`/usr/libexec/java_home -v <span class="number">1.8</span>`</span><br><span class="line"></span><br><span class="line"><span class="comment">#默认JDK 6</span></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=<span class="variable">$JAVA_6_HOME</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#alias命令动态切换JDK版本</span></span><br><span class="line"><span class="built_in">alias</span> jdk6=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_6_HOME</span>"</span></span><br><span class="line"><span class="built_in">alias</span> jdk7=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_7_HOME</span>"</span></span><br><span class="line"><span class="built_in">alias</span> jdk8=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_8_HOME</span>"</span></span><br></pre></td></tr></table></figure>
+<p>直接直接可以用 <code>jdk6</code>, <code>jdk7</code>, <code>jdk8</code> 来切换。</p>
+<p>经过漫长的等待（约 73 分钟），就可以在 S3 中拿到结果，可以用 <code>aws s3 cp s3://project1dawang/output/ ./output/ --recursive</code>，然后用 <code>cat part-* &gt; output</code> 来进行合并。然后就可以来做最后的计算和分析了。</p>
+<p>这里把 instance 上的文件都拷贝到本地来进行测试：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp -i demo.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">84</span>-<span class="number">88</span>-<span class="number">191</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/* ./server/</span><br></pre></td></tr></table></figure>
+<p>然后在下一个阶段完成所有的工作</p>
+<h3 id="Runner"><a href="#Runner" class="headerlink" title="Runner"></a>Runner</h3><p>先把 runner 复制到本地，用以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp -i demo.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">164</span>-<span class="number">94</span>-<span class="number">23</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/runner.sh ./</span><br></pre></td></tr></table></figure>
+<p>需要回答的问题是：</p>
+<ol>
+<li>output 文件中有多少行，可以用这个命令 <code>wc -l output | awk {&#39;print $1&#39;}</code></li>
+<li>过滤后的输出中最不热门的文章是哪个，获得了多少次访问</li>
+<li>12 月 18 日最热门的文章是哪篇，对应那一天的点击量是多少</li>
+<li>2015 年 12 月最受欢迎的且在 12 月 1 日没有人访问的页面是那个(实在想不明白为什么会出现顺序影响结果的问题)</li>
+<li>这个月有多少天，标题是 <code>Twitter</code> 的页面的访问次数比标题是 <code>Apple_Inc.</code> 的页面的访问次数多。</li>
+<li>给在文件 q6 中出现的电影排序，根据单天最高的浏览量来排（高的在前面），用逗号分隔，没有空格</li>
+<li>给在文件 q7 中出现的操作系统排序，根据月份最高的浏览量来排（高的在前面），用逗号分隔，没有空格，数量相同需要用字母降序排序</li>
+<li>有多少数据集中的电影也有对应的电视剧？电影名称 <code>&lt;article_name&gt;_([year_]film)</code>，电视剧名称 <code>&lt;article_name&gt;_([year]_TV_series)</code>，也就是说，<code>article_name</code> 必须完全相同，电影和电视剧系列可能跟着一个 4 位数的年份（也就是说可能没有）</li>
+<li>Find out the number of articles with longest number of strictly decreasing sequence of views 最长递减子序列的个数，可以一次做完</li>
+</ol>
+<p>后面四个问题是不评分的，按照实际情况填写就好。我用的都是 <code>m3.xlarge</code> 类型的 instance，然后一共 4 个 core，时间是：73 min</p>
+<p>因为之前终止了实例，所以需要把之前的工作重新上传：</p>
+<p>先登录：<code>ssh -i demo.pem ubuntu@ec2-54-84-88-191.compute-1.amazonaws.com</code></p>
+<p>用下面的命令把文件复制到机器里：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp -i demo.pem ./Mapper.java ubuntu@ec2-<span class="number">54</span>-<span class="number">175</span>-<span class="number">116</span>-<span class="number">84</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line">scp -i demo.pem ./Reducer.java ubuntu@ec2-<span class="number">54</span>-<span class="number">175</span>-<span class="number">116</span>-<span class="number">84</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line">scp -i demo.pem ./runner.sh ubuntu@ec2-<span class="number">54</span>-<span class="number">84</span>-<span class="number">88</span>-<span class="number">191</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line">scp -i demo.pem ./Q4.java ubuntu@ec2-<span class="number">54</span>-<span class="number">84</span>-<span class="number">88</span>-<span class="number">191</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line">scp -i demo.pem ./Q7.java ubuntu@ec2-<span class="number">54</span>-<span class="number">164</span>-<span class="number">94</span>-<span class="number">23</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 恢复上次的工作</span></span><br><span class="line">scp -i demo.pem ./server/* ubuntu@ec2-<span class="number">54</span>-<span class="number">84</span>-<span class="number">88</span>-<span class="number">191</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br></pre></td></tr></table></figure>
+<p>然后可以用下面的代码提交：<code>./submitter -a dawang -l java</code>。</p>
+<p>大部分的时间都在为奇奇怪怪又不说清楚的测试集耽误时间，真心觉得这样浪费大家时间没多少意义。差评。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-10.html"
+           data-title="云计算 第 10 课 Parallel Programming using EMR" data-url="http://wdxtub.com/vault/cc-10.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

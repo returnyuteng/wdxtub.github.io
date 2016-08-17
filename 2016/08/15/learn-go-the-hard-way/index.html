@@ -1,0 +1,851 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Go,笨鸟," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="在学习新语言这个事情上，笨办法往往是最高效的办法。效仿『笨办法学 Python』和『笨办法学 Ruby』，我来写一篇『笨办法学 Go』吧！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Go 之旅】II 我的笨办法学 Go">
+<meta property="og:url" content="http://wdxtub.com/2016/08/15/learn-go-the-hard-way/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="在学习新语言这个事情上，笨办法往往是最高效的办法。效仿『笨办法学 Python』和『笨办法学 Ruby』，我来写一篇『笨办法学 Go』吧！">
+<meta property="og:updated_time" content="2016-08-15T11:43:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Go 之旅】II 我的笨办法学 Go">
+<meta name="twitter:description" content="在学习新语言这个事情上，笨办法往往是最高效的办法。效仿『笨办法学 Python』和『笨办法学 Ruby』，我来写一篇『笨办法学 Go』吧！">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 【Go 之旅】II 我的笨办法学 Go | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【Go 之旅】II 我的笨办法学 Go
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-15T19:43:14+08:00" content="2016-08-15">
+              2016-08-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/15/learn-go-the-hard-way/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/15/learn-go-the-hard-way/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在学习新语言这个事情上，笨办法往往是最高效的办法。效仿『笨办法学 Python』和『笨办法学 Ruby』，我来写一篇『笨办法学 Go』吧！</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5F00_u59CB_u4E4B_u524D"><a href="#u5F00_u59CB_u4E4B_u524D" class="headerlink" title="开始之前"></a>开始之前</h2><p>在上一篇日志中我们大概对 Go 有了基本的认识，不过还不够系统，也远达不到掌握。所以就通过简单的例子和大量的编码练习来快速入门吧！</p>
+<p>学新语言的关键点有三个：实践、能力培养和习惯养成。这些可能要比语言的语法本身更加重要！本日志基于 Go 1.6.3，仿照『笨办法学语言』系列的模式，用闯关的方式来学习。</p>
+<p>具体的安装和基础知识可以参考 <a href="http://wdxtub.com/2016/08/11/golang-first-step/">Go 快速入门</a></p>
+<p>本文的配套代码可以在<a href="https://github.com/wdxtub/learn-go-the-hard-way" target="_blank" rel="external">这里</a>查阅。</p>
+<h2 id="u4E60_u9898_1__u7B2C_u4E00_u4E2A_u7A0B_u5E8F"><a href="#u4E60_u9898_1__u7B2C_u4E00_u4E2A_u7A0B_u5E8F" class="headerlink" title="习题 1 第一个程序"></a>习题 1 第一个程序</h2><p>新建一个名为 <code>ex1.go</code> 的文件，内容为：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="comment">// 一个变量声明</span></span><br><span class="line">    <span class="keyword">var</span> name = <span class="string">"dawang"</span></span><br><span class="line">    <span class="comment">// 也是一个变量声明</span></span><br><span class="line">    gender := <span class="string">"male"</span></span><br><span class="line">    fmt.Println(<span class="string">"What a great day! Let's Go!"</span>)</span><br><span class="line">    fmt.Println(name + <span class="string">"'s gender is "</span> + gender) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后执行 <code>go run ex1.go</code>，可以看到结果为</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ go run ex1.go</span><br><span class="line">What a great day! Let<span class="string">'s Go!</span><br><span class="line">dawang'</span>s gender is male</span><br></pre></td></tr></table></figure>
+<p><strong>知识点</strong></p>
+<ul>
+<li>注释</li>
+<li>变量声明</li>
+<li>输出语句</li>
+<li>程序基本结构</li>
+<li>包 Package</li>
+</ul>
+<h2 id="u4E60_u9898_2__u6570_u5B57_u548C_u6570_u5B66_u8FD0_u7B97"><a href="#u4E60_u9898_2__u6570_u5B57_u548C_u6570_u5B66_u8FD0_u7B97" class="headerlink" title="习题 2 数字和数学运算"></a>习题 2 数字和数学运算</h2><h2 id="u4E60_u9898_3__u5B57_u7B26_u4E32_u4E0E_u683C_u5F0F_u5316_u8F93_u51FA"><a href="#u4E60_u9898_3__u5B57_u7B26_u4E32_u4E0E_u683C_u5F0F_u5316_u8F93_u51FA" class="headerlink" title="习题 3 字符串与格式化输出"></a>习题 3 字符串与格式化输出</h2><h2 id="u4E60_u9898_4__u8F93_u5165"><a href="#u4E60_u9898_4__u8F93_u5165" class="headerlink" title="习题 4 输入"></a>习题 4 输入</h2><h2 id="u4E60_u9898_5__u5305_Package"><a href="#u4E60_u9898_5__u5305_Package" class="headerlink" title="习题 5 包 Package"></a>习题 5 包 Package</h2><h2 id="u4E60_u9898_6__u547D_u4EE4_u884C_u53C2_u6570"><a href="#u4E60_u9898_6__u547D_u4EE4_u884C_u53C2_u6570" class="headerlink" title="习题 6 命令行参数"></a>习题 6 命令行参数</h2><h2 id="u4E60_u9898_7__u8BFB_u5199_u6587_u4EF6"><a href="#u4E60_u9898_7__u8BFB_u5199_u6587_u4EF6" class="headerlink" title="习题 7 读写文件"></a>习题 7 读写文件</h2><h2 id="u4E60_u9898_8__u590D_u5236_u6587_u4EF6_u5185_u5BB9"><a href="#u4E60_u9898_8__u590D_u5236_u6587_u4EF6_u5185_u5BB9" class="headerlink" title="习题 8 复制文件内容"></a>习题 8 复制文件内容</h2><h2 id="u4E60_u9898_9__u51FD_u6570"><a href="#u4E60_u9898_9__u51FD_u6570" class="headerlink" title="习题 9 函数"></a>习题 9 函数</h2><h2 id="u4E60_u9898_10"><a href="#u4E60_u9898_10" class="headerlink" title="习题 10"></a>习题 10</h2><h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://github.com/wdxtub/learn-go-the-hard-way" target="_blank" rel="external">配套代码</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Go/" rel="tag">#Go</a>
+          
+            <a href="/tags/笨鸟/" rel="tag">#笨鸟</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/15/kafka-guide/" rel="next" title="Kafka 指南">
+                <i class="fa fa-chevron-left"></i> Kafka 指南
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/16/how-to-teach-cs/" rel="prev" title="我们需要怎样的计算机科学教育">
+                我们需要怎样的计算机科学教育 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/15/learn-go-the-hard-way/"
+           data-title="【Go 之旅】II 我的笨办法学 Go" data-url="http://wdxtub.com/2016/08/15/learn-go-the-hard-way/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5F00_u59CB_u4E4B_u524D"><span class="nav-number">1.</span> <span class="nav-text">开始之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898_1__u7B2C_u4E00_u4E2A_u7A0B_u5E8F"><span class="nav-number">2.</span> <span class="nav-text">习题 1 第一个程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898_2__u6570_u5B57_u548C_u6570_u5B66_u8FD0_u7B97"><span class="nav-number">3.</span> <span class="nav-text">习题 2 数字和数学运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898_3__u5B57_u7B26_u4E32_u4E0E_u683C_u5F0F_u5316_u8F93_u51FA"><span class="nav-number">4.</span> <span class="nav-text">习题 3 字符串与格式化输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898_4__u8F93_u5165"><span class="nav-number">5.</span> <span class="nav-text">习题 4 输入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898_5__u5305_Package"><span class="nav-number">6.</span> <span class="nav-text">习题 5 包 Package</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898_6__u547D_u4EE4_u884C_u53C2_u6570"><span class="nav-number">7.</span> <span class="nav-text">习题 6 命令行参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898_7__u8BFB_u5199_u6587_u4EF6"><span class="nav-number">8.</span> <span class="nav-text">习题 7 读写文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898_8__u590D_u5236_u6587_u4EF6_u5185_u5BB9"><span class="nav-number">9.</span> <span class="nav-text">习题 8 复制文件内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898_9__u51FD_u6570"><span class="nav-number">10.</span> <span class="nav-text">习题 9 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E60_u9898_10"><span class="nav-number">11.</span> <span class="nav-text">习题 10</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">12.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

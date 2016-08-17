@@ -1,0 +1,1101 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CSAPP,动态分配,虚拟内存,读薄," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="进程是操作系统中最重要的抽象，虚拟内存令这一切成为可能，为什么进程可以使用完整且连续的虚拟地址空间，而不需要关注物理内存呢？另外，计算机又是如何管理我们 new 的对象的？这一讲我们就来看看关于内存的这两个重要话题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【读薄 CSAPP】柒 虚拟内存与动态内存分配">
+<meta property="og:url" content="http://wdxtub.com/2016/04/16/thin-csapp-7/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="进程是操作系统中最重要的抽象，虚拟内存令这一切成为可能，为什么进程可以使用完整且连续的虚拟地址空间，而不需要关注物理内存呢？另外，计算机又是如何管理我们 new 的对象的？这一讲我们就来看看关于内存的这两个重要话题。">
+<meta property="og:image" content="http://wdxtub.com/images/14615011037796.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14615017442915.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14615030555447.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14615040688550.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14615862225552.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14615900211847.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619333202471.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619339362618.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619349692957.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619365087673.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619386956596.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619392574046.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619394874702.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619399183944.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619404450222.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619405964352.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619422087381.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619426495995.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14619429933039.jpg">
+<meta property="og:updated_time" content="2016-04-29T15:48:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【读薄 CSAPP】柒 虚拟内存与动态内存分配">
+<meta name="twitter:description" content="进程是操作系统中最重要的抽象，虚拟内存令这一切成为可能，为什么进程可以使用完整且连续的虚拟地址空间，而不需要关注物理内存呢？另外，计算机又是如何管理我们 new 的对象的？这一讲我们就来看看关于内存的这两个重要话题。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 【读薄 CSAPP】柒 虚拟内存与动态内存分配 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【读薄 CSAPP】柒 虚拟内存与动态内存分配
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-16T09:07:28+08:00" content="2016-04-16">
+              2016-04-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/16/thin-csapp-7/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/16/thin-csapp-7/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>进程是操作系统中最重要的抽象，虚拟内存令这一切成为可能，为什么进程可以使用完整且连续的虚拟地址空间，而不需要关注物理内存呢？另外，计算机又是如何管理我们 new 的对象的？这一讲我们就来看看关于内存的这两个重要话题。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<li>了解物理地址和虚拟地址的区别</li>
+<li>理解虚拟内存在缓存、内存管理与保护中所扮演的角色</li>
+<li>掌握虚拟内存到物理内存的翻译机制</li>
+<li>理解现代计算机系统中虚拟内存的应用</li>
+<li>理解动态内存分配的基本概念</li>
+<li>区别内部碎片与外部碎片</li>
+<li>掌握管理动态内存分配的三种方法</li>
+<li>了解垃圾回收的基本原理</li>
+<li>了解内存使用中常见的错误</li>
+</ol>
+<p>这一讲的内容，跟之前介绍的缓存系统有异曲同工之妙，唯一的差别是，因为涉及的概念和横跨的系统层级增多，难度更大了。如果遇到不明白的地方，一定要结合原书进行细致阅读理解。</p>
+<h2 id="u4ECE_u7269_u7406_u5185_u5B58_u5230_u865A_u62DF_u5185_u5B58"><a href="#u4ECE_u7269_u7406_u5185_u5B58_u5230_u865A_u62DF_u5185_u5B58" class="headerlink" title="从物理内存到虚拟内存"></a>从物理内存到虚拟内存</h2><p>物理地址一般应用在简单的嵌入式微控制器中（汽车、电梯、电子相框等），因为应用的范围有严格的限制，不需要在内存管理中引入过多的复杂度。</p>
+<p>但是对于计算机（以及其他智能设备）来说，虚拟地址则是必不可少的，通过 MMU(Memory management unit)把虚拟地址(Virtual Address, VA)转换为物理地址(Physical Address, PA)，再由此进行实际的数据传输。大致的过程如下图所示</p>
+<p><img src="/images/14615011037796.jpg" alt=""></p>
+<p>使用虚拟内存主要是基于下面三个考虑：</p>
+<ol>
+<li>可以更有效率的使用内存：使用 DRAM 当做部分的虚拟地址空间的缓存</li>
+<li>简化内存管理：每个进程都有统一的线性地址空间</li>
+<li>隔离地址控件：进程之间不会相互影响；用户程序不能访问内核信息和代码</li>
+</ol>
+<h2 id="u865A_u62DF_u5185_u5B58_u7684_u4E09_u4E2A_u89D2_u8272"><a href="#u865A_u62DF_u5185_u5B58_u7684_u4E09_u4E2A_u89D2_u8272" class="headerlink" title="虚拟内存的三个角色"></a>虚拟内存的三个角色</h2><h3 id="u4F5C_u4E3A_u7F13_u5B58_u5DE5_u5177"><a href="#u4F5C_u4E3A_u7F13_u5B58_u5DE5_u5177" class="headerlink" title="作为缓存工具"></a>作为缓存工具</h3><p>概念上来说，虚拟内存就是存储在磁盘上的 N 个连续字节的数组。这个数组的部分内容，会缓存在 DRAM 中，在 DRAM 中的每个缓存快(cache block)就称为页(page)，如下图所示：</p>
+<p><img src="/images/14615017442915.jpg" alt=""></p>
+<p>大致的思路和之前的 cache memory 是类似的，就是利用 DRAM 比较快的特性，把最常用的数据换缓存起来。如果要访问磁盘的话，大约会比访问 DRAM 慢一万倍，所以我们的目标就是尽可能从 DRAM 中拿数据。为此，我们需要：</p>
+<ul>
+<li>更大的页尺寸(page size)：通常是 4KB，有的时候可以达到 4MB</li>
+<li>全相联(Fully associative)：每一个虚拟页(virual page)可以放在任意的物理页(physical page)中，没有限制。</li>
+<li>映射函数非常复杂，所以没有办法用硬件实现，通常使用 Write-back 而非 Write-through 机制<ul>
+<li>Write-through: 命中后更新缓存，同时写入到内存中</li>
+<li>Write-back: 直到这个缓存需要被置换出去，才写入到内存中（需要额外的 dirty bit 来表示缓存中的数据是否和内存中相同，因为可能在其他的时候内存中对应地址的数据已经更新，那么重复写入就会导致原有数据丢失）</li>
+</ul>
+</li>
+</ul>
+<p>具体怎么做呢？通过页表(page table)。每个页表实际上是一个数组，数组中的每个元素称为页表项(PTE, page table entry)，每个页表项负责把虚拟页映射到物理页上。在 DRAM 中，每个进程都有自己的页表，具体如下</p>
+<p><img src="/images/14615030555447.jpg" alt=""></p>
+<p>因为有一个表可以查询，就会遇到两种情况，一种是命中(Page Hit)，另一种则是未命中(Page Fault)。</p>
+<p>命中的时候，即访问到页表中蓝色条目的地址时，因为在 DRAM 中有对应的数据，可以直接访问。</p>
+<p>不命中的时候，即访问到 page table 中灰色条目的时候，因为在 DRAM 中并没有对应的数据，所以需要执行一系列操作（从磁盘复制到 DRAM 中），具体为：</p>
+<ul>
+<li>触发 Page fault，也就是一个异常</li>
+<li>Page fault handler 会选择 DRAM 中需要被置换的 page，并把数据从磁盘复制到 DRAM 中</li>
+<li>重新执行访问指令，这时候就会是 page hit</li>
+</ul>
+<p>复制过程中的等待时间称为 demand paging。</p>
+<p>仔细留意上面的页表，会发现有一个条目是 null，也就是没有分配。具体的分配过程（比方说声明了一个大数组），就是让该条目指向虚拟内存（在磁盘上）的某个页，但并不复制到 DRAM，只有当出现 page fault 的时候才需要拷贝数据。</p>
+<p>看起来『多此一举』，但是由于局部性原理，虚拟内存其实是非常高效的机制，这一部分最后提到了工作集(working set)[1]的概念，比较简单，这里不再赘述。</p>
+<h3 id="u4F5C_u4E3A_u5185_u5B58_u7BA1_u7406_u5DE5_u5177"><a href="#u4F5C_u4E3A_u5185_u5B58_u7BA1_u7406_u5DE5_u5177" class="headerlink" title="作为内存管理工具"></a>作为内存管理工具</h3><p>前面提到，每个进程都有自己的虚拟地址空间，这样一来，对于进程来说，它们看到的就是简单的线性空间（但实际上在物理内存中可能是间隔、支离破碎的），具体的映射过程可以用下图表示：</p>
+<p><img src="/images/14615040688550.jpg" alt=""></p>
+<p>在内存分配中没有太多限制，每个虚拟页都可以被映射到任何的物理页上。这样也带来一个好处，如果两个进程间有共享的数据，那么直接指向同一个物理页即可（也就是上图 PP 6 的状况，只读数据）</p>
+<p>虚拟内存带来的另一个好处就是可以简化链接和载入的结构（因为有了统一的抽象，不需要纠结细节）</p>
+<h3 id="u4F5C_u4E3A_u5185_u5B58_u4FDD_u62A4_u5DE5_u5177"><a href="#u4F5C_u4E3A_u5185_u5B58_u4FDD_u62A4_u5DE5_u5177" class="headerlink" title="作为内存保护工具"></a>作为内存保护工具</h3><p>页表中的每个条目的高位部分是表示权限的位，MMU 可以通过检查这些位来进行权限控制（读、写、执行），如下图所示：</p>
+<p><img src="/images/14615862225552.jpg" alt=""></p>
+<h2 id="u5730_u5740_u7FFB_u8BD1"><a href="#u5730_u5740_u7FFB_u8BD1" class="headerlink" title="地址翻译"></a>地址翻译</h2><p>开始之前先来了解以下参数：</p>
+<p>$$N=2^n,\;M=2^m,\;P=2^p$$</p>
+<p>其中 <code>N</code> 表示虚拟地址空间中的地址数量，<code>M</code> 表示物理地址空间中的地址数量，<code>P</code> 是每一页包含的字节数(page size)。</p>
+<p>虚拟地址(VA, Virtual Address)中的元素：</p>
+<ul>
+<li><code>TLBI</code>: TLB 的索引值</li>
+<li><code>TLBT</code>: TLB 的标签(tag)</li>
+<li><code>VPO</code>: 虚拟页偏移量</li>
+<li><code>VPN</code>: 虚拟页编号</li>
+</ul>
+<p>物理地址(PA, physical address)中的元素：</p>
+<ul>
+<li><code>PPO</code>: 物理页偏移量（与 <code>VPO</code> 的值相同）</li>
+<li><code>PPN</code>: 物理页编号</li>
+</ul>
+<p>然后我们通过一个具体的例子来说明如何进行地址翻译</p>
+<p><img src="/images/14615900211847.jpg" alt=""></p>
+<p>具体的访问过程为：</p>
+<ul>
+<li>通过虚拟地址找到页表(page table)中对应的条目</li>
+<li>检查有效位(valid bit)，是否需要触发页错误(page fault)</li>
+<li>然后根据页表中的物理页编号(physical page number)找到内存中的对应地址</li>
+<li>最后把虚拟页偏移(virtual page offset)和前面的实际地址拼起来，就是最终的物理地址了</li>
+</ul>
+<p>这里又分两种情况：Page Hit 和 Page Fault，我们先来看看 Page Hit 的情况</p>
+<p><img src="/images/14619333202471.jpg" alt=""></p>
+<p>主要有 5 步，CPU 首先把虚拟地址发送给 MMU，MMU 检查缓存，并把从页表中得到对应的物理地址，接着 MMU 把物理地址发送给缓存/内存，最后从缓存/内存中得到数据。</p>
+<p>而 Page Fault 的时候就复杂一些，第一次触发页错误会把页面载入内存/缓存，然后再以 Page Hit 的机制得到数据：</p>
+<p><img src="/images/14619339362618.jpg" alt=""></p>
+<p>这里有 7 步，前面和 Page Hit 是一致的，先把虚拟地址发给 MMU 进行检查，然后发现没有对应的页，于是触发异常，异常处理器会负责从磁盘中找到对应页面并与缓存/内存中的页进行置换，置换完成后再访问同一地址，就可以按照 Page Hit 的方式来访问了。</p>
+<p>虽然缓存已经很快了，但是能不能更快呢，为什么不能直接在 MMU 进行一部分的工作呢？于是就有了另外一个设计：Translation Lookaside Buffer(TLB)。TLB 实际上可以认为是页表在处理芯片上的缓存，整体的机制和前面提到的缓存很像，我们通过下面的图进行讲解：</p>
+<p><img src="/images/14619349692957.jpg" alt=""></p>
+<p>这里 VPN + VPO 就是虚拟地址，同样分成三部分，分别用于匹配标签、确定集合，如果 TLB 中有对应的记录，那么直接返回对应页表项(PTE)即可，如果没有的话，就要从缓存/内存中获取，并更新 TLB 的对应集合。</p>
+<h3 id="u591A_u5C42_u9875_u8868_Multi-Level_Page_Table"><a href="#u591A_u5C42_u9875_u8868_Multi-Level_Page_Table" class="headerlink" title="多层页表 Multi-Level Page Table"></a>多层页表 Multi-Level Page Table</h3><p>虽然页表是一个表，但因为往往虚拟地址的位数比物理内存的位数要大得多，所以保存页表项(PTE) 所需要的空间也是一个问题。举个例子：</p>
+<p>假设每个页的大小是 4KB（2 的 12 次方），每个地址有 48 位，一条 PTE 记录有 8 个字节，那么要全部保存下来，需要的大小是：</p>
+<p>$$2^{48} \times 2^{-12} \times 2^3 = 2^{39} bytes$$</p>
+<p>整整 512 GB！所以我们采用多层页表，第一层的页表中的条目指向第二层的页表，一个一个索引下去，最终寻找具体的物理地址，整个翻译过程如下：</p>
+<p><img src="/images/14619365087673.jpg" alt=""></p>
+<h3 id="u5730_u5740_u7FFB_u8BD1_u5B9E_u4F8B"><a href="#u5730_u5740_u7FFB_u8BD1_u5B9E_u4F8B" class="headerlink" title="地址翻译实例"></a>地址翻译实例</h3><p>来看一个简单的例子，我们的内存系统设定如下：</p>
+<ul>
+<li>14 位的虚拟地址</li>
+<li>12 位的物理地址</li>
+<li>页大小为 64 字节</li>
+</ul>
+<p>TLB 的配置为：</p>
+<ul>
+<li>能够存储 16 条记录</li>
+<li>每个集合有 4 条记录</li>
+</ul>
+<p>系统本身缓存（对应于物理地址）：</p>
+<ul>
+<li>16 行，每个块 4 个字节</li>
+<li>直接映射（即 16 个集合）</li>
+</ul>
+<p><img src="/images/14619386956596.jpg" alt=""></p>
+<p>TLB 中的数据为</p>
+<p><img src="/images/14619392574046.jpg" alt=""></p>
+<p>页表中的数据为（一共有 256 条记录，这里列出前 16 个）</p>
+<p><img src="/images/14619394874702.jpg" alt=""></p>
+<p>缓存中的数据为</p>
+<p><img src="/images/14619399183944.jpg" alt=""></p>
+<p>一定要注意好不同部分的所代表的位置，这里我也会尽量写得清楚一些，来看第一个例子：</p>
+<blockquote>
+<p>虚拟地址为 <code>0x03D4</code></p>
+</blockquote>
+<p>具体的转换过程如下图所示：</p>
+<p><img src="/images/14619404450222.jpg" alt=""></p>
+<p>具体来梳理一次：</p>
+<p>先看 TLB 中有没有对应的条目，所以先看虚拟地址的第 6-13 位，在前面的 TLB 表中，根据 TLBI 为 3 这个信息，去看这个 set 中有没有 tag 为 3 的项目，发现有，并且对应的 PPN 是 0x0D，所以对应到物理地址，就是 PPN 加上虚拟地址的 0-5 位，而具体的物理地址又可以在缓存中找到（利用 cache memory 的机制），就可以获取到对应的数据了。</p>
+<p>下面的例子同样可以按照这个方法来进行分析</p>
+<blockquote>
+<p>虚拟地址为 <code>0x0020</code></p>
+</blockquote>
+<p><img src="/images/14619405964352.jpg" alt=""></p>
+<h2 id="u52A8_u6001_u5185_u5B58_u5206_u914D"><a href="#u52A8_u6001_u5185_u5B58_u5206_u914D" class="headerlink" title="动态内存分配"></a>动态内存分配</h2><p>前面了解了虚拟内存的相关知识，这一节我们来看看动态内存分配的基本概念，相信这之后就知道诸如 <code>malloc</code> 和 <code>new</code> 这类方法是怎么做的了。</p>
+<p>程序员通过动态内存分配（例如 <code>malloc</code>）来让程序在运行时得到虚拟内存。动态内存分配器会管理一个虚拟内存区域，称为堆(heap)。</p>
+<p>分配器以块为单位来维护堆，可以进行分配或释放。有两种类型的分配器：</p>
+<ul>
+<li>显式分配器：应用分配并且回收空间（C 语言中的 <code>malloc</code> 和 <code>free</code>）</li>
+<li>隐式分配器：应用只负责分配，但是不负责回收（Java 中的垃圾收集）</li>
+</ul>
+<p>先来看看一个简单的使用 <code>malloc</code> 和 <code>free</code> 的例子</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line"></span><br><span class="line">void foo(int n) &#123;</span><br><span class="line">    int i, *p;</span><br><span class="line">    </span><br><span class="line">    /* Allocate a block of n ints */</span><br><span class="line">    p = (int *) malloc(n * sizeof(int));</span><br><span class="line">    if (p == NULL) &#123;</span><br><span class="line">        perror("malloc");</span><br><span class="line">        exit(0);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    /* Initialize allocated block */</span><br><span class="line">    for (i=0; i&lt;n; i++)</span><br><span class="line">        p[i] = i;</span><br><span class="line"></span><br><span class="line">    /* Return allocated block to the heap */</span><br><span class="line">    free(p);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了讲述方便，我们做如下假设：</p>
+<ul>
+<li>内存地址按照字来编码</li>
+<li>每个字的大小和整型一致</li>
+</ul>
+<p>例如：</p>
+<p><img src="/images/14619422087381.jpg" alt=""></p>
+<p>程序可以用任意的顺序发送 <code>malloc</code> 和 <code>free</code> 请求，<code>free</code> 请求必须作用与已被分配的 block。</p>
+<p>分配器有如下的限制：</p>
+<ul>
+<li>不能控制已分配块的数量和大小</li>
+<li>必须立即响应 <code>malloc</code> 请求（不能缓存或者给请求重新排序）</li>
+<li>必须在未分配的内存中分配</li>
+<li>不同的块需要对齐（32 位中 8 byte，64 位中 16 byte）</li>
+<li>只能操作和修改未分配的内存</li>
+<li>不能移动已分配的块</li>
+</ul>
+<h3 id="u6027_u80FD_u6307_u6807"><a href="#u6027_u80FD_u6307_u6807" class="headerlink" title="性能指标"></a>性能指标</h3><p>现在我们可以来看看如何去评测具体的分配算法了。假设给定一个 <code>malloc</code> 和 <code>free</code> 的请求的序列：</p>
+ $$R_0, R_1, ..., R_k, ..., R_{n-1}$$ 
+<p>目标是尽可能提高吞吐量以及内存利用率（注意，这两个目标常常是冲突的）</p>
+<p>吞吐量是在单位时间内完成的请求数量。假设在 10 秒中之内进行了 5000 次 <code>malloc</code> 和 5000 次 <code>free</code> 调用，那么吞吐量是 1000 operations/second</p>
+<p>另外一个目标是 Peak Memory Utilization，就是最大的内存利用率。</p>
+<p>影响内存利用率的主要因素就是『内存碎片』，分为内部碎片和外部碎片两种。</p>
+<p><strong>内部碎片</strong></p>
+<p>内部碎片指的是对于给定的块，如果需要存储的数据(payload)小于块大小，就会因为对齐和维护堆所需的数据结构的缘故而出现无法利用的空间，例如：</p>
+<p><img src="/images/14619426495995.jpg" alt=""></p>
+<p>内部碎片只依赖于上一个请求的具体模式，所以比较容易测量。</p>
+<p><strong>外部碎片</strong></p>
+<p>指的是内存中没有足够的连续空间，如下图所示，内存中有足够的空间，但是空间不连续，所以成为了碎片：</p>
+<p><img src="/images/14619429933039.jpg" alt=""></p>
+<h3 id="u5B9E_u73B0_u7EC6_u8282"><a href="#u5B9E_u73B0_u7EC6_u8282" class="headerlink" title="实现细节"></a>实现细节</h3><p>我们已经知道了原理，现在就来看看怎么样能够实现一个高效的内存分配算法吧！在具体实现之前，需要考虑以下问题：</p>
+<ul>
+<li>给定一个指针，我们如何知道需要释放多少内存？</li>
+<li>如何记录未分配的块？</li>
+<li>实际需要的空间比未分配的空间要小的时候，剩下的空间怎么办？</li>
+<li>如果有多个区域满足条件，如何选择？</li>
+<li>释放空间之后如何进行记录？</li>
+</ul>
+<p>具体这部分书中提到了四种方法：</p>
+<ol>
+<li>隐式空闲列表 Implicit List</li>
+<li>显式空闲列表 Explicit List</li>
+<li>分离的空闲列表 Segregated Free List</li>
+<li>按照大小对块进行排序 Blocks Sorted by Size</li>
+</ol>
+<p>因为涉及的细节比较多，建议是详读书本的对应章节（第二版和第三版均为第九章第九节），这里不再赘述（如果需要的话之后我在另起一篇做详细介绍）</p>
+<p>这里提一点，就是如何确定哪部分空间合适，有三种方法：</p>
+<ol>
+<li>First Fit: 每次都从头进行搜索，找到第一个合适的块，线性查找</li>
+<li>Next Fit: 每次从上次搜索结束的位置继续搜索，速度较快，但可能会有更多碎片</li>
+<li>Best Fit: 每次遍历列表，找到最合适的块，碎片较少，但是速度最慢</li>
+</ol>
+<p>更详细可以参考这两篇文章：<a href="http://wdxtub.com/vault/csapp-18.html">Dynamic Memory Allocation - Basic Concept</a> 和 <a href="http://wdxtub.com/vault/csapp-19.html">Dynamic Memory Allocation - Advanced Concept</a></p>
+<h2 id="u5783_u573E_u56DE_u6536"><a href="#u5783_u573E_u56DE_u6536" class="headerlink" title="垃圾回收"></a>垃圾回收</h2><p>所谓垃圾回收，就是我们不再需要显式释放所申请内存空间了，例如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> *p = <span class="built_in">malloc</span>(<span class="number">128</span>);</span><br><span class="line">    <span class="keyword">return</span>; <span class="comment">/* p block is now garbage*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种机制在许多动态语言中都有实现：Python, Ruby, Java, Perl, ML, Lisp, Mathematica。C 和 C++ 中也有类似的变种，但是需要注意的是，是不可能回收所有的垃圾的。</p>
+<p>我们如何知道什么东西才是『垃圾』呢？简单！只要没有任何指针指向的地方，不管有没有用，因为都不可能被使用，当然可以直接清理掉啦。不过这其实是需要一些前提条件的：</p>
+<ul>
+<li>我们可以知道哪里是指针，哪里不是指针</li>
+<li>每个指针都指向 block 的开头</li>
+<li>指针不能被隐藏(by coercing them to an <code>int</code>, and then back again)</li>
+</ul>
+<p>相关的算法如下：</p>
+<ul>
+<li>Mark-and-sweep collection (McCarthy, 1960)</li>
+<li>Reference counting (Collins, 1960)</li>
+<li>Copying collection (Minsky, 1963)</li>
+<li>Generational Collectors(Lieberman and Hewitt, 1983)</li>
+</ul>
+<p>大部分比较常用的算法居然都有五十多年历史了，神奇。更多相关细节在维基百科[2]中都有详细介绍（中文版本质量较差，这里给出英文版）。</p>
+<h2 id="u5185_u5B58_u9677_u9631"><a href="#u5185_u5B58_u9677_u9631" class="headerlink" title="内存陷阱"></a>内存陷阱</h2><p>关于内存的使用需要注意避免以下问题：</p>
+<ul>
+<li>解引用错误指针</li>
+<li>读取未初始化的内存</li>
+<li>覆盖内存</li>
+<li>引用不存在的变量</li>
+<li>多次释放同一个块</li>
+<li>引用已释放的块</li>
+<li>释放块失败</li>
+</ul>
+<h3 id="Dereferencing_Bad_Pointers"><a href="#Dereferencing_Bad_Pointers" class="headerlink" title="Dereferencing Bad Pointers"></a>Dereferencing Bad Pointers</h3><p>这是非常常见的例子，没有引用对应的地址，少了 <code>&amp;</code></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> val;</span><br><span class="line">...</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">"%d"</span>, val);</span><br></pre></td></tr></table></figure>
+<h3 id="Reading_Uninitialized_Memory"><a href="#Reading_Uninitialized_Memory" class="headerlink" title="Reading Uninitialized Memory"></a>Reading Uninitialized Memory</h3><p>不能假设堆中的数据会自动初始化为 0，下面的代码就会出现奇怪的问题</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">/* return y = Ax */</span><br><span class="line">int *matvec(int **A, int *x) &#123;</span><br><span class="line">    int *y = malloc(N * sizeof(int));</span><br><span class="line">    int i, j;</span><br><span class="line">    </span><br><span class="line">    for (i = 0; i &lt; N; i++)</span><br><span class="line">        for (j = 0; j &lt; N; j++)</span><br><span class="line">            y[i] += A[i][j] * x[j];</span><br><span class="line">    return y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Overwriting_Memory"><a href="#Overwriting_Memory" class="headerlink" title="Overwriting Memory"></a>Overwriting Memory</h3><p>这里有挺多问题，第一种是分配了错误的大小，下面的例子中，一开始不能用 <code>sizeof(int)</code>，因为指针的长度不一定和 int 一样。</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">int **p;</span><br><span class="line">p = malloc(N * sizeof(int));</span><br><span class="line"></span><br><span class="line">for (i = 0; i &lt; N; i++) </span><br><span class="line">    p[i] = malloc(M * sizeof(int));</span><br></pre></td></tr></table></figure>
+<p>第二个问题是超出了分配的空间，下面代码的 for 循环中，因为使用了 <code>&lt;=</code>，会写入到其他位置</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">int **p;</span><br><span class="line"></span><br><span class="line">p = malloc(N * sizeof (int *));</span><br><span class="line"></span><br><span class="line">for (i = 0; i &lt;= N; i++)</span><br><span class="line">    p[i] = malloc(M * sizeof(int));</span><br></pre></td></tr></table></figure>
+<p>第三种是因为没有检查字符串的长度，超出部分就写到其他地方去了（经典的缓冲区溢出攻击也是利用相同的机制）</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> s[<span class="number">8</span>];</span><br><span class="line"><span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">gets(s); <span class="comment">/* reads "123456789" from stdin */</span></span><br></pre></td></tr></table></figure>
+<p>第四种是没有正确理解指针的大小以及对应的操作，应该使用 <code>sizeof(int *)</code></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> *<span class="title">search</span><span class="params">(<span class="keyword">int</span> *p, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (*p &amp;&amp; *p != null)</span><br><span class="line">        p += <span class="keyword">sizeof</span>(<span class="keyword">int</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第五种是引用了指针，而不是其指向的对象，下面的例子中，<code>*size--</code> 一句因为 <code>--</code> 的优先级比较高，所以实际上是对指针进行了操作，正确的应该是 <code>(*size)--</code></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> *<span class="title">BinheapDelete</span><span class="params">(<span class="keyword">int</span> **binheap, <span class="keyword">int</span> *size)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> *packet;</span><br><span class="line">    packet = binheap[<span class="number">0</span>];</span><br><span class="line">    binheap[<span class="number">0</span>] = binheap[*size - <span class="number">1</span>];</span><br><span class="line">    *size--;</span><br><span class="line">    Heapify(binheap, *size, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> (packet);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Referencing_Nonexistent_Variables"><a href="#Referencing_Nonexistent_Variables" class="headerlink" title="Referencing Nonexistent Variables"></a>Referencing Nonexistent Variables</h3><p>下面的情况中，没有注意到局部变量会在函数返回的时候失效（所以对应的指针也会无效），这是传引用和返回引用需要注意的，传值的话则不用担心</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> *<span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &amp;val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Freeing_Blocks_Multiple_Times"><a href="#Freeing_Blocks_Multiple_Times" class="headerlink" title="Freeing Blocks Multiple Times"></a>Freeing Blocks Multiple Times</h3><p>这个不用多说，不能重复搞两次</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">x = malloc(N * sizeof(int));</span><br><span class="line">//  &lt;manipulate x&gt;</span><br><span class="line">free(x);</span><br><span class="line"></span><br><span class="line">y = malloc(M * sizeof(int));</span><br><span class="line">//  &lt;manipulate y&gt;</span><br><span class="line">free(x);</span><br></pre></td></tr></table></figure>
+<h3 id="Referencing_Freed_Blocks"><a href="#Referencing_Freed_Blocks" class="headerlink" title="Referencing Freed Blocks"></a>Referencing Freed Blocks</h3><p>同样是很明显的错误，不要犯</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">x = malloc(N * sizeof(int));</span><br><span class="line">//  &lt;manipulate x&gt;</span><br><span class="line">free(x);</span><br><span class="line">//  ....</span><br><span class="line"></span><br><span class="line">y = malloc(M * sizeof(int));</span><br><span class="line">for (i = 0; i &lt; M; i++)</span><br><span class="line">    y[i] = x[i]++;</span><br></pre></td></tr></table></figure>
+<h3 id="Memory_Leaks"><a href="#Memory_Leaks" class="headerlink" title="Memory Leaks"></a>Memory Leaks</h3><p>用完没有释放，就是内存泄露啦</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">foo() &#123;</span><br><span class="line">    int *x = malloc(N * sizeof(int));</span><br><span class="line">    // ...</span><br><span class="line">    return ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或者只释放了数据结构的一部分：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="built_in">list</span> &#123;</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    <span class="keyword">struct</span> <span class="built_in">list</span> *next;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">foo() &#123;</span><br><span class="line">    <span class="keyword">struct</span> <span class="built_in">list</span> *head = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> <span class="built_in">list</span>));</span><br><span class="line">    head-&gt;val = <span class="number">0</span>;</span><br><span class="line">    head-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="built_in">free</span>(head);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>这一讲的内容比较多，再加上各种不同的映射，可能是最需要花时间去理解的一讲了。我们先了解了物理地址和虚拟地址的区别，然后在此基础上理解虚拟内存在缓存、内存管理与保护中所扮演的角色，并通过实际的例子学习虚拟内存到物理内存的翻译机制。</p>
+<p>有了前面的基础，简要介绍了动态内存分配的基本概念和管理动态内存分配的三种算法。最后提及了垃圾回收的基本原理和内存使用中常见的错误。</p>
+<p>尤其是动态内存分配和垃圾回收的部分，因为篇幅限制说得比较简单，一定要对照书本进行阅读和理解。</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a href="https://en.wikipedia.org/wiki/Working_set" target="_blank" rel="external">Working set</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science" target="_blank" rel="external">Garbage collection</a>)</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSAPP/" rel="tag">#CSAPP</a>
+          
+            <a href="/tags/动态分配/" rel="tag">#动态分配</a>
+          
+            <a href="/tags/虚拟内存/" rel="tag">#虚拟内存</a>
+          
+            <a href="/tags/读薄/" rel="tag">#读薄</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/16/thin-csapp-6/" rel="next" title="【读薄 CSAPP】陆 系统输入输出">
+                <i class="fa fa-chevron-left"></i> 【读薄 CSAPP】陆 系统输入输出
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/16/thin-csapp-8/" rel="prev" title="【读薄 CSAPP】捌 网络编程">
+                【读薄 CSAPP】捌 网络编程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/16/thin-csapp-7/"
+           data-title="【读薄 CSAPP】柒 虚拟内存与动态内存分配" data-url="http://wdxtub.com/2016/04/16/thin-csapp-7/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B66_u4E60_u76EE_u6807"><span class="nav-number">1.</span> <span class="nav-text">学习目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4ECE_u7269_u7406_u5185_u5B58_u5230_u865A_u62DF_u5185_u5B58"><span class="nav-number">2.</span> <span class="nav-text">从物理内存到虚拟内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u865A_u62DF_u5185_u5B58_u7684_u4E09_u4E2A_u89D2_u8272"><span class="nav-number">3.</span> <span class="nav-text">虚拟内存的三个角色</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u4F5C_u4E3A_u7F13_u5B58_u5DE5_u5177"><span class="nav-number">3.1.</span> <span class="nav-text">作为缓存工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4F5C_u4E3A_u5185_u5B58_u7BA1_u7406_u5DE5_u5177"><span class="nav-number">3.2.</span> <span class="nav-text">作为内存管理工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4F5C_u4E3A_u5185_u5B58_u4FDD_u62A4_u5DE5_u5177"><span class="nav-number">3.3.</span> <span class="nav-text">作为内存保护工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5730_u5740_u7FFB_u8BD1"><span class="nav-number">4.</span> <span class="nav-text">地址翻译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u591A_u5C42_u9875_u8868_Multi-Level_Page_Table"><span class="nav-number">4.1.</span> <span class="nav-text">多层页表 Multi-Level Page Table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5730_u5740_u7FFB_u8BD1_u5B9E_u4F8B"><span class="nav-number">4.2.</span> <span class="nav-text">地址翻译实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u52A8_u6001_u5185_u5B58_u5206_u914D"><span class="nav-number">5.</span> <span class="nav-text">动态内存分配</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u6027_u80FD_u6307_u6807"><span class="nav-number">5.1.</span> <span class="nav-text">性能指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5B9E_u73B0_u7EC6_u8282"><span class="nav-number">5.2.</span> <span class="nav-text">实现细节</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5783_u573E_u56DE_u6536"><span class="nav-number">6.</span> <span class="nav-text">垃圾回收</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5185_u5B58_u9677_u9631"><span class="nav-number">7.</span> <span class="nav-text">内存陷阱</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dereferencing_Bad_Pointers"><span class="nav-number">7.1.</span> <span class="nav-text">Dereferencing Bad Pointers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reading_Uninitialized_Memory"><span class="nav-number">7.2.</span> <span class="nav-text">Reading Uninitialized Memory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Overwriting_Memory"><span class="nav-number">7.3.</span> <span class="nav-text">Overwriting Memory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Referencing_Nonexistent_Variables"><span class="nav-number">7.4.</span> <span class="nav-text">Referencing Nonexistent Variables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Freeing_Blocks_Multiple_Times"><span class="nav-number">7.5.</span> <span class="nav-text">Freeing Blocks Multiple Times</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Referencing_Freed_Blocks"><span class="nav-number">7.6.</span> <span class="nav-text">Referencing Freed Blocks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Memory_Leaks"><span class="nav-number">7.7.</span> <span class="nav-text">Memory Leaks</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">9.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

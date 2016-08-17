@@ -1,0 +1,745 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="这节课我们通过『生产者-消费者问题』以及『读者-写者问题』来更深入理解同步机制。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="深入理解计算机系统 第 24 课 Synchronization - Advanced">
+<meta property="og:url" content="http://wdxtub.com/vault/csapp-24.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="这节课我们通过『生产者-消费者问题』以及『读者-写者问题』来更深入理解同步机制。">
+<meta property="og:image" content="http://wdxtub.com/images/14600704484721.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600747953883.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600771838118.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600772808229.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600774132333.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600774554184.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600774851875.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600775118044.jpg">
+<meta property="og:updated_time" content="2016-04-08T01:05:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统 第 24 课 Synchronization - Advanced">
+<meta name="twitter:description" content="这节课我们通过『生产者-消费者问题』以及『读者-写者问题』来更深入理解同步机制。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    深入理解计算机系统 第 24 课 Synchronization - Advanced | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>这节课我们通过『生产者-消费者问题』以及『读者-写者问题』来更深入理解同步机制。</p>
+<a id="more"></a>
+<hr>
+<p>Semaphores 实际上可以认为是线程之间最简单的通知机制，用来控制共享资源的访问。这之中有两个非常经典的问题：</p>
+<ul>
+<li>The Producer-Consumer Problem</li>
+<li>The Readers-Writers Problem</li>
+</ul>
+<h2 id="u751F_u4EA7_u8005-_u6D88_u8D39_u8005_u95EE_u9898"><a href="#u751F_u4EA7_u8005-_u6D88_u8D39_u8005_u95EE_u9898" class="headerlink" title="生产者-消费者问题"></a>生产者-消费者问题</h2><p><img src="/images/14600704484721.jpg" alt="Producer-Consumer Problem"></p>
+<p>具体的同步模型为：</p>
+<ul>
+<li>生产者等待空的 slot，把 item 存储到 buffer，并通知消费者</li>
+<li>消费整等待 item，从 buffer 中移除 item，并通知生产者</li>
+</ul>
+<p>主要用于</p>
+<ul>
+<li>多媒体处理<ul>
+<li>生产者生成 MPEG 视频帧，消费者进行渲染</li>
+</ul>
+</li>
+<li>事件驱动的图形用户界面<ul>
+<li>生产者检测到鼠标点击、移动和键盘输入，并把对应的事件插入到 buffer 中</li>
+<li>消费者从 buffer 中获取事件，并绘制到到屏幕上</li>
+</ul>
+</li>
+</ul>
+<p>接下来我们实现一个有 n 个元素 buffer，为此，我们需要一个 mutex 和两个用来计数的 semaphore：</p>
+<ul>
+<li><code>mutex</code>: 用来保证对 buffer 的互斥访问</li>
+<li><code>slots</code>: 统计 buffer 中可用的 slot 数目</li>
+<li><code>items</code>: 统计 buffer 中可用的 item 数目</li>
+</ul>
+<p>我们直接来看代码，就比较清晰了</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 头文件 sbuf.h</span></span><br><span class="line"><span class="comment">// 包括几个基本操作</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">"csapp.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">int</span> *buf;    <span class="comment">// Buffer array</span></span><br><span class="line">    <span class="keyword">int</span> n;       <span class="comment">// Maximum number of slots</span></span><br><span class="line">    <span class="keyword">int</span> front;   <span class="comment">// buf[(front+1)%n] is first item</span></span><br><span class="line">    <span class="keyword">int</span> rear;    <span class="comment">// buf[rear%n] is the last item</span></span><br><span class="line">    <span class="keyword">sem_t</span> mutex; <span class="comment">// Protects accesses to buf</span></span><br><span class="line">    <span class="keyword">sem_t</span> slots; <span class="comment">// Counts available slots</span></span><br><span class="line">    <span class="keyword">sem_t</span> items; <span class="comment">// Counts available items</span></span><br><span class="line">&#125; <span class="keyword">sbuf_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_init</span><span class="params">(sbuf_t *sp, <span class="keyword">int</span> n)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_deinit</span><span class="params">(sbuf_t *sp)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_insert</span><span class="params">(sbuf_t *sp, <span class="keyword">int</span> item)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sbuf_remove</span><span class="params">(sbuf_t *sp)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>然后是具体的实现</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// sbuf.c</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Create an empty, bounded, shared FIFO buffer with n slots</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_init</span><span class="params">(sbuf_t *sp, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    sp-&gt;buf = Calloc(n, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    sp-&gt;n = n;                  <span class="comment">// Buffer holds max of n items</span></span><br><span class="line">    sp-&gt;front = sp-&gt;rear = <span class="number">0</span>;   <span class="comment">// Empty buffer iff front == rear</span></span><br><span class="line">    Sem_init(&amp;sp-&gt;mutex, <span class="number">0</span>, <span class="number">1</span>); <span class="comment">// Binary semaphore for locking</span></span><br><span class="line">    Sem_init(&amp;sp-&gt;slots, <span class="number">0</span>, n); <span class="comment">// Initially, buf has n empty slots</span></span><br><span class="line">    Sem_init(&amp;sp-&gt;items, <span class="number">0</span>, <span class="number">0</span>); <span class="comment">// Initially, buf has 0 items</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Clean up buffer sp</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_deinit</span><span class="params">(sbuf_t *sp)</span></span>&#123;</span><br><span class="line">    Free(sp-&gt;buf);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Insert item onto the rear of shared buffer sp</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_insert</span><span class="params">(sbuf_t *sp, <span class="keyword">int</span> item)</span> </span>&#123;</span><br><span class="line">    P(&amp;sp-&gt;slots);                        <span class="comment">// Wait for available slot</span></span><br><span class="line">    P(&amp;sp-&gt;mutext);                       <span class="comment">// Lock the buffer</span></span><br><span class="line">    sp-&gt;buf[(++sp-&gt;rear)%(sp-&gt;n)] = item; <span class="comment">// Insert the item</span></span><br><span class="line">    V(&amp;sp-&gt;mutex);                        <span class="comment">// Unlock the buffer</span></span><br><span class="line">    V(&amp;sp-&gt;items);                        <span class="comment">// Announce available item</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Remove and return the first tiem from the buffer sp</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sbuf_remove</span><span class="params">(sbuf_f *sp)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> item;</span><br><span class="line">    P(&amp;sp-&gt;items);                         <span class="comment">// Wait for available item</span></span><br><span class="line">    P(&amp;sp-&gt;mutex);                         <span class="comment">// Lock the buffer</span></span><br><span class="line">    item = sp-&gt;buf[(++sp-&gt;front)%(sp-&gt;n)]; <span class="comment">// Remove the item</span></span><br><span class="line">    V(&amp;sp-&gt;mutex);                         <span class="comment">// Unlock the buffer</span></span><br><span class="line">    V(&amp;sp-&gt;slots);                         <span class="comment">// Announce available slot</span></span><br><span class="line">    <span class="keyword">return</span> item;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u8BFB_u8005-_u5199_u8005_u95EE_u9898"><a href="#u8BFB_u8005-_u5199_u8005_u95EE_u9898" class="headerlink" title="读者-写者问题"></a>读者-写者问题</h2><p>是互斥问题的通用描述，具体为：</p>
+<ul>
+<li>读者线程只读取对象</li>
+<li>写者线程修改对象</li>
+<li>写者对于对象的访问是互斥的</li>
+<li>多个读者可以同时读取对象</li>
+</ul>
+<p>常见的应用场景是：</p>
+<ul>
+<li>在线订票系统</li>
+<li>多线程缓存 web 代理</li>
+</ul>
+<p>根据不同的读写策略，又两类读者写者问题，需要注意的是，这两种情况都可能出现 starvation。</p>
+<blockquote>
+<p>第一类读者写者问题（读者优先）</p>
+</blockquote>
+<ul>
+<li>如果写者没有获取到使用对象的权限，不应该让读者等待</li>
+<li>在等待的写者之后到来的读者应该在写者之前处理</li>
+<li>也就是说，只有没有读者的情况下，写者才能工作</li>
+</ul>
+<blockquote>
+<p>第二类读者写者问题（写者优先）</p>
+</blockquote>
+<ul>
+<li>一旦写者可以处理的时候，就不应该进行等待</li>
+<li>在等待的写者之后到来的读者应该在写者之后处理</li>
+</ul>
+<p>把前面这些拼到一起，就有了完整的 Server </p>
+<p><img src="/images/14600747953883.jpg" alt="Prethreaded Concurrent Server"></p>
+<p>具体的代码为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">sbuf_t</span> sbuf; <span class="comment">// Shared buffer of connected descriptors</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> byte_cnt;  <span class="comment">// Byte counter</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">sem_t</span> mutex;   <span class="comment">// and the mutex that protects it</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">echo_cnt</span><span class="params">(<span class="keyword">int</span> connfd)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">char</span> buf[MAXLINE];</span><br><span class="line">    <span class="keyword">rio_t</span> rio;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">pthread_once_t</span> once = PTHREAD_ONCE_INIT;</span><br><span class="line">    </span><br><span class="line">    Pthread_once(&amp;once, init_echo_cnt);</span><br><span class="line">    Rio_readinitb(&amp;rio, connfd);</span><br><span class="line">    <span class="keyword">while</span> ((n = Rio_readlineb(&amp;rio, buf, MAXLINE)) != <span class="number">0</span>) &#123;</span><br><span class="line">        P(&amp;mutex);</span><br><span class="line">        byte_cnt += n;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"thread %d received %d (%d total) bytes on fd %d\n"</span>,</span><br><span class="line">                    (<span class="keyword">int</span>) pthread_self(), n, byte_cnt, connfd);</span><br><span class="line">        V(&amp;mutex);</span><br><span class="line">        Rio_writen(connfd, buf, n);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init_echo_cnt</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">    Sem_init(&amp;mutex, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    byte_cnt = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">thread</span><span class="params">(<span class="keyword">void</span> *vargp)</span></span>&#123;</span><br><span class="line">    Pthread_detach(pthread_self());</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> connfd = sbuf_remove(&amp;sbuf); <span class="comment">// Remove connfd from buf</span></span><br><span class="line">        echo_cnt(connfd);                <span class="comment">// Service client</span></span><br><span class="line">        Close(connfd);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i, listenfd, connfd;</span><br><span class="line">    <span class="keyword">socklen_t</span> clientlen;</span><br><span class="line">    <span class="keyword">struct</span> sockaddr_storage clientaddr;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid;</span><br><span class="line">    </span><br><span class="line">    listenfd = Open_listenfd(argv[<span class="number">1</span>]);</span><br><span class="line">    sbuf_init(&amp;sbuf, SBUFSIZE);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; NTHREADS; i++) <span class="comment">// Create worker threads</span></span><br><span class="line">        Pthread_create(&amp;tid, <span class="literal">NULL</span>, thread, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        clientlen = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_storage);</span><br><span class="line">        connfd = Accept(listenfd, (SA *)&amp;clientaddr, &amp;clientlen);</span><br><span class="line">        sbuf_insert(&amp;sbuf, connfd); <span class="comment">// Insert connfd in buffer</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u7EBF_u7A0B_u5B89_u5168"><a href="#u7EBF_u7A0B_u5B89_u5168" class="headerlink" title="线程安全"></a>线程安全</h2><p>在线程中调用的函数必须是线程安全的，定义为：</p>
+<blockquote>
+<p>A function is thread-safe iff it will always produce correct results when called repeatedly from multiple concurrent threads</p>
+</blockquote>
+<p>主要有 4 类线程不安全的函数</p>
+<ol>
+<li>Functions that do not protect shared variables<ul>
+<li>解决办法：使用 P 和 V semaphore 操作</li>
+<li>问题：同步操作会影响性能</li>
+</ul>
+</li>
+<li>Functions that keep state across multiple invocations<ul>
+<li>Fix: Pass state as part of argument </li>
+</ul>
+</li>
+<li>Functions that return a pointer to a static variable<ul>
+<li>Fix 1: Rewrite function so caller passes address of variable to store result</li>
+<li>Fix 2: Lock-and-copy</li>
+</ul>
+</li>
+<li>Functions that call thread-unsage functions<ul>
+<li>解决办法：只调用线程安全的函数</li>
+</ul>
+</li>
+</ol>
+<p>另一个重要的概念是 Reentrant Function，定义为：</p>
+<blockquote>
+<p>A function is <strong>reentrant</strong> iff it accesses no shared variables when called by multiple threads</p>
+</blockquote>
+<p><img src="/images/14600771838118.jpg" alt=""></p>
+<p>Reentrant Functions 是线程安全函数非常重要的子集，不需要同步操作，对于第二类的函数来说（上面提到的），唯一的办法就是把他们修改成 reentrant 的。</p>
+<p>标准 C 库中的函数都是线程安全的（如 <code>malloc</code>, <code>free</code>, <code>printf</code>, <code>scanf</code>），大多数 Unix 的系统调用也都是线程安全的，除了下面这些例外：</p>
+<p><img src="/images/14600772808229.jpg" alt=""></p>
+<p>最后要提的两点是『竞争条件』和『死锁』，对于前者来说，要避免状态的共享，对于后者来说，要保证共享资源按照顺序进行请求。举个例子：</p>
+<p><img src="/images/14600774132333.jpg" alt="Deadlocking With Semaphores"></p>
+<p> 留意两个函数中 P 操作的顺序，用 Progress Graph 来表示就是：</p>
+<p><img src="/images/14600774554184.jpg" alt="Deadlock Visualized in Progress Graph"></p>
+<p>但是如果我们调整顺序：</p>
+<p><img src="/images/14600774851875.jpg" alt="Acquire shared resources in same order"></p>
+<p>情况就会变成这样</p>
+<p><img src="/images/14600775118044.jpg" alt="Avoided Deadlock in Progress Graph"></p>
+<p>也就解决了死锁的问题。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/csapp-24.html"
+           data-title="深入理解计算机系统 第 24 课 Synchronization - Advanced" data-url="http://wdxtub.com/vault/csapp-24.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

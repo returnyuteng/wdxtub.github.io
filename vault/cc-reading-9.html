@@ -1,0 +1,720 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="A key element, which is also one of the more complex parts of virtualization, is CPU virtualization.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 阅读材料 9 Resource Virtualization - CPU">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-reading-9.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="A key element, which is also one of the more complex parts of virtualization, is CPU virtualization.">
+<meta property="og:image" content="http://wdxtub.com/images/14551131967470.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551132129213.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551132303380.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551133049722.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551133248973.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551136108303.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551137270984.jpg">
+<meta property="og:updated_time" content="2016-03-03T17:47:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 阅读材料 9 Resource Virtualization - CPU">
+<meta name="twitter:description" content="A key element, which is also one of the more complex parts of virtualization, is CPU virtualization.">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 阅读材料 9 Resource Virtualization - CPU | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>A key element, which is also one of the more complex parts of virtualization, is CPU virtualization.</p>
+<a id="more"></a>
+<hr>
+<p>Virtualizing a CPU entails two major steps:</p>
+<ul>
+<li>Multiplexing a physical CPU (pCPU) among virtual CPUs (vCPUs) associated with virtual machines (VMs); this is called vCPU scheduling.</li>
+<li>Virtualizing the ISA of a pCPU in order to make vCPUs with different ISAs run on this pCPU.</li>
+</ul>
+<p>In this module, we present some conditions for virtualizing ISAs. Second, we describe ISA virtualization. Third, we make a distinction between two types of ISA virtualization: full virtualization and paravirtualization. Fourth, we discuss emulation, a major technique for virtualizing CPUs. Fifth, we compare two kinds of VMs: simultaneous multiprocessing (SMP) and uniprocessors (UP) VMs. Finally, we close with a discussion on vCPU scheduling. As examples, we present two popular Xen vCPU schedulers.</p>
+<h2 id="The_Conditions_for_Virtualizing_ISAs"><a href="#The_Conditions_for_Virtualizing_ISAs" class="headerlink" title="The Conditions for Virtualizing ISAs"></a>The Conditions for Virtualizing ISAs</h2><p><strong>Virtualizing an ISA</strong></p>
+<p>The key to virtualizing a CPU lies in the execution of both privileged and unprivileged instructions issued by guest virtual processors. The set of any processor instructions is documented and provided in the ISA. The following video (Video 3.5) outlines the issues regarding virtualizing an ISA:</p>
+<p><a href="http://youtu.be/L55ut9i10O8" target="_blank" rel="external">Video 3.5: Virtualizing an ISA.</a></p>
+<p>Special privileges to system resources are permitted by defining modes of operations (or rings) in the ISA. Each CPU ISA usually specifies two modes of operations, system (or supervisor/kernel/privileged) mode and user mode (see Fig. 3.18(a)). System mode allows a wide accessibility to system components, while user mode restricts such accessibility. In an attempt to provide security and resource isolations, OSs in traditional systems are executed in system mode, while associated applications are run in user mode. Some ISAs, however, support more than two rings. For instance, the Intel IA-32 ISA supports four rings (see Fig. 3.18(b)). In traditional systems, when Linux is implemented on an IA-32 ISA, the OS is executed in Ring 0 and application processes are executed in Ring 3.</p>
+<p><img src="/images/14551131967470.jpg" alt="Figure 3.18: System modes of operations (or rings)."></p>
+<p>A privileged instruction is defined as one that traps in user mode and does not trap in system mode. A trap is a transfer of control to system mode wherein the hypervisor (as in virtualization) or the OS (as in traditional OSs) performs some action before switching control back to the originating process. Traps occur as side effects of executing instructions. Overall, instructions can be classified into two different categories: sensitive and innocuous. Sensitive instructions can be either control sensitive or behavior sensitive. Control-sensitive instructions are those that attempt to modify the configuration of resources in a system, such as changing the mode of operation or CPU timer. An example of control-sensitive instructions is load processor status word (LPSW) (IBM System/370). LPSW loads the processor status word from a location in memory if the CPU is in system mode and, otherwise it traps. LPSW contains bits that determine the state of the CPU. For instance, one of these bits is the P bit, which specifies whether the CPU is in user mode or system mode. If executing this instruction is allowed in user mode, a malicious program can easily change the mode of operation to privileged and obtain control over the system. Hence, to protect the system, such an instruction can only be executed in system mode. Behavior-sensitive instructions are those whose behaviors are determined by the current configuration of resources in a system. An example of behavior-sensitive instructions is Pop Stack into Flags Register (POPF) (Intel IA-32). POPF pops the flag registers from a stack held in memory. One of these flags, called the interrupt enable flag, can be altered only in system mode. If POPF is executed in user mode by a program that attempts to pop the interrupt enable flag, POPF will act as a no op (i.e., no operation). Therefore, the behavior of POPF depends on the mode of operation, rendering as behavior sensitive. Finally, if the instruction is neither control sensitive nor behavior sensitive, it is innocuous.</p>
+<p>According to Popek and Goldberg (1974), a hypervisor can be constructed if it satisfies three properties: efficiency, resource control, and equivalence. Efficiency entails executing all innocuous instructions directly on hardware without any interference by the hypervisor. Resource control suggests that it is not possible for any guest software to change the configuration of resources in a system. Equivalence requires identical behavior of a program running on a VM or on a traditional OS with no virtualization. One exception is a difference in performance. Popek and Goldberg’s proposal (or theorem) implies that a hypervisor can be constructed only if the set of sensitive instructions is a subset of the set of privileged instructions. That is to say, instructions that interfere with the correct functioning of the system (i.e., sensitive instructions, such as LPSW) should always trap in the user mode. Figure 3.19 illustrates Popek and Goldberg’s theorem. [1]</p>
+<p><img src="/images/14551132129213.jpg" alt="Figure 3.19: Demonstrating Popek and Goldberg&#39;s theorem."></p>
+<p>Finally, let us discuss how a trap can be handled in a system. Specifically, we describe traps in the context of CPU virtualization. Figure 3.20 demonstrates how a hypervisor can handle an instruction trap. The hypervisor’s trap-handling functions can be divided into three main parts: dispatcher, allocator, and a set of interpreter routines. First, a privileged instruction traps to the hypervisor’s dispatcher. If the hypervisor recognizes that the instruction is attempting to alter system resources, it directs it to the allocator; otherwise, it sends it to a corresponding interpreter routine. The allocator decides how system resources are to be allocated in a nonconflicting manner and satisfies the instruction’s request accordingly. The interpreter routines emulate (more on emulation shortly) the effects of the instruction when operating on virtual resources. When the instruction is handled fully (i.e., done), control is passed back to the guest software at the instruction that comes immediately after the one that caused the trap.</p>
+<p><img src="/images/14551132303380.jpg" alt="Figure 3.20: Demonstration of a trap to a hypervisor. The hypervisor includes three main components: the dispatcher, the allocator, and the interpreter routines."></p>
+<p><strong>References</strong></p>
+<ol>
+<li>Popek, J., and Goldberg, R. (1974). “Formal Requirements for Virtualizable Third Generation Architectures.” Commun. ACM, Vol. 17, No. 7.</li>
+</ol>
+<h2 id="Full_Virtualization_and_Paravirtualization"><a href="#Full_Virtualization_and_Paravirtualization" class="headerlink" title="Full Virtualization and Paravirtualization"></a>Full Virtualization and Paravirtualization</h2><p>A problem arises when an instruction that is sensitive but unprivileged is issued by a process running on a VM in user mode. According to Popek and Goldberg (1974), sensitive instructions have to trap to the hypervisor if executed in user mode. However, as explained earlier, sensitive instructions can be privileged (e.g., LPSW) and unprivileged (e.g., POPF). Unprivileged instructions do not trap to the hypervisor. Instructions that are sensitive and unprivileged are called critical (see Fig. 3.21). ISAs that contain critical instructions do not satisfy Popek and Goldberg’s theorem [1] . Video 3.6 covers this concept and ways around it:</p>
+<p><a href="http://youtu.be/ay0ZpkMbw_8" target="_blank" rel="external">Video 3.6: ISA virtualization techniques.</a></p>
+<p>The challenge becomes, can a hypervisor be constructed in the presence of critical instructions? The answer is yes. Nonetheless, Smith and Nair [2] distinguish between a hypervisor that complies with Popek and Goldberg’s theorem and one that does not comply by referring to the former as a true or an efficient hypervisor and to the latter simply as a hypervisor.</p>
+<p><img src="/images/14551133049722.jpg" alt="Figure 3.21: Instructions that do not satisfy Popek and Goldberg’&#39; theorem. They are called critical instructions."></p>
+<p>If a processor does not satisfy Popek and Goldberg’s virtualization requirement, a hypervisor can be constructed by using code patching, full virtualization, and/or paravirtualization. As illustrated in Figure 3.22, code patching requires the hypervisor to scan the guest code before execution, discover all critical instructions, and replace them with traps (system calls) to the hypervisor. Full virtualization emulates all instructions in the ISA. Emulation degrades performance because it implies reproducing the behavior of every source instruction by first translating it to a target instruction, then running it on a target ISA (more on emulation shortly). Paravirtualization deals with critical instructions by modifying guest OSs. Specifically, it entails rewriting every critical instruction as a hypercall that traps to the Xen hypervisor. Accordingly, paravirtualization improves performance due to totally avoiding emulation but at the expense of modifying guest OSs. In reverse, full virtualization avoids modifying guest OSs but at the expense of degrading system performance. As examples, VMware uses full virtualization, while Xen employs paravirtualization. Xen supports most major OSs, including Windows, Linux, Solaris, and NetBSD.</p>
+<p><img src="/images/14551133248973.jpg" alt="Figure 3.22: Code scanning and patching to enforce critical instructions to trap to the hypervisor. The code is shown in a format close to a control flow diagram."></p>
+<p><strong>References</strong></p>
+<ol>
+<li>Popek, J., and Goldberg, R. (1974). “Formal Requirements for Virtualizable Third Generation Architectures.” Commun. ACM, Vol. 17, No. 7.</li>
+<li>Smith, J. E., and Nair, R. (2005). “The Architecture of Virtual Machines.” Computer, 38(5), 32-38.</li>
+</ol>
+<h2 id="Emulation"><a href="#Emulation" class="headerlink" title="Emulation"></a>Emulation</h2><p>Now that we understand the conditions for virtualizing ISAs and the two main classes of CPU virtualization, full virtualization and paravirtualization, we move to discussing emulation as a technique used to implement full virtualization and process VMs. Emulation has been introduced previously, but to recap, emulation is the process of allowing the interfaces and functionalities of one system (the source) to be implemented on a system with different interfaces and functionalities (the target). Emulation is the only CPU virtualization mechanism available when the guest and host ISAs are different. If the guest and host ISAs are identical, direct native execution can (possibly) be applied.</p>
+<p>Emulation is carried out either via interpretation or binary translation. With interpretation, source instructions are converted, one instruction at a time, to relevant target instructions. Interpretation is relatively slow because of the one-by-one emulation of instructions and the lack of any optimization technique (e.g., precluding the interpretation of an already encountered and interpreted instruction). Binary translation optimizes interpretation via converting blocks of source instructions to target instructions and caching generated blocks for repeated use. Typically, blocks of instructions are more amenable to optimizations than single instructions. Compared to interpretation, binary translation is much faster because of the application of block caching as well as code optimizations over blocks. In the following video, we discuss three major interpretation schemes: decode and dispatch, indirect threaded, and direct threaded.</p>
+<p><a href="http://youtu.be/TutPj22Dq94" target="_blank" rel="external">Video 3.7: Interpretation Techniques in Virtualization</a></p>
+<p>As explained in Video 3.7, a basic interpreter should read through the source code instruction by instruction, analyze each instruction, and call relevant routines to generate the target code. An interpreter called decode and dispatch applies basic interpretation but results in a number of branch (or jump) instructions, both direct and indirect, which leads to poor execution times. As an optimization for decode and dispatch, an interpreter called indirect threaded attempts to release some of the decode-and-dispatch branches via appending (or threading) a portion of the dispatch code to the end of each interpreter routine. Last, a more advanced interpreter, called direct threaded, improves indirect threaded by attempting to interpret a repeated operation only once. Although the direct-threaded interpreter improves the indirect threaded and the decode-and-dispatch branches, it still suffers from major drawbacks, such as vast memory image and limited portability. In the next video, we discuss binary translation, which essentially targets the limitations of direct-threaded interpretation.</p>
+<p><a href="http://youtu.be/wnbYwUm6KgY" target="_blank" rel="external">Video 3.8: Binary Translation.</a></p>
+<p>As presented in Video 3.8, binary translation tries to amortize the fetch and analysis costs caused by the direct-threaded interpreter through: (1) translating a block of source instructions (rather than a single instruction) to a block of target instructions and (2) caching the translated code in an attempt to save interpreting source instructions more than once. The following table compares binary translation, decode-and-dispatch, indirect-threaded, and direct-threaded emulation techniques in terms of four metrics: memory requirements, startup performance, steady-state performance, and code portability. For instance, the decode-and-dispatch interpreter row reads as follows: first, with decode and dispatch, memory requirements remain low because of having only one interpreter routine for each instruction type in the target ISA. Furthermore, decode and dispatch avoids threading the dispatch code at the end of each routine. Second, startup performance is fast because neither predecoding nor translation of the source binary is applied. Third, steady-state performance (i.e., the performance after starting up the interpreter) is slow because of the high number of branches and the interpretation of every instruction per each appearance. Finally, code portability is good because predecoding with addresses of interpreter routines is not applied by decode-and-dispatch interpreters (in contrast to direct-threaded interpreters).</p>
+<p><img src="/images/14551136108303.jpg" alt=""></p>
+<h2 id="Virtual_CPU"><a href="#Virtual_CPU" class="headerlink" title="Virtual CPU"></a>Virtual CPU</h2><p><strong>Uniprocessor and Multiprocessor VMs</strong></p>
+<p>As described earlier in the unit, a virtual CPU (vCPU) acts as a proxy to a physical CPU (pCPU). In other words, a vCPU is a representation of a pCPU to a guest OS (i.e., an OS that runs on a VM). A vCPU can be initiated in a VM and mapped to an underlying pCPU by the hypervisor. In principle, a VM can have one or many vCPUs. For instance, a VM in VMware ESX 4 can have up to eight vCPUs. The amount of vCPUs represents the width of a VM. A VM with a width greater than one is called a symmetric multiprocessing (SMP) VM. In reverse, a VM with a width equal to one is called a uniprocessor (UP) VM. Video 3.9 discusses Multiprocesseor VMs in detail:</p>
+<p><a href="http://youtu.be/0iZrCvccTdY" target="_blank" rel="external">Video 3.9: Multiprocessor VMs.</a></p>
+<p>Figure 3.23 demonstrates an SMP native system VM with a width of four and a UP native system VM, both running on the same hardware.</p>
+<p><img src="/images/14551137270984.jpg" alt="Figure 3.23: An SMP native system VM with a width of four and a UP native system VM, both running on the same hardware."></p>
+<p>Similar to a process on a general-purpose OS, a vCPU can be in different states, such as running, ready, and wait states. At a certain point in time, a vCPU can be scheduled by the hypervisor at only a single core (akin to scheduling an OS process on a core). For instance, a UP VM running on a host machine equipped with two Xeon 5405 (i.e., a total of eight pCPUs) will run only on one of the eight available cores. Inherently parallel workloads, such as MapReduce applications, prefer SMP VMs. We next discuss how the hypervisor schedules vCPUs on pCPUs.</p>
+<p><strong>Virtual CPU Scheduling and Xen’s Schedulers</strong></p>
+<p>General-purpose OSs support two levels of scheduling, process and thread scheduling. With a hypervisor, one extra level of scheduling is added, vCPU scheduling. The hypervisor schedules vCPUs on the underlying pCPU(s), thereby providing each guest VM a portion of the underlying physical processing time.</p>
+<p>We (briefly) discuss two popular schedulers from Xen, Simple Earliest Deadline First (SEDF) and Credit Scheduler (CS). As its name suggests, SEDF is simple, whereby only two parameters, n (the slice) and m (the period), are involved. A VM (or domain Ui in Xen’s parlance) can request n every m. SEDF specifies a deadline for each vCPU computed in terms of n and m. The deadline is defined as the latest time a domain can be run to meet its deadline. For instance, a domain Ui can request n = 10ms and m = 100ms. Accordingly, a vCPU at this domain can be scheduled by SEDF as late as 90ms into the 100ms period, yet still meet its deadline. SEDF operates by searching across the set of all runnable vCPUs, held in a queue, and selecting the one with the earliest deadline.</p>
+<p>Xen’s Credit Scheduler (CS) is more involved than SEDF. First, when configuring a VM, each vCPU in the VM is set with two properties: the weight and the cap. The weight determines the share of a pCPU’s capacity that should be provided to a vCPU. For instance, if two vCPUs, vCPU-1 and vCPU-2, are specified with weights of 256 (the default) and 128, respectively, vCPU-1 will obtain double the share of vCPU-2. Weights can range from 1 to 65,535. The cap determines the total percentage of a pCPU that should be given to a vCPU. The cap can modify the behavior of the weight. Nonetheless, a vCPU can be kept uncapped.</p>
+<p>CS converts each vCPU’s weight to credits. Credits from a vCPU will be deducted as long as it is running. A vCPU is marked as over once it runs out of credits and is otherwise marked under. CS maintains a queue per each pCPU (assuming a chip multiprocessors architecture) and stores all under vCPUs first, followed by all over vCPUs. CS operates by picking the first under vCPU in the queue to go next. CS keeps track of each vCPU’s credits, and when switching a vCPU out, it places it in the queue at the end of the appropriate category. Finally, CS applies load balancing by allowing a pCPU with no under vCPUs to pull under vCPUs from queues of other pCPUs. More details on SEDF and CS can be found in Chisnall’s The Definitive Guide to the Xen Hypervisor. [1]</p>
+<p>Xen is an open source hypervisor. Hence, it is possible to devise and add your own scheduler. Chisnall provides an excellent and comprehensive coverage of Xen’s internals as well as step-by-step instructions for adding a new scheduler to Xen.</p>
+<p><strong>References</strong></p>
+<ol>
+<li>David Chisnall (2007). “The Definitive Guide to the Xen Hypervisor.” Prentice Hall.</li>
+</ol>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><ul>
+<li>Virtualizing a physical CPU (pCPU) involves: (1) timesharing the pCPU among virtual CPUs (vCPUs) contained and executed in VMs (called vCPU scheduling) and (2) virtualizing the ISA of the pCPU to make it amenable to host vCPUs with different ISAs.</li>
+<li>A vCPU acts as a proxy to a pCPU.</li>
+<li>In principle, a VM can have one or many vCPUs.</li>
+<li>A VM that includes more than one vCPU is called a symmetric multiprocessing (SMP) VM, while a VM with one vCPU is called a uniprocessor (UP) VM.</li>
+<li>In principle, hypervisors can support three levels of scheduling, process, thread, and vCPU scheduling.</li>
+<li>Examples of vCPU schedulers are Simple Earliest Deadline First (SEDF) and Credit Scheduler (CS) from Xen.</li>
+<li>In addition to vCPU scheduling, virtualizing a pCPU requires virtualizing the instructions defined in its ISA.</li>
+<li>Instructions in ISAs can generally be classified into two types: privileged and unprivileged instructions.</li>
+<li>A privileged instruction is defined as one that traps in user mode and does not trap in system mode.</li>
+<li>In addition, instructions can be further classified into two different categories: sensitive and innocuous.</li>
+<li>Sensitive instructions can be either control sensitive or behavior sensitive.</li>
+<li>Control-sensitive instructions are those that attempt to modify the configuration of resources in a system (e.g., LPSW from IBM System/370).</li>
+<li>Behavior-sensitive instructions are those whose behaviors are determined by the current configuration of resources in a system (e.g., POPF from Intel IA-32).</li>
+<li>When the instruction is neither control sensitive nor behavior sensitive, it is innocuous.</li>
+<li>Sensitive instructions can be privileged (e.g., LPSW) and unprivileged (e.g., POPF).</li>
+<li>Popek and Goldberg (1974) suggested that a hypervisor can only be constructed if the set of sensitive instructions is a subset of the set of privileged instructions (i.e., sensitive instructions always trap in the user mode).</li>
+<li>A problem arises when instructions that are sensitive but unprivileged are issued in VMs running in user mode (i.e., they will not trap as such).</li>
+<li>The instructions that are sensitive and unprivileged are called critical instructions.</li>
+<li>A hypervisor can still be constructed for ISAs that contain critical instructions.</li>
+<li>Constructing a hypervisor with the presence of critical instructions can be achieved using either code patching, full virtualization, and/or paravirtualization.</li>
+<li>Code patching replaces all critical instructions with system calls to the hypervisor, thus enforcing them to trap.</li>
+<li>Full virtualization emulates all instructions in the ISA.</li>
+<li>Emulation is a popular technique in virtualizing CPUs. It allows the interfaces and functionalities of one system (the source) to be implemented on a system with different interfaces and functionalities (the target).</li>
+<li>Emulation can be implemented using either interpretation or binary translation.</li>
+<li>Interpretation techniques (e.g., decode and dispatch, indirect threaded, and direct threaded) translate source instructions to target instructions one at a time, while binary translation converts blocks of source instructions to target instructions and caches them for repeated use.</li>
+<li>Paravirtualization rewrites every critical instruction as a hypercall that traps to the hypervisor (which typically requires modifying guest OSs).</li>
+<li>As concrete examples, VMware uses full virtualization, while Xen employs paravirtualization.</li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-reading-9.html"
+           data-title="云计算 阅读材料 9 Resource Virtualization - CPU" data-url="http://wdxtub.com/vault/cc-reading-9.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

@@ -1,0 +1,875 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Logstash,日志,管理," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="日志作为运维中非常重要的一环，往往只有在出了问题的时候才被重视起来，不同部门，不同项目的不同日志如果能够统一规范管理，对日常的开发和业务的运营都是有很大帮助的，这里我们来了解一下实时日志处理领域开源第一选择 - ELK 套餐中的 L - Logstash">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Logstash 入门指南">
+<meta property="og:url" content="http://wdxtub.com/2016/07/24/logstash-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="日志作为运维中非常重要的一环，往往只有在出了问题的时候才被重视起来，不同部门，不同项目的不同日志如果能够统一规范管理，对日常的开发和业务的运营都是有很大帮助的，这里我们来了解一下实时日志处理领域开源第一选择 - ELK 套餐中的 L - Logstash">
+<meta property="og:image" content="http://wdxtub.com/images/14693152085839.jpg">
+<meta property="og:updated_time" content="2016-07-24T05:34:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Logstash 入门指南">
+<meta name="twitter:description" content="日志作为运维中非常重要的一环，往往只有在出了问题的时候才被重视起来，不同部门，不同项目的不同日志如果能够统一规范管理，对日常的开发和业务的运营都是有很大帮助的，这里我们来了解一下实时日志处理领域开源第一选择 - ELK 套餐中的 L - Logstash">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Logstash 入门指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Logstash 入门指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-24T07:05:35+08:00" content="2016-07-24">
+              2016-07-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/24/logstash-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/24/logstash-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>日志作为运维中非常重要的一环，往往只有在出了问题的时候才被重视起来，不同部门，不同项目的不同日志如果能够统一规范管理，对日常的开发和业务的运营都是有很大帮助的，这里我们来了解一下实时日志处理领域开源第一选择 - ELK 套餐中的 L - Logstash</p>
+<a id="more"></a>
+<hr>
+<h2 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h2><p>从 Logstash 的名字就能看出，它主要负责跟日志相关的各类操作，不过在此之前，我们先来看看日志管理的三个境界吧。</p>
+<p>境界一：『昨夜西风凋碧树。独上高楼，望尽天涯路』，在各台服务器上用传统的 linux 工具（如 cat, tail, sed, awk, grep 等）对日志进行简单的分析和处理，基本上可以认为是命令级别的操作，成本很低，速度很快，但难以复用，也只能完成基本的操作。</p>
+<p>境界二：『衣带渐宽终不悔，为伊消得人憔悴』，服务器多了之后，分散管理的成本变得越来越多，所以会利用 <code>rsyslog</code> 这样的工具，把各台机器上的日志汇总到某一台指定的服务器上，进行集中化管理。这样带来的问题是日志量剧增，小作坊式的管理基本难以满足需求。</p>
+<p>境界三：『众里寻他千百度，蓦然回首，那人却在灯火阑珊处』，随着日志量的增大，我们从日志中获取去所需信息，并找到各类关联事件的难度会逐渐加大，这个时候，就是 Logstash 登场的时候了。</p>
+<p>Logstash 的主要优势在我看来有俩，一个是在支持各类插件的前提下提供统一的管道进行日志处理（就是 input-filter-output 这一套），二个是灵活且性能不错。</p>
+<h2 id="u67B6_u6784"><a href="#u67B6_u6784" class="headerlink" title="架构"></a>架构</h2><p>Logstash 是由 JRuby 编写的，使用基于消息的简单架构，在 JVM 上运行。理念非常简单，如果说 MapReduce 框架分为 Mapper 和 Reducer 两大模块，那么 Logstash 有仨：</p>
+<ol>
+<li>Collect: 数据输入。对应 input</li>
+<li>Enrich: 数据处理。对应 filter</li>
+<li>Transport: 数据输出。对应 output</li>
+</ol>
+<p>虽然模块仅仅比 MapReduce 框架多了一个，但是无三不成几，通过不同的拓扑结构，可以完成各类数据处理应用。不过这里我们主要还是以日志汇总处理系统的思路来进行介绍，一个典型的架构为：</p>
+<p><img src="/images/14693152085839.jpg" alt=""></p>
+<p>图中的三个组件为 Shipper, Broker 和 Indexer，这里我们结合上图分别来进行介绍</p>
+<ul>
+<li>Shipper 负责日志收集。职责是监控本地日志文件的变化，并输出到 Redis 缓存起来。实际部署是我们也可以考虑一些替代方案，比方说用 <code>rsyslog</code> 来取代 Shipper，这样就可以减少在各个服务器配置 Logstash 的工作量，也可以结合 <code>logrotate</code> 进行版本管理，具体方式很多，可以根据需要选择最合适的方式，切换的成本也不会特别高，只要原始日志不丢，其他都好说。</li>
+<li>Broker 可以看作是日志集线器，可以连接多个 Shipper 和多个 Indexer。实际情况中是否需要采用 Redis 做存储集中，亦或是通过某台服务器来完成日志汇总，都是可以根据工作量来权衡的，不过如果对性能要求较高，可能需要接入 Redis。</li>
+<li>Indexer 负责日志存储。在这个架构中会从 Redis 接收日志，写入到本地文件。因为架构比较灵活，如果不想用 Logstash 的存储，也可以对接到 Elasticsearch，这也就是前面所说的 ELK 的套路了。</li>
+</ul>
+<p>一个 Logstash 进程可以有多个输入源，同时也可以有多个输出源，输入输出均支持过滤和改写，非常灵活。如果需要 Broker 的话，官方推荐 Redis，因为其支持订阅发布和队列两种模式，能够自行根据需求选用。</p>
+<h2 id="u5B89_u88C5_u90E8_u7F72"><a href="#u5B89_u88C5_u90E8_u7F72" class="headerlink" title="安装部署"></a>安装部署</h2><p>Logstash 的安装也非常简单，我们先装好 JDK，配好 <code>JAVA_HOME</code> 即可，然后下载 Logstash 的安装包，一般来说我们会解压到 <code>/usr/local/</code> 中，运行的时候执行 logstash 文件夹下 bin 文件夹的 <code>logstash</code> 文件即可。就是这么轻松，也就部署完成了，如果需要管理集群，可以配合 <code>ansible</code> 这类轻量级的配置管理工具，之后我也会具体介绍。</p>
+<p>当然在 mac 下，可以直接 <code>brew install logstash</code> 即可。</p>
+<h2 id="u7B80_u5355_u6D41_u7A0B"><a href="#u7B80_u5355_u6D41_u7A0B" class="headerlink" title="简单流程"></a>简单流程</h2><p>更详细的介绍会在之后的《ELK 指南》中提及，这里就简单说一下 Logstash 具体的执行吧。按照惯例，从 Hello World 开始，运行如下命令：</p>
+<p><code>bin/logstash -e &#39;input{stdin{}}output{stdout{codec=&gt;rubydebug}}&#39;</code></p>
+<p>然后在终端里随便输入点什么，比如说 Hello world，我们就可以看到如下结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># dawang at wdxtub.local in ~/Documents/Blog [7:34:06]</span></span><br><span class="line">$ logstash <span class="operator">-e</span> <span class="string">'input&#123;stdin&#123;&#125;&#125;output&#123;stdout&#123;codec=&gt;rubydebug&#125;&#125;'</span></span><br><span class="line">Settings: Default pipeline workers: <span class="number">4</span></span><br><span class="line">Pipeline main started</span><br><span class="line">Hello World! I<span class="string">'m wdxtub</span><br><span class="line">&#123;</span><br><span class="line">       "message" =&gt; "Hello World! I'</span>m wdxtub<span class="string">",</span><br><span class="line">      "</span>@version<span class="string">" =&gt; "</span><span class="number">1</span><span class="string">",</span><br><span class="line">    "</span>@timestamp<span class="string">" =&gt; "</span><span class="number">2016</span>-<span class="number">07</span>-<span class="number">23</span>T23:<span class="number">35</span>:<span class="number">27.773</span>Z<span class="string">",</span><br><span class="line">          "</span>host<span class="string">" =&gt; "</span>wdxtub.local<span class="string">"</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>如果需要配置的东西比较多，还用命令行输入就比较费劲了，这时我们可以使用 <code>.conf</code> 文件来进行配置，再交由 <code>logstash -f</code> 来执行。另外我们可以把所有的配置文件放在 <code>/etc/logstash.d/</code> 中，logstash 会自动读取该目录下所有 <code>*.conf</code> 的文本文件，然后再拼接成一个完整的大配置文件执行。</p>
+<p>具体的命令行参数如下，这里就不再赘述了：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ logstash -h</span><br><span class="line">Usage:</span><br><span class="line">    /bin/logstash agent [OPTIONS]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">    <span class="operator">-f</span>, --config CONFIG_PATH      Load the logstash config from a specific file</span><br><span class="line">                                  or directory.  If a directory is given, all</span><br><span class="line">                                  files <span class="keyword">in</span> that directory will be concatenated</span><br><span class="line">                                  <span class="keyword">in</span> lexicographical order and <span class="keyword">then</span> parsed as a</span><br><span class="line">                                  single config file. You can also specify</span><br><span class="line">                                  wildcards (globs) and any matched files will</span><br><span class="line">                                  be loaded <span class="keyword">in</span> the order described above.</span><br><span class="line">    <span class="operator">-e</span> CONFIG_STRING              Use the given string as the configuration</span><br><span class="line">                                  data. Same syntax as the config file. If no</span><br><span class="line">                                  input is specified, <span class="keyword">then</span> the following is</span><br><span class="line">                                  used as the default input:</span><br><span class="line">                                  <span class="string">"input &#123; stdin &#123; type =&gt; stdin &#125; &#125;"</span></span><br><span class="line">                                  and <span class="keyword">if</span> no output is specified, <span class="keyword">then</span> the</span><br><span class="line">                                  following is used as the default output:</span><br><span class="line">                                  <span class="string">"output &#123; stdout &#123; codec =&gt; rubydebug &#125; &#125;"</span></span><br><span class="line">                                  If you wish to use both defaults, please use</span><br><span class="line">                                  the empty string <span class="keyword">for</span> the <span class="string">'-e'</span> flag.</span><br><span class="line">                                   (default: <span class="string">""</span>)</span><br><span class="line">    -w, --pipeline-workers COUNT  Sets the number of pipeline workers to run.</span><br><span class="line">                                   (default: <span class="number">4</span>)</span><br><span class="line">    -b, --pipeline-batch-size SIZE Size of batches the pipeline is to work in.</span><br><span class="line">                                   (default: <span class="number">125</span>)</span><br><span class="line">    -u, --pipeline-batch-delay DELAY_IN_MS When creating pipeline batches, how long to <span class="built_in">wait</span> <span class="keyword">while</span> polling</span><br><span class="line">                                  <span class="keyword">for</span> the next event.</span><br><span class="line">                                   (default: <span class="number">5</span>)</span><br><span class="line">    --filterworkers COUNT         DEPRECATED. Now an <span class="built_in">alias</span> <span class="keyword">for</span> --pipeline-workers and -w</span><br><span class="line">    <span class="operator">-l</span>, --log FILE                Write logstash internal logs to the given</span><br><span class="line">                                  file. Without this flag, logstash will emit</span><br><span class="line">                                  logs to standard output.</span><br><span class="line">    -v                            Increase verbosity of logstash internal logs.</span><br><span class="line">                                  Specifying once will show <span class="string">'informational'</span></span><br><span class="line">                                  logs. Specifying twice will show <span class="string">'debug'</span></span><br><span class="line">                                  logs. This flag is deprecated. You should use</span><br><span class="line">                                  --verbose or --debug instead.</span><br><span class="line">    --quiet                       Quieter logstash logging. This causes only</span><br><span class="line">                                  errors to be emitted.</span><br><span class="line">    --verbose                     More verbose logging. This causes <span class="string">'info'</span></span><br><span class="line">                                  level logs to be emitted.</span><br><span class="line">    --debug                       Most verbose logging. This causes <span class="string">'debug'</span></span><br><span class="line">                                  level logs to be emitted.</span><br><span class="line">    --debug-config                translation missing: en.logstash.runner.flag.debug_config (default: <span class="literal">false</span>)</span><br><span class="line">    -V, --version                 Emit the version of logstash and its friends,</span><br><span class="line">                                  <span class="keyword">then</span> exit.</span><br><span class="line">    -p, --pluginpath PATH         A path of <span class="built_in">where</span> to find plugins. This flag</span><br><span class="line">                                  can be given multiple <span class="built_in">times</span> to include</span><br><span class="line">                                  multiple paths. Plugins are expected to be</span><br><span class="line">                                  <span class="keyword">in</span> a specific directory hierarchy:</span><br><span class="line">                                  <span class="string">'PATH/logstash/TYPE/NAME.rb'</span> <span class="built_in">where</span> TYPE is</span><br><span class="line">                                  <span class="string">'inputs'</span> <span class="string">'filters'</span>, <span class="string">'outputs'</span> or <span class="string">'codecs'</span></span><br><span class="line">                                  and NAME is the name of the plugin.</span><br><span class="line">    -t, --configtest              Check configuration <span class="keyword">for</span> valid syntax and <span class="keyword">then</span> exit.</span><br><span class="line">    --[no-]allow-unsafe-shutdown  Force logstash to <span class="built_in">exit</span> during shutdown even</span><br><span class="line">                                  <span class="keyword">if</span> there are still inflight events <span class="keyword">in</span> memory.</span><br><span class="line">                                  By default, logstash will refuse to quit until all</span><br><span class="line">                                  received events have been pushed to the outputs. (default: <span class="literal">false</span>)</span><br><span class="line">    -r, --[no-]auto-reload        Monitor configuration changes and reload</span><br><span class="line">                                  whenever it is changed.</span><br><span class="line">                                  NOTE: use SIGHUP to manually reload the config</span><br><span class="line">                                   (default: <span class="literal">false</span>)</span><br><span class="line">    --reload-interval RELOAD_INTERVAL How frequently to poll the configuration location</span><br><span class="line">                                  <span class="keyword">for</span> changes, <span class="keyword">in</span> seconds.</span><br><span class="line">                                   (default: <span class="number">3</span>)</span><br><span class="line">    --allow-env                   EXPERIMENTAL. Enables templating of environment variable</span><br><span class="line">                                  values. Instances of <span class="string">"<span class="variable">$&#123;VAR&#125;</span>"</span> <span class="keyword">in</span> strings will be replaced</span><br><span class="line">                                  with the respective environment variable value named <span class="string">"VAR"</span>.</span><br><span class="line">                                   (default: <span class="literal">false</span>)</span><br><span class="line">    -h, --help                    <span class="built_in">print</span> <span class="built_in">help</span></span><br></pre></td></tr></table></figure>
+<h2 id="u5C0F_u7ED3"><a href="#u5C0F_u7ED3" class="headerlink" title="小结"></a>小结</h2><p>更多关于 Logstash 的内容可以在 <a href="https://www.gitbook.com/book/chenryn/kibana-guide-cn/details" target="_blank" rel="external">ELKstack 中文指南</a> 查阅，只要明白了基本的套路，剩下的就是根据业务需求不断实践了，不过这里再说两点：</p>
+<ul>
+<li>插件的使用类似于 Rails 中 Gemfile 的表现，都是利用 Ruby 强大的 DSL 实现的</li>
+<li>配置文件的语法不算复杂，但是有些东西比较细，需要测试后再投入使用</li>
+</ul>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://www.elastic.co/products/logstash" target="_blank" rel="external">LogStash 官网</a></li>
+<li><a href="http://xxrenzhe.blog.51cto.com/4036116/1352353" target="_blank" rel="external">LogStash日志分析展示系统</a></li>
+<li><a href="http://blog.jobbole.com/96823/" target="_blank" rel="external">Logstash实践: 分布式系统的日志监控</a></li>
+<li><a href="https://www.gitbook.com/book/chenryn/kibana-guide-cn/details" target="_blank" rel="external">ELKstack 中文指南</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Logstash/" rel="tag">#Logstash</a>
+          
+            <a href="/tags/日志/" rel="tag">#日志</a>
+          
+            <a href="/tags/管理/" rel="tag">#管理</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/23/ye-zi/" rel="next" title="第六周 - 野子">
+                <i class="fa fa-chevron-left"></i> 第六周 - 野子
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/24/elastic-search-guide/" rel="prev" title="Elasticsearch 入门指南">
+                Elasticsearch 入门指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/24/logstash-guide/"
+           data-title="Logstash 入门指南" data-url="http://wdxtub.com/2016/07/24/logstash-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u4ECB"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u67B6_u6784"><span class="nav-number">2.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B89_u88C5_u90E8_u7F72"><span class="nav-number">3.</span> <span class="nav-text">安装部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u5355_u6D41_u7A0B"><span class="nav-number">4.</span> <span class="nav-text">简单流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

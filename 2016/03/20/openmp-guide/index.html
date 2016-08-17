@@ -1,0 +1,1261 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CMU,OpenMP,整理," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="简单的 OpenMP 快速入门指南。主要来源">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenMP 入门指南">
+<meta property="og:url" content="http://wdxtub.com/2016/03/20/openmp-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="简单的 OpenMP 快速入门指南。主要来源">
+<meta property="og:updated_time" content="2016-03-20T13:45:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenMP 入门指南">
+<meta name="twitter:description" content="简单的 OpenMP 快速入门指南。主要来源">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> OpenMP 入门指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                OpenMP 入门指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-20T07:58:43+08:00" content="2016-03-20">
+              2016-03-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/20/openmp-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/20/openmp-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>简单的 OpenMP 快速入门指南。<a href="http://blog.csdn.net/donhao" target="_blank" rel="external">主要来源</a></p>
+<a id="more"></a>
+<hr>
+<h2 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h2><p>这门课作为 ECE 中少有的跟计算机科学相关的课，自然是必上不可。不过无论是 OpenMP 还是 CUDA，对于平时极少接触并行编程的我来说，都是十分吃力的，第一次作业的 OpenMP 编程已经让意识到了个中的差别，当然，在单个核心的计算速度基本达到极致的现在，掌握并行编程可以算是程序员的基本素养，而 OpenMP 其实是一个非常好的开始，简单，易懂，见效飞快。所以我们的旅程，就从这里开始吧。</p>
+<h2 id="Hello_OpenMP"><a href="#Hello_OpenMP" class="headerlink" title="Hello OpenMP"></a>Hello OpenMP</h2><p>OpenMP是一种面向共享内存以及分布式共享内存的多处理器多线程并行编程语言。一段简单的代码如下：</p>
+<pre><code>#include &lt;omp.h&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+int main(){
+    #pragma omp parallel for 
+    for (int i = 0; i &lt; 10; ++i)
+    {
+        cout &lt;&lt; i;
+    }
+    cout &lt;&lt; endl;
+    return 0;
+}
+</code></pre><p>通过#pragma omp预处理指示符指定要采用OpenMP</p>
+<p>通过#pragma omp parallel for来指定下方的for循环采用多线程执行，此时编译器会根据CPU的个数来创建线程数，对于双核系统，编译器会默认创建两个线程执行并行区域的代码。</p>
+<p>这段程序的输入如下（省略前面的终端信息）</p>
+<pre><code>dawang$ ./a.out
+3680479152
+dawang$ ./a.out
+8603971425
+dawang$ ./a.out
+3086419752
+dawang$ ./a.out
+6038714925
+</code></pre><h3 id="u5E38_u7528_u7684_u5E93_u51FD_u6570"><a href="#u5E38_u7528_u7684_u5E93_u51FD_u6570" class="headerlink" title="常用的库函数"></a>常用的库函数</h3><p>函数原型 / 功能</p>
+<pre><code>返回当前可用的处理器个数
+int omp_get_num_procs(void) 
+
+返回当前并行区域中的活动线程个数，如果在并行区域外部调用，返回1
+int omp_get_num_threads(void)
+
+返回当前的线程号（个人感觉这里为omp_get_thread_ID好一些）
+int omp_get_thread_num(void) 
+
+设置进入并行区域时，将要创建的线程个数
+int omp_set_num_threads(void)
+</code></pre><p>下面的这个例子演示了四个库函数</p>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;omp.h&gt;
+using namespace std;
+
+int main(){
+    cout &lt;&lt; &quot;CPU number: &quot; &lt;&lt; omp_get_num_procs() &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;Parallel area 1: &quot; &lt;&lt; endl;
+
+    #pragma omp parallel //下面大括号内部为并行区域
+    {
+        cout &lt;&lt; &quot;Num of threads is: &quot; &lt;&lt; omp_get_num_threads();
+        cout &lt;&lt; &quot;; This thread ID is &quot; &lt;&lt; omp_get_thread_num() &lt;&lt; endl;
+    }
+
+    cout &lt;&lt; &quot;Parallel area 2:&quot; &lt;&lt; endl;
+    omp_set_num_threads(4); // 设置为并行区域创建4个线程
+    #pragma omp parallel //下面大括号内部为并行区域
+    {
+        cout &lt;&lt; &quot;Num of threads is: &quot; &lt;&lt; omp_get_num_threads();
+        cout &lt;&lt; &quot;; This thread ID is &quot; &lt;&lt; omp_get_thread_num() &lt;&lt; endl;
+    }
+
+    return 0;
+}
+</code></pre><p>大家可以自己运行一次看看自己的输出</p>
+<h2 id="u6570_u636E_u76F8_u5173_u6027"><a href="#u6570_u636E_u76F8_u5173_u6027" class="headerlink" title="数据相关性"></a>数据相关性</h2><p>在循环并行化时，由于多个线程同时执行循环，迭代的顺序是不确定的。如果是数据不相关的，则可以采用基本的#pragma omp parallel for预处理器指示符。</p>
+<p>如果语句S2与语句S1相关，那么必然存在以下两种情况之一：</p>
+<ol>
+<li>语句S1在一次迭代中访问存储单元L，而S2在随后的一次迭代中访问统一存储单元，称之为循环迭代相关（Loop-Carried Dependence）；</li>
+<li>S1和S2在同一循环迭代中访问统一存储单元L，但S1的执行在S2之前，称之为非循环迭代相关（Loop-Independent Dependence）。</li>
+</ol>
+<h3 id="for__u5FAA_u73AF_u5E76_u884C_u5316_u7684_u58F0_u660E_u5F62_u5F0F"><a href="#for__u5FAA_u73AF_u5E76_u884C_u5316_u7684_u58F0_u660E_u5F62_u5F0F" class="headerlink" title="for 循环并行化的声明形式"></a>for 循环并行化的声明形式</h3><pre><code>#include &lt;iostream&gt;
+#include &lt;omp.h&gt;
+using namespace std;
+
+int main(){
+    // for 循环并行化声明形式1
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for (int i = 0; i &lt; 10; ++i){
+            cout &lt;&lt; i &lt;&lt; endl;
+        }
+    }
+
+    // for 循环并行化声明形式2
+    #pragma omp parallel for
+    for (int j = 0; j &lt; 10; ++j){
+        cout &lt;&lt; j &lt;&lt; endl;
+    }
+    return 0;
+}
+</code></pre><p>上边代码的两种声明形式是一样的，很显然第二种声明形式更为简洁紧凑。但是第一种声明形式有一个好处，即可以在并行区域内、for循环以外写其他并行代码。</p>
+<h3 id="for__u5FAA_u73AF_u5E76_u884C_u5316_u7684_u7EA6_u675F_u6761_u4EF6"><a href="#for__u5FAA_u73AF_u5E76_u884C_u5316_u7684_u7EA6_u675F_u6761_u4EF6" class="headerlink" title="for 循环并行化的约束条件"></a>for 循环并行化的约束条件</h3><p>尽管OpenMP可以方便地对for循环进行并行化，但并不是所有的for循环都可以进行并行化。以下几种情况不能进行并行化：</p>
+<ol>
+<li>for循环中的循环变量必须是有符号整形。例如，for (unsigned int i = 0; i &lt; 10; ++i){}会编译不通过；</li>
+<li>for循环中比较操作符必须是&lt;, &lt;=, &gt;, &gt;=。例如for (int i = 0; i != 10; ++i){}会编译不通过；</li>
+<li>for循环中的第三个表达式，必须是整数的加减，并且加减的值必须是一个循环不变量。例如for (int i = 0; i != 10; i = i + 1){}会编译不通过；感觉只能++i; i++; –i; 或i–；</li>
+<li>如果for循环中的比较操作为&lt;或&lt;=，那么循环变量只能增加；反之亦然。例如for (int i = 0; i != 10; –i)会编译不通过；</li>
+<li>循环必须是单入口、单出口，也就是说循环内部不允许能够达到循环以外的跳转语句，exit除外。异常的处理也必须在循环体内处理。例如：若循环体内的break或goto会跳转到循环体外，那么会编译不通过。</li>
+</ol>
+<h3 id="u57FA_u672C_for__u5FAA_u73AF_u5E76_u884C_u5316_u4E3E_u4F8B"><a href="#u57FA_u672C_for__u5FAA_u73AF_u5E76_u884C_u5316_u4E3E_u4F8B" class="headerlink" title="基本 for 循环并行化举例"></a>基本 for 循环并行化举例</h3><pre><code>#include &lt;iostream&gt;
+#include &lt;omp.h&gt;
+
+int main(){
+    int a[10] = {1};
+    int b[10] = {2};
+    int c[10] = {0};
+
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for (int i = 0; i &lt; 10; ++i){
+            // c[i] 只跟 a[i] 和 b[i] 有关
+            c[i] = a[i] + b[i];
+        }
+    }
+
+    return 0;
+}
+</code></pre><h3 id="u5D4C_u5957_for__u5FAA_u73AF_u5E76_u884C_u5316_u4E3E_u4F8B"><a href="#u5D4C_u5957_for__u5FAA_u73AF_u5E76_u884C_u5316_u4E3E_u4F8B" class="headerlink" title="嵌套 for 循环并行化举例"></a>嵌套 for 循环并行化举例</h3><pre><code>#include &lt;omp.h&gt;
+
+int main(){
+    int a[10][5] = {1};
+    int b[10][5] = {2};
+    int c[10][5] = {3};
+
+    #pragma omp parallel
+    {
+        #pragma omp for
+        for (int i = 0; i &lt; 10; ++i){
+            for (int j = 0; j &lt; 5; ++j){
+                // c[i][j] 只跟 a[i][j] 和 b[i][j] 有关
+                c[i][j] = a[i][j] + b[i][j];
+            }
+        }
+    }
+
+    return 0;
+}
+</code></pre><p>对于双核 CPU 来说，编译器会让第一个cpu完成：</p>
+<pre><code>for (int i = 0; i &lt; 5; ++i){
+    for (int j = 0; j &lt; 5; ++j){
+        // c[i][j] 只跟 a[i][j] 和 b[i][j] 有关
+        c[i][j] = a[i][j] + b[i][j];
+    }
+}
+</code></pre><p>会让第二个 cpu 完成：</p>
+<pre><code>for (int i = 5; i &lt; 10; ++i){
+    for (int j = 0; j &lt; 5; ++j){
+        // c[i][j] 只跟 a[i][j] 和 b[i][j] 有关
+        c[i][j] = a[i][j] + b[i][j];
+    }
+}
+</code></pre><h2 id="u6570_u636E_u7684_u5171_u4EAB_u4E0E_u79C1_u6709_u5316"><a href="#u6570_u636E_u7684_u5171_u4EAB_u4E0E_u79C1_u6709_u5316" class="headerlink" title="数据的共享与私有化"></a>数据的共享与私有化</h2><p>在并行区域中，若多个线程共同访问同一存储单元，并且至少会有一个线程更新数据单元中的内容时，会发送数据竞争。本节的数据共享与私有化对数据竞争做一个初步的探讨，后续会在同步、互斥相关章节中进行进一步描述。</p>
+<p>除了以下三种情况外，并行区域中的所有变量都是共享的：</p>
+<ol>
+<li>并行区域中定义的变量</li>
+<li>多个线程用来完成循环的循环变量</li>
+<li>private、firstprivate、lastprivate或reduction字句修饰的变量</li>
+</ol>
+<p>例如：</p>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;omp.h&gt;
+using namespace std;
+
+int main(){
+    int share_a = 0; // 共享变量
+    int share_to_private_b = 1; // 通过 private 子句修饰该变量之后在并行区域内变为私有变量
+
+    #pragma omp parallel
+    {
+        int private_c = 2;
+
+        #pragma omp for private(share_to_private_b)
+        for (int i = 0; i &lt; 10; ++i) //该循环变量是私有的，若为两个线程，则一个线程执行0~4，另一个执行5~9
+            cout &lt;&lt; i &lt;&lt; endl;
+
+    }
+
+    return 0;
+}
+</code></pre><p>声明方法 / 功能</p>
+<pre><code>并行区域中变量val是私有的，即每个线程拥有该变量的一个拷贝
+private(val1, val2, ...)
+
+与private不同的是，每个线程在开始的时候都会对该变量进行一次初始化。
+first_private(val1, val2, ...)      
+
+与private不同的是，并发执行的最后一次循环的私有变量将会拷贝到val
+last_private(val1, val2, ...)      
+
+声明val是共享的
+shared(val1, val2, ...)              
+</code></pre><p>如果使用private，无论该变量在并行区域外是否初始化，在进入并行区域后，该变量均不会初始化。</p>
+<h2 id="Reduction__u7684_u7528_u6CD5"><a href="#Reduction__u7684_u7528_u6CD5" class="headerlink" title="Reduction 的用法"></a>Reduction 的用法</h2><p>直接上例子</p>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;stdio.h&gt;
+#include &lt;omp.h&gt;
+using namespace std;
+
+int main(){
+    int sum = 0;
+    cout &lt;&lt; &quot;Before: &quot; &lt;&lt; sum &lt;&lt; endl;
+
+    #pragma omp parallel for reduction(+:sum)
+    for (int i = 0; i &lt; 10; ++i){
+        sum = sum + i;
+        printf(&quot;%d\n&quot;, sum);
+    }
+
+    cout &lt;&lt; &quot;After: &quot; &lt;&lt; sum &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre><p>其中sum是共享的，采用reduction之后，每个线程根据reduction（+: sum）的声明算出自己的sum，然后再将每个线程的sum加起来。</p>
+<p>reduction声明可以看作：</p>
+<ol>
+<li>保证了对sum的原则操作</li>
+<li>多个线程的执行结果通过reduction中声明的操作符进行计算，以加法操作符为例：</li>
+</ol>
+<p>假设sum的初始值为10，reduction（+: sum）声明的并行区域中每个线程的sum初始值为0（规定），并行处理结束之后，会将sum的初始化值10以及每个线程所计算的sum值相加。</p>
+<p>我们在上边已经了解了reduction的声明形式，其具体如下：</p>
+<p>reduction (operator: var1, val2, …)</p>
+<p>其中operator以及约定变量的初始值如下：</p>
+<pre><code>运算符            数据类型            默认初始值
+  +              整数、浮点             0
+  -              整数、浮点             0
+  *              整数、浮点             1
+  &amp;                整数             所有位均为1
+  |                整数                0
+  ^                整数                0
+  &amp;&amp;               整数                1
+  ||               整数                0
+</code></pre><h2 id="u7EBF_u7A0B_u540C_u6B65_u4E4B_atomic"><a href="#u7EBF_u7A0B_u540C_u6B65_u4E4B_atomic" class="headerlink" title="线程同步之 atomic"></a>线程同步之 atomic</h2><p>在OpenMP中，线程同步机制包括互斥锁同步机制和事件同步机制。互斥锁同步的概念类似于Windows中的临界区（CriticalSection）以及Windows和Linux中的Mutex，以及VxWorks中的SemTake何SemGive（初始化时信号量为满），即对某一块代码操作进行保护，以保证同时只能有一个线程执行该段代码。</p>
+<h3 id="atomic_uFF08_u539F_u5B50_uFF09_u64CD_u4F5C_u8BED_u6CD5"><a href="#atomic_uFF08_u539F_u5B50_uFF09_u64CD_u4F5C_u8BED_u6CD5" class="headerlink" title="atomic（原子）操作语法"></a>atomic（原子）操作语法</h3><pre><code>#pragma omp atomic
+x&lt; + or * or - or * or / or &amp; or | or &lt;&lt; or &gt;&gt; &gt;=expr
+(例如x &lt;&lt;= 1; or x *=2;)
+</code></pre><p>或</p>
+<pre><code>#pragma omp atomic
+x++ //or x--, --x, ++x
+</code></pre><p>可以看到atomic的操作仅适用于两种情况：</p>
+<ol>
+<li>自加减操作</li>
+<li>x&lt;上述列出的操作符&gt;=expr</li>
+</ol>
+<p>例如</p>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;omp.h&gt;
+using namespace std;
+
+int main(){
+    int sum = 0;
+    cout &lt;&lt; &quot;Before: &quot; &lt;&lt; sum &lt;&lt; endl;
+
+    #pragma omp parallel for
+    for (int i = 0; i &lt; 20000; ++i){
+        #pragma omp atomic
+        sum++;
+    }
+    cout &lt;&lt; &quot;Atomic-After: &quot; &lt;&lt; sum &lt;&lt; endl;
+
+    sum = 0;
+    #pragma omp parallel for
+    for (int i = 0; i &lt; 20000; ++i){
+        sum++;
+    }
+    cout &lt;&lt; &quot;None-atomic-After: &quot; &lt;&lt; sum &lt;&lt; endl;
+    return 0;
+}
+</code></pre><p>输出20000。如果将#pragma omp atomic声明去掉，则输出值不确定。</p>
+<h2 id="u7EBF_u7A0B_u540C_u6B65_u4E4B_critical"><a href="#u7EBF_u7A0B_u540C_u6B65_u4E4B_critical" class="headerlink" title="线程同步之 critical"></a>线程同步之 critical</h2><p>这里的临界区与Windows下的CriticalSection类似。<br>临界区声明方法</p>
+<pre><code>#pragma omp critical [(name)] //[]表示名字可选
+{
+//并行程序块，同时只能有一个线程能访问该并行程序块
+}
+</code></pre><p>例如</p>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;omp.h&gt;
+using namespace std;
+
+int main(){
+    int sum = 0;
+    cout &lt;&lt; &quot;Before: &quot; &lt;&lt; sum &lt;&lt; endl;
+
+    #pragma omp parallel for
+    for (int i = 0; i &lt; 100; ++i){
+        #pragma omp critical(a)
+        {
+            sum = sum + i;
+            sum = sum + i * 2;
+        }
+    }
+
+    cout &lt;&lt; &quot;After: &quot; &lt;&lt; sum &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre><p>critical 与 atomic 的区别在于，atomic 仅适用于上一节规定的两种类型操作，而且 atomic 所防护的仅为一句代码。critical 可以对某个并行程序块进行防护。</p>
+<p>For a simple increment to a shared variable, atomic and critical are semantically equivalent, but atomic allows the compiler more opportunities for optimisation (using hardware instructions, for example). </p>
+<p>In other cases, there are differences. If incrementing array elements (e.g. a[i]++ ), atomic allows different threads to update different elements of the array concurrently whereas critical does not. If there is a more complicated expression on the RHS (e.g. a+=foo() ) then the evaluation of foo() is protected from concurrent execution with critical but not with atomic. </p>
+<p>Using a critical section is a legitimate way of implementing atomics inside the compiler/runtime, but most current OpenMP compilers do a better job than this. </p>
+<h2 id="u7EBF_u7A0B_u540C_u6B65_u4E4B_u4E8B_u4EF6_u540C_u6B65_u673A_u5236"><a href="#u7EBF_u7A0B_u540C_u6B65_u4E4B_u4E8B_u4EF6_u540C_u6B65_u673A_u5236" class="headerlink" title="线程同步之事件同步机制"></a>线程同步之事件同步机制</h2><p>互斥锁同步包括atomic、critical、mutex函数，其机制与普通多线程同步的机制类似。而事件同步则通过nowait、sections、single、master等预处理器指示符声明来完成。</p>
+<h3 id="u9690_u5F0F_u6805_u969C"><a href="#u9690_u5F0F_u6805_u969C" class="headerlink" title="隐式栅障"></a>隐式栅障</h3><p>barrier为隐式栅障，即并行区域中所有线程执行完毕之后，主线程才继续执行。</p>
+<h3 id="nowait__u7528_u6765_u53D6_u6D88_u6805_u969C"><a href="#nowait__u7528_u6765_u53D6_u6D88_u6805_u969C" class="headerlink" title="nowait 用来取消栅障"></a>nowait 用来取消栅障</h3><p>其用法如下：</p>
+<pre><code>#pragma omp for nowait //不能用#pragma omp parallel for nowait
+或
+#pragma omp single nowait
+</code></pre><p>例如</p>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;omp.h&gt;
+
+int main(){
+    #pragma omp parallel
+    {
+        #pragma omp for nowait
+        for (int i = 0; i &lt; 1000; ++i){
+            printf(&quot;%d+\n&quot;, i);
+        }
+
+        #pragma omp for
+        for (int j = 0; j &lt; 10; ++j){
+            printf(&quot;%d-\n&quot;, j);
+        }
+    }
+    return 0;
+}
+</code></pre><p>第一个 for 循环的两个线程中的一个执行完之后，继续往下执行，因此同时打印出了第一个循环的 + 和第一个循环的 - 。</p>
+<p>可以看到，第二个 for 循环的两个线程都执行完之后，才开始同时执行第三个 for 循环，并没有交叉。也就是说，通过 #pragma omp for 声明的 for 循环结束时有一个默认的栅障。</p>
+<h3 id="u663E_u5F0F_u540C_u6B65_u6805_u969C__23pragma_omp_barrier"><a href="#u663E_u5F0F_u540C_u6B65_u6805_u969C__23pragma_omp_barrier" class="headerlink" title="显式同步栅障 #pragma omp barrier"></a>显式同步栅障 #pragma omp barrier</h3><pre><code>#include &lt;stdio.h&gt;
+#include &lt;omp.h&gt;
+
+int main(){
+    #pragma omp parallel
+    {
+        for (int i = 0; i &lt; 100; ++i){
+        printf(&quot;%d+\n&quot;, i);
+        }
+        #pragma omp barrier
+        for (int j = 0; j &lt; 10; ++j){
+            printf(&quot;%d-\n&quot;, j);
+        }
+    }    
+}
+</code></pre><p>两个线程(具体数目不同 CPU 不同)执行了第一个for循环，当两个线程同时执行完第一个for循环之后，在barrier处进行了同步，然后执行后边的for循环。</p>
+<h3 id="master__u901A_u8FC7_23pragma_omp_mater_u6765_u58F0_u660E_u5BF9_u5E94_u7684_u5E76_u884C_u7A0B_u5E8F_u5757_u53EA_u7531_u4E3B_u7EBF_u7A0B_u5B8C_u6210_u3002"><a href="#master__u901A_u8FC7_23pragma_omp_mater_u6765_u58F0_u660E_u5BF9_u5E94_u7684_u5E76_u884C_u7A0B_u5E8F_u5757_u53EA_u7531_u4E3B_u7EBF_u7A0B_u5B8C_u6210_u3002" class="headerlink" title="master 通过#pragma omp mater来声明对应的并行程序块只由主线程完成。"></a>master 通过#pragma omp mater来声明对应的并行程序块只由主线程完成。</h3><pre><code>#include &lt;stdio.h&gt;
+#include &lt;omp.h&gt;
+
+int main(){
+    #pragma omp parallel
+    {
+        #pragma omp master
+        {
+            for (int j = 0; j &lt; 10; ++j){
+                printf(&quot;%d-\n&quot;, j);
+            }
+        }
+
+        printf(&quot;This will be shown two or more times\n&quot;);
+    }
+    return 0;
+}
+</code></pre><p>进入 parallel 声明的并行区域之后，创建了两个(或更多)线程，主线程执行了 for 循环，而另一个线程没有执行 for 循环，而直接进入了 for 循环之后的打印语句，然后执行 for 循环的线程随后还会再执行一次后边的打印语句。</p>
+<h3 id="section__u7528_u6765_u6307_u5B9A_u4E0D_u540C_u7684_u7EBF_u7A0B_u6267_u884C_u4E0D_u540C_u7684_u90E8_u5206"><a href="#section__u7528_u6765_u6307_u5B9A_u4E0D_u540C_u7684_u7EBF_u7A0B_u6267_u884C_u4E0D_u540C_u7684_u90E8_u5206" class="headerlink" title="section 用来指定不同的线程执行不同的部分"></a>section 用来指定不同的线程执行不同的部分</h3><p>通过一个示例说明其使用方法：</p>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;omp.h&gt;
+
+int main(){
+    #pragma omp parallel sections // 声明该区域分为若干个 section, section 之间的运行顺序为并行的关系
+    {
+        #pragma omp section // 第一个 section, 由某个线程单独完成
+        for (int i = 0; i &lt; 5; ++i){
+            printf(&quot;%d+\n&quot;, i);
+        }
+
+        #pragma omp section // 另一个 section, 由某个线程单独完成
+        for (int j = 0; j &lt; 5; ++j){
+            printf(&quot;%d-\n&quot;, j);
+        }
+    }
+    return 0;
+}
+</code></pre><p>因为并行区域中有两个线程，所以两个section同时执行。</p>
+<h2 id="u7EBF_u7A0B_u7684_u8C03_u5EA6_u4F18_u5316"><a href="#u7EBF_u7A0B_u7684_u8C03_u5EA6_u4F18_u5316" class="headerlink" title="线程的调度优化"></a>线程的调度优化</h2><p>通过前边的介绍，知道了并行区域，默认情况下会自动生成与CPU个数相等的线程，然后并行执行并行区域中的代码，对于并行区域中的for循环，有特殊的声明方式，这样不同的线程可以分别运行for循环变量的不同部分。通过锁同步（atomic、critical、mutex函数）或事件同步（nowait、signal、section、master）来实现并行区域的同步控制。</p>
+<p>具体的调度策略均由底层完成，本节介绍几种可以在上层对for循环进行控制的调度策略。</p>
+<p>determines which iterations are executed by each thread</p>
+<ul>
+<li>STATIC<ul>
+<li>The iteration space is broken in chunks of approximately size N/(num of threads). Then these chunks are assigned to the threads in a Round-Robin fashion.    </li>
+</ul>
+</li>
+<li>STATIC, CHUNK<ul>
+<li>The iteration space is broken in chunks of size N. Then these chunks are assigned to the threads in a Round-Robin fashion.</li>
+</ul>
+</li>
+<li>Characteristics of static schedules<ul>
+<li>Low overhead</li>
+<li>Good locality (usually)</li>
+<li>Can have load imbalance problems</li>
+</ul>
+</li>
+<li>DYNAMIC[,chunk]<ul>
+<li>Threads dynamically grab chunks of N iterations until all iterations have been executed. If no chunk is specified, N = 1</li>
+</ul>
+</li>
+<li>GUIDED[,chunk]<ul>
+<li>Variant of dynamic. The size of the chunks deceases as the threads grab iterations, but it is at least of size N. If no chunk is specified, N = 1.</li>
+</ul>
+</li>
+<li>Characteristics of static schedules<ul>
+<li>Higher overhead</li>
+<li>Not very good locality (usually)</li>
+<li>Can solve imbalance problems</li>
+</ul>
+</li>
+<li>AUTO<ul>
+<li>The implementation is allowed to do whatever it wishes. (Do not expect much of it as of now)</li>
+</ul>
+</li>
+<li>RUNTIME<ul>
+<li>The decision is delayed until the program is run through the sched-nvar ICV. It can be set with:</li>
+<li>The <code>OMP_SCHEDULE</code> environment variable</li>
+<li>The <code>omp_set_schedule()</code> API call</li>
+</ul>
+</li>
+</ul>
+<p>能看到这里，如果都跑过一遍的话，应该也就差不多了。上课过程中有啥想法再追加吧。我要去改代码了再见。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CMU/" rel="tag">#CMU</a>
+          
+            <a href="/tags/OpenMP/" rel="tag">#OpenMP</a>
+          
+            <a href="/tags/整理/" rel="tag">#整理</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/18/deacon-blue/" rel="next" title="第十周 - Deacon Blue">
+                <i class="fa fa-chevron-left"></i> 第十周 - Deacon Blue
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/20/cpp-note/" rel="prev" title="Cpp 学习笔记">
+                Cpp 学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/20/openmp-guide/"
+           data-title="OpenMP 入门指南" data-url="http://wdxtub.com/2016/03/20/openmp-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u4ECB"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello_OpenMP"><span class="nav-number">2.</span> <span class="nav-text">Hello OpenMP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5E38_u7528_u7684_u5E93_u51FD_u6570"><span class="nav-number">2.1.</span> <span class="nav-text">常用的库函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6570_u636E_u76F8_u5173_u6027"><span class="nav-number">3.</span> <span class="nav-text">数据相关性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#for__u5FAA_u73AF_u5E76_u884C_u5316_u7684_u58F0_u660E_u5F62_u5F0F"><span class="nav-number">3.1.</span> <span class="nav-text">for 循环并行化的声明形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for__u5FAA_u73AF_u5E76_u884C_u5316_u7684_u7EA6_u675F_u6761_u4EF6"><span class="nav-number">3.2.</span> <span class="nav-text">for 循环并行化的约束条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u57FA_u672C_for__u5FAA_u73AF_u5E76_u884C_u5316_u4E3E_u4F8B"><span class="nav-number">3.3.</span> <span class="nav-text">基本 for 循环并行化举例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5D4C_u5957_for__u5FAA_u73AF_u5E76_u884C_u5316_u4E3E_u4F8B"><span class="nav-number">3.4.</span> <span class="nav-text">嵌套 for 循环并行化举例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6570_u636E_u7684_u5171_u4EAB_u4E0E_u79C1_u6709_u5316"><span class="nav-number">4.</span> <span class="nav-text">数据的共享与私有化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reduction__u7684_u7528_u6CD5"><span class="nav-number">5.</span> <span class="nav-text">Reduction 的用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7EBF_u7A0B_u540C_u6B65_u4E4B_atomic"><span class="nav-number">6.</span> <span class="nav-text">线程同步之 atomic</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#atomic_uFF08_u539F_u5B50_uFF09_u64CD_u4F5C_u8BED_u6CD5"><span class="nav-number">6.1.</span> <span class="nav-text">atomic（原子）操作语法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7EBF_u7A0B_u540C_u6B65_u4E4B_critical"><span class="nav-number">7.</span> <span class="nav-text">线程同步之 critical</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7EBF_u7A0B_u540C_u6B65_u4E4B_u4E8B_u4EF6_u540C_u6B65_u673A_u5236"><span class="nav-number">8.</span> <span class="nav-text">线程同步之事件同步机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u9690_u5F0F_u6805_u969C"><span class="nav-number">8.1.</span> <span class="nav-text">隐式栅障</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nowait__u7528_u6765_u53D6_u6D88_u6805_u969C"><span class="nav-number">8.2.</span> <span class="nav-text">nowait 用来取消栅障</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u663E_u5F0F_u540C_u6B65_u6805_u969C__23pragma_omp_barrier"><span class="nav-number">8.3.</span> <span class="nav-text">显式同步栅障 #pragma omp barrier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#master__u901A_u8FC7_23pragma_omp_mater_u6765_u58F0_u660E_u5BF9_u5E94_u7684_u5E76_u884C_u7A0B_u5E8F_u5757_u53EA_u7531_u4E3B_u7EBF_u7A0B_u5B8C_u6210_u3002"><span class="nav-number">8.4.</span> <span class="nav-text">master 通过#pragma omp mater来声明对应的并行程序块只由主线程完成。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#section__u7528_u6765_u6307_u5B9A_u4E0D_u540C_u7684_u7EBF_u7A0B_u6267_u884C_u4E0D_u540C_u7684_u90E8_u5206"><span class="nav-number">8.5.</span> <span class="nav-text">section 用来指定不同的线程执行不同的部分</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7EBF_u7A0B_u7684_u8C03_u5EA6_u4F18_u5316"><span class="nav-number">9.</span> <span class="nav-text">线程的调度优化</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

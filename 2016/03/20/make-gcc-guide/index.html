@@ -1,0 +1,915 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Gcc,Make," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Make 可以简化编译过程，如果有一个近百个源文件的项目，如果有个文件更改后工程需要重新编译，那么一直用gcc -c a.c这些个命令敲来敲去会屎人的。运行make时候，他会寻找指定目录下（默认是 .）的 Makefile 文件并且分析依赖关系进行必要的编译。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Make 与 GCC 指南">
+<meta property="og:url" content="http://wdxtub.com/2016/03/20/make-gcc-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="Make 可以简化编译过程，如果有一个近百个源文件的项目，如果有个文件更改后工程需要重新编译，那么一直用gcc -c a.c这些个命令敲来敲去会屎人的。运行make时候，他会寻找指定目录下（默认是 .）的 Makefile 文件并且分析依赖关系进行必要的编译。">
+<meta property="og:updated_time" content="2016-03-20T13:35:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Make 与 GCC 指南">
+<meta name="twitter:description" content="Make 可以简化编译过程，如果有一个近百个源文件的项目，如果有个文件更改后工程需要重新编译，那么一直用gcc -c a.c这些个命令敲来敲去会屎人的。运行make时候，他会寻找指定目录下（默认是 .）的 Makefile 文件并且分析依赖关系进行必要的编译。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Make 与 GCC 指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Make 与 GCC 指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-20T09:33:49+08:00" content="2016-03-20">
+              2016-03-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/20/make-gcc-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/20/make-gcc-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Make 可以简化编译过程，如果有一个近百个源文件的项目，如果有个文件更改后工程需要重新编译，那么一直用gcc -c a.c这些个命令敲来敲去会屎人的。运行make时候，他会寻找指定目录下（默认是 .）的 Makefile 文件并且分析依赖关系进行必要的编译。</p>
+<a id="more"></a>
+<hr>
+<p>Makefile文件的基本格式很简单：</p>
+<pre><code>目标文件： 依赖文件1 依赖文件2 依赖文件3 。。。。
+[tab]编译命令
+</code></pre><p>他的意思是目标文件是依赖于冒号后面几个文件的，如果这些依赖文件有更新的，那么其目标文件也需要更新。</p>
+<p>Makefile 中可能有很多以上条目，他们共同组成了一个有向无回路图（DAG图），这样可以传递依赖。make 命令会把 Makefile 文件的第一个目标文件作为默认目标，当执行 make 命令时，make 会考察这个目标文件的依赖关系，进行编译。也可以指定，比如这个 Makefile：</p>
+<pre><code>main: a.o b.o
+[tab]gcc -o main a.o b.o
+a.o : a.c c.h
+[tab]gcc -c a.c -o a.o
+b.o: b.c c.h
+[tab]gcc -c b.c -o b.o
+
+// [tab]的意思是这里用tab字符代替，不能有其他的什么字符
+</code></pre><p>在命令行里执行make，分析关系并生成main，如果是make a.o那么他只会编译到 a.o 。</p>
+<p>当然我们还可以设定伪目标，比如：</p>
+<pre><code>clean：
+[tab]rm a.o b.o
+</code></pre><p>这样执行make clean的时候就把.o文件清除了,这里不会生成什么文件,只进行一些操作,更清楚的做法是在前面加上以下语句:</p>
+<pre><code>.PHONY : clean install dest [其他伪目标]
+</code></pre><p>下面来说下变量，Makefile 里的变量按惯例是大写，包括数字字母下划线。当我们需要一个变量的值的时候，通常用 ${NAME} 或者 $(NAME)。他有好几种变量定义的方法。</p>
+<p>首先是常规法，就是A=content，等号两边可以有空格，和shell不一样。</p>
+<p>其次是递归法，比如A=$(B)，B=$(C)，C=haha，那么当寻找A的定义的时候就会去找B，然后再找C，变量展开的时候就是当他被引用的时候，这种方法效率比较低，因为如果他引用了函数，那么每次展开都要调用函数，而且可能会出现无限递归（A=$(B),B=$(A)）。</p>
+<p>然后是直接展开法。这个很容易理解，就像是c语言是按照顺序执行的，当变量定义的时候这个变量就已经展开了（如果他引用了变量A，引用的是他定义时候A的值），当被引用的时候就直接用他代表的字符串替代。但是他用的不是等号 是 := ,比如 A:=hello，A:=$(B)。</p>
+<p>还有嵌套定义： A=B,B=haha,V=$($(A))类似于这种的V的值是haha</p>
+<p>最后是替换引用定义，他会替换后缀，有个例子很好 foo := a.o b.o c.o ,bar := $(foo:.o=.c),我们可以知道bar的值就是 a.c b.c c.c。</p>
+<p>变量还有分类：</p>
+<p>1.预定义变量，当使用隐式规则的时候他会派上用场，常用的有以下几个：</p>
+<pre><code>CC   c编译器的名称（默认gcc？）
+CPP    c预编译器名称（默认$(CC) -E）
+CXX c++编译器的名称(默认g++)
+CFLAGS c编译器选项,无默认值
+CXXFLAGS c++编译器选项,无默认值
+</code></pre><p>2.自动变量,常用有以下:</p>
+<pre><code>$@:表示当前规则中的完整目标文件名
+$*:不包含扩展名的目标文件名
+$&lt;:当前规则中第一个依赖文件名
+$^:当前规则所有文件列表
+$%:当目标为库文件时,表示库文件名
+</code></pre><p>3.环境变量,Makefile对环境变量是可见的,可以引用.</p>
+<p>Makefile还有个常用的东东就是隐式规则,make会自己推导.比如说</p>
+<pre><code>c：a.o b.o
+[tab]gcc -o c a.o b.o
+</code></pre><p>这时我们可以省略下面的命令，直接用第一行就行。make自动分析生成a，此时预定义变量就有用了，CC，CFLAGS等也派上了用场。</p>
+<p>由于把握不了隐式规则的底线和能力，我还是觉得隐式规则应用的不要太多太复杂影响阅读为好。。</p>
+<p>make的工作过程大概是一下几步</p>
+<ol>
+<li>读取Makefile，根据make的选项查找Makefile</li>
+<li>初始化Makefile，将Makefile中的变量进行替换，如果Makefile中包含其他文件，则加载他</li>
+<li>解释规则，对其中的执行规则进行解析，推导隐藏规则，为目标建立关系链</li>
+<li>分析变更，根据依赖关系和时间戳，判断有木有变化。</li>
+<li>执行。</li>
+</ol>
+<h2 id="u7F16_u8BD1_u7684_u57FA_u672C_u6D41_u7A0B"><a href="#u7F16_u8BD1_u7684_u57FA_u672C_u6D41_u7A0B" class="headerlink" title="编译的基本流程"></a>编译的基本流程</h2><p>基本过程是以下四步：</p>
+<p>1.<code>c(.c)</code>和<code>c++(.cc, .cpp, .cxx)</code>的源文件</p>
+<pre><code>gcc -E a.c -o a.i
+// 如果不加-o参数，gcc会把处理过的源文件放到标准输出中
+</code></pre><p>2.预处理后的源文件。c源文件预处理后后缀为<code>.i</code>, c++为<code>.ii</code> 。</p>
+<pre><code>gcc -S a.i
+//会在当前文件夹下生成a.s
+</code></pre><p>3.编译后生成的汇编源代码。后缀为<code>.s</code>,<code>.S</code>。</p>
+<pre><code>gcc -c a.s
+//只进行汇编生成目标文件,.o结尾的目标文件可以用
+//(ar crv libabc.a a.o b.o c.o )打包成形如lib×××.a的静态库
+</code></pre><p>4.目标文件与库文件进行链接，生成可执行文件。</p>
+<pre><code>gcc a.o //在当前文件夹下生成a.out
+</code></pre><p>其中任何一种状态，用 gcc 如果不加 <code>-c</code>，<code>-E</code>，<code>-S</code> 选项都会直接生成可执行文件，如果加上了选项，可以由之前任一状态生成所需要的文件（如<code>gcc -S a.c</code>可以直接生成<code>a.s，gcc -c a.i</code>可以直接生成<code>a.o</code> ）。如果是c++直接换用g++命令就行。</p>
+<p>另外<code>gcc -v</code>可以输出编译过程的配置和版本信息。</p>
+<h2 id="gcc__u8B66_u544A_u63D0_u793A"><a href="#gcc__u8B66_u544A_u63D0_u793A" class="headerlink" title="gcc 警告提示"></a>gcc 警告提示</h2><pre><code>-fsyntax-only   检查程序中的语法错误，不产生输出信息
+-w 禁止所有警告信息
+-Wunused 声明了木有用
+-Wmain main函数定义不常规
+-Wall 提供所有警告
+-pedantic-errors 允许ansi c标准列出的全部信息
+</code></pre><p>实际用的话，所有错误用一个“墙”就可以了</p>
+<h2 id="u5176_u4ED6_u5E38_u7528_u9009_u9879"><a href="#u5176_u4ED6_u5E38_u7528_u9009_u9879" class="headerlink" title="其他常用选项"></a>其他常用选项</h2><ul>
+<li>-g 加入调试信息，gdb调试的时候要用。</li>
+<li>-On 优化选项。这里的n可以用0-3来替代。数字越大优化效果越好，-O0表示不进行优化。优化可能针对硬件进行优化，也可能针对代码优化（删除公共表达式，循环优化，删除无用信息）。优化可能大大增加编译时间和内存，他通常会将循环或函数展开，使他们以内联的方式进行，不是通过函数调用，这样可以显著提高性能，不过调试最好不要用优化选项。</li>
+<li>-l 指定要用到的库，注意这里之后要加的是库的名字，如果是多线程，可能要用到pthread库，那么此时就要加上 -lpthread ，这样gcc就会到库目录中找名为libpthread.so（lib×××.so）的文件，如果是静态库的话是libpthread.a( lib×××.a)（貌似gcc先找动态库，再找静态库？）。</li>
+<li>-L 指定所需要的库所在的文件夹。系统先寻找标准位置，再寻找指定位置（标准库一般在/lib或/usr/lib）。</li>
+<li>-I 指定头文件的寻找路径。先找标准的，后找指定的（标准的一般在/usr/include）。</li>
+<li>-static 只用静态库,再拿上面那个例子，如果加上-static，系统就会只寻找libpthread.a文件。</li>
+<li>-shared 生成动态库（共享库）文件，形如 libxxx.so （gcc -shared dang.o -o libdang.so）</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Gcc/" rel="tag">#Gcc</a>
+          
+            <a href="/tags/Make/" rel="tag">#Make</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/20/ubuntu-work-env/" rel="next" title="Ubuntu 工作环境搭建">
+                <i class="fa fa-chevron-left"></i> Ubuntu 工作环境搭建
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/20/iterm2-guide/" rel="prev" title="iTerm2 指南">
+                iTerm2 指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/20/make-gcc-guide/"
+           data-title="Make 与 GCC 指南" data-url="http://wdxtub.com/2016/03/20/make-gcc-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7F16_u8BD1_u7684_u57FA_u672C_u6D41_u7A0B"><span class="nav-number">1.</span> <span class="nav-text">编译的基本流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gcc__u8B66_u544A_u63D0_u793A"><span class="nav-number">2.</span> <span class="nav-text">gcc 警告提示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5176_u4ED6_u5E38_u7528_u9009_u9879"><span class="nav-number">3.</span> <span class="nav-text">其他常用选项</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

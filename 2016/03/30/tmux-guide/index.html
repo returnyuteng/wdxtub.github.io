@@ -1,0 +1,947 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="命令行,效率,窗口," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="今天试用了一下 tmux，发现简直是神器！以前还傻傻不停开窗口，现在一个窗口就可以都搞定啦！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tmux 指南">
+<meta property="og:url" content="http://wdxtub.com/2016/03/30/tmux-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="今天试用了一下 tmux，发现简直是神器！以前还傻傻不停开窗口，现在一个窗口就可以都搞定啦！">
+<meta property="og:image" content="http://wdxtub.com/images/14593788571503.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14593965566247.jpg">
+<meta property="og:updated_time" content="2016-04-19T19:56:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tmux 指南">
+<meta name="twitter:description" content="今天试用了一下 tmux，发现简直是神器！以前还傻傻不停开窗口，现在一个窗口就可以都搞定啦！">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> tmux 指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                tmux 指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-30T18:55:27+08:00" content="2016-03-30">
+              2016-03-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/30/tmux-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/30/tmux-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天试用了一下 tmux，发现简直是神器！以前还傻傻不停开窗口，现在一个窗口就可以都搞定啦！</p>
+<a id="more"></a>
+<hr>
+<p>Tmux 简单来说就是终端里的『窗口管理器』，如果我使用终端登录到远程主机并运行前台程序，那么这个窗口等于就被占用了，想要看一下 CPU 的使用率，就得再连接一次。但是如果在远程主机上运行 tmux，那么就可以开启多个控制台（类似于窗口），相当高效，比方说可以像下面这样：</p>
+<p><img src="/images/14593788571503.jpg" alt="一个面板监视服务器，一个面板查看硬件状况"></p>
+<p>需要注意的是，这里是在我本地使用 tmux，最好在远程主机也安装 tmux，这样就只需要连接一次。</p>
+<h2 id="Hello_World"><a href="#Hello_World" class="headerlink" title="Hello World"></a>Hello World</h2><p>前面提到的窗口管理只是 tmux 功能的一小部分，另一个很有用的功能就是，连接到远程主机之后，一旦断开，那么当前账户登录的任务就被取消了，但是使用 tmux 可以在断开之后继续工作，下次登录可以查看。其他的功能还有：</p>
+<ol>
+<li>窗口切换，每个窗口里还可以分割面板</li>
+<li>配置方便，可以使用脚本</li>
+<li>类似 vim 的双层操作逻辑</li>
+<li>复制粘贴缓冲区</li>
+</ol>
+<p>安装的话也很简单，在 mac 下直接 <code>brew install tmux</code>（前提需要安装 homebrew），ubuntu 下则直接 <code>sudo apt-get install tmux</code></p>
+<p>在终端中输入 <code>tmux</code> 就可以打开一个新的 tmux session，tmux 的所有操作必须先使用一个前缀键（默认是 <code>ctrl + b</code>）进入命令模式，或者说进入控制台，就像 vim 中的 esc。</p>
+<h2 id="u57FA_u672C_u64CD_u4F5C"><a href="#u57FA_u672C_u64CD_u4F5C" class="headerlink" title="基本操作"></a>基本操作</h2><blockquote>
+<p>信息查询</p>
+</blockquote>
+<ul>
+<li><code>tmux list-keys</code> 列出所有可以的快捷键和其运行的 tmux 命令</li>
+<li><code>tmux list-commands</code> 列出所有的 tmux 命令及其参数</li>
+<li><code>tmux info</code> 流出所有的 session, window, pane, 运行的进程号，等。</li>
+</ul>
+<blockquote>
+<p>窗口控制</p>
+</blockquote>
+<p>先来看看在 tmux 之外如何进行控制</p>
+<ul>
+<li>session 会话：session是一个特定的终端组合。输入tmux就可以打开一个新的session<ul>
+<li><code>tmux new -s session_name</code> 创建一个叫做 <code>session_name</code> 的 tmux session</li>
+<li><code>tmux attach -t session_name</code> 重新开启叫做 <code>session_name</code> 的 tmux session</li>
+<li><code>tmux switch -t session_name</code> 转换到叫做 <code>session_name</code> 的 tmux session</li>
+<li><code>tmux list-sessions</code> / <code>tmux ls</code> 列出现有的所有 session</li>
+<li><code>tmux detach</code> 离开当前开启的 session</li>
+<li><code>tmux kill-server</code> 关闭所有 session</li>
+</ul>
+</li>
+<li>window 窗口：session 中可以有不同的 window（但是同时只能看到一个 window）<ul>
+<li><code>tmux new-window</code> 创建一个新的 window</li>
+<li><code>tmux list-windows</code> </li>
+<li><code>tmux select-window -t :0-9</code> 根据索引转到该 window</li>
+<li><code>tmux rename-window</code> 重命名当前 window</li>
+</ul>
+</li>
+<li>pane 面板：window 中可以有不同的 pane（可以把 window 分成不同的部分）<ul>
+<li><code>tmux split-window</code> 将 window 垂直划分为两个 pane</li>
+<li><code>tmux split-window -h</code> 将 window 水平划分为两个 pane</li>
+<li><code>tmux swap-pane -[UDLR]</code> 在指定的方向交换 pane</li>
+<li><code>tmux select-pane -[UDLR]</code> 在指定的方向选择下一个 pane</li>
+</ul>
+</li>
+</ul>
+<p>更常用的是在 tmux 中直接通过默认前缀 <code>ctrl + b</code> 之后输入对应命令来操作，具体如下（这里只列出输入默认前缀之后需要输入的操作）：</p>
+<blockquote>
+<p>基本操作</p>
+</blockquote>
+<ul>
+<li><code>?</code> 列出所有快捷键；按q返回</li>
+<li><code>d</code> 脱离当前会话,可暂时返回Shell界面</li>
+<li><code>s</code> 选择并切换会话；在同时开启了多个会话时使用</li>
+<li><code>D</code> 选择要脱离的会话；在同时开启了多个会话时使用</li>
+<li><code>:</code> 进入命令行模式；此时可输入支持的命令，例如 <code>kill-server</code> 关闭所有tmux会话</li>
+<li><code>[</code> 复制模式，光标移动到复制内容位置，空格键开始，方向键选择复制，回车确认，q/Esc退出</li>
+<li><code>]</code> 进入粘贴模式，粘贴之前复制的内容，按q/Esc退出</li>
+<li><code>~</code> 列出提示信息缓存；其中包含了之前tmux返回的各种提示信息</li>
+<li><code>t</code> 显示当前的时间</li>
+<li><code>ctrl + z</code> 挂起当前会话</li>
+</ul>
+<blockquote>
+<p>窗口操作</p>
+</blockquote>
+<ul>
+<li><code>c</code> 创建新窗口</li>
+<li><code>&amp;</code> 关闭当前窗口</li>
+<li><code>[0-9]</code> 数字键切换到指定窗口</li>
+<li><code>p</code> 切换至上一窗口</li>
+<li><code>n</code> 切换至下一窗口</li>
+<li><code>l</code> 前后窗口间互相切换</li>
+<li><code>w</code> 通过窗口列表切换窗口</li>
+<li><code>,</code> 重命名当前窗口，便于识别</li>
+<li><code>.</code> 修改当前窗口编号，相当于重新排序</li>
+<li><code>f</code> 在所有窗口中查找关键词，便于窗口多了切换</li>
+</ul>
+<blockquote>
+<p>面板操作</p>
+</blockquote>
+<ul>
+<li><code>&quot;</code> 将当前面板上下分屏（我自己改成了 <code>|</code>）</li>
+<li><code>%</code> 将当前面板左右分屏（我自己改成了 <code>-</code>）</li>
+<li><code>x</code> 关闭当前分屏</li>
+<li><code>!</code> 将当前面板置于新窗口,即新建一个窗口,其中仅包含当前面板</li>
+<li><code>ctrl+方向键</code> 以1个单元格为单位移动边缘以调整当前面板大小</li>
+<li><code>alt+方向键</code> 以5个单元格为单位移动边缘以调整当前面板大小</li>
+<li><code>q</code> 显示面板编号</li>
+<li><code>o</code> 选择当前窗口中下一个面板</li>
+<li><code>方向键</code> 移动光标选择对应面板</li>
+<li><code>{</code> 向前置换当前面板</li>
+<li><code>}</code> 向后置换当前面板</li>
+<li><code>alt+o</code> 逆时针旋转当前窗口的面板</li>
+<li><code>ctrl+o</code> 顺时针旋转当前窗口的面板</li>
+<li><code>z</code> 最大化当前所在面板</li>
+<li><code>page up</code> 向上滚动屏幕，q 退出</li>
+<li><code>page down</code> 向下滚动屏幕，q 退出</li>
+</ul>
+<p>因为 iTerm2 的支持，很多切换的操作可以直接用鼠标进行，非常方便。具体大家可以自己尝试一下。</p>
+<h2 id="u914D_u7F6E"><a href="#u914D_u7F6E" class="headerlink" title="配置"></a>配置</h2><p>我们可以先进行一些简单的配置，修改 <code>~/.tmux.conf</code> 即可，让整个使用更方便。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">#<span class="comment">-- base --#</span></span><br><span class="line"></span><br><span class="line"><span class="operator"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">default</span>-terminal <span class="string">"screen-256color"</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> display-<span class="keyword">time</span> <span class="number">3000</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> history-<span class="keyword">limit</span> <span class="number">10000</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> base-<span class="keyword">index</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> pane-base-<span class="keyword">index</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">set</span> -s escape-<span class="keyword">time</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> mouse <span class="keyword">on</span></span><br><span class="line"></span><br><span class="line">#<span class="comment">-- bindkeys --#</span></span><br><span class="line"></span><br><span class="line"># <span class="keyword">split</span> windows <span class="keyword">like</span> vim.  - Note: vim<span class="string">'s definition of a horizontal/vertical split is reversed from tmux'</span>s</span><br><span class="line"></span><br><span class="line">unbind s</span><br><span class="line">bind s <span class="keyword">split</span>-window -v</span><br><span class="line">bind S <span class="keyword">split</span>-window -v -<span class="keyword">l</span> <span class="number">40</span></span><br><span class="line">bind v <span class="keyword">split</span>-window -h</span><br><span class="line">bind V <span class="keyword">split</span>-window -h -<span class="keyword">l</span> <span class="number">120</span></span><br><span class="line"></span><br><span class="line"># navigate panes <span class="keyword">with</span> hjkl</span><br><span class="line">bind h <span class="keyword">select</span>-pane -<span class="keyword">L</span></span><br><span class="line">bind j <span class="keyword">select</span>-pane -<span class="keyword">D</span></span><br><span class="line">bind <span class="keyword">k</span> <span class="keyword">select</span>-pane -U</span><br><span class="line">bind <span class="keyword">l</span> <span class="keyword">select</span>-pane -R</span><br><span class="line"></span><br><span class="line"># <span class="keyword">key</span> bindings <span class="keyword">for</span> horizontal <span class="keyword">and</span> vertical panes</span><br><span class="line">unbind %</span><br><span class="line">bind | <span class="keyword">split</span>-window -h      # 使用|竖屏，方便分屏</span><br><span class="line">unbind <span class="string">'"'</span></span><br><span class="line">bind - <span class="keyword">split</span>-window -v      # 使用-横屏，方便分屏</span><br><span class="line"></span><br><span class="line"># swap panes</span><br><span class="line">bind ^u swapp -U</span><br><span class="line">bind ^<span class="keyword">d</span> swapp -<span class="keyword">D</span></span><br><span class="line"></span><br><span class="line">bind q killp</span><br><span class="line">bind ^<span class="keyword">e</span> <span class="keyword">last</span></span><br><span class="line"></span><br><span class="line">unbind r</span><br><span class="line">bind r <span class="keyword">source</span>-<span class="keyword">file</span> ~/.tmux.conf \;</span> display "Configuration Reloaded!"</span><br><span class="line"></span><br><span class="line">#<span class="comment">-- statusbar --#</span></span><br><span class="line"></span><br><span class="line"><span class="operator"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-justify centre</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">left</span> <span class="string">"#[fg=red]s#S:w#I.p#P#[default]"</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">right</span> <span class="string">'[#(whoami)#(date +" %m-%d %H:%M ")]'</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">left</span>-<span class="keyword">attr</span> bright</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">left</span>-<span class="keyword">length</span> <span class="number">120</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">right</span>-<span class="keyword">length</span> <span class="number">120</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-utf8 <span class="keyword">on</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="built_in">interval</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> visual-activity <span class="keyword">on</span></span><br><span class="line">setw -<span class="keyword">g</span> monitor-activity <span class="keyword">on</span></span><br><span class="line">setw -<span class="keyword">g</span> <span class="keyword">automatic</span>-<span class="keyword">rename</span> <span class="keyword">off</span></span><br><span class="line"></span><br><span class="line"># <span class="keyword">default</span> statusbar colors</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-bg colour235 #base02</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-fg colour136 #yellow</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">attr</span> <span class="keyword">default</span></span><br><span class="line"></span><br><span class="line"># <span class="keyword">default</span> window title colors</span><br><span class="line">setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-fg colour244</span><br><span class="line">setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-bg <span class="keyword">default</span></span><br><span class="line">#setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">attr</span> dim</span><br><span class="line"></span><br><span class="line"># active window title colors</span><br><span class="line">setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">current</span>-fg colour166 #orange</span><br><span class="line">setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">current</span>-bg <span class="keyword">default</span></span><br><span class="line">#setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">current</span>-<span class="keyword">attr</span> bright</span><br><span class="line"></span><br><span class="line"># window title <span class="keyword">string</span> (uses statusbar <span class="keyword">variables</span>)</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">set</span>-titles-<span class="keyword">string</span> <span class="string">'#T'</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-justify <span class="string">"centre"</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">format</span> <span class="string">'#I #W'</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">current</span>-<span class="keyword">format</span> <span class="string">' #I #W '</span></span><br><span class="line"></span><br><span class="line"># pane border</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> pane-active-border-fg <span class="string">'#55ff55'</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> pane-border-fg <span class="string">'#555555'</span></span><br><span class="line"></span><br><span class="line"># message <span class="built_in">text</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> message-bg colour235 #base02</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> message-fg colour166 #orange</span><br><span class="line"></span><br><span class="line"># pane <span class="built_in">number</span> display</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> display-panes-active-colour colour33 #blue</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> display-panes-colour colour166 #orange</span><br><span class="line"></span><br><span class="line"># clock</span><br><span class="line">setw -<span class="keyword">g</span> clock-<span class="keyword">mode</span>-colour colour64 #green</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 修改进入命令模式按键</span><br><span class="line"># remap prefix <span class="keyword">to</span> Control + a</span><br><span class="line"># <span class="keyword">set</span> -<span class="keyword">g</span> prefix <span class="keyword">C</span>-a</span><br><span class="line"># unbind <span class="keyword">C</span>-b</span><br><span class="line"># bind <span class="keyword">C</span>-a send-prefix</span></span><br></pre></td></tr></table></figure>
+<p>最终的效果是</p>
+<p><img src="/images/14593965566247.jpg" alt=""></p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://foocoder.com/blog/zhong-duan-huan-jing-zhi-tmux.html/" target="_blank" rel="external">终端环境之tmux</a></li>
+<li><a href="http://blog.jeswang.org/blog/2013/06/24/tmux-kuai-su-jiao-cheng/" target="_blank" rel="external">Tmux 快速教程</a></li>
+<li><a href="http://kumu-linux.github.io/blog/2013/08/06/tmux/" target="_blank" rel="external">Linux下终端利器tmux</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/命令行/" rel="tag">#命令行</a>
+          
+            <a href="/tags/效率/" rel="tag">#效率</a>
+          
+            <a href="/tags/窗口/" rel="tag">#窗口</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/30/ruby-first-step/" rel="next" title="【Ruby 之旅】I Ruby 快速入门">
+                <i class="fa fa-chevron-left"></i> 【Ruby 之旅】I Ruby 快速入门
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/31/cc-rethink-5/" rel="prev" title="云计算 反思课 5 实时服务测试的策略与思考">
+                云计算 反思课 5 实时服务测试的策略与思考 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/30/tmux-guide/"
+           data-title="tmux 指南" data-url="http://wdxtub.com/2016/03/30/tmux-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello_World"><span class="nav-number">1.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u672C_u64CD_u4F5C"><span class="nav-number">2.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u914D_u7F6E"><span class="nav-number">3.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

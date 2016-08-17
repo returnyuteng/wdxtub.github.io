@@ -1,0 +1,1102 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CSAPP,同步,并行,读薄," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="进程和线程有什么差别？超线程又是什么意思？为什么多线程能够提高程序执行的速度？是所有情况都适用吗？并行程序有没有什么限制？这一讲我们来聊聊并行与同步这两个『继往开来』的概念。在今后的学习中，大家一定会不止一次发现，很多问题说来说去，其实就是并行与同步的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【读薄 CSAPP】玖 并行与同步">
+<meta property="og:url" content="http://wdxtub.com/2016/04/16/thin-csapp-9/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="进程和线程有什么差别？超线程又是什么意思？为什么多线程能够提高程序执行的速度？是所有情况都适用吗？并行程序有没有什么限制？这一讲我们来聊聊并行与同步这两个『继往开来』的概念。在今后的学习中，大家一定会不止一次发现，很多问题说来说去，其实就是并行与同步的问题。">
+<meta property="og:image" content="http://wdxtub.com/images/14620201714327.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14620251080738.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14620327073816.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14601450728106.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14601452084625.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14601453998378.jpg">
+<meta property="og:updated_time" content="2016-04-30T16:13:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【读薄 CSAPP】玖 并行与同步">
+<meta name="twitter:description" content="进程和线程有什么差别？超线程又是什么意思？为什么多线程能够提高程序执行的速度？是所有情况都适用吗？并行程序有没有什么限制？这一讲我们来聊聊并行与同步这两个『继往开来』的概念。在今后的学习中，大家一定会不止一次发现，很多问题说来说去，其实就是并行与同步的问题。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 【读薄 CSAPP】玖 并行与同步 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【读薄 CSAPP】玖 并行与同步
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-16T09:07:37+08:00" content="2016-04-16">
+              2016-04-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/16/thin-csapp-9/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/16/thin-csapp-9/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>进程和线程有什么差别？超线程又是什么意思？为什么多线程能够提高程序执行的速度？是所有情况都适用吗？并行程序有没有什么限制？这一讲我们来聊聊并行与同步这两个『继往开来』的概念。在今后的学习中，大家一定会不止一次发现，很多问题说来说去，其实就是并行与同步的问题。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<li>理解并行的几个层次：进程、事件、线程</li>
+<li>了解 Posix 标准</li>
+<li>了解同步问题产生的背景，以及信号量的工作机制</li>
+<li>了解『生产者-消费者问题』和『读者-写者问题』</li>
+<li>理解线程安全和一致性问题</li>
+</ol>
+<h2 id="u5E76_u884C_u65B9_u6CD5"><a href="#u5E76_u884C_u65B9_u6CD5" class="headerlink" title="并行方法"></a>并行方法</h2><p>首先一定要清楚地意识到：『并行编程不简单』！最主要的原因恐怕就是我们自己的大脑，人脑实际上是一个非常精妙的系统，所采取的并行策略是一明一暗两条线，但是对于明线来说，是线性的，于是就和计算机中并行的概念冲突了。另外时间这个概念也是线性的，这就导致了想要处理好并行程序可能出现的各种问题几乎是不可能的（或者常常要出错）。</p>
+<p>常见的错误有仨：竞争条件[2]、死锁[3]和活锁[4]，尤其是在现在的多核处理器架构中，更容易出现这类并行问题。</p>
+<p>我们前面实现的服务器，一次只能处理一个请求，只有当前的请求处理完了，才能继续处理下一个。</p>
+<p><img src="/images/14620201714327.jpg" alt=""></p>
+<p>这里具体讲解一下：Client 1 向 Server 发送连接请求(connect)，Server 接受(accept)之后开始等待 Client 1 发送请求（也就是开始 read），这之后 Client 1 发送具体的内容(write)后转为等待响应(call read)，Server 的 read 接收到了内容之后，发送响应(write) 后仅需进入等待(read)，而 Client 1 接收到了响应(ret read)，最后根据用户指令退出(close)。</p>
+<p>而只有当 Client 1 断开之后，Server 才会处理 Client 2 的请求，从图中也可以看到这一点。具体是在哪里等待呢？因为 TCP 会缓存，所以实际上 Client 2 在 <code>ret read</code> 之前进行等待，为了解决这个问题，我们可以使用并行的策略，同时处理不同客户端发来的请求。</p>
+<p>总体来说，根据系统机制的层级和实现方式，有下面三大类方法：</p>
+<ol>
+<li>基于进程<ul>
+<li>内核自动管理多个逻辑流</li>
+<li>每个进程有其私有的地址空间（也就是说进程切换的时候需要保存和载入数据）</li>
+</ul>
+</li>
+<li>基于事件<ul>
+<li>由程序员手动控制多个逻辑流</li>
+<li>所有的逻辑流共享同一个地址空间</li>
+<li>这个技术称为 I/O multiplexing</li>
+</ul>
+</li>
+<li>基于线程<ul>
+<li>内核自动管理多个逻辑流</li>
+<li>每个线程共享地址空间</li>
+<li>属于基于进程和基于事件的混合体</li>
+</ul>
+</li>
+</ol>
+<h3 id="u57FA_u4E8E_u8FDB_u7A0B"><a href="#u57FA_u4E8E_u8FDB_u7A0B" class="headerlink" title="基于进程"></a>基于进程</h3><p>为每个客户端分离出一个单独的进程，是建立了连接之后才开始并行，连接的建立还是串行的。</p>
+<p>具体的代码为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sigchld_handler</span><span class="params">(<span class="keyword">int</span> sig)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (waitpid(-<span class="number">1</span>, <span class="number">0</span>, WNOHANG) &gt; <span class="number">0</span>)</span><br><span class="line">        ;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// Reap all zombie children</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> listenfd, connfd;</span><br><span class="line">    <span class="keyword">socklen_t</span> clientlen;</span><br><span class="line">    <span class="keyword">struct</span> sockaddr_storage clientaddr;</span><br><span class="line">    </span><br><span class="line">    Signal(SIGCHLD, sigchld_handler);</span><br><span class="line">    listenfd = Open_listenfd(argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        clientlen = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_storage);</span><br><span class="line">        connfd = Accept(listenfd, (SA *) &amp;clientaddr, &amp;clientlen);</span><br><span class="line">        <span class="keyword">if</span> (Fork() == <span class="number">0</span>) &#123;</span><br><span class="line">            Close(listenfd); <span class="comment">// Child closes its listening socket</span></span><br><span class="line">            echo(connfd); <span class="comment">// Child services client</span></span><br><span class="line">            Close(connfd); <span class="comment">// Child closes connection with client</span></span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">0</span>); <span class="comment">// Child exits</span></span><br><span class="line">        &#125;</span><br><span class="line">        Close(connfd); <span class="comment">// Parent closes connected socket (important!)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里用文字描述一下流程：首先，服务器在 <code>accept</code>  函数中（对应 <code>listenfd</code>）等待连接请求，然后客户端通过调用 <code>connect</code> 函数发送连接请求，最后服务器在 <code>accept</code> 中返回 <code>connfd</code> 并且 fork 一个子进程来处理客户端连接，连接建立在 <code>listenfd</code> 和 <code>connfd</code> 间。</p>
+<p>整个执行模型中：</p>
+<ul>
+<li>每个客户端由独立子进程处理<ul>
+<li>必须回收僵尸进程，来避免严重的内存泄露</li>
+</ul>
+</li>
+<li>不同进程之间不共享数据</li>
+<li>父进程和子进程都有 <code>listenfd</code> 和 <code>connfd</code>，所以在父进程中需要关闭 <code>connfd</code>，在子进程中需要关闭 <code>listenfd</code><ul>
+<li>内核会保存每个 socket 的引用计数，在 fork 之后 <code>refcnt(connfd) = 2</code>，所以在父进程需要关闭 connfd，这样在子进程结束后引用计数才会为零</li>
+</ul>
+</li>
+</ul>
+<p>基于进程的方式可以并行处理连接，除了共享已打开的 file table 外，无论是 descriptor 还是全局变量都不共享，不大容易造成同步问题，比较简单粗暴。但是带来了额外的进程管理开销，并且进程间通讯不便，需要使用 IPC (interprocess communication)。</p>
+<h3 id="u57FA_u4E8E_u4E8B_u4EF6"><a href="#u57FA_u4E8E_u4E8B_u4EF6" class="headerlink" title="基于事件"></a>基于事件</h3><p>服务器会维护一个 connection 数组，包含若干 <code>connfd</code>，每个输入请求都被当做事件，然后每次从已有的事件中选取一个进行处理。</p>
+<p>基于实践的好处在于只使用一个逻辑控制流和地址空间，可以利用调试器进行单步调试（其他的方法因为并行的缘故基本没办法调试），也不会有进程/线程控制的开销。但是相比之下，代码的逻辑复杂度会比较高，很难进行精细度比较高的并行，也无法发挥多核处理器的全部性能。</p>
+<h3 id="u57FA_u4E8E_u7EBF_u7A0B"><a href="#u57FA_u4E8E_u7EBF_u7A0B" class="headerlink" title="基于线程"></a>基于线程</h3><p>和基于进程的方法非常相似，唯一的区别是这里用线程。进程其实是比较『重』的，一个进程包括进程上下文、代码、数据和栈。如果从线程的角度来描述，一个进程则包括线程、代码、数据和上下文。也就是说，线程作为单独可执行的部分，被抽离出来了，一个进程可以有多个线程。</p>
+<p>每个线程有自己的线程 id，有自己的逻辑控制流，也有自己的用来保存局部变量的栈（其他线程可以修改）但是会共享所有的代码、数据以及内核上下文。</p>
+<p>和进程不同的是，线程没有一个明确的树状结构（使用 <code>fork</code> 是有明确父进程子进程区分的）。和进程中『并行』的概念一样，如果两个线程的控制流在时间上有『重叠』（或者说有交叉），那么就是并行的。</p>
+<p>进程和线程的差别已经被说了太多次，这里简单提一下。相同点在于，它们都有自己的逻辑控制流，可以并行，都需要进行上下文切换。不同点在于，线程共享代码和数据（进程通常不会），线程开销比较小（创建和回收）</p>
+<p><strong>POSIX Threads</strong></p>
+<p>Pthreads 是一个线程库，基本上只要是 C 程序能跑的平台，都会支持这个标准。Pthreads定义了一套C语言的类型、函数与常量，它以 <code>pthread.h</code> 头文件和一个线程库实现。</p>
+<p>Pthreads API 中大致共有 100 个函数调用，全都以 <code>pthread_</code> 开头，并可以分为四类：</p>
+<ol>
+<li>线程管理，例如创建线程，等待(join)线程，查询线程状态等。</li>
+<li>Mutex：创建、摧毁、锁定、解锁、设置属性等操作</li>
+<li>条件变量（Condition Variable）：创建、摧毁、等待、通知、设置与查询属性等操作</li>
+<li>使用了读写锁的线程间的同步管理</li>
+</ol>
+<p>POSIX 的 Semaphore API 可以和 Pthreads 协同工作，但这并不是 Pthreads 的标准。因而这部分API是以 <code>sem_</code> 打头，而非 <code>pthread_</code>。</p>
+<p>我们用线程的方式重写一次之前的 Echo Server</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Thread routine</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">thread</span><span class="params">(<span class="keyword">void</span> *vargp)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> connf = *((<span class="keyword">int</span> *)vargp);</span><br><span class="line">    <span class="comment">// detach 之后不用显式 join，会在执行完毕后自动回收</span></span><br><span class="line">    Pthread_detach(pthread_self());</span><br><span class="line">    Free(vargp);</span><br><span class="line">    echo(connfd);</span><br><span class="line">    <span class="comment">// 一定要记得关闭！</span></span><br><span class="line">    Close(connfd);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> listenfd, *connfdp;</span><br><span class="line">    <span class="keyword">socklen_t</span> clientlen;</span><br><span class="line">    <span class="keyword">struct</span> sockaddr_storage clientaddr;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid;</span><br><span class="line">    </span><br><span class="line">    listenfd = Open_listenfd(argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        clientlen = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_storage);</span><br><span class="line">        <span class="comment">// 这里使用新分配的 connected descriptor 来避免竞争条件</span></span><br><span class="line">        connfdp = Malloc(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">        *connfdp = Accept(listenfd, (SA *) &amp; clientaddr, &amp;clientlen);</span><br><span class="line">        Pthread_create(&amp;tid, <span class="literal">NULL</span>, thread, connfdp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个模型中，每个客户端由单独的线程进行处理，这些线程除了线程 id 之外，共享所有的进程状态（但是每个线程有自己的局部变量栈）。</p>
+<p>使用线程并行，能够在不同的线程见方便地共享数据，效率也比进程高，但是共享变量可能会造成比较难发现的程序问题，很难调试和测试。</p>
+<h3 id="u5C0F_u7ED3"><a href="#u5C0F_u7ED3" class="headerlink" title="小结"></a>小结</h3><p>这里简单归纳下三种并行方法的特点：</p>
+<ul>
+<li>基于进程<ul>
+<li>难以共享资源，但同时也避免了可能带来的共享问题</li>
+<li>添加/移除进程开销较大 </li>
+</ul>
+</li>
+<li>基于事件<ul>
+<li>非常底层的实现机制</li>
+<li>使用全局控制而非调度</li>
+<li>开销比较小</li>
+<li>但是无法提供精细度较高的并行</li>
+<li>无法充分利用多核处理器 </li>
+</ul>
+</li>
+<li>基于线程<ul>
+<li>容易共享资源，但也容易出现问题</li>
+<li>开销比进程小</li>
+<li>对于具体的调度可控性较低</li>
+<li>难以调试（因为事件发生的顺序不一致）</li>
+</ul>
+</li>
+</ul>
+<h2 id="u540C_u6B65"><a href="#u540C_u6B65" class="headerlink" title="同步"></a>同步</h2><h3 id="u5171_u4EAB_u53D8_u91CF"><a href="#u5171_u4EAB_u53D8_u91CF" class="headerlink" title="共享变量"></a>共享变量</h3><p>在介绍同步之前，我们需要弄清楚一个定义，什么是 Shared variable（共享变量）？</p>
+<blockquote>
+<p>A variable <code>x</code> is <em>shared</em> if and only if multiple threads reference some instance of <code>x</code></p>
+</blockquote>
+<p>另外一个需要注意的是线程的内存模型，因为概念上的模型和实际的模型有一些差异，非常容易导致错误。</p>
+<p>在概念上的模型中：</p>
+<ul>
+<li>多个线程在一个单独进程的上下文中运行</li>
+<li>每个线程有单独的线程上下文（线程 ID，栈，栈指针，PC，条件码，GP 寄存器）</li>
+<li>所有的线程共享剩下的进程上下文<ul>
+<li>Code, data, heap, and shared library segments of the process virtual address space</li>
+<li>Open files and installed handlers</li>
+</ul>
+</li>
+</ul>
+<p>在实际的模型中，寄存器的值虽然是隔离且被保护的，但是在栈中的值并不是这样的（其他线程也可以访问）。</p>
+<p>我们来看一个简单的例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> **ptr; <span class="comment">// 全局变量</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> i;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid;</span><br><span class="line">    <span class="keyword">char</span> *msgs[<span class="number">2</span>] = &#123;</span><br><span class="line">        <span class="string">"Good Day!"</span>,</span><br><span class="line">        <span class="string">"Bad Day!"</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ptr = msgs;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">2</span>; i++)</span><br><span class="line">    Pthread_create(&amp;tid, <span class="literal">NULL</span>, thread, (<span class="keyword">void</span> *)i);</span><br><span class="line">Pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">thread</span><span class="params">(<span class="keyword">void</span> *vargp)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> myid = (<span class="keyword">long</span>)vargp;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 这里每个线程都可以访问 ptr 这个全局变量</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[%ld]: %s (cnt=%d)\n"</span>, myid, ptr[myid], ++cnt);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有几个不同类型的变量，我们一一来看一下：</p>
+<ul>
+<li>全局变量：在函数外声明的变量<ul>
+<li>虚拟内存中有全局唯一的一份实例</li>
+</ul>
+</li>
+<li>局部变量：在函数内声明，且没有用 static 关键字<ul>
+<li>每个线程的栈中都保存着对应线程的局部变量</li>
+</ul>
+</li>
+<li>局部静态变量：在函数内用 static 关键字声明的变量<ul>
+<li>虚拟内存中有全局唯一的一份实例</li>
+</ul>
+</li>
+</ul>
+<p>具体来分析下，一个变量只有在被多个线程引用的时候才算是共享，在这个例子中，共享变量有 <code>ptr</code>, <code>cnt</code> 和 <code>msgs</code>；非共享变量有 <code>i</code> 和 <code>myid</code>。</p>
+<h3 id="u5173_u952E_u533A_u57DF_Critical_Section"><a href="#u5173_u952E_u533A_u57DF_Critical_Section" class="headerlink" title="关键区域 Critical Section"></a>关键区域 Critical Section</h3><p>这一部分我们用一个具体的例子来进行讲解，看看如何用多个线程来计数：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 全局共享变量</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">long</span> cnt = <span class="number">0</span>; <span class="comment">// 计数器</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> niters;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid1, tid2;</span><br><span class="line">    </span><br><span class="line">    niter2 = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">    Pthread_create(&amp;tid1, <span class="literal">NULL</span>, thread, &amp;niters);</span><br><span class="line">    Pthread_create(&amp;tid2, <span class="literal">NULL</span>, thread, &amp;niters);</span><br><span class="line">    Pthread_join(tid1, <span class="literal">NULL</span>);</span><br><span class="line">    Pthread_join(tid2, <span class="literal">NULL</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 检查结果</span></span><br><span class="line">    <span class="keyword">if</span> (cnt != (<span class="number">2</span> * niters))</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Wrong! cnt=%ld\n"</span>, cnt);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Correct! cnt=%ld\n"</span>, cnt);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行之后发现不是每次都出现同样的结果，我们把操作 <code>cnt</code> 的部分抽出来单独看一看：</p>
+<p>线程中循环部分的代码为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; niters; i++)</span><br><span class="line">    cnt++;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码为</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">    # &#20197;&#19979;&#22235;&#21477;&#20026; Head &#37096;&#20998;&#65292;&#35760;&#20026; H&#10;    movq    (%rdi), %rcx&#10;    testq   %rcx, %rcx&#10;    jle     .L2&#10;    movl    $0, %eax&#10;.L3:&#10;    movq    cnt(%rip), %rdx # &#36733;&#20837; cnt&#65292;&#35760;&#20026; L&#10;    addq    $1, %rdx        # &#26356;&#26032; cnt&#65292;&#35760;&#20026; U&#10;    movq    %rdx, cnt(%rip) # &#20445;&#23384; cnt&#65292;&#35760;&#20026; S&#10;    # &#20197;&#19979;&#20026; Tail &#37096;&#20998;&#65292;&#35760;&#20026; T&#10;    addq    $1, %rax&#10;    cmpq    %rcx, %rax&#10;    jne     .L3&#10;.L2:</span><br></pre></td></tr></table></figure>
+<p>这里有一点需要注意，<code>cnt</code> 使用了 <code>volatile</code> 关键字声明，意思是不要在寄存器中保存值，无论是读取还是写入，都要对内存操作（还记得 write-through 吗？）。这里把具体的步骤分成 5 步：HLUST，尤其要注意 LUS 这三个操作，这三个操作必须在一次执行中完成，一旦次序打乱，就会出现问题，不同线程拿到的值就不一定是最新的。</p>
+<p>更多相关内容，可以参考<a href="http://wdxtub.com/vault/csapp-23.html">Synchronization - Basics</a>，其中提到了利用图表来描述关键区域的方法，感兴趣可以看一下。</p>
+<h3 id="u4FE1_u53F7_u91CF"><a href="#u4FE1_u53F7_u91CF" class="headerlink" title="信号量"></a>信号量</h3><p>针对关键区域的问题，我们可以考虑用信号量来限制程序的执行顺序。计数信号量具备两种操作动作，称为 V（又称signal()）与 P（wait()）。 V 操作会增加信号量 S 的数值，P 操作会减少。运作方式：</p>
+<ol>
+<li>初始化，给与它一个非负数的整数值。</li>
+<li>运行 P，信号量 S 的值将被减少。企图进入临界区块的进程，需要先运行 P。当信号量 S 减为负值时，进程会被挡住，不能继续；当信号量S不为负值时，进程可以获准进入临界区块。</li>
+<li>运行 V，信号量 S 的值会被增加。结束离开临界区块的进程，将会运行 V。当信号量 S 不为负值时，先前被挡住的其他进程，将可获准进入临界区块。</li>
+</ol>
+<p>我们来看看如何修改可以使得前面我们的计数程序正确运行。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 先定义信号量</span></span><br><span class="line"><span class="keyword">volatile</span> <span class="keyword">long</span> cnt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">sem_t</span> mutex;</span><br><span class="line"></span><br><span class="line">Sem_init(&amp;mutex, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 在线程中用 P 和 V 包围关键操作</span></span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; niters; i++)</span><br><span class="line">&#123;</span><br><span class="line">    P(&amp;mutex);</span><br><span class="line">    cnt++;</span><br><span class="line">    V(&amp;mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在使用线程时，脑中需要有一个清晰的分享变量的概念，共享变量需要互斥访问，而 Semaphores 是一个基础的机制。</p>
+<h2 id="u751F_u4EA7_u8005-_u6D88_u8D39_u8005_u95EE_u9898"><a href="#u751F_u4EA7_u8005-_u6D88_u8D39_u8005_u95EE_u9898" class="headerlink" title="生产者-消费者问题"></a>生产者-消费者问题</h2><p><img src="/images/14620251080738.jpg" alt=""></p>
+<p>具体的同步模型为：</p>
+<ul>
+<li>生产者等待空的 slot，把 item 存储到 buffer，并通知消费者</li>
+<li>消费整等待 item，从 buffer 中移除 item，并通知生产者</li>
+</ul>
+<p>主要用于</p>
+<ul>
+<li>多媒体处理<ul>
+<li>生产者生成 MPEG 视频帧，消费者进行渲染</li>
+</ul>
+</li>
+<li>事件驱动的图形用户界面<ul>
+<li>生产者检测到鼠标点击、移动和键盘输入，并把对应的事件插入到 buffer 中</li>
+<li>消费者从 buffer 中获取事件，并绘制到到屏幕上</li>
+</ul>
+</li>
+</ul>
+<p>接下来我们实现一个有 n 个元素 buffer，为此，我们需要一个 mutex 和两个用来计数的 semaphore：</p>
+<ul>
+<li><code>mutex</code>: 用来保证对 buffer 的互斥访问</li>
+<li><code>slots</code>: 统计 buffer 中可用的 slot 数目</li>
+<li><code>items</code>: 统计 buffer 中可用的 item 数目</li>
+</ul>
+<p>我们直接来看代码，就比较清晰了</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 头文件 sbuf.h</span></span><br><span class="line"><span class="comment">// 包括几个基本操作</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">"csapp.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">int</span> *buf;    <span class="comment">// Buffer array</span></span><br><span class="line">    <span class="keyword">int</span> n;       <span class="comment">// Maximum number of slots</span></span><br><span class="line">    <span class="keyword">int</span> front;   <span class="comment">// buf[(front+1)%n] is first item</span></span><br><span class="line">    <span class="keyword">int</span> rear;    <span class="comment">// buf[rear%n] is the last item</span></span><br><span class="line">    <span class="keyword">sem_t</span> mutex; <span class="comment">// Protects accesses to buf</span></span><br><span class="line">    <span class="keyword">sem_t</span> slots; <span class="comment">// Counts available slots</span></span><br><span class="line">    <span class="keyword">sem_t</span> items; <span class="comment">// Counts available items</span></span><br><span class="line">&#125; <span class="keyword">sbuf_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_init</span><span class="params">(sbuf_t *sp, <span class="keyword">int</span> n)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_deinit</span><span class="params">(sbuf_t *sp)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_insert</span><span class="params">(sbuf_t *sp, <span class="keyword">int</span> item)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sbuf_remove</span><span class="params">(sbuf_t *sp)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>然后是具体的实现</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// sbuf.c</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Create an empty, bounded, shared FIFO buffer with n slots</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_init</span><span class="params">(sbuf_t *sp, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    sp-&gt;buf = Calloc(n, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    sp-&gt;n = n;                  <span class="comment">// Buffer holds max of n items</span></span><br><span class="line">    sp-&gt;front = sp-&gt;rear = <span class="number">0</span>;   <span class="comment">// Empty buffer iff front == rear</span></span><br><span class="line">    Sem_init(&amp;sp-&gt;mutex, <span class="number">0</span>, <span class="number">1</span>); <span class="comment">// Binary semaphore for locking</span></span><br><span class="line">    Sem_init(&amp;sp-&gt;slots, <span class="number">0</span>, n); <span class="comment">// Initially, buf has n empty slots</span></span><br><span class="line">    Sem_init(&amp;sp-&gt;items, <span class="number">0</span>, <span class="number">0</span>); <span class="comment">// Initially, buf has 0 items</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Clean up buffer sp</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_deinit</span><span class="params">(sbuf_t *sp)</span></span>&#123;</span><br><span class="line">    Free(sp-&gt;buf);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Insert item onto the rear of shared buffer sp</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_insert</span><span class="params">(sbuf_t *sp, <span class="keyword">int</span> item)</span> </span>&#123;</span><br><span class="line">    P(&amp;sp-&gt;slots);                        <span class="comment">// Wait for available slot</span></span><br><span class="line">    P(&amp;sp-&gt;mutext);                       <span class="comment">// Lock the buffer</span></span><br><span class="line">    sp-&gt;buf[(++sp-&gt;rear)%(sp-&gt;n)] = item; <span class="comment">// Insert the item</span></span><br><span class="line">    V(&amp;sp-&gt;mutex);                        <span class="comment">// Unlock the buffer</span></span><br><span class="line">    V(&amp;sp-&gt;items);                        <span class="comment">// Announce available item</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Remove and return the first tiem from the buffer sp</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sbuf_remove</span><span class="params">(sbuf_f *sp)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> item;</span><br><span class="line">    P(&amp;sp-&gt;items);                         <span class="comment">// Wait for available item</span></span><br><span class="line">    P(&amp;sp-&gt;mutex);                         <span class="comment">// Lock the buffer</span></span><br><span class="line">    item = sp-&gt;buf[(++sp-&gt;front)%(sp-&gt;n)]; <span class="comment">// Remove the item</span></span><br><span class="line">    V(&amp;sp-&gt;mutex);                         <span class="comment">// Unlock the buffer</span></span><br><span class="line">    V(&amp;sp-&gt;slots);                         <span class="comment">// Announce available slot</span></span><br><span class="line">    <span class="keyword">return</span> item;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u8BFB_u8005-_u5199_u8005_u95EE_u9898"><a href="#u8BFB_u8005-_u5199_u8005_u95EE_u9898" class="headerlink" title="读者-写者问题"></a>读者-写者问题</h2><p>是互斥问题的通用描述，具体为：</p>
+<ul>
+<li>读者线程只读取对象</li>
+<li>写者线程修改对象</li>
+<li>写者对于对象的访问是互斥的</li>
+<li>多个读者可以同时读取对象</li>
+</ul>
+<p>常见的应用场景是：</p>
+<ul>
+<li>在线订票系统</li>
+<li>多线程缓存 web 代理</li>
+</ul>
+<p>根据不同的读写策略，又两类读者写者问题，需要注意的是，这两种情况都可能出现 starvation。</p>
+<blockquote>
+<p>第一类读者写者问题（读者优先）</p>
+</blockquote>
+<ul>
+<li>如果写者没有获取到使用对象的权限，不应该让读者等待</li>
+<li>在等待的写者之后到来的读者应该在写者之前处理</li>
+<li>也就是说，只有没有读者的情况下，写者才能工作</li>
+</ul>
+<blockquote>
+<p>第二类读者写者问题（写者优先）</p>
+</blockquote>
+<ul>
+<li>一旦写者可以处理的时候，就不应该进行等待</li>
+<li>在等待的写者之后到来的读者应该在写者之后处理</li>
+</ul>
+<p>具体的代码为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">sbuf_t</span> sbuf; <span class="comment">// Shared buffer of connected descriptors</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> byte_cnt;  <span class="comment">// Byte counter</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">sem_t</span> mutex;   <span class="comment">// and the mutex that protects it</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">echo_cnt</span><span class="params">(<span class="keyword">int</span> connfd)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">char</span> buf[MAXLINE];</span><br><span class="line">    <span class="keyword">rio_t</span> rio;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">pthread_once_t</span> once = PTHREAD_ONCE_INIT;</span><br><span class="line">    </span><br><span class="line">    Pthread_once(&amp;once, init_echo_cnt);</span><br><span class="line">    Rio_readinitb(&amp;rio, connfd);</span><br><span class="line">    <span class="keyword">while</span> ((n = Rio_readlineb(&amp;rio, buf, MAXLINE)) != <span class="number">0</span>) &#123;</span><br><span class="line">        P(&amp;mutex);</span><br><span class="line">        byte_cnt += n;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"thread %d received %d (%d total) bytes on fd %d\n"</span>,</span><br><span class="line">                    (<span class="keyword">int</span>) pthread_self(), n, byte_cnt, connfd);</span><br><span class="line">        V(&amp;mutex);</span><br><span class="line">        Rio_writen(connfd, buf, n);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init_echo_cnt</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">    Sem_init(&amp;mutex, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    byte_cnt = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">thread</span><span class="params">(<span class="keyword">void</span> *vargp)</span></span>&#123;</span><br><span class="line">    Pthread_detach(pthread_self());</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> connfd = sbuf_remove(&amp;sbuf); <span class="comment">// Remove connfd from buf</span></span><br><span class="line">        echo_cnt(connfd);                <span class="comment">// Service client</span></span><br><span class="line">        Close(connfd);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i, listenfd, connfd;</span><br><span class="line">    <span class="keyword">socklen_t</span> clientlen;</span><br><span class="line">    <span class="keyword">struct</span> sockaddr_storage clientaddr;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid;</span><br><span class="line">    </span><br><span class="line">    listenfd = Open_listenfd(argv[<span class="number">1</span>]);</span><br><span class="line">    sbuf_init(&amp;sbuf, SBUFSIZE);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; NTHREADS; i++) <span class="comment">// Create worker threads</span></span><br><span class="line">        Pthread_create(&amp;tid, <span class="literal">NULL</span>, thread, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        clientlen = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_storage);</span><br><span class="line">        connfd = Accept(listenfd, (SA *)&amp;clientaddr, &amp;clientlen);</span><br><span class="line">        sbuf_insert(&amp;sbuf, connfd); <span class="comment">// Insert connfd in buffer</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u7EBF_u7A0B_u5B89_u5168"><a href="#u7EBF_u7A0B_u5B89_u5168" class="headerlink" title="线程安全"></a>线程安全</h2><p>在线程中调用的函数必须是线程安全的，定义为：</p>
+<blockquote>
+<p>A function is thread-safe iff it will always produce correct results when called repeatedly from multiple concurrent threads</p>
+</blockquote>
+<p>主要有 4 类线程不安全的函数</p>
+<ol>
+<li>不保护共享变量的函数<ul>
+<li>解决办法：使用 P 和 V semaphore 操作</li>
+<li>问题：同步操作会影响性能</li>
+</ul>
+</li>
+<li>在多次调用间保存状态的函数<ul>
+<li>解决办法：把状态当做传入参数</li>
+</ul>
+</li>
+<li>返回指向静态变量的指针的函数<ul>
+<li>解决办法1：重写函数，传地址用以保存</li>
+<li>解决办法2：上锁，并且进行复制</li>
+</ul>
+</li>
+<li>调用线程不安全函数的函数<ul>
+<li>解决办法：只调用线程安全的函数</li>
+</ul>
+</li>
+</ol>
+<p>另一个重要的概念是 Reentrant Function，定义为：</p>
+<blockquote>
+<p>A function is <strong>reentrant</strong> iff it accesses no shared variables when called by multiple threads</p>
+</blockquote>
+<p>Reentrant Functions 是线程安全函数非常重要的子集，不需要同步操作，对于第二类的函数来说（上面提到的），唯一的办法就是把他们修改成 reentrant 的。</p>
+<p>标准 C 库中的函数都是线程安全的（如 <code>malloc</code>, <code>free</code>, <code>printf</code>, <code>scanf</code>），大多数 Unix 的系统调用也都是线程安全的。</p>
+<p>总结来看，并行编程需要注意的是：</p>
+<ul>
+<li>要有并行策略，可以把一个大任务分成若干个独立的子任务，或者用分而治之的方式来解决</li>
+<li>内循环最好不要有任何同步机制</li>
+<li>注意 Amdahl’s Law</li>
+<li>一致性是个大问题，无论是计算一致性还是存储一致性，都需要仔细考虑</li>
+</ul>
+<h2 id="u8D85_u7EBF_u7A0B"><a href="#u8D85_u7EBF_u7A0B" class="headerlink" title="超线程"></a>超线程</h2><p>回想一下，我们之前是如何处理 I/O 的延迟的呢？一个办法是每个客户端都由一个线程来处理，这样就不需要互相等待。现在的多核/超线程处理器提供了另外一种可能。我们不但可以并行执行多个线程，更好的是这些都是自动进行的，当然，我们也可以通过把大任务分成小任务来加速运算。</p>
+<p><img src="/images/14620327073816.jpg" alt=""></p>
+<p>上图是典型的多核处理器架构，这里需要注意的是 L3 缓存（图上没有显示）和主内存都是共享的。而具体的执行计算的架构，基本的乱序执行处理器的架构为：</p>
+<p><img src="/images/14601450728106.jpg" alt="Out-of-Order Processor Structure"></p>
+<p>指令控制器会动态把程序转换成操作流，操作会被映射到 Functional Unit 上进行并行处理。这种情况下，一个核心处理一个线程。而在超线程的设计中，一个核心可以处理若干个线程，秘诀在于多出来了若干套指令控制流，如下图：</p>
+<p><img src="/images/14601452084625.jpg" alt="Hyperthreading Implementation"></p>
+<p>如果我们想要了解机器的相关信息，可以访问 <code>/proc/cpuinfo</code></p>
+<p><img src="/images/14601453998378.jpg" alt=""></p>
+<p>随后老师提及了两个例子，一个是并行求和，一个是并行快排，这里不赘述，如果感兴趣的话，可以自己思考一下。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>这一讲是本系列的最后一部分了，我们首先学习了并行的几个层次：进程、事件、线程，并了解 Posix 标准。在此基础上，针对并行编程可能产生的同步问题，使用信号量给出了简单的解决办法。之后通过『生产者-消费者问题』和『读者-写者问题』对并行和同步进行更加深入的探讨，最后介绍了线程安全和一致性问题。</p>
+<p>终于赶在五月前完成了『读薄』系列，希望大家喜欢。</p>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97" target="_blank" rel="external">并行计算</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E7%AB%B6%E7%88%AD%E5%8D%B1%E5%AE%B3" target="_blank" rel="external">竞争条件</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%AD%BB%E9%94%81" target="_blank" rel="external">死锁</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Deadlock" target="_blank" rel="external">Deadlock</a></li>
+<li><a href="https://en.wikipedia.org/wiki/POSIX_Threads" target="_blank" rel="external">Posix Thread</a></li>
+<li><a href="http://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html" target="_blank" rel="external">POSIX thread (pthread) libraries</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSAPP/" rel="tag">#CSAPP</a>
+          
+            <a href="/tags/同步/" rel="tag">#同步</a>
+          
+            <a href="/tags/并行/" rel="tag">#并行</a>
+          
+            <a href="/tags/读薄/" rel="tag">#读薄</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/16/thick-csapp-lab-0/" rel="next" title="【读厚 CSAPP】实验概览">
+                <i class="fa fa-chevron-left"></i> 【读厚 CSAPP】实验概览
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/16/thick-csapp-lab-1/" rel="prev" title="【读厚 CSAPP】I Data Lab">
+                【读厚 CSAPP】I Data Lab <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/16/thin-csapp-9/"
+           data-title="【读薄 CSAPP】玖 并行与同步" data-url="http://wdxtub.com/2016/04/16/thin-csapp-9/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B66_u4E60_u76EE_u6807"><span class="nav-number">1.</span> <span class="nav-text">学习目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E76_u884C_u65B9_u6CD5"><span class="nav-number">2.</span> <span class="nav-text">并行方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u57FA_u4E8E_u8FDB_u7A0B"><span class="nav-number">2.1.</span> <span class="nav-text">基于进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u57FA_u4E8E_u4E8B_u4EF6"><span class="nav-number">2.2.</span> <span class="nav-text">基于事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u57FA_u4E8E_u7EBF_u7A0B"><span class="nav-number">2.3.</span> <span class="nav-text">基于线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5C0F_u7ED3"><span class="nav-number">2.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u540C_u6B65"><span class="nav-number">3.</span> <span class="nav-text">同步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5171_u4EAB_u53D8_u91CF"><span class="nav-number">3.1.</span> <span class="nav-text">共享变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5173_u952E_u533A_u57DF_Critical_Section"><span class="nav-number">3.2.</span> <span class="nav-text">关键区域 Critical Section</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4FE1_u53F7_u91CF"><span class="nav-number">3.3.</span> <span class="nav-text">信号量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u751F_u4EA7_u8005-_u6D88_u8D39_u8005_u95EE_u9898"><span class="nav-number">4.</span> <span class="nav-text">生产者-消费者问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BFB_u8005-_u5199_u8005_u95EE_u9898"><span class="nav-number">5.</span> <span class="nav-text">读者-写者问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7EBF_u7A0B_u5B89_u5168"><span class="nav-number">6.</span> <span class="nav-text">线程安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8D85_u7EBF_u7A0B"><span class="nav-number">7.</span> <span class="nav-text">超线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

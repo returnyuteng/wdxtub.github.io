@@ -1,0 +1,875 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="了解完了链接，我们来看看在程序出错的时候会发生什么事情，这一课我们主要来了解异常与进程。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="深入理解计算机系统 第 13 课 Exceptions and Processes">
+<meta property="og:url" content="http://wdxtub.com/vault/csapp-13.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="了解完了链接，我们来看看在程序出错的时候会发生什么事情，这一课我们主要来了解异常与进程。">
+<meta property="og:image" content="http://wdxtub.com/images/14572937620861.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572946534326.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572947301161.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572948483518.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572949405706.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572951617051.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572951831475.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572953320001.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572953822399.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572960158600.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572959919795.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572961362662.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572962685162.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572963666951.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572964493864.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572965827499.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572966466237.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14572967455790.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573038632263.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573039229956.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573039725814.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573044246995.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573045555520.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573045862749.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573046274270.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573049855888.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573050208627.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573055666401.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573056037360.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573056447947.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573057138513.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573057856048.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573058581756.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573058863617.jpg">
+<meta property="og:updated_time" content="2016-04-23T00:10:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统 第 13 课 Exceptions and Processes">
+<meta name="twitter:description" content="了解完了链接，我们来看看在程序出错的时候会发生什么事情，这一课我们主要来了解异常与进程。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    深入理解计算机系统 第 13 课 Exceptions and Processes | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>了解完了链接，我们来看看在程序出错的时候会发生什么事情，这一课我们主要来了解异常与进程。</p>
+<a id="more"></a>
+<hr>
+<p>从开机到关机，CPU 做的工作其实很简单，就是不断读取并执行指令，每次执行一条，整个指令执行的序列，称为 CPU 的控制流。到目前为止，我们已经学过了两种改变控制流的方式：</p>
+<ul>
+<li>跳转和分支</li>
+<li>调用和返回</li>
+</ul>
+<p>这对应于 program state 的改变。但是这实际上仅仅局限于程序的控制，没有办法去应对更加复杂的情况，比方说 system state 变化的时候：</p>
+<ul>
+<li>数据从磁盘或者网络适配器到达</li>
+<li>指令除以了零</li>
+<li>用户按下 ctrl+c</li>
+<li>系统的计时器到时间</li>
+</ul>
+<p>所以我们这里会介绍另一种机制，称为 exceptional control flow。</p>
+<h2 id="Exceptional_Control_Flow"><a href="#Exceptional_Control_Flow" class="headerlink" title="Exceptional Control Flow"></a>Exceptional Control Flow</h2><p>Exceptional Control Flow 存在于系统的每个层级：</p>
+<p><img src="/images/14572937620861.jpg" alt=""></p>
+<p>本节课我们先介绍前两种，下节课介绍后面两种。</p>
+<h2 id="Exceptions"><a href="#Exceptions" class="headerlink" title="Exceptions"></a>Exceptions</h2><p>An <strong>exception</strong> is a transfer of control to the OS kernel in response to some event (i.e., change in processor state)</p>
+<ul>
+<li>Kernel 是操作系统常驻内存的一部分</li>
+<li>Event: Divide by 0, arithmetic overflow, page fault, I/O request completes, typing ctrl-c</li>
+</ul>
+<p>具体的过程可以用下图表示：</p>
+<p><img src="/images/14572946534326.jpg" alt="Exception 流程"></p>
+<p>系统会通过 Exception Table 来确定跳转的位置，每种事件都有对应的唯一的异常编号，发生对应异常时就会调用对应的异常处理代码：</p>
+<p><img src="/images/14572947301161.jpg" alt="Exception Table"></p>
+<h3 id="Asynchronous_Exceptions__28Interrupts_29"><a href="#Asynchronous_Exceptions__28Interrupts_29" class="headerlink" title="Asynchronous Exceptions (Interrupts)"></a>Asynchronous Exceptions (Interrupts)</h3><p>异步异常称之为中断，是有处理器外面发生的事情引起的，这种情况下：</p>
+<ul>
+<li>需要设置处理器的 interrupt pin</li>
+<li>处理完成后会返回之前控制流中的『下一条』指令</li>
+</ul>
+<p><img src="/images/14572948483518.jpg" alt="中断的两个例子"></p>
+<h3 id="Synchronous_Exceptions"><a href="#Synchronous_Exceptions" class="headerlink" title="Synchronous Exceptions"></a>Synchronous Exceptions</h3><p>同步异常是因为执行某条指令所导致的事件，分为 Traps, Faults 和 Aborts 三种情况：</p>
+<p><img src="/images/14572949405706.jpg" alt="同步异常的三种类型"></p>
+<p>这里需要注意三种不同类型的处理方式，比方说 Traps 和中断一样，会返回执行『下一条』指令；而 Faults 会重新执行之前触发事件的指令；Aborts 则是直接退出当前的程序。</p>
+<p><strong>System Call Example</strong></p>
+<p>这里我们来了解一下系统调用 System Calls，系统调用看起来像是函数调用，但其实是走异常控制流的，在 x86-64 系统中，每个系统调用都有一个唯一的 ID，如：</p>
+<p><img src="/images/14572951617051.jpg" alt=""></p>
+<p>而具体的的调用过程如下所示：</p>
+<p><img src="/images/14572951831475.jpg" alt=""></p>
+<p><strong>Fault Example</strong></p>
+<p>这里我们以 Page Fault 为例，来说明 Fault 的机制。Page Fault 发生的条件是：</p>
+<ul>
+<li>用户写入内存位置</li>
+<li>但该位置目前还不在内存中</li>
+</ul>
+<p>比如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a[<span class="number">1000</span>];</span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">    a[<span class="number">500</span>] = <span class="number">13</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么系统会通过 Page Fault 把对应的部分载入到内存中，然后重新执行赋值语句：</p>
+<p><img src="/images/14572953320001.jpg" alt=""></p>
+<p>但是如果代码改为这样：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a[<span class="number">1000</span>];</span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">    a[<span class="number">5000</span>] = <span class="number">13</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也就是引用非法地址的时候，整个流程就会变成：</p>
+<p><img src="/images/14572953822399.jpg" alt=""></p>
+<p>具体来说会像用户进程发送 <code>SIGSEGV</code> 信号，用户进程会以 segmentation fault 的标记退出。</p>
+<p>从上面我们就可以看到异常是非常底层的机制。</p>
+<h2 id="Process__u8FDB_u7A0B"><a href="#Process__u8FDB_u7A0B" class="headerlink" title="Process 进程"></a>Process 进程</h2><blockquote>
+<p>A process is an instance of a running program</p>
+</blockquote>
+<p>进程是计算机科学中最为重要的思想之一，注意，和 “program” 或 “processor” 都不一样。</p>
+<p><img src="/images/14572960158600.jpg" alt="进程示意图"></p>
+<p>进程给每个应用提供了两个非常关键的抽象：</p>
+<p><img src="/images/14572959919795.jpg" alt="两个关键抽象"></p>
+<p>计算机会同时运行多个进程，比如说不同的前台应用，或者后台任务，比方说在 Mac 下输入 <code>top</code>，可以看到如下的进程信息：</p>
+<p><img src="/images/14572961362662.jpg" alt="我的电脑当前的状态"></p>
+<p>具体的多进程模型如下所示：</p>
+<p><img src="/images/14572962685162.jpg" alt="多进程模型（单核）"></p>
+<ul>
+<li>CPU 交替执行不同的进程</li>
+<li>虚拟内存系统会负责管理地址空间</li>
+<li>没有执行的进程的寄存器值会被保存在内存中</li>
+</ul>
+<p><img src="/images/14572963666951.jpg" alt="切换到另一个进程执行，会载入原先的寄存器值(context switch)"></p>
+<p>而现代处理器一般有多个核心，所以可以真正同时执行多个进程：</p>
+<p><img src="/images/14572964493864.jpg" alt="现代处理器执行模型"></p>
+<p>进程之间，也分并行与串行的关系：</p>
+<ul>
+<li>Two processes run <strong>concurrently</strong> if their flows overlap in time</li>
+<li>Otherwise, they are <strong>sequential</strong></li>
+</ul>
+<p>比方说下图中：</p>
+<p><img src="/images/14572965827499.jpg" alt=""></p>
+<ul>
+<li>Concurrent: A&amp;B, A&amp;C</li>
+<li>Sequential: B&amp;C</li>
+</ul>
+<p>不过在用户看来，执行的感觉是这样的：</p>
+<p><img src="/images/14572966466237.jpg" alt=""></p>
+<h3 id="Context_Switching"><a href="#Context_Switching" class="headerlink" title="Context Switching"></a>Context Switching</h3><p>具体切换进程时，kernel 会负责具体的调度。</p>
+<blockquote>
+<p>The kernel is not a separate process, but rather runs as part of some existing process</p>
+</blockquote>
+<p>控制流通过上下文切换的方式从一个进程到另一个进程，如下图所示：</p>
+<p><img src="/images/14572967455790.jpg" alt="上下文切换 Context Switching"></p>
+<h2 id="Process_Control__u8FDB_u7A0B_u63A7_u5236"><a href="#Process_Control__u8FDB_u7A0B_u63A7_u5236" class="headerlink" title="Process Control 进程控制"></a>Process Control 进程控制</h2><h3 id="System_Call_Error_Handling"><a href="#System_Call_Error_Handling" class="headerlink" title="System Call Error Handling"></a>System Call Error Handling</h3><p>在遇到错误的时候，Linux 系统级函数通常会返回 -1 并且设置 <code>errno</code> 这个全局变量来表示错误的原因。使用的时候记住两个规则：</p>
+<ol>
+<li>You must check the return status of every system-level function</li>
+<li>Only exception is the handful of functions that return void</li>
+</ol>
+<p>例如，对于 <code>fork()</code> 函数，我们应该这么写：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> ((pid = fork()) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"fork error: %s\n"</span>, strerror(errno));</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果觉得这样写太麻烦，可以利用一个辅助函数：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unix_error</span><span class="params">(<span class="keyword">char</span> *msg)</span> <span class="comment">/* Unix-style error */</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"%s: %s\n"</span>, msg, strerror(errno));</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 上面的片段可以写为</span></span><br><span class="line"><span class="keyword">if</span> ((pid = fork()) &lt; <span class="number">0</span>)</span><br><span class="line">    unix_error(<span class="string">"fork error"</span>);</span><br></pre></td></tr></table></figure>
+<p>我们甚至可以更进一步，把整个 <code>fork()</code> 包装起来，就可以自带错误处理，比如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pid_t</span> Fork(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">if</span> ((pid = fork()) &lt; <span class="number">0</span>)</span><br><span class="line">        unix_error(<span class="string">"Fork error"</span>);</span><br><span class="line">    <span class="keyword">return</span> pid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用的时候直接使用 <code>pid = Fork();</code> 即可（注意这里是大写的 F）</p>
+<h3 id="u83B7_u53D6_u8FDB_u7A0B_u4FE1_u606F"><a href="#u83B7_u53D6_u8FDB_u7A0B_u4FE1_u606F" class="headerlink" title="获取进程信息"></a>获取进程信息</h3><ul>
+<li><code>pid_t getpid(void)</code> - 返回当前进程的 PID</li>
+<li><code>pid_t getppid(void)</code> - 返回当前进程的父进程的 PID</li>
+</ul>
+<p>我们可以认为，进程有三个状态：</p>
+<ul>
+<li>Running<ul>
+<li>正在被执行、正在等待执行或者最终将会被执行</li>
+</ul>
+</li>
+<li>Stopped<ul>
+<li>执行被挂起，在进一步通知前不会计划执行</li>
+</ul>
+</li>
+<li>Terminated<ul>
+<li>进程被永久停止</li>
+</ul>
+</li>
+</ul>
+<p><strong>终止进程</strong></p>
+<p>在下面三种情况时，进程会被终止：</p>
+<ol>
+<li>接收到一个终止信号</li>
+<li>返回到 <code>main</code> </li>
+<li>调用了 <code>exit</code> 函数</li>
+</ol>
+<p><img src="/images/14573038632263.jpg" alt="exit is called once but never returns"></p>
+<p><strong>创建进程</strong></p>
+<p>调用 <code>fork</code> 来创造新进程</p>
+<p><img src="/images/14573039229956.jpg" alt="fork is interesting becasue it is called once but returns twice"></p>
+<p>下面我们来看一个简单的例子：</p>
+<p><img src="/images/14573039725814.jpg" alt=""></p>
+<p>有以下几点需要注意：</p>
+<ul>
+<li>调用一次，但是会有两个返回值</li>
+<li>并行执行，不能预计父进程和子进程的执行顺序</li>
+<li>拥有自己独立的地址空间（也就是变量都是独立的），除此之外其他都相同</li>
+<li>在父进程和子进程中 <code>stdout</code> 是一样的</li>
+</ul>
+<h3 id="u8FDB_u7A0B_u56FE"><a href="#u8FDB_u7A0B_u56FE" class="headerlink" title="进程图"></a>进程图</h3><p>进程图是一个很好的帮助我们理解进程执行的工具：</p>
+<ul>
+<li>每个节点代表一条执行的语句</li>
+<li>a -&gt; b 表示 a 在 b 前面执行</li>
+<li>边可以用当前变量的值来标记</li>
+<li><code>printf</code> 节点可以用输出来进行标记</li>
+<li>每个图由一个入度为 0 的节点作为起始</li>
+</ul>
+<p>对于进程图来说，只要满足拓扑排序，就是可能的输出。我们还是用刚才的例子：</p>
+<p><img src="/images/14573044246995.jpg" alt=""></p>
+<p>我们再来看三个稍微复制一点的例子：</p>
+<p><img src="/images/14573045555520.jpg" alt="Two consecutive forks"></p>
+<p><img src="/images/14573045862749.jpg" alt="Nested forks in parent"></p>
+<p><img src="/images/14573046274270.jpg" alt="Nested forks in children"></p>
+<h3 id="Reaping_Child_Processes"><a href="#Reaping_Child_Processes" class="headerlink" title="Reaping Child Processes"></a>Reaping Child Processes</h3><p>即使进程已经终止，也还在消耗系统资源，我们称之为『僵尸』。为了『打僵尸』，就可以采用『收割』(Reaping) 的方法。父进程利用 <code>wait</code> 或 <code>waitpid</code> 回收已终止的子进程，然后给系统提供相关信息，kernel 就会把 zombie child process 给删除。</p>
+<p>如果父进程不『收割』的话，通常来说会被 <code>init</code> 进程(pid == 1)回收，所以一般不必显式回收。但是在长期运行的进程中，就需要显式回收（例如 shell 和 server）。下面是几个僵尸进程的例子：</p>
+<p><img src="/images/14573049855888.jpg" alt="这里，子进程可以成功被回收"></p>
+<p><img src="/images/14573050208627.jpg" alt="这里，因为子进程没有调用 `exit`，所以需要显式回收"></p>
+<p><strong>wait: Synchronizing with Children</strong></p>
+<p>父进程通过调用 <code>wait</code> 函数来『收割』子进程</p>
+<p><img src="/images/14573055666401.jpg" alt=""></p>
+<p>下面是一个具体的例子，同样用进程图来描述：</p>
+<p><img src="/images/14573056037360.jpg" alt="wait: Synchronizing with Children"></p>
+<p><img src="/images/14573056447947.jpg" alt="If multiple children completed, will take in arbitrary order. Can use macros WIFEXITED and WEXITSTATUS to get information about exit status"></p>
+<p><strong>waitpid: Waiting for a Specific Process</strong></p>
+<p>直接看例子：</p>
+<p><img src="/images/14573057138513.jpg" alt=""></p>
+<p><strong>execve: Loading and Running Programs</strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">execve</span><span class="params">(<span class="keyword">char</span> *filename, <span class="keyword">char</span> *argv[], <span class="keyword">char</span> *envp[])</span></span></span><br></pre></td></tr></table></figure>
+<p>具体的行为是：</p>
+<p><img src="/images/14573057856048.jpg" alt=""></p>
+<p>为了理解 <code>execve</code> 的行为，我们要先理解程序在栈中的布局：</p>
+<p><img src="/images/14573058581756.jpg" alt="栈的结构"></p>
+<p>一个具体的例子：</p>
+<p><img src="/images/14573058863617.jpg" alt="execve 例子"></p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>Exceptions<ul>
+<li>Events that require nonstandard control flow</li>
+<li>Generated externally (interrupts) or internally (traps and faults)</li>
+</ul>
+</li>
+<li>Processes<ul>
+<li>At any given time, system has multiple active processes</li>
+<li>Only one can execute at a time on a single core, though</li>
+<li>Each process appears to have total control of processor + private memory space</li>
+</ul>
+</li>
+<li>Spawning processes<ul>
+<li>Call <code>fork</code></li>
+<li>One call, two returns</li>
+</ul>
+</li>
+<li>Process completion<ul>
+<li>Call <code>exit</code></li>
+<li>One call </li>
+</ul>
+</li>
+<li>Reaping and waiting for processes<ul>
+<li>Call <code>wait</code> or <code>waitpid</code></li>
+</ul>
+</li>
+<li>Loading and running programs<ul>
+<li>Call <code>execve</code></li>
+<li>One call, (normally) no return</li>
+</ul>
+</li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/csapp-13.html"
+           data-title="深入理解计算机系统 第 13 课 Exceptions and Processes" data-url="http://wdxtub.com/vault/csapp-13.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

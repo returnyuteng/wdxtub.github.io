@@ -1,0 +1,981 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Docker,概念," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="在 Docker 快速入门及试验环境配置中我们通过一个例子简单了解了 docker 的使用。这篇文章会从基本概念出发，用实际操作去更加深入理解 docker。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 基本概念">
+<meta property="og:url" content="http://wdxtub.com/2016/04/03/docker-basic-concept/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="在 Docker 快速入门及试验环境配置中我们通过一个例子简单了解了 docker 的使用。这篇文章会从基本概念出发，用实际操作去更加深入理解 docker。">
+<meta property="og:image" content="http://wdxtub.com/images/14596963929829.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14596967621449.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14596968187418.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14596971019958.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14596971443647.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14596980285832.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14596980932968.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14596987783177.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14596980285832.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14596998719751.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14596999803535.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14597002872580.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14597004851281.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14597044909422.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14597046071804.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14597046832387.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14597048507796.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14597049156842.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14597049744299.jpg">
+<meta property="og:updated_time" content="2016-04-03T17:56:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker 基本概念">
+<meta name="twitter:description" content="在 Docker 快速入门及试验环境配置中我们通过一个例子简单了解了 docker 的使用。这篇文章会从基本概念出发，用实际操作去更加深入理解 docker。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Docker 基本概念 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Docker 基本概念
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-03T06:03:09+08:00" content="2016-04-03">
+              2016-04-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/03/docker-basic-concept/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/03/docker-basic-concept/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在 <a href="/./2016/04/02/docker-first-step/">Docker 快速入门及试验环境配置</a>中我们通过一个例子简单了解了 docker 的使用。这篇文章会从基本概念出发，用实际操作去更加深入理解 docker。</p>
+<a id="more"></a>
+<hr>
+<p>具体的安装部分这里不赘述，可以在 <a href="/./2016/04/02/docker-first-step/">Docker 快速入门及试验环境配置</a> 的『安装』部分找到。</p>
+<p>先大概复习一下基本概念：</p>
+<p>主要是三个：</p>
+<ul>
+<li>镜像(Image)<ul>
+<li>一个只读的模板，镜像可以用来创建 Docker 容器</li>
+<li>可以简单创建或更新现有镜像，或者直接下载使用其他人的</li>
+</ul>
+</li>
+<li>容器(Container)<ul>
+<li>容器是从镜像创建的运行实例，在启动的时候创建一层可写层作为最上层（因为镜像是只读的）</li>
+<li>可以被启动、开始、停止、删除。每个容器都是相互隔离的、保证安全的平台</li>
+<li>可以把容器看做是一个简易版的 Linux 环境（包括root用户权限、进程空间、用户空间和网络空间等）和运行在其中的应用程序</li>
+</ul>
+</li>
+<li>仓库(Repository)<ul>
+<li>集中存放镜像文件的场所</li>
+<li>最大的公开仓库是 <a href="https://hub.docker.com/" target="_blank" rel="external">Docker Hub</a></li>
+<li>国内的公开仓库包括 <a href="http://www.dockerpool.com/" target="_blank" rel="external">Docker Pool</a> 等</li>
+<li>当用户创建了自己的镜像之后就可以使用 push 命令将它上传到公有或者私有仓库，这样下次在另外一台机器上使用这个镜像时候，只需要从仓库上 pull 下来就可以了</li>
+<li>Docker 仓库的概念跟 Git 类似，注册服务器可以理解为 GitHub 这样的托管服务</li>
+</ul>
+</li>
+</ul>
+<h2 id="u955C_u50CF"><a href="#u955C_u50CF" class="headerlink" title="镜像"></a>镜像</h2><p>我们可以使用 <code>docker pull</code> 命令从仓库中获取所需要的镜像。比如说 <code>sudo docker pull ubuntu:12.04</code>，相当于 <code>sudo docker pull registry.hub.docker.com/ubuntu:12.04</code>，即从注册服务器 <code>registry.hub.docker.com</code> 中的 <code>ubuntu</code> 仓库来下载标记为<code>12.04</code> 的镜像。</p>
+<p>如果想从其他仓库注册服务器下载，需要输入完成的地址，例如：<code>sudo docker pull dl.dockerpool.com:5000/ubuntu:12.04</code></p>
+<p>下载完成之后就可以使用该镜像了，比如下面的语句就会创建容器，其中运行 <code>bash</code>：<code>sudo docker run -t -i ubuntu:12.04 /bin/bash</code></p>
+<p>可以使用 <code>dokcer images</code> 来显示本地已有的镜像，如下</p>
+<p><img src="/images/14596963929829.jpg" alt="docker images"></p>
+<p>具体字段的意思一目了然，这里不再赘述。然后我们来运行官方例子 <code>whalesay</code> 镜像。</p>
+<h3 id="u8FD0_u884C_u955C_u50CF"><a href="#u8FD0_u884C_u955C_u50CF" class="headerlink" title="运行镜像"></a>运行镜像</h3><p>打开浏览器，进入 <a href="https://hub.docker.com/?utm_source=getting_started_guide&amp;utm_medium=embedded_Linux&amp;utm_campaign=find_whalesay" target="_blank" rel="external">Docker Hub</a></p>
+<p><img src="/images/14596967621449.jpg" alt="Docker Hub"></p>
+<p>搜索 <code>whalesay</code> 这个镜像，就可以看到结果，点进去可以看到详细内容（基于 Ubuntu）</p>
+<p><img src="/images/14596968187418.jpg" alt="whalesay image"></p>
+<p>然后我们来运行一下，使用命令 <code>docker run docker/whalesay cowsay boo</code>，其中 <code>cowsay</code> 是要运行的命令，后面的 <code>boo</code> 是参数。</p>
+<p>Docker 会先在本地查找有没有镜像，如果没有就从仓库中下载，具体的运行结果是：</p>
+<p><img src="/images/14596971019958.jpg" alt="cowsay boo"></p>
+<p>也可以让鲸鱼说不同的话，比如：</p>
+<p><img src="/images/14596971443647.jpg" alt=""></p>
+<h3 id="u5236_u4F5C_u955C_u50CF"><a href="#u5236_u4F5C_u955C_u50CF" class="headerlink" title="制作镜像"></a>制作镜像</h3><p>如果想要制作自己的镜像，需要自己写 Dockerfile。具体步骤如下</p>
+<ol>
+<li>创建一个文件夹 <code>mkdir wdxtub; cd wdxtub</code>，构造镜像所需的所有东西都会放在这个文件夹中</li>
+<li>创建一个名为 <code>Dockerfile</code> 的文件 <code>gedit Dockerfile</code></li>
+<li>添加第一句话 <code>FROM docker/whalesay:latest</code>，表示我们的镜像以 <code>whalesay</code> 为基础</li>
+<li>添加需要运行的命令，如 <code>RUN apt-get -y update &amp;&amp; apt-get install -y fortunes</code>（<code>fortunes</code> 这个程序会输出名言警句）</li>
+<li>通过 <code>CMD</code> 指定镜像载入之后需要执行的命令，如 <code>CMD /usr/games/fortune -a | cowsay</code></li>
+<li>保存并关闭 Dockerfile</li>
+<li>使用 <code>sudo docker build -t wdx-whale .</code> 来构造镜像，简单来说就是用 Dockerfile 中的内容按步骤构造</li>
+<li>使用 <code>docker images</code> 应该就可以看到我们新创建的镜像</li>
+</ol>
+<p><img src="/images/14596980285832.jpg" alt="wdx-whale image"></p>
+<p>然后我们就可以运行一下看看 <code>docker run wdx-whale</code></p>
+<p><img src="/images/14596980932968.jpg" alt="搞笑句"></p>
+<p>还有更贱的（感觉可以玩一天）</p>
+<p><img src="/images/14596987783177.jpg" alt=""></p>
+<p>如果想要把自己的镜像上传到网上，就需要注册一个 Docker Hub 帐号，然后点击 Create Repository，这里我创建了一个名为 <code>wdxtub/demo</code> 的公用仓库。</p>
+<p>接下来我们需要打上 tag，目前 <code>docker images</code> 的情况是：</p>
+<p><img src="/images/14596980285832.jpg" alt="wdx-whale image"></p>
+<p>记住我们的 IMAGE ID 26ac9649d7da。用以下命令打 tag <code>docker tag 26ac9649d7da wdxtub/wdx-whale:latest</code>，然后再 <code>docker images</code> 一次：</p>
+<p><img src="/images/14596998719751.jpg" alt=""></p>
+<p>然后用这个命令登录 <code>docker login --username=yourhubusername --email=youremail@company.com</code>，对于我来说就是 <code>docker login --username=wdxtub --email=dacrocodilee@gmail.com</code></p>
+<p>成功之后大概是这样：</p>
+<p><img src="/images/14596999803535.jpg" alt="登录成功"></p>
+<p>然后就可以 push 上去了 <code>docker push wdxtub/wdx-whale</code>，像下面这样</p>
+<p><img src="/images/14597002872580.jpg" alt="push"></p>
+<p>为了测试 pull 自己的镜像，我们先把本地上的 whale 镜像删掉：<code>docker rmi -f wdxtub/wdx-whale; docker rmi -f wdx-whale</code>（如果有其他的用不着的也都删掉），最后剩下（上课要用的镜像）：</p>
+<p><img src="/images/14597004851281.jpg" alt=""></p>
+<p>接着来运行一下 <code>docker run wdxtub/wdx-whale</code></p>
+<h3 id="u7BA1_u7406_u955C_u50CF"><a href="#u7BA1_u7406_u955C_u50CF" class="headerlink" title="管理镜像"></a>管理镜像</h3><p>我们可以把镜像导出到本地文件，使用 <code>docker save</code> 命令即可，比如针对我现在有的镜像 <code>wdxtub/wdx-whale(id:26ac9649d7da)</code>，可以这样：<code>docker save -o wdx-local-whale.tar wdxtub/wdx-whale</code>。如果要载入的话，使用下面的命令即可（会载入相关的元数据信息）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker load --input wdx-local-whale.tar</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">docker load &lt; wdx-local-whale.tar</span><br></pre></td></tr></table></figure>
+<p>在删除镜像之前要先用 <code>docker rm</code> 删掉依赖于这个镜像的所有容器.</p>
+<p><code>sudo docker rmi $(docker images -q -f &quot;dangling=true&quot;)</code></p>
+<blockquote>
+<p>镜像的实现原理</p>
+</blockquote>
+<p>Docker 镜像是怎么实现增量的修改和维护的？ 每个镜像都由很多层次构成，Docker 使用 <a href="http://en.wikipedia.org/wiki/UnionFS" target="_blank" rel="external">Union FS</a> 将这些不同的层结合到一个镜像中去。</p>
+<p>通常 Union FS 有两个用途, 一方面可以实现不借助 LVM、RAID 将多个 disk 挂到同一个目录下,另一个更常用的就是将一个只读的分支和一个可写的分支联合在一起，Live CD 正是基于此方法可以允许在镜像不变的基础上允许用户在其上进行一些写操作。 Docker 在 AUFS 上构建的容器也是利用了类似的原理。</p>
+<h2 id="u5BB9_u5668"><a href="#u5BB9_u5668" class="headerlink" title="容器"></a>容器</h2><p>容器是独立运行的一个或一组应用，以及它们的运行态环境。对应的，虚拟机可以理解为模拟运行的一整套操作系统（提供了运行态环境和其他系统环境）和跑在上面的应用。</p>
+<p>启动容器有两种方式，一种是基于镜像新建一个容器并启动，另外一个是将在终止状态（stopped）的容器重新启动。因为 Docker 的容器实在太轻量级了，很多时候用户都是随时删除和新创建容器（对于初级应用来说后者更方便）。</p>
+<p>当利用 docker run 来创建容器时，Docker 在后台运行的标准操作包括：</p>
+<ul>
+<li>检查本地是否存在指定的镜像，不存在就从公有仓库下载</li>
+<li>利用镜像创建并启动一个容器</li>
+<li>分配一个文件系统，并在只读的镜像层外面挂载一层可读写层</li>
+<li>从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中去</li>
+<li>从地址池配置一个 ip 地址给容器</li>
+<li>执行用户指定的应用程序</li>
+<li>执行完毕后容器被终止</li>
+</ul>
+<p>可以利用 <code>docker start</code> 命令，直接将一个已经终止的容器启动运行。<br>容器的核心为所执行的应用程序，所需要的资源都是应用程序运行所必需的。除此之外，并没有其它的资源。可以在伪终端中利用 <code>ps</code> 或 <code>top</code> 来查看进程信息。</p>
+<h3 id="u542F_u52A8"><a href="#u542F_u52A8" class="headerlink" title="启动"></a>启动</h3><p>举个例子，我们来创建一个 ubuntu:14.04 的容器 <code>docker run ubuntu:14.04 /bin/echo &#39;Hello wdx!&#39;</code></p>
+<p><img src="/images/14597044909422.jpg" alt=""></p>
+<p>用 <code>docker run -t -i ubuntu:14.04 /bin/bash</code> 可以启动一个 bash 终端用来交互。其中，-t 选项让Docker分配一个伪终端（pseudo-tty）并绑定到容器的标准输入上， -i 则让容器的标准输入保持打开。我们可以输入一些命令来测试</p>
+<p><img src="/images/14597046071804.jpg" alt=""></p>
+<p>我们用 <code>ps</code> 或 <code>top</code> 在伪终端中查看进程信息，可以看到：</p>
+<p><img src="/images/14597046832387.jpg" alt=""></p>
+<p>输入 <code>exit</code> 可以退出 docker</p>
+<p>容器中仅运行了指定的 bash 应用。这种特点使得 Docker 对资源的利用率极高，是货真价实的轻量级虚拟化。</p>
+<h3 id="u540E_u53F0_u8FD0_u884C"><a href="#u540E_u53F0_u8FD0_u884C" class="headerlink" title="后台运行"></a>后台运行</h3><p>更多的时候，需要让 Docker在后台运行而不是直接把执行命令的结果输出在当前宿主机下。此时，可以通过添加 -d 参数来实现。</p>
+<p>下面举两个例子来说明一下。</p>
+<p>如果不使用 -d 参数运行容器 <code>docker run ubuntu:14.04 /bin/sh -c &quot;while true; do echo hello world; sleep 1; done&quot;</code> 容器会把输出的结果(STDOUT)打印到宿主机上面</p>
+<p><img src="/images/14597048507796.jpg" alt=""></p>
+<p>如果使用了 -d 参数运行容器 <code>docker run -d ubuntu:14.04 /bin/sh -c &quot;while true; do echo hello world; sleep 1; done&quot;</code>，则显示是这样：</p>
+<p><img src="/images/14597049156842.jpg" alt=""></p>
+<p>使用 <code>docker logs containerid</code> 可以查看输出，如：</p>
+<p><img src="/images/14597049744299.jpg" alt=""></p>
+<p>使用 -d 参数启动后会返回一个唯一的 id，也可以通过 docker ps 命令来查看容器信息。容器是否会长久运行，是和docker run指定的命令有关，和 -d 参数无关</p>
+<p>在使用 -d 参数时，容器启动后会进入后台。 某些时候需要进入容器进行操作，有很多种方法，包括使用 docker attach 命令或 nsenter 工具等。具体参考<a href="https://yeasy.gitbooks.io/docker_practice/content/container/enter.html" target="_blank" rel="external">这里</a></p>
+<h3 id="u7EC8_u6B62_u4E0E_u91CD_u65B0_u542F_u52A8"><a href="#u7EC8_u6B62_u4E0E_u91CD_u65B0_u542F_u52A8" class="headerlink" title="终止与重新启动"></a>终止与重新启动</h3><p>使用 <code>docker stop containerid</code> 来终止容器。终止状态的容器可以用 <code>docker ps -a</code> 命令看到。</p>
+<p>另外，<code>docker restart containerid</code> 命令会将一个运行态的容器终止，然后再重新启动它。</p>
+<h3 id="u5BFC_u5165_u5BFC_u51FA_u4E0E_u5220_u9664"><a href="#u5BFC_u5165_u5BFC_u51FA_u4E0E_u5220_u9664" class="headerlink" title="导入导出与删除"></a>导入导出与删除</h3><p>如果要导出本地某个容器，可以使用 <code>docker export containerid</code> 命令。</p>
+<p>可以使用 <code>docker import</code> 从容器快照文件中再导入为镜像，例如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat ubuntu.tar | sudo docker import - <span class="built_in">test</span>/ubuntu:v1.<span class="number">0</span></span><br><span class="line"><span class="comment"># 也可以通过指定 URL 或者某个目录来导入，例如</span></span><br><span class="line">docker import http://example.com/exampleimage.tgz example/imagerepo</span><br></pre></td></tr></table></figure>
+<p>用户既可以使用 docker load 来导入镜像存储文件到本地镜像库，也可以使用docker import 来导入一个容器快照到本地镜像库。这两者的区别在于容器快照文件将丢弃所有的历史记录和元数据信息（即仅保存容器当时的快照状态），而镜像存储文件将保存完整记录，体积也要大。此外，从容器快照文件导入时可以重新指定标签等元数据信息。</p>
+<p>可以使用 <code>docker rm</code> 来删除一个处于终止状态的容器。如果要删除一个运行中的容器，可以添加 -f 参数。Docker 会发送 SIGKILL 信号给容器。</p>
+<p>用 <code>docker ps -a</code> 命令可以查看所有已经创建的包括终止状态的容器，如果数量太多要一个个删除可能会很麻烦，用 <code>docker rm $(docker ps -a -q)</code> 可以全部清理掉。</p>
+<p>注意：这个命令其实会试图删除所有的包括还在运行中的容器，不过就像上面提过的<code>docker rm</code> 默认并不会删除运行中的容器。</p>
+<h2 id="u4ED3_u5E93"><a href="#u4ED3_u5E93" class="headerlink" title="仓库"></a>仓库</h2><p>仓库（Repository）是集中存放镜像的地方。</p>
+<p>一个容易混淆的概念是注册服务器（Registry）。实际上注册服务器是管理仓库的具体服务器，每个服务器上可以有多个仓库，而每个仓库下面有多个镜像。从这方面来说，仓库可以被认为是一个具体的项目或目录。例如对于仓库地址dl.dockerpool.com/ubuntu 来说，dl.dockerpool.com 是注册服务器地址，ubuntu是仓库名。</p>
+<p>大部分时候，并不需要严格区分这两者的概念。相信信息可以直接看教程，这里不赘述了。</p>
+<ul>
+<li><a href="https://yeasy.gitbooks.io/docker_practice/content/repository/dockerhub.html" target="_blank" rel="external">Docker Hub 指南</a></li>
+<li><a href="https://yeasy.gitbooks.io/docker_practice/content/repository/local_repo.html" target="_blank" rel="external">私有仓库指南</a></li>
+<li><a href="https://yeasy.gitbooks.io/docker_practice/content/repository/config.html" target="_blank" rel="external">配置文件指南</a></li>
+</ul>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="/Find and run the whalesay image">Find and run the whalesay image</a></li>
+<li><a href="https://yeasy.gitbooks.io/docker_practice/content/image/create.html" target="_blank" rel="external">创建镜像</a></li>
+<li><a href="https://yeasy.gitbooks.io/docker_practice/content/container/enter.html" target="_blank" rel="external">进入容器</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag">#Docker</a>
+          
+            <a href="/tags/概念/" rel="tag">#概念</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/02/docker-first-step/" rel="next" title="Docker 快速入门及试验环境配置">
+                <i class="fa fa-chevron-left"></i> Docker 快速入门及试验环境配置
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/03/docker-gossip/" rel="prev" title="Docker 碎碎念">
+                Docker 碎碎念 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/03/docker-basic-concept/"
+           data-title="Docker 基本概念" data-url="http://wdxtub.com/2016/04/03/docker-basic-concept/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u955C_u50CF"><span class="nav-number">1.</span> <span class="nav-text">镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u8FD0_u884C_u955C_u50CF"><span class="nav-number">1.1.</span> <span class="nav-text">运行镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5236_u4F5C_u955C_u50CF"><span class="nav-number">1.2.</span> <span class="nav-text">制作镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7BA1_u7406_u955C_u50CF"><span class="nav-number">1.3.</span> <span class="nav-text">管理镜像</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5BB9_u5668"><span class="nav-number">2.</span> <span class="nav-text">容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u542F_u52A8"><span class="nav-number">2.1.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u540E_u53F0_u8FD0_u884C"><span class="nav-number">2.2.</span> <span class="nav-text">后台运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7EC8_u6B62_u4E0E_u91CD_u65B0_u542F_u52A8"><span class="nav-number">2.3.</span> <span class="nav-text">终止与重新启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5BFC_u5165_u5BFC_u51FA_u4E0E_u5220_u9664"><span class="nav-number">2.4.</span> <span class="nav-text">导入导出与删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4ED3_u5E93"><span class="nav-number">3.</span> <span class="nav-text">仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

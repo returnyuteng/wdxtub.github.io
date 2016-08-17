@@ -1,0 +1,953 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CSAPP,IO,读薄," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Linux 系统中 IO 的概念是非常有趣的，结合『所有东西都是文件』这个抽象，无论是输入输出重定向，还是挂载不同的设备，甚至是网络编程，都可以由系统输入输出这个统一的模型来进行描述。这一讲我们就来了解一下以 stdin, stdout 等为代表的系统输入输出。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【读薄 CSAPP】陆 系统输入输出">
+<meta property="og:url" content="http://wdxtub.com/2016/04/16/thin-csapp-6/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="Linux 系统中 IO 的概念是非常有趣的，结合『所有东西都是文件』这个抽象，无论是输入输出重定向，还是挂载不同的设备，甚至是网络编程，都可以由系统输入输出这个统一的模型来进行描述。这一讲我们就来了解一下以 stdin, stdout 等为代表的系统输入输出。">
+<meta property="og:image" content="http://wdxtub.com/images/14614963360280.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14614966173879.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14614968463687.jpg">
+<meta property="og:updated_time" content="2016-04-24T11:52:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【读薄 CSAPP】陆 系统输入输出">
+<meta name="twitter:description" content="Linux 系统中 IO 的概念是非常有趣的，结合『所有东西都是文件』这个抽象，无论是输入输出重定向，还是挂载不同的设备，甚至是网络编程，都可以由系统输入输出这个统一的模型来进行描述。这一讲我们就来了解一下以 stdin, stdout 等为代表的系统输入输出。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 【读薄 CSAPP】陆 系统输入输出 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【读薄 CSAPP】陆 系统输入输出
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-16T09:07:24+08:00" content="2016-04-16">
+              2016-04-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/16/thin-csapp-6/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/16/thin-csapp-6/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Linux 系统中 IO 的概念是非常有趣的，结合『所有东西都是文件』这个抽象，无论是输入输出重定向，还是挂载不同的设备，甚至是网络编程，都可以由系统输入输出这个统一的模型来进行描述。这一讲我们就来了解一下以 <code>stdin</code>, <code>stdout</code> 等为代表的系统输入输出。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<li>理解 Unix I/O 的设计与应用</li>
+<li>了解不同的文件类型</li>
+<li>理解文件描述符(file descriptor)及在读写中的应用</li>
+<li>了解元数据的相关概念及访问方法</li>
+<li>理解输入输出重定向的实现机制</li>
+<li>简单了解 C 标准库中的标准 I/O 函数</li>
+<li>知道如何根据不同场景选择对应的 I/O 方式</li>
+</ol>
+<h2 id="Unix_I/O"><a href="#Unix_I/O" class="headerlink" title="Unix I/O"></a>Unix I/O</h2><p>在 Linux 中，文件实际上可以看做是字节的序列。更有意思的是，所有的 I/O 设备也是用文件来表示的，比如：</p>
+<ul>
+<li><code>./dev/sda2</code> (<code>/usr</code> 磁盘分区)</li>
+<li><code>/dev/tty2</code> (终端)</li>
+</ul>
+<p>甚至连内核也是用文件来表示的：</p>
+<ul>
+<li><code>/boot/vmlinuz-3.13.0-55-generic</code> (内核镜像)</li>
+<li><code>/proc</code> (内核数据结构)</li>
+</ul>
+<p>因为 I/O 设备也是文件，所以内核可以利用称为 Unix I/O 的简单接口来处理输入输出，比如使用 <code>open()</code> 和 <code>close()</code> 来打开和关闭文件，使用 <code>read()</code> 和 <code>write()</code> 来读写文件，或者利用 <code>lseek()</code> 来设定读取的偏移量等等。</p>
+<p>为了区别不同文件的类型，会有一个 <code>type</code> 来进行区别：</p>
+<ul>
+<li>普通文件：包含任意数据</li>
+<li>目录：相关一组文件的索引</li>
+<li>套接字 Socket：和另一台机器上的进程通信的类型</li>
+</ul>
+<p>其实还有一些比较特别的类型，但是这里提一下，不深入了解：</p>
+<ul>
+<li>Named pipes(FIFOs)</li>
+<li>Symbolic links</li>
+<li>Character and block devices</li>
+</ul>
+<p><strong>普通文件</strong></p>
+<p>普通的文件包含任意数据，应用一般来说需要区分出文本文件和二进制文件。文本文件只包含 ASCII 或 Unicode 字符。除此之外的都是二进制文件(对象文件, JPEG 图片, 等等)。对于内核来说其实并不能区分出个中的区别。</p>
+<p>文本文件就是一系列的文本行，每行以 <code>\n</code> 结尾，新的一行是 <code>0xa</code>，和 ASCII 码中的 line feed 字符(LF) 一样。不同系统用用判断一行结束的符号不同(End of line, EOL)，如：</p>
+<ul>
+<li>Linux &amp; Mac OS: <code>\n</code>(0xa)<ul>
+<li>line feed(LF) </li>
+</ul>
+</li>
+<li>Windows &amp; 网络协议: <code>\r\n</code> (0xd 0xa)<ul>
+<li>Carriage return(CR) followed by line feed(LF)</li>
+</ul>
+</li>
+</ul>
+<p><strong>目录</strong></p>
+<p>目录包含一个链接(link)数组，并且每个目录至少包含两条记录：</p>
+<ul>
+<li><code>.</code>(dot) 当前目录</li>
+<li><code>..</code>(dot dot) 上一层目录</li>
+</ul>
+<p>用来操作目录的命令主要有 <code>mkdir</code>, <code>ls</code>, <code>rmdir</code>。目录是以树状结构组织的，根目录是 <code>/</code>(slash)。</p>
+<p>内核会为每个进程保存当前工作目录(cwd, current working directory)，可以用 <code>cd</code> 命令来进行更改。我们通过路径名来确定文件的位置，一般分为绝对路径和相对路径。</p>
+<p>接下来我们了解一下基本的文件操作。</p>
+<h3 id="u6253_u5F00_u6587_u4EF6"><a href="#u6253_u5F00_u6587_u4EF6" class="headerlink" title="打开文件"></a>打开文件</h3><p>在使用文件之前需要通知内核打开该文件：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> fd; <span class="comment">// 文件描述符 file descriptor</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ((fd = open(<span class="string">"/etc/hosts"</span>, O_RDONLY)) &lt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    perror(<span class="string">"open"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回值是一个小的整型称为文件描述符(file descriptor)，如果这个值等于 -1 则说明发生了错误。每个由 Linux sheel 创建的进程都会默认打开三个文件（注意这里的文件概念）：</p>
+<ul>
+<li>0: standard input(stdin)</li>
+<li>1: standard output(stdout)</li>
+<li>2: standar error(stderr)</li>
+</ul>
+<h3 id="u5173_u95ED_u6587_u4EF6"><a href="#u5173_u95ED_u6587_u4EF6" class="headerlink" title="关闭文件"></a>关闭文件</h3><p>使用完毕之后同样需要通知内核关闭文件：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> fd;     <span class="comment">// 文件描述符</span></span><br><span class="line"><span class="keyword">int</span> retval; <span class="comment">// 返回值</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> ((retval = close(fd)) &lt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    perror(<span class="string">"close"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果在此关闭已经关闭了的文件，会出大问题。所以一定要检查返回值，哪怕是 <code>close()</code> 函数（如上面的例子所示）</p>
+<h3 id="u8BFB_u53D6_u6587_u4EF6"><a href="#u8BFB_u53D6_u6587_u4EF6" class="headerlink" title="读取文件"></a>读取文件</h3><p>在打开和关闭之间就是读取文件，实际上就是把文件中对应的字节复制到内存中，并更新文件指针：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> buf[<span class="number">512</span>];</span><br><span class="line"><span class="keyword">int</span> fd;</span><br><span class="line"><span class="keyword">int</span> nbytes;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打开文件描述符，并从中读取 512 字节的数据</span></span><br><span class="line"><span class="keyword">if</span> ((nbytes = read(fd, buf, <span class="keyword">sizeof</span>(buf))) &lt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    perror(<span class="string">"read"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回值是读取的字节数量，是一个 <code>ssize_t</code> 类型（其实就是一个有符号整型），如果 <code>nbytes &lt; 0</code> 那么表示出错。<code>nbytes &lt; sizeof(buf)</code> 这种情况(short counts) 是可能发生的，而且并不是错误。</p>
+<h3 id="u5199_u5165_u6587_u4EF6"><a href="#u5199_u5165_u6587_u4EF6" class="headerlink" title="写入文件"></a>写入文件</h3><p>写入文件是把内存中的数据复制到文件中，并更新文件指针：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> buf[<span class="number">512</span>];</span><br><span class="line"><span class="keyword">int</span> fd;</span><br><span class="line"><span class="keyword">int</span> nbytes;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打开文件描述符，并向其写入 512 字节的数据</span></span><br><span class="line"><span class="keyword">if</span> ((nbytes = write(fd, buf, <span class="keyword">sizeof</span>(buf)) &lt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    perror(<span class="string">"write"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回值是写入的字节数量，如果 <code>nbytes &lt; 0</code> 那么表示出错。<code>nbytes &lt; sizeof(buf)</code> 这种情况(short counts) 是可能发生的，而且并不是错误。</p>
+<p>综合上面的操作，我们可以来看看 Unix I/O 的例子，这里我们一个字节一个字节把标准输入复制到标准输出中：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">"csapp.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">    <span class="keyword">while</span>(Read(STDIN_FILENO, &amp;c, <span class="number">1</span>) != <span class="number">0</span>)</span><br><span class="line">        Write(STDOUT_FILENO, &amp;c, <span class="number">1</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>前面提到的 short count 会在下面的情形下发生：</p>
+<ul>
+<li>在读取的时候遇到 EOF(end-of-file)</li>
+<li>从终端中读取文本行</li>
+<li>读取和写入网络 sockets</li>
+</ul>
+<p>但是在下面的情况下不会发生</p>
+<ul>
+<li>从磁盘文件中读取（除 EOF 外）</li>
+<li>写入到磁盘文件中</li>
+</ul>
+<p>最好总是允许 short count，这样就可以避免处理这么多不同的情况。</p>
+<h2 id="u5143_u6570_u636E"><a href="#u5143_u6570_u636E" class="headerlink" title="元数据"></a>元数据</h2><p>元数据是用来描述数据的数据，由内核维护，可以通过 <code>stat</code> 和 <code>fstat</code> 函数来访问，其结构是：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> stat</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">dev_t</span>           st_dev;     <span class="comment">// Device</span></span><br><span class="line">    <span class="keyword">ino_t</span>           st_ino;     <span class="comment">// inode</span></span><br><span class="line">    <span class="keyword">mode_t</span>          st_mode;    <span class="comment">// Protection &amp; file type</span></span><br><span class="line">    <span class="keyword">nlink_t</span>         st_nlink;   <span class="comment">// Number of hard links</span></span><br><span class="line">    <span class="keyword">uid_t</span>           st_uid;     <span class="comment">// User ID of owner</span></span><br><span class="line">    <span class="keyword">gid_t</span>           st_gid;     <span class="comment">// Group ID of owner</span></span><br><span class="line">    <span class="keyword">dev_t</span>           st_rdev;    <span class="comment">// Device type (if inode device)</span></span><br><span class="line">    <span class="keyword">off_t</span>           st_size;    <span class="comment">// Total size, in bytes</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span>   st_blksize; <span class="comment">// Blocksize for filesystem I/O</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span>   st_blocks;  <span class="comment">// Number of blocks allocated</span></span><br><span class="line">    <span class="keyword">time_t</span>          st_atime;   <span class="comment">// Time of last access</span></span><br><span class="line">    <span class="keyword">time_t</span>          st_mtime;   <span class="comment">// Time of last modification</span></span><br><span class="line">    <span class="keyword">time_t</span>          st_ctime;   <span class="comment">// Time of last change</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的访问例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> stat stat;</span><br><span class="line">    <span class="keyword">char</span> *type, *readok;</span><br><span class="line">    </span><br><span class="line">    Stat(argv[<span class="number">1</span>], &amp;stat);</span><br><span class="line">    <span class="keyword">if</span> (S_ISREG(stat.st_mode)) <span class="comment">// 确定文件类型</span></span><br><span class="line">        type = <span class="string">"regular"</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (S_ISDIR(stat.st_mode))</span><br><span class="line">        type = <span class="string">"directory"</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        type = <span class="string">"other"</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> ((stat.st_mode &amp; S_IRUSR)) <span class="comment">// 检查读权限</span></span><br><span class="line">        readok = <span class="string">"yes"</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        readok = <span class="string">"no"</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"type: %s, read: %s\n"</span>, type, readok);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u91CD_u5B9A_u5411"><a href="#u91CD_u5B9A_u5411" class="headerlink" title="重定向"></a>重定向</h2><p>了解了具体的结构之后，我们来看看内核是如何表示已打开的文件的。其实过程很简单，每个进程都有自己的描述符表(Descriptor table)，然后 Descriptor 1 指向终端，Descriptor 4 指向磁盘文件，如下图所示：</p>
+<p><img src="/images/14614963360280.jpg" alt=""></p>
+<p>这里有一个需要说明的情况，就是使用 <code>fork</code>。子进程实际上是会继承父进程打开的文件的。在 fork 之后，子进程实际上和父进程的指向是一样的，这里需要注意的是会把引用计数加 1，如下图所示</p>
+<p><img src="/images/14614966173879.jpg" alt=""></p>
+<p>了解了这个，我们我们就可以知道所谓的重定向是怎么实现的了。其实很简单，只要调用 <code>dup2(oldfd, newfd)</code> 函数即可。我们只要改变文件描述符指向的文件，也就完成了重定向的过程，下图中我们把原来指向终端的文件描述符指向了磁盘文件，也就把终端上的输出保存在了文件中：</p>
+<p><img src="/images/14614968463687.jpg" alt=""></p>
+<h2 id="u6807_u51C6_u8F93_u5165_u8F93_u51FA"><a href="#u6807_u51C6_u8F93_u5165_u8F93_u51FA" class="headerlink" title="标准输入输出"></a>标准输入输出</h2><p>C 标准库中包含一系列高层的标准 IO 函数，比如</p>
+<ul>
+<li>打开和关闭文件: <code>fopen</code>, <code>fclose</code></li>
+<li>读取和写入字节: <code>fread</code>, <code>fwrite</code></li>
+<li>读取和写入行: <code>fgets</code>, <code>fputs</code></li>
+<li>格式化读取和写入: <code>fscanf</code>, <code>fprintf</code></li>
+</ul>
+<p>标准 IO 会用流的形式打开文件，所谓流(stream)实际上是文件描述符和缓冲区(buffer)在内存中的抽象。C 程序一般以三个流开始，如下所示：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">extern</span> FILE *<span class="built_in">stdin</span>;     <span class="comment">// 标准输入 descriptor 0</span></span><br><span class="line"><span class="keyword">extern</span> FILE *<span class="built_in">stdout</span>;    <span class="comment">// 标准输出 descriptor 1</span></span><br><span class="line"><span class="keyword">extern</span> FILE *<span class="built_in">stderr</span>;    <span class="comment">// 标准错误 descriptor 2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="built_in">fprintf</span>(<span class="built_in">stdout</span>, <span class="string">"Hello, Da Wang\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来我们详细了解一下为什么需要使用缓冲区，程序经常会一次读入或者写入一个字符，比如 <code>getc</code>, <code>putc</code>, <code>ungetc</code>，同时也会一次读入或者写入一行，比如 <code>gets</code>, <code>fgets</code>。如果用 Unix I/O 的方式来进行调用，是非常昂贵的，比如说 <code>read</code> 和 <code>write</code> 因为需要内核调用，需要大于 10000 个时钟周期。</p>
+<p>解决的办法就是利用 <code>read</code> 函数一次读取一块数据，然后再由高层的接口，一次从缓冲区读取一个字符（当缓冲区用完的时候需要重新填充）</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>前面介绍了两种 I/O 方法，Unix I/O 是最底层的，通过系统调用来进行文件操作，在这之上是 C 的标准 I/O 库，对应的函数为：</p>
+<ul>
+<li>Unix I/O: <code>open</code>, <code>read</code>, <code>write</code>, <code>lseek</code>, <code>stat</code>, <code>close</code></li>
+<li>Standard C I/O: <code>fopen</code>, <code>fdopen</code>, <code>fread</code>, <code>fwrite</code>, <code>fscanf</code>, <code>fprintf</code>, <code>sscanf</code>, <code>sprintf</code>, <code>fgets</code>, <code>fputs</code>, <code>fflush</code>, <code>fseek</code>, <code>fclose</code></li>
+</ul>
+<p>Unix I/O 是最通用最底层的 I/O 方法，其他的 I/O 包都是在 Unix I/O 的基础上进行构建的，值得注意的一点是，Unix I/O 中的方法都是异步信号安全(async-signal-safe)的，也就是说，可以在信号处理器中调用。因为比较底层和基础的缘故，需要处理的情况非常多，很容易出错。高效率的读写需要用到缓冲区，同样容易出错，这也就是标准 C 库着重要解决的问题。</p>
+<p>标准 C I/O 提供了带缓存访问文件的方法，使用的时候几乎不用考虑太多，但是如果我们想要得到文件的元信息时，就还是得使用 Unix I/O 中的 <code>stat</code> 函数。另外标准 C I/O 中的函数都不是异步信号安全(async-signal-safe)的，所以并不能在信号处理器中使用。最后，标准 C I/O 不适合用于处理网络套接字。</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://www.ostera.io/tldr.jsx/#/?_k=tfdvsj" target="_blank" rel="external">查看命令用法</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSAPP/" rel="tag">#CSAPP</a>
+          
+            <a href="/tags/IO/" rel="tag">#IO</a>
+          
+            <a href="/tags/读薄/" rel="tag">#读薄</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/16/thin-csapp-5/" rel="next" title="【读薄 CSAPP】伍 异常控制流">
+                <i class="fa fa-chevron-left"></i> 【读薄 CSAPP】伍 异常控制流
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/16/thin-csapp-7/" rel="prev" title="【读薄 CSAPP】柒 虚拟内存与动态内存分配">
+                【读薄 CSAPP】柒 虚拟内存与动态内存分配 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/16/thin-csapp-6/"
+           data-title="【读薄 CSAPP】陆 系统输入输出" data-url="http://wdxtub.com/2016/04/16/thin-csapp-6/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B66_u4E60_u76EE_u6807"><span class="nav-number">1.</span> <span class="nav-text">学习目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unix_I/O"><span class="nav-number">2.</span> <span class="nav-text">Unix I/O</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u6253_u5F00_u6587_u4EF6"><span class="nav-number">2.1.</span> <span class="nav-text">打开文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5173_u95ED_u6587_u4EF6"><span class="nav-number">2.2.</span> <span class="nav-text">关闭文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u8BFB_u53D6_u6587_u4EF6"><span class="nav-number">2.3.</span> <span class="nav-text">读取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5199_u5165_u6587_u4EF6"><span class="nav-number">2.4.</span> <span class="nav-text">写入文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5143_u6570_u636E"><span class="nav-number">3.</span> <span class="nav-text">元数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u91CD_u5B9A_u5411"><span class="nav-number">4.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6807_u51C6_u8F93_u5165_u8F93_u51FA"><span class="nav-number">5.</span> <span class="nav-text">标准输入输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

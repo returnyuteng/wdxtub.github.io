@@ -1,0 +1,685 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="我们需要比较两个不同的 web 框架的性能，于是也选择了当下比较热门的 Vert.x 框架来做比较，网上的中文资源还是比较少的，这里同样记录一下如何在 EC2 上搭建和部署 Vert.x。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 Twitter 语料分析 3 Vert.x 配置部署">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-p3.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="我们需要比较两个不同的 web 框架的性能，于是也选择了当下比较热门的 Vert.x 框架来做比较，网上的中文资源还是比较少的，这里同样记录一下如何在 EC2 上搭建和部署 Vert.x。">
+<meta property="og:image" content="http://wdxtub.com/images/14568662369892.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14568725986794.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14568771965878.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14568776771132.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14568776972444.jpg">
+<meta property="og:updated_time" content="2016-03-02T00:19:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 Twitter 语料分析 3 Vert.x 配置部署">
+<meta name="twitter:description" content="我们需要比较两个不同的 web 框架的性能，于是也选择了当下比较热门的 Vert.x 框架来做比较，网上的中文资源还是比较少的，这里同样记录一下如何在 EC2 上搭建和部署 Vert.x。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 Twitter 语料分析 3 Vert.x 配置部署 | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>我们需要比较两个不同的 web 框架的性能，于是也选择了当下比较热门的 Vert.x 框架来做比较，网上的中文资源还是比较少的，这里同样记录一下如何在 EC2 上搭建和部署 Vert.x。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u73AF_u5883_u914D_u7F6E"><a href="#u73AF_u5883_u914D_u7F6E" class="headerlink" title="环境配置"></a>环境配置</h2><p>先启动一个标准的 Ubuntu 镜像（因为有 apt-get 安装软件比较方便）</p>
+<p>我们需要安装 java 和 maven，并配置好对应的路径，具体参考下面的命令，这里和之前不同的是需要安装 Java 8，以及 maven 3：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装 java,maven</span></span><br><span class="line">sudo add-apt-repository ppa:webupd8team/java</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install oracle-java8-installer</span><br><span class="line">sudo add-apt-repository <span class="string">"deb http://ppa.launchpad.net/natecarlson/maven3/ubuntu precise main"</span></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install maven3</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置默认 jdk</span></span><br><span class="line">sudo update-alternatives --config java</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 Java Home 编辑 ~/.bashrc</span></span><br><span class="line">JAVA_HOME=/usr/</span><br><span class="line"><span class="built_in">export</span> JAVA_HOME</span><br><span class="line">PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span></span><br><span class="line"><span class="built_in">export</span> PATH</span><br></pre></td></tr></table></figure>
+<h2 id="Hello_World"><a href="#Hello_World" class="headerlink" title="Hello World"></a>Hello World</h2><p>同样用 maven 来创建项目，这次我们直接手动现在本地建立如下所示的文件层级：</p>
+<p><img src="/images/14568662369892.jpg" alt="项目目录"></p>
+<p>然后我们修改 <code>pom.xml</code> 文件，具体如下：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">project</span> <span class="attribute">xmlns</span>=<span class="value">"http://maven.apache.org/POM/4.0.0"</span></span><br><span class="line">         <span class="attribute">xmlns:xsi</span>=<span class="value">"http://www.w3.org/2001/XMLSchema-instance"</span></span><br><span class="line">         <span class="attribute">xsi:schemaLocation</span>=<span class="value">"http://maven.apache.org/POM/4.0.0</span><br><span class="line">                      http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="title">modelVersion</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>housailei.vertx<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>vertx-server<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="title">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="title">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>io.vertx<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>vertx-core<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">version</span>&gt;</span>3.0.0<span class="tag">&lt;/<span class="title">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="title">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="title">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">plugins</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">version</span>&gt;</span>3.3<span class="tag">&lt;/<span class="title">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">configuration</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="title">source</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="title">target</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">configuration</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="title">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="title">plugin</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>maven-shade-plugin<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">version</span>&gt;</span>2.3<span class="tag">&lt;/<span class="title">version</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">executions</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">execution</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="title">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="title">phase</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="title">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">goal</span>&gt;</span>shade<span class="tag">&lt;/<span class="title">goal</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="title">goals</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="title">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">transformers</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="title">transformer</span></span><br><span class="line">                    <span class="attribute">implementation</span>=<span class="value">"org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="title">manifestEntries</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="title">Main-Class</span>&gt;</span>io.vertx.core.Starter<span class="tag">&lt;/<span class="title">Main-Class</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="title">Main-Verticle</span>&gt;</span>housailei.vertx.App<span class="tag">&lt;/<span class="title">Main-Verticle</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="title">manifestEntries</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="title">transformer</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="title">transformers</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">artifactSet</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">outputFile</span>&gt;</span>$&#123;project.build.directory&#125;/$&#123;project.artifactId&#125;-$&#123;project.version&#125;-fat.jar<span class="tag">&lt;/<span class="title">outputFile</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="title">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="title">execution</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="title">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">plugins</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="title">build</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后我们在 <code>src/main/java/housailei/vertx/</code> 下创建一个 <code>App.java</code> 文件：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> housailei.vertx;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.vertx.core.AbstractVerticle;</span><br><span class="line"><span class="keyword">import</span> io.vertx.core.Future;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="annotation">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(Future&lt;Void&gt; fut)</span> </span>&#123;</span><br><span class="line">    vertx</span><br><span class="line">        .createHttpServer()</span><br><span class="line">        .requestHandler(r -&gt; &#123;</span><br><span class="line">          r.response().end(<span class="string">"&lt;h1&gt;Hello from my first "</span> +</span><br><span class="line">              <span class="string">"Vert.x 3 application! config by dawang&lt;/h1&gt;"</span>);</span><br><span class="line">        &#125;)</span><br><span class="line">        .listen(<span class="number">8080</span>, result -&gt; &#123;</span><br><span class="line">          <span class="keyword">if</span> (result.succeeded()) &#123;</span><br><span class="line">            fut.complete();</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            fut.fail(result.cause());</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后我们把代码上传回服务器上：<code>scp -i ../group.pem -r ./* ubuntu@dns.amazonaws.com:~/vertx-server/</code></p>
+<p>执行的话稍微麻烦一点</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mvn3 clean package</span><br><span class="line">java -jar target/vertx-server-<span class="number">1.0</span>-SNAPSHOT-fat.jar</span><br></pre></td></tr></table></figure>
+<p>正常运行如下图所示：</p>
+<p><img src="/images/14568725986794.jpg" alt="正常运行截图"></p>
+<h2 id="u5B9E_u73B0_REST"><a href="#u5B9E_u73B0_REST" class="headerlink" title="实现 REST"></a>实现 REST</h2><p>前面的代码虽然可以工作，我们没办法设定不同的 api，也没办法做更进一步的处理，所以我们现在来更进一步，实现一个 RESTful 的简易 API。</p>
+<p>我们先要在 <code>pom.xml</code> 文件中添加依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>io.vertx<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>vertx-web<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="title">version</span>&gt;</span>3.2.1<span class="tag">&lt;/<span class="title">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后对应修改 <code>start</code> 方法，如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(Future&lt;Void&gt; fut)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Create a router object.</span></span><br><span class="line">   Router router = Router.router(vertx);</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Bind "/" to our hello message - so we are still compatible.</span></span><br><span class="line">   router.route(<span class="string">"/"</span>).handler(routingContext -&gt; &#123;</span><br><span class="line">   HttpServerResponse response = routingContext.response();</span><br><span class="line">   response</span><br><span class="line">      .putHeader(<span class="string">"content-type"</span>, <span class="string">"text/html"</span>)</span><br><span class="line">      .end(<span class="string">"&lt;h1&gt;Hello from my first "</span> +</span><br><span class="line">         <span class="string">"Vert.x 3 application! config by dawang&lt;/h1&gt;"</span>);</span><br><span class="line">   &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="comment">// Create the HTTP server and pass the "accept" method to the request handler.</span></span><br><span class="line">   vertx.createHttpServer().requestHandler(router::accept)</span><br><span class="line">       .listen(</span><br><span class="line">       <span class="comment">// Retrieve the port from the configuration,</span></span><br><span class="line">       <span class="comment">// default to 8080.</span></span><br><span class="line">       config().getInteger(<span class="string">"http.port"</span>, <span class="number">8080</span>), result -&gt; &#123;</span><br><span class="line">           <span class="keyword">if</span> (result.succeeded()) &#123;</span><br><span class="line">               fut.complete();</span><br><span class="line">           &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               fut.fail(result.cause());</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在开始start方法里创建了一个 <code>Router</code> 对象。router 是 Vert.x Web 的基础，负责分发 HTTP 请求到 handler（处理器），在Vert.x Web中还有两个很重要的概念。</p>
+<ul>
+<li>Route - 定义请求的分发</li>
+<li>Handler - 这是实际处理请求并且返回结果的地方。Handlers可以被链接起来使用。</li>
+</ul>
+<p>如果明白了这3个概念（Router、Routes、Handlers），就能明白 Vert.x Web 了。</p>
+<p>重新运行一次，可以看到结果如下：</p>
+<p><img src="/images/14568771965878.jpg" alt="再次配置成功"></p>
+<p>然后我们多定义几个接口，并对应不同的方法来实现，同样是在 <code>start</code> 方法中，添加两条 router 规则：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">router.get(<span class="string">"/api/hou"</span>).handler(<span class="keyword">this</span>::HouHandler);</span><br><span class="line">router.get(<span class="string">"/api/sai"</span>).handler(<span class="keyword">this</span>::SaiHandler);</span><br></pre></td></tr></table></figure>
+<p>然后创建对应的方法（就不用都写在一个函数里了）：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">HouHandler</span><span class="params">(RoutingContext routingContext)</span></span>&#123;</span><br><span class="line">   routingContext.response()</span><br><span class="line">       .putHeader(<span class="string">"content-type"</span>, <span class="string">"application/json; charset=utf-8"</span>)</span><br><span class="line">       .end(<span class="string">"This is Hou HOu HOU!!! API!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">SaiHandler</span><span class="params">(RoutingContext routingContext)</span></span>&#123;</span><br><span class="line">   routingContext.response()</span><br><span class="line">       .putHeader(<span class="string">"content-type"</span>, <span class="string">"application/json; charset=utf-8"</span>)</span><br><span class="line">       .end(<span class="string">"This is Sai SAi SAI!!! API!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们再测试一下，可以看到 api 已经启用了：</p>
+<p><img src="/images/14568776771132.jpg" alt="Hou Content"></p>
+<p><img src="/images/14568776972444.jpg" alt="Sai Content"></p>
+<p>有了这些，我们就可以自己来进行操作了，虽然可能代码丑一些，不过易上手，容易改。</p>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://vertx.io/docs/" target="_blank" rel="external">官方文档</a></li>
+<li><a href="http://vertx.io/docs/vertx-core/java/" target="_blank" rel="external">Vertx Core 手册</a></li>
+<li><a href="http://vertx.io/docs/apidocs/" target="_blank" rel="external">Vertx Core API 文档</a></li>
+<li><a href="http://vertx.io/docs/vertx-web/java/" target="_blank" rel="external">Vertx Web 手册</a></li>
+<li><a href="http://vertx.io/docs/apidocs/" target="_blank" rel="external">Vertx Web API 文档</a></li>
+</ul>
+<p>非常有用的新手入门教程</p>
+<ul>
+<li><a href="http://vertx.io/blog/my-first-vert-x-3-application/index.html" target="_blank" rel="external">My first Vert.x 3 Application</a></li>
+<li><a href="http://vertx.io/blog/vert-x-application-configuration/" target="_blank" rel="external">Vert.x Application Configuration</a></li>
+<li><a href="http://vertx.io/blog/some-rest-with-vert-x/" target="_blank" rel="external">Some Rest with Vert.x</a></li>
+<li><a href="http://vertx.io/blog/unit-and-integration-tests/" target="_blank" rel="external">Unit and Integration Tests</a></li>
+<li><a href="https://github.com/quanke/vertx3_study_demo" target="_blank" rel="external">中文机器翻译版本</a></li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-p3.html"
+           data-title="云计算 Twitter 语料分析 3 Vert.x 配置部署" data-url="http://wdxtub.com/vault/cc-p3.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

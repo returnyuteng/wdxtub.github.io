@@ -1,0 +1,937 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ELK,日志,服务器," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="最近在把公司各个业务线的数据和日志接入到统一的 ELK 平台中，我主要在做 LK 和对接的工作，涉及服务器和网络拓扑相关内容比较多和杂，网上没有太多相关资料，这里跟大家分享一下我的一点经验。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rsyslog + Logstash 日志传输指南">
+<meta property="og:url" content="http://wdxtub.com/2016/08/12/rsyslog-logstash-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="最近在把公司各个业务线的数据和日志接入到统一的 ELK 平台中，我主要在做 LK 和对接的工作，涉及服务器和网络拓扑相关内容比较多和杂，网上没有太多相关资料，这里跟大家分享一下我的一点经验。">
+<meta property="og:updated_time" content="2016-08-15T11:37:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rsyslog + Logstash 日志传输指南">
+<meta name="twitter:description" content="最近在把公司各个业务线的数据和日志接入到统一的 ELK 平台中，我主要在做 LK 和对接的工作，涉及服务器和网络拓扑相关内容比较多和杂，网上没有太多相关资料，这里跟大家分享一下我的一点经验。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Rsyslog + Logstash 日志传输指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Rsyslog + Logstash 日志传输指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-12T23:03:57+08:00" content="2016-08-12">
+              2016-08-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/12/rsyslog-logstash-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/12/rsyslog-logstash-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在把公司各个业务线的数据和日志接入到统一的 ELK 平台中，我主要在做 LK 和对接的工作，涉及服务器和网络拓扑相关内容比较多和杂，网上没有太多相关资料，这里跟大家分享一下我的一点经验。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u573A_u666F"><a href="#u573A_u666F" class="headerlink" title="场景"></a>场景</h2><p>因为部分历史遗留问题以及业务线的情况，不同后台业务涉及两个云服务提供商在三地的不同机房。出于安全考虑，不同项目组的服务器需要隔离（目前还没有用容器，所以是虚拟机隔离），但是日志需要统一进行收集、统计和展示。因为人员调动，我其实是临时接手这部分业务，所以只能在平稳接入各个业务之后，再考虑架构的演进。</p>
+<p>之前的架构基本是『怎么快怎么方便怎么来』，颇有『刀耕火种』的感觉，不过大部分时间还是运转良好的，在新架构完成之前，只能先用这套不太完善的机制进行传输了。</p>
+<p>为了描述方便，这里我们虚构两个服务，各自服务器部署配置如下</p>
+<ul>
+<li>服务 A：两个机房<ul>
+<li>机房 1：杭州阿里云，机器 x 3，编号 A-HZ-ALI-01, A-HZ-ALI-02, A-HZ-ALI-03</li>
+<li>机房 2：美国 AWS，机器 x 3，编号 A-US-AWS-01, A-US-AWS-02, A-US-AWS-03</li>
+</ul>
+</li>
+<li>服务 B：两个机房<ul>
+<li>机房 1：杭州阿里云，机器 x 3，编号 B-HZ-ALI-01, B-HZ-ALI-02, B-HZ-ALI-03</li>
+<li>机房 2：美国阿里云，机器 x 3，编号 B-US-ALI-01, B-US-ALI-02, B-US-ALI-03</li>
+</ul>
+</li>
+</ul>
+<p>而 Elasticsearch 集群部署在美国 AWS，后面统称 ES。另外还有部分数据需要从 RDS 中获取，统称为 MySQL 任务。</p>
+<h2 id="u7F51_u7EDC"><a href="#u7F51_u7EDC" class="headerlink" title="网络"></a>网络</h2><p>每台服务器都有自己的日志，使用 logrotate 工具按日进行切割，如果服务异常，之前的做法是登录到对应机器上进行日志查看。因为使用 Nginx 做负载均衡的缘故，很可能没办法快速找到对应的日志（现在机器比较少还好，再多就很麻烦了）。所以我们首先需要考虑的是想个办法把各个机器的日志收集到一起。</p>
+<p>在具体部署的时候，我们考虑过两种方案，这里简单介绍一下：</p>
+<p>第一种，简单粗暴，每台机器均直接把自己的日志发送给 ES。第二种，在每个机房选择一台服务器进行日志汇总，然后再统一发送给 ES。这两种方案各有优劣，我们来简单思考一下：</p>
+<p>第一种方案的优劣</p>
+<ul>
+<li>劣势<ul>
+<li>每台机器直接发给 ES 需要大量配置（当然这个可以用自动配置工具完成），一旦需求变动，所有的配置都需要修改</li>
+<li>每台机器都需要外网权限，运维难度增加，安全风险增加</li>
+<li>没办法利用内网通讯速度快的优势，给线上服务带来较高的带宽压力</li>
+</ul>
+</li>
+<li>优势<ul>
+<li>避免了单点的问题，即使一台服务器出问题，其他的日志还能正常发送数据</li>
+</ul>
+</li>
+</ul>
+<p>第二种方案的优劣   </p>
+<ul>
+<li>劣势<ul>
+<li>汇总服务器是单点，一旦出问题，所有的日志都没有办法正常发送</li>
+</ul>
+</li>
+<li>优势 <ul>
+<li>只需要配置一台机器（其他机器可以通过系统自带的 rsyslog 进行日志传输），即使人工操作也不太麻烦</li>
+<li>只有一台服务器强制需要外网权限</li>
+<li>内部的日志传输通过内网，速度快</li>
+</ul>
+</li>
+</ul>
+<p>综合上述考虑，我们决定采用第二种解决方案，接下来会介绍如何进行配置。</p>
+<h2 id="u914D_u7F6E"><a href="#u914D_u7F6E" class="headerlink" title="配置"></a>配置</h2><p>在开始配置之前一定要确定下面几个事情：</p>
+<ul>
+<li>服务器上的对应端口是否有配置好权限</li>
+<li>服务器的内网 ip 以及内网互访的权限</li>
+<li>Logstash 和 Rsyslog 的版本</li>
+<li>服务器配置及负载情况</li>
+</ul>
+<h3 id="u8F6C_u53D1_u673A_u914D_u7F6E"><a href="#u8F6C_u53D1_u673A_u914D_u7F6E" class="headerlink" title="转发机配置"></a>转发机配置</h3><p>有了这些信息，我们就可以从每个机房挑选一台服务器作为日志汇总和转发机，这里我们选择：A-HZ-ALI-01, A-US-AWS-01, B-HZ-ALI-01, B-US-ALI-01 这四台机器分别接入（后面称为汇总机）。</p>
+<p>这里我们使用 Logstash 进行日志汇总转发，各台机器上的 Logstash 配置可以是一样的，因为需要在后台启用该服务，所以需要修改/创建 <code>/etc/logstash/conf.d/logstash.conf</code> 文件，然后使用 <code>sudo service logstash restart</code> 重启服务（或者也可以使用 <code>&amp;</code> 创建后台任务，总之把应用开起来就行）</p>
+<figure class="highlight puppet"><table><tr><td class="code"><pre><span class="line"><span class="name">input</span> &#123;</span><br><span class="line"> tcp &#123;</span><br><span class="line">   port=&gt; <span class="number">16666</span></span><br><span class="line">   codec =&gt; json_lines</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="name">filter</span> &#123;</span><br><span class="line">  geoip &#123;</span><br><span class="line">    source =&gt; <span class="string">"ip"</span></span><br><span class="line">    fields =&gt; [<span class="string">"location"</span>, <span class="string">"city_name"</span>, <span class="string">"country_name"</span>, <span class="string">"country_code2"</span>,<span class="string">"country_code3"</span>, <span class="string">"region_name"</span>, <span class="string">"continent_code"</span>]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="name">output</span> &#123;</span><br><span class="line">    elasticsearch &#123;</span><br><span class="line">        hosts =&gt; [<span class="string">"es.wdxtub.com:80"</span>]</span><br><span class="line">        index =&gt; <span class="string">"ServiceA-log-%&#123;+YYYY-MM-dd&#125;"</span></span><br><span class="line">        user =&gt; <span class="string">"wdxtub"</span></span><br><span class="line">        password =&gt; <span class="string">"www.wdxtub.com"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的配置文件的意思是当程序启动时，监听 16666 端口传来的 json 行，根据 ip 地址获取地理信息之后，发送到 <code>es.wdxtub.com:80</code> 这个 ES 集群中，对应的索引是 <code>ServiceA-log-%{+YYYY-MM-dd}</code>，这里实际上做了按日分隔（在 Kibana 中只需使用 <code>ServiceA-log-*</code> 就可以汇总所有的 ServiceA 的日志）</p>
+<h3 id="u65E5_u5FD7_u8F6C_u53D1"><a href="#u65E5_u5FD7_u8F6C_u53D1" class="headerlink" title="日志转发"></a>日志转发</h3><p>我们现在已经有了从汇总机到 ES 的通道，现在需要做的就是把各个机器的日志发送到汇总机了，甚至汇总机本机的日志也可以通过这种方式进行（这样就是一个统一的过程了，不因为机器的角色有特殊情况）。这里具体选择的方式是 rsyslog，同一个机房同一个服务的机器的配置文件是一样的，我们在 <code>/etc/rsyslog.d/</code> 中新建一个 <code>10-file.conf</code> 文件，内容为</p>
+<figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor"># 载入文件读取模块</span></span><br><span class="line"><span class="variable">$ModLoad</span> imfile</span><br><span class="line"><span class="variable">$template</span> myFileMonitorTemplate,<span class="string">"%msg%"</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 日志文件</span></span><br><span class="line"><span class="variable">$InputFileName</span> /data/home/service/project/shared/<span class="built_in">log</span>/lograge_production.<span class="built_in">log</span></span><br><span class="line"><span class="preprocessor"># 打标签</span></span><br><span class="line"><span class="variable">$InputFileTag</span> service-<span class="built_in">log</span>:</span><br><span class="line"><span class="preprocessor"># 下面这行是用来保存文件状态的</span></span><br><span class="line"><span class="variable">$InputFileStateFile</span> stat1470781524</span><br><span class="line"><span class="variable">$InputFileSeverity</span> info</span><br><span class="line"><span class="variable">$InputFileFacility</span> local7</span><br><span class="line"><span class="preprocessor"># 拉取时间间隔，单位是秒</span></span><br><span class="line"><span class="variable">$InputFilePollInterval</span> <span class="number">1</span></span><br><span class="line"><span class="variable">$InputFilePersistStateInterval</span> <span class="number">1</span></span><br><span class="line"><span class="variable">$InputRunFileMonitor</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 两个 @@ 为 tcp 请求</span></span><br><span class="line"><span class="keyword">if</span> <span class="variable">$syslogtag</span> contains <span class="string">'service-log'</span> <span class="literal">and</span> <span class="variable">$syslogfacility</span>-text == <span class="string">'local7'</span> <span class="keyword">then</span> @<span class="constant">@10</span><span class="number">.0</span><span class="number">.1</span><span class="number">.2</span>:<span class="number">16666</span><span class="comment">;myFileMonitorTemplate</span></span><br><span class="line">&amp; stop</span><br></pre></td></tr></table></figure>
+<p>配置文件最后的地址就是对应转发机的内网 ip 地址，这样我们就建立了每个服务器到转发机的连接。然后可以通过 <code>sudo service rsyslog restart</code> 来重启并加载新的配置文件。因为使用 logrotate，所以还要考虑 rotate 时候的日志传输问题，解决办法是在 <code>/etc/logrotate.d/</code> 文件夹中新建一个 <code>_machine_name</code> 文件，内容为</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/data/</span>home<span class="regexp">/service/</span><span class="keyword">project</span><span class="regexp">/current/</span>log<span class="comment">/*.log &#123;</span><br><span class="line">    daily</span><br><span class="line">    size 200M</span><br><span class="line">    missingok</span><br><span class="line">    rotate 52</span><br><span class="line">    compress</span><br><span class="line">    delaycompress</span><br><span class="line">    notifempty</span><br><span class="line">    copytruncate</span><br><span class="line">postrotate</span><br><span class="line"> (sudo stop rsyslog &amp;&amp; sudo sed -i "s/InputFileStateFile.*/</span>InputFileStateFile stat$(date +<span class="string">'%s'</span>)<span class="regexp">/" /</span>etc<span class="regexp">/rsyslog.d/</span><span class="number">10</span>-<span class="keyword">file</span>.conf &amp;&amp; sudo start rsyslog <span class="number">2</span>&gt;&amp;<span class="number">1</span>) || <span class="keyword">true</span></span><br><span class="line">        endscript</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>前面的比较常规，主要是 <code>postrotate</code> 之后执行的脚本，大意就是在日志切分之后完成收尾工作，保证不因为 logrotate 导致日志重复发送或者丢失。</p>
+<p>至此，我们就建立了服务器 - 转发机 - ES 的完整链路。</p>
+<hr>
+<p>更新 rsyslog 的方法，因为要发送到 kafka 需要 v8 的配合</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo add-apt-repository ppa:adiscon/v8-stable</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install rsyslog</span><br></pre></td></tr></table></figure>
+<p>更新之后就可以弄到 kafka 上了</p>
+<h2 id="u6D4B_u8BD5"><a href="#u6D4B_u8BD5" class="headerlink" title="测试"></a>测试</h2><p>前面的配置看起来不复杂，但是其中任何一步没跑通，整个套路就玩不转。具体有没有什么办法能测试呢？当然要有了，不然真是连错都找不到。我们来看看一步一步如何进行测试。</p>
+<h3 id="u8F6C_u53D1_u673A_u5230_ES"><a href="#u8F6C_u53D1_u673A_u5230_ES" class="headerlink" title="转发机到 ES"></a>转发机到 ES</h3><p>首先是测试配置文件，直接从 logstash 文件夹前台启动 logstash，并查看具体的信息，确定无误后，再放到后台执行。这里可能遇到的问题基本是跟 logstash 版本相关的，要么升级要么改成对应版本的配置语法即可。</p>
+<p>常用的命令有 </p>
+<ul>
+<li><code>sudo lsof -i:16666</code> 查看对应端口的占用情况</li>
+<li><code>ifconfig</code> 查看本机的网络信息</li>
+<li><code>cat /proc/meminfo</code> 查看本机的内存信息</li>
+<li><code>cat /proc/cpuinfo</code> 查看本机的 CPU 信息</li>
+<li><code>ps aux | grep logstash</code> 查看 logstash 对应的进程号（可以用于强制关闭）</li>
+</ul>
+<h3 id="u670D_u52A1_u5668_u5230_u8F6C_u53D1_u673A"><a href="#u670D_u52A1_u5668_u5230_u8F6C_u53D1_u673A" class="headerlink" title="服务器到转发机"></a>服务器到转发机</h3><p>具体配置的时候，这一步是问题最多的，因为 rsyslog 的配置实在是令人抓狂。基本的测试套路是这样的</p>
+<ul>
+<li>用 telnet 看看转发机的对应端口开起来没有，如果开起来了，应该是能连通的，不能的话，检查权限与服务配置</li>
+<li>可以利用 <code>nc</code> 工具尝试发送单条 log，比如 <code>head -n1 service.log | nc 10.0.1.2 16666</code>，如果卡住，那么说明链路建立有问题，如果能正常发送，就可以看看 ES 到底收到没有了</li>
+</ul>
+<p>基本上如果这两步都没问题，大概是可以看到链路建立的。如果还不行，考虑到我对运维这块也不是很熟，就只能自力更生或者抱大腿了。</p>
+<h2 id="u6539_u8FDB_u65B9_u5411"><a href="#u6539_u8FDB_u65B9_u5411" class="headerlink" title="改进方向"></a>改进方向</h2><p>目前这套非常脆弱的处理流程，每天只能祈祷服务器不崩，崩了之后得自己手动重启（或者写一个守护进程，挂了之后重新启动起来）。这种收集的工作，使用业务服务器『推』的模型，不如统一由日志服务器『拉』，如果借由诸如 S3 这样的外部存储，其实是可以做到解耦的。</p>
+<p>所以这就衍生出两个套路，以后可以考虑尝试</p>
+<ol>
+<li>使用 fluentd</li>
+<li>改为『拉』模型</li>
+</ol>
+<p>具体的以后细写，现在的我，感觉身体被掏空。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>搭建数据平台的过程基本把公司的业务线都过了一遍，深深感受到数据收集处理分析的重要性，这样对产品和服务的改进才不是瞎拍脑袋，才能真正把好钢用到刀刃上（现在的云资源浪费还是很严重的）。</p>
+<p>不过嘛，慢慢来，一步一个脚印，每天都在进步就好。</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://www.rsyslog.com/" target="_blank" rel="external">RSYSLOG 官网</a></li>
+<li><a href="https://mos.meituan.com/library/5/how-to-config-rsyslog/" target="_blank" rel="external">如何对rsyslog进行配置</a></li>
+<li><a href="http://blog.clanzx.net/2013/12/31/rsyslog.html" target="_blank" rel="external">rsyslog 配置简介</a></li>
+<li><a href="https://segmentfault.com/a/1190000003509909" target="_blank" rel="external">Linux环境下使用rsyslog管理日志</a></li>
+<li><a href="http://www.rsyslog.com/rsyslog-configuration-builder/" target="_blank" rel="external">配置文件生成器</a></li>
+<li><a href="http://www.rsyslog.com/using-the-text-file-input-module/" target="_blank" rel="external">Using the Text File Input Module</a></li>
+<li><a href="http://www.rsyslog.com/discarding-unwanted-messages/" target="_blank" rel="external">Discarding unwanted messages</a></li>
+<li><a href="http://www.rsyslog.com/connecting-with-logstash-via-apache-kafka/" target="_blank" rel="external">Connecting with Logstash via Apache Kafka</a></li>
+<li><a href="http://www.rsyslog.com/ubuntu-repository/" target="_blank" rel="external">Ubuntu Repository</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ELK/" rel="tag">#ELK</a>
+          
+            <a href="/tags/日志/" rel="tag">#日志</a>
+          
+            <a href="/tags/服务器/" rel="tag">#服务器</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/12/women-in-computer-science/" rel="next" title="计算机科学中的女性">
+                <i class="fa fa-chevron-left"></i> 计算机科学中的女性
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/13/sky/" rel="prev" title="第九周 - 天空">
+                第九周 - 天空 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/12/rsyslog-logstash-guide/"
+           data-title="Rsyslog + Logstash 日志传输指南" data-url="http://wdxtub.com/2016/08/12/rsyslog-logstash-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u573A_u666F"><span class="nav-number">1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7F51_u7EDC"><span class="nav-number">2.</span> <span class="nav-text">网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u914D_u7F6E"><span class="nav-number">3.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u8F6C_u53D1_u673A_u914D_u7F6E"><span class="nav-number">3.1.</span> <span class="nav-text">转发机配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u65E5_u5FD7_u8F6C_u53D1"><span class="nav-number">3.2.</span> <span class="nav-text">日志转发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6D4B_u8BD5"><span class="nav-number">4.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u8F6C_u53D1_u673A_u5230_ES"><span class="nav-number">4.1.</span> <span class="nav-text">转发机到 ES</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u670D_u52A1_u5668_u5230_u8F6C_u53D1_u673A"><span class="nav-number">4.2.</span> <span class="nav-text">服务器到转发机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6539_u8FDB_u65B9_u5411"><span class="nav-number">5.</span> <span class="nav-text">改进方向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

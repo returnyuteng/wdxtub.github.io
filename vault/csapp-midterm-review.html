@@ -1,0 +1,978 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="这一次我们主要来回顾一下重要的知识点，以及讲解一些往年试题中容易混淆的概念。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="深入理解计算机系统 期中考试复习">
+<meta property="og:url" content="http://wdxtub.com/vault/csapp-midterm-review.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="这一次我们主要来回顾一下重要的知识点，以及讲解一些往年试题中容易混淆的概念。">
+<meta property="og:image" content="http://wdxtub.com/images/csapp2.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp3.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp5.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp7.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp13.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp14.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp15.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp24.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp25.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp26.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14531723678160.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14531733075157.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14531733728296.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14533846615880.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14555647586566.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14555654345569.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14555690389309.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14556314890158.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14566917311963.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14566942080505.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14566960252571.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14566960458022.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14567011035267.jpg">
+<meta property="og:updated_time" content="2016-03-01T14:10:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统 期中考试复习">
+<meta name="twitter:description" content="这一次我们主要来回顾一下重要的知识点，以及讲解一些往年试题中容易混淆的概念。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    深入理解计算机系统 期中考试复习 | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>这一次我们主要来回顾一下重要的知识点，以及讲解一些往年试题中容易混淆的概念。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u77E5_u8BC6_u70B9_u68B3_u7406"><a href="#u77E5_u8BC6_u70B9_u68B3_u7406" class="headerlink" title="知识点梳理"></a>知识点梳理</h2><p>范围是第 1-3 章和第 6 章，下面是部分知识点（每个其实都包含不少内容，建议再看一次我前面写过的系列，这里还是会挑一些重点来写以下）</p>
+<ul>
+<li>十六进制表示</li>
+<li>数据类型的字节表示</li>
+<li>C 语言中的位操作、逻辑操作、左移右移操作</li>
+<li>整型的表示方法及运算方式</li>
+<li>浮点数的表示方法及运算方式</li>
+<li>理解汇编：访问数据，算术和逻辑运算，控制，过程调用，数组的内存空间分配和访问，结构体/联合体的表示，数据对齐</li>
+<li>理解指针，栈帧以及常见的攻击方式</li>
+<li>内存相关话题：Locality, Memory Hierarchy, Cache Memories</li>
+</ul>
+<h3 id="u5E03_u5C14_u8FD0_u7B97"><a href="#u5E03_u5C14_u8FD0_u7B97" class="headerlink" title="布尔运算"></a>布尔运算</h3><p>集合 A</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">01101001</span> &#123;<span class="number">0</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>&#125;</span><br><span class="line"><span class="number">76543210</span></span><br></pre></td></tr></table></figure>
+<p>集合 B</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">01010101</span> &#123;<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>&#125;</span><br><span class="line"><span class="number">76543210</span></span><br></pre></td></tr></table></figure>
+<p>那么不同的布尔运算就代表：</p>
+<ul>
+<li><code>&amp;</code> 交集 Intersection <code>01000001</code> {0, 6}</li>
+<li><code>|</code> 并集 Union <code>01111101</code> {0, 2, 3, 4, 5, 6}</li>
+<li><code>^</code> 差集 Symmetric difference <code>00111100</code> {2, 3, 4, 5}</li>
+<li><code>~</code> 补集 Complement <code>10101010</code> {1, 3, 5, 7}</li>
+</ul>
+<p>以上这四种运算 C 语言都支持，只要是『数值型』即可：<code>long</code>, <code>int</code>, <code>short</code>, <code>char</code>, <code>unsigned</code>。每个参数都会被看做是位向量。</p>
+<h3 id="u6574_u578B_u7684_u8868_u793A"><a href="#u6574_u578B_u7684_u8868_u793A" class="headerlink" title="整型的表示"></a>整型的表示</h3><p>针对有符号数和无符号数，有两种不同的形式，这里的 w 表示 word size：</p>
+<ul>
+<li>无符号数：$B2U(X)=\sum_{i=0}^{w-1}x_i·2^i$</li>
+<li>有符号数： $B2T(X)=-x_{w-1}·2^{w-1}+\sum_{i=0}^{w-2}x_i·2^i$ </li>
+</ul>
+<p>为了方便讲解，下面定义几个常量，这里 w 是 word size：</p>
+<ul>
+<li>UMin = 0 即 000…0</li>
+<li>UMax = $2^w-1$ 即 111…1</li>
+</ul>
+<p>Two’s Complement 值</p>
+<ul>
+<li>TMin = $-2^{w-1}$ 即 100…0</li>
+<li>TMax = $2^{w-1}-1$ 即 011…1</li>
+</ul>
+<p>其他值</p>
+<ul>
+<li>Minus 1 即 111…1</li>
+</ul>
+<p>观察可以得知两个很重要的特性</p>
+<ul>
+<li>|TMin| = TMax + 1 (范围并不是对称的)</li>
+<li>UMax = 2*TMax + 1</li>
+</ul>
+<p>有符号数和无符号数在非负数的编码是一样的，每一个数字的编码是唯一的，这两者可以互换：</p>
+<ul>
+<li>$U2B(x)=B2U^{-1}(x)$</li>
+<li>$T2B(x)=B2T^{-1}(x)$</li>
+</ul>
+<p><img src="/images/csapp2.jpg" alt="2&#39;s Complement vs Unsigned"></p>
+<h3 id="u62D3_u5C55_u548C_u88C1_u526A"><a href="#u62D3_u5C55_u548C_u88C1_u526A" class="headerlink" title="拓展和裁剪"></a>拓展和裁剪</h3><p>有的时候我们需要扩展一个变量的位数，比如说从 32 位扩展到 64 位。更通用一点的话，给定一个 w 位的有符号整数 x，要把它转换成 w+k 位的整数（保持值不变），只需要在左边添加 k 个与符号位相同的数值即可，如下图：</p>
+<p><img src="/images/csapp3.jpg" alt="从 32 位拓展到 64 位"></p>
+<ul>
+<li>扩展（例如从 <code>short int</code> 到 <code>int</code>）<ul>
+<li>无符号数：加 0</li>
+<li>有符号数：加符号位</li>
+<li>都可以得到预期的结果</li>
+</ul>
+</li>
+<li>缩短（例如 <code>unsigned</code> 到 <code>unsigned short</code>）<ul>
+<li>均会截取</li>
+<li>无符号数：mod 操作</li>
+<li>有符号数：近似 mod 操作</li>
+<li>对于小的数字可以得到预期的结果</li>
+</ul>
+</li>
+</ul>
+<h3 id="u6EA2_u51FA_u95EE_u9898"><a href="#u6EA2_u51FA_u95EE_u9898" class="headerlink" title="溢出问题"></a>溢出问题</h3><p>无符号加法和有符号加法有不同的溢出方式：</p>
+<p><img src="/images/csapp5.jpg" alt="无符号加法的溢出"></p>
+<p><img src="/images/csapp7.jpg" alt="有符号加法的两种溢出"></p>
+<h3 id="u6D6E_u70B9_u6570"><a href="#u6D6E_u70B9_u6570" class="headerlink" title="浮点数"></a>浮点数</h3><p>二进制浮点数的表示，其实和我们日常生活中常见的十进制的方式是一致的，都是相当于每一位的系数，乘以每一位的数值，然后把结果加起来，如下图所示：</p>
+<p><img src="/images/csapp13.jpg" alt="浮点数表示"></p>
+<p>所以我们其实可以用一个统一的公式来表达：</p>
+<p>$$ \sum_{k=-j}^ib_k\times 2^k $$</p>
+<p>例如</p>
+<p>$$ 5\frac{3}{4}=101.11_2 \;,\; 2\frac{7}{8}=10.111_2 \;,\; 1\frac{7}{16}=1.0111_2 $$</p>
+<p>细心的同学就会发现，这种表达方式其实是比较明显的限制的，比如说，只有形为 $\frac{x}{2^k}$ 的小数部分可以被精确表示，其他的数字会变成循环的小数，例如：$\frac{1}{3}=0.0101010101[01]…_2$。</p>
+<p>除此之外，另一个问题在于，如果给定了 w 个比特，能够表达的数字其实是有限的。</p>
+<h3 id="IEEE__u6D6E_u70B9_u6570"><a href="#IEEE__u6D6E_u70B9_u6570" class="headerlink" title="IEEE 浮点数"></a>IEEE 浮点数</h3><p>我们用下面的公式来表达浮点数：</p>
+<p>$$(-1)^s \; M \; 2^E$$</p>
+<p>其中 s 是符号位，决定正负；M 通常是一个值在 [1.0, 2.0) 的小数；E 是次方数。具体编码的时候是这样的：</p>
+<p><img src="/images/csapp14.jpg" alt="浮点数的格式"></p>
+<p>其中 s 对应着符号位，exp 对应着 E（注意，不一定等于 E，因为位数限制表达能力有限），frac 对应着 M（注意，不一定等于 M，因为位数限制表达能力有限）。</p>
+<p>不同的位数就代表了不同的表示能力，也就是单精度，双精度，扩展精度的来源，具体的位数表示如下：</p>
+<p><img src="/images/csapp15.jpg" alt="单精度、双精度、拓展精度"></p>
+<p>注意区别 normalized 和 denormalized 的区别</p>
+<p>舍入到最近的偶数比较特别，中心思想是：舍入之后最右边的值要是偶数，从下面一个例子就可以明白：</p>
+<p><img src="/images/csapp24.jpg" alt="舍入到最近的偶数"></p>
+<p>对于二进制数也是类似的</p>
+<p><img src="/images/csapp25.jpg" alt="二进制数舍入到最近的偶数"></p>
+<h3 id="u6D6E_u70B9_u6570_u4E58_u6CD5"><a href="#u6D6E_u70B9_u6570_u4E58_u6CD5" class="headerlink" title="浮点数乘法"></a>浮点数乘法</h3><p>$$(-1)^{s1}\; M1 \; 2^{E1} \times (-1)^{s2}\; M2 \; 2^{E2}$$</p>
+<p>结果是 $(-1)^{s}\; M \; 2^{E}$，其中 s= s1 ^ s2, M = M1 * M2, E = E1 + E2</p>
+<ul>
+<li>如果 M 大于等于 2，那么把 M 右移，并增加 E 的值。</li>
+<li>如果 E 超出了可以表示的范围，溢出</li>
+<li>把 M 舍入到 frac 的精度</li>
+</ul>
+<p>基本性质</p>
+<ul>
+<li>相乘可能产生 infinity 或者 NaN</li>
+<li>满足交换率</li>
+<li>不满足结合律（因为舍入会造成精度损失）</li>
+<li>乘以 1 等于原来的数</li>
+<li>不满足分配率 <code>1e20*(1e20-1e20)=0.0</code> 但 <code>1e20*1e20-1e20*1e20=NaN</code></li>
+<li>除了 infinity 和 NaN，满足单调性，即 $a\ge b \to a\times c \ge a\times b$</li>
+</ul>
+<h3 id="u6D6E_u70B9_u6570_u52A0_u6CD5"><a href="#u6D6E_u70B9_u6570_u52A0_u6CD5" class="headerlink" title="浮点数加法"></a>浮点数加法</h3><p>$$(-1)^{s1}\; M1 \; 2^{E1} + (-1)^{s2}\; M2 \; 2^{E2}$$，这里假设 E1 &gt; E2</p>
+<p><img src="/images/csapp26.jpg" alt="浮点数加法"></p>
+<p>结果是 $(-1)^{s}\; M \; 2^{E}$，其中 s= s1 ^ s2, M = M1 + M2, E = E1</p>
+<ul>
+<li>如果 M 大于等于 2，那么把 M 右移，并增加 E 的值</li>
+<li>如果 M 小于 1，把 M 左移 k 位，E 减少 k</li>
+<li>如果 E 超出了可以表示的范围，溢出</li>
+<li>把 M 舍入到 frac 的精度</li>
+</ul>
+<p>基本性质</p>
+<ul>
+<li>相加可能产生 infinity 或者 NaN</li>
+<li>满足交换率</li>
+<li>不满足结合律（因为舍入会造成精度损失，如 <code>3.14+1e10)-1e10=0</code>，但 <code>3.14+(1e10-1e10)=3.14</code>）</li>
+<li>加上 0 等于原来的数</li>
+<li>除了 infinity 和 NaN，每个元素都有对应的倒数</li>
+<li>除了 infinity 和 NaN，满足单调性，即 $a\ge b \to a+c \ge a+b$</li>
+</ul>
+<h3 id="u79FB_u52A8_u6570_u636E_u4E0E_u5BFB_u5740"><a href="#u79FB_u52A8_u6570_u636E_u4E0E_u5BFB_u5740" class="headerlink" title="移动数据与寻址"></a>移动数据与寻址</h3><p>操作数主要有三种类型，一种是立即数，也就是直接给的一个数字，第二种是寄存器，第三种是内存</p>
+<p><img src="/images/14531723678160.jpg" alt=""></p>
+<p>普通模式，(R)，相当于 <code>Mem[Reg[R]]</code>，也就是说寄存器 R 指定内存地址，类似于 C 语言中的指针，语法为：<code>movq (%rcx), %rax</code> 也就是说以 %rcx 寄存器中存储的地址去内存里找对应的数据，存到寄存器 %rax 中</p>
+<p>移位模式，D(R)，相当于 <code>Mem[Reg[R]+D]</code>，寄存器 R 给出起始的内存地址，然后 D 是偏移量，语法为：<code>movq 8(%rbp),%rdx</code> 也就是说以 %rbp 寄存器中存储的地址再加上 8 个偏移量去内存里找对应的数据，存到寄存器 %rdx 中</p>
+<p><img src="/images/14531733075157.jpg" alt=""></p>
+<p>举个例子：%rdx 的存着的地址是 0xf000；%rcx 的存着的地址是 0x0100，那么有：</p>
+<p><img src="/images/14531733728296.jpg" alt=""></p>
+<h3 id="u6761_u4EF6_u7801_u4E0E_u4EE3_u7801_u63A7_u5236"><a href="#u6761_u4EF6_u7801_u4E0E_u4EE3_u7801_u63A7_u5236" class="headerlink" title="条件码与代码控制"></a>条件码与代码控制</h3><p>最后的四个寄存器（CF, ZF, SF, OF）就是用来辅助程序的流程控制的，意思是：</p>
+<ul>
+<li>CF: Carry Flag (for unsigned)</li>
+<li>ZF: Zero Flag</li>
+<li>SF: Sign Flag (for signed)</li>
+<li>OF: Overflow Flag (for signed)</li>
+</ul>
+<p>可以看到以上这四个寄存器，表示四种不同的状态，举个例子，假如我们有一条诸如 <code>t = a + b</code> 的语句，汇编之后假设用的是 <code>addq Src, Dest</code>，那么根据这个操作结果的不同，会相应设置上面提到的四个寄存器，而因为这个是执行类似操作时顺带尽心设置的，称为隐式设置，例如：</p>
+<ul>
+<li>如果两个数相加，在最高位还需要进位（也就是溢出了），那么 CF 寄存器就会被设置</li>
+<li>如果 t 等于 0，那么 ZF 寄存器会被设置</li>
+<li>如果 t 小于 0，那么 SF 寄存器会被设置</li>
+<li>如果 2’s complement 溢出，那么 OF 寄存器会被设置为 1（溢出的情况是 <code>(a&gt;0 &amp;&amp; b &gt; 0 &amp;&amp; t &lt;0) || (a&lt;0 &amp;&amp; b&lt;0 &amp;&amp; t&gt;=0)</code>）</li>
+</ul>
+<p>这就发现了，其实这四个条件代码，是用来标记上一条命令的结果的各种可能的，是自动会进行设置的。注意，使用 <code>leaq</code> 指令的话不会进行设置。</p>
+<h3 id="u6808_u5E27"><a href="#u6808_u5E27" class="headerlink" title="栈帧"></a>栈帧</h3><p>在 x86-64/Linux 中，栈帧的结构是固定的，当前的要执行的栈中包括：</p>
+<ul>
+<li>Argument Build: 需要使用的参数</li>
+<li>如果不能保存在寄存器中，会把一些本地变量放在这里</li>
+<li>已保存的寄存器上下文</li>
+<li>老的栈帧的指针（可选）</li>
+</ul>
+<p>而调用者的栈帧则包括：</p>
+<ul>
+<li>返回地址（因为 <code>call</code> 指令被压入栈的）</li>
+<li>调用所需的参数</li>
+</ul>
+<p>具体如下图所示：</p>
+<p><img src="/images/14533846615880.jpg" alt="栈帧的例子"></p>
+<h3 id="u5B58_u50A8_u76F8_u5173"><a href="#u5B58_u50A8_u76F8_u5173" class="headerlink" title="存储相关"></a>存储相关</h3><p>总的访问时间  Taccess =  寻址时间 Tavg seek + 旋转时间 Tavg rotation + 传输时间 Tavg transfer</p>
+<ul>
+<li>寻址时间 Tavg seek 因为物理规律的限制，一般是 3-9 ms</li>
+<li>旋转延迟 Tavg rotation 取决于硬盘具体的转速，一般来说是 7200 RPM</li>
+<li>传输时间 Tavg tranfer 就是需要读取的 sector 数目</li>
+</ul>
+<p>举个例子，假设转速是 7200 RPM，平均寻址时间 9ms，平均每个 track 的 sector 数目是 400，那么我们有：</p>
+<ul>
+<li>Tavg rotation = 1/2 x (60 secs / 7200 RPM) x 1000 ms/sec = 4 ms</li>
+<li>Tavg transfer = 60 / 7200 RPM x 1/400 secs/track x 1000 ms/sec = 0.02 ms</li>
+<li>Taccess = 9 ms + 4 ms + 0.02 ms</li>
+</ul>
+<p>从这里可以看出，主要决定访问时间的是寻址时间和旋转延迟；读取一个 sector 的第一个 bit 是非常耗时的，之后的都几乎可以忽略不计；硬盘比 SRAM 慢 40,000 倍，比 DRAM 慢 2500 倍。</p>
+<h3 id="Locality__u4E0E_Memory_Heirarchy"><a href="#Locality__u4E0E_Memory_Heirarchy" class="headerlink" title="Locality 与 Memory Heirarchy"></a>Locality 与 Memory Heirarchy</h3><p>Locality 的思路很简单，就是如果一个数据最近被访问过，很可能还会被再次访问：</p>
+<ul>
+<li>Temporal locality: Recently referenced items are likely to be referenced again in the near future</li>
+<li>Spatial locality: Items with nearby addresses tend to be referenced close together in time</li>
+</ul>
+<p>一种介质的速度越快，就会越贵，同时也消耗更多的电量，所以一般容量比较小。而 CPU 和内存之间的速度差距越来越大，所以好的程序都会尽可能利用 locality。根据这些特性，也就引申出了一个安排存储的方式，称为 memory hierarchy。</p>
+<p><img src="/images/14555647586566.jpg" alt="Memory Heirarchy"></p>
+<p>这里就涉及到一个技术：缓存。缓存可以看作是把大且缓慢的设备中的数据的一部分拿出来存储到其中的更快的存储设备。在 memory hierarchy 金字塔中，每一层都可以看作是下一层的缓存。利用 locality，程序会更倾向于访问第 k 层的数据，而非第 k+1 层，这样就减少了访问时间。</p>
+<p><img src="/images/14555654345569.jpg" alt="访问时间比较"></p>
+<h3 id="Cache_Miss"><a href="#Cache_Miss" class="headerlink" title="Cache Miss"></a>Cache Miss</h3><p>Cache miss 有三种：</p>
+<ul>
+<li>Cold(compulsory) Miss: CPU 第一次访问相应 cache 块，cache 中肯定没有该 cache 块，这是不可避免的</li>
+<li>Confilict Miss: 在直接相联或组相联的 cache 中，不同的 cache 块由于 index 相同相互替换，引起的失效叫做冲突失效<ul>
+<li>假设这里有 32KB 直接相联的 cache</li>
+<li>如果有两个 8KB 的数据需要来回访问，但是这两个数组都映射到相同的地址，cache 大小足够存储全部的数据，但是因为相同地址发生了冲突需要来回替换，发生的失效则全都是冲突失效（第一次访问失效依旧是强制性失效），这时 cache 并没有存满</li>
+</ul>
+</li>
+<li>Capacity Miss: 有限的 cache 容量导致 cache 放不下而被替换出 cache 块，被替换出去的 cache 块再被访问，引起的失效叫做容量失效<ul>
+<li>假设这里有 32KB 直接相联的 cache</li>
+<li>如果有一个 64KB 的数组需要重复访问，数组的大小远远大于 cache 大小，没办法全部放入 cache。第一次访问数组发生的失效全都是强制性失效。之后再访问数组，再发生的失效则全都是容量失效，这时 cache 已经存满，容量不足以存储全部数据</li>
+</ul>
+</li>
+</ul>
+<h3 id="Cache_Memories"><a href="#Cache_Memories" class="headerlink" title="Cache Memories"></a>Cache Memories</h3><p>通常来说，是按照如下图所示的方式来组织的，一定要注意 S/E/B 具体在说什么：</p>
+<p><img src="/images/14555690389309.jpg" alt=""></p>
+<p>实际上可以理解为三种层级关系，对应不同的索引，这样分层的好处在于，通过层级关系简化搜索需要的时间，并且和字节的排布也是一一对应的（之后介绍缓存的时候就体现得更加明显）。</p>
+<p>具体的例子请参考<a href="http://wdxtub.com/2016/02/15/csapp-12/">深入理解计算机系统 第 12 课 Cache Memories</a></p>
+<h3 id="Memory_Mountain"><a href="#Memory_Mountain" class="headerlink" title="Memory Mountain"></a>Memory Mountain</h3><p><img src="/images/14556314890158.jpg" alt=""></p>
+<p>注意，这是根据 Core i7 得出来的图，不同的处理器可能因为不同的设计和架构而有所区别，但是可以通过不同的颜色和层次，看出不同 size 和 stride 对性能的影响。山脚是我们应该尽量避免的，山顶是我们力求达到的，也就是说，尽量一次访问一个 stride，一次读入的数据大小也不宜太大，最好和 L1 缓存数值上吻合。</p>
+<h2 id="u5F80_u5E74_u8BD5_u9898_u8BB2_u89E3"><a href="#u5F80_u5E74_u8BD5_u9898_u8BB2_u89E3" class="headerlink" title="往年试题讲解"></a>往年试题讲解</h2><h3 id="u9009_u62E9_u9898_u77E5_u8BC6_u70B9"><a href="#u9009_u62E9_u9898_u77E5_u8BC6_u70B9" class="headerlink" title="选择题知识点"></a>选择题知识点</h3><ul>
+<li><code>test</code> 指令和 <code>and</code> 指令一样，只设置 flag 不改变结果</li>
+<li>在一个 32 位的 Linux 系统中，<code>long</code> 的大小为 <code>4 bytes</code></li>
+<li>在一个 64 位的 Linux 系统中，并不是所有的参数都在栈上传递</li>
+<li><code>mov</code> 和 <code>lea</code> 指令的不同在于 <code>mov</code> 会 dereferences an address，也就是说 <code>mov</code> 是取值，<code>lea</code> 是地址</li>
+<li>先调用函数，然后压入 <code>%ebp</code></li>
+<li>一个 8 位浮点数（1 sign, 3 exp, 4 frac），则 0 111 1111 表示 NaN</li>
+<li>每次执行完一条语句，<code>%rsp</code> 的值减 8 </li>
+<li>二维数组在内存中以 row-major 方式存储</li>
+<li><code>%rdi</code> 保存着函数调用的第一个参数</li>
+</ul>
+<h3 id="u6D6E_u70B9_u6570_u7F16_u7801"><a href="#u6D6E_u70B9_u6570_u7F16_u7801" class="headerlink" title="浮点数编码"></a>浮点数编码</h3><p>这里我们考虑两种 6 位数的 IEEE 浮点数格式</p>
+<ul>
+<li>格式 A<ul>
+<li>1 个符号位 s</li>
+<li>k = 3 个 exponent bits，bias 为 $2^{k-1} - 1 = 3$</li>
+<li>n = 2 个 fraction bits</li>
+</ul>
+</li>
+<li>格式 B<ul>
+<li>1 个符号位 s</li>
+<li>k = 2 个 exponent bits，bias 为 $2^{k-1} - 1 = 1$</li>
+<li>n = 3 个 fraction bits</li>
+</ul>
+</li>
+</ul>
+<p>注意</p>
+<ul>
+<li>对应于 denormalized 的情况，E = 1 - bias</li>
+<li>对应于 normalized 的情况，E = exp - bias</li>
+</ul>
+<p>需要填写下表</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Value</th>
+<th style="text-align:center">Format A Bits</th>
+<th style="text-align:center">Format B Bits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Zero</td>
+<td style="text-align:center">0 000 00</td>
+<td style="text-align:center">0 00 000</td>
+</tr>
+<tr>
+<td style="text-align:center">One</td>
+<td style="text-align:center">0 011 00</td>
+<td style="text-align:center">0 01 000</td>
+</tr>
+<tr>
+<td style="text-align:center">$\frac{1}{2}$</td>
+<td style="text-align:center">0 010 00</td>
+<td style="text-align:center">0 00 100</td>
+</tr>
+<tr>
+<td style="text-align:center">$\frac{11}{8}$</td>
+<td style="text-align:center">0 011 10</td>
+<td style="text-align:center">0 01 011</td>
+</tr>
+</tbody>
+</table>
+<p>我们来对应看一下具体要怎么填。</p>
+<p>首先需要知道的是 IEEE 浮点数的具体格式，是 s | exp | frac。接下来要知道什么时候是 denormalized，什么时候是 normalized，简单来说就是如果 exp 全为 0 或全为 1 时，属于 denormalized，其他时候属于 normalized。</p>
+<p>对应浮点数的公式</p>
+<p>$$(-1)^s \; M \; 2^E$$</p>
+<p>我们知道如果要表示 1，那么 E 应该等于 0，M 部分应该为 1（M 的形式应该是是 1.xxxxx，其中 xxx 是 frac 的部分，于是 frac 应该为 0）。这里 E 因为属于 normalized 的情况，所以 E = exp - bias，而 E 需要等于 0，所以 exp = bias，针对不同的格式，就可以找到对应的答案（格式 A 中 bias = 3，所以 exp 部分是 011；格式 B 中 bias = 1，所以 exp 部分是 01；frac 部分均为 0）</p>
+<p>然后我们来看看如何表示 0.5，根据公式，E 应该等于 -1，那么对于格式 A，E = exp - bias，所以 exp = -1 + 3 = 2，exp 部分就是 010。但是对于格式 B 就有点不同，因为这时候是属于 denormalized 的，这时 E = 1 - bias = 0，我们需要对 frac 部分做出处理，在这种情况下(M 的形式是 0.xxx)，frac 的第一位就表示 0.5，所以最终的结果如上表所示。</p>
+<p>最后我们来看看 $\frac{11}{8}$ 要如何表示，实际上就是 1 加上 $\frac{3}{8}$，因为前面已经表示过 1，所以只要在 frac 部分做做文章即可，这次我们先来看格式 B，根据浮点数的定义，我们很快就可以知道 frac 应该为 011，完成！对于格式 A，因为 frac 只有 2 位，那么就需要进行舍入（到最近的偶数），也就是 <code>011 -&gt; 01 + 01 -&gt; 10</code>，所以最终的结果如上表所示。</p>
+<h3 id="u6C47_u7F16_u7A0B_u5E8F_u9605_u8BFB"><a href="#u6C47_u7F16_u7A0B_u5E8F_u9605_u8BFB" class="headerlink" title="汇编程序阅读"></a>汇编程序阅读</h3><p>假设有这么一段汇编程序</p>
+<p><img src="/images/14566917311963.jpg" alt=""></p>
+<p>根据上面的信息，补充完整下面对应的程序代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">transform</span><span class="params">(<span class="keyword">unsigned</span> n)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> b, m;</span><br><span class="line">    <span class="keyword">for</span> (m = __; _____; _____)&#123;</span><br><span class="line">        b = ____;</span><br><span class="line">        <span class="keyword">if</span> (b == <span class="number">0</span>) &#123;</span><br><span class="line">            ______;</span><br><span class="line">        &#125;</span><br><span class="line">        ______;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先我们应该熟悉，这里 <code>%eax</code> 中存放的变量是 <code>m</code>，<code>%edx</code> 中存放的变量是 <code>n</code>。在 &lt;+6&gt; 这一行把 <code>0x0</code> 放到了 <code>%eax</code> 中，所以循环的初始条件是 <code>m=0</code>，然后 &lt;+11&gt; 这一句实际是判断 <code>%edx</code> 是否为 0，如果为 0，则跳转到 &lt;+28&gt;，所以终止条件是 <code>n != 0</code>。接着就是循环体里的内容，&lt;+15&gt; 用 <code>%dl</code> 和 <code>0x1</code> 做 <code>&amp;</code> 操作，在汇编中结果会保存到对应的 flag 中，在代码中我们就保存到了 <code>b</code> 中，如果 <code>b == 0</code>，那么就跳转到 &lt;+24&gt;，进行移位操作，也就是循环操作为 <code>n &gt;&gt;= 1</code>，否则先要执行 &lt;+20&gt;，这一句实际上就是 <code>m = m + m + 1</code>，综上所述，就可以得到最终答案：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">transform</span><span class="params">(<span class="keyword">unsigned</span> n)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> b, m;</span><br><span class="line">    <span class="keyword">for</span> (m = <span class="number">0</span>; n != <span class="number">0</span>; m &gt;&gt;= <span class="number">1</span>)&#123;</span><br><span class="line">        b = n &amp; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (b == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        m = m + m + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="u7ED3_u6784_u4F53_u7684_u5185_u5B58_u6392_u5217"><a href="#u7ED3_u6784_u4F53_u7684_u5185_u5B58_u6392_u5217" class="headerlink" title="结构体的内存排列"></a>结构体的内存排列</h3><p>假设我们有下面这个结构体</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">char</span> a;</span><br><span class="line">    <span class="keyword">long</span> b;</span><br><span class="line">    <span class="keyword">float</span> c;</span><br><span class="line">    <span class="keyword">char</span> d[<span class="number">3</span>];</span><br><span class="line">    <span class="keyword">int</span> *e;</span><br><span class="line">    <span class="keyword">short</span> *f;</span><br><span class="line">&#125; foo;</span><br></pre></td></tr></table></figure>
+<p>请给出具体的内存排列顺序。</p>
+<p>首先我们需要知道每个数据类型所占据的字节数目，如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// 2 字节：short</span></span><br><span class="line">    <span class="comment">// 16 字节：long double</span></span><br><span class="line">    <span class="keyword">char</span> a;    <span class="comment">// 1 字节</span></span><br><span class="line">    <span class="keyword">long</span> b;    <span class="comment">// 8 字节（其他 8 字节的有 double, 指针）</span></span><br><span class="line">    <span class="keyword">float</span> c;   <span class="comment">// 4 字节（其他 4 字节的有 int）</span></span><br><span class="line">    <span class="keyword">char</span> d[<span class="number">3</span>]; <span class="comment">// 1 x 3 字节</span></span><br><span class="line">    <span class="keyword">int</span> *e;    <span class="comment">// 8 字节</span></span><br><span class="line">    <span class="keyword">short</span> *f;  <span class="comment">// 8 字节</span></span><br><span class="line">&#125; foo;</span><br></pre></td></tr></table></figure>
+<p>所以具体的排列为（用 x 表示 padding 的字节）</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="tag">a</span> x x x x x x x <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span></span><br><span class="line">c c c c d d d x e e e e e e e e</span><br><span class="line">f f f f f f f f</span><br></pre></td></tr></table></figure>
+<p> 如果想要紧凑一点，其实可以进行对其，把 a, c, d 组合一下，如</p>
+ <figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="tag">a</span> d d d c c c c <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span> <span class="tag">b</span></span><br><span class="line">e e e e e e e e f f f f f f f f</span><br></pre></td></tr></table></figure>
+<p>这样就省了 8 个字节出来</p>
+<h3 id="u7ED3_u6784_u4F53_u7684_u8BBF_u95EE"><a href="#u7ED3_u6784_u4F53_u7684_u8BBF_u95EE" class="headerlink" title="结构体的访问"></a>结构体的访问</h3><p>给出下面的结构体</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> confuse &#123;</span><br><span class="line">    <span class="keyword">char</span> systems;</span><br><span class="line">    <span class="keyword">long</span> theory;</span><br><span class="line">    <span class="keyword">struct</span> applications &#123;</span><br><span class="line">        <span class="keyword">char</span> web[<span class="number">3</span>];</span><br><span class="line">    &#125; database;</span><br><span class="line">    <span class="keyword">int</span> *languages;</span><br><span class="line">    <span class="keyword">struct</span> confuse *math;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>问题是，右边的汇编程序分别对应哪个函数：</p>
+<p><img src="/images/14566942080505.jpg" alt=""></p>
+<p>根据上一题，我们可以先画出具体的内存排列，用变量的首字母作为缩写，用 x 表示 padding：</p>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">s x x x x x x x t t t t t t t t</span><br><span class="line">w w w x x x x x <span class="keyword">l</span> <span class="keyword">l</span> <span class="keyword">l</span> <span class="keyword">l</span> <span class="keyword">l</span> <span class="keyword">l</span> <span class="keyword">l</span> <span class="keyword">l</span></span><br><span class="line"><span class="keyword">m</span> <span class="keyword">m</span> <span class="keyword">m</span> <span class="keyword">m</span> <span class="keyword">m</span> <span class="keyword">m</span> <span class="keyword">m</span> <span class="literal">m</span></span><br></pre></td></tr></table></figure>
+<p>然后根据偏移量来数对应的变量即可，其中要注意的是十六进制转十进制的运算。比较简单，最后的对应为：</p>
+<ul>
+<li>A - phd</li>
+<li>B - bachelors</li>
+<li>C = masters</li>
+</ul>
+<h3 id="Switch__u8BED_u53E5"><a href="#Switch__u8BED_u53E5" class="headerlink" title="Switch 语句"></a>Switch 语句</h3><p>我们先来看跳转表：</p>
+<p><img src="/images/14566960252571.jpg" alt="跳转表"></p>
+<p>接着是汇编程序</p>
+<p><img src="/images/14566960458022.jpg" alt=""></p>
+<p>我们要做的是补充完整下面的程序：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> c)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">4</span>;   </span><br><span class="line">    <span class="keyword">switch</span>(a) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            _____;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">            _____;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">            result = ____;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">            _____;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">7</span>:</span><br><span class="line">            _____;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            _____;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>汇编程序中负责跳转的是 <code>0x40047b    jmpq  *0x400598(, %rdi, 8)</code>，其中 <code>%rdi</code> 就是变量 <code>a</code> 的值，仔细观察跳转表和程序，可以发现一些规律：</p>
+<ul>
+<li>a 等于 0 或 1 的时候，做的事情是一样的，并且直到执行完 a 等于 2 的语句才会返回</li>
+<li>a 等于 5 时是一套独立的指令</li>
+<li>a 等于 3 和 7 时，做的事情类似，并且最后都会执行默认的命令</li>
+<li>switch 语句中有些有 break，有些没有</li>
+</ul>
+<p>有了这些线索，就可以『翻译』对应的汇编代码了，答案如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> c)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">4</span>;   </span><br><span class="line">    <span class="keyword">switch</span>(a) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            result = c - <span class="number">5</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">            result = c * <span class="number">4</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">            result = <span class="number">0x15213</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">            c = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">7</span>:</span><br><span class="line">            b = b &amp; c;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            result = b + <span class="number">4</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="u6808_u7684_u5E94_u7528"><a href="#u6808_u7684_u5E94_u7528" class="headerlink" title="栈的应用"></a>栈的应用</h3><p>这一题主要考察函数调用时候压栈出栈以及栈指针和返回地址的理解，C 代码和对应的汇编代码为：</p>
+<p><img src="/images/14567011035267.jpg" alt=""></p>
+<p>我们需要画出栈中的数据存放表示，具体的函数是 <code>foo(3, 4, 5)</code>，注意要标志出 <code>%ebp</code> 的值</p>
+<p>在调用 <code>foo</code> 函数时 <code>%ebp</code> 的值为 <code>0xffffd858</code>，调用 <code>foo</code> 的函数的返回地址是 <code>0x080483c9</code></p>
+<figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">Stack      The diagram starts with theaddresss   arguments for foo()</span><br><span class="line">           +-----------------------------------+0xffffd850 |<span class="string">                5                  </span>|           +-----------------------------------+0xffffd84c |<span class="string">                4                  </span>|           +-----------------------------------+0xffffd848 |<span class="string">                3                  </span>|           +-----------------------------------+0xffffd844 |<span class="string">      return addr 0x080483c9       </span>|           +-----------------------------------+0xffffd840 |<span class="string">        old ebp 0xffffd858         </span>|           +-----------------------------------+0xffffd83c |<span class="string">                3                  </span>|           +-----------------------------------+0xffffd838 |<span class="string">                4                  </span>|           +-----------------------------------+0xffffd834 |<span class="string">      return addr 0x08048397       </span>|           +-----------------------------------+0xffffd830 |<span class="string">        old ebp 0xffffd858         </span>|           +-----------------------------------+</span><br></pre></td></tr></table></figure>
+<p>我们来看看这题要怎么做。首先，老师还是很贴心的给出了第一个参数在栈中的位置，不过开始之前还是先要弄明白我们到底需要在栈中放什么东西。首先是函数的参数（倒着放，这样第一个参数才能先弹出来），然后是返回值地址和旧的 <code>%ebp</code> 指针，这俩是为了告诉指令该去哪，以及栈要去哪的。</p>
+<p>所以答案就呼之欲出了，前三个简单，543 一路下来即可；接下来是返回地址，也就是题目给出的初始条件；再下来是题目给出的初始 ebp；接着是调用 <code>bar</code> 函数的栈排列，也还是参数，但是这里题目是换了顺序的，所以先 3 后 4；然后是返回值地址，找到汇编代码中 call 的下一句，就是它了；最后一句可有可无，不过为了清晰 ebp 的做用，还是写上，应该指向旧的 ebp 地址，也就是 <code>0xffffd840</code>，至此，题目完成。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/csapp-midterm-review.html"
+           data-title="深入理解计算机系统 期中考试复习" data-url="http://wdxtub.com/vault/csapp-midterm-review.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

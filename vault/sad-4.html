@@ -1,0 +1,793 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="有了前面的基本概念和第一次作业的练习，这一讲我们主要来看看如何设计架构。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="软件架构与设计 第 4 课 Designing Architectures">
+<meta property="og:url" content="http://wdxtub.com/vault/sad-4.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="有了前面的基本概念和第一次作业的练习，这一讲我们主要来看看如何设计架构。">
+<meta property="og:image" content="http://wdxtub.com/images/14532127643541.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14532130749730.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14532131812505.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14532132171147.jpg">
+<meta property="og:updated_time" content="2016-02-28T04:10:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="软件架构与设计 第 4 课 Designing Architectures">
+<meta name="twitter:description" content="有了前面的基本概念和第一次作业的练习，这一讲我们主要来看看如何设计架构。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    软件架构与设计 第 4 课 Designing Architectures | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>有了前面的基本概念和第一次作业的练习，这一讲我们主要来看看如何设计架构。</p>
+<a id="more"></a>
+<hr>
+<p>设计架构的目标主要有两个方面，一个是创新，一个是方法。创新的意思是拓展自己的技能树，使用一些新的工具；而方法的意思是去找到那些高效的技术。在开发的时候往往需要做一些取舍：什么时候用去开发新方法，什么时候去使用已经验证的有效方法。</p>
+<p>具体到做工程，设计的过程主要分以下几个阶段：</p>
+<ul>
+<li>Feasibility stage：可行性分析，找到一些可行的概念</li>
+<li>Preliminary design stage：初步设计，选择和拓展最佳的概念</li>
+<li>Detailed design stage：详细设计，做出这些概念的工程上的描述</li>
+<li>Planning stage：计划阶段，根据产品，贡献，消耗和产品退出市场综合评估和改变这些概念</li>
+</ul>
+<p>每一步实际上可能都不是那么一帆风顺，比如说：</p>
+<ul>
+<li>如果设计者没有办法产出可行的概念，那么整个流程就无法继续</li>
+<li>在问题越来越多，产品越来越大越来越复杂的时候，每一步成功的概率也在降低</li>
+<li>标准的方法没有充分去考虑市场因素，比如不同产品线之间的影响</li>
+</ul>
+<p>所以主要矛盾就是日益增长的复杂度与设计者经验的不足之间的矛盾，为此，必须采用一些新的方法，比如：</p>
+<ul>
+<li>Standard：也就是之前提到的线性模型</li>
+<li>Cyclic：可以从后面的步骤跳回到之前的步骤</li>
+<li>Parallel：独立的过程可以并行处理</li>
+<li>Adaptive：就是走一步看一步</li>
+<li>Incremental：每一个阶段可以看作是在上一个阶段的基础上进行优化</li>
+</ul>
+<p>在继续讲下去之前，先说明若干概念，首先是『抽象』，抽象有两种方式，对应于软件工程中两类比较大的工程思路：自底向上和自顶向下。来看看下面的概念：</p>
+<blockquote>
+<p>Abstraction: The act or process of separating in thought, of considering a thing independently of its associations; or a substance independently of its attributes; or an attribute or quality independently of the substance to which it belongs.</p>
+<p>Reification: The mental conversion of …[an] abstract concept into a thing.</p>
+<p>Deduction: The process of drawing a conclusion from a principle already known or assumed; spec. in Logic, inference by reasoning from generals to particulars; opposed to INDUCTION.</p>
+<p>Induction: The process of inferring a general law or principle from the observation of particular instances; opposed to DEDUCTION.</p>
+</blockquote>
+<p>最开始的时候，如果不知道从何入手，可以考虑 simple machine 方法，具体的意思就是，剥离大部分非核心的功能，从最基础的入手，比方说，要设计一个传真机，那么对应的 simple machine 就是一个状态机，先把这个状态机的状态确定好，然后再慢慢尽心迭代优化。对于不同的应用来说，通常都有对应的 simple machine，可以当作是万里长征第一步，一些常见的如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Domain</th>
+<th style="text-align:center">Simple Machines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Graphics</td>
+<td style="text-align:center">Pixel arrays, Transformation matrices, Widgets, Abstract depiction graphs</td>
+</tr>
+<tr>
+<td style="text-align:center">Word processing</td>
+<td style="text-align:center">Structured documents, Layouts</td>
+</tr>
+<tr>
+<td style="text-align:center">Process control</td>
+<td style="text-align:center">Finite state machines</td>
+</tr>
+<tr>
+<td style="text-align:center">Income Tax Software</td>
+<td style="text-align:center">Hypertext, Spreadsheets, Form templates</td>
+</tr>
+<tr>
+<td style="text-align:center">Web pages</td>
+<td style="text-align:center">Hypertext, Composite documents</td>
+</tr>
+<tr>
+<td style="text-align:center">Scientific computing</td>
+<td style="text-align:center">Matrices, Mathematical functions</td>
+</tr>
+<tr>
+<td style="text-align:center">Banking</td>
+<td style="text-align:center">Spreadsheets, Databases, Transactions</td>
+</tr>
+</tbody>
+</table>
+<p>如果决定使用抽象来作为设计工具，那么有两个问题必须要搞清楚，一个是抽象的层级，一个是需要讨论的范畴。这两个为什么重要呢？举个例子，假设我们在讨论宇宙，有意义的抽象的层级应该是一致的，不能说一个人在讨论行星恒星黑洞，另一个人在讨论水星火星地球。在层级一样之后，还需要确定的是具体到某个层级要讨论的范围，这样才能真正落到实处。</p>
+<p>这里可以采用概念划分的方法，也就是把根据不同的子问题，划分出相互独立的几个部分，然后可以分别进行讨论。但是其实系统中各个部分或多或少都是相互联系的，那么如何分往往是需要取舍的。在软件工程中，一个比较关键的例子是组件（用于计算）和连接器（用于通信）直接的划分。</p>
+<p>设计之中过去的经验也是很重要的，经验丰富的系统设计师经过长期训练所得到的直觉非常可靠（大部分情况下），我们还需要从过去的成功或失败中学习经验。失败是最好的老师，成功同样可以是，但是需要排除那些偶然因素影响的部分，去找到真正开启成功大门的钥匙。</p>
+<p>然后我们来整体看一下不同部分在坐标系的位置，越靠近右上角，说明越需要领域相关的知识，同时也是从更高层的抽象来思考问题。</p>
+<p><img src="/images/14532127643541.jpg" alt=""></p>
+<p>Domain-Specific Software Architecutres, DSSA 是一系列软件组件的组合，针对特定的领域，使用标准的组件。这种特性也使得 DSSA 只对特定的领域有关系，普适性较低。</p>
+<p>Architectural Patterns 是一组架构设计决定，可以根据图中的位置来大概感受其特点。一个比较常见的三层模型为：</p>
+<p><img src="/images/14532130749730.jpg" alt=""></p>
+<p>另一种是我们常常听到的 MVC，MVC 在移动应用中开发广泛使用（当然也有 MVVM）</p>
+<p><img src="/images/14532131812505.jpg" alt=""></p>
+<p>而对于嵌入式带有各种传感器的应用，一般是这样的架构：</p>
+<p><img src="/images/14532132171147.jpg" alt=""></p>
+<p>Architectural Styles 是软件系统设计的经验准则，需要更少的领域相关的内容。不同的风格之间是可以共存的。一些基本属性：</p>
+<ul>
+<li>设计元素的词汇表<ul>
+<li>包括组件类型，连接器类型，数据元素等等</li>
+<li>例如：pipes, filters, objects, servers</li>
+</ul>
+</li>
+<li>一组配置规则<ul>
+<li>不同组件间的限制与拓扑规则</li>
+<li>例如：一个组件在当前条件下最多只能和其他两个组件相连</li>
+</ul>
+</li>
+<li>语义描述<ul>
+<li>设计的组件需要有意义</li>
+</ul>
+</li>
+</ul>
+<p>使用 Styles 的好处有很多，例如：</p>
+<ul>
+<li>设计重用</li>
+<li>代码重用</li>
+<li>系统组织容易理解</li>
+<li>Interoperability：也就是互用性</li>
+<li>特定风格分析</li>
+<li>可视化</li>
+</ul>
+<p>一些可以问自己的问题：</p>
+<ul>
+<li>What is the design vocabulary?</li>
+<li>What are the allowable strucural patterns?</li>
+<li>What is the underlying computational model?</li>
+<li>What are the essential invariants of the style?</li>
+<li>What are common examples of its use?</li>
+<li>What are the (dis)advantages of using the style?</li>
+<li>What are the style’s specializations?</li>
+</ul>
+<p>一些比较常见的风格（保证准确这里不翻译）：</p>
+<ul>
+<li>Traditional, language-influenced styles<ul>
+<li>Main program and subroutines</li>
+<li>Object-oriented</li>
+</ul>
+</li>
+<li>Layered<ul>
+<li>Virtual machines</li>
+<li>Client-server</li>
+<li>MVC</li>
+</ul>
+</li>
+<li>Data-flow styles<ul>
+<li>Batch sequential</li>
+<li>Pipe and filter</li>
+</ul>
+</li>
+<li>Shared memory<ul>
+<li>Blackboard</li>
+<li>Rule based</li>
+<li>MapReduce</li>
+</ul>
+</li>
+<li>Interpreter<ul>
+<li>Interpreter</li>
+<li>Mobile code</li>
+</ul>
+</li>
+<li>Implicit invocation<ul>
+<li>Event-based</li>
+<li>Publish-subscribe</li>
+</ul>
+</li>
+<li>Peer-to-peer </li>
+<li>“Derived” styles <ul>
+<li>C2</li>
+<li>CORBA</li>
+<li>SOA</li>
+</ul>
+</li>
+</ul>
+<p>至此这一讲的内容就结束了，后面会详细说明不同风格。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/sad-4.html"
+           data-title="软件架构与设计 第 4 课 Designing Architectures" data-url="http://wdxtub.com/vault/sad-4.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

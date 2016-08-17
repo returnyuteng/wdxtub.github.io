@@ -1,0 +1,793 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="从这一讲开始，慢慢就有点难度了，树的每个节点虽然看起来比较简单，但是不同结点以不同规则进行组合就使得难度指数级增长，后面的红黑树因为涉及到结点的调整，一定要按照前面提到的 5 个步骤来过一次，才能清晰理解。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="数据结构与算法 第 4 课 树">
+<meta property="og:url" content="http://wdxtub.com/vault/dsa-4.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="从这一讲开始，慢慢就有点难度了，树的每个节点虽然看起来比较简单，但是不同结点以不同规则进行组合就使得难度指数级增长，后面的红黑树因为涉及到结点的调整，一定要按照前面提到的 5 个步骤来过一次，才能清晰理解。">
+<meta property="og:image" content="http://wdxtub.com/images/14563638168396.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563638734277.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563639875028.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563645014537.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563646007700.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563646456272.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563698058000.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563702807914.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563707343954.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563710814940.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563744343036.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563745325794.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563980237017.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14563990361014.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564007797015.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564008049100.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564008689598.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564009041532.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564011447526.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564014630573.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564015026747.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564016695179.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564016869839.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564018498766.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564020922018.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564021367330.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564021619408.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564058100039.jpg">
+<meta property="og:updated_time" content="2016-02-25T13:11:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据结构与算法 第 4 课 树">
+<meta name="twitter:description" content="从这一讲开始，慢慢就有点难度了，树的每个节点虽然看起来比较简单，但是不同结点以不同规则进行组合就使得难度指数级增长，后面的红黑树因为涉及到结点的调整，一定要按照前面提到的 5 个步骤来过一次，才能清晰理解。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    数据结构与算法 第 4 课 树 | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>从这一讲开始，慢慢就有点难度了，树的每个节点虽然看起来比较简单，但是不同结点以不同规则进行组合就使得难度指数级增长，后面的红黑树因为涉及到结点的调整，一定要按照前面提到的 5 个步骤来过一次，才能清晰理解。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u6811_u7684_u5E94_u7528"><a href="#u6811_u7684_u5E94_u7528" class="headerlink" title="树的应用"></a>树的应用</h2><p>这次我们换个方式，先从不同的应用角度来了解一下树的用途。</p>
+<p><strong>表示数学表达式</strong></p>
+<p>我们可以用下面的树来表示 <code>b + a * b</code></p>
+<p><img src="/images/14563638168396.jpg" alt=""></p>
+<p><strong>XML Document Object Model</strong></p>
+<p>XML 实际上也是一个树结构：</p>
+<p><img src="/images/14563638734277.jpg" alt=""></p>
+<p><strong>表示迁移路径的概率</strong></p>
+<p>下图可以认为，从 S 出发，有 p 的概率到 Su，有 1-p 的概率到 Sd</p>
+<p><img src="/images/14563639875028.jpg" alt=""></p>
+<h2 id="u6811_u7684_u5B9A_u4E49"><a href="#u6811_u7684_u5B9A_u4E49" class="headerlink" title="树的定义"></a>树的定义</h2><p>下面介绍几种不同类型的树</p>
+<h3 id="Free_tree"><a href="#Free_tree" class="headerlink" title="Free tree"></a>Free tree</h3><p>指的是相互连接的无环无向图</p>
+<p><img src="/images/14563645014537.jpg" alt="Free Tree"></p>
+<p>假设 G = (V, E) 是一个无向图，那么下面的语句是等价的：</p>
+<ol>
+<li>G 是一个 free tree</li>
+<li>G 中的任意两个节点间都有唯一的一条路径</li>
+<li>G 是连通的的，但是如果去掉任何一条边，G 就不连通了</li>
+<li>G 是连通的，并且 $|E|=|V|-1$</li>
+<li>G 是无环的，并且 $|E|=|V|-1$</li>
+<li>G 是无环的，但是加入任何一条新的边，就会变成有环的</li>
+</ol>
+<h3 id="Forest__u68EE_u6797"><a href="#Forest__u68EE_u6797" class="headerlink" title="Forest 森林"></a>Forest 森林</h3><p>同样是无环无向图，但不是所有的节点都是连通的</p>
+<p><img src="/images/14563646007700.jpg" alt="Forest"></p>
+<p>下图中包含一个环，所以不能算是森林：</p>
+<p><img src="/images/14563646456272.jpg" alt="包含环的例子"></p>
+<h3 id="Rooted_Tree"><a href="#Rooted_Tree" class="headerlink" title="Rooted Tree"></a>Rooted Tree</h3><p>有根的树也是一棵 free tree，但是其中一个节点和其他不同，称为根，下图中的 7 号节点就是根：</p>
+<p><img src="/images/14563698058000.jpg" alt=""></p>
+<p>有根树中有一些概念需要理解清楚，这里只列举出来不再赘述：ancestor, descendant, proper ancestor, proper descendant, parent, child, siblings, external node(leaf), internal node。</p>
+<p>一个节点的孩子数量称之为节点的度(degree)，从根到某节点的要经过的边的数量就是该节点的深度，最大的深度称为树的高度，如下图所示：</p>
+<p><img src="/images/14563702807914.jpg" alt=""></p>
+<p>根树有几个特例，也非常常用，需要理解清楚，这里列举如下：</p>
+<ul>
+<li>Binary tree</li>
+<li>Full binary tree: each node is either a leaf or has degree exactly 2</li>
+<li>Complete k-ary tree: a k-ary tree in which all leaves have the same depth and all internal nodes have degree k</li>
+<li>Binary search tree: 一个节点的左右子节点和节点本身满足一定的大小关系</li>
+</ul>
+<p><img src="/images/14563707343954.jpg" alt="Complete Binary Tree"></p>
+<h3 id="Catalan_Numbers"><a href="#Catalan_Numbers" class="headerlink" title="Catalan Numbers"></a>Catalan Numbers</h3><p>先来看公式</p>
+<p><img src="/images/14563710814940.jpg" alt=""></p>
+<p>然后我们就发现，Catalan 数对应的是有 n 节点的二叉树的数量（根据左右子树的位置可以有不同的结构）</p>
+<h2 id="u6811_u7684_u904D_u5386"><a href="#u6811_u7684_u904D_u5386" class="headerlink" title="树的遍历"></a>树的遍历</h2><p>这一部分也是非常重要的内容，基本来说各类考点都在这里，不但需要对概念的清晰理解，还需要利用递归来解决问题（虽然不用递归也可以），主要有下面这四类：</p>
+<ol>
+<li>前序遍历</li>
+<li>中序遍历</li>
+<li>后序遍历</li>
+<li>层次遍历</li>
+</ol>
+<p>具体的概念可以在 wiki 上查看，注意一下层次遍历可能需要一些特殊处理即可。</p>
+<h2 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h2><p>如果我们想要表示一个 complete binary tree 的话，其实可以用数组来完成，这种结构其实也可以看成是一个堆。堆的话需要理解的不算特别多，注意下最大堆最小堆，以及对应的操作即可。另外前面提到的优先队列也可以认为是堆，不过这个不展开了。</p>
+<p>这一部分我们着重来看看 B-Tree，这是一类搜索树，在给定 n 个节点的条件下，尽可能减少树的高度，相对于原来的二叉搜索树，B-Tree 做了两个调整：</p>
+<ol>
+<li>节点可以有多于两个子节点</li>
+<li>节点中可以保存多个元素</li>
+</ol>
+<p>因为需要保存不定数量的元素，所以一般用 set 来实现（这种情况下不允许有重复的元素，重复的情况这里暂时不考虑）。稍微提一下，许多数据库都是用 B-Tree 实现的。</p>
+<p>所有的 B-Tree 都有一个非常重要的常数 MINIMUM，决定了每个节点中需要保存多少元素，具体的规则如下：</p>
+<ol>
+<li>根节点有 0 或 1 个元素，其他的节点至少需要保存 MINIMUM 个元素</li>
+<li>一个节点中最多可以保存 <code>2*MINIMUM</code> 个元素</li>
+<li>一个节点中保存的元素是有序的，从最小到最大</li>
+<li>假设一个非叶节点中存有 N 个元素，那么它会有 N+1 个子树</li>
+<li>对于任何一个非叶节点：<ul>
+<li>第 I 个元素比其第 I 个子树的所有元素都要大</li>
+<li>第 I 个元素比其第 I+1 个子树的所有元素都要小</li>
+<li><img src="/images/14563744343036.jpg" alt=""></li>
+</ul>
+</li>
+<li>每个叶节点都有相同的深度，也就是说 B-Tree 总是平衡的</li>
+</ol>
+<p>下图是一个例子，其中 MINIMUM = 1，注意，根节点的每个子节点也是一颗 B-Tree</p>
+<p><img src="/images/14563745325794.jpg" alt="B-Tree 的例子"></p>
+<p>对应的数据结构是：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IntBalancedSet</span></span>&#123;</span><br><span class="line">    <span class="comment">// constants</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> MINIMUM = <span class="number">200</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> MAXIMUM = <span class="number">2</span> * MINIMUM;</span><br><span class="line">    <span class="comment">// info about root node</span></span><br><span class="line">    <span class="keyword">int</span> dataCount;</span><br><span class="line">    <span class="keyword">int</span>[] data = <span class="keyword">new</span> <span class="keyword">int</span>[MAXIMUM + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span> childCount;</span><br><span class="line">    <span class="comment">// info about children</span></span><br><span class="line">    IntBalancedSet[] subset = <span class="keyword">new</span> IntBalancedSet[MAXIMUM+<span class="number">2</span>];</span><br><span class="line">    <span class="comment">// ....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>例如：</p>
+<p><img src="/images/14563980237017.jpg" alt=""></p>
+<p>利用 B-Tree 进行搜索的方法如下：</p>
+<ul>
+<li>找到这样一个 set，满足 <code>data[I] &gt;= target</code> 且 I 尽可能小，如果找不到，则 <code>I = dataCount</code></li>
+<li>如果 <code>data[I] == target</code> 返回 true，如果不等于且没有子节点，返回 false</li>
+<li>如果不等于但是有子节点，则返回 <code>subset[I].contains(target)</code></li>
+</ul>
+<p><img src="/images/14563990361014.jpg" alt="利用 B-Tree 进行搜索的例子"></p>
+<p>一般来说，结构比较复杂的数据结构，进行修改都会比较麻烦（因为结构中内在的约束太多，变动的话需要满足所有约束），在 B-Tree 中添加和删除节点是比较复杂的操作。这里讲详细一些，用一个具体的例子来做说明（MINIMUM=1）</p>
+<p>删除操作的伪代码：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">Delete</span>(<span class="keyword">T</span>, X, <span class="keyword">success</span>)</span><br><span class="line">    // 从树 <span class="keyword">T</span> 中删除 <span class="keyword">key</span> 为 X 的节点，如果没有对应节点，则操作失败</span><br><span class="line">    // 操作结果可以从 <span class="keyword">success</span> 变量中获悉</span><br><span class="line">    </span><br><span class="line">    // 先找到 <span class="keyword">key</span> 为 X 的节点的位置</span><br><span class="line">    <span class="keyword">IF</span> <span class="keyword">I</span> <span class="keyword">is</span> <span class="keyword">present</span> <span class="keyword">THEN</span></span><br><span class="line">        swap item <span class="keyword">I</span> <span class="keyword">into</span> leaf <span class="keyword">L</span> which contains the inorder successor <span class="keyword">of</span> <span class="keyword">I</span></span><br><span class="line">        // 从 leaf <span class="keyword">L</span> 开始删除操作</span><br><span class="line">        <span class="keyword">IF</span> <span class="keyword">L</span> has <span class="keyword">no</span> items <span class="keyword">THEN</span> Fix(<span class="keyword">L</span>)</span><br><span class="line">        <span class="keyword">success</span> := <span class="literal">true</span></span><br><span class="line">    <span class="keyword">ELSE</span></span><br><span class="line">        <span class="keyword">success</span> := <span class="literal">false</span></span></span><br></pre></td></tr></table></figure>
+<p>然后是其中的 Fix 函数，用来处理没有子节点的节点，保证符合 B-Tree 的基本性质</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">Fix(N)</span><br><span class="line">    // N 是一个没有子节点的节点</span><br><span class="line">    // 如果 N 是一个 internal node，那么它有一个子节点</span><br><span class="line">    </span><br><span class="line">    Let P be the parent of N. If N is the root, <span class="operator"><span class="keyword">delete</span> it <span class="keyword">and</span> <span class="keyword">return</span>.</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">IF</span> <span class="keyword">some</span> sibling <span class="keyword">of</span> <span class="keyword">N</span> has two items <span class="keyword">THEN</span></span><br><span class="line">        <span class="keyword">distribute</span> items among <span class="keyword">N</span>, the sibling, <span class="keyword">and</span> <span class="keyword">P</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">IF</span> <span class="keyword">N</span> <span class="keyword">is</span> internal <span class="keyword">THEN</span></span><br><span class="line">            <span class="keyword">move</span> the appropriate <span class="keyword">child</span> <span class="keyword">from</span> the sibling <span class="keyword">to</span> <span class="keyword">N</span></span><br><span class="line">    <span class="keyword">ELSE</span></span><br><span class="line">        // 如果其兄弟没有两个子节点，就必须要进行融合</span><br><span class="line">        <span class="keyword">Choose</span> an adjancent sibling S <span class="keyword">of</span> <span class="keyword">N</span></span><br><span class="line">        </span><br><span class="line">        Bring the appropriate item down <span class="keyword">from</span> <span class="keyword">P</span> <span class="keyword">into</span> S</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">IF</span> <span class="keyword">N</span> <span class="keyword">is</span> internal <span class="keyword">THEN</span></span><br><span class="line">            <span class="keyword">Move</span> <span class="keyword">N</span><span class="string">'s child to S</span><br><span class="line">        </span><br><span class="line">        Delete node N</span><br><span class="line">        </span><br><span class="line">        IF P is now without an item THEN Fix(P)</span></span></span><br></pre></td></tr></table></figure>
+<p>然后我们看看插入操作：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">Insert</span>(<span class="keyword">T</span>, newitem)</span><br><span class="line">    // 把 newitem 插入到树 <span class="keyword">T</span> 中</span><br><span class="line">    Let X be the <span class="keyword">search</span> <span class="keyword">key</span> <span class="keyword">of</span> <span class="keyword">new</span> item</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">Locate</span> the leaf <span class="keyword">L</span> <span class="keyword">in</span> which X belongs</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">Add</span> newitem <span class="keyword">to</span> <span class="keyword">L</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">IF</span> <span class="keyword">L</span> <span class="keyword">now</span> has three items <span class="keyword">THEN</span></span><br><span class="line">        <span class="keyword">Split</span>(<span class="keyword">L</span>)</span></span><br></pre></td></tr></table></figure>
+<p>继续来看看这里的 Split 函数</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">Split(N)</span><br><span class="line">    // 分割那些有 3 个子节点的节点。注意如果 N 是 internal 的，它可以有 4 个孩子</span><br><span class="line">    Let P be the parent of N</span><br><span class="line">        // 如果 N 是根，那么创建一个新节点 P</span><br><span class="line">        </span><br><span class="line">    <span class="operator"><span class="keyword">Replace</span> node <span class="keyword">N</span> <span class="keyword">by</span> two nodes, N1 <span class="keyword">and</span> N2</span><br><span class="line">    </span><br><span class="line">    Give N1 the item <span class="keyword">in</span> <span class="keyword">N</span> <span class="keyword">with</span> the smallest <span class="keyword">search</span> <span class="keyword">key</span> <span class="keyword">value</span></span><br><span class="line">    Give N2 the item <span class="keyword">in</span> <span class="keyword">N</span> <span class="keyword">with</span> the largest <span class="keyword">search</span> <span class="keyword">key</span> <span class="keyword">value</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">IF</span> <span class="keyword">N</span> <span class="keyword">is</span> an iternal node <span class="keyword">THEN</span></span><br><span class="line">        N1 becomes the <span class="keyword">parent</span> <span class="keyword">of</span> <span class="keyword">N</span><span class="string">'s two leftmost children</span><br><span class="line">        N2 becomes the parent of N'</span>s two rightmost children</span><br><span class="line">    </span><br><span class="line">    Send up <span class="keyword">to</span> <span class="keyword">P</span> the item <span class="keyword">in</span> <span class="keyword">N</span> <span class="keyword">with</span> the middle <span class="keyword">search</span> <span class="keyword">key</span> <span class="keyword">value</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">IF</span> <span class="keyword">P</span> <span class="keyword">now</span> has <span class="number">3</span> items <span class="keyword">THEN</span></span><br><span class="line">        <span class="keyword">Split</span>(<span class="keyword">P</span>)</span></span><br></pre></td></tr></table></figure>
+<p>我们给定如下一颗 B-Tree</p>
+<p><img src="/images/14564007797015.jpg" alt=""></p>
+<p>插入 39 之后（插入总是在叶节点）为</p>
+<p><img src="/images/14564008049100.jpg" alt="插入 39 之后"></p>
+<p>再插入 38，会发现有一个节点有多于 2 个子节点，需要 split</p>
+<p><img src="/images/14564008689598.jpg" alt="插入 38，split 之前"></p>
+<p>可以看到我们通过 split 操作把 39 提上去了（注意对照前面的 split 函数的伪代码来进行操作和理解）：</p>
+<p><img src="/images/14564009041532.jpg" alt="插入 38，split 之后"></p>
+<p>我们再插入 37 与 36，这会导致树高改变，需要进行更多操作，过程如下：</p>
+<p><img src="/images/14564011447526.jpg" alt="插入 37 与 36"></p>
+<p>插入之后我们发现又出现了非法的节点，依照 split 规则更新之后，上层的节点再次非法，这里属于有四个子节点的情况，左右分开，把中间的 37 移上一层，就成为最后一个形态。</p>
+<p>我们再多插入一些，比如 34，35，36，整个过程如下：</p>
+<p><img src="/images/14564014630573.jpg" alt=""></p>
+<p>最后就得到</p>
+<p><img src="/images/14564015026747.jpg" alt=""></p>
+<p>注意，因为向下传播的关系，高度是从顶层开始增长的。</p>
+<p>然后我们来看看删除操作，还是用刚才的例子，给定：</p>
+<p><img src="/images/14564016695179.jpg" alt=""></p>
+<p>这次我们删除 50，因为是根节点，所以需要找一个节点放到原来根的位置，并且需要把 70 下移以满足条件</p>
+<p><img src="/images/14564016869839.jpg" alt="删除 50"></p>
+<p>我们再删除 100 试试看：</p>
+<p><img src="/images/14564018498766.jpg" alt=""></p>
+<p>同样对照前面的 Fix 函数进行操作即可。然后我们再删除 60，这里需要涉及的变动就会比较多，如下：</p>
+<p><img src="/images/14564020922018.jpg" alt=""></p>
+<p>然后我们再删除 70 看看，就会变成这样：</p>
+<p><img src="/images/14564021367330.jpg" alt="删除 70"></p>
+<p>最后再删除 80，又会进行一次融合</p>
+<p><img src="/images/14564021619408.jpg" alt="删除 80"></p>
+<p>删除操作总是从 leaf 开始的，把要删除的节点和其 inorder successor 换位置。具体的操作如果还不明白，可以找一些视频来看看，这里不赘述了。</p>
+<h2 id="u7EA2_u9ED1_u6811_Red_Black_Tree"><a href="#u7EA2_u9ED1_u6811_Red_Black_Tree" class="headerlink" title="红黑树 Red Black Tree"></a>红黑树 Red Black Tree</h2><p>这里只给出基本性质的说明，具体的细节可以查看<a href="https://zh.wikipedia.org/wiki/%E7%BA%A2%E9%BB%91%E6%A0%91" target="_blank" rel="external">这里</a></p>
+<p>红黑树是每个节点都带有颜色属性的二叉查找树，颜色为红色或黑色。在二叉查找树强制一般要求以外，对于任何有效的红黑树我们增加了如下的额外要求：</p>
+<ol>
+<li>节点是红色或黑色。</li>
+<li>根是黑色。</li>
+<li>所有叶子都是黑色（叶子是NIL节点）。</li>
+<li>每个红色节点必须有两个黑色的子节点。（从每个叶子到根的所有路径上不能有两个连续的红色节点。）</li>
+<li>从任一节点到其每个叶子的所有简单路径都包含相同数目的黑色节点。</li>
+</ol>
+<p><img src="/images/14564058100039.jpg" alt="红黑树的例子"></p>
+<p>这些约束确保了红黑树的关键特性：从根到叶子的最长的可能路径不多于最短的可能路径的两倍长。结果是这个树大致上是平衡的。因为操作比如插入、删除和查找某个值的最坏情况时间都要求与树的高度成比例，这个在高度上的理论上限允许红黑树在最坏情况下都是高效的，而不同于普通的二叉查找树。</p>
+<p>还是那句话对于约束较多的数据结构，进行插入和删除都是比较复杂的操作，最好通过例子掌握整个过程。</p>
+<p>最后提一下复杂度，因为树的分叉设计，所以基本来说复杂度都是 log 的，但是需要注意，在最坏情况下，复杂度很可能是 O(n)，</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/dsa-4.html"
+           data-title="数据结构与算法 第 4 课 树" data-url="http://wdxtub.com/vault/dsa-4.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

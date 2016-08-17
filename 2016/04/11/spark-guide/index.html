@@ -1,0 +1,953 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Spark,云计算,分布式," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="因为课程的机会接触了一下 Spark，许多概念以及对应的思维方式需要改变，这里结合网上的资料以及一些自己测试的例子来进行讲解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark 入门实例指南">
+<meta property="og:url" content="http://wdxtub.com/2016/04/11/spark-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="因为课程的机会接触了一下 Spark，许多概念以及对应的思维方式需要改变，这里结合网上的资料以及一些自己测试的例子来进行讲解。">
+<meta property="og:image" content="http://wdxtub.com/images/14604089924899.jpg">
+<meta property="og:updated_time" content="2016-04-13T14:00:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spark 入门实例指南">
+<meta name="twitter:description" content="因为课程的机会接触了一下 Spark，许多概念以及对应的思维方式需要改变，这里结合网上的资料以及一些自己测试的例子来进行讲解。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Spark 入门实例指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Spark 入门实例指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-11T16:47:43+08:00" content="2016-04-11">
+              2016-04-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/11/spark-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/11/spark-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>因为课程的机会接触了一下 Spark，许多概念以及对应的思维方式需要改变，这里结合网上的资料以及一些自己测试的例子来进行讲解。</p>
+<a id="more"></a>
+<hr>
+<p>Spark 是基于内存的分布式计算框架，因为无需利用 HDFS 作为中间结果保存的介质，性能杠杠的。Spark 是由 Scala 实现的，所以最好学习一下 Scala（当然用 Python 和 Java 也是可以的）。</p>
+<p>虽然网上的资料很多，但是我看了一圈，都比较冗长，这里用问答的形式，尽量在 10 分钟之内让大家对 Spark 有基本的认知。</p>
+<blockquote>
+<p>为啥要用 Spark？</p>
+</blockquote>
+<ol>
+<li>快！基于内存</li>
+<li>易用！Scala, Java, Python 都支持，还有交互式的 Python 和 Scala 的 shell，可以快速进行原型开发</li>
+<li>通用！批处理、交互查询、流处理、机器学习、图计算，样样精通</li>
+<li>兼容！可以使用各种现有的技术作为底层，也可以自己独立运行</li>
+</ol>
+<blockquote>
+<p>Spark 的架构是怎么样的？</p>
+</blockquote>
+<p><img src="/images/14604089924899.jpg" alt=""></p>
+<ul>
+<li>Driver 就是用户编写的程序，需要创建 <code>SparkContext</code></li>
+<li><code>SparkContext</code> 是用户和 Spark 集群交互的接口，它和 Cluster Manager 交互</li>
+<li>Cluster Manager 负责资源管理调度</li>
+<li>Worker Node 是具体执行计算的节点</li>
+<li>Executer 是在 Worker Node 为某个应用启动的一个进程（相互独立）</li>
+<li>Task 是被送到 Executor 上的计算任务</li>
+</ul>
+<blockquote>
+<p>Spark 应用是如何工作的？</p>
+</blockquote>
+<ol>
+<li>用户创建 <code>SparkContext</code> 之后会连接到 Cluster Manager，Cluster Manager 分配计算资源并启动对应的 Executer</li>
+<li>Driver 会将用户程序划分为不同的执行阶段，每个执行阶段由一组完全相同的 Task 组成，这些 Task 分别作用于待处理数据的不同分区。在阶段划分完成和 Task 创建后，Driver 会向 Executor 发送 Task</li>
+<li>Executor 在接收到 Task 后，会下载 Task 的运行时依赖，在准备好 Task 的执行环境后，会开始执行 Task，并且将 Task 的运行状态汇报给 Driver</li>
+<li>Driver 会根据收到的 Task 的运行状态来处理不同的状态更新。Task 分为两种：一种是 Shuffle Map Task，它实现数据的重新洗牌，洗牌的结果保存到 Executor 所在节点的文件系统中；另外一种是 Result Task，它负责生成结果数据</li>
+<li>Driver 会不断地调用 Task，将 Task发送到 Executor 执行，在所有的 Task 都正确执行或者超过执行次数的限制仍然没有执行成功时停止</li>
+</ol>
+<blockquote>
+<p>Spark 生态系统有哪些组件？</p>
+</blockquote>
+<ul>
+<li>Spark SQL: 类似 Hive，支持在不同 RDD 上进行类似 SQL 的操作</li>
+<li>Spark Streaming: 对于流数据进行处理</li>
+<li>MLlib: 机器学习库</li>
+<li>GraphX: 图并行框架</li>
+</ul>
+<blockquote>
+<p>RDD 是什么？</p>
+</blockquote>
+<p>在 Spark 框架中，最重要的是一类新的数据抽象，叫做 Resilient Distributed Dataset - RDD。RDD 是分布式存储在集群中的内存对象，按照值的范围或者哈希结果进行划分。与此同时 RDD 会记录关于数据进行的各种操作（每次操作都会生成新的 RDD），这样即使节点挂掉，也能够根据之前的操作日志重新得到损失的 RDD</p>
+<p>RDD 支持2种操作：</p>
+<ol>
+<li>转换（transformation）：从现有的数据集创建一个新的数据集</li>
+<li>动作（actions）：在数据集上运行计算后，返回一个值给驱动程序</li>
+</ol>
+<h2 id="u8FDB_u9636_u6982_u5FF5"><a href="#u8FDB_u9636_u6982_u5FF5" class="headerlink" title="进阶概念"></a>进阶概念</h2><blockquote>
+<p>Lazy Evaluation</p>
+</blockquote>
+<p>RDD 对象分布于很多个部分，我们无法对其进行列表的标准操作，而且 RDD 本身就是为了处理分布式数据开发的。RDD 抽象方式的优势是可以让 Spark 在本地计算机运行。在本地运行时，Spark 把本地计算机的内存划分为很多部分，以模拟在许多机器上进行计算的情境，所以在本地运行时也无需改动代码。</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> textFile = sc.textFile(<span class="string">"README.md"</span>)</span><br><span class="line">scala&gt; textFile.count()</span><br></pre></td></tr></table></figure>
+<p>Spark 把一个计算拖延到不得不运行的时候。在上面的代码中，直到运行 <code>textFile.count()</code>，Spark 才把 README 文件载入 RDD。当 <code>val textFile = sc.textFile(&quot;README.md&quot;)</code> 被调用时，创建了一个指向此文件的指针。但只有当 <code>textFile.count()</code> 需要此文件时，文件才真正被读取进 <code>textFile</code>。</p>
+<blockquote>
+<p>sbt 配置</p>
+</blockquote>
+<p>类似于 maven，我们需要一个描述文件，命名为 <code>simple.sbt</code></p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line"><span class="string">name :</span>= <span class="string">"Follower"</span></span><br><span class="line"><span class="string">version :</span>= <span class="string">"1.0"</span></span><br><span class="line"><span class="string">scalaVersion :</span>= <span class="string">"2.10.4"</span></span><br><span class="line">libraryDependencies += <span class="string">"org.apache.spark"</span> %% <span class="string">"spark-core"</span> % <span class="string">"1.5.2"</span></span><br></pre></td></tr></table></figure>
+<p>具体打包时需要按照规矩放置文件，如下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ find .</span><br><span class="line">.</span><br><span class="line">./simple.sbt</span><br><span class="line">./src</span><br><span class="line">./src/main</span><br><span class="line">./src/main/scala</span><br><span class="line">./src/main/scala/SimpleApp.scala</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打包</span></span><br><span class="line">$ sbt package</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用</span></span><br><span class="line">$ YOUR_SPARK_HOME/bin/spark-submit \</span><br><span class="line">  --class <span class="string">"Follower"</span> \</span><br><span class="line">  --master <span class="built_in">local</span>[<span class="number">4</span>] \</span><br><span class="line">  target/scala-<span class="number">2.10</span>/follower_2.<span class="number">10</span>-<span class="number">1.0</span>.jar</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>性能调优</p>
+</blockquote>
+<ol>
+<li>尽量使用对象数组和原生类型</li>
+<li>尽量避免带有很多小对象和指针的嵌套结构</li>
+<li>使用数值型 ID 或者枚举类来代替 string 作为主键</li>
+</ol>
+<blockquote>
+<p>垃圾回收器调优</p>
+</blockquote>
+<p>当java需要腾出空间给新的对象时，需要跟踪所有的java对象来找出没用的对象，由于垃圾回收器的代价是与java对象的数量成比例的，所以使用较少对象的数据结构（如使用ints数组代替LinkedList）会减少相应的代价。一个更好的方法是将对象序列化，这时每个RDD分片就只有一个对象了（字节数组）。</p>
+<p>衡量 GC 影响</p>
+<p>GC 调优的第一步是收集 GC 发生的频率和每次 GC 消耗的时间等统计信息，这个工作可以通过添加 <code>-verbose:gc -XX:+PrintGCDetails -XX:PrintGCTimeStamps</code> 属性到 <code>SPARK_JAVA_OPTS</code> 环境变量中。这样当 spark 任务运行时，worker 节点的日志就会显示 GC 每次发生的信息。</p>
+<p>GC 当中一个重要的配置参数是缓存 RDD 需要多少内存，默认，spark 使用配置的 <code>spark.executor.memory</code> 值的 60% 的内存来缓存 RDD，意味着 40% 的内存可用于任务执行时对象的创建。</p>
+<p>当发现任务执行速度减慢并且发现 GC 频繁工作或者内存溢出，需要降低该百分比以减少内存消耗，比如需要降低为 50%，则使用 <code>conf.set(&quot;spark.storage.memoryFraction&quot;,&quot;0.5&quot;)</code>。结合序列化缓存，使用更小的缓存大小对减轻 GC 问题是很有作用的。</p>
+<ul>
+<li>java 堆空间是被分成年轻代和老年代两个区域，年轻代存放生命周期较短的对象而老年代存放生命周期长的对象</li>
+<li>年轻代又被分成 Eden，Survivor1，Survivor2 三个区域</li>
+</ul>
+<hr>
+<ul>
+<li>cache 的机制</li>
+<li>persist 的机制</li>
+<li>参数的意义</li>
+</ul>
+<p>迭代时间变长是由于RDD的lazy computation的特性，以及RDD为了错误恢复，在迭代的过程中都保留着很长且复杂的依赖关系(lineage dependency)，不过为什么lineage越长会造成迭代时间越长，揣测是因为迭代的时候会占用大量内存，这也是为什么迭代次数太多会发生内存泄露。解决这个问题，主要就是要懂得合理的cache以及unpersist, 仅仅这些还不够，还需要在适当的时候，truncate lineage设置checkpoint。</p>
+<h2 id="u73AF_u5883_u642D_u5EFA"><a href="#u73AF_u5883_u642D_u5EFA" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>目前最新的 Spark 版本是 1.6.1，我们可以在<a href="http://spark.apache.org/downloads.html" target="_blank" rel="external">官方网站</a>下载 <code>spark-1.6.1.tgz</code> 并解压（如果想省事儿可以直接用编译好的），然后需要安装一些依赖，在 ubuntu 下执行以下命令即可</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"># &#23433;&#35013; Scala&#10;sudo apt-get install scala&#10;# &#37197;&#32622;&#29615;&#22659;&#21464;&#37327;&#65292;&#22312; ~/.bashrc &#20013;&#28155;&#21152;&#19979;&#38754;&#35821;&#21477;&#65292;&#27880;&#24847;&#26356;&#25913;&#25991;&#20214;&#22841;&#10;export PATH=$PATH:/home/parallels/spark-1.6.1/bin&#10;# &#24212;&#29992;&#25913;&#21160;&#10;source ~/.bashrc&#10;# &#36827;&#20837; spark &#25991;&#20214;&#22841;&#10;cd spark-1.6.1&#10;# &#21551;&#21160; spark shell&#10;spark-shell</span><br></pre></td></tr></table></figure>
+<h2 id="u7B80_u5355_u6D4B_u8BD5"><a href="#u7B80_u5355_u6D4B_u8BD5" class="headerlink" title="简单测试"></a>简单测试</h2><p>这里尝试一下官方教程中的一些命令</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 README 文件</span></span><br><span class="line">scala&gt; <span class="keyword">val</span> textFile = sc.textFile(<span class="string">"README.md"</span>)</span><br><span class="line">textFile: org.apache.spark.rdd.<span class="type">RDD</span>[<span class="type">String</span>] = <span class="type">README</span>.md <span class="type">MapPartitionsRDD</span>[<span class="number">1</span>] at textFile at &lt;console&gt;:<span class="number">27</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// RDD 中的文件数量</span></span><br><span class="line">scala&gt; textFile.count() </span><br><span class="line">res0: <span class="type">Long</span> = <span class="number">95</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// RDD 中的第一个内容</span></span><br><span class="line">scala&gt; textFile.first() </span><br><span class="line">res1: <span class="type">String</span> = # <span class="type">Apache</span> <span class="type">Spark</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 有多少行包括 Spark</span></span><br><span class="line">scala&gt; textFile.filter(line =&gt; line.contains(<span class="string">"Spark"</span>)).count() </span><br><span class="line">res2: <span class="type">Long</span> = <span class="number">17</span></span><br></pre></td></tr></table></figure>
+<h2 id="u4E2D_u7EA7_u6D4B_u8BD5"><a href="#u4E2D_u7EA7_u6D4B_u8BD5" class="headerlink" title="中级测试"></a>中级测试</h2><p>这里我们选用 twitter 的数据，样例如下，数据的意思是左边的人(id)，关注了右边的人(id)：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">10000018</span>	<span class="number">19941587</span><span class="number">10000018</span>	<span class="number">18348492</span><span class="number">10000018</span>	<span class="number">18007448</span><span class="number">10000018</span>	<span class="number">14539055</span><span class="number">10000018</span>	<span class="number">13942840</span><span class="number">10000018</span>	<span class="number">13603904</span><span class="number">10000018</span>	<span class="number">12797198</span><span class="number">10000018</span>	<span class="number">10000029</span><span class="number">10000018</span>	<span class="number">10000017</span><span class="number">10000018</span>	<span class="number">10000017</span></span><br></pre></td></tr></table></figure>
+<p>需要注意的是，这里的数据进行了修改，理论上来说应该不会有两条一样的记录，我们启动 <code>spark-shell</code> 完成下面的任务:</p>
+<ol>
+<li>统计一共有多少个不同的 id</li>
+<li>统计一共又多少个不同的 (id, id) 对</li>
+</ol>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 载入测试数据，这里只有十行，如上面所示</span></span><br><span class="line">scala&gt; <span class="keyword">val</span> textFile = sc.textFile(<span class="string">"tg10.txt"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 统计不同的 id 数目</span></span><br><span class="line"><span class="comment">// 先只用 Mapper</span></span><br><span class="line">scala&gt; <span class="keyword">val</span> userCount = textFile.flatMap(line =&gt; line.split(<span class="string">"\t"</span>)).map(id =&gt; (id, <span class="number">1</span>))</span><br><span class="line">scala&gt; userCount.count()</span><br><span class="line"><span class="comment">// 只用 Mapper，会生成 20 项</span>res0: <span class="type">Long</span> = <span class="number">20</span></span><br><span class="line"><span class="comment">// 配合上 Reducer 就可以知道有多少不同的的 id</span></span><br><span class="line"><span class="comment">// 顺带可以统计每个 id 出现了多少次（在左在右都算）</span></span><br><span class="line">scala&gt; <span class="keyword">val</span> userCount = textFile.flatMap(line =&gt; line.split(<span class="string">"\t"</span>)).map(id =&gt; (id, <span class="number">1</span>)).reduceByKey(_ + _)</span><br><span class="line">scala&gt; userCount.count()</span><br><span class="line"><span class="comment">// 有了 Reducer，就可以知道是 10</span></span><br><span class="line">res0: <span class="type">Long</span> = <span class="number">10</span></span><br><span class="line"><span class="comment">// 都打印出来看看，发现和数据相符</span></span><br><span class="line">scala&gt; userCount.collect()res8: <span class="type">Array</span>[(<span class="type">String</span>, <span class="type">Int</span>)] = <span class="type">Array</span>((<span class="number">10000029</span>,<span class="number">1</span>), (<span class="number">13603904</span>,<span class="number">1</span>), (<span class="number">14539055</span>,<span class="number">1</span>), (<span class="number">19941587</span>,<span class="number">1</span>), (<span class="number">12797198</span>,<span class="number">1</span>), (<span class="number">18007448</span>,<span class="number">1</span>), (<span class="number">10000018</span>,<span class="number">10</span>), (<span class="number">10000017</span>,<span class="number">2</span>), (<span class="number">18348492</span>,<span class="number">1</span>), (<span class="number">13942840</span>,<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">// 统计有多少不同的 (id, id) 组，直接用每行做 key 即可</span></span><br><span class="line">scala&gt; <span class="keyword">val</span> edgeCount = textFile.map(id =&gt; (id, <span class="number">1</span>)).reduceByKey(_ + _)</span><br><span class="line">scala&gt; edgeCount.count()</span><br><span class="line"><span class="comment">// 结果应当为 9，说明测试正确</span></span><br><span class="line">res11: <span class="type">Long</span> = <span class="number">9</span></span><br><span class="line"><span class="comment">// 打印出来看看，无误</span></span><br><span class="line">scala&gt; edgeCount.collect()res12: <span class="type">Array</span>[(<span class="type">String</span>, <span class="type">Int</span>)] = <span class="type">Array</span>((<span class="number">10000018</span>   <span class="number">13942840</span>,<span class="number">1</span>), (<span class="number">10000018</span>     <span class="number">10000017</span>,<span class="number">2</span>), (<span class="number">10000018</span>  <span class="number">18348492</span>,<span class="number">1</span>), (<span class="number">10000018</span>  <span class="number">19941587</span>,<span class="number">1</span>), (<span class="number">10000018</span>     <span class="number">13603904</span>,<span class="number">1</span>), (<span class="number">10000018</span>  <span class="number">12797198</span>,<span class="number">1</span>), (<span class="number">10000018</span>  <span class="number">14539055</span>,<span class="number">1</span>), (<span class="number">10000018</span>     <span class="number">18007448</span>,<span class="number">1</span>), (<span class="number">10000018</span>  <span class="number">10000029</span>,<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="u8FDB_u9636_u6D4B_u8BD5"><a href="#u8FDB_u9636_u6D4B_u8BD5" class="headerlink" title="进阶测试"></a>进阶测试</h2><p>换一些数据数据，我们需要统计每个人的粉丝数量，也就是需要对第二列进行统计，看看每个 id 各出现了多少次。</p>
+<p>具体的数据为，这里修改了一点，理论上来说，id 为 19941587 的用户有俩粉丝：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">10000018</span>	<span class="number">19941587</span><span class="number">10000017</span>	<span class="number">19941587</span><span class="number">10000018</span>	<span class="number">18007448</span><span class="number">10000018</span>	<span class="number">14539055</span><span class="number">10000018</span>	<span class="number">13942840</span><span class="number">10000018</span>	<span class="number">13603904</span><span class="number">10000018</span>	<span class="number">12797198</span><span class="number">10000018</span>	<span class="number">10000029</span><span class="number">10000018</span>	<span class="number">10000017</span><span class="number">10000018</span>	<span class="number">5658436</span><span class="number">10000018</span>	<span class="number">4869533</span><span class="number">10000018</span>	<span class="number">3588965</span><span class="number">10000018</span>	<span class="number">40813667</span><span class="number">10000018</span>	<span class="number">40184678</span><span class="number">10000018</span>	<span class="number">40042307</span><span class="number">10000018</span>	<span class="number">39314362</span><span class="number">10000018</span>	<span class="number">38198153</span><span class="number">10000018</span>	<span class="number">37867561</span><span class="number">10000018</span>	<span class="number">36243138</span><span class="number">10000018</span>	<span class="number">35679228</span></span><br></pre></td></tr></table></figure>
+<p>代码为</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 载入测试数据，这里有 20 行，如上面所示</span></span><br><span class="line">scala&gt; <span class="keyword">val</span> textFile = sc.textFile(<span class="string">"tg20.txt"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 选取第二列，用类似前面的例子来进行统计</span></span><br><span class="line">scala&gt; <span class="keyword">val</span> fansCount = textFile.map(line =&gt; line.split(<span class="string">"\t"</span>)(<span class="number">1</span>)).map(id =&gt; (id, <span class="number">1</span>)).reduceByKey(_ + _)</span><br><span class="line"><span class="comment">// 看看结果</span></span><br><span class="line">scala&gt; fansCount.collect()</span><br><span class="line"><span class="comment">// 可以看到已经统计完成</span></span><br><span class="line">res3: <span class="type">Array</span>[(<span class="type">String</span>, <span class="type">Int</span>)] = <span class="type">Array</span>((<span class="number">10000029</span>,<span class="number">1</span>), (<span class="number">13603904</span>,<span class="number">1</span>), (<span class="number">38198153</span>,<span class="number">1</span>), (<span class="number">14539055</span>,<span class="number">1</span>), (<span class="number">40042307</span>,<span class="number">1</span>), (<span class="number">19941587</span>,<span class="number">2</span>), (<span class="number">36243138</span>,<span class="number">1</span>), (<span class="number">12797198</span>,<span class="number">1</span>), (<span class="number">18007448</span>,<span class="number">1</span>), (<span class="number">40184678</span>,<span class="number">1</span>), (<span class="number">35679228</span>,<span class="number">1</span>), (<span class="number">4869533</span>,<span class="number">1</span>), (<span class="number">3588965</span>,<span class="number">1</span>), (<span class="number">39314362</span>,<span class="number">1</span>), (<span class="number">40813667</span>,<span class="number">1</span>), (<span class="number">10000017</span>,<span class="number">1</span>), (<span class="number">13942840</span>,<span class="number">1</span>), (<span class="number">5658436</span>,<span class="number">1</span>), (<span class="number">37867561</span>,<span class="number">1</span>))</span><br><span class="line"><span class="comment">// 也可以只看几个</span></span><br><span class="line">scala&gt; fansCount.take(<span class="number">5</span>)res4: <span class="type">Array</span>[(<span class="type">String</span>, <span class="type">Int</span>)] = <span class="type">Array</span>((<span class="number">10000029</span>,<span class="number">1</span>), (<span class="number">13603904</span>,<span class="number">1</span>), (<span class="number">38198153</span>,<span class="number">1</span>), (<span class="number">14539055</span>,<span class="number">1</span>), (<span class="number">40042307</span>,<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引入头文件</span></span><br><span class="line"><span class="keyword">import</span> java.io.<span class="type">PrintWriter</span></span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.<span class="type">Configuration</span></span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.<span class="type">FileSystem</span></span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.fs.<span class="type">Path</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> fs = <span class="type">FileSystem</span>.get(<span class="keyword">new</span> <span class="type">Configuration</span>())</span><br><span class="line"><span class="keyword">val</span> writer = <span class="keyword">new</span> <span class="type">PrintWriter</span>(fs.create(<span class="keyword">new</span> <span class="type">Path</span>(<span class="string">"result"</span>)))</span><br><span class="line"><span class="comment">// for 循环输出</span></span><br><span class="line">writer.close</span><br><span class="line"></span><br><span class="line">scala&gt; <span class="keyword">for</span>((k,v)&lt;-fansCount) println(k + <span class="string">"\t"</span> + v)</span><br></pre></td></tr></table></figure>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://www.ituring.com.cn/article/200908" target="_blank" rel="external">Apache Spark 入门攻略</a></li>
+<li><a href="http://saliormoon.github.io/2015/12/15/Spark%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/" target="_blank" rel="external">Spark入门学习</a></li>
+<li><a href="https://spark.apache.org/docs/latest/quick-start.html" target="_blank" rel="external">Quick Start</a></li>
+<li><a href="http://colobu.com/2014/12/08/spark-quick-start/" target="_blank" rel="external">Spark 快速入门</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-spark-practice1/" target="_blank" rel="external">Spark 实战，第 1 部分: 使用 Scala 语言开发 Spark 应用程序</a></li>
+<li><a href="http://uohzoaix.github.io/studies/2014/10/05/sparkTunning/" target="_blank" rel="external">spark之路第九课——spark性能调优</a></li>
+<li><a href="http://spark.apache.org/docs/latest/configuration.html" target="_blank" rel="external">Spark Configuration</a></li>
+<li><a href="http://www.lipingict.com/archives/13" target="_blank" rel="external">Pagerank spark 幂法实现</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spark/" rel="tag">#Spark</a>
+          
+            <a href="/tags/云计算/" rel="tag">#云计算</a>
+          
+            <a href="/tags/分布式/" rel="tag">#分布式</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/08/sword-man/" rel="next" title="第十三周 - 笑傲江湖">
+                <i class="fa fa-chevron-left"></i> 第十三周 - 笑傲江湖
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/13/graphlab-guide/" rel="prev" title="GraphLab 入门实例指南">
+                GraphLab 入门实例指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/11/spark-guide/"
+           data-title="Spark 入门实例指南" data-url="http://wdxtub.com/2016/04/11/spark-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FDB_u9636_u6982_u5FF5"><span class="nav-number">1.</span> <span class="nav-text">进阶概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u73AF_u5883_u642D_u5EFA"><span class="nav-number">2.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u5355_u6D4B_u8BD5"><span class="nav-number">3.</span> <span class="nav-text">简单测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E2D_u7EA7_u6D4B_u8BD5"><span class="nav-number">4.</span> <span class="nav-text">中级测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FDB_u9636_u6D4B_u8BD5"><span class="nav-number">5.</span> <span class="nav-text">进阶测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

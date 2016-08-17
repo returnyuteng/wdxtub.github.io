@@ -1,0 +1,1378 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CSAPP,机器指令,程序优化,读薄," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="计算机能读懂的只有零和一，而我们用汇编去和计算机『感同身受』。接近硬件底层，很多代码中再平常不过的概念，具体实现起来则并没有看起来那么『理所当然』。这一讲我们会了解程序到底是如何执行的，在知其所以然后，自然可以发现高效代码的秘密。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【读薄 CSAPP】贰 机器指令与程序优化">
+<meta property="og:url" content="http://wdxtub.com/2016/04/16/thin-csapp-2/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="计算机能读懂的只有零和一，而我们用汇编去和计算机『感同身受』。接近硬件底层，很多代码中再平常不过的概念，具体实现起来则并没有看起来那么『理所当然』。这一讲我们会了解程序到底是如何执行的，在知其所以然后，自然可以发现高效代码的秘密。">
+<meta property="og:image" content="http://wdxtub.com/images/14531672465886.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14531674473247.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611529201796.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611562175522.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611621119083.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611673348513.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611722773236.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611733132821.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611748992035.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611757048510.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611816137150.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611821730508.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611824112595.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611827570059.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611833392466.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611853013958.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611855170102.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14611856222781.jpg">
+<meta property="og:updated_time" content="2016-08-16T14:37:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【读薄 CSAPP】贰 机器指令与程序优化">
+<meta name="twitter:description" content="计算机能读懂的只有零和一，而我们用汇编去和计算机『感同身受』。接近硬件底层，很多代码中再平常不过的概念，具体实现起来则并没有看起来那么『理所当然』。这一讲我们会了解程序到底是如何执行的，在知其所以然后，自然可以发现高效代码的秘密。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 【读薄 CSAPP】贰 机器指令与程序优化 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【读薄 CSAPP】贰 机器指令与程序优化
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-16T09:06:44+08:00" content="2016-04-16">
+              2016-04-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/16/thin-csapp-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/16/thin-csapp-2/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>计算机能读懂的只有零和一，而我们用汇编去和计算机『感同身受』。接近硬件底层，很多代码中再平常不过的概念，具体实现起来则并没有看起来那么『理所当然』。这一讲我们会了解程序到底是如何执行的，在知其所以然后，自然可以发现高效代码的秘密。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<li>了解基本的 CPU 架构，以及 CPU 如何进行指令计算</li>
+<li>掌握基本的汇编语法，常见的寻址方式和运算方式</li>
+<li>理解如何通过条件代码进行流程控制</li>
+<li>理解过程调用和递归的底层实现机制</li>
+<li>理解数据在内存中的存储方式</li>
+<li>了解程序在内存中的组织形式以及缓冲区溢出漏洞攻击</li>
+<li>利用代码执行的机制来优化已有代码</li>
+</ol>
+<p>这一讲的内容比较多，考虑到现在接触汇编的机会着实不多，部分涉及具体细节的内容有删减，详情请参考书本。</p>
+<h2 id="u57FA_u7840_u77E5_u8BC6"><a href="#u57FA_u7840_u77E5_u8BC6" class="headerlink" title="基础知识"></a>基础知识</h2><h3 id="u4ECE_8086__u5230_Core_i7"><a href="#u4ECE_8086__u5230_Core_i7" class="headerlink" title="从 8086 到 Core i7"></a>从 8086 到 Core i7</h3><p>1978 年，Intel 发布了第一款 x86 指令集的微处理器——Intel 8086[1]，以此拉开了 Intel x86 系列发展的序幕。8086 是 16 位微处理器，主要为 IBM PC 和 DOS 设计，有 1MB 的地址空间。八年后的 1985，第一个 32 位 Intel 处理器(IA32) 386 诞生。2004 年，奔腾(Pentium) 4E 成为了第一个 64 位处理器(x86-64)。后来随着摩尔定律在单个核心上达到极限，2006 年 Core 2 成为了第一个多核 Intel 处理器。</p>
+<p>多核心的处理器大概长这样：</p>
+<p><img src="/images/14531672465886.jpg" alt=""></p>
+<p>随着时代和科技的发展，处理器除了支持最基本的运算指令集外，还增加了支持多媒体操作处理和更高效执行条件操作的指令，这部分内容涉及到分支预测[2]（又是一个很有意思但是没时间写的话题），因为篇幅关系不再赘述，简单来说就是研究人员为了让处理器效率提升采用了各种各样的方法，可能只是为了 1% 的提升。</p>
+<p>除了增加处理器本身的功能外，另外的趋势是集成，比如说 2015 年的 Core i7 Broadwell，可以从下图看到处理器芯片中加入了原来主板才有的许多部件，如 PCIe, SATA, DDR3 等等。</p>
+<p><img src="/images/14531674473247.jpg" alt=""></p>
+<p>顺带说一下千年老二 AMD，主打性价比，研发的 Opteron 系列是 Pentium 4 的强劲对手，并且开发了自己的 64 位拓展 x86-64。</p>
+<p>Intel 在 64 位处理器的发展并不算顺风顺水，2001 年本打算使用全新的架构快速从 IA32 转换到 IA64，但是糟糕的性能反倒给了 AMD 机会。后者在 2003 年发布的 x86-64(现在叫 AMD64) 架构明显更厉害，搞得 Intel 疲于应战，最后在 2004 年搞出来一个叫 EM64T 的东西，其实几乎和 AMD64 一样。现在除了某些低端的处理器，几乎都支持 x86-64，也是这一讲主要介绍的内容。</p>
+<h3 id="u4ECE_C__u5230_u673A_u5668_u4EE3_u7801"><a href="#u4ECE_C__u5230_u673A_u5668_u4EE3_u7801" class="headerlink" title="从 C 到机器代码"></a>从 C 到机器代码</h3><p>机器代码就是处理器能够直接执行的字节层面上的程序，但是对于人类来说基本上是不可读的，所以把字节按照具体含义进行『翻译』，就成了人类可读的汇编代码。注意这里的用词是『翻译』而不是『编译』，可以认为汇编代码就是机器代码的可读形式。</p>
+<p>机器代码和 C 代码应用两套完全不同的逻辑，机器代码是纯粹从『执行』的方式来进行思考的，而 C 的话则因为较多的抽象有了『程序设计』这个概念。相信读完这一节之后，你就会意识到为什么 C 语言的出现，可以称得上计算机学科的『第二次工业革命』。</p>
+<p>一门新语言绝非只是一套语法规则，而是一系列配套的工具加上语法规则。C 语言代码最终成为机器可执行的程序，会像流水线上的产品一样接受各项处理：</p>
+<ul>
+<li>C 语言代码(da.c, wang.c)经过编译器的处理(<code>gcc -0g -S</code>)成为汇编代码(da.s, wang.s)</li>
+<li>汇编代码(da.s, wang.s)经过汇编器的处理(<code>gcc</code> 或 <code>as</code>)成为对象程序(da.o, wang.o)</li>
+<li>对象程序(da.o, wang.o)以及所需静态库(lib.a)经过链接器的处理(<code>gcc</code> 或 <code>ld</code>)最终成为计算机可执行的程序</li>
+</ul>
+<p>我们直接来看一段代码及其经过编译生成的汇编代码，可能会有些难以理解，这是正常的，因为还没有介绍处理器具体执行指令的机制。这里我们先有一个感性的认识即可。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 代码文件: sum.c</span></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">plus</span><span class="params">(<span class="keyword">long</span> x, <span class="keyword">long</span> y)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sumstore</span><span class="params">(<span class="keyword">long</span> x, <span class="keyword">long</span> y, <span class="keyword">long</span> *dest)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> t = plus(x, y);</span><br><span class="line">    *dest = t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">sumstore:&#10;    pushq   %rbx&#10;    movq    %rbx, %rbx&#10;    call    plus&#10;    movq    %rax, (%rbx)&#10;    popq    %rbx&#10;    ret</span><br></pre></td></tr></table></figure>
+<p>比较一下我们就发现，C 语言代码被处理成了有统一格式的汇编代码，在汇编代码中，第一个字符串叫做操作符，后面可能跟着 1/2/3 个以逗号分隔的操作数，为什么是以这样的形式呢？这就要从处理器的运算方式讲起了，先来看看处理器是如何配合内存进行计算的：</p>
+<p><img src="/images/14611529201796.jpg" alt=""></p>
+<ul>
+<li>程序计数器(PC, Program counter) - 存着下一条指令的地址，在 x86-64 中称为 RIP</li>
+<li>寄存器(Register) - 用来存储数据以便操作</li>
+<li>条件代码(Codition codes) - 通常保存最近的算术或逻辑操作的信息，用来做条件跳转</li>
+</ul>
+<p>这里需要注意，处理器能够执行的操作其实是非常有限的，简单来说只有三种：存取数据、计算和传输控制。存取数据是在内存和寄存器之间传输数据，进行计算则是对寄存器或者内存中的数据执行算术运算，传输控制主要指非条件跳转和条件分支。这也就是为什么汇编代码有固定的 <code>指令 操作数1 (,操作数2 ,操作数3)</code> 这样的形式了。</p>
+<p>我们拿前面程序中的两条指令来具体说明一下从 C 到汇编再到机器代码的变化：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C 代码</span></span><br><span class="line">*dest = t;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对应的汇编代码</span></span><br><span class="line">movq    %rax, (%rbx)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对应的对象代码</span></span><br><span class="line"><span class="number">0x40059e</span>:   <span class="number">46</span> <span class="number">89</span> <span class="number">03</span></span><br></pre></td></tr></table></figure>
+<p>C 代码的意思很简单，就是把值 <code>t</code> 存储到指针 <code>dest</code> 指向的内存中。对应到汇编代码，就是把 8字节（也就是四个字, Quad words）移动到内存中（这也就是为什叫做 <code>movq</code>）。<code>t</code> 的值保存在寄存器 %rax 中，<code>dest</code> 指向的地址保存在 %rbx 中，而 <code>*dest</code> 是取地址操作，对应于在内存中找到对应的值，也就是 <code>M[%rbx]</code>，在汇编代码中用小括号表示取地址，即 <code>(%rbx)</code>。最后转换成 3 个字节的指令，并保存在 <code>0x40059e</code> 这个地址中。</p>
+<h3 id="u6C47_u7F16_u5165_u95E8"><a href="#u6C47_u7F16_u5165_u95E8" class="headerlink" title="汇编入门"></a>汇编入门</h3><p>前面我们简要了解了一下程序执行的基本过程，也对汇编有了一点点认识，这一节我们从寄存器的相关知识讲起，介绍汇编的基本知识。这部分内容虽然在实际编程中几乎用不到，但是对于后面内容的理解非常重要。</p>
+<p>x86-64 架构中的整型寄存器如下图所示（暂时不考虑浮点数的部分）</p>
+<p><img src="/images/14611562175522.jpg" alt=""></p>
+<p>仔细看看寄存器的分布，我们可以发现有不同的颜色以及不同的寄存器名称，黄色部分是 16 位寄存器，也就是 16 位处理器 8086 的设计，然后绿色部分是 32 位寄存器（这里我是按照比例画的），给 32 位处理器使用，而蓝色部分是为 64 位处理器设计的。这样的设计保证了令人震惊的向下兼容性，几十年前的 x86 代码现在仍然可以运行！</p>
+<p>前六个寄存器(%rax, %rbx, %rcx, %rdx, %rsi, %rdi)称为通用寄存器，有其『特定』的用途：</p>
+<ul>
+<li>%rax(%eax) 用于做累加</li>
+<li>%rcx(%ecx) 用于计数</li>
+<li>%rdx(%edx) 用于保存数据</li>
+<li>%rbx(%ebx) 用于做内存查找的基础地址</li>
+<li>%rsi(%esi) 用于保存源索引值</li>
+<li>%rdi(%edi) 用于保存目标索引值</li>
+</ul>
+<p>而 %rsp(%esp) 和 %rbp(%ebp) 则是作为栈指针和基指针来使用的。下面我们通过 <code>movq</code> 这个指令来了解操作数的三种基本类型：立即数(Imm)、寄存器值(Reg)和内存值(Mem)。</p>
+<p>对于 <code>movq</code> 指令来说，需要源操作数和目标操作数，源操作数可以是立即数、寄存器值或内存值的任意一种，但目标操作数只能是寄存器值或内存值。指令的具体格式可以这样写 <code>movq [Imm|Reg|Mem], [Reg|Mem]</code>，第一个是源操作数，第二个是目标操作数，例如：</p>
+<ul>
+<li><code>movq Imm, Reg</code> -&gt; <code>mov $0x5, %rax</code> -&gt; <code>temp = 0x5;</code></li>
+<li><code>movq Imm, Mem</code> -&gt; <code>mov $0x5, (%rax)</code> -&gt; <code>*p = 0x5;</code></li>
+<li><code>movq Reg, Reg</code> -&gt; <code>mov %rax, %rdx</code> -&gt; <code>temp2 = temp1;</code></li>
+<li><code>movq Reg, Mem</code> -&gt; <code>mov %rax, (%rdx)</code> -&gt; <code>*p = temp;</code></li>
+<li><code>movq Mem, Reg</code> -&gt; <code>mov (%rax), %rdx</code> -&gt; <code>temp = *p;</code></li>
+</ul>
+<p>这里有一种情况是不存在的，没有 <code>movq Mem, Mem</code> 这个方式，也就是说，我们没有办法用一条指令完成内存间的数据交换。</p>
+<p>上面的例子中有些操作数是带括号的，括号的意思就是寻址，这也分两种情况：</p>
+<ul>
+<li>普通模式，(R)，相当于 <code>Mem[Reg[R]]</code>，也就是说寄存器 R 指定内存地址，类似于 C 语言中的指针，语法为：<code>movq (%rcx), %rax</code> 也就是说以 %rcx 寄存器中存储的地址去内存里找对应的数据，存到寄存器 %rax 中</li>
+<li>移位模式，D(R)，相当于 <code>Mem[Reg[R]+D]</code>，寄存器 R 给出起始的内存地址，然后 D 是偏移量，语法为：<code>movq 8(%rbp),%rdx</code> 也就是说以 %rbp 寄存器中存储的地址再加上 8 个偏移量去内存里找对应的数据，存到寄存器 %rdx 中</li>
+</ul>
+<p>因为寻址这个内容比较重要，所以多说两句，不然之后接触指针会比较吃力。对于寻址来说，比较通用的格式是 <code>D(Rb, Ri, S)</code> -&gt; <code>Mem[Reg[Rb]+S*Reg[Ri]+D]</code>，其中：</p>
+<ul>
+<li><code>D</code> - 常数偏移量</li>
+<li><code>Rb</code> - 基寄存器</li>
+<li><code>Ri</code> - 索引寄存器，不能是 %rsp</li>
+<li><code>S</code> - 系数</li>
+</ul>
+<p>除此之外，还有如下三种特殊情况</p>
+<ul>
+<li><code>(Rb, Ri)</code> -&gt; <code>Mem[Reg[Rb]+Reg[Ri]]</code></li>
+<li><code>D(Rb, Ri)</code> -&gt; <code>Mem[Reg[Rb]+Reg[Ri]+D]</code></li>
+<li><code>(Rb, Ri, S)</code> -&gt; <code>Mem[Reg[Rb]+S*Reg[Ri]]</code></li>
+</ul>
+<p>我们通过具体的例子来巩固一下，这里假设 %rdx 中的存着 <code>0xf000</code>，%rcx 中存着 <code>0x0100</code>，那么</p>
+<ul>
+<li><code>0x8(%rdx)</code> = <code>0xf000</code> + <code>0x8</code> = <code>0xf008</code></li>
+<li><code>(%rdx, %rcx)</code> = <code>0xf000</code> + <code>0x100</code> = <code>0xf100</code></li>
+<li><code>(%rdx, %rcx, 4)</code> = <code>0xf000</code> + <code>4*0x100</code> = <code>0xf400</code></li>
+<li><code>0x80(, %rdx, 2)</code> = <code>2*0xf000</code> + <code>0x80</code> = <code>0x1e080</code></li>
+</ul>
+<p>了解了寻址之后，我们来看看运算指令，这里以 <code>leaq</code> 指令为例子。具体格式为 <code>leaq Src, Dst</code>，其中 <code>Src</code> 是地址的表达式，然后把计算的值存入 <code>Dst</code> 指定的寄存器，也就是说，无须内存引用就可以计算，类似于 <code>p = &amp;x[i];</code>。我们来看一个具体的例子，假设一个 C 函数是：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">m12</span><span class="params">(<span class="keyword">long</span> x)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x * <span class="number">12</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码为：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">leaq (%rdi, %rdi, 2), %rax # t &#60;- x+x*2&#10;salq $2, %rax              # return t &#60;&#60; 2</span><br></pre></td></tr></table></figure>
+<p>可以看到是直接对 %rdi 寄存器中存的数据（地址）进行运算，然后赋值给 %rax。最后给出一些常见的算术运算指令，注意参数的顺序，而且对于有符号和无符号数都是一样的，更多的信息可以参考 Intel 官方文档[3]。</p>
+<p>需要两个操作数的指令</p>
+<ul>
+<li><code>addq Src, Dest</code> -&gt; <code>Dest = Dest + Src</code></li>
+<li><code>subq Src, Dest</code> -&gt; <code>Dest = Dest - Src</code></li>
+<li><code>imulq Src, Dest</code> -&gt; <code>Dest = Dest * Src</code></li>
+<li><code>salq Src, Dest</code> -&gt; <code>Dest = Dest &lt;&lt; Src</code></li>
+<li><code>sarq Src, Dest</code> -&gt; <code>Dest = Dest &gt;&gt; Src</code></li>
+<li><code>shrq Src, Dest</code> -&gt; <code>Dest = Dest &gt;&gt; Src</code></li>
+<li><code>xorq Src, Dest</code> -&gt; <code>Dest = Dest ^ Src</code></li>
+<li><code>andq Src, Dest</code> -&gt; <code>Dest = Dest &amp; Src</code></li>
+<li><code>orq Src, Dest</code> -&gt; <code>Dest = Dest | Src</code></li>
+</ul>
+<p>需要一个操作数的指令</p>
+<ul>
+<li><code>incq Dest</code> -&gt; <code>Dest = Dest + 1</code></li>
+<li><code>decq Dest</code> -&gt; <code>Dest = Dest - 1</code></li>
+<li><code>negq Dest</code> -&gt; <code>Dest = -Dest</code></li>
+<li><code>notq Dest</code> -&gt; <code>Dest = ~Dest</code></li>
+</ul>
+<h2 id="u6D41_u7A0B_u63A7_u5236"><a href="#u6D41_u7A0B_u63A7_u5236" class="headerlink" title="流程控制"></a>流程控制</h2><p>我们先来回顾一下 x86-64 处理器中不同的寄存器，这一部分很重要，务必要弄明白</p>
+<p><img src="/images/14611621119083.jpg" alt=""></p>
+<p>首先要理解的是，寄存器中存储着当前正在执行的程序的相关信息：</p>
+<ul>
+<li>临时数据存放在 (%rax, …)</li>
+<li>运行时栈的地址存储在 (%rsp) 中</li>
+<li>目前的代码控制点存储在 (%rip, …) 中</li>
+<li>目前测试的状态放在 CF, ZF, SF, OF 中</li>
+</ul>
+<h3 id="u6761_u4EF6_u4EE3_u7801_u4E0E_u8DF3_u8F6C"><a href="#u6761_u4EF6_u4EE3_u7801_u4E0E_u8DF3_u8F6C" class="headerlink" title="条件代码与跳转"></a>条件代码与跳转</h3><p>最后的四个寄存器（CF, ZF, SF, OF）就是用来辅助程序的流程控制的，意思是：</p>
+<ul>
+<li>CF: Carry Flag (针对无符号数)</li>
+<li>ZF: Zero Flag</li>
+<li>SF: Sign Flag (针对有符号数)</li>
+<li>OF: Overflow Flag (针对有符号数)</li>
+</ul>
+<p>可以看到以上这四个寄存器，表示四种不同的状态，举个例子，假如我们有一条诸如 <code>t = a + b</code> 的语句，汇编之后假设用的是 <code>addq Src, Dest</code>，那么根据这个操作结果的不同，会相应设置上面提到的四个寄存器，而因为这个是执行类似操作时顺带尽心设置的，称为隐式设置，例如：</p>
+<ul>
+<li>如果两个数相加，在最高位还需要进位（也就是溢出了），那么 CF 寄存器就会被设置</li>
+<li>如果 t 等于 0，那么 ZF 寄存器会被设置</li>
+<li>如果 t 小于 0，那么 SF 寄存器会被设置</li>
+<li>如果 2’s complement 溢出，那么 OF 寄存器会被设置为 1（溢出的情况是 <code>(a&gt;0 &amp;&amp; b &gt; 0 &amp;&amp; t &lt;0) || (a&lt;0 &amp;&amp; b&lt;0 &amp;&amp; t&gt;=0)</code>）</li>
+</ul>
+<p>这就发现了，其实这四个条件代码，是用来标记上一条命令的结果的各种可能的，是自动会进行设置的。注意，使用 <code>leaq</code> 指令的话不会进行设置。</p>
+<p>除了隐形设置，还可以显式进行设置，具体的方法是使用 <code>cmpq</code> 指令，这里的 q 指的是 64 位的地址。具体来说 <code>cmpq Src2(b), Src1(a)</code> 等同于计算 <code>a-b</code>（注意 a b 顺序是颠倒的），然后利用 <code>a-b</code> 的结果来对应进行条件代码的设置：</p>
+<ul>
+<li>如果在最高位还需要进位（也就是溢出了），那么 CF 寄存器就会被设置</li>
+<li>a 和 b 相等时，也就是 <code>a-b</code> 等于零时，ZF 寄存器会被设置</li>
+<li>如果 a &lt; b，也就是 <code>(a-b)&lt;0</code> 时，那么 SF 寄存器会被设置</li>
+<li>如果 2’s complement 溢出，那么 OF 寄存器会被设置（溢出的情况是 <code>(a&gt;0 &amp;&amp; b &gt; 0 &amp;&amp; t &lt;0) || (a&lt;0 &amp;&amp; b&lt;0 &amp;&amp; t&gt;=0)</code>）</li>
+</ul>
+<p>另一种进行显式设置的方法是使用 <code>testq</code> 指令，具体来说 <code>testq Src2(b), Src1(a)</code> 等同于计算 <code>a&amp;b</code>（注意 a b 顺序是颠倒的），然后利用 <code>a-b</code> 的结果来对应进行条件代码的设置，通常来说会把其中一个操作数作为 mask：</p>
+<ul>
+<li>当 <code>a&amp;b == 0</code> 时，ZF 寄存器会被设置</li>
+<li>当 <code>a&amp;b &lt; 0</code> 时，SF 寄存器会被设置</li>
+</ul>
+<p>有了这四个条件码，就可以通过不同的组合方式，来产生不同的条件判断。</p>
+<p>介绍完了条件代码，就可以来看看具体的跳转了，跳转实际上就是根据条件代码的不同来进行不同的操作。我们先来看一个比较原始的例子（编译器没有进行优化）：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">absdiff</span><span class="params">(<span class="keyword">long</span> x, <span class="keyword">long</span> y)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> result;</span><br><span class="line">    <span class="keyword">if</span> (x &gt; y)</span><br><span class="line">        result = x-y;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        result = y-x;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码如下，这里 %rdi 中保存了参数 x，%rsi 中保存了参数 y，而 %rax 一般用来存储返回值：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">absdiff:&#10;    cmpq    %rsi, %rdi&#10;    jle     .L4&#10;    movq    %rdi, %rax&#10;    subq    %rsi, %rax&#10;    ret&#10;.L4:    # x &#60;= y&#10;    movq    %rsi, %rax&#10;    subq    %rdi, %rax&#10;    ret</span><br></pre></td></tr></table></figure>
+<p>这里我们是要给出两个数的绝对值的差，所以需要判断谁大谁小。考虑到汇编不算特别直观，这里我们用 goto 语句重写一次，基本上就和汇编出来的代码逻辑类似了，方便之后的讲解：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">absdiff_goto</span><span class="params">(<span class="keyword">long</span> x, <span class="keyword">long</span> y)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> result;</span><br><span class="line">    <span class="keyword">int</span> ntest = x &lt;= y;</span><br><span class="line">    <span class="keyword">if</span> (ntest) <span class="keyword">goto</span> Else;</span><br><span class="line">    result = x-y;</span><br><span class="line">    <span class="keyword">goto</span> Done;</span><br><span class="line">Else:</span><br><span class="line">    result = y-x;</span><br><span class="line">Done:</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们再看另一种条件语句要如何翻译，比如 <code>val = Test ? Then_Expr : Else_Expr;</code>，重写上面的函数就是：<code>val = x&gt;y ? x-y : y-x;</code></p>
+<p>转换成 goto 形式就是：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">	ntest = !Test;</span><br><span class="line">	<span class="keyword">if</span> (ntest) <span class="keyword">goto</span> Else;</span><br><span class="line">	value = Then_Expr;</span><br><span class="line">	<span class="keyword">goto</span> Done;</span><br><span class="line">Else:</span><br><span class="line">	val = Else_Expr;</span><br><span class="line">Done:</span><br><span class="line">	...</span><br></pre></td></tr></table></figure>
+<p>但是实际上汇编出来的代码，并不是这样的，会采用另一种方法来加速分支语句的执行。现在我们先来说一说，为什么分支语句会对性能造成很大的影响。</p>
+<p>我们知道现在的 CPU 都是依靠流水线工作的，比方说执行一系列操作需要 ABCDE 五个步骤，那么在执行 A 的时候，实际上执行 B 所需的数据会在执行 A 的同时加载到寄存器中，这样运算器执行外 A，就可以立刻执行 B 而无须等待数据载入。如果程序一直是顺序的，那么这个过程就可以一直进行下去，效率会很高。但是一旦遇到分支，那么可能执行完 A 下一步要执行的是 C，但是载入的数据是 B，这时候就要把流水线清空（因为后面载入的东西都错了），然后重新载入 C 所需要的数据，这就带来了很大的性能影响。为此人们常常用『分支预测』这一技术来解决（分支预测是另一个话题这里不展开），但是对于这类只需要判断一次的条件语句来说，其实有更好的方法。</p>
+<p>处理器有一条指令支持 <code>if(Test) Dest &lt;- Src</code> 的操作，也就是说可以不用跳转，利用条件代码来进行赋值，于是编译器在可能的时候会把上面的 goto 程序改成如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">result = Then_Expr;</span><br><span class="line">eval = Else_Expr;</span><br><span class="line">nt = !Test;</span><br><span class="line"><span class="keyword">if</span> (nt) result = eval;</span><br><span class="line"><span class="keyword">return</span> result;</span><br></pre></td></tr></table></figure>
+<p>具体的做法是：反正一共就两个分支，我都算出行不行，然后利用上面的条件指令来进行赋值，这样就完美避免了因为分支可能带来的性能问题（需要清空流水线），像下面这样，同样 %rdi 中保存了参数 x，%rsi 中保存了参数 y，而 %rax 一般用来存储返回值：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">absdiff:&#10;    movq    %rdi, %rax  # x&#10;    subq    %rsi, %rax  # result = x-y&#10;    movq    %rsi, %rdx&#10;    subq    %rdi, %rdx  # eval = y-x&#10;    cmpq    %rsi, %rdi  # x:y&#10;    cmovle  %rdx, %rax  # if &#60;=, result = eval&#10;    ret</span><br></pre></td></tr></table></figure>
+<p>这个方法好是好，但是也有一些情况并不适用于：</p>
+<ul>
+<li>因为会把两个分支的运算都提前算出来，如果这两个值都需要大量计算的话，就得不偿失了，所以需要分支中的计算尽量简单。</li>
+<li>另外在涉及指针操作的时候，如 <code>val = p ? *p : 0;</code>，因为两个分支都会被计算，所以可能导致奇怪问题出现</li>
+<li>最后一种就是如果分支中的计算是有副作用的，那么就不能这样弄 <code>val = x &gt; 0 ? x*= 7 : x+= 3;</code>，这种情况下，因为都计算了，那么 x 的值肯定就不是我们想要的了。</li>
+</ul>
+<h3 id="u5FAA_u73AF"><a href="#u5FAA_u73AF" class="headerlink" title="循环"></a>循环</h3><p>先来看看并不那么常用的 Do-While 语句以及对应使用 goto 语句进行跳转的版本：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Do While 的 C 语言代码</span></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">pcount_do</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> x)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        result += x &amp; <span class="number">0x1</span>;</span><br><span class="line">        x &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">while</span> (x);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Goto 版本</span></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">pcount_goto</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> x)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> result = <span class="number">0</span>;</span><br><span class="line">loop:</span><br><span class="line">    result += x &amp; <span class="number">0x1</span>;</span><br><span class="line">    x &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (x) <span class="keyword">goto</span> loop;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数计算参数 x 中有多少位是 1，翻译成汇编如下：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">    movl    $0, %eax    # result = 0&#10;.L2:                    # loop:&#10;    movq    %rdi, %rdx&#10;    andl    $1, %edx    # t = x &#38; 0x1&#10;    addq    %rdx, %rax  # result += t&#10;    shrq    %rdi        # x &#62;&#62;= 1&#10;    jne     .L2         # if (x) goto loop&#10;    rep; ret</span><br></pre></td></tr></table></figure>
+<p>其中 %rdi 中存储的是参数 x，%rax 存储的是返回值。换成更通用的形式如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C Code</span></span><br><span class="line"><span class="function"><span class="keyword">do</span></span><br><span class="line">	Body</span><br><span class="line">	<span class="title">while</span> <span class="params">(Test)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Goto Version</span></span><br><span class="line">loop:</span><br><span class="line">	<span class="function">Body</span><br><span class="line">	<span class="title">if</span> <span class="params">(Test)</span></span><br><span class="line">		<span class="keyword">goto</span> loop</span></span><br></pre></td></tr></table></figure>
+<p>而对于 While 语句的转换，会直接跳到中间，如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C While version</span></span><br><span class="line"><span class="keyword">while</span> (Test)</span><br><span class="line">	Body</span><br><span class="line"></span><br><span class="line"><span class="comment">// Goto Version</span></span><br><span class="line">	<span class="keyword">goto</span> test;</span><br><span class="line">loop:</span><br><span class="line">	Body</span><br><span class="line">test:</span><br><span class="line">	<span class="keyword">if</span> (Test)</span><br><span class="line">		<span class="keyword">goto</span> loop;</span><br><span class="line">done:</span><br></pre></td></tr></table></figure>
+<p>如果在编译器中开启 <code>-O1</code> 优化，那么会把 While 先翻译成 Do-While，然后再转换成对应的 Goto 版本，因为 Do-While 语句执行起来更快，更符合 CPU 的运算模型。</p>
+<p>接着来看看最常用的 For 循环，也可以一步一步转换成 While 的形式，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// For</span></span><br><span class="line"><span class="keyword">for</span> (Init; Test; Update)</span><br><span class="line">	Body</span><br><span class="line">	</span><br><span class="line"><span class="comment">// While Version</span></span><br><span class="line">Init;</span><br><span class="line"><span class="keyword">while</span> (Test) &#123;</span><br><span class="line">	Body</span><br><span class="line">	Update;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Switch__u8BED_u53E5"><a href="#Switch__u8BED_u53E5" class="headerlink" title="Switch 语句"></a>Switch 语句</h3><p>最后我们来看看最复杂的 switch 语句，这种类型的语句一次判断会有多种可能的跳转路径（知道 CPU 的分支预测会多抓狂吗）。这里用一个具体的例子来进行讲解：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">switch_eg</span> <span class="params">(<span class="keyword">long</span> x, <span class="keyword">long</span> y, <span class="keyword">long</span> z)</span></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> w = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">switch</span> (x) &#123;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">			w = y*z;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">			w = y/z;</span><br><span class="line">			<span class="comment">// fall through</span></span><br><span class="line">		<span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">			w += z;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">		<span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">			w -= z;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			w = <span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> w;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个例子中包含了大部分比较特殊的情况：</p>
+<ul>
+<li>共享的条件：5 和 6</li>
+<li>fall through：2 也会执行 3 的部分（这个要小心，一般来说不这么搞，如果确定要用，务必写上注释）</li>
+<li>缺失的条件：4</li>
+</ul>
+<p>具体怎么办呢？简单来说，使用跳转表（你会发现表的解决方式在很多地方都有用：虚函数，继承甚至动态规划），可能会类似如下汇编代码，这里 %rdi 是参数 x，%rsi 是参数 y，%rdx 是参数 z, %rax 是返回值</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">switch_eg:&#10;    movq    %rdx, %rcx&#10;    cmpq    $6, %rdi    # x:6&#10;    ja      .L8&#10;    jmp     *.L4(, %rdi, 8)</span><br></pre></td></tr></table></figure>
+<p>跳转表为</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">.section    .rodata&#10;    .align 8&#10;.L4:&#10;    .quad   .L8 # x = 0&#10;    .quad   .L3 # x = 1&#10;    .quad   .L5 # x = 2&#10;    .quad   .L9 # x = 3&#10;    .quad   .L8 # x = 4&#10;    .quad   .L7 # x = 5&#10;    .quad   .L7 # x = 6</span><br></pre></td></tr></table></figure>
+<p>这里需要注意，我们先跟 6 进行比较（因为 6 是最大的），然后利用 <code>ja</code> 指令进行跳转，为什么，因为如果是负数的话，<code>ja</code> 是处理无符号数的，所以负数情况肯定大于 6，于是直接利用 <code>ja</code> 跳转到 default 的分支。</p>
+<p>然后下一句 <code>jmp *.L4(,%rdi, 8) # goto *JTab[x]</code>，是一个间接跳转，通过看上面的跳转列表来进行跳转。</p>
+<p>比如说，直接跳转 <code>jmp .L8</code>，就直接跳到 <code>.L8</code> 所在的标签，也就是 x = 0</p>
+<p>如果是 <code>jmp *.L4(,%rdi,8)</code> 那么就先找到 <code>.L4</code> 然后往后找 8 个字节（或 8 的倍数），于是就是 0~6 的范围。</p>
+<p>通过上面的例子，我们可以大概了解处理 switch 语句的方式：大的 switch 语句会用跳转表，具体跳转时可能会用到决策树（if-elseif-elseif-else）</p>
+<h2 id="u8FC7_u7A0B_u8C03_u7528"><a href="#u8FC7_u7A0B_u8C03_u7528" class="headerlink" title="过程调用"></a>过程调用</h2><p>上一节中我们学习了机器是如何利用跳转实现流程控制的，这一节我们来看一个更加复杂的机制：过程调用（也就是调用函数）具体在 CPU 和内存中是怎么实现的。理解之后，对于递归会有更加清晰的认识。</p>
+<p>在过程调用中主要涉及三个重要的方面：</p>
+<ol>
+<li>传递控制：包括如何开始执行过程代码，以及如何返回到开始的地方</li>
+<li>传递数据：包括过程需要的参数以及过程的返回值</li>
+<li>内存管理：如何在过程执行的时候分配内存，以及在返回之后释放内存</li>
+</ol>
+<p>以上这三点，都是凭借机器指令实现的</p>
+<h3 id="u6808_u7ED3_u6784"><a href="#u6808_u7ED3_u6784" class="headerlink" title="栈结构"></a>栈结构</h3><p>在 x86-64 中，所谓的栈，实际上一块内存区域，这个区域的数据进出满足先进后出的原则。越新入栈的数据，地址越低，所以栈顶的地址是最小的。下图中箭头所指的就是寄存器 %rsp 的值，这个寄存器是栈指针，用来记录栈顶的位置。</p>
+<p><img src="/images/14611673348513.jpg" alt=""></p>
+<p>我们假设一开始 %rsp 为红色，对于 <code>push</code> 操作，对应的是 <code>pushq Src</code> 指令，具体会完成下面三个步骤：</p>
+<ol>
+<li>从地址 <code>Src</code> 中取出操作数</li>
+<li>把 %rsp 中的地址减去 8（也就是到下一个位置）</li>
+<li>把操作数写入到 %rsp 的新地址中 </li>
+</ol>
+<p>这个时候 %rsp 就对应蓝色。</p>
+<p>重来一次，假设一开始 %rsp 为红色，对于 <code>pop</code> 操作，对应的是 <code>popq Dest</code> 指令，具体会完成下面三个步骤：</p>
+<ol>
+<li>从 %rsp 中存储的地址中读入数据</li>
+<li>把 %rsp 中的地址增加 8（回到上一个位置）</li>
+<li>把刚才取出来的值放到 <code>Dest</code> 中（这里必须是一个寄存器）</li>
+</ol>
+<p>这时候 %rsp 就对应黄色。</p>
+<h3 id="u8C03_u7528_u65B9_u5F0F"><a href="#u8C03_u7528_u65B9_u5F0F" class="headerlink" title="调用方式"></a>调用方式</h3><p>了解了栈的结构之后，我们先通过一个函数调用的例子来具体探索一下过程调用中的一些细节。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// multstore 函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">multstore</span> <span class="params">(<span class="keyword">long</span> x, <span class="keyword">long</span>, y, <span class="keyword">long</span> *dest)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> t = mult2(x, y);</span><br><span class="line">    *dest = t;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// mult2 函数</span></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">mult2</span><span class="params">(<span class="keyword">long</span> a, <span class="keyword">long</span> b)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> s = a * b;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码为：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">0000000000400540 &#60;multstore&#62;:&#10;    # x &#22312; %rdi &#20013;&#65292;y &#22312; %rsi &#20013;&#65292;dest &#22312; %rdx &#20013;&#10;    400540: push    %rbx            # &#36890;&#36807;&#21387;&#26632;&#20445;&#23384; %rbx&#10;    400541: mov     %rdx, %rbx      # &#20445;&#23384; dest&#10;    400544: callq   400550 &#60;mult2&#62;  # &#35843;&#29992; mult2(x, y)&#10;    # t &#22312; %rax &#20013;&#10;    400549: mov     %rax, (%rbx)    # &#32467;&#26524;&#20445;&#23384;&#21040; dest &#20013;&#10;    40054c: pop     %rbx            # &#36890;&#36807;&#20986;&#26632;&#24674;&#22797;&#21407;&#26469;&#30340; %rbx&#10;    40054d: retq                    # &#36820;&#22238;&#10;&#10;0000000000400550 &#60;mult2&#62;:&#10;    # a &#22312; %rdi &#20013;&#65292;b &#22312; %rsi &#20013;&#10;    400550: mov     %rdi, %rax      # &#24471;&#21040; a &#30340;&#20540;&#10;    400553: imul    %rsi, %rax      # a * b&#10;    # s &#22312; %rax &#20013;&#10;    400557: retq                    # &#36820;&#22238;</span><br></pre></td></tr></table></figure>
+<p>可以看到，过程调用是利用栈来进行的，通过 <code>call label</code> 来进行调用（先把返回地址入栈，然后跳转到对应的 label），返回的地址，将是下一条指令的地址，通过 <code>ret</code> 来进行返回（把地址从栈中弹出，然后跳转到对应地址）</p>
+<p>我们『单步调试』来看看具体调用的过程</p>
+<p><img src="/images/14611722773236.jpg" alt=""></p>
+<ol>
+<li>在执行到 400544 那一行的时候 %rsp 指向栈顶（存储着栈顶的地址），%rip 指向当前要执行的指令（也就是 400544）</li>
+<li>在上一步操作完成之后，因为跳转的关系，%rip 指向 mult2 函数开始的地方（也就是 400550），之前的压栈操作也使得栈顶改变（返回值的位置），于是 %rsp 对应进行改变</li>
+<li>接着执行到了 <code>retq</code> 那句，这个时候要做的就是从栈中取出栈顶位置（这样就可以从跳转处继续了），然后对寄存器做对应的修改</li>
+<li>最后恢复到原来的 multstore 函数中继续执行</li>
+</ol>
+<p>我们可以发现，函数调用中会利用 %rax 来保存过程调用的返回值，以便程序继续运行的。这就是基本的过程调用的控制流程。</p>
+<p>那么过程调用的参数会放在哪里呢？如果参数没有超过六个，那么会放在：%rdi, %rsi, %rdx, %rcx, %r8, %r9 中。如果超过了，会另外放在一个栈中。而返回值会放在 %rax 中。</p>
+<p>既然是利用栈来进行函数调用，自然而然就可以推广到递归的情况，而对于每个过程调用来说，都会在栈中分配一个帧 Frames。每一帧里需要包含：</p>
+<ul>
+<li>返回信息</li>
+<li>本地存储（如果需要）</li>
+<li>临时空间（如果需要）</li>
+</ul>
+<p>整一帧会在过程调用的时候进行空间分配，然后在返回时进行回收，在 x86-64/Linux 中，栈帧的结构是固定的，当前的要执行的栈中包括：</p>
+<ul>
+<li>Argument Build: 需要使用的参数</li>
+<li>如果不能保存在寄存器中，会把一些本地变量放在这里</li>
+<li>已保存的寄存器上下文</li>
+<li>老的栈帧的指针（可选）</li>
+</ul>
+<p>而调用者的栈帧则包括：</p>
+<ul>
+<li>返回地址（因为 <code>call</code> 指令被压入栈的）</li>
+<li>调用所需的参数</li>
+</ul>
+<p>具体如下图所示：</p>
+<p><img src="/images/14611733132821.jpg" alt=""></p>
+<h3 id="u9012_u5F52"><a href="#u9012_u5F52" class="headerlink" title="递归"></a>递归</h3><p>有了前面的的基础，要理解递归就简单很多了，直接上例子</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">pcount_r</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> x)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (x == <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> (x &amp; <span class="number">1</span>) + pcount_r(x &gt;&gt; <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码为：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">pcount_r:&#10;    mov     $0, %eax&#10;    testq   %rdi, %rdi&#10;    je      .L6&#10;    push    %rbx&#10;    movq    %rdi, %rbx&#10;    andl    $1, %ebx&#10;    shrq    %rdi&#10;    call    pcount_r&#10;    addq    %rbx, %rax&#10;    popq    %rbx&#10;.L6:&#10;    rep; ret</span><br></pre></td></tr></table></figure>
+<p>实际执行的过程中，会不停进行压栈，直到最后返回，所以递归本身就是一个隐式的栈实现，但是系统一般对于栈的深度有限制（每次一都需要保存当前栈帧的各种数据），所以一般来说会把递归转换成显式栈来进行处理以防溢出。</p>
+<h2 id="u6570_u636E_u5B58_u50A8"><a href="#u6570_u636E_u5B58_u50A8" class="headerlink" title="数据存储"></a>数据存储</h2><p>上一节我们了解了过程调用是如何用机器代码实现的，这一节我们来看看基本的数据是如何存储在计算机中。</p>
+<p>第一讲中我们已经学到，不同的数据类型所需要的字节数是不同的，我们先来回顾一下这个表格：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">数据类型</th>
+<th style="text-align:center">32 位</th>
+<th style="text-align:center">64 位</th>
+<th style="text-align:center">x86-64</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">char</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">short</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:center">int</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:center">long</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">long double</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">10/16</td>
+</tr>
+<tr>
+<td style="text-align:center">指针</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+</tr>
+</tbody>
+</table>
+<p>我们举几个具体的例子就一目了然了：</p>
+<p><img src="/images/14611748992035.jpg" alt=""></p>
+<p>既然是连续的地址空间，就有很多不同的访问方式，比方对于 <code>int val[5]</code> 来说</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">引用方式</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>val[4]</code></td>
+<td style="text-align:center"><code>int</code></td>
+<td style="text-align:center">5</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>val</code></td>
+<td style="text-align:center"><code>int *</code></td>
+<td style="text-align:center">x</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>val+1</code></td>
+<td style="text-align:center"><code>int *</code></td>
+<td style="text-align:center">x+4</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>&amp;val[2]</code></td>
+<td style="text-align:center"><code>int *</code></td>
+<td style="text-align:center">x+8</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>val[5]</code></td>
+<td style="text-align:center"><code>int</code></td>
+<td style="text-align:center">?? 越界</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>*(val+1)</code></td>
+<td style="text-align:center"><code>int</code></td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>val+i</code></td>
+<td style="text-align:center"><code>int *</code></td>
+<td style="text-align:center">x + 4i</td>
+</tr>
+</tbody>
+</table>
+<h3 id="u591A_u7EF4_u6570_u7EC4"><a href="#u591A_u7EF4_u6570_u7EC4" class="headerlink" title="多维数组"></a>多维数组</h3><p>对于多维的数组，基本形式是 <code>T A[R][C]</code>，R 是行，C 是列，如果类型 T 占 K 个字节的话，那么数组所需要的内存是 <code>R*C*K</code> 字节。具体在内存里的排列方式如下：</p>
+<p><img src="/images/14611757048510.jpg" alt=""></p>
+<p>具体访问的方式如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_a_digit</span><span class="params">(<span class="keyword">int</span> index, <span class="keyword">int</span> dig)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> A[index][dig];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码为，这里假设 C = 5</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">leaq    (%rdi, %rdi, 4), %rax   # 5 * index&#10;addl    %rax, %rsi              # 5 * index + dig&#10;movl    A(, %rsi, 4), %eax      # M[A + 4*(5*index+dig)]</span><br></pre></td></tr></table></figure>
+<p>还有另外一种组合数组的方式，不是连续分配，而是存储每个数组的起始地址。与之前连续分配唯一不同之处在于计算元素位置时候不同行对应不连续的起始地址（可能分散在内存的不同部分）。这两种方式在 C 语言中看起来差不多，但对应的汇编代码则完全不同。</p>
+<h3 id="u7ED3_u6784_u4F53"><a href="#u7ED3_u6784_u4F53" class="headerlink" title="结构体"></a>结构体</h3><p>结构体是 C 语言中非常常用的一种机制，具体在内存中是如何存放的呢？我们通过具体的例子来进行学习。比如我们有这样一个结构体：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> rec </span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> a[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">size_t</span> i;       </span><br><span class="line">    <span class="keyword">struct</span> rect *next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>那么在内存中的排列是</p>
+<p><img src="/images/14611816137150.jpg" alt=""></p>
+<p>如果我们换一下结构体元素的排列顺序，可能就会出现和我们预想不一样的结果，比如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> S1</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">    <span class="keyword">int</span> i[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">double</span> v;</span><br><span class="line">&#125; *p;</span><br></pre></td></tr></table></figure>
+<p>因为需要对齐的缘故，所以具体的排列是这样的：</p>
+<p><img src="/images/14611821730508.jpg" alt=""></p>
+<p>具体对齐的原则是，如果数据类型需要 K 个字节，那么地址都必须是 K 的倍数，比方说这里 int 数组 i 需要是 4 的倍数，而 v 则需要是 8 的倍数。</p>
+<p>感谢网友『光河』的补充：文中讲“具体对齐的原则是，如果数据类型需要 K 个字节，那么地址都必须是 K 的倍数”——这只是windows的原则，而Linux中的对齐策略是“2字节数据类型的地址必须为2的倍数，较大的数据类型（int,double,float）的地址必须是4的倍数”</p>
+<p>为什么要这样呢，因为内存访问通常来说是 4 或者 8 个字节位单位的，不对齐的话访问起来效率不高。具体来看的话，是这样：</p>
+<ul>
+<li>1 字节：char, …<ul>
+<li>没有地址的限制</li>
+</ul>
+</li>
+<li>2 字节：short, …<ul>
+<li>地址最低的 1 比特必须是 <code>0</code></li>
+</ul>
+</li>
+<li>4 字节：int, float, …<ul>
+<li>地址最低的 2 比特必须是 <code>00</code></li>
+</ul>
+</li>
+<li>8 字节：double, long, char *, …<ul>
+<li>地址最低的 3 比特必须是 <code>000</code></li>
+</ul>
+</li>
+<li>16 字节：long double (GCC on Linux)<ul>
+<li>地址最低的 4 比特必须是 <code>0000</code></li>
+</ul>
+</li>
+</ul>
+<p>对于一个结构体来说，所占据的内存空间必须是最大的类型所需字节的倍数，所以可能需要占据更多的空间，比如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> S2 &#123;</span><br><span class="line">	<span class="keyword">double</span> v;</span><br><span class="line">	<span class="keyword">int</span> i[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">&#125; *p;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/14611824112595.jpg" alt=""></p>
+<p>根据这种特点，在设计结构体的时候可以采用一些技巧。例如，要把大的数据类型放到前面，加入我们有两个结构体：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> S4 &#123;</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> d;</span><br><span class="line">&#125; *p;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> S5 &#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">	<span class="keyword">char</span> d;</span><br><span class="line">&#125; *p;</span><br></pre></td></tr></table></figure>
+<p>对应的排列是：</p>
+<p><img src="/images/14611827570059.jpg" alt=""></p>
+<p>这样我们就通过不同的排列，节约了 4 个字节空间，如果这个结构体要被复制很多次，这也是很可观的内存优化。</p>
+<h2 id="u7F13_u51B2_u533A_u6EA2_u51FA"><a href="#u7F13_u51B2_u533A_u6EA2_u51FA" class="headerlink" title="缓冲区溢出"></a>缓冲区溢出</h2><p>这一节是机器代码的最后一部分，主要说说由缓冲区溢出引起的攻防大战。我们先来看看程序在内存中是如何组织的（x86-64 Linux）</p>
+<p><img src="/images/14611833392466.jpg" alt=""></p>
+<p>最上面是运行时栈，有 8MB 的大小限制，一般用来保存局部变量。然后是堆，动态的内存分配会在这里处理，例如 <code>malloc()</code>, <code>calloc()</code>, <code>new()</code> 等。然后是数据，指的是静态分配的数据，比如说全局变量，静态变量，常量字符串。最后是共享库等可执行的机器指令，这一部分是只读的。</p>
+<p>可以见到，栈在最上面，也就是说，栈再往上就是另一个程序的内存范围了，这种时候我们就可以通过这种方式修改内存的其他部分了。</p>
+<p>举个例子</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> </span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> a[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">double</span> d;</span><br><span class="line">&#125; <span class="keyword">struct_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">fun</span><span class="params">(<span class="keyword">int</span> i)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="keyword">struct_t</span> s;</span><br><span class="line">    s.d = <span class="number">3.14</span>;</span><br><span class="line">    s.a[i] = <span class="number">1073741824</span>; <span class="comment">// 可能会越界</span></span><br><span class="line">    <span class="keyword">return</span> s.d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不同的 i 可能的执行结果是：</p>
+<ul>
+<li><code>fun(0)</code> -&gt; 3.14</li>
+<li><code>fun(1)</code> -&gt; 3.14</li>
+<li><code>fun(2)</code> -&gt; 3.1399998664856</li>
+<li><code>fun(3)</code> -&gt; 2.00000061035156</li>
+<li><code>fun(4)</code> -&gt; 3.14</li>
+<li><code>fun(6)</code> -&gt; Segmentation fault</li>
+</ul>
+<p>之所以会产生这种错误，是因为访问内存的时候跨过了数组本身的界限修改了 d 的值。你没看错，这是个大问题！如果不检查输入字符串的长度，就很容易出现这种问题，尤其是针对在栈上有界限的字符数组。</p>
+<p>在 Unix 中，<code>gets()</code> 函数的实现是这样的：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 从 stdin 中获取输入</span></span><br><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">gets</span><span class="params">(<span class="keyword">char</span> *dest)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c = getchar();</span><br><span class="line">    <span class="keyword">char</span> *p = dest;</span><br><span class="line">    <span class="keyword">while</span> (c != EOF &amp;&amp; c != <span class="string">'\n'</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        *p++ = c;</span><br><span class="line">        c = getchar();</span><br><span class="line">    &#125;</span><br><span class="line">    *p = <span class="string">'\0'</span>;</span><br><span class="line">    <span class="keyword">return</span> dest;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到并没有去检测最多能读入多少字符（于是很容易出问题），类似的情况还在 <code>strcpy</code>, <code>strcat</code>, <code>scanf</code>, <code>fscanf</code>, <code>sscanf</code> 中出现。比如说</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">echo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span> buf[<span class="number">4</span>]; <span class="comment">// 太小</span></span><br><span class="line">	gets(buf);</span><br><span class="line">	<span class="built_in">puts</span>(buf);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">call_echo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	echo();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们来测试一下这个函数，可能的结果是：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">unix&gt; ./echodemo</span><br><span class="line"> Input: <span class="number">012345678901234567890123</span></span><br><span class="line">Output: <span class="number">012345678901234567890123</span></span><br><span class="line"></span><br><span class="line">unix&gt; ./echodemo</span><br><span class="line"> Input: <span class="number">0123456789012345678901234</span></span><br><span class="line">Segmentation Fault</span><br></pre></td></tr></table></figure>
+<p>为什么明明在 <code>echo()</code> 中声明 <code>buf</code> 为 4 个 char，居然一开始输入这么多都没问题？我们到汇编代码里去看看：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">00000000004006cf &#60;echo&#62;:&#10;    4006cf: 48 83 ec 18         sub   $0x18, %rsp&#10;    4006d3: 48 89 e7            mov   %rsp, %rdi&#10;    4006d6: e8 a5 ff ff ff      callq 400680 &#60;gets&#62;&#10;    4006db: 48 89 e7            mov   %rsp, %rdi&#10;    4006de: e8 3d fe ff ff      callq 400520 &#60;puts@plt&#62;&#10;    4006e3: 48 83 c4 18         add   $0x18, %rsp&#10;    4006e7: c3                  retq&#10;&#10;# call_echo &#37096;&#20998;&#10;    4006e8: 48 83 ec 08         sub   $0x8, %rsp&#10;    4006ec: b8 00 00 00 00      mov   $0x0, %eax&#10;    4006f1: e8 d9 ff ff ff      callq 4006cf &#60;echo&#62;&#10;    4006f6: 48 83 c4 08         add   $0x8, %rsp&#10;    4006fa: c3                  retq</span><br></pre></td></tr></table></figure>
+<p>我们看 <code>4006cf</code> 这一行，可以发现实际上给 %rsp 分配了 0x18 的空间，所以可以容纳不止 4 个 char。</p>
+<p>在调用 <code>gets</code> 函数之前（第 <code>4006d6</code> 行），内存中栈帧示意图为：</p>
+<p><img src="/images/14611853013958.jpg" alt=""></p>
+<p>结合上面代码可以看到，<code>call_echo</code> 栈帧中保存着调用之前执行指令的地址 <code>4006f6</code>，用于返回之后继续执行。我们输入字符串 <code>01234567890123456789012</code> 之后，栈帧中缓冲区被填充，如下：</p>
+<p><img src="/images/14611855170102.jpg" alt=""></p>
+<p>虽然缓冲区溢出了，但是并没有损害当前的状态，程序还是可以继续运行（也就是没有出现段错误），但是如果再多一点的话，也就是输入 <code>0123456789012345678901234</code>，内存中的情况是这样的：</p>
+<p><img src="/images/14611856222781.jpg" alt=""></p>
+<p>就把返回地址给覆盖掉了，当 <code>echo</code> 执行完成要回到 <code>call_echo</code> 函数时，就跳转到 <code>0x400034</code> 这个内容未知的地址中了。也就是说，通过缓冲区溢出，我们可以在程序返回时跳转到任何我们想要跳转到的地方！攻击者可以利用这种方式来执行恶意代码！</p>
+<p>那么我们现在来看看，怎么处理缓冲区溢出攻击，有几种方式：</p>
+<ol>
+<li>好好写代码，尽量不让缓冲区异常</li>
+<li>程序容易出问题，那么提供系统层级的保护</li>
+<li>编译器也可以来个认证(stack canaries)</li>
+</ol>
+<p>第一种，避免缓冲区溢出，我们用更安全的方法，如：<code>fgets</code>, <code>strncpy</code> 等等。</p>
+<p>第二种，栈的位置不确定，让缓冲区溢出没办法影响到，并且每次位置都不一样，就不怕被暴力破解。并且也可以把一段内存标记为只读，那么就避免因为缓冲区溢出而导致的重写。</p>
+<p>第三种，使用认证机制(Stack Canaries)。简单来说，就是在超出缓冲区的位置加一个特殊的值，如果发现这个值变化了，那么就知道出问题了。</p>
+<p>但是，除了缓冲区溢出，还有另一种攻击的方式，称为返回导向编程[4]。可以利用修改已有的代码，来绕过系统和编译器的保护机制，攻击者控制堆栈调用以劫持程序控制流并执行针对性的机器语言指令序列（称为Gadgets）。每一段 gadget 通常结束于 return 指令，并位于共享库代码中的子程序。系列调用这些代码，攻击者可以在拥有更简单攻击防范的程序内执行任意操作。</p>
+<p>具体利用缓冲区进行攻击的例子，会在<a href="/./2016/04/16/thick-csapp-lab-3/">【读厚 CSAPP】III Attack Lab</a> 中进行讲解，这里不再赘述。</p>
+<h2 id="u7A0B_u5E8F_u4F18_u5316"><a href="#u7A0B_u5E8F_u4F18_u5316" class="headerlink" title="程序优化"></a>程序优化</h2><p>前面了解了许多机器代码以及程序执行机制的相关知识，这一节我们来学习如何利用这些性质来优化代码。</p>
+<ul>
+<li>用好编译器的不同参数设定</li>
+<li>写对编译器友好的代码，尤其是过程调用和内存引用，时刻注意内层循环</li>
+<li>根据机器来优化代码，包括利用指令级并行、避免不可以预测的分支以及有效利用缓存</li>
+</ul>
+<h3 id="u901A_u7528_u6280_u5DE7"><a href="#u901A_u7528_u6280_u5DE7" class="headerlink" title="通用技巧"></a>通用技巧</h3><p>即使是常数项系数的操作，同样可能影响性能。性能的优化是一个多层级的过程：算法、数据表示、过程和循环，都是需要考虑的层次。于是，这就要求我们需要对系统有一定的了解，例如：</p>
+<ul>
+<li>程序是如何编译和执行的</li>
+<li>现代处理器和内存是如何工作的</li>
+<li>如何衡量程序的性能以及找出瓶颈</li>
+<li>如何保持代码模块化的前提下，提高程序性能</li>
+</ul>
+<p>最根源的优化是对编译器的优化，比方说再寄存器分配、代码排序和选择、死代码消除、效率提升等方面，都可以由编译器做一定的辅助工作。</p>
+<p>但是因为这毕竟是一个自动的过程，而代码本身可以非常多样，在不能改变程序行为的前提下，很多时候编译器的优化策略是趋于保守的。并且大部分用来优化的信息来自于过程和静态信息，很难充分进行动态优化。 </p>
+<p>接下来会介绍一些我们自己需要注意的地方，而不是依赖处理器或者编译器来解决。</p>
+<h3 id="u4EE3_u7801_u79FB_u52A8"><a href="#u4EE3_u7801_u79FB_u52A8" class="headerlink" title="代码移动"></a>代码移动</h3><p>如果一个表达式总是得到同样的结果，最好把它移动到循环外面，这样只需要计算一次。编译器有时候可以自动完成，比如说使用 <code>-O1</code> 优化。一个例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_row</span><span class="params">(<span class="keyword">double</span> *a, <span class="keyword">double</span> *b, <span class="keyword">long</span> i, <span class="keyword">long</span> n)</span></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> j;</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)&#123;</span><br><span class="line">        a[n*i + j] = b[j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里 <code>n*i</code> 是重复被计算的，可以放到循环外面</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">long</span> j;</span><br><span class="line"><span class="keyword">int</span> ni = n * i;</span><br><span class="line"><span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)&#123;</span><br><span class="line">    a[ni + j] = b[j];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="u51CF_u5C11_u8BA1_u7B97_u5F3A_u5EA6"><a href="#u51CF_u5C11_u8BA1_u7B97_u5F3A_u5EA6" class="headerlink" title="减少计算强度"></a>减少计算强度</h3><p>用更简单的表达式来完成用时较久的操作，例如 <code>16*x</code> 就可以用 <code>x &lt;&lt; 4</code> 代替，一个比较明显的例子是，可以把乘积转化位一系列的加法，如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">    <span class="keyword">int</span> ni = n * i;</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">        a[ni + j] = b[j];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以把 <code>n*i</code> 用加法代替，比如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> ni = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">        a[ni + j] = b[j];</span><br><span class="line">    ni += n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="u516C_u5171_u5B50_u8868_u8FBE_u5F0F"><a href="#u516C_u5171_u5B50_u8868_u8FBE_u5F0F" class="headerlink" title="公共子表达式"></a>公共子表达式</h3><p>可以重用部分表达式的计算结果，例如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Sum neighbors of i, j */</span></span><br><span class="line">up =    val[(i-<span class="number">1</span>)*n + j  ];</span><br><span class="line">down =  val[(i+<span class="number">1</span>)*n + j  ];</span><br><span class="line">left =  val[i*n     + j-<span class="number">1</span>];</span><br><span class="line">right = val[i*n     + j+<span class="number">1</span>];</span><br><span class="line">sum = up + down + left + right;</span><br></pre></td></tr></table></figure>
+<p>可以优化为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">long</span> inj = i*n + j;</span><br><span class="line">up =    val[inj - n];</span><br><span class="line">down =  val[inj + n];</span><br><span class="line">left =  val[inj - <span class="number">1</span>];</span><br><span class="line">right = val[inj + <span class="number">1</span>];</span><br><span class="line">sum = up + down + left + right;</span><br></pre></td></tr></table></figure>
+<p>虽然说，现代处理器对乘法也有很好的优化，但是既然可以从 3 次乘法运算减少到只需要 1 次，为什么不这样做呢？蚂蚁再小也是肉嘛。</p>
+<h3 id="u5C0F_u5FC3_u8FC7_u7A0B_u8C03_u7528"><a href="#u5C0F_u5FC3_u8FC7_u7A0B_u8C03_u7528" class="headerlink" title="小心过程调用"></a>小心过程调用</h3><p>我们先来看一段代码，找找有什么问题：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lower1</span><span class="params">(<span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">size_t</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="built_in">strlen</span>(s); i++)</span><br><span class="line">        <span class="keyword">if</span> (s[i] &gt;= <span class="string">'A'</span> &amp;&amp; s[i] &lt;= <span class="string">'Z'</span>)</span><br><span class="line">            s[i] -= (<span class="string">'A'</span> - <span class="string">'a'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>问题在于，在字符串长度增加的时候，时间复杂度是二次方的！每次循环中都会调用一次 <code>strlen(s)</code>，而这个函数本身需要通过遍历字符串来取得长度，因此时间复杂度就成了二次方。</p>
+<p>可以怎么优化呢？简单，那么只计算一次就好了：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lower2</span><span class="params">(<span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">size_t</span> i;</span><br><span class="line">    <span class="keyword">size_t</span> len = <span class="built_in">strlen</span>(s);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; len; i++)</span><br><span class="line">        <span class="keyword">if</span> (s[i] &gt;= <span class="string">'A'</span> &amp;&amp; s[i] &lt;= <span class="string">'Z'</span>)</span><br><span class="line">            s[i] -= (<span class="string">'A'</span> - <span class="string">'a'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为什么编译器不能自动把这个过程调用给移到外面去呢？</p>
+<p>前面说过，编译器的策略必须是保守的，因为过程调用之后所发生的事情是不可控的，所以不能直接改变代码逻辑，比方说，假如 <code>strlen</code> 这个函数改变了字符串 <code>s</code> 的长度，那么每次都需要重新计算。如果移出去的话，就会导致问题。</p>
+<p>所以很多时候只能靠程序员自己进行代码优化。</p>
+<h3 id="u6CE8_u610F_u5185_u5B58_u95EE_u9898"><a href="#u6CE8_u610F_u5185_u5B58_u95EE_u9898" class="headerlink" title="注意内存问题"></a>注意内存问题</h3><p>接下来我们看另一段代码及其汇编代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 把 nxn 的矩阵 a 的每一行加起来，存到向量 b 中</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sum_rows1</span><span class="params">(<span class="keyword">double</span> *a, <span class="keyword">double</span> *b, <span class="keyword">long</span> n)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> i, j;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        b[i] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">            b[i] += a[i*n + j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码为</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"># sum_rows1 &#30340;&#20869;&#24490;&#29615;&#10;.L4:&#10;    movsd   (%rsi, %rax, 8), %xmm0  # &#28014;&#28857;&#25968;&#36733;&#20837;&#10;    addsd   (%rdi), %xmm0           # &#28014;&#28857;&#25968;&#21152;&#10;    movsd   %xmm0, (%rsi, %rax, 8)  # &#28014;&#28857;&#25968;&#20445;&#23384;&#10;    addq    $8, %rdi&#10;    cmpq    %rcx, %rdi&#10;    jne     .L4</span><br></pre></td></tr></table></figure>
+<p>可以看到在汇编中，每次都会把 <code>b[i]</code> 存进去再读出来，为什么编译器会有这么奇怪的做法呢？因为有可能这里的 <code>a</code> 和 <code>b</code> 指向的是同一块内存地址，那么每次更新，都会使得值发生变化。但是中间过程是什么，实际上是没有必要存储起来的，所以我们引入一个临时变量，这样就可以消除内存引用的问题。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 把 nxn 的矩阵 a 的每一行加起来，存到向量 b 中</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sum_rows2</span><span class="params">(<span class="keyword">double</span> *a, <span class="keyword">double</span> *b, <span class="keyword">long</span> n)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> i, j;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">double</span> val = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; n; j++)</span><br><span class="line">            val += a[i*n + j];</span><br><span class="line">        b[i] = val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码为</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"># sum_rows2 &#20869;&#24490;&#29615;&#10;.L10:&#10;    addsd   (%rdi), %xmm0   # &#28014;&#28857;&#25968;&#36733;&#20837; + &#21152;&#27861;&#10;    addq    $9, %rdi&#10;    cmpq    %rax, %rdi&#10;    jne     .L10</span><br></pre></td></tr></table></figure>
+<p>可以看到，加入了临时变量后，解决了奇怪的内存问题，生成的汇编代码干净了许多。</p>
+<h3 id="u5904_u7406_u6761_u4EF6_u5206_u652F"><a href="#u5904_u7406_u6761_u4EF6_u5206_u652F" class="headerlink" title="处理条件分支"></a>处理条件分支</h3><p>这个问题，如果不是对处理器执行指令的机制有一定了解的话，可能会难以理解。</p>
+<p>现代处理器普遍采用超标量设计，也就是基于流水线来进行指令的处理，也就是说，当执行当前指令时，接下来要执行的几条指令已经进入流水线的处理流程了。</p>
+<p>这个很重要，对于顺序执行来说，不会有任何问题，但是对于条件分支来说，在跳转指令时可能会改变程序的走向，也就是说，之前载入的指令可能是无效的。这个时候就只能清空流水线，然后重新进行载入。为了减少清空流水线所带来的性能损失，处理器内部会采用称为『分支预测』的技术。</p>
+<p>比方说在一个循环中，根据预测，可能除了最后一次跳出循环的时候会判断错误之外，其他都是没有问题的。这就可以接受，但是如果处理器不停判断错误的话（比方说代码逻辑写得很奇怪），性能就会得到极大的拖累。</p>
+<p>分支问题有些时候会成为最主要的影响性能的因素，但有的时候其实很难避免。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>这一讲的内容比较多，我们从 CPU 架构入手，了解了处理器如何执行指令，继而通过学习汇编，对寻址和计算有了基本的认识。然后详细说明了汇编代码中的流程控制和过程调用。接着通过了解数据在内存中的存储方式，介绍了缓冲区溢出相关的内容。最后综合所有内容，对具体代码的编写，给出了一些优化建议。</p>
+<p>部分内容需要细致阅读几次才能完全理解，如果仍然不理解也不用过于担心，在『读厚』部分我会通过具体的例子来详细说明这部分的内容。</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a href="https://zh.wikipedia.org/wiki/Intel_8086" target="_blank" rel="external">Intel 8086</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%88%86%E6%94%AF%E9%A0%90%E6%B8%AC%E5%99%A8" target="_blank" rel="external">分支预测器</a></li>
+<li><a href="http://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf" target="_blank" rel="external">Intel® 64 and IA-32 Architectures Software Developer’s Manual</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E8%BF%94%E5%9B%9E%E5%AF%BC%E5%90%91%E7%BC%96%E7%A8%8B" target="_blank" rel="external">返回导向编程</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSAPP/" rel="tag">#CSAPP</a>
+          
+            <a href="/tags/机器指令/" rel="tag">#机器指令</a>
+          
+            <a href="/tags/程序优化/" rel="tag">#程序优化</a>
+          
+            <a href="/tags/读薄/" rel="tag">#读薄</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/16/thin-csapp-1/" rel="next" title="【读薄 CSAPP】壹 数据表示">
+                <i class="fa fa-chevron-left"></i> 【读薄 CSAPP】壹 数据表示
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/16/thin-csapp-3/" rel="prev" title="【读薄 CSAPP】叁 内存与缓存">
+                【读薄 CSAPP】叁 内存与缓存 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/16/thin-csapp-2/"
+           data-title="【读薄 CSAPP】贰 机器指令与程序优化" data-url="http://wdxtub.com/2016/04/16/thin-csapp-2/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B66_u4E60_u76EE_u6807"><span class="nav-number">1.</span> <span class="nav-text">学习目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u7840_u77E5_u8BC6"><span class="nav-number">2.</span> <span class="nav-text">基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u4ECE_8086__u5230_Core_i7"><span class="nav-number">2.1.</span> <span class="nav-text">从 8086 到 Core i7</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4ECE_C__u5230_u673A_u5668_u4EE3_u7801"><span class="nav-number">2.2.</span> <span class="nav-text">从 C 到机器代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6C47_u7F16_u5165_u95E8"><span class="nav-number">2.3.</span> <span class="nav-text">汇编入门</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6D41_u7A0B_u63A7_u5236"><span class="nav-number">3.</span> <span class="nav-text">流程控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u6761_u4EF6_u4EE3_u7801_u4E0E_u8DF3_u8F6C"><span class="nav-number">3.1.</span> <span class="nav-text">条件代码与跳转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5FAA_u73AF"><span class="nav-number">3.2.</span> <span class="nav-text">循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Switch__u8BED_u53E5"><span class="nav-number">3.3.</span> <span class="nav-text">Switch 语句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FC7_u7A0B_u8C03_u7528"><span class="nav-number">4.</span> <span class="nav-text">过程调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u6808_u7ED3_u6784"><span class="nav-number">4.1.</span> <span class="nav-text">栈结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u8C03_u7528_u65B9_u5F0F"><span class="nav-number">4.2.</span> <span class="nav-text">调用方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u9012_u5F52"><span class="nav-number">4.3.</span> <span class="nav-text">递归</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6570_u636E_u5B58_u50A8"><span class="nav-number">5.</span> <span class="nav-text">数据存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u591A_u7EF4_u6570_u7EC4"><span class="nav-number">5.1.</span> <span class="nav-text">多维数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7ED3_u6784_u4F53"><span class="nav-number">5.2.</span> <span class="nav-text">结构体</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7F13_u51B2_u533A_u6EA2_u51FA"><span class="nav-number">6.</span> <span class="nav-text">缓冲区溢出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7A0B_u5E8F_u4F18_u5316"><span class="nav-number">7.</span> <span class="nav-text">程序优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u901A_u7528_u6280_u5DE7"><span class="nav-number">7.1.</span> <span class="nav-text">通用技巧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4EE3_u7801_u79FB_u52A8"><span class="nav-number">7.2.</span> <span class="nav-text">代码移动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u51CF_u5C11_u8BA1_u7B97_u5F3A_u5EA6"><span class="nav-number">7.3.</span> <span class="nav-text">减少计算强度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u516C_u5171_u5B50_u8868_u8FBE_u5F0F"><span class="nav-number">7.4.</span> <span class="nav-text">公共子表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5C0F_u5FC3_u8FC7_u7A0B_u8C03_u7528"><span class="nav-number">7.5.</span> <span class="nav-text">小心过程调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6CE8_u610F_u5185_u5B58_u95EE_u9898"><span class="nav-number">7.6.</span> <span class="nav-text">注意内存问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5904_u7406_u6761_u4EF6_u5206_u652F"><span class="nav-number">7.7.</span> <span class="nav-text">处理条件分支</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">9.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

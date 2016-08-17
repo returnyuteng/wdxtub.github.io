@@ -1,0 +1,876 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Swift 千金方,iOS,技巧,闭包," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="参考 Stanford CS193p 的例子进行一定的精简（目的是为了集中于闭包机制本身），用一个计算器功能函数的实例来介绍闭包的强大威力。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift 千金方 1 - 闭包">
+<meta property="og:url" content="http://wdxtub.com/2015/12/14/swift-tricks-1/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="参考 Stanford CS193p 的例子进行一定的精简（目的是为了集中于闭包机制本身），用一个计算器功能函数的实例来介绍闭包的强大威力。">
+<meta property="og:updated_time" content="2015-12-14T22:24:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift 千金方 1 - 闭包">
+<meta name="twitter:description" content="参考 Stanford CS193p 的例子进行一定的精简（目的是为了集中于闭包机制本身），用一个计算器功能函数的实例来介绍闭包的强大威力。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Swift 千金方 1 - 闭包 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Swift 千金方 1 - 闭包
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-14T15:59:15+08:00" content="2015-12-14">
+              2015-12-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/14/swift-tricks-1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/14/swift-tricks-1/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>参考 Stanford CS193p 的例子进行一定的精简（目的是为了集中于闭包机制本身），用一个计算器功能函数的实例来介绍闭包的强大威力。</p>
+<a id="more"></a>
+<hr>
+<p>Swift 千金方的想法来自于《千金方》，意在记录那些我学习 Swift 遇到的有意思的技巧与思路，一步一步导出最终的结论。需要注意的是，因为开发环境以及语言版本可能存在的差异性，没有办法保证时效性，仅供参考。</p>
+<p>我当前的开发环境</p>
+<ul>
+<li>Xcode 7.2</li>
+<li>OS X 10.11.2</li>
+<li>Swift 2.1</li>
+<li>iOS 9.2 (iPhone 6s, iPod Touch 6th, iPad 3)</li>
+</ul>
+<h2 id="u5B9E_u4F8B_u4ECB_u7ECD"><a href="#u5B9E_u4F8B_u4ECB_u7ECD" class="headerlink" title="实例介绍"></a>实例介绍</h2><p>计算器作为非常好的入门实例，其中有一个需要实现的功能就是加减乘除的处理，或者更抽象一点说，是运算符号的处理。如果仔细思考一下，就会发现运算符号有一些基本的特点：</p>
+<ul>
+<li>对于特定的运算符来说，其操作数的形式是一定的，比如说加法，那就是需要左操作数和右操作数</li>
+<li>而运算符可以通过操作数的数量来分类，比方说加减乘除等是一类，开根号这种只需要一个操作数的可以算作另一类</li>
+<li>在相同的类别里，计算的逻辑是非常相似的，比如说加减乘除其实都只是一个符号的差别</li>
+</ul>
+<p>假设我们现在要写一个函数来完成加减乘除以及开方的操作，函数原型为</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> operandStack = <span class="type">Array</span>&lt;<span class="type">Double</span>&gt;() </span><br><span class="line"><span class="comment">// 用来存操作数，直接 type inference 所以不用显式声明类型</span></span><br><span class="line"></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">operate</span><span class="params">(operation: String)</span></span> -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="comment">// TODO</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如何设计，才能让代码最精简，并且可读性更强呢？接下来就一步一步来优化，从最开始比较笨的设计，一步一步利用 Swift 的特性来进行『升级』</p>
+<h2 id="u601D_u8DEF_u5206_u6790"><a href="#u601D_u8DEF_u5206_u6790" class="headerlink" title="思路分析"></a>思路分析</h2><h3 id="u7B2C_u4E00_u4E2A_u601D_u8DEF_uFF1A_u7B80_u5355_u7C97_u66B4_u590D_u5236"><a href="#u7B2C_u4E00_u4E2A_u601D_u8DEF_uFF1A_u7B80_u5355_u7C97_u66B4_u590D_u5236" class="headerlink" title="第一个思路：简单粗暴复制"></a>第一个思路：简单粗暴复制</h3><p>笨办法，用来演示代码可以写得多糟糕，千万不要为了图省事儿这么写。因为太简单粗暴，就不用介绍思路，直接上代码：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">operate</span><span class="params">(operation: String)</span></span> -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="keyword">switch</span> operation &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"*"</span>:</span><br><span class="line">		<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">2</span>&#123;</span><br><span class="line">			<span class="keyword">return</span> operandStack.removeLast() * operandStack.removeLast();</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"/"</span>:</span><br><span class="line">		<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">2</span>&#123;</span><br><span class="line">			<span class="keyword">return</span> operandStack.removeLast() / operandStack.removeLast();</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"+"</span>:</span><br><span class="line">		<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">2</span>&#123;</span><br><span class="line">			<span class="keyword">return</span> operandStack.removeLast() + operandStack.removeLast();</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"-"</span>:</span><br><span class="line">		<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">2</span>&#123;</span><br><span class="line">			<span class="keyword">return</span> operandStack.removeLast() - operandStack.removeLast();</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"sqrt"</span>:</span><br><span class="line">		<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">1</span>&#123;</span><br><span class="line">			<span class="keyword">return</span> sqrt(operandStack.removeLast());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">default</span>: <span class="keyword">break</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这一大段复制粘贴，简直酸爽，千万不要这么写代码！会被炒鱿鱼的！</p>
+<h3 id="u7B2C_u4E8C_u4E2A_u601D_u8DEF_uFF1A_u628A_u51FD_u6570_u4F5C_u4E3A_u53C2_u6570_u6765_u7EDF_u4E00_u903B_u8F91"><a href="#u7B2C_u4E8C_u4E2A_u601D_u8DEF_uFF1A_u628A_u51FD_u6570_u4F5C_u4E3A_u53C2_u6570_u6765_u7EDF_u4E00_u903B_u8F91" class="headerlink" title="第二个思路：把函数作为参数来统一逻辑"></a>第二个思路：把函数作为参数来统一逻辑</h3><p>第一个思路的问题在于代码的大量重复，非常没有意义而且还增加维护的难度，有没有可能我传入一个函数，然后这个函数执行对应的运算逻辑，这样就不用无意义重复了，于是代码可以写成这样，注意注释中强调的问题：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">operate</span><span class="params">(operation: String)</span></span> -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="keyword">switch</span> operation &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"*"</span>: <span class="keyword">return</span> performOperationTwo(multiply)</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"/"</span>: <span class="keyword">return</span> performOperationTwo(divide)</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"+"</span>: <span class="keyword">return</span> performOperationTwo(plus)</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"-"</span>: <span class="keyword">return</span> performOperationTwo(minus)</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"sqrt"</span>: <span class="keyword">return</span> performOperationOne(square)</span><br><span class="line">	<span class="keyword">default</span>: <span class="keyword">break</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">mutiply</span><span class="params">(op1: Double, op2: Double)</span></span> -&gt; <span class="type">Double</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> op1 * op2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">divide</span><span class="params">(op1: Double, op2: Double)</span></span> -&gt; <span class="type">Double</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> op1 / op2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">plus</span><span class="params">(op1: Double, op2: Double)</span></span> -&gt; <span class="type">Double</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> op1 + op2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">minus</span><span class="params">(op1: Double, op2: Double)</span></span> -&gt; <span class="type">Double</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> op1 - op2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">square</span><span class="params">(op: Double)</span></span> -&gt; <span class="type">Double</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> sqrt(op)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">performOperationTwo</span><span class="params">(operation: <span class="params">(Double, Double)</span></span></span> -&gt; <span class="type">Double</span>) -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">2</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> operation(operandStack.removeLast(), operandStack.removeLast())</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意，在 Swift 2.1 以前，原本这个函数和上一个函数可以用同一个名字，利用不同的</span></span><br><span class="line"><span class="comment">// 传入函数类型来进行区分</span></span><br><span class="line"><span class="comment">// 一个是 (Double, Double) -&gt; Double</span></span><br><span class="line"><span class="comment">// 另一个是 Double -&gt; Double</span></span><br><span class="line"><span class="comment">// 现在这种做法已经不可以，所以需要两个不一样的函数名称</span></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">performOperationOne</span><span class="params">(operation: Double -&gt; Double)</span></span> -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">1</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> operation(operandStack.removeLast())</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样一来，虽然原本函数里面的逻辑非常清晰了，但是却增加了七个函数，而且很多还长得差不多。接下来，就可以利用 Swift 的语言特点来进行精简了</p>
+<h3 id="u7B2C_u4E09_u6B65_uFF1A_u4F7F_u7528_u533F_u540D_u51FD_u6570_u6765_u7CBE_u7B80_u4EE3_u7801"><a href="#u7B2C_u4E09_u6B65_uFF1A_u4F7F_u7528_u533F_u540D_u51FD_u6570_u6765_u7CBE_u7B80_u4EE3_u7801" class="headerlink" title="第三步：使用匿名函数来精简代码"></a>第三步：使用匿名函数来精简代码</h3><p>以 <code>multiply</code> 函数为首的计算代码其实都可以通过如下形式写成匿名函数，就清晰很多</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">operate</span><span class="params">(operation: String)</span></span> -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="keyword">switch</span> operation &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"*"</span>: <span class="keyword">return</span> performOperationTwo(&#123; </span><br><span class="line">		(op1: <span class="type">Double</span>, op2: <span class="type">Double</span>) -&gt; <span class="type">Double</span> <span class="keyword">in</span> </span><br><span class="line">		<span class="keyword">return</span> op1 * op2</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"/"</span>: <span class="keyword">return</span> performOperationTwo(&#123; </span><br><span class="line">		(op1: <span class="type">Double</span>, op2: <span class="type">Double</span>) -&gt; <span class="type">Double</span> <span class="keyword">in</span> </span><br><span class="line">		<span class="keyword">return</span> op1 / op2</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"+"</span>: <span class="keyword">return</span> performOperationTwo(&#123; </span><br><span class="line">		(op1: <span class="type">Double</span>, op2: <span class="type">Double</span>) -&gt; <span class="type">Double</span> <span class="keyword">in</span> </span><br><span class="line">		<span class="keyword">return</span> op1 + op2</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"-"</span>: <span class="keyword">return</span> performOperationTwo(&#123; </span><br><span class="line">		(op1: <span class="type">Double</span>, op2: <span class="type">Double</span>) -&gt; <span class="type">Double</span> <span class="keyword">in</span> </span><br><span class="line">		<span class="keyword">return</span> op1 - op2</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"sqrt"</span>: <span class="keyword">return</span> performOperationTwo(&#123; </span><br><span class="line">		(op: <span class="type">Double</span>) -&gt; <span class="type">Double</span> <span class="keyword">in</span> </span><br><span class="line">		<span class="keyword">return</span> sqrt(op)</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">default</span>: <span class="keyword">break</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">performOperationTwo</span><span class="params">(operation: <span class="params">(Double, Double)</span></span></span> -&gt; <span class="type">Double</span>) -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">2</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> operation(operandStack.removeLast(), operandStack.removeLast())</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意，在 Swift 2.1 以前，原本这个函数和上一个函数可以用同一个名字，利用不同的</span></span><br><span class="line"><span class="comment">// 传入函数类型来进行区分</span></span><br><span class="line"><span class="comment">// 一个是 (Double, Double) -&gt; Double</span></span><br><span class="line"><span class="comment">// 另一个是 Double -&gt; Double</span></span><br><span class="line"><span class="comment">// 现在这种做法已经不可以，所以需要两个不一样的函数名称</span></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">performOperationOne</span><span class="params">(operation: Double -&gt; Double)</span></span> -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">1</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> operation(operandStack.removeLast())</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样一来我们就去掉了原来那几个显式声明的函数，但是这样看起来还是有些乱，能不能再进一步呢？</p>
+<h3 id="u7B2C_u56DB_u6B65_uFF1A_u5229_u7528_Swift__u7684_u7C7B_u578B_u63A8_u65AD_u8FDB_u4E00_u6B65_u7CBE_u7B80_u4EE3_u7801"><a href="#u7B2C_u56DB_u6B65_uFF1A_u5229_u7528_Swift__u7684_u7C7B_u578B_u63A8_u65AD_u8FDB_u4E00_u6B65_u7CBE_u7B80_u4EE3_u7801" class="headerlink" title="第四步：利用 Swift 的类型推断进一步精简代码"></a>第四步：利用 Swift 的类型推断进一步精简代码</h3><p>当然可以！因为我们在 <code>performOperationTwo</code> 和 <code>performOperationOne</code> 中传入的参数是有类型的，所以在声明匿名函数的时候，其实可以省略掉类型，甚至返回类型和 <code>return</code> 关键字本身都可以省略，例如</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="string">"*"</span>: <span class="keyword">return</span> performOperationTwo(&#123; </span><br><span class="line">	(op1: <span class="type">Double</span>, op2: <span class="type">Double</span>) -&gt; <span class="type">Double</span> <span class="keyword">in</span> </span><br><span class="line">	<span class="keyword">return</span> op1 * op2</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>可以改为</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="string">"*"</span>: <span class="keyword">return</span> performOperationTwo(&#123; (op1, op2) <span class="keyword">in</span> op1 * op2 &#125;)</span><br></pre></td></tr></table></figure>
+<p>还可以再精简一些，匿名函数其实连传入参数名称都可以省略</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="string">"*"</span>: <span class="keyword">return</span> performOperationTwo(&#123; $<span class="number">0</span> * $<span class="number">1</span> &#125;)</span><br></pre></td></tr></table></figure>
+<p>但是大括号在小括号里总有点怪怪的，这个也有办法解决，如果这个传入的函数是参数列表里的最后一个，其实可以把大括号放到外面去，像这样：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="string">"*"</span>: <span class="keyword">return</span> performOperationTwo()&#123; $<span class="number">0</span> * $<span class="number">1</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>更进一步，因为这个函数是唯一的传入参数，小括号其实都可以省略，于是变成像这样</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="string">"*"</span>: <span class="keyword">return</span> performOperationTwo&#123; $<span class="number">0</span> * $<span class="number">1</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>最后就可以把代码改写成如下形式</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">operate</span><span class="params">(operation: String)</span></span> -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="keyword">switch</span> operation &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"*"</span>: <span class="keyword">return</span> performOperationTwo&#123; $<span class="number">0</span> * $<span class="number">1</span> &#125;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"/"</span>: <span class="keyword">return</span> performOperationTwo&#123; $<span class="number">0</span> / $<span class="number">1</span> &#125;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"+"</span>: <span class="keyword">return</span> performOperationTwo&#123; $<span class="number">0</span> + $<span class="number">1</span> &#125;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"-"</span>: <span class="keyword">return</span> performOperationTwo&#123; $<span class="number">0</span> - $<span class="number">1</span> &#125;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">"*"</span>: <span class="keyword">return</span> performOperationOne&#123; sqrt($<span class="number">0</span>) &#125;</span><br><span class="line">	<span class="keyword">default</span>: <span class="keyword">break</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">performOperationTwo</span><span class="params">(operation: <span class="params">(Double, Double)</span></span></span> -&gt; <span class="type">Double</span>) -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">2</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> operation(operandStack.removeLast(), operandStack.removeLast())</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意，在 Swift 2.1 以前，原本这个函数和上一个函数可以用同一个名字，利用不同的</span></span><br><span class="line"><span class="comment">// 传入函数类型来进行区分</span></span><br><span class="line"><span class="comment">// 一个是 (Double, Double) -&gt; Double</span></span><br><span class="line"><span class="comment">// 另一个是 Double -&gt; Double</span></span><br><span class="line"><span class="comment">// 现在这种做法已经不可以，所以需要两个不一样的函数名称</span></span><br><span class="line"><span class="func"><span class="keyword">func</span> <span class="title">performOperationOne</span><span class="params">(operation: Double -&gt; Double)</span></span> -&gt; <span class="type">Double</span>&#123;</span><br><span class="line">	<span class="keyword">if</span> operandStack.<span class="built_in">count</span> &gt;= <span class="number">1</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> operation(operandStack.removeLast())</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样一来就完成了。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>通过以上四个步骤，我们把原来的一大段重复且可读性很差的代码优化成了非常精简和可读可拓展的代码，所以我们在写代码的过程中不能只是想着完成就好（这就是为什么我不喜欢刷题），而是应该从更高的层次去理解并实现代码。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Swift-千金方/" rel="tag">#Swift 千金方</a>
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/技巧/" rel="tag">#技巧</a>
+          
+            <a href="/tags/闭包/" rel="tag">#闭包</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/13/strange-ios-1/" rel="next" title="iOS 杂病论 1 - Library not loaded">
+                <i class="fa fa-chevron-left"></i> iOS 杂病论 1 - Library not loaded
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/17/strange-ios-2/" rel="prev" title="iOS 杂病论 2 - HTTP? HTTPS!">
+                iOS 杂病论 2 - HTTP? HTTPS! <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/12/14/swift-tricks-1/"
+           data-title="Swift 千金方 1 - 闭包" data-url="http://wdxtub.com/2015/12/14/swift-tricks-1/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B9E_u4F8B_u4ECB_u7ECD"><span class="nav-number">1.</span> <span class="nav-text">实例介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u601D_u8DEF_u5206_u6790"><span class="nav-number">2.</span> <span class="nav-text">思路分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u7B2C_u4E00_u4E2A_u601D_u8DEF_uFF1A_u7B80_u5355_u7C97_u66B4_u590D_u5236"><span class="nav-number">2.1.</span> <span class="nav-text">第一个思路：简单粗暴复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7B2C_u4E8C_u4E2A_u601D_u8DEF_uFF1A_u628A_u51FD_u6570_u4F5C_u4E3A_u53C2_u6570_u6765_u7EDF_u4E00_u903B_u8F91"><span class="nav-number">2.2.</span> <span class="nav-text">第二个思路：把函数作为参数来统一逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7B2C_u4E09_u6B65_uFF1A_u4F7F_u7528_u533F_u540D_u51FD_u6570_u6765_u7CBE_u7B80_u4EE3_u7801"><span class="nav-number">2.3.</span> <span class="nav-text">第三步：使用匿名函数来精简代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7B2C_u56DB_u6B65_uFF1A_u5229_u7528_Swift__u7684_u7C7B_u578B_u63A8_u65AD_u8FDB_u4E00_u6B65_u7CBE_u7B80_u4EE3_u7801"><span class="nav-number">2.4.</span> <span class="nav-text">第四步：利用 Swift 的类型推断进一步精简代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

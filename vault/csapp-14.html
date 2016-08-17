@@ -1,0 +1,827 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="了解完了异常与进程，异常处理中另外两个很重要的部分是信号和非局部跳转，也就是我们这节课要介绍的内容。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="深入理解计算机系统 第 14 课 Signals and Nonlocal Jumps">
+<meta property="og:url" content="http://wdxtub.com/vault/csapp-14.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="了解完了异常与进程，异常处理中另外两个很重要的部分是信号和非局部跳转，也就是我们这节课要介绍的内容。">
+<meta property="og:image" content="http://wdxtub.com/images/14573806185809.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573806718703.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573807472000.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573811635888.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573814877982.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573820359900.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573821103841.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573823408948.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573824038965.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573845678378.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573846209836.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573846875850.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573847143072.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573848399013.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573850645959.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573852332585.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573853746526.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573854667518.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573856728934.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573860066787.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573866195444.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573866343912.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573867961969.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573869619954.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573869910604.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573870533166.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573871178306.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573871346551.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573872756594.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573873026532.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573874602644.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573875130970.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14573875598038.jpg">
+<meta property="og:updated_time" content="2016-04-23T13:36:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统 第 14 课 Signals and Nonlocal Jumps">
+<meta name="twitter:description" content="了解完了异常与进程，异常处理中另外两个很重要的部分是信号和非局部跳转，也就是我们这节课要介绍的内容。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    深入理解计算机系统 第 14 课 Signals and Nonlocal Jumps | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>了解完了异常与进程，异常处理中另外两个很重要的部分是信号和非局部跳转，也就是我们这节课要介绍的内容。</p>
+<a id="more"></a>
+<hr>
+<p>Linux 的进程树，可以通过 <code>pstree</code> 命令查看，如下：</p>
+<p><img src="/images/14573806185809.jpg" alt="Linux Process Hierarchy"></p>
+<p>我们以 shell 为例子，来看看整个过程是如何实现的：</p>
+<p><img src="/images/14573806718703.jpg" alt="Shell: Execution is a sequence of read/evaluate steps"></p>
+<p><img src="/images/14573807472000.jpg" alt="Simple Shell eval Function"></p>
+<p>如果只有前台进程的话，我们的 shell 可以在前台工作完成之后进行回收。但是后台进程则会在终止之后成为僵尸进程，不会被回收并且造成内存泄露。</p>
+<p>这怎么办呢？同样可以利用 Exceptional control flow，当后台进程完成时，内核会中断常规执行并通知我们，具体的通知机制就是『信号』(signal)。</p>
+<h2 id="Signals"><a href="#Signals" class="headerlink" title="Signals"></a>Signals</h2><blockquote>
+<p>A signal is a small message that notifies a process that an event of some type has occurred in the system</p>
+</blockquote>
+<p>这样看来，其实是类似于 exception 和 interrupt 的，是由内核（在其他进程的请求下）向当前进程发出的。信号的类型由 1-30 的整数定义，信号所能携带的信息极少，一是对应的编号，二就是信号到达这个事实。下面是几个比较常用的信号的编号及简介：</p>
+<p><img src="/images/14573811635888.jpg" alt=""></p>
+<blockquote>
+<p>Kernel sends a signal to a destination process by updating some state in the context of the destination process</p>
+</blockquote>
+<p>在下面两个场景中，内核会发送信号：</p>
+<ul>
+<li>内核检测到了如除以零(SIGFPE)或子进程终止(SIGCHLD)的系统事件</li>
+<li>另一个进程调用了 <code>kill</code> 指令来请求内核发送信号给指定的进程</li>
+</ul>
+<blockquote>
+<p>A destination process receives a signal when it is forced by the kernel to react in some way to the delivery of the signal</p>
+</blockquote>
+<p>一个进程在接收到了信号之后，可以有几种不同的操作：</p>
+<ul>
+<li><strong>忽略</strong>这个型号</li>
+<li><strong>终止</strong>进程</li>
+<li><strong>捕获</strong>信号，通过执行 signal handler 完成（类似于异步中断中的 exception handler）</li>
+</ul>
+<p>具体的过程如下：</p>
+<p><img src="/images/14573814877982.jpg" alt=""></p>
+<blockquote>
+<p>A signal is pending if sent but not yet received</p>
+</blockquote>
+<p>同类型的信号至多只会有一个 pending signal，一定要注意这个特性，因为内部实现机制不可能提供较复杂的数据结构，所以信号的接收并不是一个队列。(If a process has a pending signal of type k, then subsequent signals of type k that are sent to that process are discarded)</p>
+<p>一个 pending signal 至多只能被收到一次。</p>
+<blockquote>
+<p>A process can block the receipt of certain signals</p>
+</blockquote>
+<p>被阻塞的信号仍然可以发送，但是直到不阻塞之后才能被接收</p>
+<p>内核用 pending 位向量 和 blocked 位向量来维护每个进程的信号相关状态</p>
+<ul>
+<li>pending: represents the set of pending signals<ul>
+<li>Kernel sets bit k in <strong>pending</strong> when a signal of type k is delivered</li>
+<li>Kernel clears bit k in <strong>pending</strong> when a signal of type k is received </li>
+</ul>
+</li>
+<li>blocked: represent the set of blocked signals<ul>
+<li>Can be set and cleared by using <code>sigprocmask</code> 函数</li>
+<li>Also referred to as the <strong>signal mask</strong></li>
+</ul>
+</li>
+</ul>
+<p><strong>进程组</strong></p>
+<p>每个进程都只属于一个进程组，如下图所示：</p>
+<p><img src="/images/14573820359900.jpg" alt=""></p>
+<p>我们可以据此指定一个进程组或者一个单独的进程，如：</p>
+<p><img src="/images/14573821103841.jpg" alt="Sending Signals with `/bin/kill` Program"></p>
+<p>这里可以看到，第一个命令只会杀掉编号为 24818 的进程，但是第二个命令，因为有两个进程都属于进程组 24817，所以会杀掉进程组中的每个进程。</p>
+<p>键盘同样可以让内核向每个前台进程发送 SIGINT(SIGTSTP) 信号</p>
+<ul>
+<li>SIGINT - default action is to terminate each process</li>
+<li>SIGTSTP - default action is to stop(suspend) each process</li>
+</ul>
+<p><img src="/images/14573823408948.jpg" alt="Example of ctrl-c and ctrl-z"></p>
+<p>我们可以可以通过 <code>kill</code> 函数来发送信号：</p>
+<p><img src="/images/14573824038965.jpg" alt="Sending Signals with kill Function"></p>
+<h2 id="u63A5_u6536_u4FE1_u53F7"><a href="#u63A5_u6536_u4FE1_u53F7" class="headerlink" title="接收信号"></a>接收信号</h2><p>所有的上下文切换都是通过调用某个 exception handler 完成的，内核会计算对易于某个进程 p 的 pnb 值：<code>pnb = pending &amp; ~blocked</code></p>
+<ul>
+<li>如果 <code>pnb == 0</code><ul>
+<li>那么就把控制交给进程 p 的逻辑流中的下一条指令</li>
+</ul>
+</li>
+<li>否则<ul>
+<li>选择 <code>pnb</code> 中最小的非零位 k，并强制进程 p 接收信号 k</li>
+<li>接收到信号之后，进程 p 会执行对应的动作</li>
+<li>对 <code>pnb</code> 中所有的非零位进行这个操作</li>
+<li>最后把控制交给进程 p 的逻辑流中的下一条指令</li>
+</ul>
+</li>
+</ul>
+<p><strong>默认动作</strong></p>
+<p>每个信号类型都有一个预定义的『默认动作』，可能是以下的情况：</p>
+<ul>
+<li>终止进程</li>
+<li>终止进程并 dump core</li>
+<li>停止进程，收到 <code>SIGCONT</code> 信号之后重启</li>
+<li>忽略信号</li>
+</ul>
+<p><code>signal</code> 函数可以修改默认的动作：<code>handler_t *signal(int signum, handler_t *handler)</code>，具体来说：</p>
+<p><img src="/images/14573845678378.jpg" alt="Different values for handler"></p>
+<p>我们再通过具体的代码来感受下：</p>
+<p><img src="/images/14573846209836.jpg" alt="Signal Handling Example"></p>
+<p>可以这么理解 signal handler：</p>
+<blockquote>
+<p>A signal handler is a separate logical flow(not process) that runs concurrently with the main program</p>
+</blockquote>
+<p>如下图所示：</p>
+<p><img src="/images/14573846875850.jpg" alt="Signals Handlers as Concurrent Flows"></p>
+<p><img src="/images/14573847143072.jpg" alt="Another View of Signal Handlers as Concurrent Flows"></p>
+<p>还有一个需要注意的是，handler 也可以被其他的 handler 中断，控制流如下图所示：</p>
+<p><img src="/images/14573848399013.jpg" alt="Nested Signal Handlers"></p>
+<h2 id="u963B_u585E/_u4E0D_u963B_u585E_u4FE1_u53F7"><a href="#u963B_u585E/_u4E0D_u963B_u585E_u4FE1_u53F7" class="headerlink" title="阻塞/不阻塞信号"></a>阻塞/不阻塞信号</h2><p>隐式的机制是，内核会阻塞与当前在处理的信号同类型的其他 pending signal，也就是说，一个 SIGINT handler 是不能被另一个 SIGINT 信号中断的。</p>
+<p>如果想要显式阻塞，就需要使用 <code>sigprocmask</code> 函数了，以及其他一些辅助函数：</p>
+<ul>
+<li><code>sigemptyset</code> - Create empty set</li>
+<li><code>sigfillset</code> - Add every signal number to set</li>
+<li><code>sigaddset</code> - Add signal number to set</li>
+<li><code>sigdelset</code> - Delete signal number from set</li>
+</ul>
+<p>我们可以用下面这段代码来临时阻塞特定的信号：</p>
+<p><img src="/images/14573850645959.jpg" alt="Temporarily Blocking Signals"></p>
+<h2 id="u5B89_u5168_u5730_u5904_u7406_u4FE1_u53F7"><a href="#u5B89_u5168_u5730_u5904_u7406_u4FE1_u53F7" class="headerlink" title="安全地处理信号"></a>安全地处理信号</h2><blockquote>
+<p>Handlers are tricky because they are concurrent with main program and share the same global data structures</p>
+</blockquote>
+<p>尤其要注意因为并行访问可能导致的数据损坏的问题，这里提供一些基本的指南（后面的课程会详细介绍）</p>
+<p><img src="/images/14573852332585.jpg" alt="Guidelines for Writing Safe Handlers"></p>
+<p>另外一个需要注意的问题是 Async-Signal-Safety。</p>
+<blockquote>
+<p>Function is async-signal-safe if either reentrant(all variables sotred on stack frame) or non-interruptible by signals</p>
+</blockquote>
+<p>Posix 标准指定了 117 个 async-signal-safe 的函数（可以通过 <code>man 7 signal</code> 查看）</p>
+<p><img src="/images/14573853746526.jpg" alt="许多常用的函数都不是 async-signal-safe 的"></p>
+<p>因为输出函数不是 async-signal-safe 的，所以最好使用课本中提供的 <code>csapp.c</code> 中的相关 handler</p>
+<ul>
+<li><code>ssize_t sio_puts(char s[])</code> - Put string</li>
+<li><code>ssize_t sio_putl(long v)</code> - Put long</li>
+<li><code>void sio_error(char s[])</code> - Put msg &amp; exit</li>
+</ul>
+<p><img src="/images/14573854667518.jpg" alt=""></p>
+<p>正确的信号处理方法：</p>
+<ul>
+<li>You can’t use signals to count events, such as children terminating</li>
+<li>Must wait for all terminated child processes.</li>
+</ul>
+<p><img src="/images/14573856728934.jpg" alt="Put `wait` in a loop to reap all terminated children"></p>
+<p>还有一个问题，不同 Unix 版本有不同的 signal handling semantics，我们给出的解决方案是使用 <code>sigaction</code>，如下：</p>
+<p><img src="/images/14573860066787.jpg" alt="Portable Signal Handling"></p>
+<h2 id="u907F_u514D_u8FDB_u7A0B_u7ADE_u4E89"><a href="#u907F_u514D_u8FDB_u7A0B_u7ADE_u4E89" class="headerlink" title="避免进程竞争"></a>避免进程竞争</h2><p>我们之前的 shell 代码会出现微妙的同步错误，因为我们假设父进程会在子进程之前执行，代码如下：</p>
+<p><img src="/images/14573866195444.jpg" alt=""></p>
+<p><img src="/images/14573866343912.jpg" alt=""></p>
+<p>我们需要在循环中添加同步条件，确保父进程和子进程的顺序（注意比较）</p>
+<p><img src="/images/14573867961969.jpg" alt="Corrected Shell Program without Race"></p>
+<h2 id="u663E_u5F0F_u7B49_u5F85_u4FE1_u53F7"><a href="#u663E_u5F0F_u7B49_u5F85_u4FE1_u53F7" class="headerlink" title="显式等待信号"></a>显式等待信号</h2><p>我们也可以用类似与等待前台任务执行的方式来等待子进程，方法如下：</p>
+<p><img src="/images/14573869619954.jpg" alt="Handlers for program explicitly waiting for SIGCHLD to arrive"></p>
+<p><img src="/images/14573869910604.jpg" alt="Handlers for program explicitly waiting for SIGCHLD to arrive"></p>
+<p>这里的代码是正确的，但是我们注意 <code>while(!pid)</code> 这一句，通过忙等待的方式实现同步，非常浪费资源，而其他方式看起来也不行：</p>
+<p><img src="/images/14573870533166.jpg" alt="Other options"></p>
+<p>怎么办呢？我们的解决办法是 <code>sigsuspend</code>，函数为：</p>
+<p><code>int sigsuspend(const sigset_t *mask)</code></p>
+<p>等同于 atomic 版本的：</p>
+<p><img src="/images/14573871178306.jpg" alt=""></p>
+<p>所以代码如下：</p>
+<p><img src="/images/14573871346551.jpg" alt="Wating for Signals with sigsuspend"></p>
+<h2 id="Nonlocal_Jump"><a href="#Nonlocal_Jump" class="headerlink" title="Nonlocal Jump"></a>Nonlocal Jump</h2><p>这一部分比较简单，主要是使用 <code>setjmp</code> 与 <code>longjmp</code></p>
+<p><img src="/images/14573872756594.jpg" alt="NoNonlocal Jumps: setjmp/longjmp"></p>
+<p><img src="/images/14573873026532.jpg" alt="NoNonlocal Jumps: setjmp/longjmp"></p>
+<p>我们可以利用这种方式，来跳转到其他的栈帧中，比方说在嵌套函数中，我们可以利用这个快速返回栈底的函数：</p>
+<p><img src="/images/14573874602644.jpg" alt=""></p>
+<p>但是也有限制，必须在栈中（也就是还没完成）才可以进行跳转，下面的例子中，因为 P2 已经返回，所以不能跳转了：</p>
+<p><img src="/images/14573875130970.jpg" alt=""></p>
+<p>最后是一个非常清晰的例子：</p>
+<p><img src="/images/14573875598038.jpg" alt="A Program that restarts itself when ctrl-c"></p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>这两个基本说完了 exceptional control flow 的全部内容，可能会稍微有点难以理解，我会在后面的习题课中尽可能详细说明。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/csapp-14.html"
+           data-title="深入理解计算机系统 第 14 课 Signals and Nonlocal Jumps" data-url="http://wdxtub.com/vault/csapp-14.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

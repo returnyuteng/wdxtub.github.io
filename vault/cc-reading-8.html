@@ -1,0 +1,688 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Now that we have covered the motivation and benefits of virtualization, in this module, we will cover the formal definition of virtualization.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 阅读材料 8 Virtualization">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-reading-8.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="Now that we have covered the motivation and benefits of virtualization, in this module, we will cover the formal definition of virtualization.">
+<meta property="og:image" content="http://wdxtub.com/images/14551121054860.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551121252577.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551121504766.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551122397465.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551122593382.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551122850438.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551123005959.jpg">
+<meta property="og:updated_time" content="2016-03-03T17:45:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 阅读材料 8 Virtualization">
+<meta name="twitter:description" content="Now that we have covered the motivation and benefits of virtualization, in this module, we will cover the formal definition of virtualization.">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 阅读材料 8 Virtualization | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>Now that we have covered the motivation and benefits of virtualization, in this module, we will cover the formal definition of virtualization.</p>
+<a id="more"></a>
+<hr>
+<p>You may have also noticed that there are different types of virtual machines. For example, Java programs run inside a sandbox environment known as a Java Virtual Machine (JVM). You may also have seen or used virtualization software on your desktop or laptop, such as VirtualBox or Parallels, which allow you to run multiple Operating systems on your computer simultaneously. Also, you should have provisioned and used virtualized instances on a cloud provider in the programming projects for this course. Each of these virtualization systems are different; you will learn about the various virtualization types in detail in this module.</p>
+<h3 id="What_Is_Virtualization_3F"><a href="#What_Is_Virtualization_3F" class="headerlink" title="What Is Virtualization?"></a>What Is Virtualization?</h3><p><strong>Virtualization</strong></p>
+<p>Formally, virtualization involves the construction of an isomorphism that maps a virtual guest system to a real host system. [1] Video 3.3 and Figure 3.11 illustrates the virtualization process.</p>
+<p><a href="http://youtu.be/U6HwG9dc03A" target="_blank" rel="external">Video 3.3: Definition of Virtualization.</a></p>
+<p>The function V in the figure maps guest state to host state. For a sequence of operations, e, that modifies a guest state, there is a corresponding sequence of operations, e’, in the host that performs equivalent modifications. Informally, virtualization creates virtual resources and maps them to physical resources. Virtual resources are created from physical resources and essentially act as proxies to them.</p>
+<p><img src="/images/14551121054860.jpg" alt="Figure 3.11: Virtualization isomorphism."></p>
+<p>The concept of virtualization can be applied to either a system component or an entire machine. Traditionally, virtualization has been applied to only the memory component in general-purpose operating systems (OSs), providing what is known as the virtual memory. In a revisit to the hard disk example in Figure 3.5, some applications might desire multiple hard drives. To satisfy such a requirement, the physical hard drive can be partitioned into multiple virtual disks, as shown in Figure 3.12. Each virtual disk is offered logical cylinders, sectors, and tracks. This keeps the level of detail analogous to what is offered by general-purpose OSs, yet at a different interface and without being abstracted. The hypervisor can map (the function V in the isomorphism) a virtual disk to a single, large file on the physical disk. Afterward, to carry a read/write operation on a virtual disk (the function e in the isomorphism), the hypervisor reflects the operation as a file read/write followed by an actual disk read/write (the function e’ in the isomorphism).</p>
+<p><img src="/images/14551121252577.jpg" alt="Figure 3.12: Constructing a virtual disk by mapping its content to large files."></p>
+<p>On the other hand, when virtualization is applied to an entire machine, it provides what is called a virtual machine (VM). Specifically, a full set of hardware resources, including processors, memory, and I/O devices, are virtualized to provide the VM. As shown in Figure 3.13, an underlying hardware machine usually is called a host, and an OS running on a VM is called a guest OS. A VM can run only at a single host at a time. As compared to a host, a VM can have resources different in quantity and in type. For instance, a VM can obtain more processors than what a host offers and can run an ISA that is different than that of the host. Last, every VM can be booted, shut down, and rebooted just like a regular host. Further details on VMs and their different types are provided on the next page.</p>
+<p><img src="/images/14551121504766.jpg" alt="Figure 3.13: Virtualization as applied to an entire physical system. An OS running on a VM is called a guest OS, and every physical machine is called a host. Compared to a host, a VM can have virtual resources different in quantity and type."></p>
+<p><strong>References</strong></p>
+<ol>
+<li>Popek, J., and Goldberg, R. (1974). “Formal Requirements for Virtualizable Third Generation Architectures.” Commun. ACM, Vol. 17, No. 7.</li>
+</ol>
+<h3 id="Virtual_Machine_Types"><a href="#Virtual_Machine_Types" class="headerlink" title="Virtual Machine Types"></a>Virtual Machine Types</h3><p>There are two main implementations of virtual machines (VMs): process VMs and system VMs. The following video (Video 3.4) covers the taxonomy of Virtual Machine Types:</p>
+<p><a href="http://youtu.be/15DGinFJwFg" target="_blank" rel="external">Video 3.4: Virtual Machine Types.</a></p>
+<p>We first cover process VMs and then system VMs.</p>
+<p><strong>Process Virtual Machines</strong></p>
+<p><img src="/images/14551122397465.jpg" alt="Figure 3.14: Process virtual machine (VM)."></p>
+<p>A process VM is a VM capable of supporting an individual process as long as the process is alive. Figure 3.14 demonstrates process VMs. A process VM terminates when the hosted process ceases. From a process VM perspective, a machine consists of a virtual memory address space, user-level registers, and instructions assigned to a process to execute a user program. According to this definition, a process in a general-purpose OS can also be called a machine. However, a regular process in an OS can only support user program binaries compiled for the ISA of the host machine. That is, executing binaries compiled for an ISA different than that of the host machine is not supported by regular processes. Conversely, a process VM allows that to happen. Process VMs can support ISAs that differ from host ISAs via emulation. As shown in Figure 3.15, emulation is the process of allowing the interfaces and functionalities of one system (the source) to be implemented on a system with different interfaces and functionalities (the target). Emulation is discussed in detail later. The abstraction of the process VM is provided by a piece of virtualizing software called the runtime (see Fig. 3.14). The runtime is placed at the Application Binary Interface (ABI) on top of the host OS and the underlying hardware. It is this runtime that emulates the VM instructions and/or system calls when guest and host ISAs are different.</p>
+<p><img src="/images/14551122593382.jpg" alt="Figure 3.15: The emulation process."></p>
+<p>Finally, a process VM may not directly correspond to any physical platform; it is employed mainly to offer cross-platform portability. Such kinds of process VMs are called high-level language VMs (HLL VMs). An HLL VM abstracts away details of the underlying hardware resources and the OS and allows programs to run the same way on any platform. Java VM (JVM) and Microsoft Common Language Infrastructure (CLI) are examples of HLL VMs. In summary, a process VM is similar to a regular process running on an OS. However, a process VM allows, via emulation, the execution of an application compiled for an ISA different than that of the host machine.</p>
+<p><strong>System Virtual Machines</strong></p>
+<p>Contrary to process VMs, a system VM is a VM capable of virtualizing a full set of hardware resources, including processors, memories, and I/O devices, thus providing a complete system environment. A system VM can support an OS along with its associated processes as long as the system environment is alive. Figure 3.16 illustrates system VMs. As defined previously, the hypervisor (or the VM monitor [VMM]) is a piece of software that provides abstraction for the system VM. It can be placed at the ISA level directly on top of the raw hardware and below system images (e.g., OSs). The hardware resources of the host platform can be shared among multiple guest VMs. The hypervisor manages the allocation of and access to the hardware resources by the guest VMs. In practice, the hypervisor provides an elegant way to logically isolate multiple guest VMs sharing a single physical system. Each guest VM is given the illusion of acquiring all of the underlying hardware resources.</p>
+<p><img src="/images/14551122850438.jpg" alt="Figure 3.16: System virtual machine (VM)."></p>
+<p>There are different classes of system VMs. Figure 3.17 exhibits three of these classes as well as traditional systems. In a conventional time-shared system, the OS runs in a privileged mode (system mode), while the applications associated with it run in unprivileged mode (user mode) (more details on system privileges are discussed later). With system virtualization, however, the guest OS(s) might run in unprivileged mode, while the hypervisor operates in a privileged mode. Such a system is called a native system VM. In a native system VM, every privileged instruction issued by a user program at any guest OS has to trap to the hypervisor. In addition, the hypervisor needs to specify and implement every function required for managing hardware resources. In contrary, if the hypervisor operates in unprivileged mode on top of a host OS, the guest OS(s) will also operate in unprivileged mode. This system is called a user-mode hosted system VM. In this case, privileged instructions from guest OS(s) still need to trap to the hypervisor. In return, the hypervisor needs also to trap to the host OS. Clearly, this requirement increases the overhead by adding one more trap per every privileged instruction. Nonetheless, the hypervisor can utilize the functions already available on the host OS to manage hardware resources. Finally, the hypervisor can operate partly in privileged mode and partly in user mode in a system called a dual-mode hosted system VM. This way, the hypervisor can make use of the host OS’s resource-management functions and preclude the one more trap per each privileged instruction imposed in user-mode hosted system VMs.</p>
+<p><img src="/images/14551123005959.jpg" alt="Figure 3.17: Different system VM classes."></p>
+<h3 id="Virtualization_Summary"><a href="#Virtualization_Summary" class="headerlink" title="Virtualization Summary"></a>Virtualization Summary</h3><ul>
+<li>Virtualization involves the construction of an isomorphism that maps a virtual guest system to a real (or physical) host system.</li>
+<li>An underlying physical machine (PM) usually is called a host, and an OS running on a VM is called a guest OS.</li>
+<li>As compared to a host PM, a VM can have resources different in quantity and in type (e.g., a host can contain one Intel IA-32 physical CPU, while a VM can include eight PowerPC virtual CPUs that all map to the single physical CPU).</li>
+<li>A VM can run only at a single host at a certain point in time, yet can be migrated to a different host (and run at that host) at a different point in time.</li>
+<li>There are two types of VMs, process VMs and system VMs.</li>
+<li>A process VM (e.g., JVM) consists of a virtual memory address space, user-level registers, and instructions assigned to an OS process to execute a user program (i.e., no OS can run within a process VM).</li>
+<li>Process VMs can support ISAs that differ from host ISAs.</li>
+<li>The abstraction of a process VM is provided by a piece of virtualizing software denoted as the runtime.</li>
+<li>The runtime of a process VM is placed at the ABI interface, on top of a host OS.</li>
+<li>As opposed to process VMs, a system VM provides a complete system environment (i.e., an OS image can be run in a system VM).</li>
+<li>System VMs can support ISAs that differ from host ISAs.</li>
+<li>The abstraction of a system VM is provided by a piece of a virtualizing software called the hypervisor (or the virtual machine monitor [VMM]).</li>
+<li>There are three main classes of system VMs, which are defined according to where in the system the hypervisor is placed.</li>
+<li>A system VM is called a native system VM when its hypervisor is placed on bare metal (i.e., the raw hardware).</li>
+<li>In native system VMs, the hypervisor is run in system mode, and the VMs (alongside their associated OSs) are run in user mode.</li>
+<li>Hypervisors in native system VMs should specify and implement every function required for managing hardware resources.</li>
+<li>With native system VMs, every privileged instruction issued by a user program at any guest OS has to trap to the hypervisor.</li>
+<li>A system VM is called a user-mode hosted VM when its hypervisor is placed on top of a host OS.</li>
+<li>In user-mode hosted VMs, the hypervisor and all its managed VMs run in user mode, while the underlying host OS runs in system mode.</li>
+<li>With user-mode hosted VMs, privileged instructions from guest OS(s) need to trap to the hypervisor, but the hypervisor needs not implement every function required for managing hardware resources.</li>
+<li>A system VM is called a dual-mode hosted VM when its hypervisor is placed partly on bare metal and partly on a host OS.</li>
+<li>In dual-mode hosted VMs, the hypervisor can partly operate in system mode and partly in user mode, hence, using the best of native system VMs and user-mode hosted VMs.</li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-reading-8.html"
+           data-title="云计算 阅读材料 8 Virtualization" data-url="http://wdxtub.com/vault/cc-reading-8.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

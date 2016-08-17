@@ -1,0 +1,992 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="JavaScript,基础,核心," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="学习之初通读一遍这个部分，就可以开始上路了，以后再遇到问题是，回过头来复习巩固所学知识。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 学习笔记 2 - 语言核心">
+<meta property="og:url" content="http://wdxtub.com/2015/11/21/javascript-core/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="学习之初通读一遍这个部分，就可以开始上路了，以后再遇到问题是，回过头来复习巩固所学知识。">
+<meta property="og:updated_time" content="2015-11-29T22:22:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript 学习笔记 2 - 语言核心">
+<meta name="twitter:description" content="学习之初通读一遍这个部分，就可以开始上路了，以后再遇到问题是，回过头来复习巩固所学知识。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> JavaScript 学习笔记 2 - 语言核心 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                JavaScript 学习笔记 2 - 语言核心
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-11-21T16:25:45+08:00" content="2015-11-21">
+              2015-11-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/11/21/javascript-core/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/21/javascript-core/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>学习之初通读一遍这个部分，就可以开始上路了，以后再遇到问题是，回过头来复习巩固所学知识。</p>
+<a id="more"></a>
+<hr>
+<h1 id="u8BCD_u6CD5_u7ED3_u6784"><a href="#u8BCD_u6CD5_u7ED3_u6784" class="headerlink" title="词法结构"></a>词法结构</h1><p>一些要点</p>
+<ul>
+<li>JavaScript 程序是用 Unicode 字符集编写的</li>
+<li>大小写敏感</li>
+<li>JavaScript 会忽略 token 间的空格和换行符</li>
+<li>注释方式 <code>//</code> 或者 <code>/* */</code>，后者可以跨行，但不能嵌套</li>
+<li>直接量(literal) 是程序中直接使用的数据值</li>
+<li>变量名必须以字母、下划线或者美元符号开始，后面可以是字母数字下划线美元符号</li>
+<li>保留字: break, delete, function, return, typeof, case, do, if, switch, var, catch, else, in, this, void, continue, false, instanceof, throw, while, debugger, finally, new, true, with, default, for, null, try</li>
+<li>ECMAScript 5 的保留关键字: class, const, enum, export, extends, import, super</li>
+<li>ECMAScript 3 将 Java 的所有关键字都列为保留字，为了实现兼容，请尽可能避免使用: abstract, double, goto, native, static, boolean, enum, implements, package, super, byte, export, import, private, synchronized, char, extends, int, protected, throws, class, final, interface, public, transient, const, float, long, short, volatile</li>
+<li>JavaScript 预定能很多全局变量和函数，应当避免使用它们作为变量名和函数名: arguments, encodeURI, Infinity, Number, RegExp, Array, encodeURIComponent, isFinite, Object, String, Boolean, Error, isNaN, parseFloat, SyntaxError, Date, eval, JSON, parseInt, TypeError, decodeURI, EvalError, Math, RangeError, undefined, decodeURIComponent, Function, NaN, ReferenceError, URIError</li>
+<li>每一种特定的 JavaScript 运行环境都有自己的一个全局属性列表</li>
+<li>虽然句末的分号不是必须的，但是为了美观和避免奇怪的错误，还是加上为好</li>
+</ul>
+<h1 id="u7C7B_u578B_u3001_u503C_u548C_u53D8_u91CF"><a href="#u7C7B_u578B_u3001_u503C_u548C_u53D8_u91CF" class="headerlink" title="类型、值和变量"></a>类型、值和变量</h1><p>一些要点</p>
+<ul>
+<li>数据类型分为两类：原始类型(primitive type) 和对象类型(object type)</li>
+<li>原始类型包括数字、字符串和布尔值</li>
+<li>null 和 undefined 是特殊的原始值，通常分别代表了各自特殊类型的唯一的成员</li>
+<li>对象是属性(property)的集合</li>
+<li>另一种特殊对象是函数。函数是具有与它相关联的可执行代码的对象</li>
+<li>JavaScript 解释器有自己的内存管理机制，可以自动对内存进行垃圾回收(garbage collection)</li>
+<li>JavaScript 的类型还可以分为可变(mutable)类型和不可变(immutable)类型。对象和数组属于可变类型，数字布尔值null和undefined属于不可变类型</li>
+<li>JavaScript 的变量是无类型的 (untyped)，采用词法作用域(lexical scoping)，不在任何函数内声明的变量就是全局变量</li>
+</ul>
+<h2 id="u6570_u5B57"><a href="#u6570_u5B57" class="headerlink" title="数字"></a>数字</h2><ul>
+<li>不区分整数值和浮点数值，统一用浮点数值表示</li>
+<li>十六进制用 <code>0x</code> 或 <code>0X</code> 为前缀</li>
+<li>八进制最好就不要用了，在 ECMAScript 6 的严格模式下是不允许的</li>
+<li>简洁的语法: [digits][.digits][(E|e)[(+|-)]digits]<ul>
+<li>6.02e23</li>
+<li>1.4738223E-32</li>
+</ul>
+</li>
+</ul>
+<p><strong>算数运算</strong></p>
+<p><code>+ - * / %</code> 和其他语言一致</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Math</span>.pow(<span class="number">2</span>, <span class="number">53</span>)  <span class="comment">// 9007199254740992: 2 的 53 次幂</span></span><br><span class="line"><span class="built_in">Math</span>.round(<span class="number">.6</span>)   <span class="comment">// 1.0: 四舍五入</span></span><br><span class="line"><span class="built_in">Math</span>.ceil(<span class="number">.6</span>)    <span class="comment">// 1.0: 向上去整</span></span><br><span class="line"><span class="built_in">Math</span>.floor(<span class="number">.6</span>)   <span class="comment">// 0.0: 向下求整</span></span><br><span class="line"><span class="built_in">Math</span>.abs(-<span class="number">5</span>)     <span class="comment">// 5: 求绝对值</span></span><br><span class="line"><span class="built_in">Math</span>.max(x,y,z)  <span class="comment">// 返回最大值</span></span><br><span class="line"><span class="built_in">Math</span>.min(x,y,z)  <span class="comment">// 返回最小值</span></span><br><span class="line"><span class="built_in">Math</span>.random()    <span class="comment">// 生成一个 0-1.0 的伪随机数</span></span><br><span class="line"><span class="built_in">Math</span>.PI          <span class="comment">// 圆周率</span></span><br><span class="line"><span class="built_in">Math</span>.E           <span class="comment">// 自然对数</span></span><br><span class="line"><span class="built_in">Math</span>.sqrt(<span class="number">3</span>)     <span class="comment">// 3 的平方根</span></span><br><span class="line"><span class="built_in">Math</span>.pow(<span class="number">3</span>, <span class="number">1</span>/<span class="number">3</span>) <span class="comment">// 3 的立方根</span></span><br><span class="line"><span class="built_in">Math</span>.sin(<span class="number">0</span>)      <span class="comment">// 三角函数: Math.cos, Math.atan 等</span></span><br><span class="line"><span class="built_in">Math</span>.log(<span class="number">10</span>)     <span class="comment">// 10 为底的自然对数</span></span><br><span class="line"><span class="built_in">Math</span>.log(<span class="number">100</span>)/<span class="built_in">Math</span>.LN10 <span class="comment">// 10 为底 100 的对数</span></span><br><span class="line"><span class="built_in">Math</span>.log(<span class="number">512</span>)/<span class="built_in">Math</span>.LN2  <span class="comment">// 2 为底 512 的对数</span></span><br><span class="line"><span class="built_in">Math</span>.exp(<span class="number">3</span>)      <span class="comment">// e 的三次幂</span></span><br></pre></td></tr></table></figure>
+<p>算术运算在溢出、下溢或被零整除时不会报错，而是会用 <code>Infinity</code>, <code>-Infinity</code> 表示。负零值和正零值是相等的，除了作为除数的时候</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> zero = <span class="number">0</span></span><br><span class="line"><span class="keyword">var</span> negz = -<span class="number">0</span></span><br><span class="line">zero === negz <span class="comment">// true</span></span><br><span class="line"><span class="number">1</span>/zero === <span class="number">1</span>/negz <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p>日期和时间用 <code>Date</code> 类表示，日期对象不是基本数据类型，下面是一个简单的例子</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> then = <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="number">2011</span>, <span class="number">8</span>, <span class="number">11</span>); <span class="comment">// 2011 年 9 月 11 日</span></span><br><span class="line"><span class="keyword">var</span> later = <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="number">2011</span>, <span class="number">8</span>, <span class="number">11</span>, <span class="number">11</span>, <span class="number">11</span>, <span class="number">11</span>); <span class="comment">// 加上了时间</span></span><br><span class="line"><span class="keyword">var</span> now = <span class="keyword">new</span> <span class="built_in">Date</span>(); <span class="comment">// 当前日期时间</span></span><br><span class="line"><span class="keyword">var</span> elapsed = now - then; <span class="comment">// 计算时间间隔的毫秒数</span></span><br><span class="line">later.getFullYear(); <span class="comment">// 2011</span></span><br><span class="line">later.getMonth(); <span class="comment">// 8: 从 0 开始计数的月份</span></span><br><span class="line">later.getDate(); <span class="comment">// 11: 从 1 开始计数的天数</span></span><br><span class="line">later.getDay(); <span class="comment">// 得到星期几</span></span><br><span class="line">later.getHours(); <span class="comment">// 时间</span></span><br><span class="line">later.getUTCHours(); <span class="comment">// 使用 UTC 表示小时的时间，基于时区</span></span><br></pre></td></tr></table></figure>
+<h2 id="u6587_u672C"><a href="#u6587_u672C" class="headerlink" title="文本"></a>文本</h2><ul>
+<li>字符串是一组由 16 位值组成的不可变的有序序列，每个字符通常来自于 Unicode 字符集</li>
+<li>转义字符 <code>\</code></li>
+<li><code>\o</code> NUL 字符</li>
+<li><code>\b</code> 退格符</li>
+<li><code>\t</code> 水平制表符</li>
+<li><code>\n</code> 换行符</li>
+<li><code>\v</code> 垂直制表符</li>
+<li><code>\f</code> 换页符</li>
+<li><code>\r</code> 回车符</li>
+<li><code>\&quot;</code> 双引号</li>
+<li><code>\&#39;</code> 单引号或撇号</li>
+<li><code>\\</code> 反斜线</li>
+<li><code>\xXX</code> 两位十六进制数 XX 指定的 Latin-1 字符</li>
+<li><code>\uXXXX</code> 四位十六进制数 XXXX 指定的 Unicode 字符</li>
+</ul>
+<p>字符串的其他一些方法，注意字符串本身是不会被改变的，所以都是会返回一个新的字符串。在 ECMAScript 5 中也可以直接用方括号索引指定位置</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> s = <span class="string">"Hello, wdx"</span></span><br><span class="line">s.length             <span class="comment">// 长度</span></span><br><span class="line">s.charAt(<span class="number">0</span>)          <span class="comment">// 获取第一个字符</span></span><br><span class="line">s.charAt(s.length-<span class="number">1</span>) <span class="comment">// 获取最后一个字符</span></span><br><span class="line">s.substring(<span class="number">1</span>,<span class="number">4</span>)     <span class="comment">// 获取第 2-4 个字符</span></span><br><span class="line">s.slice(<span class="number">1</span>,<span class="number">4</span>)         <span class="comment">// 同上</span></span><br><span class="line">s.slice(-<span class="number">3</span>)          <span class="comment">// 获取最后 3 个字符</span></span><br><span class="line">s.indexOf(<span class="string">"l"</span>)       <span class="comment">// 字符 l 第一次出现的位置</span></span><br><span class="line">s.lastIndexOf(<span class="string">"l"</span>)   <span class="comment">// 字符 l 最后一次出现的位置</span></span><br><span class="line">s.indexOf(<span class="string">"l"</span>,<span class="number">3</span>)     <span class="comment">// 字符 l 在位置 3 之后首次出现的位置</span></span><br><span class="line">s.split(<span class="string">" "</span>)         <span class="comment">// 用空格分割成子串</span></span><br><span class="line">s.replace(<span class="string">"h"</span>, <span class="string">"H"</span>)  <span class="comment">// 字符替换</span></span><br><span class="line">s.toUpperCase()      <span class="comment">// 变成大写</span></span><br></pre></td></tr></table></figure>
+<p>使用 <code>RegExp()</code> 构造函数可以使用正则表达式，两条斜线之间的文本构成了一个正则表达式直接量，例如：<code>/[1-9][0-9]*/</code></p>
+<h2 id="u5E03_u5C14_u503C"><a href="#u5E03_u5C14_u503C" class="headerlink" title="布尔值"></a>布尔值</h2><p>true 和 false</p>
+<h2 id="null__u548C_undefined"><a href="#null__u548C_undefined" class="headerlink" title="null 和 undefined"></a>null 和 undefined</h2><p>可以将 null 认为是一个特殊的对象值(进行 typeof 运算会返回 object)，含义是『非对象』</p>
+<p>用未定义值(undefined)来表示更深层次的空值，表示变量没有初始化</p>
+<h2 id="u5168_u5C40_u5BF9_u8C61"><a href="#u5168_u5C40_u5BF9_u8C61" class="headerlink" title="全局对象"></a>全局对象</h2><ul>
+<li>JavaScript 程序可以直接使用</li>
+<li>包括<ul>
+<li>全局属性: undefined, Infinity, NaN</li>
+<li>全局函数: isNaN(), parseInt(), eval()</li>
+<li>构造函数: Date(), RegExp(), String(), Object(), Array()</li>
+<li>全局对象: Math, JSON </li>
+</ul>
+</li>
+</ul>
+<h2 id="u5305_u88C5_u5BF9_u8C61"><a href="#u5305_u88C5_u5BF9_u8C61" class="headerlink" title="包装对象"></a>包装对象</h2><p>类似于 Java 中的 Integer 与 Character 类 </p>
+<h2 id="u4E0D_u53EF_u53D8_u7684_u539F_u59CB_u503C_u548C_u53EF_u53D8_u7684_u5BF9_u8C61_u5F15_u7528"><a href="#u4E0D_u53EF_u53D8_u7684_u539F_u59CB_u503C_u548C_u53EF_u53D8_u7684_u5BF9_u8C61_u5F15_u7528" class="headerlink" title="不可变的原始值和可变的对象引用"></a>不可变的原始值和可变的对象引用</h2><p>类似于 Java 中的传值与传引用的区别</p>
+<h2 id="u7C7B_u578B_u8F6C_u6362"><a href="#u7C7B_u578B_u8F6C_u6362" class="headerlink" title="类型转换"></a>类型转换</h2><p>== 运算符在判断两个值相等时会做类型转换</p>
+<p>=== 运算符不会做类型转换</p>
+<h1 id="u8868_u8FBE_u5F0F_u548C_u8FD0_u7B97_u7B26"><a href="#u8868_u8FBE_u5F0F_u548C_u8FD0_u7B97_u7B26" class="headerlink" title="表达式和运算符"></a>表达式和运算符</h1><p>基本来说和 Java, Cpp, Python 等没有太大的区别，这里只提一些要点：</p>
+<ul>
+<li>用关键词 new 来新建对象，如果构造函数不需要参数，那么可以省略空圆括号对</li>
+<li><code>~</code> 按位求反</li>
+<li><code>&amp;</code> 按位与</li>
+<li><code>|</code> 按位或</li>
+<li><code>^</code> 按位异或</li>
+<li><code>!</code> 逻辑非</li>
+<li><code>delete</code> 删除属性</li>
+<li><code>typeof</code> 检测类型</li>
+<li><code>&lt;&lt;</code> 左移位</li>
+<li><code>&gt;&gt;</code> 有符号右移</li>
+<li><code>&gt;&gt;&gt;</code> 无符号右移</li>
+<li><code>instanceof</code> 测试对象类</li>
+<li><code>in</code> 测试属性是否存在</li>
+<li><code>===</code> 判断恒等</li>
+<li><code>!==</code> 判断非恒等</li>
+</ul>
+<p>这里 <code>===</code> 和 <code>==</code> 比较容易混淆，简单的理解就是，前者需要各方面都相等，后者只需要值或者类型转换后的值相等即可</p>
+<p>eval() 功能很强大，但是要慎用</p>
+<h1 id="u8BED_u53E5"><a href="#u8BED_u53E5" class="headerlink" title="语句"></a>语句</h1><p>基本来说就是三个类别：条件，循环，跳转。直接给出几个例子，就很明白了</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// if ... else if ... else</span></span><br><span class="line"><span class="keyword">if</span> (condition)&#123;</span><br><span class="line">	statements</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (condition) &#123;</span><br><span class="line">	statements</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">	statements</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// switch</span></span><br><span class="line"><span class="keyword">switch</span>(expression)&#123;</span><br><span class="line">	<span class="keyword">case</span> val1:</span><br><span class="line">		statements</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> val2:</span><br><span class="line">		statements</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		statements</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// while</span></span><br><span class="line"><span class="keyword">while</span> (expression)&#123;</span><br><span class="line">	statements</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// do while</span></span><br><span class="line"><span class="keyword">do</span>&#123;</span><br><span class="line">	statements</span><br><span class="line">&#125; <span class="keyword">while</span>(expression)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// for</span></span><br><span class="line"><span class="keyword">for</span> (initiale; test; increment)&#123;</span><br><span class="line">	statement</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// for in</span></span><br><span class="line"><span class="keyword">for</span> (variable <span class="keyword">in</span> object)&#123;</span><br><span class="line">	statement</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// throw</span></span><br><span class="line"><span class="keyword">throw</span> expression</span><br><span class="line">e.g</span><br><span class="line"><span class="keyword">if</span> (x &lt; <span class="number">0</span>) thrw <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"x can't be negative"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// try/catch/finally</span></span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">	statements</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span>(e)&#123;</span><br><span class="line">	statements</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">finally</span>&#123;</span><br><span class="line">	statementss</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// empty</span></span><br><span class="line">empty; <span class="comment">// 什么也不做，可以用作占位</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>循环中可以使用 continue 与 break 来进行控制。</li>
+<li>JavaScript 还支持标签，但是会使得代码比较乱，我不是很推荐用</li>
+<li>最好不要使用 with 语句，对性能影响很大，也很难优化</li>
+<li>debugger 语句用于临时调试</li>
+<li><code>use strict</code> 严格模式执行指令(和语句还是有区别的)</li>
+</ul>
+<h2 id="u51FD_u6570"><a href="#u51FD_u6570" class="headerlink" title="函数"></a>函数</h2><p>用关键字 function 来定义函数</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">funcname</span>(<span class="params">[arg1 [, arg2 [..., argn]]]</span>)</span>&#123;</span><br><span class="line">	statements</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hypotenuse</span>(<span class="params">x, y</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">Math</span>.sqrt(x*x + y*y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="u5BF9_u8C61"><a href="#u5BF9_u8C61" class="headerlink" title="对象"></a>对象</h1><ul>
+<li>基本上和其他面向对象语言的类一致，</li>
+<li>删除属性使用 <code>delete</code> 关键字</li>
+<li>检测属性 <code>in</code>, <code>hasOwnProperty()</code>, <code>propertyIsEnumerable()</code> 来完成</li>
+</ul>
+<h2 id="u7EE7_u627F"><a href="#u7EE7_u627F" class="headerlink" title="继承"></a>继承</h2><p>面向对象的思路，看例子</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> o = &#123;&#125;</span><br><span class="line">o.x = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">var</span> p = inherit(o);</span><br><span class="line">p.y = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">var</span> q = inherit(p);</span><br><span class="line">q.z = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="u679A_u4E3E_u5C5E_u6027"><a href="#u679A_u4E3E_u5C5E_u6027" class="headerlink" title="枚举属性"></a>枚举属性</h2><p>具体在例子中</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (p <span class="keyword">in</span> o)&#123;</span><br><span class="line">	<span class="keyword">if</span> (!o.hasOwnProperty(p)) <span class="keyword">continue</span>; <span class="comment">// 跳过继承的属性</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (p <span class="keyword">in</span> o)&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">typeof</span> o[p] === <span class="string">"function"</span>) <span class="keyword">continue</span>; <span class="comment">// 跳过方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u5E8F_u5217_u5316_u5BF9_u8C61"><a href="#u5E8F_u5217_u5316_u5BF9_u8C61" class="headerlink" title="序列化对象"></a>序列化对象</h2><p>基本都是用 JSON 来搞，这两个方法 <code>JSON.stringify()</code> 和 <code>JSON.parse()</code></p>
+<h1 id="u6570_u7EC4"><a href="#u6570_u7EC4" class="headerlink" title="数组"></a>数组</h1><p>整体思路和 python 非常类似</p>
+<ul>
+<li>方括号来进行声明初始化</li>
+<li>数组方法<ul>
+<li>join(): 将所有元素转换为字符串并连接到一起，如果不指定分隔符，则默认用逗号</li>
+<li>reverse(): 颠倒元素顺序</li>
+<li>sort(): 排序，可以传入一个比较函数，例如<ul>
+<li><code>a.sort(function(a,b) {return b-a};</code></li>
+</ul>
+</li>
+<li>concat(): 创建并返回一个新数组，元素包括调用 concat() 的原始数组的元素和 concat() 的每个参数</li>
+<li>slice(): 返回数组片段，但是不修改数组本身</li>
+<li>splice(): 返回数组片度，并且会修改数组本身<ul>
+<li><code>var a = [1, 2, 3, 4, 5, 6, 7, 8];</code></li>
+<li><code>a.splice(4);</code> 返回 [5, 6, 7, 8]，a 变为 [1, 2, 3, 4]</li>
+</ul>
+</li>
+<li>push(): 数组尾添加元素，并返回数组新的长度</li>
+<li>pop(): 删除最后一个元素，并返回这个元素</li>
+<li>push 和 pop 会修改并替换原数组，而不是生成新的数组</li>
+<li>unshift(): 数组头部添加元素，并返回新数组元素</li>
+<li>shift(): 删除第一个元素，并把之后的元素移过来补位，返回删除的元素</li>
+<li>toString(): 类似于默认的 join() 方法</li>
+</ul>
+</li>
+<li>ECMAScript 5 中的数组方法<ul>
+<li>forEach()</li>
+<li>map()</li>
+<li>filter()</li>
+<li>every()</li>
+<li>some()</li>
+<li>reduce()</li>
+<li>reduceRight()</li>
+<li>indexOf()</li>
+<li>lasIndexOf()</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JavaScript/" rel="tag">#JavaScript</a>
+          
+            <a href="/tags/基础/" rel="tag">#基础</a>
+          
+            <a href="/tags/核心/" rel="tag">#核心</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/21/javascript-basic/" rel="next" title="JavaScript 学习笔记 1 - 概述">
+                <i class="fa fa-chevron-left"></i> JavaScript 学习笔记 1 - 概述
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/22/gdjzj/" rel="prev" title="【古董局中局4】大鱼吃小鱼">
+                【古董局中局4】大鱼吃小鱼 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/11/21/javascript-core/"
+           data-title="JavaScript 学习笔记 2 - 语言核心" data-url="http://wdxtub.com/2015/11/21/javascript-core/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#u8BCD_u6CD5_u7ED3_u6784"><span class="nav-number">1.</span> <span class="nav-text">词法结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u7C7B_u578B_u3001_u503C_u548C_u53D8_u91CF"><span class="nav-number">2.</span> <span class="nav-text">类型、值和变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u6570_u5B57"><span class="nav-number">2.1.</span> <span class="nav-text">数字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6587_u672C"><span class="nav-number">2.2.</span> <span class="nav-text">文本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E03_u5C14_u503C"><span class="nav-number">2.3.</span> <span class="nav-text">布尔值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null__u548C_undefined"><span class="nav-number">2.4.</span> <span class="nav-text">null 和 undefined</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5168_u5C40_u5BF9_u8C61"><span class="nav-number">2.5.</span> <span class="nav-text">全局对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5305_u88C5_u5BF9_u8C61"><span class="nav-number">2.6.</span> <span class="nav-text">包装对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E0D_u53EF_u53D8_u7684_u539F_u59CB_u503C_u548C_u53EF_u53D8_u7684_u5BF9_u8C61_u5F15_u7528"><span class="nav-number">2.7.</span> <span class="nav-text">不可变的原始值和可变的对象引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7C7B_u578B_u8F6C_u6362"><span class="nav-number">2.8.</span> <span class="nav-text">类型转换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u8868_u8FBE_u5F0F_u548C_u8FD0_u7B97_u7B26"><span class="nav-number">3.</span> <span class="nav-text">表达式和运算符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u8BED_u53E5"><span class="nav-number">4.</span> <span class="nav-text">语句</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u51FD_u6570"><span class="nav-number">4.1.</span> <span class="nav-text">函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u5BF9_u8C61"><span class="nav-number">5.</span> <span class="nav-text">对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7EE7_u627F"><span class="nav-number">5.1.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u679A_u4E3E_u5C5E_u6027"><span class="nav-number">5.2.</span> <span class="nav-text">枚举属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E8F_u5217_u5316_u5BF9_u8C61"><span class="nav-number">5.3.</span> <span class="nav-text">序列化对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u6570_u7EC4"><span class="nav-number">6.</span> <span class="nav-text">数组</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

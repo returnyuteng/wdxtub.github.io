@@ -1,0 +1,862 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="这一讲主要是介绍第一次作业 Datalab 的相关内容以及解法，还包括如何在远程机器上编写代码和测试。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="深入理解计算机系统 习题课 1 Datalab">
+<meta property="og:url" content="http://wdxtub.com/vault/csapp-lab1.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="这一讲主要是介绍第一次作业 Datalab 的相关内容以及解法，还包括如何在远程机器上编写代码和测试。">
+<meta property="og:image" content="http://wdxtub.com/images/csapp28.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp29.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp30.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp31.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp32.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp33.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp34.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp35.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp36.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp37.jpg">
+<meta property="og:updated_time" content="2016-04-24T00:24:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统 习题课 1 Datalab">
+<meta name="twitter:description" content="这一讲主要是介绍第一次作业 Datalab 的相关内容以及解法，还包括如何在远程机器上编写代码和测试。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    深入理解计算机系统 习题课 1 Datalab | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>这一讲主要是介绍第一次作业 Datalab 的相关内容以及解法，还包括如何在远程机器上编写代码和测试。</p>
+<a id="more"></a>
+<hr>
+<p>我们先来看看 Datalab 需要我们做什么。主要是通过这次的作业来熟悉整型及浮点数的位表达形式，简单来说，就是解开一些人工谜题。列表如下：</p>
+<p><img src="/images/csapp28.jpg" alt="csapp28"></p>
+<p><img src="/images/csapp29.jpg" alt="csapp29"></p>
+<p><img src="/images/csapp30.jpg" alt="csapp30"></p>
+<p>一共 13 个需要补充的函数（会在后面分别详细说明），要开始做 lab，有以下四个步骤（针对 CMU 学生）</p>
+<ol>
+<li>从 Autolab 下载 lab 文件和文档</li>
+<li>lab 的代码需要在远程机器上执行，需要解压文件（可能还需要修改权限 <code>chmod xxx filename</code>）</li>
+<li>修改 <code>bits.c</code> 文件，测试的话有三种方式：<code>btest</code>, <code>dlc</code>, 和 <code>BDD checker</code>，另外 <code>driver.pl</code> 是 autolab 将要进行的测试</li>
+<li>有无限次提交，但是不要用 autolab 来当做测试的方式，用 <code>driver.pl</code> 测试，Autolab 需要在网页端提交（使用 <code>tar -cvzf out.tar.gz file1 file2 ...</code> 这样来压缩，可以 tcp 赋复制到自己的电脑中）</li>
+</ol>
+<p>一些小技巧：</p>
+<ul>
+<li>在函数开始时声明所有变量</li>
+<li><code>}</code> 应该在第一列</li>
+<li>注意运算符号的优先级，使用括号确保顺序的正确</li>
+<li>关注 !, 0, TMin 等</li>
+</ul>
+<h2 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h2><p>我们先登录到远程机器，命令为 <code>ssh -X dawang@shark.ics.cs.cmu.edu</code>，输入密码后可以看到如下界面</p>
+<p><img src="/images/csapp31.jpg" alt="csapp31"></p>
+<p>然后另开一个终端，把之前下载好的 <code>datalab-handout.tar</code> 传到服务器上，命令是 <code>scp datalab-handout.tar dawang@shark.ics.cs.cmu.edu:</code></p>
+<p><img src="/images/csapp32.jpg" alt="csapp32"></p>
+<p>可以看到上面有一些我之前课程的内容，我们创建一个新的文件夹 <code>513</code> 并把这个压缩包移动进去</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir <span class="number">513</span></span><br><span class="line">mv datalab-handout.tar ./<span class="number">513</span></span><br><span class="line">clear <span class="comment"># 让屏幕向后翻一页，看得更清楚一些</span></span><br></pre></td></tr></table></figure>
+<p>这里稍微啰嗦一点，如果想要一边改动文件，然后一边编译测试的话，可以开启两个终端连接到远程机器上，这样就不用切换来切换去了。</p>
+<p>解压这次试验所需的文件： <code>tar xvf datalab-handout.tar</code></p>
+<p><img src="/images/csapp33.jpg" alt="csapp33"></p>
+<p>这次的作业主要是在 <code>bits.c</code> 文件里完成，我们来看看里面的内容 <code>vim bits.c</code></p>
+<p><img src="/images/csapp34.jpg" alt="csapp34"></p>
+<p>任务指引还是比较清晰的，主要有以下一些说明：</p>
+<ol>
+<li>整型的范围是 0 到 255(0xFF)，不允许用更大</li>
+<li>只能包含参数和局部变量</li>
+<li>一元操作符 <code>!</code> <code>~</code></li>
+<li>二元操作符 <code>&amp;</code> <code>|</code> <code>+</code> <code>&lt;&lt;</code> <code>&gt;&gt;</code></li>
+</ol>
+<p>不允许的操作有：</p>
+<ol>
+<li>使用任何条件控制语句</li>
+<li>定义和使用宏</li>
+<li>定义其他的函数</li>
+<li>调用函数</li>
+<li>使用其他的操作符</li>
+<li>使用类型转换</li>
+<li>使用除 int 之外的类型（针对整型）</li>
+<li>使用除 int, unsigned 之外的类型（针对浮点数）</li>
+</ol>
+<p>可以认为机器：</p>
+<ul>
+<li>使用 2’s complent，32位</li>
+<li>执行算术右移</li>
+<li>移动超过字长的位数会出问题</li>
+</ul>
+<p>其他需要注意的事情有：</p>
+<ol>
+<li>使用 dlc(data lab checker) 来检测代码的合法性（有没有使用不给使用的符号语法等等）</li>
+<li>每个函数都有操作数的上限值，注意 <code>=</code> 不算</li>
+<li>使用 btest 来测试结果的正确与否</li>
+<li>使用 BDD checker 来正规测试你的函数</li>
+</ol>
+<h2 id="u9898_u76EE_u53CA_u89E3_u6CD5"><a href="#u9898_u76EE_u53CA_u89E3_u6CD5" class="headerlink" title="题目及解法"></a>题目及解法</h2><h3 id="thirdBits"><a href="#thirdBits" class="headerlink" title="thirdBits"></a>thirdBits</h3><ul>
+<li>题目要求：return word with every third bit (starting from the LSB) set to 1</li>
+<li>允许操作：<code>! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</code></li>
+<li>操作数限制：8</li>
+<li>分值：1</li>
+</ul>
+<p>我们返回的结果是：<code>0100 1001 0010 0100 1001 0010 0100 1001</code>，因为题目要求每个变量不可以超过 255，也就是最多 <code>1111 1111</code>，所以只能分步骤来进行组合，如下面代码所示</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">Desired output: <span class="number">0100</span> <span class="number">1001</span> <span class="number">0010</span> <span class="number">0100</span> <span class="number">1001</span> <span class="number">0010</span> <span class="number">0100</span> <span class="number">1001</span> </span><br><span class="line">Step <span class="number">1</span>:         <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0100</span> <span class="number">1001</span>  <span class="number">0x49</span></span><br><span class="line">Step <span class="number">2</span>:         <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">1001</span> <span class="number">0010</span> <span class="number">0000</span> <span class="number">0000</span>  Shift &lt;&lt; <span class="number">9</span></span><br><span class="line">Step <span class="number">3</span>:         <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">1001</span> <span class="number">0010</span> <span class="number">0100</span> <span class="number">1001</span>  Add <span class="number">0x49</span></span><br><span class="line">Step <span class="number">4</span>:         <span class="number">0100</span> <span class="number">1001</span> <span class="number">0010</span> <span class="number">0100</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span> <span class="number">0000</span>  Shift &lt;&lt; <span class="number">18</span></span><br><span class="line">Step <span class="number">5</span>:         <span class="number">0100</span> <span class="number">1001</span> <span class="number">0010</span> <span class="number">0100</span> <span class="number">1001</span> <span class="number">0010</span> <span class="number">0100</span> <span class="number">1001</span>  Add result from step <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">thirdBits</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> a = <span class="number">0x49</span>;</span><br><span class="line">  <span class="keyword">int</span> b = (a &lt;&lt; <span class="number">9</span>);</span><br><span class="line">  <span class="keyword">int</span> c = b + a;</span><br><span class="line">  <span class="keyword">return</span> (c &lt;&lt; <span class="number">18</span>) + c; <span class="comment">// Steps 4 and 5</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后我们来测试一下正确性，先保存代码，然后：<code>make; ./btest</code>，结果如下：</p>
+<p><img src="/images/csapp35.jpg" alt="csapp35"></p>
+<p>可以看到第一个函数已经写对的得到了一分，然后我们再来检测一下有没有用非法的操作符：<code>./dlc -e bits.c</code></p>
+<p><img src="/images/csapp36.jpg" alt="csapp36"></p>
+<p>可以看到没有显示错误信息，<code>-e</code> 会输出操作符的数量，这里也都没有问题。接下来的题目都会用这种方式测试，但是就不会再贴图了。</p>
+<h3 id="isTmin"><a href="#isTmin" class="headerlink" title="isTmin"></a>isTmin</h3><ul>
+<li>题目要求：returns 1 if x is the minimum, two’s complement number, and 0 otherwise</li>
+<li>允许操作：<code>! ~ &amp; ^ | +</code></li>
+<li>操作数限制：10</li>
+<li>分值：1</li>
+</ul>
+<p>根据 2’s complement 的定义，Tmin 的值是 <code>10000000 00000000 00000000 00000000</code>，我们要怎么判断一个数是不是 Tmin 呢，原则上来说，只需要把 x 和 Tmin 做 <code>&amp;</code> 操作，判断即可，但是题目要求不能左移，于是就要想其他的办法了，观察 Tmin 的值，发现如果左移一次，就变成全部为 0，但是全部为零的情况还有另外一种就是本身全部就是 0，所以只要排除第二种情况，就可以判断是否是 Tmin 了，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 前面一部分用于判断左移一位后是否全部为0，后面一部分用来判断 x 值是否为 0</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isTmin</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> !(x+x)&amp;!!(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="isNotEqual"><a href="#isNotEqual" class="headerlink" title="isNotEqual"></a>isNotEqual</h3><ul>
+<li>题目要求：return 0 if x == y, and 1 otherwise <ul>
+<li>例如: isNotEqual(5,5) = 0, isNotEqual(4,5) = 1</li>
+</ul>
+</li>
+<li>允许操作：<code>! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</code></li>
+<li>操作数限制：6</li>
+<li>分值：2</li>
+</ul>
+<p>这题比较简单，发现可以使用异或操作，那么只需要判断两个数异或后结果是否为 0 即可，这里同样使用了 !! 来把 bit 转换成 boolean 值</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isNotEqual</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span>(!!(x ^ y));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="anyOddBit"><a href="#anyOddBit" class="headerlink" title="anyOddBit"></a>anyOddBit</h3><ul>
+<li>题目要求：return 1 if any odd-numbered bit in word set to 1<ul>
+<li>例如： anyOddBit(0x5) = 0, anyOddBit(0x7) = 1</li>
+</ul>
+</li>
+<li>允许操作：<code>! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</code></li>
+<li>操作数限制：12</li>
+<li>分值：2</li>
+</ul>
+<p>我们依旧不能超过 0xFF 的限制，所以需要把前面的 24 位都用 <code>|</code> 和 <code>&gt;&gt;</code> 运算符移动到最后八位中，再和 <code>10101010</code> 来做 <code>&amp;</code> 操作，只要不为零，就说明在偶数位上有不为 0 位</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">anyOddBit</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> !!((x | (x &gt;&gt; <span class="number">8</span>) | (x &gt;&gt; <span class="number">16</span>) | (x &gt;&gt; <span class="number">24</span>)) &amp; <span class="number">0xaa</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="negate"><a href="#negate" class="headerlink" title="negate"></a>negate</h3><ul>
+<li>题目要求：return -x<ul>
+<li>例如：negate(1) = -1. </li>
+</ul>
+</li>
+<li>允许操作：<code>! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</code></li>
+<li>操作数限制：5</li>
+<li>分值：2</li>
+</ul>
+<p>第一感觉就是用到取反 <code>~</code> 符号，但需要考虑三种情况：正，零，负</p>
+<ul>
+<li>假设是 <code>0010</code>(2)，取反之后是 <code>1101</code>(-3)</li>
+<li>假设是 <code>1110</code>(-2)，取反之后是 <code>0001</code>(1)</li>
+<li>假设是 <code>0000</code>(0)，取反之后是 <code>1111</code>(-1) </li>
+</ul>
+<p>可以发现一个规律，就是都差 1，为什么呢，就是因为 2’s complement 的定义中是加上了 1 的，所以只要再加一就好。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">negate</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;  </span><br><span class="line">  <span class="keyword">return</span> ~x + <span class="number">1</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="conditional"><a href="#conditional" class="headerlink" title="conditional"></a>conditional</h3><ul>
+<li>题目要求：same as x ? y : z<ul>
+<li>例如：conditional(2,4,5) = 4 </li>
+</ul>
+</li>
+<li>允许操作：<code>! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</code></li>
+<li>操作数限制：16</li>
+<li>分值：3</li>
+</ul>
+<p>这一题稍微有一些复杂，我们来看看怎么去想。因为不能用 if 来做流程判断，所以我们返回的表达式例一定要包含 y 和 z，但是可以根据 x 的值来进行变换，所以大概的式子是 <code>(y op expr) | (z op expr)</code>(op 表示操作符， expr 是某个表达式)。</p>
+<p>然后就简单很多了，我们只要想办法做一个 expr，要么为 <code>0x00000000</code>，要么为 <code>0xffffffff</code> 即可，于是表达式 <code>~!x + 1</code> 就可以满足我们的需求，x 为 0 时，表达式为 <code>0xffffffff</code>，不等于 0 时也满足条件，就等于有了答案</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">conditional</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> z)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span><br><span class="line">     *if x!=0,mask=0x00000000,so y&amp;~mask==y and z&amp;mask==0</span><br><span class="line">     *if x==0,mask=0xffffffff,so y&amp;~mask = y&amp;0 =0; z&amp;mask=z</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">int</span> mask= ~!x+<span class="number">1</span>; </span><br><span class="line">    <span class="keyword">return</span> (y &amp; ~mask)|(z &amp; mask);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="subOK"><a href="#subOK" class="headerlink" title="subOK"></a>subOK</h3><ul>
+<li>题目要求：Determine if can compute x-y without overflow<ul>
+<li>例如：</li>
+<li>subOK(0x80000000,0x80000000) = 1</li>
+<li>subOK(0x80000000,0x70000000) = 0</li>
+</ul>
+</li>
+<li>允许操作：<code>! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</code></li>
+<li>操作数限制：20</li>
+<li>分值：3</li>
+</ul>
+<p>这题也不算轻松，但是我们可以一步一步来搞定，首先，既然是计算 x-y，我们要能够知道结果，由于不给使用减号，那就用倒数（之前的方法），所以 x-y 的结果为 <code>~y+1+x</code>。然后需要怎么判断呢，观察发现，只有在以下这两种情况同时发生的时候，才是 overflow</p>
+<ol>
+<li>x 和 y 符号不同</li>
+<li>x-y 的符号和 x 不同</li>
+</ol>
+<p>可能有点难以理解，overflow 指的是除符号位的最高位进位，也就是说符号会变化，所以需要 x 和 y 的符号不同（这样 x-y 就等同于两个同符号的加法），也就是第一个条件；符号到底有没有变化呢，就要看 x-y 与 x 的符号是否相同，也就是第二个条件。所以代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">subOK</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/*</span><br><span class="line">   * overflow of sub happens iff </span><br><span class="line">   * 1) x and y have different signs</span><br><span class="line">   * 2) res = x - y has different sign with x</span><br><span class="line">   */</span></span><br><span class="line">  <span class="keyword">int</span> res = x + (~y + <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">int</span> sameSign = x ^ y;</span><br><span class="line">  <span class="keyword">int</span> resSign = res ^ x;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> !((sameSign &amp; resSign) &gt;&gt; <span class="number">31</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="isGreater"><a href="#isGreater" class="headerlink" title="isGreater"></a>isGreater</h3><ul>
+<li>题目要求：if x &gt; y  then return 1, else return 0<ul>
+<li>例如：isGreater(4,5) = 0, isGreater(5,4) = 1</li>
+</ul>
+</li>
+<li>允许操作：<code>! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</code></li>
+<li>操作数限制：24</li>
+<li>分值：3</li>
+</ul>
+<p>因为要考虑正负号，所以这个问题变成：</p>
+<ol>
+<li>两个数符号相同的情况</li>
+<li>两个数符号不同的情况</li>
+</ol>
+<p>具体可以参见代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">isGreater</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">        <span class="comment">// Boolean value indicating sign of x</span></span><br><span class="line">        <span class="comment">// 1 = Negative</span></span><br><span class="line">        <span class="comment">// 0 = Non-Negative</span></span><br><span class="line">        <span class="keyword">int</span> sign_x = x &gt;&gt; <span class="number">31</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Boolean value indicating sign of y</span></span><br><span class="line">        <span class="comment">// 1 = Negative</span></span><br><span class="line">        <span class="comment">// 0 = Non-Negative</span></span><br><span class="line">        <span class="keyword">int</span> sign_y = y &gt;&gt; <span class="number">31</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// if the signs are equal, then</span></span><br><span class="line">	<span class="comment">// if x is larger, sign bit of (~y + x) is 0</span></span><br><span class="line">	<span class="comment">// if y is larger, sign bit of (~y + x) is 1</span></span><br><span class="line">	<span class="keyword">int</span> equal = !(sign_x ^ sign_y) &amp; ((~y + x) &gt;&gt; <span class="number">31</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// if signs are not equal, these principles are reversed.</span></span><br><span class="line">	<span class="keyword">int</span> notEqual = sign_x &amp; !sign_y;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// this | returns 0 when it is x is greater, so you have to negate it.</span></span><br><span class="line">	<span class="keyword">return</span> !( equal | notEqual);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="bitParity"><a href="#bitParity" class="headerlink" title="bitParity"></a>bitParity</h3><ul>
+<li>题目要求：returns 1 if x contains an odd number of 0’s<ul>
+<li>例如：bitParity(5) = 0, bitParity(7) = 1</li>
+</ul>
+</li>
+<li>允许操作：<code>! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</code></li>
+<li>操作数限制：20</li>
+<li>分值：4</li>
+</ul>
+<p>这道题要我们统计有有多少个零，这里我们需要利用一个特点，就是堆两个数进行异或操作，不改变奇偶性，所以只需要一步一步来异或就可以了</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bitParity</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* XORing two numbers returns a number with same bit parity.</span><br><span class="line">     Keep shifting half of our number until reduced to 1 bit simple case.*/</span></span><br><span class="line"></span><br><span class="line">  x = ( x &gt;&gt; <span class="number">16</span> ) ^ x;</span><br><span class="line">  x = ( x &gt;&gt; <span class="number">8</span> ) ^ x;</span><br><span class="line">  x = ( x &gt;&gt; <span class="number">4</span> ) ^ x;</span><br><span class="line">  x = ( x &gt;&gt; <span class="number">2</span> ) ^ x;</span><br><span class="line">  x = ( x &gt;&gt; <span class="number">1</span>) ^ x;</span><br><span class="line">  <span class="keyword">return</span> (x &amp; <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="howManyBits"><a href="#howManyBits" class="headerlink" title="howManyBits"></a>howManyBits</h3><ul>
+<li>题目要求：return the minimum number of bits required to represent x in two’s complement<ul>
+<li>例如：</li>
+<li>howManyBits(12) = 5</li>
+<li>howManyBits(298) = 10</li>
+<li>howManyBits(-5) = 4</li>
+<li>howManyBits(0)  = 1</li>
+<li>howManyBits(-1) = 1</li>
+<li>howManyBits(0x80000000) = 32</li>
+</ul>
+</li>
+<li>允许操作：<code>! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</code></li>
+<li>操作数限制：90</li>
+<li>分值：4</li>
+</ul>
+<p>这题从操作数限制的数目来看就知道比较复杂，但是代码还是比较清晰的，可以直接查看代码中的注释（特别鸣谢：@guojiex）</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">howManyBits</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp=x^(x&gt;&gt;<span class="number">31</span>);<span class="comment">//get positive of x;</span></span><br><span class="line">    <span class="keyword">int</span> isZero=!temp;</span><br><span class="line">    <span class="comment">//notZeroMask is 0xffffffff</span></span><br><span class="line">    <span class="keyword">int</span> notZeroMask=(!(!temp)&lt;&lt;<span class="number">31</span>)&gt;&gt;<span class="number">31</span>;</span><br><span class="line">    <span class="keyword">int</span> bit_16,bit_8,bit_4,bit_2,bit_1;</span><br><span class="line">    bit_16=!(!(temp&gt;&gt;<span class="number">16</span>))&lt;&lt;<span class="number">4</span>;</span><br><span class="line">    <span class="comment">//see if the high 16bits have value,if have,then we need at least 16 bits</span></span><br><span class="line">    <span class="comment">//if the highest 16 bits have value,then rightshift 16 to see the exact place of  </span></span><br><span class="line">    <span class="comment">//if not means they are all zero,right shift nothing and we should only consider the low 16 bits</span></span><br><span class="line">    temp=temp&gt;&gt;bit_16;</span><br><span class="line">    bit_8=!(!(temp&gt;&gt;<span class="number">8</span>))&lt;&lt;<span class="number">3</span>;</span><br><span class="line">    temp=temp&gt;&gt;bit_8;</span><br><span class="line">    bit_4=!(!(temp&gt;&gt;<span class="number">4</span>))&lt;&lt;<span class="number">2</span>;</span><br><span class="line">    temp=temp&gt;&gt;bit_4;</span><br><span class="line">    bit_2=!(!(temp&gt;&gt;<span class="number">2</span>))&lt;&lt;<span class="number">1</span>;</span><br><span class="line">    temp=temp&gt;&gt;bit_2;</span><br><span class="line">    bit_1=!(!(temp&gt;&gt;<span class="number">1</span>));</span><br><span class="line">    temp=bit_16+bit_8+bit_4+bit_2+bit_1+<span class="number">2</span>;<span class="comment">//at least we need one bit for 1 to tmax,</span></span><br><span class="line">    <span class="comment">//and we need another bit for sign</span></span><br><span class="line">    <span class="keyword">return</span> isZero|(temp&amp;notZeroMask);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="float_half"><a href="#float_half" class="headerlink" title="float_half"></a>float_half</h3><ul>
+<li>题目要求：Return bit-level equivalent of expression (float) x. Result is returned as unsigned int, but it is to be interpreted as the bit-level representation of a single-precision floating point values.</li>
+<li>允许操作：Any integer/unsigned operations incl. ||, &amp;&amp;. also if, while</li>
+<li>操作数限制：30</li>
+<li>分值：4</li>
+</ul>
+<p>这个就是考察基本的对于 IEEE 浮点数格式的转换了，思路也比较清晰，就是根据不同的部分来求出对应的值</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">float_half</span><span class="params">(<span class="keyword">unsigned</span> uf)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> round, S, E, maskE, maskM, maskS,maskEM, maskSM, tmp;</span><br><span class="line">  round = !((uf&amp;<span class="number">3</span>)^<span class="number">3</span>);</span><br><span class="line">  maskS = <span class="number">0x80000000</span>;</span><br><span class="line">  maskE = <span class="number">0x7F800000</span>;</span><br><span class="line">  maskM = <span class="number">0x007FFFFF</span>;</span><br><span class="line">  maskEM= <span class="number">0x7FFFFFFF</span>;</span><br><span class="line">  maskSM= <span class="number">0x807FFFFF</span>;</span><br><span class="line">  E = uf&amp;maskE;</span><br><span class="line">  S = uf&amp;maskS;</span><br><span class="line">  <span class="comment">//Nan or Infinity</span></span><br><span class="line">  <span class="keyword">if</span> (E==<span class="number">0x7F800000</span>) <span class="keyword">return</span> uf;</span><br><span class="line">  <span class="comment">//E=1 - specialcase</span></span><br><span class="line">  <span class="keyword">if</span> (E==<span class="number">0x00800000</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> S | (round + ((uf &amp; maskEM)&gt;&gt;<span class="number">1</span>)) ;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//E=0 - denormalized</span></span><br><span class="line">  <span class="keyword">if</span> (E==<span class="number">0x00000000</span>) &#123;</span><br><span class="line">    tmp = (uf&amp;maskM)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> S | (tmp + round);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//normalized case</span></span><br><span class="line">  <span class="keyword">return</span> (((E&gt;&gt;<span class="number">23</span>)-<span class="number">1</span>)&lt;&lt;<span class="number">23</span>) | (uf &amp; maskSM);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="float_i2f"><a href="#float_i2f" class="headerlink" title="float_i2f"></a>float_i2f</h3><ul>
+<li>题目要求：Return bit-level equivalent of expression (float) x. Result is returned as unsigned int, but it is to be interpreted as the bit-level representation of a single-precision floating point values.</li>
+<li>允许操作：Any integer/unsigned operations incl. ||, &amp;&amp;. also if, while</li>
+<li>操作数限制：30</li>
+<li>分值：4</li>
+</ul>
+<p>和上题一样，这个就是考察基本的对于 IEEE 浮点数格式的转换了，思路也比较清晰，就是根据不同的部分来求出对应的值（特别鸣谢@guojiex）</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">float_i2f</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*int exponent=0;</span><br><span class="line">    return ((sign&lt;&lt;31)|(exponent&lt;&lt;23)|fraction)+flag;*/</span></span><br><span class="line">    <span class="keyword">int</span> sign=x&gt;&gt;<span class="number">31</span>&amp;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">int</span> exponent; </span><br><span class="line">    <span class="keyword">int</span> fraction; </span><br><span class="line">    <span class="keyword">int</span> delta;</span><br><span class="line">    <span class="keyword">int</span> fraction_mask;</span><br><span class="line">    <span class="keyword">if</span>(x==<span class="number">0</span>)<span class="comment">//||x==0x8000000)</span></span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(x==<span class="number">0x80000000</span>)</span><br><span class="line">        exponent=<span class="number">158</span>;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (sign)<span class="comment">//turn negtive to positive</span></span><br><span class="line">            x = -x;</span><br><span class="line">        i = <span class="number">30</span>;</span><br><span class="line">        <span class="keyword">while</span> ( !(x &gt;&gt; i) )<span class="comment">//see how many bits do x have(rightshift until 0) </span></span><br><span class="line">            i--;</span><br><span class="line">        <span class="comment">//printf("%x %d\n",x,i);</span></span><br><span class="line">        exponent = i + <span class="number">127</span>;</span><br><span class="line">        x = x &lt;&lt; (<span class="number">31</span> - i);<span class="comment">//clean all those zeroes of high bits</span></span><br><span class="line">        fraction_mask = <span class="number">0x7fffff</span>;<span class="comment">//(1 &lt;&lt; 23) - 1;</span></span><br><span class="line">        fraction = fraction_mask &amp; (x &gt;&gt; <span class="number">8</span>);<span class="comment">//right shift 8 bits to become the fraction,sign and exp have 8 bits total</span></span><br><span class="line">        x = x &amp; <span class="number">0xff</span>;</span><br><span class="line">        delta = x &gt; <span class="number">128</span> || ((x == <span class="number">128</span>) &amp;&amp; (fraction &amp; <span class="number">1</span>));<span class="comment">//if lowest 8 bits of x is larger than a half,or is 1.5,round up 1</span></span><br><span class="line">        fraction += delta;</span><br><span class="line">        <span class="keyword">if</span>(fraction &gt;&gt; <span class="number">23</span>) &#123;<span class="comment">//if after rounding fraction is larger than 23bits</span></span><br><span class="line">            fraction &amp;= fraction_mask;</span><br><span class="line">            exponent += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (sign&lt;&lt;<span class="number">31</span>)|(exponent&lt;&lt;<span class="number">23</span>)|fraction;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="float_f2i"><a href="#float_f2i" class="headerlink" title="float_f2i"></a>float_f2i</h3><ul>
+<li>题目要求：Return bit-level equivalent of expression (int) f for floating point argument f. Argument is passed as unsigned int, but it is to be interpreted as the bit-level representation of a single-precision floating point value. Anything out of range (including NaN and infinity) should return 0x80000000u.</li>
+<li>允许操作：Any integer/unsigned operations incl. ||, &amp;&amp;. also if, while</li>
+<li>操作数限制：30</li>
+<li>分值：4</li>
+</ul>
+<p>和上题一样，这个就是考察基本的对于 IEEE 浮点数格式的转换了，思路也比较清晰，就是根据不同的部分来求出对应的值</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">float_f2i</span><span class="params">(<span class="keyword">unsigned</span> uf)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> <span class="built_in">exp</span> = (uf &gt;&gt; <span class="number">23</span>) &amp; <span class="number">0xFF</span>;</span><br><span class="line">  <span class="keyword">int</span> frac = uf &amp; <span class="number">0x007FFFFF</span>;</span><br><span class="line">  <span class="keyword">int</span> sign = uf &amp; <span class="number">0x80000000</span>;</span><br><span class="line">  <span class="keyword">int</span> bias = <span class="built_in">exp</span> - <span class="number">127</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">exp</span> == <span class="number">255</span> || bias &gt; <span class="number">30</span>) &#123;</span><br><span class="line">    <span class="comment">// exponent is 255 (NaN), or number is too large for an int</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0x80000000</span>u;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">exp</span> || bias &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// number is very small, round down to 0</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// append a 1 to the front to normalize</span></span><br><span class="line">  frac = frac | <span class="number">1</span> &lt;&lt; <span class="number">23</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// float based on the bias</span></span><br><span class="line">  <span class="keyword">if</span> (bias &gt; <span class="number">23</span>) &#123;</span><br><span class="line">    frac = frac &lt;&lt; (bias - <span class="number">23</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    frac = frac &gt;&gt; (<span class="number">23</span> - bias);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (sign) &#123;</span><br><span class="line">    <span class="comment">// original number was negative, make the new number negative</span></span><br><span class="line">    frac = ~(frac) + <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> frac;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u68C0_u67E5_u4E0E_u63D0_u4EA4"><a href="#u68C0_u67E5_u4E0E_u63D0_u4EA4" class="headerlink" title="检查与提交"></a>检查与提交</h2><p>全部题目做完之后，就可以检查一下了，这里我们可以用另外一个命令 <code>./driver.pl</code>，结果如下：</p>
+<p><img src="/images/csapp37.jpg" alt="csapp37"></p>
+<p>这样就算完成啦，提交的时候只需要提交 <code>bits.c</code> 所以我们先把它从远程主机复制回来 <code>scp dawang@shark.ics.cs.cmu.edu:513/datalab-handout/bits.c ./</code></p>
+<p>不用压缩，直接提交即可，检查无误之后，至此本次实验完成。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/csapp-lab1.html"
+           data-title="深入理解计算机系统 习题课 1 Datalab" data-url="http://wdxtub.com/vault/csapp-lab1.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

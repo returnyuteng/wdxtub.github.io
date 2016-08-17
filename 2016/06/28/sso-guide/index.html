@@ -1,0 +1,947 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="安全,登陆,网络," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="单点登陆作为在网络应用开发中非常常见的实践，有必要深入理解其实现机制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSO 单点登录指南">
+<meta property="og:url" content="http://wdxtub.com/2016/06/28/sso-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="单点登陆作为在网络应用开发中非常常见的实践，有必要深入理解其实现机制。">
+<meta property="og:updated_time" content="2016-06-28T13:07:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SSO 单点登录指南">
+<meta name="twitter:description" content="单点登陆作为在网络应用开发中非常常见的实践，有必要深入理解其实现机制。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> SSO 单点登录指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                SSO 单点登录指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-28T20:35:22+08:00" content="2016-06-28">
+              2016-06-28
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/06/28/sso-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/06/28/sso-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>单点登陆作为在网络应用开发中非常常见的实践，有必要深入理解其实现机制。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h2><p>当企业内部业务变多时，尤其是在平台化规范化的过程中，不同系统、不同应用的帐号需要互通，简单来说就是『一次登录，处处畅通』，即所谓的『单点登录』。具体到实现方式，可以参考 QQ 的做法。主要分两类，一类是针对第三方的接入，主要是通过 OAuth 协议进行授权，另一类是诸如 QQ 空间这样的第一方服务，就通过 SSO 来实现单点登录的功能。</p>
+<p>我们来细化一下具体的场景，在整个 SSO 过程中，参与的有：</p>
+<ul>
+<li>多个用户</li>
+<li>多个应用</li>
+<li>一个认证中心</li>
+</ul>
+<p>这里有两个关键点：</p>
+<ol>
+<li>应用不处理用户的登录，所有的登录都在认证中心进行</li>
+<li>认证中心通过后，不同应用通过认证中心返回的信息来进行下一步处理</li>
+</ol>
+<p>在认证中心进行认证的方式不一定是常规的邮箱或手机号，也可以有新浪、QQ、微信等帐号的第三方登录，甚至是手机动态密码或扫码等方式。</p>
+<p>不同的方案有很多，这里列举比较出名的几个：</p>
+<ul>
+<li><a href="https://forgerock.org/openam/" target="_blank" rel="external">OpenAM</a> 项目的前身是 OpenSSO（被 Oracle 收购后便关闭，这家公司不是一次两次做这种事儿了），好在 ForgeRock 公司在 2010 宣布会继续开发，也就是现在的 OpenAM 项目（换名字是因为 Oracle 拥有 OpenSSO 这个名字，你说损不损…）。支持的功能很多，按照官网的说法是『The only “all-in-one” access management solution that includes Authentication, SSO, Authorization, Federation, Entitlements, Adaptive Authentication, Strong Authentication, and Web Services Security, in a single, unified product』，简直拽到没朋友。不过是走 Java 那一套系统的，因为公司原有系统结构的缘故，暂时就先不考虑了。</li>
+<li><a href="http://web.mit.edu/kerberos/" target="_blank" rel="external">Kerberos</a> 是来自 MIT 的计算机网络认证协议，针对的就是客户端-服务器模型，特点是提供了一系列交互认证——用户和服务器都能验证对方的身份。Kerberos 协议可以保护网络实体免受窃听和重复攻击。更多信息可以查阅<a href="https://zh.wikipedia.org/wiki/Kerberos" target="_blank" rel="external">维基百科: Kerberos 词条</a>，介绍得还是非常清晰的。</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E9%9B%86%E4%B8%AD%E5%BC%8F%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1" target="_blank" rel="external">CAS</a> 是耶鲁大学发起的开源项目，简单来说，CAS 是最简单实效，而且足够安全的 SSO 选择，旨在为 Web 应用系统提供一种可靠的单点登录方法。这个方案的问题在于公司业务主要基于 Rails，但是 Rails 上相关的库乏善可陈而且文档非常『稀疏』，暂时还在考虑具体的方式</li>
+<li><a href="https://shibboleth.net/" target="_blank" rel="external">Shibboleth</a> 也是广泛使用的一套身份验证系统，CMU 用的就是它！每个组建都是开源免费的，主要包括三大部分：Identity Provider(IdP), Native Service Provider(SP) 和 Discovery Service(DS)。具体还需要仔细研究一下，不过我更倾向于这种。</li>
+</ul>
+<h2 id="u539F_u7406"><a href="#u539F_u7406" class="headerlink" title="原理"></a>原理</h2><h3 id="u57FA_u672C_u767B_u5F55"><a href="#u57FA_u672C_u767B_u5F55" class="headerlink" title="基本登录"></a>基本登录</h3><p>在开始具体介绍 SSO 及相关协议之前，我们先来简单了解一下登录的原理。</p>
+<p>现在似乎已经很难找到不需要登录就可以深度体验全部功能的网站了（我的博客是一个例外，哈），为什么我们输入用户名密码之后，理论上『无状态』的 HTTP 连接就变得『有（登录）状态』了呢？其中的奥秘在 Cookie 和 Session 中。</p>
+<p>当我们第一次访问某个新网站时，服务器会创建一个新的 Session 对象和对应的 Cookie，并且把 Cookie 写入到用户的浏览器中。下一次访问同一网站时，浏览器会在发送请求的时候捎带上 Cookie，服务器就根据 Cookie 找到该浏览器对应的 Session。用户一旦登录成功，服务器会在其 Session 中写入用户信息，在此之后服务器便可以通过 Cookie 得到对应的 Session，并据此读取当前用户的信息。</p>
+<p>小结一下：Cookie 保存在用户的浏览器中，Session 对象存放在服务器中，服务器根据随请求发来的 Cookie 找到对应的 Session 来判断用户的身份。看起来非常合理，但是这里我们隐含了一个假设：只有一台服务器。</p>
+<p>如果我们的后端是服务器集群，第一次用户的请求是 Server1 处理，第二次是 Server2 处理，因为第一次产生的 Session 是存放在 Server1 的，所以第二次访问 Server2 的时候，并没有对应的 Session 信息，便出现异常。</p>
+<p>这怎么办？比较常用的办法有三种：</p>
+<ol>
+<li>稳定分发，意思就是同一个浏览器发送来的请求，只会发给同一台服务器。这种方式简单粗暴，但是很难做负载均衡，实际上也把服务器集群劣化成了单点失败的系统，所以不建议采用。</li>
+<li>Session 复制，意思是 Server 之间进行 Session 的同步，保证两边的数据一致。这种方式需要额外的计算和带宽资源，而且同步的问题是非常棘手且容易出错的，不到万不得已也不建议。</li>
+<li>Session 共享，比方说使用 Redis 来保存 Session，不同的服务器都访问同一个 Redis 来进行 Session 的存取。</li>
+</ol>
+<p>这样一来，我们的系统就支持登录功能了。</p>
+<h3 id="u5355_u70B9_u767B_u5F55"><a href="#u5355_u70B9_u767B_u5F55" class="headerlink" title="单点登录"></a>单点登录</h3><p>前面的基本登录是针对于一个系统的，但是一般公司内部会有各种各样的系统，而且因为历史原因每个系统的登录往往是分开的，系统一多就很麻烦。这时候如果我们想一处登录处处畅通的话，就需要处理下面几个问题：</p>
+<ol>
+<li>用户数据如何维护？<ul>
+<li>各自维护：每个系统不需要做太大变动，但是最好保证相同用户的登录名一致</li>
+<li>主从维护：选一个系统作为主系统，其他的系统从该系统同步</li>
+<li>独立维护：独立于原来的系统的一套专有系统</li>
+</ul>
+</li>
+<li>用户数据如何同步？（针对于后两种维护方式）<ul>
+<li>主系统推送：子系统单点故障容易导致数据不一致</li>
+<li>子系统定期同步：不能达到实时，比方说用户更换头像不能及时同步过去</li>
+<li>用户登录后更新：无法控制用户的访问</li>
+<li>最好根据实际情况挑选一个或多个来配合实现</li>
+</ul>
+</li>
+<li>用户权限如何设计？<ul>
+<li>割据模式：不同系统自行决定</li>
+<li>分封模式：主系统只指定子系统的超级管理员</li>
+<li>集权模式：主系统定义各种用户的角色权限</li>
+<li>其中割据模式不推荐，集权模式比较适用于新系统，分封模式可以用作过渡</li>
+</ul>
+</li>
+<li>系统如何实现？<ul>
+<li>共享 Cookie：前面提到过，如果不同的 session 共用一个 Cookie 不就可以统一验证了嘛，但是需要域名相同，并且也不是太安全，不建议</li>
+<li>Ticket 验证：<ul>
+<li>用户访问某个子系统，发现如果未登录，则引导用户跳转到 SSO 登录页面</li>
+<li>判断 SSO 是否已经登</li>
+<li>如果已经登录，直接跳转到回调地址，并返回认证 ticket</li>
+<li>如果未登录，用户正确输入用户名/密码，认证通过跳转到回调地址，并返回认证 ticket</li>
+<li>子系统获取 ticket，调用 SSO 获取用户 uid 等信息，成功后让用户登录</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>前面提到过 CAS 协议，接下来我们会以此为主介绍 SSO 的具体实现细节。</p>
+<h2 id="u6DF1_u5165_u7406_u89E3_CAS"><a href="#u6DF1_u5165_u7406_u89E3_CAS" class="headerlink" title="深入理解 CAS"></a>深入理解 CAS</h2><p>一般来说 CAS 包含两部分：CAS Server 和 CAS Client。前者需要独立部署，负责用户认证工作，后者则是放在应用中（主要就是 Web 应用），并把所有的认证请求都重定向到 CAS Server 中。</p>
+<p>继续之前我们来了解三个术语：</p>
+<blockquote>
+<p>Ticket Granting Ticket(TGT)</p>
+</blockquote>
+<p>TGT 是 CAS 为用户签发的登录票据，拥有了 TGT，用户就可以证明自己在 CAS 成功登录过。TGT 封装了 Cookie 值以及此 Cookie 值对应的用户信息。用户在 CAS 认证成功后，CAS 生成 cookie（叫 TGC），写入浏览器，同时生成一个 TGT 对象，放入自己的缓存，TGT 对象的 ID 就是 cookie 的值。当 HTTP 再次请求到来时，如果传过来的有 CAS 生成的 cookie，则 CAS 以此 cookie 值为 key 查询缓存中有无 TGT，如果有的话，则说明用户之前登录过，如果没有，则用户需要重新登录。</p>
+<blockquote>
+<p>Ticket-granting cookie(TGC)</p>
+</blockquote>
+<p>存放用户身份认证凭证的 cookie，在浏览器和 CAS Server 间通讯时使用，并且只能基于安全通道传输（Https），是 CASServer 用来明确用户身份的凭证</p>
+<blockquote>
+<p>Service ticket(ST)</p>
+</blockquote>
+<p>服务票据，服务的惟一标识码 , 由 CASServer 发出（Http 传送），用户访问 Service 时， service 发现用户没有 ST，则要求用户去 CAS 获取 ST。用户向 CAS 发出获取 ST 的请求， CAS 发现用户有 TGT，则签发一个 ST，返回给用户。用户拿着 ST 去访问 service，service 拿 ST 去 CAS 验证，验证通过后，允许用户访问资源。</p>
+<h3 id="u5DE5_u4F5C_u6D41_u7A0B"><a href="#u5DE5_u4F5C_u6D41_u7A0B" class="headerlink" title="工作流程"></a>工作流程</h3><p>整个流程在前面有简单介绍过，现在具体说明一下：</p>
+<ol>
+<li>我们首次访问子系统时，通过内嵌的 CAS Client 经浏览器发送访问请求，此时没有 Session 也没有 ST，所以会重定向到 CAS Server</li>
+<li>请求发送到 CAS Server 后，因为浏览器中没有 cookie，所以服务器无法获取 TGC，这时候我们需要重新登录</li>
+<li>转到登录界面后，用户输入正确的凭证(Credentials)后认证成功，服务器生成对应的 cookie 并写入浏览器，同时生成一个 TGT 对象，然后根据 TGT 生成 ST，最后附带着 ST 把请求重定向到 CAS Client</li>
+<li>CAS Client 接收到 ST 之后，会去 CAS Server 验证，成功之后 CAS Server 返回对应的用户信息</li>
+<li>CAS Client 根据对应的信息进行内容展示。为什么收到 ST 后还要验证呢？因为目前只有 CAS Server 知道该用户登录了，但是对于子应用来说并不知道，所以要验证</li>
+<li>当用户访问另一个子应用的时候，同样会被重定向到 CAS Server，这时候用户是带有对应的 TGC 的</li>
+<li>如果此时 TGC 没有失效，那么返回第三步，生成 ST 并重定向；如果 TGC 失效了，用户需要重新登录，也就是返回第二步</li>
+</ol>
+<p>简单来说，就是 1 个 Cookie 配合 多个 Session 的套路。CAS Server 创建的 cookie 在所有应用中登录时使用，各应用通过创建各自的 session 来标识应用是否已经登录。</p>
+<h3 id="u5B89_u5168"><a href="#u5B89_u5168" class="headerlink" title="安全"></a>安全</h3><p>作为统一的验证机制，自然而然就把所有的脆弱性集中到了一起，于是安全就成了重中之重。CAS 协议从最开始就很依赖 SSL，所以之前的 SSL 漏洞着实影响着很多系统。</p>
+<p>在 CAS 系统中，最重要的要数 TGC，如果 TGC 泄露，黑客就能够利用 TGC 来冒充子应用骗过 CAS Server。</p>
+<p>那么具体在应用中可以注意什么呢？</p>
+<ul>
+<li>根据业务需求设定合适的 TGC 存活周期</li>
+<li>ST 只使用一次，并且在一段时间后失效</li>
+<li>ST 需要足够随机，不能太容易被猜中</li>
+</ul>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://dev.cmcm.com/archives/238" target="_blank" rel="external">SSO单点登录的实现</a></li>
+<li><a href="http://www.cnblogs.com/yupeng/archive/2012/05/24/2517317.html" target="_blank" rel="external">单点登录SSO</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/web/wa-singlesign/" target="_blank" rel="external">构建和实现单点登录解决方案</a></li>
+<li><a href="https://www.itlipeng.cn/?p=767" target="_blank" rel="external">一个单点登录系统（SSO）设计</a></li>
+<li><a href="http://www.ittenyear.com/119/sso-compare/" target="_blank" rel="external">单点登录方案的比较和选择</a></li>
+<li><a href="https://yq.aliyun.com/articles/42566?spm=5176.8067842.tagmain.17.lKuJ5Z" target="_blank" rel="external">单点登录是怎么回事</a></li>
+<li><a href="https://yq.aliyun.com/articles/42569?spm=5176.8067842.tagmain.11.lKuJ5Z" target="_blank" rel="external">CAS的登录和注销原理</a></li>
+<li><a href="https://apereo.github.io/cas/4.2.x/index.html" target="_blank" rel="external">CAS HomePage</a></li>
+<li><a href="http://www.cncoders.net/article/10927/" target="_blank" rel="external">CAS 实现单点登录（SSO）基本实现流程</a></li>
+<li><a href="http://www.cnblogs.com/yonsin/archive/2009/08/29/1556423.html" target="_blank" rel="external">SSO 原理</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/安全/" rel="tag">#安全</a>
+          
+            <a href="/tags/登陆/" rel="tag">#登陆</a>
+          
+            <a href="/tags/网络/" rel="tag">#网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/27/ren-zhi-qiang-said/" rel="next" title="【野心优雅】大，人">
+                <i class="fa fa-chevron-left"></i> 【野心优雅】大，人
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/03/on-jupiter/" rel="prev" title="第三周 - 在木星">
+                第三周 - 在木星 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/06/28/sso-guide/"
+           data-title="SSO 单点登录指南" data-url="http://wdxtub.com/2016/06/28/sso-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u4ECB"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u539F_u7406"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u57FA_u672C_u767B_u5F55"><span class="nav-number">2.1.</span> <span class="nav-text">基本登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5355_u70B9_u767B_u5F55"><span class="nav-number">2.2.</span> <span class="nav-text">单点登录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6DF1_u5165_u7406_u89E3_CAS"><span class="nav-number">3.</span> <span class="nav-text">深入理解 CAS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5DE5_u4F5C_u6D41_u7A0B"><span class="nav-number">3.1.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5B89_u5168"><span class="nav-number">3.2.</span> <span class="nav-text">安全</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

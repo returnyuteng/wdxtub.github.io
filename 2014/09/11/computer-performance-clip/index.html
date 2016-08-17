@@ -1,0 +1,1056 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="结构,计算机系统,课本," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="从性能角度出发也是很好的认识计算机的方式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【计算机组成与体系结构 性能设计】读书笔记">
+<meta property="og:url" content="http://wdxtub.com/2014/09/11/computer-performance-clip/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="从性能角度出发也是很好的认识计算机的方式">
+<meta property="og:updated_time" content="2016-07-28T22:16:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【计算机组成与体系结构 性能设计】读书笔记">
+<meta name="twitter:description" content="从性能角度出发也是很好的认识计算机的方式">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 【计算机组成与体系结构 性能设计】读书笔记 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【计算机组成与体系结构 性能设计】读书笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-09-11T07:10:28+08:00" content="2014-09-11">
+              2014-09-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Reading/" itemprop="url" rel="index">
+                    <span itemprop="name">Reading</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/09/11/computer-performance-clip/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/11/computer-performance-clip/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>从性能角度出发也是很好的认识计算机的方式</p>
+<a id="more"></a>
+<hr>
+<p>SimpleScalar 和 SMPCache</p>
+<h2 id="u8BA1_u7B97_u673A_u7684_u6F14_u53D8_u548C_u6027_u80FD"><a href="#u8BA1_u7B97_u673A_u7684_u6F14_u53D8_u548C_u6027_u80FD" class="headerlink" title="计算机的演变和性能"></a>计算机的演变和性能</h2><p>计算机的发展历史主要由提高处理器速度、减小部件尺寸、增大存储容量、加快 I/O 能力和速度来表征</p>
+<p>导致处理器速度大幅度提高的一个关键因素是，缩减微处理器部件的尺寸，即减少部件间的距离，从而提高速度。然而近年来在速度上的真正增益却是来自于处理器的组成，这包括流水线处理技术和并行执行技术的大量使用，以及推测执行技术的使用（推测执行技术可使将来可能需要的指令提前探测性的执行）。所有这些技术的出发点是，最大限度地使处理器保持运行状态。</p>
+<p>计算机系统设计的一个关键问题是在各元器件之间的性能平衡，以便在一个领域内所获得的性能增益不被另一领域的滞后所妨碍。特别是，处理器速度的提高远超出存储器存储速度的提高，因此，包括高速缓存技术，从存储器到处理器的更宽的数据路径和更智能的存储芯片等多种技术，用来补偿这种平衡的失调。</p>
+<h2 id="u8BA1_u7B97_u673A_u529F_u80FD_u548C_u4E92_u8FDE_u7684_u9876_u5C42_u89C6_u56FE"><a href="#u8BA1_u7B97_u673A_u529F_u80FD_u548C_u4E92_u8FDE_u7684_u9876_u5C42_u89C6_u56FE" class="headerlink" title="计算机功能和互连的顶层视图"></a>计算机功能和互连的顶层视图</h2><p>指令周期的组成如下：首先取指令，随后取零个或多个操作数，再后存零个或多个操作数，最后是中断检查（若中断允许）。</p>
+<p>计算机系统的主要部件（处理器、主存、I/O 模块）为了交换数据和控制信号，需要进行互连。最流行的互连方式是使用多条线组成的共享系统总线。在当今系统中，通常采用层次式总线来改善性能</p>
+<p>总线的设计要素包括：仲裁（以集中式或分布式控制来裁决是否允许把型号发送到总线上）、时序（总线上的信号是与中央时钟同步，还是基于最近传送事件的异步传送）和宽度（地址线条数和数据线条数）</p>
+<h2 id="cache__u5B58_u50A8_u5668"><a href="#cache__u5B58_u50A8_u5668" class="headerlink" title="cache 存储器"></a>cache 存储器</h2><p>计算机的存储器被组织成层次结构。最顶层（最靠近处理器的一层）是处理器内的寄存器。接下来是一级或多级的高速缓存，当使用多级 cache 时，它们分别标记为 L1, L2 等。再往下的是主存，它通常由动态随机存储器 DRAM 构成，所有这些都被认为是系统内部的存储器。存储层次继续划分外部存储器，下一层通常是固定硬盘，再往下的是可装卸的存储设备，如光盘、磁带机等。</p>
+<p>沿着存储器层次结构自顶向下，存储器成本也逐层下降，其容量在变大，而存取时间在边长。只使用最快的存储器当然好，但是它也是最昂贵的，因此我们通过使用更多较慢的存储器，以便达到存取时间与成本之间的均衡。其中的技巧是，在存储器中恰当地组织程序和数据，使需要存取的数据通常在较快的存储器中。</p>
+<p>通常，处理器将要访问的主存位置极有可能是刚被访问过的或其临近的位置，所以 cache 会自动保存一些来自近期被使用过的 DRAM 字的副本（地址本身，或地址的一部分就是索引，索引的思维）。如果 cache 设计得合理，那么大多数时候处理器所需要的存储器数据便已经在 cache 中。</p>
+<h2 id="u5185_u90E8_u5B58_u50A8_u5668"><a href="#u5185_u90E8_u5B58_u50A8_u5668" class="headerlink" title="内部存储器"></a>内部存储器</h2><p>半导体随机存取存储器的两种基本形式是动态 RAM（DRAM）和静态 RAM（SRAM）。SRAM 比 DRAM 存取速度快、价格更昂贵，并且集成度较低，一般用于 cache 存储器。而 DRAM 一般用于主存储器。</p>
+<p>存储器系统中通常都使用纠错技术，这包括添加一些与原数据位成函数关系的冗余位来构成纠错码。如果出现错误位，纠错码会检测并通常能纠正该错误位。</p>
+<p>为了补偿 DRAM 相对较低的速度，现已推出几种先进的 DRAM 组织。使用最普遍的两种是同步 DRAM 和总线式 DRAM(Rambus DRAM)。两者都使用系统时钟以支持数据块传送。</p>
+<h2 id="u5916_u90E8_u5B58_u50A8_u5668"><a href="#u5916_u90E8_u5B58_u50A8_u5668" class="headerlink" title="外部存储器"></a>外部存储器</h2><p>磁盘至今仍然是最重要的外部存储器。从个人计算机到大型机，乃至超级计算机，都广泛使用活动式磁盘和固定式磁盘（硬盘）。</p>
+<p>为了实现更高的性能和更好的可用性，服务器以及更大的系统使用 RAID 磁盘技术。RAID 使用了多个磁盘座位数据存储设备的并行阵列的一系列技术，并具有内在冗余性来弥补磁盘故障。</p>
+<h2 id="u8F93_u5165_/__u8F93_u51FA"><a href="#u8F93_u5165_/__u8F93_u51FA" class="headerlink" title="输入 / 输出"></a>输入 / 输出</h2><p>计算机系统的 I/O 体系结构是系统与外部世界的接口。这种体系结构提供了一种控制计算机与外部世界交互的系统化方式，并向操作系统提供有效地管理 I/O 行为的必要信息。</p>
+<p>有 3 种基本的 I/O 技术：编程式 I/O (Programmed I/O) 技术，即在请求 I/O 操作的程序的直接和连续的控制下所发生的 I/O 操作；中断驱动式 I/O (Interrupt-driver I/O) 技术，即程序发出 I/O 命令后继续执行，直到被 I/O 硬件中断，通知它 I/O 操作完成；还有直接存储器存取(DMA) 技术，即一个专门的 I/O 处理器接管 I/O 操作的控制，在 I/O 设备与存储器之间直接传送大量数据</p>
+<p>除了处理器和一组存储器模块外，计算机系统的第三个关键部件是一组输入 / 输出模块。每个模块连接到系统总线或中央交换器，并且控制一个或多个外围设备。一个 I/O 模块不是简单地将设备连接到系统总线的一组机械连接器，而是包含了执行设备与系统总线之间通信功能的逻辑。</p>
+<p>为什么不把外设直接连接到系统总线上，原因如下：</p>
+<ul>
+<li>各种外设的操作方法是不同的，将控制一定范围的外设的必要逻辑合并到某个处理器内是不现实的</li>
+<li>外设的数据传送速度一般比存储器或处理器慢得多，因此，使用高速的系统总线直接与外设通信是不切实际的</li>
+<li>另一方面，某些外设的数据传送速率比存储器或处理器要快，同样，若不适当管理，则速度失配将导致无效</li>
+<li>外设使用的数据格式和字长度通常与处理器不同</li>
+</ul>
+<p>因此 I/O 模块是必须的，它有两大主要功能</p>
+<ul>
+<li>通过系统总线或中央交换器与处理器和存储器连接</li>
+<li>通过专用数据线与一个或多个外设连接</li>
+</ul>
+<h2 id="u64CD_u4F5C_u7CFB_u7EDF_u652F_u6301"><a href="#u64CD_u4F5C_u7CFB_u7EDF_u652F_u6301" class="headerlink" title="操作系统支持"></a>操作系统支持</h2><p>操作系统是控制程序在处理器上执行和管理该处理器资源的软件。操作系统具有许多功能，包括进程调度和存储管理，但这些功能的实现离不开处理器硬件的支持。事实上，所有处理器都或多或少具备这种能力，如虚拟存储器管理硬件和进程管理硬件。这些硬件包括专用寄存器、缓冲器以及完成基础资源管理任务的电路。</p>
+<p>操作系统最重要的功能之一是进程或任务的调度，操作系统决定在给定时间内运行哪个进程。一般情况下，硬件不断中断运行进程，使操作系统做出新的调度裁决，从而使处理器时间被几个进程公平分配。</p>
+<p>操作系统的另一个重要功能是存储管理。大多数当代操作系统都包含虚拟存储器的功能，虚拟存储器有两个优点：1）进程在主存中运行时不需要将程序的全部指令和数据一次性地装入主存；2）程序可用的总存储空间可以大大超过系统的实际主存容量。虽然存储管理是用软件完成的，但操作系统依赖于处理器中的硬件支持，包括分页管理硬件和分段管理硬件。</p>
+<h2 id="u8BA1_u7B97_u673A_u7B97_u672F"><a href="#u8BA1_u7B97_u673A_u7B97_u672F" class="headerlink" title="计算机算术"></a>计算机算术</h2><p>计算机算数涉及的两个基本方面是数的表示方法（二进制格式）和基本算术运算（加减乘除）的算法。这两个方面既适用于整数算术、也适用于浮点算术。</p>
+<p>浮点数表示成一个数（有效值，significant）乘以一个定值（基值，base） 的某个整数幂（指数，exponent）。浮点数能够表示很大的数和很小的数。</p>
+<p>大多数处理器都实现了 IEEE 754 标准，用于浮点表示和浮点运算。IEEE 754 定义了 32 位和 64 位两种浮点数格式。</p>
+<h2 id="u6307_u4EE4_u96C6_uFF1A_u7279_u5F81_u548C_u529F_u80FD"><a href="#u6307_u4EE4_u96C6_uFF1A_u7279_u5F81_u548C_u529F_u80FD" class="headerlink" title="指令集：特征和功能"></a>指令集：特征和功能</h2><p>计算机指令最重要的元素是操作码（opcode），它指明将完成的操作、源和目的操作数的引用方式，并通常隐式指明下一条指令的来源。</p>
+<p>操作码指定的操作，一般可有如下类型：算术和逻辑运算，在两个寄存器、寄存器和存储器或存储器两个位置之间传送数据，输入/输出，控制。</p>
+<p>操作数引用方式指定如何寻找被操作数据的寄存器或存储器的位置。数据类型可以是地址、数值、字符或逻辑数据。</p>
+<p>各类处理器中的一个普遍的体系结构是栈 stack 的使用，栈对程序员是可见的或是不可见的。栈用于管理过程的调用和返回，也可用来提供另一种寻址存储器的方式。栈的基本操作是 PUSH 和 POP，以及在栈顶部一或两个位置上完成的操作。一般来说，栈都实现为从高地址向低地址增长。</p>
+<p>字节可以寻址的处理器可分为大端（big endian）、小端（little endian）、双端（bi-endian）这几类。如果多字节的数值是以最高有效字节存于最低地址值的字节来顺序存储，则称为大端；如果它们是以最低有效字节存于最低地址值的字节来顺序存储，则称为小端。既支持大端又支持小端的处理器是双端处理器。</p>
+<h2 id="u6307_u4EE4_u96C6_uFF1A_u5BFB_u5740_u65B9_u5F0F_u548C_u6307_u4EE4_u683C_u5F0F"><a href="#u6307_u4EE4_u96C6_uFF1A_u5BFB_u5740_u65B9_u5F0F_u548C_u6307_u4EE4_u683C_u5F0F" class="headerlink" title="指令集：寻址方式和指令格式"></a>指令集：寻址方式和指令格式</h2><p>指令的操作数引用有两种形式：一是指令中含有操作数的实际值（立即数），而是指令中含有对操作数地址的引用。各种指令集使用类型广泛的寻址方式。这包括直接寻址（操作数地址在指令的地址字段中）、间接寻址（地址字段指向一个存储位置，此位置含有操作数地址）、寄存器寻址、寄存器间接寻址，以及各种形式的偏移寻址（寄存器值加上地址值产生操作数地址）。</p>
+<p>指令格式定义了指令中字段的布局。指令格式设计是一件非常复杂的事情，要考虑到诸多因素，如指令长度是定长还是变长，指派给操作码和每个操作数引用的位数，以及如何确定寻址方式等。</p>
+<h2 id="CPU__u7ED3_u6784_u548C_u529F_u80FD"><a href="#CPU__u7ED3_u6784_u548C_u529F_u80FD" class="headerlink" title="CPU 结构和功能"></a>CPU 结构和功能</h2><p>处理器包括用户可见的寄存器和控制/状态寄存器。用户可见寄存器是指，用户使用机器指令显式或隐式可访问的寄存器。它们可以是通用寄存器，也可以是用于定点或浮点数、地址、变址和段指针这样的专用寄存器。控制和状态寄存器用于控制 CPU 的操作。一个明显的例子是程序计数器。另一重要的例子是程序状态字（PSW），它包含各种状态和条件位，例如反映最近一次算术运算结果的标志位、中断允许位和指示 CPU 当前运行于特权模式下还是用户模式下的状态位。</p>
+<p>处理器采用指令流水方式来加速指令的执行。从本质上讲，流水是将指令周期分解成几个连续出现的阶段，如取指令、译码指令、确定操作数地址、取操作数、执行指令和写结果操作数。指令向前移动通过这些段，就像车间的一条装配线一样；于是，不同的指令能同时在各个段上工作。不过，转移和指令间相关性的出现，使流水线的设计和使用变得复杂了。</p>
+<h2 id="u7CBE_u7B80_u6307_u4EE4_u96C6_u8BA1_u7B97_u673A"><a href="#u7CBE_u7B80_u6307_u4EE4_u96C6_u8BA1_u7B97_u673A" class="headerlink" title="精简指令集计算机"></a>精简指令集计算机</h2><p>对设计新型处理器体系结构来说，高级语言程序行为的研究具有指导意义，成果之一就是产生了精简指令集计算机（RISC）。程序中赋值语句占最大份额，这暗示着简单的数据传送应当优化。程序中还是许多 IF 和 LOOP 语句，意味着基本的顺序控制机制需要进行优化，以便有效地使用流水技术。操作数引用样式的研究表明，在寄存器中保持适当数量的操作数会有助于性能的提高</p>
+<p>这些研究已导出 RISC 机器的关键特征：其一，有限的指令集并具有固定格式；其二，大量的寄存器或利用编译器来优化寄存器的使用；其三，强调对指令流水线的优化。</p>
+<p>RISC 的简单指令集便于有效的流水化，因为每条指令只有少数几种操作，并且这些操作是比较容易确定的。RISC 指令集体系结构自身也有助于实施延迟分支（delayed branch） 技术，这种技术将分支指令和其他指令重排从而提高流水线效率。</p>
+<h2 id="u6307_u4EE4_u7EA7_u5E76_u884C_u6027_u548C_u8D85_u6807_u91CF_u5904_u7406_u5668"><a href="#u6307_u4EE4_u7EA7_u5E76_u884C_u6027_u548C_u8D85_u6807_u91CF_u5904_u7406_u5668" class="headerlink" title="指令级并行性和超标量处理器"></a>指令级并行性和超标量处理器</h2><p>超标量处理器是一种使用多条相互独立的指令流水线的处理器。每条流水线由多个段（stage）组成，因此每条流水线能同时处理多条指令。多流水线引入了新一级并行性，允许同时处理多个指令流。超标量处理器利用了所谓的指令级并行性（instruction-level parallelism），指令级并行性指的是程序中的指令可以并行执行。</p>
+<p>超标量处理器一次取多条指令，然后试图找出几条彼此不相关因而能够并行执行的指令。如果一条指令的输入取决于前面指令的输出，则这条指令不能同时，更不能先于前面指令完成执行。一旦这种相关性被确认，处理器可以以不同于原来代码的顺序发射和完成指令。</p>
+<p>通过使用更多的寄存器，或对原代码中的寄存器引用换名，处理器可取消某些不必要的相关性</p>
+<p>纯 RISC 处理器经常使用延迟分支来最大限度地利用指令流水线，然而，这种方法不太适用于超标量处理器，大多数超标量机器使用了传统的分支预测法来提高流水线效率。</p>
+<p>超标量实现的处理器结构是指，在这样的结构中，包括整数和浮点运算、装载、保存以及条件分支之类的普通指令，能通水启动并独立执行。这种实现引出了涉及指令流水线的几个复杂问题。</p>
+<p>超标量设计紧跟 RISC 体系结构的脚步。虽然 RISC 机器的精简指令集体系结构自身已倾向于应用超标量技术，但超标量方法既能用于 RISC 也能用于 CISC 体系结构。</p>
+<h2 id="u63A7_u5236_u5668_u64CD_u4F5C"><a href="#u63A7_u5236_u5668_u64CD_u4F5C" class="headerlink" title="控制器操作"></a>控制器操作</h2><p>一条指令的执行涉及一系列的统称为周期的子步骤。例如，一条指令的执行可由取指、间接寻址、执行和中断周期组成。每个周期又是由一系列更基本的操作（称为微操作）组成。一个单一的微操作可以完成寄存器间的一次传送，寄存器与外部总线的一次传送，或一个简单的 ALU 操作。</p>
+<p>处理器的控制器完成两项任务：1）它使得处理器以正在运行的程序所确定的次序来执行微操作；2）它产生引起微操作执行的控制信号。</p>
+<p>控制器产生的控制信号引起逻辑门的打开与管理，从而导致寄存器数据的传送和 ALU 的操作。</p>
+<p>一种控制器的实现技术是硬布线技术，采用此技术实现的控制器是一个组合电路。当前机器指令支配的输出逻辑信号被转换为一组输出控制信号</p>
+<h2 id="u5E76_u884C_u5904_u7406"><a href="#u5E76_u884C_u5904_u7406" class="headerlink" title="并行处理"></a>并行处理</h2><p>提高系统性能的传统方式是使用多个处理器，它们能并行执行，以支持给定的工作负载。两种最普遍的多处理器组织方式是对称多处理器（symmetric multiprocessor, SMP）和集群（cluster）。</p>
+<p>SMP 由多个相同或相类似的处理器组成，以总线或某种开关阵列互连成一台计算机。SMP 所需解决的最重要问题是 cache 一致性。每个处理器都有自己的 cache，于是某一行数据可能出现在不止一个 cache 中，如果该行在一个 cache 中被修改，则主存和其他 cache 保存的将是此行的无效版本。cache 一致性协议设计用来解决这个问题</p>
+<h2 id="u591A_u6838_u8BA1_u7B97_u673A"><a href="#u591A_u6838_u8BA1_u7B97_u673A" class="headerlink" title="多核计算机"></a>多核计算机</h2><p>多核计算机或者多核处理器，在一个计算机芯片上有两个或多个处理器。由于硬件性能问题，使用更多单个处理器芯片已达到一个极限，包括指令层并行和功耗的限制。另一方面，多核体系结构给软件开发者探索多核上的多线程能力提出挑战。多核结构的主要变量是芯片处理器的数目、cache 存储器级数、cache 共享的程度。多核系统中另一个结构上的设计决策是单个内核是超标量或者实现并发多线程（SMT）</p>
+<h2 id="u5173_u952E_u8BCD"><a href="#u5173_u952E_u8BCD" class="headerlink" title="关键词"></a>关键词</h2><ul>
+<li>arithmetic and logic unit, ALU: 算数逻辑单元</li>
+<li>control processing unit, CPU: 中央处理单元，中央处理器</li>
+<li>computer architecture: 计算机体系结构，计算机系统结构</li>
+<li>computer organization: 计算机组成，计算机组织</li>
+<li>control unit: 控制器，控制单元</li>
+<li>main memory: 主存</li>
+<li>processor: 处理器</li>
+<li>registers: 寄存器</li>
+<li>system bus: 系统总线</li>
+<li>accumulator AC: 累加器</li>
+<li>Amdahl’s law</li>
+<li>benchmark: 基准程序</li>
+<li>chip: 芯片</li>
+<li>data channel: 数据通道</li>
+<li>embedded system: 嵌入式系统</li>
+<li>execute cycle: 执行周期</li>
+<li>fetch cycle: 取指周期</li>
+<li>instruction buffer register IBR: 指令缓冲寄存器</li>
+<li>instruction register IR: 指令寄存器</li>
+<li>instruction set: 指令集</li>
+<li>integrated circuit IC: 集成电路</li>
+<li>memory address register MAR: 存储器地址寄存器</li>
+<li>memory buffer register MBR: 存储器缓冲寄存器</li>
+<li>microprocessor: 微处理器</li>
+<li>multicore: 多核</li>
+<li>multiplexor: 多路选择器</li>
+<li>opcode: 操作码</li>
+<li>original equipment manufacturer OEM: 原始设备制造商</li>
+<li>program control unit: 程序控制器，程序控制单元</li>
+<li>program counter PC: 程序计数器</li>
+<li>SPEC: 系统性能评估公司</li>
+<li>stored program computer: 存储程序式计算机</li>
+<li>upward compatible: 向上兼容</li>
+<li>wafer: 晶片</li>
+<li>word: 字</li>
+<li>address bus: 地址总线</li>
+<li>asynchronous timing: 异步时序</li>
+<li>bus arbitration: 总线仲裁</li>
+<li>bus width: 总线宽度</li>
+<li>centralized arbitration: 集中式仲裁</li>
+<li>data bus: 数据总线</li>
+<li>disable interrupt: 禁止中断</li>
+<li>distributed arbitration: 分布式仲裁</li>
+<li>instruction cycle: 指令周期</li>
+<li>instruction execute: 指令执行</li>
+<li>instruction fetch: 取指令</li>
+<li>interrupt: 中断</li>
+<li>interrupt handler: 中断处理</li>
+<li>interrupt service routine: 中断服务程序</li>
+<li>peripheral component interconnect PCI: 外设部件互连</li>
+<li>synchronous timing: 同步时序</li>
+<li>system bus: 系统总线</li>
+<li>associative mapping: 全相联映射</li>
+<li>high-performance computing, HPC: 高性能计算</li>
+<li>spatial locality: 空间局部性</li>
+<li>temporal locality: 时间局部性</li>
+<li>write back: 写回</li>
+<li>write through: 写直达</li>
+<li>error-correcting code, ECC: 纠错码</li>
+<li>Hamming code: 汉明码</li>
+<li>nonvolatile memory: 非易失性存储器</li>
+<li>single-error-correcting(SEC) code: 单纠错码</li>
+<li>single-error-correcting, double-error-detecting(SEC-DED) code: 单纠错双坚错码</li>
+<li>soft error: 软差错</li>
+<li>syndrome: 故障，综合故障</li>
+<li>volatile memory: 易失性存储器</li>
+<li>floppy disk: 软磁盘</li>
+<li>magnetoresistive: 磁阻</li>
+<li>multiple zoned recording: 多重区域记录</li>
+<li>optical memory: 光存储器</li>
+<li>pit: 凹坑</li>
+<li>platter: 盘片</li>
+<li>rotational delay: 旋转延迟</li>
+<li>sector: 扇区</li>
+<li>serpentine recording: 蛇形记录</li>
+<li>striped data: 条带数据</li>
+<li>substrate: 衬底</li>
+<li>cycle stealing: 周期窃取</li>
+<li>FireWire: 高速串行连接总线标准</li>
+<li>InfiniBand: 高端宽带 I/O 标准</li>
+<li>isolated I/O: 分离式 I/O</li>
+<li>memory-mapped I/O: 存储器映射式 I/O</li>
+<li>multiplexor channel: 多路转换通道</li>
+<li>parallel I/O: 并行 I/O</li>
+<li>peripheral device: 外围设备</li>
+<li>selector channel: 选择通道</li>
+<li>batch system: 批处理系统</li>
+<li>demand paging: 请求分页</li>
+<li>job control language, JCL: 作业控制语言</li>
+<li>process control block: 进程控制块</li>
+<li>resident monitor: 驻留的监控程序</li>
+<li>segmentation: 分段</li>
+<li>thrashing: 抖动</li>
+<li>time-sharing system: 分时系统</li>
+<li>arithmetic shift: 算术移位</li>
+<li>biased representation: 移码表示法</li>
+<li>denormalized number: 非规格化数</li>
+<li>dividend: 被除数</li>
+<li>divisor: 除数</li>
+<li>exponent overflow: 阶值上溢</li>
+<li>exponent underflow: 阶值下溢</li>
+<li>guard bits: 保护位</li>
+<li>mantissa: 尾数（有效值）</li>
+<li>minuend: 被减数</li>
+<li>multiplicand: 被乘数</li>
+<li>negative overflow: 负上溢</li>
+<li>negative underflow: 负下溢</li>
+<li>quotient: 商</li>
+<li>radix point: 小数点</li>
+<li>sign bit: 符号位</li>
+<li>sign-magnitude representation: 符号-幅值表示法</li>
+<li>subtrahend: 减数</li>
+<li>accumulator: 累加器</li>
+<li>operand: 操作数</li>
+<li>operation: 操作，运算</li>
+<li>packed decimal: 压缩的十进制数</li>
+<li>procedure call: 过程调用</li>
+<li>procedure return: 过程返回</li>
+<li>reentrant procedure: 可重入过程</li>
+<li>skip: 跳步</li>
+<li>autoindexing: 自动变址</li>
+<li>base-register addressing: 基值寄存器寻址</li>
+<li>displacement addressing: 偏移寻址</li>
+<li>effective address: 有效地址</li>
+<li>immediate addressing: 立即寻址</li>
+<li>indexing: 变址</li>
+<li>indirect addressing: 间接寻址</li>
+<li>instruction format: 指令格式</li>
+<li>postindexing: 后变址</li>
+<li>preindexing: 前变址</li>
+<li>register addressing: 寄存器寻址</li>
+<li>register indirect addressing: 寄存器间接寻址</li>
+<li>relative addressing: 相对寻址</li>
+<li>branch prediction: 分支预测</li>
+<li>condition code: 条件码</li>
+<li>delayed branch: 延迟分支</li>
+<li>instruction cycle: 指令周期</li>
+<li>instruction pipeline: 指令流水线</li>
+<li>instruction prefetch: 指令预取</li>
+<li>program status word: 程序状态字</li>
+<li>high-level language: 高级语言</li>
+<li>register file: 寄存器组</li>
+<li>register windows: 寄存器窗口</li>
+<li>SPARC: 可扩展处理器体系结构</li>
+<li>flow dependency: 流相关性</li>
+<li>in-order issue: 按序发射</li>
+<li>in-order completion: 按序完成</li>
+<li>micro-operations: 微操作</li>
+<li>out-of-order completion: 乱序完成</li>
+<li>out-of-order issue: 乱序发射</li>
+<li>output dependency: 输出相关性</li>
+<li>procedural dependency: 读写相关性</li>
+<li>retire: 回收</li>
+<li>superpipelined: 超级流水线式</li>
+<li>write-read dependency: 写读相关性</li>
+<li>write-write dependency: 写写相关性</li>
+<li>hardwired implementation: 硬布线实现</li>
+<li>simultaneous multithreading, SMT: 并发多线程</li>
+<li>superscalar: 超标量</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/结构/" rel="tag">#结构</a>
+          
+            <a href="/tags/计算机系统/" rel="tag">#计算机系统</a>
+          
+            <a href="/tags/课本/" rel="tag">#课本</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/09/11/code-future-clip/" rel="next" title="【代码的未来】读书笔记">
+                <i class="fa fa-chevron-left"></i> 【代码的未来】读书笔记
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/09/11/simplity-prior-clip/" rel="prev" title="【简约至上】读书笔记">
+                【简约至上】读书笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2014/09/11/computer-performance-clip/"
+           data-title="【计算机组成与体系结构 性能设计】读书笔记" data-url="http://wdxtub.com/2014/09/11/computer-performance-clip/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BA1_u7B97_u673A_u7684_u6F14_u53D8_u548C_u6027_u80FD"><span class="nav-number">1.</span> <span class="nav-text">计算机的演变和性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BA1_u7B97_u673A_u529F_u80FD_u548C_u4E92_u8FDE_u7684_u9876_u5C42_u89C6_u56FE"><span class="nav-number">2.</span> <span class="nav-text">计算机功能和互连的顶层视图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cache__u5B58_u50A8_u5668"><span class="nav-number">3.</span> <span class="nav-text">cache 存储器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5185_u90E8_u5B58_u50A8_u5668"><span class="nav-number">4.</span> <span class="nav-text">内部存储器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5916_u90E8_u5B58_u50A8_u5668"><span class="nav-number">5.</span> <span class="nav-text">外部存储器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8F93_u5165_/__u8F93_u51FA"><span class="nav-number">6.</span> <span class="nav-text">输入 / 输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u64CD_u4F5C_u7CFB_u7EDF_u652F_u6301"><span class="nav-number">7.</span> <span class="nav-text">操作系统支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BA1_u7B97_u673A_u7B97_u672F"><span class="nav-number">8.</span> <span class="nav-text">计算机算术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6307_u4EE4_u96C6_uFF1A_u7279_u5F81_u548C_u529F_u80FD"><span class="nav-number">9.</span> <span class="nav-text">指令集：特征和功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6307_u4EE4_u96C6_uFF1A_u5BFB_u5740_u65B9_u5F0F_u548C_u6307_u4EE4_u683C_u5F0F"><span class="nav-number">10.</span> <span class="nav-text">指令集：寻址方式和指令格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU__u7ED3_u6784_u548C_u529F_u80FD"><span class="nav-number">11.</span> <span class="nav-text">CPU 结构和功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7CBE_u7B80_u6307_u4EE4_u96C6_u8BA1_u7B97_u673A"><span class="nav-number">12.</span> <span class="nav-text">精简指令集计算机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6307_u4EE4_u7EA7_u5E76_u884C_u6027_u548C_u8D85_u6807_u91CF_u5904_u7406_u5668"><span class="nav-number">13.</span> <span class="nav-text">指令级并行性和超标量处理器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u63A7_u5236_u5668_u64CD_u4F5C"><span class="nav-number">14.</span> <span class="nav-text">控制器操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E76_u884C_u5904_u7406"><span class="nav-number">15.</span> <span class="nav-text">并行处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u591A_u6838_u8BA1_u7B97_u673A"><span class="nav-number">16.</span> <span class="nav-text">多核计算机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5173_u952E_u8BCD"><span class="nav-number">17.</span> <span class="nav-text">关键词</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

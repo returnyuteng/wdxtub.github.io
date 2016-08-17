@@ -1,0 +1,882 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="云,服务,架构," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="在云资源无比丰富的今天，公司核心新系统的设计开发，尤其是后台架构部分，如果不是仅仅为验证想法而做的 MVP，应该在一开始就考虑好如何利用云平台的特性，这样才能在业务增长时仍能游刃有余。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云平台架构沉思录">
+<meta property="og:url" content="http://wdxtub.com/2016/07/31/cloud-arch-thought/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="在云资源无比丰富的今天，公司核心新系统的设计开发，尤其是后台架构部分，如果不是仅仅为验证想法而做的 MVP，应该在一开始就考虑好如何利用云平台的特性，这样才能在业务增长时仍能游刃有余。">
+<meta property="og:updated_time" content="2016-07-31T07:18:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云平台架构沉思录">
+<meta name="twitter:description" content="在云资源无比丰富的今天，公司核心新系统的设计开发，尤其是后台架构部分，如果不是仅仅为验证想法而做的 MVP，应该在一开始就考虑好如何利用云平台的特性，这样才能在业务增长时仍能游刃有余。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 云平台架构沉思录 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                云平台架构沉思录
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-31T10:49:24+08:00" content="2016-07-31">
+              2016-07-31
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/31/cloud-arch-thought/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/31/cloud-arch-thought/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在云资源无比丰富的今天，公司核心新系统的设计开发，尤其是后台架构部分，如果不是仅仅为验证想法而做的 MVP，应该在一开始就考虑好如何利用云平台的特性，这样才能在业务增长时仍能游刃有余。</p>
+<a id="more"></a>
+<hr>
+<p>本文是我在设计新系统时的一些思考，剥离了具体的业务内容，但是仍会在业务层面关注各个系统组件的可用性和伸缩性，力求在设计中充分利用云计算的优势，同时为未来留有余地。简单来说，是结合企业的业务特点构建稳定可靠的分布式系统。</p>
+<h2 id="u4ED6_u5C71_u4E4B_u77F3"><a href="#u4ED6_u5C71_u4E4B_u77F3" class="headerlink" title="他山之石"></a>他山之石</h2><p>当当架构部总监史海峰在其为架构师杂志写的开卷语中列举的架构师自我修养工整且字字在理，这里摘抄如下，也算是对自己的鼓励和激励：</p>
+<ul>
+<li>以工程思维全面理解业务需求</li>
+<li>基于模型和基础模式抽象简化</li>
+<li>提出恰当可行的整体解决方案</li>
+<li>在限定资源范围完成明确目标</li>
+<li>满足业务需求且保证系统质量</li>
+<li>在可预见的周期内具备扩展性</li>
+<li>并在系统生命周期内持续演进</li>
+</ul>
+<p>架构能力的成长没有捷径，也不可能成为所谓的理论家，一定要在项目实践中不断思考积累经验，了解技术和业务发展趋势，用强大的自学能力补足各种短板，严格要求自己，用最大的动力朝抵抗力最大的路径走。当然，最重要的，有责任心，要对自己交付的每一行代码，每一张图片，每一句文字都负责。</p>
+<p>接下来就对云平台中比较重要的几个关键技术点进行简单说明，同时也有自己的一些思考。</p>
+<h2 id="u8D1F_u8F7D_u5747_u8861"><a href="#u8D1F_u8F7D_u5747_u8861" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>云平台对于用户来说是一个黑盒子，而负载均衡可以算得上是盒子内外的分界线，一个好的负载均衡机制，对于构建高性能高可用的网络架构非常重要。当然，一般来说凡事这类基础且需要一定技术水平才能做好的模块，目前的云平台都会提供，比方说 AWS ELB 就可以让开发人员告别繁琐的服务器配置，接入服务即可。不过即使如此，我们依旧需要了解其中的门道，这样即使需要自己搭建，也不至于手足无措。</p>
+<p>负载均衡会和几乎所有的服务器主机连接，具体如何保证网络安全就是一个大问题，一个解决方案是利用 VPC。把主机和系统资源放置在 VPC 网络中并指定内网网段，这样经负载均衡隔离，主机间与资源间只通过内网地址进行通信，就不至于暴露在公网。</p>
+<p>负载均衡一般来说有一台服务器负责扮演负载均衡器的角色，是一个单点问题，我们可以为其做冗余备份，一旦出现问题，立刻进行替换。具体涉及的技术一般是七层(Nginx, HAProxy)/四层(LVS)负载均衡，可以根据分发需求与性能需求进行选择；用来监控后端服务器可以使用简单的心跳检查。</p>
+<p>从上面的介绍可以看出，负载均衡的原理并不复杂，但是具体落地有太多需要注意的细节，如果不是特别在意价格，建议直接使用 AWS ELB 或其他云服务。</p>
+<h2 id="u7F13_u5B58_u7CFB_u7EDF"><a href="#u7F13_u5B58_u7CFB_u7EDF" class="headerlink" title="缓存系统"></a>缓存系统</h2><p>一般来说，为了增加服务质量和速度，都会有一个完整的缓存系统，起到数据共享交换以及提高访问速度的作用。缓存的方式有很多种，我们的业务主要在用 Redis，速度很快，支持的数据结构也比较丰富。</p>
+<p>因为涉及到共享数据，就不得不面对数据完整性与一致性的问题。目前在设计的系统的业务场景和滴滴出行的需求类似，即大部分请求是大部分请求是对数据进行修改，少部分请求对数据进行读取。比方说司机地理位置的即时变化是大量写入，而用户查看周围车辆的情况是少量读取。</p>
+<p>比方说可以保存一个 Map 的缓存，其中的键值对是司机的编号和司机当前的信息，在并发读写时这个 Map 是临界资源，用户量一上来，就不得不在处理锁的问题上耗费大量的时间，因为一锁就只能锁整个 Map，出现的问题和内存系统中 false sharing 有些类似。优化方法有两种，一种是类似于 MySQL 分库，把一个 Map 拆成多个 Map；另一种是把 Map 转换为数组，这样就可以针对每个数组元素加锁。后一种的精细度非常高，只不过锁本身的开销就会太大需要权衡。</p>
+<p>滴滴的解决办法很巧妙，直接去掉了锁，利用数据签名技术，在每次读取前都进行校验，一旦校验失败，则认为是 cache miss，这样就在性能成本较低的条件下保证了数据完整性。</p>
+<p>对我自己的启示是一定要多研究业务场景相似时其他公司的云架构，进行一定简化之后可以有效保证之后升级的快捷。</p>
+<h2 id="u4E1A_u52A1_u5C42"><a href="#u4E1A_u52A1_u5C42" class="headerlink" title="业务层"></a>业务层</h2><p>业务层最关键的问题其实就是服务质量。在版本稳定之后，可以考虑制作镜像，需要时开启并挂载到负载均衡即可，具体判断是否需要也可以通过 AutoScaling 来自动化这个过程，唯一需要注意的就是需要在实际环境中测试并设置好触发条件，前期肯定要投入不少人力。</p>
+<p>而如果是开发中，服务器环境和程序快速变化迭代的时候，最好依赖自动化部署工具，按照我一贯的思路，选择简单的，所以 Ansible 是不错的选择。</p>
+<p>还有一些需要注意的地方：</p>
+<ul>
+<li>服务器连接无状态，因为负载均衡分发使得上下文不可靠，每次请求都需要带上所有信息，是在需要上下文，保存到缓存或数据库中</li>
+<li>根据业务需求拆分服务，降低耦合性，即使子服务故障也不会影响系统的可用性，进行扩容时也更加灵活</li>
+<li>不同子服务的调用异步化，利用消息队列来实现，好处在于消息队列可以把数据进行多向发送，满足业务需求的同时，还能导入数据分析平台，更加灵活</li>
+</ul>
+<h2 id="u6570_u636E_u5C42"><a href="#u6570_u636E_u5C42" class="headerlink" title="数据层"></a>数据层</h2><p>业务相关的场景大多都是对数据库的增删查改，如果单机数据库已经无法满足需求，可以利用缓存配合一致性哈希来处理热点数据的访问，或者增加节点。对于大的，用于后期分析或存档的文件，可以考虑直接通过消息队列保存到 AWS S3 中。</p>
+<p>我个人是比较倾向于使用 NoSQL 数据库的，但是 NoSQL 没有所谓的万能钥匙，真正落地有太多可以优化的地方。主要有键值存储、文档数据库、列族存储、图数据库这么几类：列族重写入，文档更灵活，键值高性能，图处理关系。就目前的需求来说，图数据库配合文档数据库可能是比较好的选择，不过具体还需要进一步测试。</p>
+<p>数据库的性能优化就是个大问题了，虽然 NoSQL 在一定程度上摆脱了传统迂腐的 SQL 设计，不过一个设计精良的存储方式，能减轻很大的性能压力。</p>
+<h2 id="u540E_u7AEF_u6846_u67B6"><a href="#u540E_u7AEF_u6846_u67B6" class="headerlink" title="后端框架"></a>后端框架</h2><p>框架这个问题有太多可以说的，前段时间主要在做 Ruby on Rails 相关的工作，对于 Ruby 本身和 Rails 的设计思想有一定的了解。</p>
+<p>简单来说就是 DRY 原则 - Don’t Repeat Yourself。代码中有重复和相似地方不可避免，把这部分抽取出来，只写必须要写的代码，也就是所谓的业务逻辑。</p>
+<p>至于设计模式什么的，实话说我觉得有些过时，框架等于是在设计模式的基础上更上一层，极大提高了开发效率，但是却让开发者真正成为了搬砖的角色，个人觉得是非常痛苦的。</p>
+<p>为什么痛苦？我觉得最不能忍受的就是『我』成为了『框架』的一部分，就好比『我』要用『框架』，最后却发现是『框架』在用『我』，类似的，和『我以为自己在玩游戏其实却是在被游戏玩』一个感觉。</p>
+<p>但是，但是，这绝不是说真的就不需要框架。练剑的最高境界，是人剑合一，用框架也是如此，当我们了解了框架是怎么运作的，也就不再是框架的工人，而变成了框架本身。</p>
+<p>所以可以这么看，框架的选择就是系统个性的选择，按照我自己的习惯，当然是要走极简主义的轻框架，灵活且易于自定义，适合小团队。</p>
+<p>总结一下，具体选择什么框架，有以下这么几个考虑</p>
+<ul>
+<li>按照工作量和系统复杂度选择最合适的框架</li>
+<li>按照开发人员的风格选择最合适的框架</li>
+<li>按照业务需求和特点选择最合适的框架</li>
+</ul>
+<p>看起来都很虚，要慢慢悟。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>不谋万世者，不足以谋一时。虽然架构演进是一个漫长而艰巨的过程，但是加入一定程度的面向未来设计，后面随着业务发展也会少走一点弯路。</p>
+<p>希望自己在实践中也能牢记此律。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/云/" rel="tag">#云</a>
+          
+            <a href="/tags/服务/" rel="tag">#服务</a>
+          
+            <a href="/tags/架构/" rel="tag">#架构</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/29/rainbow/" rel="next" title="第七周 - 彩虹">
+                <i class="fa fa-chevron-left"></i> 第七周 - 彩虹
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/01/computer-science-corner/" rel="prev" title="计算机科学的角落">
+                计算机科学的角落 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/31/cloud-arch-thought/"
+           data-title="云平台架构沉思录" data-url="http://wdxtub.com/2016/07/31/cloud-arch-thought/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4ED6_u5C71_u4E4B_u77F3"><span class="nav-number">1.</span> <span class="nav-text">他山之石</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8D1F_u8F7D_u5747_u8861"><span class="nav-number">2.</span> <span class="nav-text">负载均衡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7F13_u5B58_u7CFB_u7EDF"><span class="nav-number">3.</span> <span class="nav-text">缓存系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E1A_u52A1_u5C42"><span class="nav-number">4.</span> <span class="nav-text">业务层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6570_u636E_u5C42"><span class="nav-number">5.</span> <span class="nav-text">数据层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u540E_u7AEF_u6846_u67B6"><span class="nav-number">6.</span> <span class="nav-text">后端框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

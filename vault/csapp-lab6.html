@@ -1,0 +1,828 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="在这个实验中，我们会实现自己的 malloc, free, realloc, calloc 函数，并借此深入理解堆中的内存分配机制。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="深入理解计算机系统 习题课 6 Malloclab">
+<meta property="og:url" content="http://wdxtub.com/vault/csapp-lab6.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="在这个实验中，我们会实现自己的 malloc, free, realloc, calloc 函数，并借此深入理解堆中的内存分配机制。">
+<meta property="og:image" content="http://wdxtub.com/images/14585171655720.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14585171934388.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14585192291308.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14585192921490.jpg">
+<meta property="og:updated_time" content="2016-03-24T12:58:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统 习题课 6 Malloclab">
+<meta name="twitter:description" content="在这个实验中，我们会实现自己的 malloc, free, realloc, calloc 函数，并借此深入理解堆中的内存分配机制。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    深入理解计算机系统 习题课 6 Malloclab | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>在这个实验中，我们会实现自己的 <code>malloc</code>, <code>free</code>, <code>realloc</code>, <code>calloc</code> 函数，并借此深入理解堆中的内存分配机制。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h2><p>老套路</p>
+<ul>
+<li>上传文件 <code>scp malloclab-handout.tar dawang@shark.ics.cs.cmu.edu:~/513</code></li>
+<li>登录 <code>ssh -X dawang@shark.ics.cs.cmu.edu</code></li>
+<li>解压 <code>tar xvf malloclab-handout.tar</code></li>
+</ul>
+<p>因为我比较习惯在本地写代码，所以把文件复制回来：</p>
+<ul>
+<li>服务器至本地<ul>
+<li><code>scp -r dawang@shark.ics.cs.cmu.edu:~/513/malloclab-handout/mm* ./</code></li>
+</ul>
+</li>
+<li>本地至服务器<ul>
+<li><code>scp ./mm.c dawang@shark.ics.cs.cmu.edu:~/513/malloclab-handout/</code></li>
+</ul>
+</li>
+</ul>
+<p>我们需要做的是完成在 <code>mm.c</code> 中的以下几个函数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mm_init</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">malloc</span><span class="params">(size_t size)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span> *ptr)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">realloc</span><span class="params">(<span class="keyword">void</span> *ptr, size_t size)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">calloc</span><span class="params">(size_t nmemb, size_t size)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mm_checkheap</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p><code>mm-naive.c</code> 中有一个简单的实现，另外 <code>mm-textbook.c</code> 中实现了课本中提到的 implicit list allocator。具体的函数介绍如下：</p>
+<ul>
+<li><code>mm-init</code>：在这里执行所有的初始化操作，包括分配初始的堆区域。注意，必须在这里重新初始化所有的全局变量，并且不要调用 <code>mem.init</code> 函数。成功的话返回 0 ，否则返回 -1</li>
+<li><code>malloc</code>：至少需要分配 <code>size</code> 这么大的空间（可能因为对齐的原因会更大一点，8 byte 对齐），不能超出堆的范围，也不能覆盖其他已分配的区域</li>
+<li><code>free</code>：释放 <code>ptr</code> 指针指向的区域（这个区域必须是已分配的），<code>free(NULL)</code> 什么都不做</li>
+<li><code>realloc</code>：重新分配，根据传入指针的不同，有不同的表现<ul>
+<li><code>ptr</code> 为 NULL 时，等同于 <code>malloc(size)</code></li>
+<li><code>size</code> 为 0 时，等同于 <code>free(ptr)</code>，需要返回 NULL</li>
+<li><code>ptr</code> 不为 NULL 时，一定是指向一个已分配的空间的，就根据新的 size 的大小进行调整，并让 <code>ptr</code> 指向新的地址（如果是新地址的话），并且旧的区域应该被释放。另外需要注意的是，需要把原来 block 的值复制过去  </li>
+</ul>
+</li>
+<li><code>calloc</code>：分配一个有 <code>nmemb</code> 个大小为 <code>size</code> 的数组，这个函数不评分，只要简单实现即可</li>
+<li><code>mm_checkheap</code>：扫描堆并检查其状态，注意，只有在检测到错误时才输出内容并调用 <code>exit</code> 退出。<code>mm_heapchecker(__Line__);</code> 传入的参数是当前行数，方便大家找到错误位置。</li>
+</ul>
+<p><code>memlib.c</code> 模拟了内存系统，可以调用下面的方法来得到响应的信息：</p>
+<ul>
+<li><code>void *mem_sbrk(int incr)</code>：让堆扩展 <code>incr</code> 个字节，并返回新分配的地址的头指针</li>
+<li><code>void *mem_heap_lo(void)</code>：返回指向堆的第一个字节的指针</li>
+<li><code>void *mem_heap_hi(void)</code>：返回指向堆的最后一个字节的指针</li>
+<li><code>size_t mem_heapsize(void)</code>：返回当前的堆大小</li>
+<li><code>size_t mem_pagesize(void)</code>：返回系统的 page size</li>
+</ul>
+<p>head checker 需要做的工作有：</p>
+<ul>
+<li>检查堆(implicit list, explicit list, segregated list)<ul>
+<li>Check epilogue and prologue blocks</li>
+<li>Check each block’s address alignment</li>
+<li>Check heap boundaries</li>
+<li>Check each block’s header and footer: size(minimum size, slignment), previous/net allocate/free bit consistency, header and footer matching each other</li>
+<li>Check coalescing: no two consecutive free blocks in the heap</li>
+</ul>
+</li>
+<li>检查 free list(explicit list, segregated list)<ul>
+<li>All next/previous pointer are consistent (is A’s next pointer points ot B, B’s previous pointer should point to A)</li>
+<li>All free list pointers points between <code>mem_heap_lo()</code> and <code>mem_heap_hi()</code></li>
+<li>Count free blocks by iterating through every block and traversing free list by pointers and see if they match</li>
+<li>All blocks in each list bucket fall within bucket size range(segregated list) </li>
+</ul>
+</li>
+</ul>
+<p>需要注意的地方：</p>
+<ul>
+<li>不能改动 <code>mm.h</code>，但是可以在 <code>mm.c</code> 中添加 <code>static</code> 方法使代码更好理解</li>
+<li><code>mm.c</code> 中不能定义任何全局 array, tree 或 list，但是可以定义全局 struct 和诸如 integer, float 和 pointer 等变量</li>
+<li>返回的指针必须是 8-byte 对齐的</li>
+<li>编译代码不能有警告</li>
+<li>建议先实现 explcit free list</li>
+<li>代码开头写注释说明思路，也要写上 ID 和名字</li>
+</ul>
+<h2 id="u63D0_u793A_u4E0E_u6D4B_u8BD5"><a href="#u63D0_u793A_u4E0E_u6D4B_u8BD5" class="headerlink" title="提示与测试"></a>提示与测试</h2><ul>
+<li>因为是 64 位机器，所以指针的大小是 8 字节</li>
+<li><code>sizeof(size_t) == 8</code></li>
+<li><code>gprof</code> 工具可能会很有用</li>
+<li>三种组织 free block 的方法：implicit free list, explicit free list, segregated free list</li>
+<li>三种扫描 free block 的方法：first fit/next fit, blocks sorted by address with first fit, best fit</li>
+<li>可以随机用上面的方法排列组合</li>
+<li>可以根据 implicit free list（在 <code>mm-textbook.c</code> 中）来实现 explicit free list，然后实现 segregated list</li>
+</ul>
+<p>可以通过 <code>mdriver.c</code> 来进行测试，每个测试会跑 12 次，一次检测正确性，一次检测空间使用，十次测试性能，下面是具体的参数：</p>
+<ul>
+<li><code>-p</code>：完整测试</li>
+<li><code>-t &lt;tracedir&gt;</code>：在自定义的文件夹中搜索测试文件</li>
+<li><code>-f &lt;tracefile&gt;</code>：进行一个特定的测试</li>
+<li><code>-c &lt;tracefile&gt;</code>：执行特定的测试 1 次，用来检测正确性很方便</li>
+<li><code>-h</code>：输出命令行参数</li>
+<li><code>-l</code>：用真实的 <code>malloc</code> 函数来测试，可以比较自己写的代码和系统代码的差距</li>
+<li><code>-V</code>：输出各种信息</li>
+<li><code>-v &lt;verbose level&gt;</code>：设置需要输出的日志等级</li>
+<li><code>-d &lt;i&gt;</code>： 有 0,1,2 三个层级，检查的标准越来越严格</li>
+<li><code>-D</code>：等于 <code>-d2</code></li>
+<li><code>-s &lt;s&gt;</code>：超过 s 秒则认为是超时，默认是永远不会超时的</li>
+</ul>
+<p>主要的考察目标是空间使用率以及吞吐量（每秒钟执行的操作数目）</p>
+<h2 id="u89E3_u9898_u601D_u8DEF"><a href="#u89E3_u9898_u601D_u8DEF" class="headerlink" title="解题思路"></a>解题思路</h2><p>题目中给出了一个提示，说堆的大小不会超过 $2^32$ 字节，这个是什么意思呢？其实很简单，我们知道 64 位机器中指针的长度是 8 个字节（八八六十四），但是因为堆的大小是有上限的，理论上来说，只要 4 个字节就可以完成整个空间的寻址（只需要记录偏移量即可），这样一来，用来保存结构信息的部分只需要原来的一半，内存的有效使用率自然就上去了。（不过具体作业的时候因为我主要参考 <code>mm-textbook.c</code> 中的代码，就没有另外做 4 字节寻址的版本了）</p>
+<p>如果有仔细看习题课视频的话，其实助教已经讲得非常清楚了，我的建议如下：</p>
+<ul>
+<li><code>mm-naive.c</code> 很短，一下就可以看完，用来热身</li>
+<li><code>mm-textbook.c</code> 基本上包括各种所需的宏以及存储结构，一定要好好理解清楚</li>
+<li>确定了具体保存信息的数据结构之后，一定要先完成 heap checker</li>
+<li>遇到段错误的时候就需要利用 heap checker 找到具体问题所在了</li>
+<li>最好画简单的示意图，对照着来编码，不然很容易乱</li>
+<li>很多时候需要用到位操作，确保每个基本操作都没有错（如果用 <code>mm-textbook.c</code> 中的就不用担心这个）</li>
+<li>列表的粒度越细，利用率就越高，但是最好的优化还是从数据结构入手</li>
+</ul>
+<p>最后要说的是不用自定义的数据结构应该很难做到 100 分，但是 90 分是没有问题的。</p>
+<h2 id="u57FA_u7840_u77E5_u8BC6_u590D_u4E60"><a href="#u57FA_u7840_u77E5_u8BC6_u590D_u4E60" class="headerlink" title="基础知识复习"></a>基础知识复习</h2><h3 id="u5B8F_u4E0E_u5185_u8054_u51FD_u6570"><a href="#u5B8F_u4E0E_u5185_u8054_u51FD_u6570" class="headerlink" title="宏与内联函数"></a>宏与内联函数</h3><p>宏实际上是一个简单的『查找并替换』的过程，会在编译前完成。一般用来定义常量以及简单的操作（这里很容易出错，下面会说）。</p>
+<p>定义常量比较简单：<code>#define NUM_ENTRIES 100</code> 即可。</p>
+<p>定义简单操作则需要注意，比如 <code>#define twice(x) 2*x</code> 这样写就是会出问题的，如果在代码中调用 <code>twice(x+1)</code> 期望得到的结果应该是 <code>2x+2</code>，但是因为宏只是简单的替换，所以会变成 <code>2x+1</code>。解决办法是一定要用括号包裹住会被替换的值，比如之前的例子应该改写成 <code>#define twice(x) (2*(x))</code>。</p>
+<p>使用宏，可以避免函数调用，也就少了很多跳转和对应的栈处理。对于 <code>malloc</code> 来说，可以通过宏快速访问 header 信息（例如 payload size, valid）</p>
+<p>宏的缺点也同样明显，能够执行的操作不如函数那么强大，并且不会进行拼写和类型检查，很容易出错，出错了也不容易找到问题所在。</p>
+<p>内联函数会在编译的时候被写入到代码中，同样因为不需要真实的函数调用，所以效率也很高。一般来说，比较小的函数都可以设置为内联。</p>
+<p>两者之间的差别在于：</p>
+<ul>
+<li>宏在编译前处理</li>
+<li>内联函数在编译时处理（带有类型检查）</li>
+<li>宏不能有返回值</li>
+<li>宏可能会带来一些副作用</li>
+<li>很难调试宏</li>
+</ul>
+<p>具体到这次作业：</p>
+<ul>
+<li>两个都需要使用</li>
+<li>宏适合做小的工作，比方说让代码更加容易理解</li>
+<li>如果宏没有办法完成，先考虑使用内联函数</li>
+</ul>
+<h3 id="u6307_u9488_u590D_u4E60"><a href="#u6307_u9488_u590D_u4E60" class="headerlink" title="指针复习"></a>指针复习</h3><p>指针恐怕是 C 语言最难的一部分了，这里会尽量解释得清楚一些。</p>
+<p>先来看看类型转换可能带来的问题：</p>
+<ul>
+<li>从 <code>&lt;type_a&gt;*</code> 转换到 <code>&lt;type_b&gt;*</code>（一个类型的指针转换为另一个类型的指针）<ul>
+<li>值并不会改变</li>
+<li>改变的是解析引用的行为，比方说原来是 int 指针，那么一次会读 4 个字节，现在转换成了 char 指针，一次就读 1 个字节（这里具体的字节数看是 32 位还是 64 位系统）</li>
+</ul>
+</li>
+<li>从 <code>&lt;type_a&gt;*</code> 转换到 integer / unsigned int<ul>
+<li>指针的值实际上就是 8 字节的数字</li>
+<li>这是一个很值得利用的特性！</li>
+<li>不过也很容易出错就是了</li>
+</ul>
+</li>
+<li>从 integer / unsigned int 转换到 <code>&lt;type_a&gt;*</code><ul>
+<li>这种情况基本不会使用，因为没人知道转换后的指针会指向什么地方</li>
+</ul>
+</li>
+</ul>
+<p>对于指针进行算术运算时，一定要注意跟指针本身的类型是有关的，比方说</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">type_a* pointer = ...;</span><br><span class="line">(<span class="keyword">void</span> *) pointer1 = (<span class="keyword">void</span> *)(pointer + a);</span><br></pre></td></tr></table></figure>
+<p>实际上进行的运算是：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">pointer1 = pointer + (a * sizeof(type_a))</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码是：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">lea (pointer, a, sizeof(type_a)), pointer1</span><br></pre></td></tr></table></figure>
+<p>这里需要注意，如果一个指针的类型是 <code>void *</code>，那么是不能对其进行算术操作的，因为我们没办法确定其大小。</p>
+<p>下面是具体的几个例子，一定要仔细理解：</p>
+<p><img src="/images/14585171655720.jpg" alt="Pointer arithmetic"></p>
+<p><img src="/images/14585171934388.jpg" alt="More pointer arithmetic"></p>
+<p>我们不能够对空指针进行解引用，来看一个例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> *ptr1 = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">*ptr1 = <span class="number">0xdeadbeef</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> val1 = *ptr1;</span><br><span class="line"><span class="keyword">int</span> val2 = (<span class="keyword">int</span>) *((<span class="keyword">char</span> *) ptr1);</span><br></pre></td></tr></table></figure>
+<p>那么 <code>val1</code> 和 <code>val2</code> 的值分别是什么呢？</p>
+<p><code>val1</code> 的值比较简单，因为没有改动，所以就是 <code>0xdeadbeef</code>，不过 <code>val2</code> 的值就比较特别了，我们具体来看一看，首先指针 <code>ptr1</code> 被转换成了 <code>char</code> 指针，按照小端规则，指针指向的值变成了 <code>0xef</code>，解引用之后在转换成 <code>int</code> 类型，前面会补上 <code>ffffff</code>，最后就是 <code>0xffffffef</code></p>
+<h3 id="Malloc"><a href="#Malloc" class="headerlink" title="Malloc"></a>Malloc</h3><p>需要知道的概念：</p>
+<ul>
+<li>malloc / calloc / realloc</li>
+<li>free</li>
+<li>sbrk</li>
+<li>payload</li>
+<li>framentation (internal vs. external)</li>
+<li>colescing<ul>
+<li>Bi-directional</li>
+<li>Immediate vs. Deferred</li>
+</ul>
+</li>
+</ul>
+<p>在 paylaod 比 block size 小的时候就会产生内部碎片，比方说</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> *m1 = <span class="built_in">malloc</span>(<span class="number">3</span>);</span><br><span class="line"><span class="keyword">void</span> *m2 = <span class="built_in">malloc</span>(<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<p>因为 m1 和 m2 都需要以 8 bytes 对齐，所以都会有 5 个 bytes 的内部碎片。</p>
+<p>实现是需要考虑的问题有：</p>
+<ul>
+<li>怎么知道 block 在哪里</li>
+<li>怎么知道 block 多大</li>
+<li>怎么知道 block 是否 free</li>
+<li>注意：不能缓存 malloc/free 调用，必须实时处理</li>
+<li>注意：调用 free 的时候只传入一个指针，不会有表示 size 的参数</li>
+<li>我们需要一个数据结构来存储关于 block 的相关信息</li>
+</ul>
+<p>这个数据结构需要做到：</p>
+<ul>
+<li>block 的位置，block 的大小，以及 block 是否 free</li>
+<li>在 malloc/free 调用的时候，需要能够改变这个数据结构</li>
+<li>需要通过这个数据结构找到下一个合适的 block</li>
+<li>能够快速标记一个 block 是 free 还是 allocated</li>
+<li>能够检测是否有足够空间</li>
+</ul>
+<p>具体怎么实现就需要自己思考了，唯一需要注意的是内存就是我们存放这些信息的地方。课堂上介绍过三种方式：</p>
+<p><img src="/images/14585192291308.jpg" alt="Common types"></p>
+<p>最好实现一个堆检查器，方便我们写程序，具体如下：</p>
+<p><img src="/images/14585192921490.jpg" alt="Headp Checker"></p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/csapp-lab6.html"
+           data-title="深入理解计算机系统 习题课 6 Malloclab" data-url="http://wdxtub.com/vault/csapp-lab6.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

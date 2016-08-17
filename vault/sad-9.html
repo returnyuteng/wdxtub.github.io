@@ -1,0 +1,808 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="既然建模很重要，我们这节课就来了解一下关于建模的基本知识。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="软件架构与设计 第 9 课 Introduction to Modeling">
+<meta property="og:url" content="http://wdxtub.com/vault/sad-9.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="既然建模很重要，我们这节课就来了解一下关于建模的基本知识。">
+<meta property="og:image" content="http://wdxtub.com/images/14545985041272.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14545985821981.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14545988003911.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546006145499.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546006273259.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546006393742.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546008499085.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546008685270.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546010836111.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546010964130.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546011979672.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546012076721.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546013363062.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546013486686.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546013962768.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546014089340.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546014835760.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546014920803.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546015630249.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546015726906.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546016742192.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546017950085.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546018068416.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14546018228100.jpg">
+<meta property="og:updated_time" content="2016-02-04T16:03:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="软件架构与设计 第 9 课 Introduction to Modeling">
+<meta name="twitter:description" content="既然建模很重要，我们这节课就来了解一下关于建模的基本知识。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    软件架构与设计 第 9 课 Introduction to Modeling | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>既然建模很重要，我们这节课就来了解一下关于建模的基本知识。</p>
+<a id="more"></a>
+<hr>
+<p>前面提到，所谓的架构，其实是一系列关于系统的原则性设计选择。所以我们可以说，一个架构模型是一个包含部分或所有设计选择的制品。架构建模的过程就是进行设计选择的具体化和文档化。如何建模和我们所采用的标记符号很有关系。</p>
+<p>具体需要从不同的使用角色来进行考虑，还需要考虑的有细节的层次，描述的清晰度以及成本和收益的权衡。</p>
+<h2 id="Stakeholder__u9A71_u52A8_u7684_u5EFA_u6A21"><a href="#Stakeholder__u9A71_u52A8_u7684_u5EFA_u6A21" class="headerlink" title="Stakeholder 驱动的建模"></a>Stakeholder 驱动的建模</h2><p>从 Stakeholder 的角度来说，不同的设计点有不同的重要性。但是万变不离其宗，重要的还是：组件、连接器、接口、配置以及设计原则这几个项目。对于架构风格，可能还需要考虑交互上行为上和并行性上的限制。</p>
+<p>还有一个需要注意的是，区分好功能性和非功能性需求，比方说『系统打印医疗记录』是一个功能性需求，但是『系统快速和秘密打印』就不算一个功能性需求了。通常来说，我们主要注意功能性需求，但是非功能性需求也很重要，因为这可能表现了功能背后的动机。</p>
+<h2 id="u6A21_u578B_u7684_u91CD_u8981_u7279_u5F81"><a href="#u6A21_u578B_u7684_u91CD_u8981_u7279_u5F81" class="headerlink" title="模型的重要特征"></a>模型的重要特征</h2><ul>
+<li>Ambiguity：如果一个模型有多说解释，那么就是不清晰的</li>
+<li>Accuracy &amp; Precision：这两个概念不大一样，但是常常被放在一起<ul>
+<li>如果一个模型是正确的，符合事实的，那么说是 accurate</li>
+<li>如果一个模型是精确界定的，那么说是 precise</li>
+<li>可以参考下图来进行理解</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14545985041272.jpg" alt=""></p>
+<h2 id="u89C6_u56FE_u4E0E_u89C6_u70B9"><a href="#u89C6_u56FE_u4E0E_u89C6_u70B9" class="headerlink" title="视图与视点"></a>视图与视点</h2><p>横看成岭侧成峰，很多时候我们需要从多个角度来描述系统，才能得到一个比较准确的模型。下面是一个例子：</p>
+<p><img src="/images/14545985821981.jpg" alt=""></p>
+<p>常用的视角有：</p>
+<ul>
+<li>逻辑视角：描述系统中的逻辑实体以及它们的交互</li>
+<li>物理视角：描述系统中的物理实体以及它们的交互</li>
+<li>部署视角：描述系统中的逻辑实体如何映射到对应的物理实体上</li>
+<li>并行视角：描述系统如何处理并行</li>
+<li>行为视角：描述系统的预期表现</li>
+</ul>
+<p>因为有这么多视角，所以需要保证不同视角描述的东西是一致的，不能说一个视角中的逻辑是 A 到 B，在另一个视角中就成为 B 到 A 了（因为不同视角肯定有重合的地方，所以需要保证一致性）</p>
+<p><img src="/images/14545988003911.jpg" alt=""></p>
+<p>常见的不一致有：</p>
+<ul>
+<li>方向不一致</li>
+<li>精细化不一致：高层的描述和底层的描述冲突</li>
+<li>静态动态不一致</li>
+<li>动态与动态不一致</li>
+<li>功能性与非功能行需求不一致</li>
+</ul>
+<h2 id="u8BC4_u4F30_u5EFA_u6A21_u65B9_u6CD5"><a href="#u8BC4_u4F30_u5EFA_u6A21_u65B9_u6CD5" class="headerlink" title="评估建模方法"></a>评估建模方法</h2><p>我们可以从下面几个角度来评估一个建模方法是否合适：</p>
+<ul>
+<li>范围和目的</li>
+<li>基础元素</li>
+<li>风格</li>
+<li>静态和动态方面</li>
+<li>动态建模</li>
+<li>非功能方面</li>
+<li>Ambiguity</li>
+<li>Accuracy</li>
+<li>Precision</li>
+<li>视角</li>
+<li>视角一致性</li>
+</ul>
+<p>一些常见的建模方法有</p>
+<h3 id="u901A_u7528_u65B9_u6CD5"><a href="#u901A_u7528_u65B9_u6CD5" class="headerlink" title="通用方法"></a>通用方法</h3><ul>
+<li>自然语言<ul>
+<li>优点：描述性高，所有 stakeholder 都可以查看，擅长捕捉非严格和非正式的架构元素，许多可用的工具</li>
+<li>缺点：模糊，宽松，不正式，通常比较冗长，没有办法用软件进行处理分析</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546006145499.jpg" alt=""></p>
+<ul>
+<li>PPT 建模<ul>
+<li>优点：看起来漂亮，大小有限制，非常灵活</li>
+<li>缺点：模糊，宽松，不正式，没有办法用软件进行处理分析</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546006273259.jpg" alt=""></p>
+<ul>
+<li>UML<ul>
+<li>优点：支持不同视角，易理解，许多工具</li>
+<li>缺点：需要确定 profile 来降低模糊性，难以保证一致性，难以描述外来概念或视图</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546006393742.jpg" alt=""></p>
+<h3 id="u65E9_u671F_u67B6_u6784_u63CF_u8FF0_u8BED_u8A00"><a href="#u65E9_u671F_u67B6_u6784_u63CF_u8FF0_u8BED_u8A00" class="headerlink" title="早期架构描述语言"></a>早期架构描述语言</h3><ul>
+<li>Darwin<ul>
+<li>优点：简单直接描述结构依赖，可以进行正规分析，支持层级结构</li>
+<li>缺点：仅在简单的架构模型中比较有用，没有办法表达显式连接器</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546008499085.jpg" alt=""></p>
+<p><img src="/images/14546008685270.jpg" alt=""></p>
+<ul>
+<li>Rapide<ul>
+<li>优点：可以描述异步沟通组件，支持模型模拟和事件的可视化追踪</li>
+<li>缺点：无法自然映射到已开发的系统，学习曲线陡峭，在现代计算机上难以运行</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546010836111.jpg" alt=""></p>
+<p><img src="/images/14546010964130.jpg" alt=""></p>
+<ul>
+<li>Wright<ul>
+<li>优点：类似 Darwin 和 Rapide 的结构描述语言，可以用工具来分析（可以检测死锁）</li>
+<li>缺点：学习曲线陡峭，无法自然映射到已开发的系统</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546011979672.jpg" alt=""></p>
+<p><img src="/images/14546012076721.jpg" alt=""></p>
+<h3 id="u9886_u57DF_u7279_u5B9A/_u98CE_u683C_u7279_u5B9A_u8BED_u8A00"><a href="#u9886_u57DF_u7279_u5B9A/_u98CE_u683C_u7279_u5B9A_u8BED_u8A00" class="headerlink" title="领域特定/风格特定语言"></a>领域特定/风格特定语言</h3><ul>
+<li>Koala<ul>
+<li>优点：可以在一个模型中描述许多系统，可以直接映射到已开发的系统并进行代码重用</li>
+<li>缺点：需要特定设计的接口才能应用</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546013363062.jpg" alt=""></p>
+<p><img src="/images/14546013486686.jpg" alt=""></p>
+<ul>
+<li>Weaves<ul>
+<li>优点：语法很简单，可以几乎映射到已开发的系统</li>
+<li>缺点：只能描述结构和数据流</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546013962768.jpg" alt=""></p>
+<p><img src="/images/14546014089340.jpg" alt=""></p>
+<ul>
+<li>AADL  <ul>
+<li>优点：可以详细规定软件硬件，有自动分析工具</li>
+<li>缺点：冗长，即使是简单的系统也需要大量描述，需要工具支持以及 UML profile 辅助描述</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546014835760.jpg" alt=""></p>
+<p><img src="/images/14546014920803.jpg" alt=""></p>
+<h3 id="u62D3_u5C55_u67B6_u6784_u63CF_u8FF0_u8BED_u8A00"><a href="#u62D3_u5C55_u67B6_u6784_u63CF_u8FF0_u8BED_u8A00" class="headerlink" title="拓展架构描述语言"></a>拓展架构描述语言</h3><ul>
+<li>Acme<ul>
+<li>优点：结构化描述，可以描述现存元素，工具支持（AcmeStudio）</li>
+<li>缺点：无法添加新的视图，属性规范可能非常复杂且有另外的语法</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546015630249.jpg" alt=""></p>
+<p><img src="/images/14546015726906.jpg" alt=""></p>
+<ul>
+<li>ADML<ul>
+<li>优点：可以使用 XML 解析器，通过元描述增加表达能力</li>
+<li>缺点：属性仍然是键值对，没有利用 XML 扩展机制</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546016742192.jpg" alt=""></p>
+<ul>
+<li>xADL <ul>
+<li>优点：内置一些常用模块，工具支持（ArchStudio），用户可以添加模块</li>
+<li>缺点：添加模块机制复杂，学习曲线陡峭，过于依赖工具</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14546017950085.jpg" alt=""></p>
+<p><img src="/images/14546018068416.jpg" alt=""></p>
+<p><img src="/images/14546018228100.jpg" alt=""></p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/sad-9.html"
+           data-title="软件架构与设计 第 9 课 Introduction to Modeling" data-url="http://wdxtub.com/vault/sad-9.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

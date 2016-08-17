@@ -1,0 +1,1784 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux,基础,服务器," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="因为之后更多会涉及后台开发的部分，所以系统学习一下 Linux 还是很有必要的，这里就用《鸟哥的 Linux 私房菜》作为主要的学习材料。不过因为我本身已经有一定基础了，所以这里主要会记录个人觉得比较生疏和重要的地方。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【鸟哥的 Linux 私房菜 - 基础】学习笔记">
+<meta property="og:url" content="http://wdxtub.com/2016/03/26/linux-basic-soup/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="因为之后更多会涉及后台开发的部分，所以系统学习一下 Linux 还是很有必要的，这里就用《鸟哥的 Linux 私房菜》作为主要的学习材料。不过因为我本身已经有一定基础了，所以这里主要会记录个人觉得比较生疏和重要的地方。">
+<meta property="og:image" content="http://wdxtub.com/images/14590942194893.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14590796988736.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14590898239987.jpg">
+<meta property="og:updated_time" content="2016-03-27T17:20:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【鸟哥的 Linux 私房菜 - 基础】学习笔记">
+<meta name="twitter:description" content="因为之后更多会涉及后台开发的部分，所以系统学习一下 Linux 还是很有必要的，这里就用《鸟哥的 Linux 私房菜》作为主要的学习材料。不过因为我本身已经有一定基础了，所以这里主要会记录个人觉得比较生疏和重要的地方。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 【鸟哥的 Linux 私房菜 - 基础】学习笔记 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【鸟哥的 Linux 私房菜 - 基础】学习笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-26T21:33:53+08:00" content="2016-03-26">
+              2016-03-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/26/linux-basic-soup/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/26/linux-basic-soup/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>因为之后更多会涉及后台开发的部分，所以系统学习一下 Linux 还是很有必要的，这里就用《鸟哥的 Linux 私房菜》作为主要的学习材料。不过因为我本身已经有一定基础了，所以这里主要会记录个人觉得比较生疏和重要的地方。</p>
+<a id="more"></a>
+<hr>
+<p>对于计算机的基本了解，可以参考我之前写的『深入理解计算机系统』系列日志。接下来主要是比较零散的知识点，具体可以参见目录。</p>
+<h2 id="u5E38_u7528_u6280_u5DE7"><a href="#u5E38_u7528_u6280_u5DE7" class="headerlink" title="常用技巧"></a>常用技巧</h2><ul>
+<li>遇到不懂的命令，一定先用 <code>man</code> 命令来了解一下，可以看到详细的介绍<ul>
+<li><code>/string</code> 向下搜索 string 这个字符串</li>
+<li><code>?string</code> 向上搜索这个字符串</li>
+<li>搜索的时候输入 n, N 可以跳到下一个/上一个结果 ，q 可以退出</li>
+</ul>
+</li>
+<li>遇到不懂的命令，可以使用 <code>info</code> 命令来查看<ul>
+<li>n（下一个），p（前一个），u（上一层），h（帮助），q（退出）</li>
+</ul>
+</li>
+<li>nano 是非常简单的编辑器，只需要 <code>nano filename</code> 即可，具体的操作会在终端中显示<ul>
+<li><code>^</code> 表示 ctrl 按键</li>
+</ul>
+</li>
+<li>改变文件属性与权限的命令<ul>
+<li><code>chgrp</code>：改变文件所属群组</li>
+<li><code>chown</code>：改变文件拥有者</li>
+<li><code>chmod</code>：改变文件权限</li>
+</ul>
+</li>
+<li>目录相关操作<ul>
+<li><code>.</code>：代表此层目录</li>
+<li><code>..</code>：代表上一层目录</li>
+<li><code>-</code>：代表前一个工作目录</li>
+<li><code>~</code>：代表“目前使用者身份”所在的主文件夹</li>
+<li><code>~account</code>：代表 account 这个使用者的主文件夹（account是个帐号名称）</li>
+<li>在所有目录下面都会存在的两个目录，分别是“.”与“..” 分别代表此层与上层目录的意思</li>
+<li><code>cd</code>：变化目录</li>
+<li><code>pwd</code>：显示目前目录</li>
+<li><code>mkdir</code>：创建新目录</li>
+<li><code>rmdir</code>：删除一个空的目录</li>
+</ul>
+</li>
+<li>可执行文件路径变量 <code>$PATH</code><ul>
+<li>当我们在执行一个指令的时候，举例来说“ls”好了，系统会依照PATH的设置去每个PATH定义的目录下搜寻文件名为ls的可执行文件， 如果在PATH定义的目录中含有多个文件名为ls的可可执行文件，那么先搜寻到的同名指令先被执行！</li>
+<li><code>echo $PATH</code> 来查看当前的值</li>
+</ul>
+</li>
+</ul>
+<h2 id="u547D_u4EE4_3A_ls_2C_cp_2C_rm_2C_mv"><a href="#u547D_u4EE4_3A_ls_2C_cp_2C_rm_2C_mv" class="headerlink" title="命令: ls, cp, rm, mv"></a>命令: ls, cp, rm, mv</h2><blockquote>
+<p>ls 用来查看文件与目录，选项与参数为：</p>
+</blockquote>
+<ul>
+<li><code>-a</code>：全部的文件，连同隐藏文件（ 开头为 . 的文件） 一起列出来（常用）</li>
+<li><code>-A</code>：全部的文件，连同隐藏文件，但不包括 . 与 .. 这两个目录</li>
+<li><code>-d</code>：仅列出目录本身，而不是列出目录内的文件数据（常用）</li>
+<li><code>-f</code>：直接列出结果，而不进行排序 （ls 默认会以文件名排序！）</li>
+<li><code>-F</code>：根据文件、目录等信息，给予附加数据结构，例如：<code>*:</code> 代表可可执行文件； <code>/:</code> 代表目录； <code>=:</code> 代表 socket 文件； <code>|:</code> 代表 FIFO 文件；</li>
+<li><code>-h</code>：将文件大小以人类较易读的方式（例如 GB, KB 等等）列出来；</li>
+<li><code>-i</code>：列出 inode 号码，inode 的意义下一章将会介绍；</li>
+<li><code>-l</code>：长数据串行出，包含文件的属性与权限等等数据；（常用）</li>
+<li><code>-n</code>：列出 UID 与 GID 而非使用者与群组的名称 （UID与GID会在帐号管理提到！）</li>
+<li><code>-r</code>：将排序结果反向输出，例如：原本文件名由小到大，反向则为由大到小；</li>
+<li><code>-R</code>：连同子目录内容一起列出来，等于该目录下的所有文件都会显示出来；</li>
+<li><code>-S</code>：以文件大小大小排序，而不是用文件名排序；</li>
+<li><code>-t</code>：依时间排序，而不是用文件名。</li>
+<li><code>--color=never</code>：不要依据文件特性给予颜色显示；</li>
+<li><code>--color=always</code>：显示颜色</li>
+<li><code>--color=auto</code>：让系统自行依据设置来判断是否给予颜色</li>
+<li><code>--full-time</code>：以完整时间模式 （包含年、月、日、时、分） 输出</li>
+<li><code>--time={atime,ctime}</code>：输出 access 时间或改变权限属性时间 （ctime） 而非内容变更时间 （modification time）</li>
+</ul>
+<blockquote>
+<p>cp 用来复制文件或者创建链接，选项与参数为：</p>
+</blockquote>
+<ul>
+<li><code>-a</code>：相当于 -dr –preserve=all 的意思，至于 dr 请参考下列说明；（常用）</li>
+<li><code>-d</code>：若来源文件为链接文件的属性（link file），则复制链接文件属性而非文件本身；</li>
+<li><code>-f</code>：为强制（force）的意思，若目标文件已经存在且无法打开，则移除后再尝试一次；</li>
+<li><code>-i</code>：若目标文件（destination）已经存在时，在覆盖时会先询问动作的进行（常用）</li>
+<li><code>-l</code>：进行硬式链接（hard link）的链接文件创建，而非复制文件本身；</li>
+<li><code>-p</code>：连同文件的属性（权限、用户、时间）一起复制过去，而非使用默认属性（备份常用）；</li>
+<li><code>-r</code>：递回持续复制，用于目录的复制行为；（常用）</li>
+<li><code>-s</code>：复制成为符号链接文件 （symbolic link），亦即“捷径”文件；</li>
+<li><code>-u</code>：destination 比 source 旧才更新 destination，或 destination 不存在的情况下才复制。</li>
+<li><code>--preserve=all</code>：除了 -p 的权限相关参数外，还加入 SELinux 的属性, links, xattr 等也复制了。最后需要注意的，如果来源文件有两个以上，则最后一个目的文件一定要是“目录”才行！</li>
+</ul>
+<blockquote>
+<p>mv 用来移动文件或者重命名，选项与参数为：</p>
+</blockquote>
+<ul>
+<li><code>-f</code>：force 强制的意思，如果目标文件已经存在，不会询问而直接覆盖；</li>
+<li><code>-i</code>：若目标文件 （destination） 已经存在时，就会询问是否覆盖！</li>
+<li><code>-u</code>：若目标文件已经存在，且 source 比较新，才会更新 （update）</li>
+</ul>
+<blockquote>
+<p>rm 用来删除文件，选项与参数为：</p>
+</blockquote>
+<ul>
+<li><code>-f</code>：就是 force 的意思，忽略不存在的文件，不会出现警告讯息；</li>
+<li><code>-i</code>：互动模式，在删除前会询问使用者是否动作</li>
+<li><code>-r</code>：递回删除啊！最常用在目录的删除了！这是非常危险的选项！！！</li>
+</ul>
+<h2 id="u547D_u4EE4_3A_cat_2C_tac_2C_nl_2C_more_2C_less"><a href="#u547D_u4EE4_3A_cat_2C_tac_2C_nl_2C_more_2C_less" class="headerlink" title="命令: cat, tac, nl, more, less"></a>命令: cat, tac, nl, more, less</h2><blockquote>
+<p>cat 由第一行开始显示文件内容</p>
+</blockquote>
+<ul>
+<li><code>-A</code>：相当于 -vET 的整合选项，可列出一些特殊字符而不是空白而已；</li>
+<li><code>-b</code>：列出行号，仅针对非空白行做行号显示，空白行不标行号！</li>
+<li><code>-E</code>：将结尾的断行字符 $ 显示出来；</li>
+<li><code>-n</code>：打印出行号，连同空白行也会有行号，与 -b 的选项不同；</li>
+<li><code>-T</code>：将 [tab] 按键以 ^I 显示出来；</li>
+<li><code>-v</code>：列出一些看不出来的特殊字符</li>
+</ul>
+<blockquote>
+<p>tac  从最后一行开始显示，可以看出 tac 是 cat 的倒着写！</p>
+</blockquote>
+<p>具体的参数和 cat 是一致的，这里不赘述</p>
+<blockquote>
+<p>nl   显示的时候，顺道输出行号！</p>
+</blockquote>
+<ul>
+<li><code>-b</code>：指定行号指定的方式，主要有两种：<ul>
+<li><code>-b a</code>：表示不论是否为空行，也同样列出行号（类似 cat -n）；</li>
+<li><code>-b t</code>：如果有空行，空的那一行不要列出行号（默认值）；</li>
+</ul>
+</li>
+<li><code>-n</code>：列出行号表示的方法，主要有三种：<ul>
+<li><code>-n ln</code>：行号在屏幕的最左方显示；</li>
+<li><code>-n rn</code>：行号在自己字段的最右方显示，且不加 0 ；</li>
+<li><code>-n rz</code>：行号在自己字段的最右方显示，且加 0 ；</li>
+</ul>
+</li>
+<li><code>-w</code>：行号字段的占用的字符数。</li>
+</ul>
+<blockquote>
+<p>more 一页一页的显示文件内容，支持的按键有</p>
+</blockquote>
+<ul>
+<li><code>空格</code>：代表向下翻一页；</li>
+<li><code>Enter</code>：代表向下翻“一行”；</li>
+<li><code>/字串</code>：代表在这个显示的内容当中，向下搜寻“字串”这个关键字；</li>
+<li><code>:f</code>：立刻显示出文件名以及目前显示的行数；</li>
+<li><code>q</code>：代表立刻离开 more ，不再显示该文件内容。</li>
+<li><code>b 或 [ctrl]-b</code>：代表往回翻页，不过这动作只对文件有用，对管线无用。</li>
+</ul>
+<blockquote>
+<p>less 与 more 类似，但是比 more 更好的是，他可以往前翻页！支持的按键有</p>
+</blockquote>
+<ul>
+<li><code>空格</code>：向下翻动一页；</li>
+<li><code>[pagedown]</code>：向下翻动一页；</li>
+<li><code>[pageup]</code>：向上翻动一页；</li>
+<li><code>/字串</code>：向下搜寻“字串”的功能；</li>
+<li><code>?字串</code>：向上搜寻“字串”的功能；</li>
+<li><code>n</code>：重复前一个搜寻 （与 / 或 ? 有关！）</li>
+<li><code>N</code>：反向的重复前一个搜寻 （与 / 或 ? 有关！）</li>
+<li><code>g</code>：前进到这个数据的第一行去；</li>
+<li><code>G</code>：前进到这个数据的最后一行去 （注意大小写）；</li>
+<li><code>q</code>：离开 less 这个程序；</li>
+</ul>
+<p>你是否会觉得 less 使用的画面与环境与 man page 非常的类似呢？没错啦！因为man这个指令就是调用 less 来显示说明文档的内容的！</p>
+<h2 id="u547D_u4EE4_3A_head_2C_tail_2C_od_2C_touch"><a href="#u547D_u4EE4_3A_head_2C_tail_2C_od_2C_touch" class="headerlink" title="命令: head, tail, od, touch"></a>命令: head, tail, od, touch</h2><blockquote>
+<p>head 只看头几行</p>
+</blockquote>
+<ul>
+<li><code>-n</code>：后面接数字，代表显示几行的意思</li>
+<li>另外那个 -n 选项后面的参数较有趣，如果接的是负数，例如上面范例的 -n -100时，代表列前的所有行数， 但不包括后面100行</li>
+</ul>
+<blockquote>
+<p>tail 只看尾巴几行</p>
+</blockquote>
+<ul>
+<li><code>-n</code>：后面接数字，代表显示几行的意思</li>
+<li><code>-f</code>：表示持续侦测后面所接的文件名，要等到按下[ctrl]-c才会结束tail的侦测</li>
+</ul>
+<blockquote>
+<p>od 以二进制的方式读取文件内容！</p>
+</blockquote>
+<ul>
+<li><code>-t</code>：后面可以接各种“类型 （TYPE）”的输出，例如：<ul>
+<li><code>a</code>：利用默认的字符来输出；</li>
+<li><code>c</code>：使用 ASCII 字符来输出</li>
+<li><code>d[size]</code>：利用十进制（decimal）来输出数据，每个整数占用 size Bytes ；</li>
+<li><code>f[size]</code>：利用浮点数值（floating）来输出数据，每个数占用 size Bytes ；</li>
+<li><code>o[size]</code>：利用八进位（octal）来输出数据，每个整数占用 size Bytes ；</li>
+<li><code>x[size]</code>：利用十六进制（hexadecimal）来输出数据，每个整数占用 size Bytes ；</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>touch 修改文件时间或创建新文件</p>
+</blockquote>
+<p>我们在 ls 这个指令的介绍时，有稍微提到每个文件在linux下面都会记录许多的时间参数， 其实是有三个主要的变动时间，那么三个时间的意义是什么呢？</p>
+<ul>
+<li>modification time （mtime）：<ul>
+<li>当该文件的“内容数据”变更时，就会更新这个时间！内容数据指的是文件的内容，而不是文件的属性或权限喔！</li>
+</ul>
+</li>
+<li>status time （ctime）：<ul>
+<li>当该文件的“状态 （status）”改变时，就会更新这个时间，举例来说，像是权限与属性被更改了，都会更新这个时间啊。</li>
+</ul>
+</li>
+<li>access time （atime）：<ul>
+<li>当“该文件的内容被取用”时，就会更新这个读取时间 （access）。举例来说，我们使用 cat 去读取 /etc/man_db.conf ， 就会更新该文件的 atime 了。</li>
+</ul>
+</li>
+</ul>
+<p>选项与参数</p>
+<ul>
+<li><code>-a</code>：仅修订 access time；</li>
+<li><code>-c</code>：仅修改文件的时间，若该文件不存在则不创建新文件；</li>
+<li><code>-d</code>：后面可以接欲修订的日期而不用目前的日期，也可以使用 –date=”日期或时间”</li>
+<li><code>-m</code>：仅修改 mtime ；</li>
+<li><code>-t</code>：后面可以接欲修订的时间而不用目前的时间，格式为[YYYYMMDDhhmm]</li>
+</ul>
+<h2 id="u547D_u4EE4_3A_file_2C_which_2C_whereis_2C_locate/updatedb_2C_find"><a href="#u547D_u4EE4_3A_file_2C_which_2C_whereis_2C_locate/updatedb_2C_find" class="headerlink" title="命令: file, which, whereis, locate/updatedb, find"></a>命令: file, which, whereis, locate/updatedb, find</h2><blockquote>
+<p>file 观察文件类型</p>
+</blockquote>
+<p>如果你想要知道某个文件的基本数据，例如是属于 ASCII 或者是 data 文件，或者是 binary ， 且其中有没有使用到动态函数库 （share library） 等等的信息，就可以利用 file 这个指令来检阅喔！</p>
+<blockquote>
+<p>which 指令文件名的搜寻 </p>
+</blockquote>
+<p><code>which [-a] command</code> 选项或参数：</p>
+<ul>
+<li><code>-a</code>：将所有由 PATH 目录中可以找到的指令均列出，而不止第一个被找到的指令名称</li>
+</ul>
+<blockquote>
+<p>whereis 由一些特定的目录中寻找文件文件名</p>
+</blockquote>
+<p><code>whereis [-bmsu] 文件或目录名</code>  选项或参数：</p>
+<ul>
+<li><code>-l</code>:可以列出 whereis 会去查询的几个主要目录而已</li>
+<li><code>-b</code>:只找 binary 格式的文件</li>
+<li><code>-m</code>:只找在说明文档 manual 路径下的文件</li>
+<li><code>-s</code>:只找 source 来源文件</li>
+<li><code>-u</code>:搜寻不在上述三个项目当中的其他特殊文件</li>
+</ul>
+<blockquote>
+<p>locate 搜索包含指定词的文件</p>
+</blockquote>
+<p><code>locate [-ir] keyword</code> 选项与参数：</p>
+<ul>
+<li><code>-i</code>：忽略大小写的差异；</li>
+<li><code>-c</code>：不输出文件名，仅计算找到的文件数量</li>
+<li><code>-l</code>：仅输出几行的意思，例如输出五行则是 -l 5</li>
+<li><code>-S</code>：输出 locate 所使用的数据库文件的相关信息，包括该数据库纪录的文件/目录数量等</li>
+<li><code>-r</code>：后面可接正则表达式的显示方式</li>
+</ul>
+<p>locate 寻找的数据是由“已创建的数据库 /var/lib/mlocate/” 里面的数据所搜寻到的，所以不用直接在去硬盘当中存取数据。那么有什么限制呢？就是因为他是经由数据库来搜寻的，而数据库的创建默认是在每天执行一次 </p>
+<p>那能否手动更新数据库哪？当然可以啊！更新 locate 数据库的方法非常简单，直接输入“ updatedb ”就可以了！ updatedb 指令会去读取 /etc/updatedb.conf 这个配置文件的设置，然后再去硬盘里面进行搜寻文件名的动作， 最后就更新整个数据库文件啰！因为 updatedb 会去搜寻硬盘，所以当你执行 updatedb 时，可能会等待数分钟的时间喔！</p>
+<blockquote>
+<p>find 查找具体文件</p>
+</blockquote>
+<p><code>find [PATH] [option] [action]</code> 选项与参数：</p>
+<ul>
+<li>与时间有关的选项：共有 -atime, -ctime 与 -mtime ，以 -mtime 说明<ul>
+<li><code>-mtime  n</code>：n 为数字，意义为在 n 天之前的“一天之内”被更动过内容的文件；</li>
+<li><code>-mtime +n</code>：列出在 n 天之前（不含 n 天本身）被更动过内容的文件文件名；</li>
+<li><code>-mtime -n</code>：列出在 n 天之内（含 n 天本身）被更动过内容的文件文件名。</li>
+<li><code>-newer file</code>：file 为一个存在的文件，列出比 file 还要新的文件文件名</li>
+</ul>
+</li>
+<li>与使用者或群组名称有关的参数<ul>
+<li><code>-uid n</code>：n 为数字，这个数字是使用者的帐号 ID，亦即 UID ，这个 UID 是记录在 /etc/passwd 里面与帐号名称对应的数字。</li>
+<li><code>-gid n</code>：n 为数字，这个数字是群组名称的 ID，亦即 GID，这个 GID 记录在/etc/group</li>
+<li><code>-user name</code>：name 为使用者帐号名称喔！例如 dmtsai </li>
+<li><code>-group name</code>：name 为群组名称喔，例如 users ；</li>
+<li><code>-nouser</code>：寻找文件的拥有者不存在 /etc/passwd 的人！</li>
+<li><code>-nogroup</code>：寻找文件的拥有群组不存在于 /etc/group 的文件！</li>
+<li>当你自行安装软件时，很可能该软件的属性当中并没有文件拥有者，这是可能的！在这个时候，就可以使用 -nouser 与 -nogroup 搜寻。</li>
+</ul>
+</li>
+<li>与文件权限及名称有关的参数：<ul>
+<li><code>-name filename</code>：搜寻文件名称为 filename 的文件；</li>
+<li><code>-size [+-]SIZE</code>：搜寻比 SIZE 还要大（+）或小（-）的文件。这个 SIZE 的规格有：<ul>
+<li><code>c</code>: 代表 Byte</li>
+<li><code>k</code>: 代表 1024Bytes</li>
+<li>所以，要找比 50KB 还要大的文件，就是 <code>-size +50k</code></li>
+</ul>
+</li>
+<li><code>-type TYPE</code>：搜寻文件的类型为 TYPE 的，类型主要有：一般正规文件 （f）, 设备文件 （b, c）,目录 （d）, 链接文件 （l）, socket （s）, 及 FIFO （p） 等属性。</li>
+<li><code>-perm mode</code>：搜寻文件权限“刚好等于” mode 的文件，这个 mode 为类似 chmod 的属性值，举例来说， -rwsr-xr-x 的属性为 4755 ！</li>
+<li><code>-perm -mode</code>：搜寻文件权限“必须要全部囊括 mode 的权限”的文件，举例来说，我们要搜寻 <code>-rwxr--r--</code> ，亦即 0744 的文件，使用 <code>-perm -0744</code>，当一个文件的权限为 <code>-rwsr-xr-x</code> ，亦即 4755 时，也会被列出来，因为 <code>-rwsr-xr-x</code> 的属性已经囊括了 <code>-rwxr--r--</code> 的属性了。</li>
+<li><code>-perm /mode</code>：搜寻文件权限“包含任一 mode 的权限”的文件，举例来说，我们搜寻 <code>-rwxr-xr-x</code> ，亦即 <code>-perm /755</code> 时，但一个文件属性为 <code>-rw-------</code> 也会被列出来，因为他有 <code>-rw....</code> 的属性存在！</li>
+</ul>
+</li>
+</ul>
+<h2 id="u547D_u4EE4_3A_gzip_2C_zcat/zmore/zless/zgrep"><a href="#u547D_u4EE4_3A_gzip_2C_zcat/zmore/zless/zgrep" class="headerlink" title="命令: gzip, zcat/zmore/zless/zgrep"></a>命令: gzip, zcat/zmore/zless/zgrep</h2><p>gzip 可以说是应用度最广的压缩指令了！目前 gzip 可以解开 compress, zip 与 gzip 等软件所压缩的文件。 至于 gzip 所创建的压缩文件为 *.gz 的文件名喔！</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gzip [-cdtv<span class="comment">#] 文件名</span></span><br><span class="line">zcat 文件名.gz</span><br></pre></td></tr></table></figure>
+<p>选项与参数：</p>
+<ul>
+<li><code>-c</code>：将压缩的数据输出到屏幕上，可通过数据流重导向来处理；</li>
+<li><code>-d</code>：解压缩的参数；</li>
+<li><code>-t</code>：可以用来检验一个压缩文件的一致性～看看文件有无错误；</li>
+<li><code>-v</code>：可以显示出原文件/压缩文件的压缩比等信息；</li>
+<li><code>-#</code>：# 为数字的意思，代表压缩等级，-1 最快，但是压缩比最差、-9 最慢，但是压缩比最好！默认是 -6</li>
+</ul>
+<p>当你使用 gzip 进行压缩时，在默认的状态下原本的文件会被压缩成为 .gz 的文件名，原始文件就不再存在了。 </p>
+<p>cat/more/less 可以使用不同的方式来读取纯文本文件，那个 zcat/zmore/zless 则可以对应于 cat/more/less 的方式来读取纯文本文件被压缩后的压缩文件！ 由于 gzip 这个压缩指令主要想要用来取代 compress 的，所以不但 compress 的压缩文件可以使用 gzip 来解开，同时 zcat 这个指令可以同时读取 compress 与 gzip 的压缩文件呦！</p>
+<h2 id="u547D_u4EE4_3A_bzip2_2C_bzcat/bzmore/bzless/bzgrep"><a href="#u547D_u4EE4_3A_bzip2_2C_bzcat/bzmore/bzless/bzgrep" class="headerlink" title="命令: bzip2, bzcat/bzmore/bzless/bzgrep"></a>命令: bzip2, bzcat/bzmore/bzless/bzgrep</h2><p>若说 gzip 是为了取代 compress 并提供更好的压缩比而成立的，那么 bzip2 则是为了取代 gzip 并提供更佳的压缩比而来的。 bzip2 真是很不错用的东西～这玩意的压缩比竟然比 gzip 还要好～至于 bzip2 的用法几乎与 gzip 相同！</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bzip2 [-cdkzv<span class="comment">#] 文件名</span></span><br><span class="line">bzcat 文件名.bz2</span><br></pre></td></tr></table></figure>
+<p>选项与参数：</p>
+<ul>
+<li><code>-c</code>：将压缩的过程产生的数据输出到屏幕上！</li>
+<li><code>-d</code>：解压缩的参数</li>
+<li><code>-k</code>：保留原始文件，而不会删除原始的文件喔！</li>
+<li><code>-z</code>：压缩的参数 （默认值，可以不加）</li>
+<li><code>-v</code>：可以显示出原文件/压缩文件的压缩比等信息；</li>
+<li><code>-#</code>：与 gzip 同样的，都是在计算压缩比的参数， -9 最佳， -1 最快！</li>
+</ul>
+<h2 id="u547D_u4EE4_3A_tar"><a href="#u547D_u4EE4_3A_tar" class="headerlink" title="命令: tar"></a>命令: tar</h2><p>tar 可以将多个目录或文件打包成一个大文件，同时还可以通过 gzip/bzip2/xz 的支持，将该文件同时进行压缩！ 更有趣的是，由于 tar 的使用太广泛了，目前 Windows 的 WinRAR 也支持 .tar.gz 文件名的解压缩呢！</p>
+<p>tar 的选项与参数非常的多！我们只讲几个常用的选项，更多选项您可以自行 man tar 查询啰！</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar [-z|-j|-J] [cv] [<span class="operator">-f</span> 待创建的新文件名] filename... &lt;==打包与压缩</span><br><span class="line">tar [-z|-j|-J] [tv] [<span class="operator">-f</span> 既有的 tar文件名]             &lt;==察看文件名</span><br><span class="line">tar [-z|-j|-J] [xv] [<span class="operator">-f</span> 既有的 tar文件名] [-C 目录]   &lt;==解压缩</span><br></pre></td></tr></table></figure>
+<p>选项与参数：</p>
+<ul>
+<li><code>-c</code>：创建打包文件，可搭配 -v 来察看过程中被打包的文件名（filename）</li>
+<li><code>-t</code>：察看打包文件的内容含有哪些文件名，重点在察看“文件名”就是了；</li>
+<li><code>-x</code>：解打包或解压缩的功能，可以搭配 -C （大写） 在特定目录解开特别留意的是， -c, -t, -x 不可同时出现在一串指令列中。</li>
+<li><code>-z</code>：通过 gzip  的支持进行压缩/解压缩：此时文件名最好为 *.tar.gz</li>
+<li><code>-j</code>：通过 bzip2 的支持进行压缩/解压缩：此时文件名最好为 *.tar.bz2</li>
+<li><code>-J</code>：通过 xz    的支持进行压缩/解压缩：此时文件名最好为 *.tar.xz 特别留意， -z, -j, -J 不可以同时出现在一串指令列中</li>
+<li><code>-v</code>：在压缩/解压缩的过程中，将正在处理的文件名显示出来！</li>
+<li><code>-f filename</code>：-f 后面要立刻接要被处理的文件名！建议 -f 单独写一个选项啰！（比较不会忘记）</li>
+<li><code>-C 目录</code>：这个选项用在解压缩，若要在特定目录解压缩，可以使用这个选项。</li>
+<li><code>-p</code>：保留备份数据的原本权限与属性，常用于备份（-c）重要的配置文件</li>
+<li><code>-P</code>：保留绝对路径，亦即允许备份数据中含有根目录存在之意；</li>
+<li><code>--exclude=FILE</code>：在压缩的过程中，不要将 FILE 打包！ </li>
+</ul>
+<p>tar 并不会主动的产生创建的文件名喔！我们要自订啦！ 所以扩展名就显的很重要了！如果不加 <code>[-z|-j|-J]</code> 的话，文件名最好取为 <code>*.tar</code> 即可。如果是 <code>-j</code>选项，代表有 bzip2 的支持，因此文件名最好就取为 <code>*.tar.bz2</code> ，因为 bzip2 会产生 <code>.bz2</code> 的扩展名之故！ 至于如果是加上了 <code>-z</code> 的 gzip 的支持，那文件名最好取为 <code>*.tar.gz</code> 喔！</p>
+<p>另外值得一提的是，tar 打包出来的文件有没有进行压缩所得到文件称呼不同喔！ 如果仅是打包而已，就是 <code>tar -cv -f file.tar</code>而已，这个文件我们称呼为 tarfile 。 如果还有进行压缩的支持，例如 <code>tar -jcv -f file.tar.bz2</code> 时，我们就称呼为 tarball （tar 球？）！这只是一个基本的称谓而已，不过很多书籍与网络都会使用到这个 tarball 的名称！所以得要跟您介绍介绍。</p>
+<h2 id="u547D_u4EE4_3A_cut_2C_grep"><a href="#u547D_u4EE4_3A_cut_2C_grep" class="headerlink" title="命令: cut, grep"></a>命令: cut, grep</h2><blockquote>
+<p>cut</p>
+</blockquote>
+<p>cut 不就是“切”吗？没错啦！这个指令可以将一段讯息的某一段给他“切”出来～ 处理的讯息是以“行”为单位喔！</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cut <span class="operator">-d</span><span class="string">'分隔字符'</span> <span class="operator">-f</span> fields &lt;==用于有特定分隔字符</span><br><span class="line">cut -c 字符区间            &lt;==用于排列整齐的讯息</span><br></pre></td></tr></table></figure>
+<p>选项与参数：</p>
+<ul>
+<li><code>-d</code>：后面接分隔字符。与 -f 一起使用；</li>
+<li><code>-f</code>：依据 -d 的分隔字符将一段讯息分区成为数段，用 -f 取出第几段的意思；</li>
+<li><code>-c</code>：以字符 （characters） 的单位取出固定字符区间；</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：将 PATH 变量取出，我要找出第五个路径。</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;PATH&#125;</span> | cut <span class="operator">-d</span> <span class="string">':'</span> <span class="operator">-f</span> <span class="number">5</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;PATH&#125;</span> | cut <span class="operator">-d</span> <span class="string">':'</span> <span class="operator">-f</span> <span class="number">3</span>,<span class="number">5</span> <span class="comment"># 找第 3 与第 5</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：将 export 输出的讯息，取得第 12 字符以后的所有字串</span></span><br><span class="line"><span class="built_in">export</span> | cut -c <span class="number">12</span>-</span><br><span class="line"><span class="comment"># 知道怎么回事了吧？用 -c 可以处理比较具有格式的输出数据！</span></span><br><span class="line"><span class="comment"># 我们还可以指定某个范围的值，例如第 12-20 的字符，就是 cut -c 12-20 等等！</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例三：用 last 将显示的登陆者的信息中，仅留下使用者大名</span></span><br><span class="line">last | cut <span class="operator">-d</span> <span class="string">' '</span> <span class="operator">-f</span> <span class="number">1</span></span><br><span class="line"><span class="comment"># 由输出的结果我们可以发现第一个空白分隔的字段代表帐号，所以使用如上指令：</span></span><br><span class="line"><span class="comment"># 但是因为 root   pts/1 之间空格有好几个，并非仅有一个，所以，如果要找出 </span></span><br><span class="line"><span class="comment"># pts/1 其实不能以 cut -d ' ' -f 1,2 喔！输出的结果会不是我们想要的。</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>grep</p>
+</blockquote>
+<p>刚刚的 cut 是将一行讯息当中，取出某部分我们想要的，而 grep 则是分析一行讯息， 若当中有我们所需要的信息，就将该行拿出来～简单的语法是这样的：</p>
+<p><code>grep [-acinv] [--color=auto] &#39;搜寻字串&#39; filename</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-a</code>：将 binary 文件以 text 文件的方式搜寻数据</li>
+<li><code>-c</code>：计算找到 ‘搜寻字串’ 的次数</li>
+<li><code>-i</code>：忽略大小写的不同，所以大小写视为相同</li>
+<li><code>-n</code>：顺便输出行号</li>
+<li><code>-v</code>：反向选择，亦即显示出没有 ‘搜寻字串’ 内容的那一行！</li>
+<li><code>--color=auto</code>：可以将找到的关键字部分加上颜色的显示喔！</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：将 last 当中，有出现 root 的那一行就取出来；</span></span><br><span class="line">last | grep <span class="string">'root'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：与范例一相反，只要没有 root 的就取出！</span></span><br><span class="line">last | grep -v <span class="string">'root'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例三：在 last 的输出讯息中，只要有 root 就取出，并且仅取第一栏</span></span><br><span class="line">last | grep <span class="string">'root'</span> | cut <span class="operator">-d</span> <span class="string">' '</span> <span class="operator">-f</span>1</span><br><span class="line"><span class="comment"># 在取出 root 之后，利用上个指令 cut 的处理，就能够仅取得第一栏啰！</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例四：取出 /etc/man_db.conf 内含 MANPATH 的那几行</span></span><br><span class="line">grep --color=auto <span class="string">'MANPATH'</span> /etc/man_db.conf</span><br><span class="line">....（前面省略）....</span><br><span class="line">MANPATH_MAP     /usr/games              /usr/share/man</span><br><span class="line">MANPATH_MAP     /opt/bin                /opt/man</span><br><span class="line">MANPATH_MAP     /opt/sbin               /opt/man</span><br><span class="line"><span class="comment"># 神奇的是，如果加上 --color=auto 的选项，找到的关键字部分会用特殊颜色显示喔！</span></span><br></pre></td></tr></table></figure>
+<h2 id="u547D_u4EE4_3A_sort_2C_wc_2C_uniq"><a href="#u547D_u4EE4_3A_sort_2C_wc_2C_uniq" class="headerlink" title="命令: sort, wc, uniq"></a>命令: sort, wc, uniq</h2><blockquote>
+<p>sort</p>
+</blockquote>
+<p>sort 是很有趣的指令，他可以帮我们进行排序，而且可以依据不同的数据型态来排序喔！ 例如数字与文字的排序就不一样。此外，排序的字符与语系的编码有关，因此， 如果您需要排序时，建议使用 <code>LANG=C</code> 来让语系统一，数据排序比较好一些。</p>
+<p><code>sort [-fbMnrtuk] [file or stdin]</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-f</code>：忽略大小写的差异，例如 A 与 a 视为编码相同；</li>
+<li><code>-b</code>：忽略最前面的空白字符部分；</li>
+<li><code>-M</code>：以月份的名字来排序，例如 JAN, DEC 等等的排序方法；</li>
+<li><code>-n</code>：使用“纯数字”进行排序（默认是以文字体态来排序的）；</li>
+<li><code>-r</code>：反向排序；</li>
+<li><code>-u</code>：就是 uniq ，相同的数据中，仅出现一行代表；</li>
+<li><code>-t</code>：分隔符号，默认是用 [tab] 键来分隔；</li>
+<li><code>-k</code>：以那个区间 （field） 来进行排序的意思</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：个人帐号都记录在 /etc/passwd 下，请将帐号进行排序。</span></span><br><span class="line">cat /etc/passwd | sort</span><br><span class="line"></span><br><span class="line">abrt:x:<span class="number">173</span>:<span class="number">173</span>::/etc/abrt:/sbin/nologin</span><br><span class="line">adm:x:<span class="number">3</span>:<span class="number">4</span>:adm:/var/adm:/sbin/nologin</span><br><span class="line">alex:x:<span class="number">1001</span>:<span class="number">1002</span>::/home/alex:/bin/bash</span><br><span class="line"><span class="comment"># 鸟哥省略很多的输出～由上面的数据看起来， sort 是默认“以第一个”数据来排序，</span></span><br><span class="line"><span class="comment"># 而且默认是以“文字”型态来排序的喔！所以由 a 开始排到最后啰！</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：/etc/passwd 内容是以 : 来分隔的，我想以第三栏来排序，该如何？</span></span><br><span class="line">cat /etc/passwd | sort -t <span class="string">':'</span> -k <span class="number">3</span></span><br><span class="line"></span><br><span class="line">root:x:<span class="number">0</span>:<span class="number">0</span>:root:/root:/bin/bash</span><br><span class="line">dmtsai:x:<span class="number">1000</span>:<span class="number">1000</span>:dmtsai:/home/dmtsai:/bin/bash</span><br><span class="line">alex:x:<span class="number">1001</span>:<span class="number">1002</span>::/home/alex:/bin/bash</span><br><span class="line">arod:x:<span class="number">1002</span>:<span class="number">1003</span>::/home/arod:/bin/bash</span><br><span class="line"><span class="comment"># 看到特殊字体的输出部分了吧？怎么会这样排列啊？呵呵！没错啦～</span></span><br><span class="line"><span class="comment"># 如果是以文字体态来排序的话，原本就会是这样，想要使用数字排序：</span></span><br><span class="line"><span class="comment"># cat /etc/passwd | sort -t ':' -k 3 -n</span></span><br><span class="line"><span class="comment"># 这样才行啊！用那个 -n 来告知 sort 以数字来排序啊！</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例三：利用 last ，将输出的数据仅取帐号，并加以排序</span></span><br><span class="line">last | cut <span class="operator">-d</span> <span class="string">' '</span> <span class="operator">-f</span>1 | sort</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>wc</p>
+</blockquote>
+<p>如果我想要知道 /etc/man_db.conf 这个文件里面有多少字？多少行？多少字符的话， 可以怎么做呢？其实可以利用 wc 这个指令来达成喔！他可以帮我们计算输出的讯息的整体数据！</p>
+<p><code>wc [-lwm]</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-l</code>：仅列出行；</li>
+<li><code>-w</code>：仅列出多少字（英文单字）；</li>
+<li><code>-m</code>  ：多少字符；</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：那个 /etc/man_db.conf 里面到底有多少相关字、行、字符数？</span></span><br><span class="line">cat /etc/man_db.conf | wc </span><br><span class="line">    <span class="number">131</span>     <span class="number">723</span>    <span class="number">5171</span></span><br><span class="line"><span class="comment"># 输出的三个数字中，分别代表： “行、字数、字符数”</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：我知道使用 last 可以输出登陆者，但是 last 最后两行并非帐号内容，那么请问，我该如何以一行指令串取得登陆系统的总人次？</span></span><br><span class="line">last | grep [a-zA-Z] | grep -v <span class="string">'wtmp'</span> | grep -v <span class="string">'reboot'</span> | \</span><br><span class="line">&gt; grep -v <span class="string">'unknown'</span> |wc <span class="operator">-l</span> </span><br><span class="line"><span class="comment"># 由于 last 会输出空白行, wtmp, unknown, reboot 等无关帐号登陆的信息，因此，我利用</span></span><br><span class="line"><span class="comment"># grep 取出非空白行，以及去除上述关键字那几行，再计算行数，就能够了解啰</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>uniq</p>
+</blockquote>
+<p>如果我排序完成了，想要将重复的数据仅列出一个显示，可以怎么做呢？</p>
+<p><code>uniq [-ic]</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-i</code>：忽略大小写字符的不同；</li>
+<li><code>-c</code>：进行计数</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：使用 last 将帐号列出，仅取出帐号栏，进行排序后仅取出一位；</span></span><br><span class="line">last | cut <span class="operator">-d</span> <span class="string">' '</span> <span class="operator">-f</span>1 | sort | uniq</span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：承上题，如果我还想要知道每个人的登陆总次数呢？</span></span><br><span class="line">last | cut <span class="operator">-d</span> <span class="string">' '</span> <span class="operator">-f</span>1 | sort | uniq -c</span><br><span class="line">      <span class="number">1</span></span><br><span class="line">      <span class="number">6</span> （unknown</span><br><span class="line">     <span class="number">47</span> dmtsai</span><br><span class="line">      <span class="number">4</span> reboot</span><br><span class="line">      <span class="number">7</span> root</span><br><span class="line">      <span class="number">1</span> wtmp</span><br><span class="line"><span class="comment"># 从上面的结果可以发现 reboot 有 4 次， root 登陆则有 7 次！大部分是以 dmtsai 来操作！</span></span><br><span class="line"><span class="comment"># wtmp 与第一行的空白都是 last 的默认字符，那两个可以忽略的！</span></span><br></pre></td></tr></table></figure>
+<h2 id="u547D_u4EE4_3A_tee_2C_split_2C_xargs"><a href="#u547D_u4EE4_3A_tee_2C_split_2C_xargs" class="headerlink" title="命令: tee, split, xargs"></a>命令: tee, split, xargs</h2><blockquote>
+<p>tee</p>
+</blockquote>
+<p><img src="/images/14590942194893.jpg" alt="tee 的工作流程示意图"></p>
+<p>tee 会同时将数据流分送到文件去与屏幕 （screen）；而输出到屏幕的，其实就是 stdout ，那就可以让下个指令继续处理喔！</p>
+<p><code>tee [-a] file</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-a</code>：以累加 （append） 的方式，将数据加入 file 当中！</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">last | tee last.list | cut <span class="operator">-d</span> <span class="string">" "</span> <span class="operator">-f</span>1</span><br><span class="line"><span class="comment"># 这个范例可以让我们将 last 的输出存一份到 last.list 文件中；</span></span><br><span class="line"></span><br><span class="line">ls <span class="operator">-l</span> /home | tee ~/homefile | more</span><br><span class="line"><span class="comment"># 这个范例则是将 ls 的数据存一份到 ~/homefile ，同时屏幕也有输出讯息！</span></span><br><span class="line"></span><br><span class="line">ls <span class="operator">-l</span> / | tee <span class="operator">-a</span> ~/homefile | more</span><br><span class="line"><span class="comment"># 要注意！ tee 后接的文件会被覆盖，若加上 -a 这个选项则能将讯息累加。</span></span><br></pre></td></tr></table></figure>
+<p>tee 可以让 standard output 转存一份到文件内并将同样的数据继续送到屏幕去处理！ 这样除了可以让我们同时分析一份数据并记录下来之外，还可以作为处理一份数据的中间暂存盘记录之用！</p>
+<blockquote>
+<p>split 将一个大文件，依据文件大小或行数来分区</p>
+</blockquote>
+<p><code>split [-bl] file PREFIX</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-b</code>：后面可接欲分区成的文件大小，可加单位，例如 b, k, m 等；</li>
+<li><code>-l</code>：以行数来进行分区。</li>
+<li><code>PREFIX</code>：代表前置字符的意思，可作为分区文件的前导文字。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：我的 /etc/services 有六百多K，若想要分成 300K 一个文件时？</span></span><br><span class="line"><span class="built_in">cd</span> /tmp; split -b <span class="number">300</span>k /etc/services services</span><br><span class="line">ll -k services*</span><br><span class="line"></span><br><span class="line">-rw-rw-r--. <span class="number">1</span> dmtsai dmtsai <span class="number">307200</span> Jul  <span class="number">9</span> <span class="number">22</span>:<span class="number">52</span> servicesaa</span><br><span class="line">-rw-rw-r--. <span class="number">1</span> dmtsai dmtsai <span class="number">307200</span> Jul  <span class="number">9</span> <span class="number">22</span>:<span class="number">52</span> servicesab</span><br><span class="line">-rw-rw-r--. <span class="number">1</span> dmtsai dmtsai  <span class="number">55893</span> Jul  <span class="number">9</span> <span class="number">22</span>:<span class="number">52</span> servicesac</span><br><span class="line"><span class="comment"># 那个文件名可以随意取的啦！我们只要写上前导文字，小文件就会以</span></span><br><span class="line"><span class="comment"># xxxaa, xxxab, xxxac 等方式来创建小文件的！</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：如何将上面的三个小文件合成一个文件，文件名为 servicesback</span></span><br><span class="line">cat services* &gt;&gt; servicesback</span><br><span class="line"><span class="comment"># 很简单吧？就用数据流重导向就好啦！简单！</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例三：使用 ls -al / 输出的信息中，每十行记录成一个文件</span></span><br><span class="line">ls -al / | split <span class="operator">-l</span> <span class="number">10</span> - lsroot</span><br><span class="line">wc <span class="operator">-l</span> lsroot*</span><br><span class="line"></span><br><span class="line">  <span class="number">10</span> lsrootaa</span><br><span class="line">  <span class="number">10</span> lsrootab</span><br><span class="line">   <span class="number">4</span> lsrootac</span><br><span class="line">  <span class="number">24</span> total</span><br><span class="line"><span class="comment"># 重点在那个 - 啦！一般来说，如果需要 stdout/stdin 时，但偏偏又没有文件，</span></span><br><span class="line"><span class="comment"># 有的只是 - 时，那么那个 - 就会被当成 stdin 或 stdout ～</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>xargs 参数代换</p>
+</blockquote>
+<p>xargs 是在做什么的呢？就以字面上的意义来看， x 是加减乘除的乘号，args 则是 arguments （参数） 的意思，所以说，这个玩意儿就是在产生某个指令的参数的意思！ xargs 可以读入 stdin 的数据，并且以空白字符或断行字符作为分辨，将 stdin 的数据分隔成为 arguments 。 因为是以空白字符作为分隔，所以，如果有一些文件名或者是其他意义的名词内含有空白字符的时候， xargs 可能就会误判了</p>
+<p><code>xargs [-0epn] command</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-0</code>：如果输入的 stdin 含有特殊字符，例如 `, \, 空白键等等字符时，这个 -0 参数可以将他还原成一般字符。这个参数可以用于特殊状态喔！</li>
+<li><code>-e</code>：这个是 EOF （end of file） 的意思。后面可以接一个字串，当 xargs 分析到这个字串时，就会停止继续工作！</li>
+<li><code>-p</code>：在执行每个指令的 argument 时，都会询问使用者的意思；</li>
+<li><code>-n</code>：后面接次数，每次 command 指令执行时，要使用几个参数的意思。</li>
+<li>当 xargs 后面没有接任何的指令时，默认是以 echo 来进行输出喔！</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：将 /etc/passwd 内的第一栏取出，仅取三行，使用 id 这个指令将每个帐号内容秀出来</span></span><br><span class="line">id root</span><br><span class="line"></span><br><span class="line">uid=<span class="number">0</span>（root） gid=<span class="number">0</span>（root） groups=<span class="number">0</span>（root）   <span class="comment"># 这个 id 指令可以查询使用者的 UID/GID 等信息</span></span><br><span class="line"></span><br><span class="line">id $（cut <span class="operator">-d</span> <span class="string">':'</span> <span class="operator">-f</span> <span class="number">1</span> /etc/passwd | head -n <span class="number">3</span>）</span><br><span class="line"><span class="comment"># 虽然使用 $（cmd） 可以预先取得参数，但可惜的是， id 这个指令“仅”能接受一个参数而已！</span></span><br><span class="line"><span class="comment"># 所以上述的这个指令执行会出现错误！根本不会显示用户的 ID 啊！</span></span><br><span class="line"></span><br><span class="line">cut <span class="operator">-d</span> <span class="string">':'</span> <span class="operator">-f</span> <span class="number">1</span> /etc/passwd | head -n <span class="number">3</span> | id</span><br><span class="line"></span><br><span class="line">uid=<span class="number">1000</span>（dmtsai） gid=<span class="number">1000</span>（dmtsai） groups=<span class="number">1000</span>（dmtsai）,<span class="number">10</span>（wheel）   <span class="comment"># 我不是要查自己啊！</span></span><br><span class="line"><span class="comment"># 因为 id 并不是管线命令，因此在上面这个指令执行后，前面的东西通通不见！只会执行 id！</span></span><br><span class="line"></span><br><span class="line">cut <span class="operator">-d</span> <span class="string">':'</span> <span class="operator">-f</span> <span class="number">1</span> /etc/passwd | head -n <span class="number">3</span> | xargs id</span><br><span class="line"><span class="comment"># 依旧会出现错误！这是因为 xargs 一口气将全部的数据通通丢给 id 处理～但 id 就接受 1 个啊最多！</span></span><br><span class="line"></span><br><span class="line">cut <span class="operator">-d</span> <span class="string">':'</span> <span class="operator">-f</span> <span class="number">1</span> /etc/passwd | head -n <span class="number">3</span> | xargs -n <span class="number">1</span> id</span><br><span class="line"></span><br><span class="line">uid=<span class="number">0</span>（root） gid=<span class="number">0</span>（root） groups=<span class="number">0</span>（root）</span><br><span class="line">uid=<span class="number">1</span>（bin） gid=<span class="number">1</span>（bin） groups=<span class="number">1</span>（bin）</span><br><span class="line">uid=<span class="number">2</span>（daemon） gid=<span class="number">2</span>（daemon） groups=<span class="number">2</span>（daemon）</span><br><span class="line"><span class="comment"># 通过 -n 来处理，一次给予一个参数，因此上述的结果就 OK 正常的显示啰！</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：同上，但是每次执行 id 时，都要询问使用者是否动作？</span></span><br><span class="line">cut <span class="operator">-d</span> <span class="string">':'</span> <span class="operator">-f</span> <span class="number">1</span> /etc/passwd | head -n <span class="number">3</span> | xargs -p -n <span class="number">1</span> id</span><br><span class="line"></span><br><span class="line">id root ?...y</span><br><span class="line">uid=<span class="number">0</span>（root） gid=<span class="number">0</span>（root） groups=<span class="number">0</span>（root）</span><br><span class="line">id bin ?...y</span><br><span class="line">.....（下面省略）.....</span><br><span class="line"><span class="comment"># 呵呵！这个 -p 的选项可以让使用者的使用过程中，被询问到每个指令是否执行！</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例三：将所有的 /etc/passwd 内的帐号都以 id 查阅，但查到 sync 就结束指令串</span></span><br><span class="line">cut <span class="operator">-d</span> <span class="string">':'</span> <span class="operator">-f</span> <span class="number">1</span> /etc/passwd | xargs <span class="operator">-e</span><span class="string">'sync'</span> -n <span class="number">1</span> id</span><br><span class="line"><span class="comment"># 仔细与上面的案例做比较。也同时注意，那个 -e'sync' 是连在一起的，中间没有空白键</span></span><br><span class="line"><span class="comment"># 上个例子当中，第六个参数是 sync 啊，那么我们下达 -e'sync' 后，则分析到 sync 这个字串时，</span></span><br><span class="line"><span class="comment"># 后面的其他 stdin 的内容就会被 xargs 舍弃掉了！</span></span><br></pre></td></tr></table></figure>
+<p>其实，在 man xargs 里面就有三四个小范例，您可以自行参考一下内容。 此外， xargs 真的是很好用的一个玩意儿！您真的需要好好的参详参详！会使用 xargs 的原因是， 很多指令其实并不支持管线命令，因此我们可以通过 xargs 来提供该指令引用 standard input 之用！</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例四：找出 /usr/sbin 下面具有特殊权限的文件名，并使用 ls -l 列出详细属性</span></span><br><span class="line">find /usr/sbin -perm /<span class="number">7000</span> | xargs ls <span class="operator">-l</span></span><br><span class="line"></span><br><span class="line">-rwx-<span class="operator">-s</span>--x. <span class="number">1</span> root lock      <span class="number">11208</span> Jun <span class="number">10</span>  <span class="number">2014</span> /usr/sbin/lockdev</span><br><span class="line">-rwsr-xr-x. <span class="number">1</span> root root     <span class="number">113400</span> Mar  <span class="number">6</span> <span class="number">12</span>:<span class="number">17</span> /usr/sbin/mount.nfs</span><br><span class="line">-rwxr-sr-x. <span class="number">1</span> root root      <span class="number">11208</span> Mar  <span class="number">6</span> <span class="number">11</span>:<span class="number">05</span> /usr/sbin/netreport</span><br><span class="line">.....（下面省略）.....</span><br><span class="line"><span class="comment"># 聪明的读者应该会想到使用“ ls -l $（find /usr/sbin -perm /7000） ”来处理这个范例！</span></span><br><span class="line"><span class="comment"># 都 OK！能解决问题的方法，就是好方法！</span></span><br></pre></td></tr></table></figure>
+<h2 id="u547D_u4EE4_3A_tr_2C_col_2C_join_2C_paste_2C_expand"><a href="#u547D_u4EE4_3A_tr_2C_col_2C_join_2C_paste_2C_expand" class="headerlink" title="命令: tr, col, join, paste, expand"></a>命令: tr, col, join, paste, expand</h2><blockquote>
+<p>tr 可以用来删除一段讯息当中的文字，或者是进行文字讯息的替换！</p>
+</blockquote>
+<p><code>tr [-ds] SET1 ...</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-d</code>：删除讯息当中的 SET1 这个字串；</li>
+<li><code>-s</code>：取代掉重复的字符！</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：将 last 输出的讯息中，所有的小写变成大写字符：</span></span><br><span class="line">last | tr <span class="string">'[a-z]'</span> <span class="string">'[A-Z]'</span></span><br><span class="line"><span class="comment"># 事实上，没有加上单引号也是可以执行的，如：last | tr [a-z] [A-Z]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：将 /etc/passwd 输出的讯息中，将冒号 （:） 删除</span></span><br><span class="line">cat /etc/passwd | tr <span class="operator">-d</span> <span class="string">':'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例三：将 /etc/passwd 转存成 dos 断行到 /root/passwd 中，再将 ^M 符号删除</span></span><br><span class="line">cp /etc/passwd ~/passwd &amp;&amp; unix2dos ~/passwd</span><br><span class="line">file /etc/passwd ~/passwd</span><br><span class="line"></span><br><span class="line">/etc/passwd:         ASCII text</span><br><span class="line">/home/dmtsai/passwd: ASCII text, with CRLF line terminators  &lt;==就是 DOS 断行</span><br><span class="line"></span><br><span class="line">cat ~/passwd | tr <span class="operator">-d</span> <span class="string">'\r'</span> &gt; ~/passwd.linux</span><br><span class="line"><span class="comment"># 那个 \r 指的是 DOS 的断行字符，关于更多的字符，请参考 man tr</span></span><br><span class="line">ll /etc/passwd ~/passwd*</span><br><span class="line">-rw-r--r--. <span class="number">1</span> root   root   <span class="number">2092</span> Jun <span class="number">17</span> <span class="number">00</span>:<span class="number">20</span> /etc/passwd</span><br><span class="line">-rw-r--r--. <span class="number">1</span> dmtsai dmtsai <span class="number">2133</span> Jul  <span class="number">9</span> <span class="number">22</span>:<span class="number">13</span> /home/dmtsai/passwd</span><br><span class="line">-rw-rw-r--. <span class="number">1</span> dmtsai dmtsai <span class="number">2092</span> Jul  <span class="number">9</span> <span class="number">22</span>:<span class="number">13</span> /home/dmtsai/passwd.linux</span><br><span class="line"><span class="comment"># 处理过后，发现文件大小与原本的 /etc/passwd 就一致了！</span></span><br></pre></td></tr></table></figure>
+<p>其实这个指令也可以写在“正则表达式”里头！因为他也是由正则表达式的方式来取代数据的！ 以上面的例子来说，使用 [] 可以设置一串字呢！也常常用来取代文件中的怪异符号！ 例如上面第三个例子当中，可以去除 DOS 文件留下来的 <code>^M</code> 这个断行的符号！这东西相当的有用！相信处理 Linux &amp; Windows 系统中的人们最麻烦的一件事就是这个事情啦！亦即是 DOS 下面会自动的在每行行尾加入 <code>^M</code> 这个断行符号！这个时候除了以前讲过的 dos2unix 之外，我们也可以使用这个 tr 来将 <code>^M</code> 去除！ <code>^M</code> 可以使用 <code>\r</code> 来代替之！</p>
+<blockquote>
+<p>col</p>
+</blockquote>
+<p><code>col [-xb]</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-x</code>：将 tab 键转换成对等的空白键</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">范例一：利用 cat -A 显示出所有特殊按键，最后以 col 将 [tab] 转成空白</span><br><span class="line"> cat -A /etc/man_db.conf  &lt;==此时会看到很多 ^I 的符号，那就是 tab</span><br><span class="line"> cat /etc/man_db.conf | col -x | cat -A | more</span><br><span class="line"><span class="comment"># 嘿嘿！如此一来， [tab] 按键会被取代成为空白键，输出就美观多了！</span></span><br></pre></td></tr></table></figure>
+<p>虽然 col 有他特殊的用途，不过，很多时候，他可以用来简单的处理将 [tab] 按键取代成为空白键！ 例如上面的例子当中，如果使用 cat -A 则 [tab] 会以 <code>^I</code> 来表示。 但经过 col -x 的处理，则会将 [tab] 取代成为对等的空白键！</p>
+<blockquote>
+<p>join 处理两个文件之间的数据</p>
+</blockquote>
+<p><code>join [-ti12] file1 file2</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-t</code>：join 默认以空白字符分隔数据，并且比对“第一个字段”的数据，如果两个文件相同，则将两笔数据联成一行，且第一个字段放在第一个</li>
+<li><code>-i</code>：忽略大小写的差异；</li>
+<li><code>-1</code>：这个是数字的 1 ，代表“第一个文件要用那个字段来分析”的意思；</li>
+<li><code>-2</code>：代表“第二个文件要用那个字段来分析”的意思。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：用 root 的身份，将 /etc/passwd 与 /etc/shadow 相关数据整合成一栏</span></span><br><span class="line">head -n <span class="number">3</span> /etc/passwd /etc/shadow</span><br><span class="line">==&gt; /etc/passwd &lt;==</span><br><span class="line">root:x:<span class="number">0</span>:<span class="number">0</span>:root:/root:/bin/bash</span><br><span class="line">bin:x:<span class="number">1</span>:<span class="number">1</span>:bin:/bin:/sbin/nologin</span><br><span class="line">daemon:x:<span class="number">2</span>:<span class="number">2</span>:daemon:/sbin:/sbin/nologin</span><br><span class="line"></span><br><span class="line">==&gt; /etc/shadow &lt;==</span><br><span class="line">root:<span class="variable">$6</span><span class="variable">$wtbCCce</span>/PxMeE5wm<span class="variable">$KE2IfSJr</span>...:<span class="number">16559</span>:<span class="number">0</span>:<span class="number">99999</span>:<span class="number">7</span>:::</span><br><span class="line">bin:*:<span class="number">16372</span>:<span class="number">0</span>:<span class="number">99999</span>:<span class="number">7</span>:::</span><br><span class="line">daemon:*:<span class="number">16372</span>:<span class="number">0</span>:<span class="number">99999</span>:<span class="number">7</span>:::</span><br><span class="line"><span class="comment"># 由输出的数据可以发现这两个文件的最左边字段都是相同帐号！且以 : 分隔</span></span><br><span class="line"></span><br><span class="line">join -t <span class="string">':'</span> /etc/passwd /etc/shadow | head -n <span class="number">3</span></span><br><span class="line">root:x:<span class="number">0</span>:<span class="number">0</span>:root:/root:/bin/bash:<span class="variable">$6</span><span class="variable">$wtbCCce</span>/PxMeE5wm<span class="variable">$KE2IfSJr</span>...:<span class="number">16559</span>:<span class="number">0</span>:<span class="number">99999</span>:<span class="number">7</span>:::</span><br><span class="line">bin:x:<span class="number">1</span>:<span class="number">1</span>:bin:/bin:/sbin/nologin:*:<span class="number">16372</span>:<span class="number">0</span>:<span class="number">99999</span>:<span class="number">7</span>:::</span><br><span class="line">daemon:x:<span class="number">2</span>:<span class="number">2</span>:daemon:/sbin:/sbin/nologin:*:<span class="number">16372</span>:<span class="number">0</span>:<span class="number">99999</span>:<span class="number">7</span>:::</span><br><span class="line"><span class="comment"># 通过上面这个动作，我们可以将两个文件第一字段相同者整合成一列！</span></span><br><span class="line"><span class="comment"># 第二个文件的相同字段并不会显示（因为已经在最左边的字段出现了啊！）</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：我们知道 /etc/passwd 第四个字段是 GID ，那个 GID 记录在 /etc/group 当中的第三个字段，请问如何将两个文件整合？</span></span><br><span class="line">head -n <span class="number">3</span> /etc/passwd /etc/group</span><br><span class="line">==&gt; /etc/passwd &lt;==</span><br><span class="line">root:x:<span class="number">0</span>:<span class="number">0</span>:root:/root:/bin/bash</span><br><span class="line">bin:x:<span class="number">1</span>:<span class="number">1</span>:bin:/bin:/sbin/nologin</span><br><span class="line">daemon:x:<span class="number">2</span>:<span class="number">2</span>:daemon:/sbin:/sbin/nologin</span><br><span class="line"></span><br><span class="line">==&gt; /etc/group &lt;==</span><br><span class="line">root:x:<span class="number">0</span>:</span><br><span class="line">bin:x:<span class="number">1</span>:</span><br><span class="line">daemon:x:<span class="number">2</span>:</span><br><span class="line"><span class="comment"># 从上面可以看到，确实有相同的部分喔！赶紧来整合一下！</span></span><br><span class="line"></span><br><span class="line">join -t <span class="string">':'</span> -<span class="number">1</span> <span class="number">4</span> /etc/passwd -<span class="number">2</span> <span class="number">3</span> /etc/group | head -n <span class="number">3</span></span><br><span class="line"><span class="number">0</span>:root:x:<span class="number">0</span>:root:/root:/bin/bash:root:x:</span><br><span class="line"><span class="number">1</span>:bin:x:<span class="number">1</span>:bin:/bin:/sbin/nologin:bin:x:</span><br><span class="line"><span class="number">2</span>:daemon:x:<span class="number">2</span>:daemon:/sbin:/sbin/nologin:daemon:x:</span><br><span class="line"><span class="comment"># 同样的，相同的字段部分被移动到最前面了！所以第二个文件的内容就没再显示。</span></span><br><span class="line"><span class="comment"># 请读者们配合上述显示两个文件的实际内容来比对！</span></span><br></pre></td></tr></table></figure>
+<p>这个 join 在处理两个相关的数据文件时，就真的是很有帮助的啦！ 例如上面的案例当中，我的 /etc/passwd, /etc/shadow, /etc/group 都是有相关性的， 其中 /etc/passwd, /etc/shadow 以帐号为相关性，至于 /etc/passwd, /etc/group 则以所谓的 GID （帐号的数字定义） 来作为他的相关性。根据这个相关性， 我们可以将有关系的数据放置在一起！这在处理数据可是相当有帮助的！ 但是上面的例子有点难，希望您可以静下心好好的看一看原因喔！</p>
+<p>此外，需要特别注意的是，在使用 join 之前，你所需要处理的文件应该要事先经过排序 （sort） 处理！ 否则有些比对的项目会被略过呢！特别注意了！</p>
+<blockquote>
+<p>paste 直接将两行贴在一起，且中间以 [tab] 键隔开</p>
+</blockquote>
+<p><code>paste [-d] file1 file2</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-d</code>：后面可以接分隔字符。默认是以 [tab] 来分隔的！</li>
+<li><code>-</code>：如果 file 部分写成 - ，表示来自 standard input 的数据的意思。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：用 root 身份，将 /etc/passwd 与 /etc/shadow 同一行贴在一起</span></span><br><span class="line">paste /etc/passwd /etc/shadow</span><br><span class="line"></span><br><span class="line">root:x:<span class="number">0</span>:<span class="number">0</span>:root:/root:/bin/bash root:<span class="variable">$6</span><span class="variable">$wtbCCce</span>/PxMeE5wm<span class="variable">$KE2IfSJr</span>...:<span class="number">16559</span>:<span class="number">0</span>:<span class="number">99999</span>:<span class="number">7</span>:::</span><br><span class="line">bin:x:<span class="number">1</span>:<span class="number">1</span>:bin:/bin:/sbin/nologin        bin:*:<span class="number">16372</span>:<span class="number">0</span>:<span class="number">99999</span>:<span class="number">7</span>:::</span><br><span class="line">daemon:x:<span class="number">2</span>:<span class="number">2</span>:daemon:/sbin:/sbin/nologin daemon:*:<span class="number">16372</span>:<span class="number">0</span>:<span class="number">99999</span>:<span class="number">7</span>:::</span><br><span class="line"><span class="comment"># 注意喔！同一行中间是以 [tab] 按键隔开的！</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：先将 /etc/group 读出（用 cat），然后与范例一贴上一起！且仅取出前三行</span></span><br><span class="line">cat /etc/group|paste /etc/passwd /etc/shadow - | head -n <span class="number">3</span></span><br><span class="line"><span class="comment"># 这个例子的重点在那个 - 的使用！那玩意儿常常代表 stdin 喔！</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>expand 将 [tab] 按键转成空白键</p>
+</blockquote>
+<p><code>expand [-t] file</code></p>
+<p>选项与参数：</p>
+<ul>
+<li><code>-t</code>：后面可以接数字。一般来说，一个 tab 按键可以用 8 个空白键取代。我们也可以自行定义一个 [tab] 按键代表多少个字符呢！</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 范例一：将 /etc/man_db.conf 内行首为 MANPATH 的字样就取出；仅取前三行；</span></span><br><span class="line">grep <span class="string">'^MANPATH'</span> /etc/man_db.conf | head -n <span class="number">3</span></span><br><span class="line"></span><br><span class="line">MANPATH_MAP     /bin                    /usr/share/man</span><br><span class="line">MANPATH_MAP     /usr/bin                /usr/share/man</span><br><span class="line">MANPATH_MAP     /sbin                   /usr/share/man</span><br><span class="line"><span class="comment"># 行首的代表标志为 ^ ，这个我们留待下节介绍！先有概念即可！</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例二：承上，如果我想要将所有的符号都列出来？（用 cat）</span></span><br><span class="line">grep <span class="string">'^MANPATH'</span> /etc/man_db.conf | head -n <span class="number">3</span> |cat -A</span><br><span class="line"></span><br><span class="line">MANPATH_MAP^I/bin^I^I^I/usr/share/man$</span><br><span class="line">MANPATH_MAP^I/usr/bin^I^I/usr/share/man$</span><br><span class="line">MANPATH_MAP^I/sbin^I^I^I/usr/share/man$</span><br><span class="line"><span class="comment"># 发现差别了吗？没错～ [tab] 按键可以被 cat -A 显示成为 ^I </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 范例三：承上，我将 [tab] 按键设置成 6 个字符的话？</span></span><br><span class="line">grep <span class="string">'^MANPATH'</span> /etc/man_db.conf | head -n <span class="number">3</span> | expand -t <span class="number">6</span> - | cat -A</span><br><span class="line"></span><br><span class="line">MANPATH_MAP /bin              /usr/share/man$</span><br><span class="line">MANPATH_MAP /usr/bin          /usr/share/man$</span><br><span class="line">MANPATH_MAP /sbin             /usr/share/man$</span><br><span class="line"><span class="number">123456123456123456123456123456123456123456123456</span>...</span><br><span class="line"><span class="comment"># 仔细看一下上面的数字说明，因为我是以 6 个字符来代表一个 [tab] 的长度，所以，</span></span><br><span class="line"><span class="comment"># MAN... 到 /usr 之间会隔 12 （两个 [tab]） 个字符喔！如果 tab 改成 9 的话，</span></span><br><span class="line"><span class="comment"># 情况就又不同了！这里也不好理解～您可以多设置几个数字来查阅就晓得！</span></span><br></pre></td></tr></table></figure>
+<h2 id="vi__u4E0E_vim"><a href="#vi__u4E0E_vim" class="headerlink" title="vi 与 vim"></a>vi 与 vim</h2><p>基本上 vi 共分为三种模式，分别是“一般指令模式”、“编辑模式”与“指令列命令模式”。 这三种模式的作用分别是：</p>
+<ul>
+<li>一般指令模式 （command mode）<ul>
+<li>以 vi 打开一个文件就直接进入一般指令模式了（这是默认的模式，也简称为一般模式）。在这个模式中， 你可以使用“上下左右”按键来移动光标，你可以使用“删除字符”或“删除整列”来处理文件内容， 也可以使用“复制、贴上”来处理你的文件数据。</li>
+</ul>
+</li>
+<li>编辑模式 （insert mode）<ul>
+<li>在一般指令模式中可以进行删除、复制、贴上等等的动作，但是却无法编辑文件内容的！ 要等到你按下 <code>i, I, o, O, a, A, r, R</code> 等任何一个字母之后才会进入编辑模式。注意了！通常在 Linux 中，按下这些按键时，在画面的左下方会出现“ INSERT 或 REPLACE ”的字样，此时才可以进行编辑。而如果要回到一般指令模式时， 则必须要按下“Esc”这个按键即可退出编辑模式。</li>
+</ul>
+</li>
+<li>指令列命令模式 （command-line mode）<ul>
+<li>在一般模式当中，输入 <code>: / ?</code> 三个中的任何一个按钮，就可以将光标移动到最下面那一列。在这个模式当中， 可以提供你“搜寻数据”的动作，而读取、存盘、大量取代字符、离开 vi 、显示行号等等的动作则是在此模式中达成的！</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14590796988736.jpg" alt=""></p>
+<blockquote>
+<p>一般指令模式可用的按钮说明</p>
+</blockquote>
+<ul>
+<li>光标移动<ul>
+<li><code>h 或 向左方向键（←）</code>：光标向左移动一个字符</li>
+<li><code>j 或 向下方向键（↓）</code>：光标向下移动一个字符</li>
+<li><code>k 或 向上方向键（↑）</code>：光标向上移动一个字符</li>
+<li><code>l 或 向右方向键（→）</code>：光标向右移动一个字符</li>
+<li>如果你将右手放在键盘上的话，你会发现 hjkl 是排列在一起的，因此可以使用这四个按钮来移动光标。 如果想要进行多次移动的话，例如向下移动 30 列，可以使用 <code>30j</code> 或 <code>30↓</code> 的组合按键， 亦即加上想要进行的次数（数字）后，按下动作即可！</li>
+<li><code>[Ctrl] + [f]</code>：屏幕“向下”移动一页，相当于 [Page Down]按键 （常用）</li>
+<li><code>[Ctrl] + [b]</code>：屏幕“向上”移动一页，相当于 [Page Up] 按键 （常用）</li>
+<li><code>[Ctrl] + [d]</code>：屏幕“向下”移动半页</li>
+<li><code>[Ctrl] + [u]</code>：屏幕“向上”移动半页</li>
+<li><code>+</code>：光标移动到非空白字符的下一列</li>
+<li><code>-</code>：光标移动到非空白字符的上一列</li>
+<li><code>n&lt;space&gt;</code>：那个 n 表示“数字”，例如 20 。按下数字后再按空白键，光标会向右移动这一列的 n 个字符。例如 20<space> 则光标会向后面移动 20 个字符距离。</space></li>
+<li><code>0 或功能键[Home]</code>：这是数字“ 0 ”：移动到这一列的最前面字符处 （常用）</li>
+<li><code>$ 或功能键[End]</code>：移动到这一列的最后面字符处（常用）</li>
+<li><code>H</code>：光标移动到这个屏幕的最上方那一列的第一个字符</li>
+<li><code>M</code>：光标移动到这个屏幕的中央那一列的第一个字符</li>
+<li><code>L</code>：光标移动到这个屏幕的最下方那一列的第一个字符</li>
+<li><code>G</code>：移动到这个文件的最后一列（常用）</li>
+<li><code>nG</code>：n 为数字。移动到这个文件的第 n 列。例如 20G 则会移动到这个文件的第 20 列（可配合 <code>:set nu</code>）</li>
+<li><code>gg</code>：移动到这个文件的第一列，相当于 1G 啊！ （常用）</li>
+<li><code>n&lt;Enter&gt;</code>：n 为数字。光标向下移动 n 列（常用）</li>
+</ul>
+</li>
+<li>复制粘贴<ul>
+<li><code>x, X</code>：在一列字当中，x 为向后删除一个字符 （相当于 [del] 按键）， X 为向前删除一个字符（相当于 [backspace] 亦即是倒退键） （常用）</li>
+<li><code>nx</code>：n 为数字，连续向后删除 n 个字符。举例来说，我要连续删除 10 个字符， “10x”</li>
+<li><code>dd</code>：删除光标所在的那一整列（常用）</li>
+<li><code>ndd</code>：n 为数字。删除光标所在的向下 n 列，例如 20dd 则是删除 20 列 （常用）</li>
+<li><code>d1G</code>：删除光标所在到第一列的所有数据</li>
+<li><code>dG</code>：删除光标所在到最后一列的所有数据</li>
+<li><code>d$</code>：删除光标所在处，到该列的最后一个字符</li>
+<li><code>d0</code>：那个是数字的 0 ，删除光标所在处，到该列的最前面一个字符</li>
+<li><code>yy</code>：复制光标所在的那一列（常用）</li>
+<li><code>nyy</code>：n 为数字。复制光标所在的向下 n 列，例如 20yy 则是复制 20 列（常用）</li>
+<li><code>y1G</code>：复制光标所在列到第一列的所有数据</li>
+<li><code>yG</code>：复制光标所在列到最后一列的所有数据</li>
+<li><code>y0</code>：复制光标所在的那个字符到该列行首的所有数据</li>
+<li><code>y$</code>：复制光标所在的那个字符到该列行尾的所有数据</li>
+<li><code>p, P</code>：p 为将已复制的数据在光标下一列贴上，P 则为贴在光标上一列！ 举例来说，我目前光标在第 20 列，且已经复制了 10 列数据。则按下 p 后， 那 10 列数据会贴在原本的 20 列之后，亦即由 21 列开始贴。但如果是按下 P 呢？ 那么原本的第 20 列会被推到变成 30 列。 （常用）</li>
+<li><code>J</code>：将光标所在列与下一列的数据结合成同一列</li>
+<li><code>c</code>：重复删除多个数据，例如向下删除 10 列，[ 10cj ]</li>
+<li><code>u</code>：复原前一个动作。（常用）</li>
+<li><code>[Ctrl]+r</code>：重做上一个动作。（常用）这个 u 与 [Ctrl]+r 是很常用的指令！一个是复原，另一个则是重做一次～ 利用这两个功能按键，你的编辑，嘿嘿！很快乐的啦！</li>
+<li><code>.</code>：不要怀疑！这就是小数点！意思是重复前一个动作的意思。 如果你想要重复删除、重复贴上等等动作，按下小数点“.”就好了！ （常用）</li>
+</ul>
+</li>
+<li>搜寻取代<ul>
+<li><code>/word</code>：向光标之下寻找一个名称为 word 的字串。例如要在文件内搜寻 vbird 这个字串，就输入 <code>/vbird</code> 即可！ （常用）</li>
+<li><code>?word</code>：向光标之上寻找一个字串名称为 word 的字串。</li>
+<li><code>n</code>：这个 n 是英文按键。代表“重复前一个搜寻的动作”。举例来说， 如果刚刚我们执行 <code>/vbird</code> 去向下搜寻 vbird 这个字串，则按下 n 后，会向下继续搜寻下一个名称为 vbird 的字串。如果是执行 <code>?vbird</code> 的话，那么按下 n 则会向上继续搜寻名称为 vbird 的字串！</li>
+<li><code>N</code>：这个 N 是英文按键。与 n 刚好相反，为“反向”进行前一个搜寻动作。 例如 <code>/vbird</code> 后，按下 N 则表示“向上”搜寻 vbird 。</li>
+<li>使用 <code>/word</code> 配合 n 及 N 是非常有帮助的！可以让你重复的找到一些你搜寻的关键字！</li>
+<li><code>:n1,n2s/word1/word2/g</code>：n1 与 n2 为数字。在第 n1 与 n2 列之间寻找 word1 这个字串，并将该字串取代为 word2 ！举例来说，在 100 到 200 列之间搜寻 vbird 并取代为 VBIRD 则：<code>:100,200s/vbird/VBIRD/g</code>（常用）</li>
+<li><code>:1,$s/word1/word2/g</code>：从第一列到最后一列寻找 word1 字串，并将该字串取代为 word2 ！（常用）</li>
+<li><code>:1,$s/word1/word2/gc</code>：从第一列到最后一列寻找 word1 字串，并将该字串取代为 word2 ！且在取代前显示提示字符给使用者确认 （confirm） 是否需要取代！（常用）</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>进入插入或取代的编辑模式</p>
+</blockquote>
+<ul>
+<li><code>i, I</code>：进入插入模式（Insert mode）<ul>
+<li>i 为“从目前光标所在处插入”， I 为“在目前所在列的第一个非空白字符处开始插入”。 （常用）</li>
+</ul>
+</li>
+<li><code>a, A</code>：进入插入模式（Insert mode）<ul>
+<li>a 为“从目前光标所在的下一个字符处开始插入”， A 为“从光标所在列的最后一个字符处开始插入”。（常用）</li>
+</ul>
+</li>
+<li><code>o, O</code>：进入插入模式（Insert mode）<ul>
+<li>这是英文字母 o 的大小写。o 为“在目前光标所在的下一列处插入新的一列”； O 为在目前光标所在处的上一列插入新的一列！（常用）</li>
+</ul>
+</li>
+<li><code>r, R</code>：进入取代模式（Replace mode）<ul>
+<li>r 只会取代光标所在的那一个字符一次；R会一直取代光标所在的文字，直到按下 ESC 为止；（常用）</li>
+</ul>
+</li>
+<li>上面这些按键中，在 vi 画面的左下角处会出现“–INSERT–”或“–REPLACE–”的字样。 由名称就知道该动作了吧！！特别注意的是，我们上面也提过了，你想要在文件里面输入字符时， 一定要在左下角处看到 INSERT 或 REPLACE 才能输入喔！</li>
+<li><code>[Esc]</code>：退出编辑模式，回到一般指令模式中（常用）</li>
+</ul>
+<blockquote>
+<p>一般指令模式切换到指令列模式的可用按钮说明</p>
+</blockquote>
+<ul>
+<li>指令列模式的储存、离开等指令<ul>
+<li><code>:w</code>：将编辑的数据写入硬盘文件中（常用）</li>
+<li><code>:w!</code>：若文件属性为“只读”时，强制写入该文件。不过，到底能不能写入， 还是跟你对该文件的文件权限有关啊！</li>
+<li><code>:q</code>：离开 vi （常用）</li>
+<li><code>:q!</code>：若曾修改过文件，又不想储存，使用 ! 为强制离开不储存盘案。</li>
+<li><code>:wq</code>：储存后离开，若为 <code>:wq!</code> 则为强制储存后离开 （常用）</li>
+<li><code>ZZ</code>：这是大写的 Z 喔！若文件没有更动，则不储存离开，若文件已经被更动过，则储存后离开！</li>
+<li><code>:w [filename]</code>：将编辑的数据储存成另一个文件（类似另存新文件）</li>
+<li><code>:r [filename]</code>：在编辑的数据中，读入另一个文件的数据。亦即将 “filename” 这个文件内容加到光标所在列后面</li>
+<li><code>:n1,n2 w [filename]</code>：将 n1 到 n2 的内容储存成 filename 这个文件。</li>
+<li><code>:! command</code>：暂时离开 vi 到指令列模式下执行 command 的显示结果！例如 <code>:! ls /home</code> 即可在 vi 当中察看 /home 下面以 ls 输出的文件信息！</li>
+</ul>
+</li>
+<li>vim 环境的变更<ul>
+<li><code>:set nu</code>：显示行号，设置之后，会在每一列的字首显示该列的行号</li>
+<li><code>:set nonu</code>：与 set nu 相反，为取消行号！</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>区块选择（Visual Block）</p>
+</blockquote>
+<ul>
+<li><code>v</code>：字符选择，会将光标经过的地方反白选择！</li>
+<li><code>V</code>：列选择，会将光标经过的列反白选择！</li>
+<li><code>[Ctrl]+v</code>：区块选择，可以用长方形的方式选择数据</li>
+<li><code>y</code>：将反白的地方复制起来</li>
+<li><code>d</code>：将反白的地方删除掉</li>
+<li><code>p</code>：将刚刚复制的区块，在光标所在处贴上！</li>
+</ul>
+<blockquote>
+<p>多文件编辑</p>
+</blockquote>
+<p>通过 <code>vim file1 file2</code> 指令来使用一个 vim 打开两个文件</p>
+<ul>
+<li><code>:n</code>：编辑下一个文件</li>
+<li><code>:N</code>：编辑上一个文件</li>
+<li><code>:files</code>：列出目前这个 vim 的打开的所有文件</li>
+</ul>
+<blockquote>
+<p>多窗口功能</p>
+</blockquote>
+<p>如何分区窗口并放入文件呢？ 很简单啊！在指令列模式输入“:sp {filename}”即可！那个 filename 可有可无， 如果想要在新窗口启动另一个文件，就加入文件名，否则仅输入 :sp 时， 出现的则是同一个文件在两个窗口间！</p>
+<ul>
+<li><code>:sp [filename]</code>：打开一个新窗口，如果有加 filename， 表示在新窗口打开一个新文件，否则表示两个窗口为同一个文件内容（同步显示）。</li>
+<li><code>[ctrl]+w+j</code> / <code>[ctrl]+w+↓</code> ：按键的按法是：先按下 [ctrl] 不放， 再按下 w 后放开所有的按键，然后再按下 j （或向下方向键），则光标可移动到下方的窗口。</li>
+<li><code>[ctrl]+w+k</code> / <code>[ctrl]+w+↑</code>：同上，不过光标移动到上面的窗口。</li>
+<li><code>[ctrl]+w+q</code>：其实就是 :q 结束离开啦！ 举例来说，如果我想要结束下方的窗口，那么利用 <code>[ctrl]+w+↓</code> 移动到下方窗口后，按下 <code>:q</code> 即可离开， 也可以按下 <code>[ctrl]+w+q</code> 啊！</li>
+</ul>
+<blockquote>
+<p>vim 环境设置与记录</p>
+</blockquote>
+<p>主要是修改 <code>~/.vimrc</code> 和 <code>~/.viminfo</code></p>
+<ul>
+<li><code>:set nu</code> / <code>:set nonu</code>：就是设置与取消行号啊！</li>
+<li><code>:set hlsearch</code> / <code>:set nohlsearch</code>：hlsearch 就是 high light search（高亮度搜寻）。 这个就是设置是否将搜寻的字串反白的设置值。默认值是 hlsearch</li>
+<li><code>:set autoindent</code> / <code>:set noautoindent</code>：是否自动缩排？autoindent 就是自动缩排。</li>
+<li><code>:set backup</code>：是否自动储存备份文件？一般是 nobackup 的， 如果设置 backup 的话，那么当你更动任何一个文件时，则原始文件会被另存成一个文件名为 filename~ 的文件。 举例来说，我们编辑 hosts ，设置 <code>:set backup</code>，那么当更动 hosts 时，在同目录下，就会产生 hosts~ 文件名的文件，记录原始的 hosts 文件内容</li>
+<li><code>:set ruler</code>：还记得我们提到的右下角的一些状态列说明吗？ 这个 ruler 就是在显示或不显示该设置值的啦！</li>
+<li><code>:set showmode</code>：这个则是，是否要显示 <code>--INSERT--</code> 之类的字眼在左下角的状态列。</li>
+<li><code>:set backspace=（012）</code>：一般来说， 如果我们按下 i 进入编辑模式后，可以利用倒退键 （backspace） 来删除任意字符的。 但是，某些 distribution 则不许如此。此时，我们就可以通过 backspace 来设置啰～ 当 backspace 为 2 时，就是可以删除任意值；0 或 1 时，仅可删除刚刚输入的字符， 而无法删除原本就已经存在的文字了！</li>
+<li><code>:set all</code>：显示目前所有的环境参数设置值。</li>
+<li><code>:set</code>：显示与系统默认值不同的设置参数， 一般来说就是你有自行变动过的设置参数啦！</li>
+<li><code>:syntax on</code> / <code>:syntax off</code>：是否依据程序相关语法显示不同颜色？ 举例来说，在编辑一个纯文本文件时，如果开头是以 # 开始，那么该列就会变成蓝色。 如果你懂得写程序，那么这个 <code>:syntax on</code> 还会主动的帮你除错呢！但是， 如果你仅是编写纯文本，要避免颜色对你的屏幕产生的干扰，则可以取消这个设置 。</li>
+<li><code>:set bg=dark</code> / <code>:set bg=light</code>：可用以显示不同的颜色色调，默认是 light 。如果你常常发现注解的字体深蓝色实在很不容易看， 那么这里可以设置为 dark 喔！试看看，会有不同的样式呢！</li>
+</ul>
+<p>总之，这些设置值很有用处的啦！但是…我是否每次使用 vim 都要重新设置一次各个参数值？ 这不太合理吧？没错啊！所以，我们可以通过配置文件来直接规定我们习惯的 vim 操作环境呢！ 整体 vim 的设置值一般是放置在 <code>/etc/vimrc</code> 这个文件，不过，不建议你修改他！ 你可以修改 <code>~/.vimrc</code> 这个文件 （默认不存在，请你自行手动创建！），将你所希望的设置值写入！ 举例来说，可以是这样的一个文件：</p>
+<p><img src="/images/14590898239987.jpg" alt=""></p>
+<p>很多朋友常常哀嚎，说他们的 vim 里面怎么无法显示正常的中文啊？其实这很有可能是因为编码的问题！ 因为中文编码有 big5 与 utf8 两种，如果你的文件是使用 big5 编码制作的，但在 vim 的终端接口中你使用的是万国码（utf8）， 由于编码的不同，你的中文文件内容当然就是一堆乱码了！怎么办？这时你得要考虑许多东西啦！有这些：</p>
+<ol>
+<li>你的 Linux 系统默认支持的语系数据：这与 <code>/etc/locale.conf</code> 有关；</li>
+<li>你的终端接口 （bash） 的语系： 这与 <code>LANG</code>, <code>LC_ALL</code> 这几个变量有关；</li>
+<li>你的文件原本的编码；</li>
+<li>打开终端机的软件，例如在 GNOME 下面的窗口接口。</li>
+</ol>
+<p>事实上最重要的是上头的第三与第四点，只要这两点的编码一致，你就能够正确的看到与编辑你的中文文件。 否则就会看到一堆乱码啦！</p>
+<h2 id="Bash"><a href="#Bash" class="headerlink" title="Bash"></a>Bash</h2><p>默认的指令记忆功能可以到达 1000 个！也就是说，你曾经下达过的指令几乎都被记录下来了。<br>这么多的指令记录在哪里呢？在你的主文件夹内的 <code>.bash_history</code> 啦！ 不过，需要留意的是，<code>~/.bash_history</code> 记录的是前一次登陆以前所执行过的指令， 而至于这一次登陆所执行的指令都被暂存在内存中，当你成功的登出系统后，该指令记忆才会记录到 <code>.bash_history</code> 当中！</p>
+<p>bash 的配置文件主要分为 login shell 与 non-login shell。login shell 主要读取 <code>/etc/profile</code> 与 <code>~/.bash_profile</code>， non-login shell 则仅读取 <code>~/.bashrc</code></p>
+<blockquote>
+<p>命令别名设置功能 alias</p>
+</blockquote>
+<p>假如我需要知道这个目录下面的所有文件 （包含隐藏文件） 及所有的文件属性，那么我就必须要下达 <code>ls -al</code> 这样的指令串，唉！真麻烦，有没有更快的取代方式？呵呵！就使用命令别名呀！例如鸟哥最喜欢直接以 lm 这个自订的命令来取代上面的命令，也就是说， lm 会等于 <code>ls -al</code> 这样的一个功能，嘿！那么要如何作呢？就使用 alias 即可！你可以在指令列输入 alias 就可以知道目前的命令别名有哪些了！也可以直接下达命令来设置别名呦：<code>alias lm=&#39;ls -al&#39;</code></p>
+<blockquote>
+<p>查询指令是否为 Bash shell 的内置命令 type</p>
+</blockquote>
+<p><code>type [-tpa] name</code> 选项与参数：</p>
+<ul>
+<li>不加任何选项与参数时，type 会显示出 name 是外部指令还是 bash 内置指令</li>
+<li><code>-t</code>：当加入 -t 参数时，type 会将 name 以下面这些字眼显示出他的意义：<ul>
+<li><code>file</code>：表示为外部指令；</li>
+<li><code>alias</code>：表示该指令为命令别名所设置的名称；</li>
+<li><code>builtin</code>：表示该指令为 bash 内置的指令功能；</li>
+</ul>
+</li>
+<li><code>-p</code>：如果后面接的 name 为外部指令时，才会显示完整文件名；</li>
+<li><code>-a</code>：会由 PATH 变量定义的路径中，将所有含 name 的指令都列出来，包含 alias</li>
+</ul>
+<blockquote>
+<p>指令的下达与快速编辑按钮</p>
+</blockquote>
+<p>上面这个指令用途是将三个文件复制到 <code>/root</code> 这个目录下而已。不过，因为指令太长， 于是鸟哥就利用 <code>\[Enter]</code> 来将 [Enter] 这个按键“跳脱！”开来，让 [Enter] 按键不再具有“开始执行”的功能！好让指令可以继续在下一行输入。 需要特别留意， [Enter] 按键是紧接着反斜线 <code>\</code> 的，两者中间没有其他字符。 因为 <code>\</code> 仅跳脱“紧接着的下一个字符”而已！</p>
+<p>另外，当你所需要下达的指令特别长，或者是你输入了一串错误的指令时，你想要快速的将这串指令整个删除掉，一般来说，我们都是按下删除键的。 有没有其他的快速组合键可以协助呢？是有的！常见的有下面这些：</p>
+<ul>
+<li><code>[ctrl]+u</code> / <code>[ctrl]+k</code><ul>
+<li>分别是从光标处向前删除指令串 （[ctrl]+u） 及向后删除指令串 （[ctrl]+k）。</li>
+</ul>
+</li>
+<li><code>[ctrl]+a</code> / <code>[ctrl]+e</code><ul>
+<li>分别是让光标移动到整个指令串的最前面 （[ctrl]+a） 或最后面 （[ctrl]+e）。</li>
+</ul>
+</li>
+</ul>
+<p>Shell 相关的部分会另外进行学习，这里暂时略过</p>
+<blockquote>
+<p>万用字符</p>
+</blockquote>
+<ul>
+<li><code>*</code>：代表“ 0 个到无穷多个”任意字符</li>
+<li><code>?</code>：代表“一定有一个”任意字符</li>
+<li><code>[ ]</code>：同样代表“一定有一个在括号内”的字符（非任意字符）。例如 [abcd] 代表“一定有一个字符， 可能是 a, b, c, d 这四个任何一个”</li>
+<li><code>[ - ]</code>：若有减号在中括号内时，代表“在编码顺序内的所有字符”。例如 [0-9] 代表 0 到 9 之间的所有数字，因为数字的语系编码是连续的！</li>
+<li><code>[^ ]</code>：若中括号内的第一个字符为指数符号（<code>^</code>），那表示“反向选择”，例如 <code>[^abc]</code> 代表 一定有一个字符，只要是非 a, b, c 的其他字符就接受的意思。</li>
+</ul>
+<blockquote>
+<p>特殊符号</p>
+</blockquote>
+<ul>
+<li><code>#</code> 注解符号：这个最常被使用在 script 当中，视为说明！在后的数据均不执行</li>
+<li><code>\</code> 跳脱符号：将“特殊字符或万用字符”还原成一般字符</li>
+<li><code>|</code> 管线 （pipe）：分隔两个管线命令的界定（后两节介绍）；</li>
+<li><code>;</code> 连续指令下达分隔符号：连续性命令的界定 （注意！与管线命令并不相同）</li>
+<li><code>~</code> 使用者的主文件夹</li>
+<li><code>$</code> 取用变量前置字符：亦即是变量之前需要加的变量取代值</li>
+<li><code>&amp;</code> 工作控制 （job control）：将指令变成背景下工作</li>
+<li><code>!</code> 逻辑运算意义上的“非” not 的意思！</li>
+<li><code>/</code> 目录符号：路径分隔的符号</li>
+<li><code>&gt;</code>, <code>&gt;&gt;</code> 数据流重导向：输出导向，分别是“取代”与“累加”</li>
+<li><code>&lt;</code>, <code>&lt;&lt;</code> 数据流重导向：输入导向 （这两个留待下节介绍）</li>
+<li><code>&#39; &#39;</code> 单引号，不具有变量置换的功能（<code>$</code> 变为纯文本）</li>
+<li><code>&quot; &quot;</code> 具有变量置换的功能！（<code>$</code> 可保留相关功能）</li>
+<li>` ` 两个 ` 中间为可以先执行的指令，亦可使用 $（ ）</li>
+<li><code>（ ）</code> 在中间为子 shell 的起始与结束</li>
+<li><code>{ }</code> 在中间为命令区块的组合！</li>
+</ul>
+<blockquote>
+<p>重定向</p>
+</blockquote>
+<p>简单的说，标准输出指的是“指令执行所回传的正确的讯息”，而标准错误输出可理解为“ 指令执行失败后，所回传的错误讯息”。举个简单例子来说，我们的系统默认有 <code>/etc/crontab</code> 但却无 <code>/etc/vbirdsay</code>， 此时若下达 <code>cat /etc/crontab /etc/vbirdsay</code> 这个指令时，cat 会进行：</p>
+<ul>
+<li>标准输出：读取 <code>/etc/crontab</code> 后，将该文件内容显示到屏幕上；</li>
+<li>标准错误输出：因为无法找到 <code>/etc/vbirdsay</code>，因此在屏幕上显示错误讯息</li>
+</ul>
+<p>不管正确或错误的数据都是默认输出到屏幕上，所以屏幕当然是乱乱的！那能不能通过某些机制将这两股数据分开呢？ 当然可以啊！那就是数据流重导向的功能啊！数据流重导向可以将 standard output （简称 stdout） 与 standard error output （简称 stderr） 分别传送到其他的文件或设备去，而分别传送所用的特殊字符则如下所示：</p>
+<ol>
+<li>标准输入　　（stdin） ：代码为 0 ，使用 <code>&lt;</code> 或 <code>&lt;&lt;</code> ；</li>
+<li>标准输出　　（stdout）：代码为 1 ，使用 <code>&gt;</code>（覆盖） 或 <code>&gt;&gt;</code>（累加） ；</li>
+<li>标准错误输出（stderr）：代码为 2 ，使用 <code>2&gt;</code>（覆盖） 或 <code>2&gt;&gt;</code>（累加） ；</li>
+</ol>
+<p>想像一下，如果我知道错误讯息会发生，所以要将错误讯息忽略掉而不显示或储存呢？ 这个时候黑洞设备 /dev/null 就很重要了！这个 /dev/null 可以吃掉任何导向这个设备的信息喔！</p>
+<p>如：<code>find /home -name .bashrc 2&gt; /dev/null</code></p>
+<blockquote>
+<p>命令执行的判断依据： <code>;</code> , <code>&amp;&amp;</code>, <code>||</code></p>
+</blockquote>
+<ul>
+<li><code>cmd ; cmd</code> 不考虑指令相关性的连续指令下达</li>
+<li><code>$? （指令回传值） 与 &amp;&amp; 或 ||</code></li>
+</ul>
+<blockquote>
+<p>管线命令 pipe</p>
+</blockquote>
+<p>在每个管线后面接的第一个数据必定是“指令”喔！而且这个指令必须要能够接受 standard input 的数据才行，这样的指令才可以是为“管线命令”，例如 less, more, head, tail 等都是可以接受 standard input 的管线命令啦。至于例如 ls, cp, mv 等就不是管线命令了！因为 ls, cp, mv 并不会接受来自 stdin 的数据。 也就是说，管线命令主要有两个比较需要注意的地方：</p>
+<ul>
+<li>管线命令仅会处理 standard output，对于 standard error output 会予以忽略</li>
+<li>管线命令必须要能够接受来自前一个指令的数据成为 standard input 继续处理才行。</li>
+</ul>
+<blockquote>
+<p>关于减号 - 的用途</p>
+</blockquote>
+<p>管线命令在 bash 的连续的处理程序中是相当重要的！另外，在 log file 的分析当中也是相当重要的一环， 所以请特别留意！另外，在管线命令当中，常常会使用到前一个指令的 stdout 作为这次的 stdin ， 某些指令需要用到文件名称 （例如 tar） 来进行处理时，该 stdin 与 stdout 可以利用减号 “-“ 来替代， 举例来说：</p>
+<p>``bash<br>mkdir /tmp/homeback<br>tar -cvf - /home | tar -xvf - -C /tmp/homeback<br>```</p>
+<p>上面这个例子是说：“我将 /home 里面的文件给他打包，但打包的数据不是纪录到文件，而是传送到 stdout； 经过管线后，将 <code>tar -cvf - /home</code> 传送给后面的 <code>tar -xvf -</code> ”。后面的这个 <code>-</code> 则是取用前一个指令的 <code>stdout</code>，因此，我们就不需要使用 filename 了！这是很常见的例子喔！注意注意！</p>
+<h2 id="Linux__u76EE_u5F55_u7684_u542B_u4E49"><a href="#Linux__u76EE_u5F55_u7684_u542B_u4E49" class="headerlink" title="Linux 目录的含义"></a>Linux 目录的含义</h2><ul>
+<li><code>bin</code><ul>
+<li>系统有很多放置可执行文件的目录，但/bin比较特殊。因为/bin放置的是在单人维护模式下还能够被操作的指令。 在/bin下面的指令可以被root与一般帐号所使用，主要有：cat, chmod, chown, date, mv, mkdir, cp, bash等等常用的指令。</li>
+</ul>
+</li>
+<li><code>/boot</code><ul>
+<li>这个目录主要在放置开机会使用到的文件，包括Linux核心文件以及开机菜单与开机所需配置文件等等。 Linux kernel常用的文件名为：vmlinuz，如果使用的是grub2这个开机管理程序， 则还会存在/boot/grub2/这个目录喔！</li>
+</ul>
+</li>
+<li><code>/dev</code><ul>
+<li>在Linux系统上，任何设备与周边设备都是以文件的型态存在于这个目录当中的。 你只要通过存取这个目录下面的某个文件，就等于存取某个设备啰～ 比要重要的文件有 <code>/dev/null</code>, <code>/dev/zero</code>, <code>/dev/tty</code>, <code>/dev/loop*</code>, <code>/dev/sd*</code> 等等 </li>
+</ul>
+</li>
+<li><code>/etc</code><ul>
+<li>系统主要的配置文件几乎都放置在这个目录内，例如人员的帐号密码档、 各种服务的启始档等等。一般来说，这个目录下的各文件属性是可以让一般使用者查阅的， 但是只有root有权力修改。FHS建议不要放置可可执行文件（binary）在这个目录中喔。比较重要的文件有： /etc/modprobe.d/, /etc/passwd, /etc/fstab, /etc/issue 等等。另外 FHS 还规范几个重要的目录最好要存在 /etc/ 目录下喔：</li>
+<li>/etc/opt（必要）：这个目录在放置第三方协力软件 /opt 的相关配置文件</li>
+<li>/etc/X11/（建议）：与 X Window 有关的各种配置文件都在这里，尤其是 xorg.conf 这个 X Server 的配置文件。</li>
+<li>/etc/sgml/（建议）：与 SGML 格式有关的各项配置文件</li>
+<li>/etc/xml/（建议）：与 XML 格式有关的各项配置文件</li>
+</ul>
+</li>
+<li><code>/lib</code><ul>
+<li>系统的函数库非常的多，而/lib放置的则是在开机时会用到的函数库， 以及在/bin或/sbin下面的指令会调用的函数库而已。 什么是函数库呢？你可以将他想成是“外挂”，某些指令必须要有这些“外挂”才能够顺利完成程序的执行之意。 另外 FSH 还要求下面的目录必须要存在：</li>
+<li>/lib/modules/：这个目录主要放置可抽换式的核心相关模块（驱动程序）喔！</li>
+</ul>
+</li>
+<li><code>/media</code><ul>
+<li>media是“媒体”的英文，顾名思义，这个/media下面放置的就是可移除的设备啦！ 包括软盘、光盘、DVD等等设备都暂时挂载于此。常见的文件名有：/media/floppy，/media/cdrom等等。</li>
+</ul>
+</li>
+<li><code>/mnt</code><ul>
+<li>如果你想要暂时挂载某些额外的设备，一般建议你可以放置到这个目录中。 在古早时候，这个目录的用途与/media相同啦！只是有了/media之后，这个目录就用来暂时挂载用了。</li>
+</ul>
+</li>
+<li><code>/opt</code><ul>
+<li>这个是给第三方协力软件放置的目录。什么是第三方协力软件啊？ 举例来说，KDE这个桌面管理系统是一个独立的计划，不过他可以安装到Linux系统中，因此KDE的软件就建议放置到此目录下了。 另外，如果你想要自行安装额外的软件（非原本的distribution提供的），那么也能够将你的软件安装到这里来。 不过，以前的Linux系统中，我们还是习惯放置在/usr/local目录下呢！ </li>
+</ul>
+</li>
+<li><code>/run</code><ul>
+<li>早期的 FHS 规定系统开机后所产生的各项信息应该要放置到 /var/run 目录下，新版的 FHS 则规范到 /run 下面。 由于 /run 可以使用内存来仿真，因此性能上会好很多！</li>
+</ul>
+</li>
+<li><code>/sbin</code><ul>
+<li>Linux有非常多指令是用来设置系统环境的，这些指令只有root才能够利用来“设置”系统，其他使用者最多只能用来“查询”而已。 放在/sbin下面的为开机过程中所需要的，里面包括了开机、修复、还原系统所需要的指令。 至于某些服务器软件程序，一般则放置到/usr/sbin/当中。至于本机自行安装的软件所产生的系统可执行文件（system binary）， 则放置到/usr/local/sbin/当中了。常见的指令包括：fdisk, fsck, ifconfig, mkfs等等。</li>
+</ul>
+</li>
+<li><code>/srv</code><ul>
+<li>srv可以视为“service”的缩写，是一些网络服务启动之后，这些服务所需要取用的数据目录。 常见的服务例如WWW, FTP等等。举例来说，WWW服务器需要的网页数据就可以放置在/srv/www/里面。 不过，系统的服务数据如果尚未要提供给网际网络任何人浏览的话，默认还是建议放置到 /var/lib 下面即可。 </li>
+</ul>
+</li>
+<li><code>/tmp</code><ul>
+<li>这是让一般使用者或者是正在执行的程序暂时放置文件的地方。 这个目录是任何人都能够存取的，所以你需要定期的清理一下。当然，重要数据不可放置在此目录啊！ 因为FHS甚至建议在开机时，应该要将/tmp下的数据都删除唷！</li>
+</ul>
+</li>
+<li><code>/usr</code><ul>
+<li>第二层 FHS 设置，后续介绍</li>
+</ul>
+</li>
+<li><code>/var</code><ul>
+<li>第二层 FHS 设置，主要为放置变动性的数据，后续介绍</li>
+</ul>
+</li>
+</ul>
+<p>FHS 建议可以存在的目录</p>
+<ul>
+<li><code>/home</code><ul>
+<li>这是系统默认的使用者主文件夹（home directory）。在你新增一个一般使用者帐号时， 默认的使用者主文件夹都会规范到这里来。比较重要的是，主文件夹有两种代号喔：</li>
+<li><code>~</code>：代表目前这个使用者的主文件夹</li>
+<li><code>~dmtsai</code>：则代表 dmtsai 的主文件夹！</li>
+</ul>
+</li>
+<li><code>/lib&lt;qual&gt;</code><ul>
+<li>用来存放与 /lib 不同的格式的二进制函数库，例如支持 64 位的 /lib64 函数库等</li>
+</ul>
+</li>
+<li><code>/root</code><ul>
+<li>系统管理员（root）的主文件夹。之所以放在这里，是因为如果进入单人维护模式而仅挂载根目录时， 该目录就能够拥有root的主文件夹，所以我们会希望root的主文件夹与根目录放置在同一个分区中。</li>
+</ul>
+</li>
+</ul>
+<p>事实上FHS针对根目录所定义的标准就仅有上面的咚咚，不过我们的Linux下面还有许多目录你也需要了解一下的。 下面是几个在Linux当中也是非常重要的目录喔</p>
+<ul>
+<li><code>/lost+found</code><ul>
+<li>这个目录是使用标准的ext2/ext3/ext4文件系统格式才会产生的一个目录，目的在于当文件系统发生错误时， 将一些遗失的片段放置到这个目录下。不过如果使用的是 xfs 文件系统的话，就不会存在这个目录了！</li>
+</ul>
+</li>
+<li><code>/proc</code><ul>
+<li>这个目录本身是一个“虚拟文件系统（virtual filesystem）”喔！他放置的数据都是在内存当中， 例如系统核心、行程信息（process）、周边设备的状态及网络状态等等。因为这个目录下的数据都是在内存当中， 所以本身不占任何硬盘空间啊！比较重要的文件例如：<code>/proc/cpuinfo</code>, <code>/proc/dma</code>, <code>/proc/interrupts</code>, <code>/proc/ioports</code>, <code>/proc/net/*</code> 等等。</li>
+</ul>
+</li>
+<li><code>/sys</code><ul>
+<li>这个目录其实跟/proc非常类似，也是一个虚拟的文件系统，主要也是记录核心与系统硬件信息较相关的信息。 包括目前已载入的核心模块与核心侦测到的硬件设备信息等等。这个目录同样不占硬盘容量喔！</li>
+</ul>
+</li>
+</ul>
+<p>早期 Linux 在设计的时候，若发生问题时，救援模式通常仅挂载根目录而已，因此有五个重要的目录被要求一定要与根目录放置在一起， 那就是 /etc, /bin, /dev, /lib, /sbin 这五个重要目录。现在许多的 Linux distributions 由于已经将许多非必要的文件移出 /usr 之外了， 所以 /usr 也是越来越精简，同时因为 /usr 被建议为“即使挂载成为只读，系统还是可以正常运行”的模样，所以救援模式也能同时挂载 /usr 喔！ </p>
+<h3 id="/usr__u4ECB_u7ECD"><a href="#/usr__u4ECB_u7ECD" class="headerlink" title="/usr 介绍"></a>/usr 介绍</h3><p>依据FHS的基本定义，/usr里面放置的数据属于可分享的与不可变动的（shareable, static）。usr是Unix Software Resource的缩写， 也就是“Unix操作系统软件资源”所放置的目录，而不是使用者的数据啦！这点要注意。 FHS建议所有软件开发者，应该将他们的数据合理的分别放置到这个目录下的次目录，而不要自行创建该软件自己独立的目录。</p>
+<p>一般来说，/usr的次目录建议有下面这些：</p>
+<ul>
+<li><code>/usr/bin/</code><ul>
+<li>所有一般用户能够使用的指令都放在这里！目前新的 CentOS 7 已经将全部的使用者指令放置于此，而使用链接文件的方式将 /bin 链接至此！ 也就是说， /usr/bin 与 /bin 是一模一样了！另外，FHS 要求在此目录下不应该有子目录！</li>
+</ul>
+</li>
+<li><code>/usr/lib/</code><ul>
+<li>基本上，与 /lib 功能相同，所以 /lib 就是链接到此目录中的！</li>
+</ul>
+</li>
+<li><code>/usr/local/</code><ul>
+<li>系统管理员在本机自行安装自己下载的软件（非distribution默认提供者），建议安装到此目录， 这样会比较便于管理。举例来说，你的distribution提供的软件较旧，你想安装较新的软件但又不想移除旧版， 此时你可以将新版软件安装于/usr/local/目录下，可与原先的旧版软件有分别啦！ 你可以自行到/usr/local去看看，该目录下也是具有bin, etc, include, lib…的次目录喔！</li>
+</ul>
+</li>
+<li><code>/usr/sbin/</code><ul>
+<li>非系统正常运行所需要的系统指令。最常见的就是某些网络服务器软件的服务指令（daemon）啰！不过基本功能与 /sbin 也差不多， 因此目前 /sbin 就是链接到此目录中的。</li>
+</ul>
+</li>
+<li><code>/usr/share/</code><ul>
+<li>主要放置只读架构的数据文件，当然也包括共享文件。在这个目录下放置的数据几乎是不分硬件架构均可读取的数据， 因为几乎都是文字文件嘛！在此目录下常见的还有这些次目录：</li>
+<li>/usr/share/man：线上说明文档</li>
+<li>/usr/share/doc：软件杂项的文件说明</li>
+<li>/usr/share/zoneinfo：与时区有关的时区文件</li>
+</ul>
+</li>
+</ul>
+<p>FHS 建议可以存在的目录</p>
+<ul>
+<li><code>/usr/games/</code><ul>
+<li>与游戏比较相关的数据放置处</li>
+</ul>
+</li>
+<li><code>/usr/include/</code><ul>
+<li>c/c++等程序语言的文件开始（header）与包含档（include）放置处，当我们以tarball方式 （<code>*.tar.gz</code> 的方式安装软件）安装某些数据时，会使用到里头的许多包含档喔！</li>
+</ul>
+</li>
+<li><code>/usr/libexec/</code><ul>
+<li>某些不被一般使用者惯用的可执行文件或脚本（script）等等，都会放置在此目录中。例如大部分的 X 窗口下面的操作指令， 很多都是放在此目录下的。</li>
+</ul>
+</li>
+<li><code>/usr/lib&lt;qual&gt;/</code><ul>
+<li>与 <code>/lib&lt;qual&gt;/</code> 功能相同，因此目前 <code>/lib&lt;qual&gt;</code> 就是链接到此目录中 </li>
+</ul>
+</li>
+<li><code>/usr/src/</code><ul>
+<li>一般源代码建议放置到这里，src有source的意思。至于核心源代码则建议放置到/usr/src/linux/目录下。</li>
+</ul>
+</li>
+</ul>
+<h3 id="/var__u4ECB_u7ECD"><a href="#/var__u4ECB_u7ECD" class="headerlink" title="/var 介绍"></a>/var 介绍</h3><p>如果/usr是安装时会占用较大硬盘容量的目录，那么/var就是在系统运行后才会渐渐占用硬盘容量的目录。 因为/var目录主要针对常态性变动的文件，包括高速缓存（cache）、登录文件（log file）以及某些软件运行所产生的文件， 包括程序文件（lock file, run file），或者例如MySQL数据库的文件等等。常见的次目录有：</p>
+<ul>
+<li><code>/var/cache/</code><ul>
+<li>应用程序本身运行过程中会产生的一些暂存盘；</li>
+</ul>
+</li>
+<li><code>/var/lib/</code><ul>
+<li>程序本身执行的过程中，需要使用到的数据文件放置的目录。在此目录下各自的软件应该要有各自的目录。 举例来说，MySQL的数据库放置到/var/lib/mysql/而rpm的数据库则放到/var/lib/rpm去！</li>
+</ul>
+</li>
+<li><code>/var/lock/</code><ul>
+<li>某些设备或者是文件资源一次只能被一个应用程序所使用，如果同时有两个程序使用该设备时， 就可能产生一些错误的状况，因此就得要将该设备上锁（lock），以确保该设备只会给单一软件所使用。 举例来说，烧录机正在烧录一块光盘，你想一下，会不会有两个人同时在使用一个烧录机烧片？ 如果两个人同时烧录，那片子写入的是谁的数据？所以当第一个人在烧录时该烧录机就会被上锁， 第二个人就得要该设备被解除锁定（就是前一个人用完了）才能够继续使用啰。目前此目录也已经挪到 /run/lock 中！</li>
+</ul>
+</li>
+<li><code>/var/log/</code><ul>
+<li>重要到不行！这是登录文件放置的目录！里面比较重要的文件如/var/log/messages, /var/log/wtmp（记录登陆者的信息）等。</li>
+</ul>
+</li>
+<li><code>/var/mail/</code><ul>
+<li>放置个人电子邮件信箱的目录，不过这个目录也被放置到/var/spool/mail/目录中！ 通常这两个目录是互为链接文件啦！</li>
+</ul>
+</li>
+<li><code>/var/run/</code><ul>
+<li>某些程序或者是服务启动后，会将他们的PID放置在这个目录下喔！至于PID的意义我们会在后续章节提到的。 与 /run 相同，这个目录链接到 /run 去了！</li>
+</ul>
+</li>
+<li><code>/var/spool/</code><ul>
+<li>这个目录通常放置一些伫列数据，所谓的“伫列”就是排队等待其他程序使用的数据啦！ 这些数据被使用后通常都会被删除。举例来说，系统收到新信会放置到/var/spool/mail/中， 但使用者收下该信件后该封信原则上就会被删除。信件如果暂时寄不出去会被放到/var/spool/mqueue/中， 等到被送出后就被删除。如果是工作调度数据（crontab），就会被放置到/var/spool/cron/目录中！</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+            <a href="/tags/基础/" rel="tag">#基础</a>
+          
+            <a href="/tags/服务器/" rel="tag">#服务器</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/26/csapp-book-note/" rel="next" title="【深入理解计算机系统】读书笔记">
+                <i class="fa fa-chevron-left"></i> 【深入理解计算机系统】读书笔记
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/27/paradigm-shift/" rel="prev" title="范式转移">
+                范式转移 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/26/linux-basic-soup/"
+           data-title="【鸟哥的 Linux 私房菜 - 基础】学习笔记" data-url="http://wdxtub.com/2016/03/26/linux-basic-soup/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E38_u7528_u6280_u5DE7"><span class="nav-number">1.</span> <span class="nav-text">常用技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_ls_2C_cp_2C_rm_2C_mv"><span class="nav-number">2.</span> <span class="nav-text">命令: ls, cp, rm, mv</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_cat_2C_tac_2C_nl_2C_more_2C_less"><span class="nav-number">3.</span> <span class="nav-text">命令: cat, tac, nl, more, less</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_head_2C_tail_2C_od_2C_touch"><span class="nav-number">4.</span> <span class="nav-text">命令: head, tail, od, touch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_file_2C_which_2C_whereis_2C_locate/updatedb_2C_find"><span class="nav-number">5.</span> <span class="nav-text">命令: file, which, whereis, locate/updatedb, find</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_gzip_2C_zcat/zmore/zless/zgrep"><span class="nav-number">6.</span> <span class="nav-text">命令: gzip, zcat/zmore/zless/zgrep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_bzip2_2C_bzcat/bzmore/bzless/bzgrep"><span class="nav-number">7.</span> <span class="nav-text">命令: bzip2, bzcat/bzmore/bzless/bzgrep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_tar"><span class="nav-number">8.</span> <span class="nav-text">命令: tar</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_cut_2C_grep"><span class="nav-number">9.</span> <span class="nav-text">命令: cut, grep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_sort_2C_wc_2C_uniq"><span class="nav-number">10.</span> <span class="nav-text">命令: sort, wc, uniq</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_tee_2C_split_2C_xargs"><span class="nav-number">11.</span> <span class="nav-text">命令: tee, split, xargs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u547D_u4EE4_3A_tr_2C_col_2C_join_2C_paste_2C_expand"><span class="nav-number">12.</span> <span class="nav-text">命令: tr, col, join, paste, expand</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vi__u4E0E_vim"><span class="nav-number">13.</span> <span class="nav-text">vi 与 vim</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bash"><span class="nav-number">14.</span> <span class="nav-text">Bash</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux__u76EE_u5F55_u7684_u542B_u4E49"><span class="nav-number">15.</span> <span class="nav-text">Linux 目录的含义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#/usr__u4ECB_u7ECD"><span class="nav-number">15.1.</span> <span class="nav-text">/usr 介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#/var__u4ECB_u7ECD"><span class="nav-number">15.2.</span> <span class="nav-text">/var 介绍</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

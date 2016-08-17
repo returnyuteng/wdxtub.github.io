@@ -1,0 +1,1128 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="这一部分的内容比较多，所以分了两节课来讲，为了保证内容的一致性和连贯性，这里把两讲合为一讲。主要介绍的是基本的计算性质以及计算机如何表示数字和地址，对之后理解指针有很大的帮助。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="深入理解计算机系统 第 2 课 Bits, Bytes 和 Integers">
+<meta property="og:url" content="http://wdxtub.com/vault/csapp-2.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="这一部分的内容比较多，所以分了两节课来讲，为了保证内容的一致性和连贯性，这里把两讲合为一讲。主要介绍的是基本的计算性质以及计算机如何表示数字和地址，对之后理解指针有很大的帮助。">
+<meta property="og:image" content="http://wdxtub.com/images/csapp2.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp3.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp4.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp5.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp6.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp7.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp8.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp9.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp10.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp11.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp12.jpg">
+<meta property="og:updated_time" content="2016-04-17T23:03:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统 第 2 课 Bits, Bytes 和 Integers">
+<meta name="twitter:description" content="这一部分的内容比较多，所以分了两节课来讲，为了保证内容的一致性和连贯性，这里把两讲合为一讲。主要介绍的是基本的计算性质以及计算机如何表示数字和地址，对之后理解指针有很大的帮助。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    深入理解计算机系统 第 2 课 Bits, Bytes 和 Integers | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>这一部分的内容比较多，所以分了两节课来讲，为了保证内容的一致性和连贯性，这里把两讲合为一讲。主要介绍的是基本的计算性质以及计算机如何表示数字和地址，对之后理解指针有很大的帮助。</p>
+<a id="more"></a>
+<hr>
+<h2 id="Representing_information_as_bits"><a href="#Representing_information_as_bits" class="headerlink" title="Representing information as bits"></a>Representing information as bits</h2><p>研究问题有两种方法，一种是自顶向下，另一种是自底向上。对于设计来说，很多时候是自顶向下的，从一个整体想法出发，然后慢慢细化；而在学习化学的时候，往往是自底向上的，比方说先去了解组成元素的基本粒子，然后在这些粒子的基础上进行更加抽象的研究。从这个角度看，学习计算机系统，自底向上可能是一个好的方向。</p>
+<p>在计算机中，我们看到的一切，归根到底，都是 bits，每个 bit 不是 0 就是 1。计算机就是通过对 bits 进行不同方式的编码和描述，来完成执行不同的任务。那么问题来了，为什么是 bits 而不是其他呢？这就要从模拟电路讲起，一言以蔽之就是，bit 这种描述方式很好存储，并且在有噪声或者传输不那么准确的情况下，也能保持比较高的可靠度（电压值有一定的容错范围）。</p>
+<p>在这样的物理基础上，计算机就是一个二进制系统（当然也有八进制和十六进制，不过其实是二进制的方便描述形式），这里简单列一个表格，就比较清楚了：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Hex</th>
+<th style="text-align:center">Decimal</th>
+<th style="text-align:center">Binary</th>
+<th style="text-align:center">Hex</th>
+<th style="text-align:center">Decimal</th>
+<th style="text-align:center">Binary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0000</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">1000 </td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0001</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">1001</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0010</td>
+<td style="text-align:center">A</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">1010</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0011</td>
+<td style="text-align:center">B</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">1011</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0100</td>
+<td style="text-align:center">C</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">1100</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">0101</td>
+<td style="text-align:center">D</td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">1101</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">0110</td>
+<td style="text-align:center">E</td>
+<td style="text-align:center">14</td>
+<td style="text-align:center">1110</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">0111</td>
+<td style="text-align:center">F</td>
+<td style="text-align:center">15</td>
+<td style="text-align:center">1111</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Bit-level_manipulations"><a href="#Bit-level_manipulations" class="headerlink" title="Bit-level manipulations"></a>Bit-level manipulations</h2><p>首先我们需要了解布尔代数(Boolean Algebra)的基本知识，非常简单，只有四个操作：</p>
+<ol>
+<li>与 And：<code>A=1</code> 且 <code>B=1</code> 时，<code>A&amp;B = 1</code></li>
+<li>或 Or：<code>A=1</code> 或 <code>B=1</code> 时，<code>A|B = 1</code></li>
+<li>非 Not：<code>A=1</code> 时，<code>~A=0</code>；<code>A=0</code> 时，<code>~A=1</code></li>
+<li>异或 Exclusive-Or(Xor)：<code>A=1</code> 或 <code>B=1</code> 时，<code>A^B = 1</code>；<code>A=1</code> 且 <code>B=1</code> 时，<code>A^B = 0</code></li>
+</ol>
+<p>布尔运算也可以看做是集合操作，举个例子：</p>
+<p>集合 A</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">01101001</span> &#123;<span class="number">0</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>&#125;</span><br><span class="line"><span class="number">76543210</span></span><br></pre></td></tr></table></figure>
+<p>集合 B</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">01010101</span> &#123;<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>&#125;</span><br><span class="line"><span class="number">76543210</span></span><br></pre></td></tr></table></figure>
+<p>那么不同的布尔运算就代表：</p>
+<ul>
+<li><code>&amp;</code> 交集 Intersection <code>01000001</code> {0, 6}</li>
+<li><code>|</code> 并集 Union <code>01111101</code> {0, 2, 3, 4, 5, 6}</li>
+<li><code>^</code> 差集 Symmetric difference <code>00111100</code> {2, 3, 4, 5}</li>
+<li><code>~</code> 补集 Complement <code>10101010</code> {1, 3, 5, 7}</li>
+</ul>
+<p>以上这四种运算 C 语言都支持，只要是『数值型』即可：<code>long</code>, <code>int</code>, <code>short</code>, <code>char</code>, <code>unsigned</code>。每个参数都会被看做是位向量。</p>
+<p>注意要与逻辑操作符区分开来：<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>，在这里会把 0 作为 false，非 0 作为 true，并且只可能返回 0 或 1 的一个，通常可以用于 early termination(多个条件判断情况)</p>
+<p>一个有用的例子：<code>p &amp;&amp; *p</code>，可以避免空指针访问。</p>
+<p>接下来是左移或者右移操作。左移比较简单，在右边补 0 即可。右移的话有两种类型，一种是逻辑右移（左边补 0），另一种是算术右移（左边补 1）。为什么会有这两种，因为对应无符号数和有符号数的运算，有符号数的最高位（最左边）是符号位在负数的时候需要进行算术右移。</p>
+<p>注意：不支持小于 0 或者大于 word size 的操作。</p>
+<h2 id="Integers"><a href="#Integers" class="headerlink" title="Integers"></a>Integers</h2><h3 id="Representation_3A_unsigned_and_signed"><a href="#Representation_3A_unsigned_and_signed" class="headerlink" title="Representation: unsigned and signed"></a>Representation: unsigned and signed</h3><p>针对有符号数和无符号数，有两种不同的形式，这里的 w 表示 word size：</p>
+<ul>
+<li>无符号数：$B2U(X)=\sum_{i=0}^{w-1}x_i·2^i$</li>
+<li>有符号数： $B2T(X)=-x_{w-1}·2^{w-1}+\sum_{i=0}^{w-2}x_i·2^i$ </li>
+</ul>
+<p>在 C 语言中 <code>short</code> 是 2 字节长度的，并且最高位是符号位，0 表示非负数，1 表示负数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">short</span> <span class="keyword">int</span> x = <span class="number">15213</span>;</span><br><span class="line"><span class="keyword">short</span> <span class="keyword">int</span> y = -<span class="number">15213</span>;</span><br></pre></td></tr></table></figure>
+<p>对应下表</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">\</th>
+<th style="text-align:center">Decimal</th>
+<th style="text-align:center">Hex</th>
+<th style="text-align:center">Binary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">x</td>
+<td style="text-align:center">15213</td>
+<td style="text-align:center">3B 6D</td>
+<td style="text-align:center">00111011 01101101</td>
+</tr>
+<tr>
+<td style="text-align:center">y</td>
+<td style="text-align:center">-15213</td>
+<td style="text-align:center">C4 93</td>
+<td style="text-align:center">11000100 10010011</td>
+</tr>
+</tbody>
+</table>
+<p>为了方便讲解，下面定义几个常量，这里 w 是 word size：</p>
+<ul>
+<li>UMin = 0 即 000…0</li>
+<li>UMax = $2^w-1$ 即 111…1</li>
+</ul>
+<p>Two’s Complement 值</p>
+<ul>
+<li>TMin = $-2^{w-1}$ 即 100…0</li>
+<li>TMax = $2^{w-1}-1$ 即 011…1</li>
+</ul>
+<p>其他值</p>
+<ul>
+<li>Minus 1 即 111…1</li>
+</ul>
+<p>对于 word size w=16，有</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">\</th>
+<th style="text-align:center">Decimal</th>
+<th style="text-align:center">Hex</th>
+<th style="text-align:center">Binary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">UMax</td>
+<td style="text-align:center">65535</td>
+<td style="text-align:center">FF FF</td>
+<td style="text-align:center">11111111 11111111</td>
+</tr>
+<tr>
+<td style="text-align:center">TMax</td>
+<td style="text-align:center">32767</td>
+<td style="text-align:center">7F FF</td>
+<td style="text-align:center">01111111 11111111</td>
+</tr>
+<tr>
+<td style="text-align:center">TMin</td>
+<td style="text-align:center">-32768</td>
+<td style="text-align:center">80 00</td>
+<td style="text-align:center">10000000 00000000</td>
+</tr>
+<tr>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">FF FF</td>
+<td style="text-align:center">11111111 11111111</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">00 00</td>
+<td style="text-align:center">00000000 00000000</td>
+</tr>
+</tbody>
+</table>
+<p>对于不同的 word size，数值也会有很大的变化</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">w</th>
+<th style="text-align:center">8</th>
+<th style="text-align:center">16</th>
+<th style="text-align:center">32</th>
+<th style="text-align:center">64 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">UMax</td>
+<td style="text-align:center">255</td>
+<td style="text-align:center">65,535</td>
+<td style="text-align:center">4,294,967,295</td>
+<td style="text-align:center">18,446,744,073,709,551,615</td>
+</tr>
+<tr>
+<td style="text-align:center">TMax</td>
+<td style="text-align:center">127</td>
+<td style="text-align:center">32,767</td>
+<td style="text-align:center">2,147,483,647</td>
+<td style="text-align:center">9,223,372,036,854,775,807</td>
+</tr>
+<tr>
+<td style="text-align:center">TMin</td>
+<td style="text-align:center">-128</td>
+<td style="text-align:center">-32,768</td>
+<td style="text-align:center">-2,147,483,648</td>
+<td style="text-align:center">-9223,372,036,854,775,808</td>
+</tr>
+</tbody>
+</table>
+<p>观察可以得知两个很重要的特性</p>
+<ul>
+<li>|TMin| = TMax + 1 (范围并不是对称的)</li>
+<li>UMax = 2*TMax + 1</li>
+</ul>
+<p>有符号数和无符号数在非负数的编码是一样的，每一个数字的编码是唯一的，这两者可以互换：</p>
+<ul>
+<li>$U2B(x)=B2U^{-1}(x)$</li>
+<li>$T2B(x)=B2T^{-1}(x)$</li>
+</ul>
+<h3 id="Conversion_2C_casting"><a href="#Conversion_2C_casting" class="headerlink" title="Conversion, casting"></a>Conversion, casting</h3><p>有符号数和无符号数的区别其实就在于最高位是表示正还是负，下图就很清晰地描述了这种转换</p>
+<p><img src="/images/csapp2.jpg" alt="csapp2"></p>
+<p>在 C 语言中，默认是有符号数。无符号数的话需要在数字后面加 <code>U</code>: <code>0U</code>, <code>4294967259U</code>。</p>
+<p>进行类型转换的时候，有一些规则：</p>
+<ul>
+<li>如果一个表达式中包含有符号数和无符号数，那么有符号数会被隐式转换成无符号数</li>
+<li>包括比较运算：<code>&lt;</code>,<code>&gt;</code>,<code>==</code>,<code>&lt;=</code>,<code>&gt;=</code></li>
+</ul>
+<p>下面用字长 w = 32 为例，这里 TMin = -2,147,483,648  TMax = 2,147,483,647</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">常量 1</th>
+<th style="text-align:center">常量 2</th>
+<th style="text-align:center">关系</th>
+<th style="text-align:center">比较对象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0U</td>
+<td style="text-align:center">==</td>
+<td style="text-align:center">unsigned</td>
+</tr>
+<tr>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">&lt;</td>
+<td style="text-align:center">signed</td>
+</tr>
+<tr>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">0U</td>
+<td style="text-align:center">&gt;</td>
+<td style="text-align:center">unsigned</td>
+</tr>
+<tr>
+<td style="text-align:center">2147483647</td>
+<td style="text-align:center">-2147483647-1</td>
+<td style="text-align:center">&gt;</td>
+<td style="text-align:center">signed</td>
+</tr>
+<tr>
+<td style="text-align:center">2147483647U</td>
+<td style="text-align:center">-2147483647-1</td>
+<td style="text-align:center">&lt;</td>
+<td style="text-align:center">unsigned</td>
+</tr>
+<tr>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">-2</td>
+<td style="text-align:center">&gt;</td>
+<td style="text-align:center">signed</td>
+</tr>
+<tr>
+<td style="text-align:center">(unsigned)-1</td>
+<td style="text-align:center">-2</td>
+<td style="text-align:center">&gt;</td>
+<td style="text-align:center">unsigned</td>
+</tr>
+<tr>
+<td style="text-align:center">2147483647</td>
+<td style="text-align:center">2147483648U</td>
+<td style="text-align:center">&lt;</td>
+<td style="text-align:center">unsigned</td>
+</tr>
+<tr>
+<td style="text-align:center">2147483647</td>
+<td style="text-align:center">(int)2147483648U</td>
+<td style="text-align:center">&gt;</td>
+<td style="text-align:center">signed</td>
+</tr>
+</tbody>
+</table>
+<p>总结一下，在进行有符号和无符号数的互相转换时：</p>
+<ul>
+<li>具体的 bit 不会改变</li>
+<li>但是计算机解释的方式变化</li>
+<li>可能会导致预期外的结果：加或减 $2^w$ (w 是 word size)</li>
+<li>如果一个表达式既包含有符号也包含无符号数，那么会被隐式转换成无符号数</li>
+</ul>
+<h3 id="Expanding_2C_truncating"><a href="#Expanding_2C_truncating" class="headerlink" title="Expanding, truncating"></a>Expanding, truncating</h3><p>有的时候我们需要扩展一个变量的位数，比如说从 32 位扩展到 64 位。更通用一点的话，给定一个 w 位的有符号整数 x，要把它转换成 w+k 位的整数（保持值不变），只需要在左边添加 k 个与符号位相同的数值即可，如下图：</p>
+<p><img src="/images/csapp3.jpg" alt="csapp3"></p>
+<p>举个例子</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">short</span> <span class="keyword">int</span> x = <span class="number">15213</span>;</span><br><span class="line"><span class="keyword">int</span> ix = (<span class="keyword">int</span>) x;</span><br><span class="line"><span class="keyword">short</span> <span class="keyword">int</span> y = -<span class="number">15213</span>;</span><br><span class="line"><span class="keyword">int</span> iy = (<span class="keyword">int</span>) y;</span><br></pre></td></tr></table></figure>
+<p>C 语言会自动做符号拓展，把小的数据类型转换成大的，如下表所示</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">\</th>
+<th style="text-align:right">Decimal</th>
+<th style="text-align:right">Hex</th>
+<th style="text-align:right">Binary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">x</td>
+<td style="text-align:right">15213</td>
+<td style="text-align:right">3B 6D</td>
+<td style="text-align:right">00111011 01101101</td>
+</tr>
+<tr>
+<td style="text-align:right">ix</td>
+<td style="text-align:right">15213</td>
+<td style="text-align:right">00 00 3B 6D</td>
+<td style="text-align:right">00000000 00000000 00111011 01101101</td>
+</tr>
+<tr>
+<td style="text-align:right">y</td>
+<td style="text-align:right">-15213</td>
+<td style="text-align:right">C4 93</td>
+<td style="text-align:right">11000100 10010011</td>
+</tr>
+<tr>
+<td style="text-align:right">iy</td>
+<td style="text-align:right">-15213</td>
+<td style="text-align:right">FF FF C4 93</td>
+<td style="text-align:right">11111111 11111111 11000100 10010011</td>
+</tr>
+</tbody>
+</table>
+<p>总结一下</p>
+<ul>
+<li>扩展（例如从 <code>short int</code> 到 <code>int</code>）<ul>
+<li>无符号数：加 0</li>
+<li>有符号数：加符号位</li>
+<li>都可以得到预期的结果</li>
+</ul>
+</li>
+<li>截取（例如 <code>unsigned</code> 到 <code>unsigned short</code>）<ul>
+<li>均会截取</li>
+<li>无符号数：mod 操作</li>
+<li>有符号数：近似 mod 操作</li>
+<li>对于小的数字可以得到预期的结果</li>
+</ul>
+</li>
+</ul>
+<h3 id="Addiction_2C_negation_2C_multiplication_2C_shifting"><a href="#Addiction_2C_negation_2C_multiplication_2C_shifting" class="headerlink" title="Addiction, negation, multiplication, shifting"></a>Addiction, negation, multiplication, shifting</h3><p>对于无符号加法，操作数是 w 位的话，真实的结果是 w+1 位的，但是会丢弃掉第 w 位，实际上就是做了一个 mod 操作($s=UAdd_w(u,v)=u+v \; mod \; 2^w$)，如下图所示</p>
+<p><img src="/images/csapp4.jpg" alt="csapp4"></p>
+<p><img src="/images/csapp5.jpg" alt="csapp5"></p>
+<p>对于有符号的加法(Two’s Complement Addition)，操作过程和无符号加法一样，只是解释的时候会有不同，因此会得到 positive overflow 和 negative overflow 两种，如下图所示：</p>
+<p><img src="/images/csapp6.jpg" alt="csapp6"></p>
+<p><img src="/images/csapp7.jpg" alt="csapp7"></p>
+<p>对于乘法来说，值的范围会大很多，这里分情况讨论一下，假设两个乘数是 x,y 并且都是 w 位的：</p>
+<ul>
+<li>无符号数：至多 2w 位<ul>
+<li>范围 $0 \le x \times y \le (2^w-1)^2 = 2^{2w}-2^{w+1}+1$</li>
+</ul>
+</li>
+<li>有符号数，最小的负数：至多 2w - 1 位<ul>
+<li>范围 $x \times y \ge (-2^{w-1})\times(2^{w-1}-1)=-2^{2w-2}+2^{w-1}$</li>
+</ul>
+</li>
+<li>有符号数，最大的正数：至多 2w 位，只有 $(TMin_w)^2$ 一种情况<ul>
+<li>范围 $x \times y \le (-2^{w-1})^2=2^{2w-2}$</li>
+</ul>
+</li>
+</ul>
+<p>如果需要保证精度，就需要用软件来实现了。</p>
+<p>计算的无符号乘法的时候，会忽略最高的 w 位，相当于 $UMult_w(u,v)=u·v\;mod\;2^w$</p>
+<p><img src="/images/csapp8.jpg" alt="csapp8"></p>
+<p>有符号数以及左移右移比较类似，这里略过。</p>
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h3><p>这里有一个问题，就是使用无符号数有些情况很容易导致错误，举两个例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 例1</span></span><br><span class="line"><span class="keyword">unsigned</span> i;</span><br><span class="line"><span class="keyword">for</span> (i = cnt-<span class="number">2</span>; i &gt;= <span class="number">0</span>; i--)</span><br><span class="line">	a[i] += a[i+<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 例2</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> DELTA sizeof(int)</span></span><br><span class="line"><span class="keyword">int</span> i;</span><br><span class="line"><span class="keyword">for</span> (i = cnt; i-DELTA &gt;= <span class="number">0</span>; i-= DELTA)</span><br><span class="line">	...</span><br></pre></td></tr></table></figure>
+<p>在上面这两个情况下，循环都不会停止，因为无符号数永远非负。如果一定要用无符号数来做循环计数，那么应该用下面的形式：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> i;</span><br><span class="line"><span class="keyword">for</span> (i = cnt - <span class="number">2</span>; i &lt; cnt; i--)</span><br><span class="line">	a[i] += a[i+<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>在这里：<code>0-1 -&gt; UMax</code></p>
+<p>或者更好的方式是</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">size_t</span> i;</span><br><span class="line"><span class="keyword">for</span> (i = cnt - <span class="number">2</span>; i &lt; cnt; i--)</span><br><span class="line">	a[i] += a[i+<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>这样就可以适应不同的字长。</p>
+<p>还有一些情况使用无符号数比较好：</p>
+<ul>
+<li>执行 Modular Arithmetic 的时候</li>
+<li>用 bits 来表示集合的时候，会使用逻辑右移，保证一致性</li>
+</ul>
+<h2 id="Representations_in_memory_2C_pointers_2C_strings"><a href="#Representations_in_memory_2C_pointers_2C_strings" class="headerlink" title="Representations in memory, pointers, strings"></a>Representations in memory, pointers, strings</h2><p>一些基本概念</p>
+<ul>
+<li>程序通过地址来引用数据<ul>
+<li>概念上可以当作是一个非常大的字节数组</li>
+<li>实际上并不是，但是这么认为也是可以的</li>
+<li>一个地址相当于是这个数组的索引</li>
+<li>一个指针变量存储的是一个地址</li>
+</ul>
+</li>
+<li>系统会给每个进程提供私有的地址空间<ul>
+<li>可以把进程看作是正在被执行的程序</li>
+<li>一个程序可以访问自己的数据，但是不能访问别人的数据</li>
+</ul>
+</li>
+<li>每台计算机都有一个字长 word size<ul>
+<li>通常来说是一个整型数据的长度（同时也是地址的长度）</li>
+<li>之前大部分机器用 32 位(4 字节)作为字长，这也限制了寻址空间，最多是 4GB（$2^32$字节）</li>
+<li>现在的机器采用 64 位字长，理论上来说支持 18EB(exabytes) 寻址空间，也就是 $18.4\times10^18$</li>
+</ul>
+</li>
+</ul>
+<p>内存中地址是连续的，根据字长的不同，有不同的间隔：</p>
+<p><img src="/images/csapp9.jpg" alt="csapp9"></p>
+<p>下面是一些常见的数据表示，单位是 byte</p>
+<p><img src="/images/csapp10.jpg" alt="csapp10"></p>
+<p>字节在内存中用两种排列顺序：</p>
+<ul>
+<li>Big Endian: Sun, PPC Mac, Internet<ul>
+<li>Least significant byte has highest address</li>
+</ul>
+</li>
+<li>Little Endian: x86, ARM processors<ul>
+<li>Least significant byte has lowest address</li>
+</ul>
+</li>
+</ul>
+<p>举个例子，假如变量 x 是 4 字节，值为 0x01234567。用 <code>&amp;x</code> 索引的地址是 0x100</p>
+<p><img src="/images/csapp11.jpg" alt="csapp11"></p>
+<p>如何检查数据的表示呢，可以用下面的代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *pointer;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">show_bytes</span><span class="params">(pointer start, size_t len)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">size_t</span> i;</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; len; i++)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%p\t0x%.2x\n"</span>, start+i, start[i]);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里 <code>%p</code> 用来输出指针，<code>%x</code> 用来输出 16 进制数据。执行可用：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">15213</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"int a = 15213;\n"</span>);</span><br><span class="line">show_bytes((pointer) &amp;a, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br></pre></td></tr></table></figure>
+<p>在我的电脑上，测试如下：</p>
+<p><img src="/images/csapp12.jpg" alt="csapp12"></p>
+<p>C 语言中表示字符串只要记得最后会加一个 <code>0</code> 即可，例如：<code>char S[6]=&quot;15213&quot;;</code></p>
+<h2 id="u989D_u5916_u5185_u5BB9"><a href="#u989D_u5916_u5185_u5BB9" class="headerlink" title="额外内容"></a>额外内容</h2><p>老师在课上还给出了一些题目，这里也列出来供大家思考。</p>
+<p>初始化条件</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> x = foo();</span><br><span class="line"><span class="keyword">int</span> y = bar();</span><br><span class="line"><span class="keyword">unsigned</span> ux = x;</span><br><span class="line"><span class="keyword">unsigned</span> uy = y;</span><br></pre></td></tr></table></figure>
+<p>判断下面的式子是否成立：</p>
+<ol>
+<li><code>x &lt; 0 -&gt; (x*2) &lt; 0</code> 不成立，TMin 就是一个反例</li>
+<li><code>ux &gt;= 0</code> 成立</li>
+<li><code>x &amp; 7 == 7 -&gt; (x &lt;&lt; 30) &lt; 0</code> 成立</li>
+<li><code>ux &gt; -1</code> 不成立，因为 -1 会被转为无符号数，就变成最大的无符号数，ux 无论如何不能大于它</li>
+<li><code>x &gt; y -&gt; -x &gt; -y</code> 不成立，TMin 就是一个反例</li>
+<li><code>x * x &gt;= 0</code> 不成立，只要溢出一点点就会变成负数</li>
+<li><code>x &gt; 0 &amp;&amp; y &gt; 0 -&gt; x + y &gt; 0</code> 不成立，理由同上</li>
+<li><code>x &gt;= 0 -&gt; -x &lt;= 0</code> 成立</li>
+<li><code>x &lt;= 0 -&gt; -x &gt;= 0</code> 不成立，因为负数比正数多一个</li>
+<li><code>(x|-x) &gt;&gt; 31 == -1</code> 不成立，当 x 等于 0 的时候，但是其他时候都是成立的</li>
+<li><code>ux &gt;&gt; 3 == ux / 8</code> 成立，不受符号位影响</li>
+<li><code>x &gt;&gt; 3 == x / 8</code> 不成立，受符号位影响</li>
+<li><code>x &amp; (x-1) != 0</code> 不成立，2的次幂都是反例</li>
+</ol>
+<p>另外介绍一些代码安全问题，举个例子，在 FreeBSD 的 <code>getpeername</code> 函数例，大概是如下类似的实现：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Kernel memory region holding user-accessible data */</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> KSIZE <span class="number">1024</span></span></span><br><span class="line"><span class="keyword">char</span> kbuf[KSIZE];</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Copy at most maxlen bytes from kernel region to user buffer */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">copy_from_kernel</span><span class="params">(<span class="keyword">void</span> *user_dest, <span class="keyword">int</span> maxlen)</span> </span>&#123;</span><br><span class="line">	<span class="comment">/* Byte count len is minimum of buffer size of maxlen */</span></span><br><span class="line">	<span class="keyword">int</span> len = KSIZE &lt; maxlen ? KSIZE : maxlen;</span><br><span class="line">	<span class="built_in">memcpy</span>(user_dest, kbuf, len);</span><br><span class="line">	<span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通常的用法是</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> MSIZE <span class="number">528</span> </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> mybuf[MSIZE];</span><br><span class="line">copy_from_kernel(mybuf, MSIZE);</span><br></pre></td></tr></table></figure>
+<p>但是可以通过这个函数访问到内存的其他部分，例如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> MSIZE <span class="number">528</span> </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> mybuf[MSIZE];</span><br><span class="line">copy_from_kernel(mybuf, -MSIZE);</span><br></pre></td></tr></table></figure>
+<p>通过这个负号，就可以访问指定位置之前的内存数据了，这很可能导致出问题。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/csapp-2.html"
+           data-title="深入理解计算机系统 第 2 课 Bits, Bytes 和 Integers" data-url="http://wdxtub.com/vault/csapp-2.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

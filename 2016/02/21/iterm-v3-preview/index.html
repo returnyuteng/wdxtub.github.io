@@ -1,0 +1,916 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Mac,iTerm2,终端," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="经过 18 个月的等待，iTerm2 终于迎来了第三个主要版本！虽然现在还在最后的 Beta 测试，不过很多超强功能已经可以体验了。这篇文章就带大家大致浏览下新功能，以及非常强大的 Shell integration。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iTerm2 Version3 动手玩">
+<meta property="og:url" content="http://wdxtub.com/2016/02/21/iterm-v3-preview/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="经过 18 个月的等待，iTerm2 终于迎来了第三个主要版本！虽然现在还在最后的 Beta 测试，不过很多超强功能已经可以体验了。这篇文章就带大家大致浏览下新功能，以及非常强大的 Shell integration。">
+<meta property="og:image" content="http://wdxtub.com/images/14560666426444.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14560679607791.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14560694592327.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14560695283473.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14560695539493.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14560715131681.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14560715581287.jpg">
+<meta property="og:updated_time" content="2016-02-21T16:20:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iTerm2 Version3 动手玩">
+<meta name="twitter:description" content="经过 18 个月的等待，iTerm2 终于迎来了第三个主要版本！虽然现在还在最后的 Beta 测试，不过很多超强功能已经可以体验了。这篇文章就带大家大致浏览下新功能，以及非常强大的 Shell integration。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> iTerm2 Version3 动手玩 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iTerm2 Version3 动手玩
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-02-21T08:53:13+08:00" content="2016-02-21">
+              2016-02-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/02/21/iterm-v3-preview/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/02/21/iterm-v3-preview/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>经过 18 个月的等待，iTerm2 终于迎来了第三个主要版本！虽然现在还在最后的 Beta 测试，不过很多超强功能已经可以体验了。这篇文章就带大家大致浏览下新功能，以及非常强大的 Shell integration。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u4E3B_u8981_u65B0_u7279_u6027"><a href="#u4E3B_u8981_u65B0_u7279_u6027" class="headerlink" title="主要新特性"></a>主要新特性</h2><p>这一部分先概要介绍一下 3.0 中的主要改进（相当令人惊喜）</p>
+<ul>
+<li>全新的界面设计<ul>
+<li>配合最新 OSX 的扁平设计风格，和系统的整体基调更搭，更好看</li>
+</ul>
+</li>
+<li>Shell Integration<ul>
+<li>基本上可以认为是 login script 的超级强化版本，可以做很多超有意思的事情：命令提示符、命令执行完成的通知、拖拽上传和下载文件等等，这一部分会在后面详细介绍</li>
+</ul>
+</li>
+<li>自动切换 profile<ul>
+<li>比方说在 ssh 到远程机器上，或者进入 root 权限，或者进入某些特定的文件夹都可以自动切换 profile（至少可以变个配色）</li>
+</ul>
+</li>
+<li>Session 恢复<ul>
+<li>简单来说就是不用 tmux 的 tmux</li>
+</ul>
+</li>
+<li>内部显示图片<ul>
+<li>可以使用 <code>imgcat</code> 脚本来在 iTerm2 中显示图片（甚至 GIF 都可以），这一部分会在后面详细介绍</li>
+</ul>
+</li>
+<li>Badges<ul>
+<li>这是一个全新的功能！可以在当前的命令行的右上角显示一些相关信息（比如当前的主机名称或者 git 分支名称），这一部分后面会详细介绍</li>
+</ul>
+</li>
+<li>密码管理器<ul>
+<li>内置的密码管理器可以保存密码到 Mac OS 的 keychain 中，甚至可以在需要输入密码的时候自动打开密码管理器</li>
+</ul>
+</li>
+<li>撤销关闭（回到过去）<ul>
+<li>假如不小心关闭了一个窗口，command + z 就可以重新打开它（记得要在 5 秒之内按）</li>
+</ul>
+</li>
+<li>标签栏现在可以放在左边，即使有很多 tab 也不怕了</li>
+<li>动态 Profiles，可以把 profiles 保存在 JSON 文件中</li>
+<li>不会再找不到光标了，可以高亮当前行或者让其他颜色变暗，总而言之就是显眼</li>
+<li>时间戳功能能够让我看到不同命令的执行时间以及错误在何时发生</li>
+<li>捕获输出，基本上来说，可以用这个功能实现部分 IDE 的便捷操作了</li>
+</ul>
+<p>注：虽然我不用 Alfred，但是新版的 iTerm2 也提供了对应支持，具体请查看官网文档。</p>
+<h2 id="u67E5_u770B_u56FE_u7247"><a href="#u67E5_u770B_u56FE_u7247" class="headerlink" title="查看图片"></a>查看图片</h2><p>非常简单，只要使用 <code>imgcat imagename</code> 就可以显示图片，例如：</p>
+<p><img src="/images/14560666426444.jpg" alt=""></p>
+<p>不过使用之前还是需要配置一下：</p>
+<ol>
+<li>下载两个对应插件 <a href="https://raw.github.com/gnachman/iTerm2/master/tests/imgls" target="_blank" rel="external">imgls</a> <a href="https://raw.github.com/gnachman/iTerm2/master/tests/imgcat" target="_blank" rel="external">imgcat</a></li>
+<li>去掉后缀名，把文件拷贝到 <code>/usr/local/bin</code> 中，并修改权限 <code>chmod 755 /usr/local/bin/imgls /usr/local/bin/imgcat</code></li>
+</ol>
+<p>然后就可以使用啦，如上图所示。另外一种用法是 <code>cat avatar.jpg | imgcat</code>，也是同样的效果：</p>
+<h2 id="Badges"><a href="#Badges" class="headerlink" title="Badges"></a>Badges</h2><p>简单来说就是显示当前终端的信息，如下所示</p>
+<p><img src="/images/14560679607791.jpg" alt=""></p>
+<p>具体的设置也很简单，如果要像我这样显示的话，在 <code>Preferences&gt;Profiles&gt;General&gt;Badge</code> 输入 <code>\(session.username)@\(session.hostname)</code> 即可（这个依赖于 Shell Integration 功能）</p>
+<p>更详细的文档可以查阅<a href="https://iterm2.com/badges.html" target="_blank" rel="external">这里</a></p>
+<h2 id="Shell_Integration"><a href="#Shell_Integration" class="headerlink" title="Shell Integration"></a>Shell Integration</h2><p>这个算是重头戏了，不过需要先安装一下（支持 tcsh, zsh, bash 和 fish）。我是直接在菜单栏里选择 <code>iTerm2 &gt; Install Shell Integration</code> 进行安装的，实际上就是执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -L https://iterm2.com/misc/install_shell_integration.sh | bash</span><br></pre></td></tr></table></figure>
+<p>具体详细的文档在<a href="https://iterm2.com/shell_integration.html" target="_blank" rel="external">这里</a>，本文只挑选一些当下对我很有用的功能</p>
+<h3 id="u5386_u53F2_u547D_u4EE4"><a href="#u5386_u53F2_u547D_u4EE4" class="headerlink" title="历史命令"></a>历史命令</h3><p>有四种方式可以查看：</p>
+<ol>
+<li><code>Edit&gt;Open Command History</code> (快捷键 Shift-Cmd-;)</li>
+<li>自动完成功能（快捷键 Cmd-;）</li>
+<li>Toolbet 中可以显示（这个后面介绍）</li>
+<li>代码提示功能（View&gt;开启 Command Completion）</li>
+</ol>
+<p><img src="/images/14560694592327.jpg" alt="历史命令查看"></p>
+<h3 id="Toolbelt"><a href="#Toolbelt" class="headerlink" title="Toolbelt"></a>Toolbelt</h3><p>在菜单栏中可以进行选择，然后就会出现在侧边栏，功能很多，很好用：</p>
+<p><img src="/images/14560695283473.jpg" alt=""></p>
+<p>选择之后的效果大概是：</p>
+<p><img src="/images/14560695539493.jpg" alt=""></p>
+<h3 id="u5BC6_u7801_u7BA1_u7406_u5668"><a href="#u5BC6_u7801_u7BA1_u7406_u5668" class="headerlink" title="密码管理器"></a>密码管理器</h3><p>我们先设置一个 trigger，如下图所示：</p>
+<p><img src="/images/14560715131681.jpg" alt=""></p>
+<p>然后在需要输入密码的时候，密码管理器会自动弹出：</p>
+<p><img src="/images/14560715581287.jpg" alt=""></p>
+<p>选择对应的帐号密码然后点击 Enter Password，就可以免去输入密码的烦恼了。</p>
+<hr>
+<p>还有很多功能没有摸索出来，网上的资料也比较少，以后有机会再慢慢补充吧。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Mac/" rel="tag">#Mac</a>
+          
+            <a href="/tags/iTerm2/" rel="tag">#iTerm2</a>
+          
+            <a href="/tags/终端/" rel="tag">#终端</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/20/dive-in-objc-1/" rel="next" title="Objective-C 格致余论 1 - Selector">
+                <i class="fa fa-chevron-left"></i> Objective-C 格致余论 1 - Selector
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/21/dive-in-objc-2/" rel="prev" title="Objective-C 格致余论 2 - Category">
+                Objective-C 格致余论 2 - Category <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/02/21/iterm-v3-preview/"
+           data-title="iTerm2 Version3 动手玩" data-url="http://wdxtub.com/2016/02/21/iterm-v3-preview/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E3B_u8981_u65B0_u7279_u6027"><span class="nav-number">1.</span> <span class="nav-text">主要新特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u67E5_u770B_u56FE_u7247"><span class="nav-number">2.</span> <span class="nav-text">查看图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Badges"><span class="nav-number">3.</span> <span class="nav-text">Badges</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shell_Integration"><span class="nav-number">4.</span> <span class="nav-text">Shell Integration</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5386_u53F2_u547D_u4EE4"><span class="nav-number">4.1.</span> <span class="nav-text">历史命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Toolbelt"><span class="nav-number">4.2.</span> <span class="nav-text">Toolbelt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5BC6_u7801_u7BA1_u7406_u5668"><span class="nav-number">4.3.</span> <span class="nav-text">密码管理器</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

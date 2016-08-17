@@ -1,0 +1,741 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="上一讲我们了解了过程调用是如何用机器代码实现的，这一讲我们来看看基本的数据是如何存储在计算机中的。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="深入理解计算机系统 第 7 课 Machine Data">
+<meta property="og:url" content="http://wdxtub.com/vault/csapp-7.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="上一讲我们了解了过程调用是如何用机器代码实现的，这一讲我们来看看基本的数据是如何存储在计算机中的。">
+<meta property="og:image" content="http://wdxtub.com/images/14534188845612.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534189454190.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534189637879.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534198336930.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534198966151.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534201884816.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534202945733.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534203418848.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534205890785.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534208481488.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534208616228.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534209862505.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534218752318.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534222886026.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534225034162.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534225338581.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534232756482.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534233087461.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534233625482.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534240460958.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534252071793.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534254596599.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14534255846801.jpg">
+<meta property="og:updated_time" content="2016-03-01T02:39:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统 第 7 课 Machine Data">
+<meta name="twitter:description" content="上一讲我们了解了过程调用是如何用机器代码实现的，这一讲我们来看看基本的数据是如何存储在计算机中的。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    深入理解计算机系统 第 7 课 Machine Data | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>上一讲我们了解了过程调用是如何用机器代码实现的，这一讲我们来看看基本的数据是如何存储在计算机中的。</p>
+<a id="more"></a>
+<hr>
+<h2 id="Arrays"><a href="#Arrays" class="headerlink" title="Arrays"></a>Arrays</h2><p>数组其实就是连续分配的地址空间，比如说 <code>T A[L]</code>，意思就是类型 T 且长度为 L 的数组，需要分配 <code>L*sizeof(T)</code> 个字节的空间。</p>
+<p><img src="/images/14534188845612.jpg" alt=""></p>
+<p>既然是连续的地址空间，就有很多不同的访问方式，举个例子：</p>
+<p><img src="/images/14534189454190.jpg" alt=""></p>
+<p>那么对应的一些访问方式为：</p>
+<p><img src="/images/14534189637879.jpg" alt=""></p>
+<p>再举个例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> ZLEN <span class="number">5</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> zip_dig[ZLEN];</span><br><span class="line"></span><br><span class="line">zip_dig cmu = &#123; <span class="number">1</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/14534198336930.jpg" alt=""></p>
+<p>假设我们要取数组中的某一位：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_digit</span><span class="params">(zip_dig z, <span class="keyword">int</span> digit)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> z[digit];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编代码是：</p>
+<p><img src="/images/14534198966151.jpg" alt=""></p>
+<p>这里寄存器 %rdi 中存着数组的起始地址，寄存器 %rsi 存着序号，我们要访问的地址等价于 <code>%rdi + 4*%rsi</code>，用内存引用的方式就是 <code>(%rdi, %rsi, 4)</code>。</p>
+<p>再看一个数组循环的例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zincr</span><span class="params">(zip_dig z)</span></span>&#123;</span><br><span class="line">	<span class="keyword">size_t</span> i;</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; ZLEN; i++)</span><br><span class="line">		z[i]++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的汇编是，注意红字的部分，相当于等价实现了 <code>++</code> 操作</p>
+<p><img src="/images/14534201884816.jpg" alt=""></p>
+<p>对于多维的数组，基本形式是 <code>T A[R][C]</code>，R 是行，C 是列，如果类型 T 占 K 个字节的话，那么数组所需要的内存是 <code>R*C*K</code> 字节。具体在内存里的排列方式如下：</p>
+<p><img src="/images/14534202945733.jpg" alt=""></p>
+<p>多维数组的第一维可以看作是每行起始的地址：</p>
+<p><img src="/images/14534203418848.jpg" alt=""></p>
+<p>因为如此，所以访问可以是这样的：</p>
+<p><img src="/images/14534205890785.jpg" alt=""></p>
+<p>这里 <code>pgh[index][dig]</code> 是 int 类型。地址 <code>pgh + 20*index + 4*dig = pgh + 4*(5*index + dig)</code>。</p>
+<p>还有另外一种组合数组的方式，不是连续分配，而是存储每个数组的起始地址，例如：</p>
+<p><img src="/images/14534208481488.jpg" alt=""></p>
+<p><img src="/images/14534208616228.jpg" alt=""></p>
+<p>获取具体某个元素的地址其实就是计算时的起始地址有变换，对应的代码为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_univ_digit</span><span class="params">(size_t index, size_t digit)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> univ[index][digit];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>汇编为：</p>
+<p><img src="/images/14534209862505.jpg" alt=""></p>
+<p>这里等同于进行两次内存访问 <code>Mem[Mem[univ+8*index]+4*digit]</code>，</p>
+<p>对比一下</p>
+<p><img src="/images/14534218752318.jpg" alt=""></p>
+<p>在 C 语言中看起来差不多，但是实际上差别很大：</p>
+<p><code>Mem[pgh+20*index+4*digit]</code> vs <code>Mem[Mem[univ+8*index]+4*digit]</code></p>
+<h2 id="Structures"><a href="#Structures" class="headerlink" title="Structures"></a>Structures</h2><p>结构体是如何表示的呢，大概是这样：</p>
+<p><img src="/images/14534222886026.jpg" alt=""></p>
+<p>这里我们发现刚好都是 4 的倍数，如果换一种方式来组合，会是怎么样的呢？会像下图这样吗？</p>
+<p><img src="/images/14534225034162.jpg" alt=""></p>
+<p>答案是，并不会，会在内存中进行对齐：</p>
+<p><img src="/images/14534225338581.jpg" alt=""></p>
+<p>具体对齐的原则是，如果 primitive data type 需要 K 个字节，那么地址都必须是 K 的倍数。为什么要这样呢，因为内存访问通常来说是 4 或者 8 个字节位单位的，不对齐的话访问起来效率不高。具体来看的话，是这样：</p>
+<ul>
+<li>1 字节：char, …<ul>
+<li>没有地址的限制</li>
+</ul>
+</li>
+<li>2 字节：short, …<ul>
+<li>地址最低的 1 比特必须是 $0_2$</li>
+</ul>
+</li>
+<li>4 字节：int, float, …<ul>
+<li>地址最低的 2 比特必须是 $00_2$</li>
+</ul>
+</li>
+<li>8 字节：double, long, char *, …<ul>
+<li>地址最低的 3 比特必须是 $000_2$</li>
+</ul>
+</li>
+<li>16 字节：long double (GCC on Linux)<ul>
+<li>地址最低的 4 比特必须是 $0000_2$</li>
+</ul>
+</li>
+</ul>
+<p>对于一个结构体来说，所占据的内存空间必须是最大的类型所需字节的倍数，比如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> S2 &#123;</span><br><span class="line">	<span class="keyword">double</span> v;</span><br><span class="line">	<span class="keyword">int</span> i[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">&#125; *p;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/14534232756482.jpg" alt=""></p>
+<p>如果是结构体数组的话，那就是像这样：</p>
+<p><img src="/images/14534233087461.jpg" alt=""></p>
+<p>具体到访问结构体中的例子，如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> S3 &#123;</span><br><span class="line">	<span class="keyword">short</span> i;</span><br><span class="line">	<span class="keyword">float</span> v;</span><br><span class="line">	<span class="keyword">short</span> j;</span><br><span class="line">&#125; a[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
+<p><img src="/images/14534233625482.jpg" alt=""></p>
+<p>那么根据这种特点，就有一些技巧了。例如，要把大的数据类型放到前面，看这个例子：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> S4 &#123;</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> d;</span><br><span class="line">&#125; *p;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> S5 &#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">	<span class="keyword">char</span> d;</span><br><span class="line">&#125; *p;</span><br></pre></td></tr></table></figure>
+<p>那么这两种的对应排列就是：</p>
+<p><img src="/images/14534240460958.jpg" alt=""></p>
+<p>可以看到，下面那种省了 4 个字节。</p>
+<h2 id="Floating_Point"><a href="#Floating_Point" class="headerlink" title="Floating Point"></a>Floating Point</h2><p>浮点数的部分在课上介绍的不是很多，这里简要介绍一下。</p>
+<p>最开始是 x87 FP（比较丑陋），之后是 SSE FP（利用了向量指令），然后是 AVX FP（类似与 SSE）。</p>
+<p>SSE3 对于 XMM 寄存器一共有 16 个，每个 16 字节：</p>
+<p><img src="/images/14534252071793.jpg" alt=""></p>
+<p>下面是对标量和 SIMD 操作的描述：</p>
+<p><img src="/images/14534254596599.jpg" alt=""></p>
+<p>具体的机制也是类似的，传入的参数存储在 %xmm0, %xmm1，返回参数在 %xmm0，所有的 XMM 寄存器都会被保存在调用者的栈帧中：</p>
+<p><img src="/images/14534255846801.jpg" alt=""></p>
+<p>这一讲到此结束，之后会进入更深入的话题（因为作业大概两到三周一次，所以可能先把重点放在概念的理解上）</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/csapp-7.html"
+           data-title="深入理解计算机系统 第 7 课 Machine Data" data-url="http://wdxtub.com/vault/csapp-7.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

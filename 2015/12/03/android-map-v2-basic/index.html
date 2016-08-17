@@ -1,0 +1,863 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Anroid,Java,Map,V2," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="最近在做地图相关的开发，但是网上对于 Google Map V2 的中文资料相当少，也比较凌乱，所以这里记录一下自己开发时候的经验，主要是自定义各类功能时候的记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 开发笔记 2 - Google Map V2">
+<meta property="og:url" content="http://wdxtub.com/2015/12/03/android-map-v2-basic/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="最近在做地图相关的开发，但是网上对于 Google Map V2 的中文资料相当少，也比较凌乱，所以这里记录一下自己开发时候的经验，主要是自定义各类功能时候的记录。">
+<meta property="og:updated_time" content="2015-12-04T03:15:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 开发笔记 2 - Google Map V2">
+<meta name="twitter:description" content="最近在做地图相关的开发，但是网上对于 Google Map V2 的中文资料相当少，也比较凌乱，所以这里记录一下自己开发时候的经验，主要是自定义各类功能时候的记录。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Android 开发笔记 2 - Google Map V2 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android 开发笔记 2 - Google Map V2
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-03T22:14:20+08:00" content="2015-12-03">
+              2015-12-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/03/android-map-v2-basic/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/03/android-map-v2-basic/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在做地图相关的开发，但是网上对于 Google Map V2 的中文资料相当少，也比较凌乱，所以这里记录一下自己开发时候的经验，主要是自定义各类功能时候的记录。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5199_u5728_u524D_u9762"><a href="#u5199_u5728_u524D_u9762" class="headerlink" title="写在前面"></a>写在前面</h2><p>具体申请 google api key 和如何利用 MapFragment 来建立一个基本的地图视图这里不赘述，主要会集中在对地图本身的操作上。</p>
+<h2 id="u6DFB_u52A0/_u5220_u9664_Marker"><a href="#u6DFB_u52A0/_u5220_u9664_Marker" class="headerlink" title="添加/删除 Marker"></a>添加/删除 Marker</h2><p>添加 Marker 很简单，这里就用官方的例子来说明，在 <code>onMapReady</code> 方法中可以直接添加：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMapReady</span><span class="params">(GoogleMap googleMap)</span> </span>&#123;</span><br><span class="line">   mMap = googleMap;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Add a marker in Sydney and move the camera</span></span><br><span class="line">   LatLng sydney = <span class="keyword">new</span> LatLng(-<span class="number">34</span>, <span class="number">151</span>);</span><br><span class="line">   mMap.addMarker(<span class="keyword">new</span> MarkerOptions().position(sydney).title(<span class="string">"Marker in Sydney"</span>));</span><br><span class="line">   mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要删除 marker 有两种方式，一种是调用 maker 本身的 remove 方法，另一种是调用地图的 <code>clear()</code> 方法。</p>
+<h2 id="u4FEE_u6539_Marker__u7684_u7279_u6027"><a href="#u4FEE_u6539_Marker__u7684_u7279_u6027" class="headerlink" title="修改 Marker 的特性"></a>修改 Marker 的特性</h2><p>其实就是修改以下对应的属性</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">MarkerOptions markerOpt = <span class="keyword">new</span> MarkerOptions();</span><br><span class="line">markerOpt.position(<span class="keyword">new</span> LatLng(fromLat, fromLng));</span><br><span class="line">markerOpt.title(<span class="string">"当前位置"</span>);</span><br><span class="line"><span class="comment">// 设定颜色：黄色</span></span><br><span class="line">markerOpt.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));</span><br><span class="line"><span class="comment">// 设为可以拖拽</span></span><br><span class="line">markerOpt.draggable(<span class="keyword">true</span>);</span><br><span class="line">map.addMarker(markerOpt).showInfoWindow();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">MarkerOptions markerOpt2 = <span class="keyword">new</span> MarkerOptions();</span><br><span class="line">markerOpt2.position(<span class="keyword">new</span> LatLng(toLat, toLng));</span><br><span class="line">markerOpt2.title(<span class="string">"目标位置"</span>);</span><br><span class="line"><span class="comment">// 设定颜色：红色</span></span><br><span class="line">markerOpt2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));</span><br><span class="line">map.addMarker(markerOpt2).showInfoWindow();</span><br></pre></td></tr></table></figure>
+<p>拖拽的话，默认长按进行拖动，只要注册事件监听就可以对拖拽进行操作：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// mMap 是一个 Google Map instance</span></span><br><span class="line">mMap.setOnMarkerDragListener(<span class="keyword">new</span> GoogleMap.OnMarkerDragListener() &#123;</span><br><span class="line">  <span class="annotation">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMarkerDragStart</span><span class="params">(Marker marker)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="annotation">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMarkerDrag</span><span class="params">(Marker marker)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="annotation">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMarkerDragEnd</span><span class="params">(Marker marker)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span>(marker.isInfoWindowShown())</span><br><span class="line">          marker.hideInfoWindow();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>Marker 更详细的用法可以看<a href="https://developers.google.com/maps/documentation/android-api/marker" target="_blank" rel="external">这里</a></p>
+<h2 id="Marker_Cluster"><a href="#Marker_Cluster" class="headerlink" title="Marker Cluster"></a>Marker Cluster</h2><p>当一个地方 marker 比较多之后，可以使用 Marker Cluster 聚合 marker。具体参考<a href="https://developers.google.com/maps/documentation/android-api/utility/marker-clustering" target="_blank" rel="external">这里</a></p>
+<h2 id="u5728_u4E24_u70B9_u4E4B_u95F4_u5212_u7EBF"><a href="#u5728_u4E24_u70B9_u4E4B_u95F4_u5212_u7EBF" class="headerlink" title="在两点之间划线"></a>在两点之间划线</h2><p>传入两个位置即可</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">PolylineOptions polylineOpt = <span class="keyword">new</span> PolylineOptions();</span><br><span class="line">polylineOpt.add(<span class="keyword">new</span> LatLng(fromLat, fromLng));</span><br><span class="line">polylineOpt.add(<span class="keyword">new</span> LatLng(toLat, toLng));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 颜色</span></span><br><span class="line">polylineOpt.color(Color.BLUE);</span><br><span class="line"><span class="comment">// 宽度</span></span><br><span class="line">polyline.setWidth(<span class="number">10</span>);</span><br><span class="line">Polyline polyline = map.addPolyline(polylineOpt);</span><br></pre></td></tr></table></figure>
+<h2 id="u8BBE_u7F6E_UI"><a href="#u8BBE_u7F6E_UI" class="headerlink" title="设置 UI"></a>设置 UI</h2><p>基本上看下面的代码就可以明白：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMapReady</span><span class="params">(GoogleMap map)</span> </span>&#123;</span><br><span class="line">   mMap = map;</span><br><span class="line"></span><br><span class="line">   mUiSettings = mMap.getUiSettings();</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Keep the UI Settings state in sync with the checkboxes.</span></span><br><span class="line">   <span class="comment">// 控制缩放</span></span><br><span class="line">   mUiSettings.setZoomControlsEnabled(isChecked(R.id.zoom_buttons_toggle));</span><br><span class="line">   <span class="comment">// 是否显示指南针</span></span><br><span class="line">   mUiSettings.setCompassEnabled(isChecked(R.id.compass_toggle));</span><br><span class="line">   <span class="comment">// 是否指示我的位置按钮</span></span><br><span class="line">   mUiSettings.setMyLocationButtonEnabled(isChecked(R.id.mylocationbutton_toggle));</span><br><span class="line">   <span class="comment">// 是否支持我的位置，需要和上面的配合使用</span></span><br><span class="line">   mMap.setMyLocationEnabled(isChecked(R.id.mylocationlayer_toggle));</span><br><span class="line">   <span class="comment">// 是否支持滚动手势</span></span><br><span class="line">   mUiSettings.setScrollGesturesEnabled(isChecked(R.id.scroll_toggle));</span><br><span class="line">   <span class="comment">// 是否支持缩放手势</span></span><br><span class="line">   mUiSettings.setZoomGesturesEnabled(isChecked(R.id.zoom_gestures_toggle));</span><br><span class="line">   <span class="comment">// 是否支持倾斜手势</span></span><br><span class="line">   mUiSettings.setTiltGesturesEnabled(isChecked(R.id.tilt_toggle));</span><br><span class="line">   <span class="comment">// 是否支持旋转手势</span></span><br><span class="line">   mUiSettings.setRotateGesturesEnabled(isChecked(R.id.rotate_toggle));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其他一些功能</p>
+<ul>
+<li>层次缩放 <code>GoogleMap.getUiSettings().setIndoorLevelPickerEnabled(boolean)</code></li>
+<li>地图工具（点击 marker 后会出现的小图标） <code>UiSettings.setMapToolbarEnabled(boolean).</code></li>
+</ul>
+<h2 id="u955C_u5934_u8F6C_u79FB_u52A8_u753B"><a href="#u955C_u5934_u8F6C_u79FB_u52A8_u753B" class="headerlink" title="镜头转移动画"></a>镜头转移动画</h2><p>使用 <code>GoogleMap.moveCamera(CameraUpdate)</code> 的话镜头会瞬间移动，用户体验不好，可以使用 <code>GoogleMap.animateCamera(cameraUpdate, duration, callback)</code> 来慢慢移动地图</p>
+<p>一个例子</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> LatLng SYDNEY = <span class="keyword">new</span> LatLng(-<span class="number">33.88</span>,<span class="number">151.21</span>);</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> LatLng MOUNTAIN_VIEW = <span class="keyword">new</span> LatLng(<span class="number">37.4</span>, -<span class="number">122.1</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> GoogleMap map;</span><br><span class="line">... <span class="comment">// Obtain the map from a MapFragment or MapView.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Move the camera instantly to Sydney with a zoom of 15.</span></span><br><span class="line">map.moveCamera(CameraUpdateFactory.newLatLngZoom(SYDNEY, <span class="number">15</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// Zoom in, animating the camera.</span></span><br><span class="line">map.animateCamera(CameraUpdateFactory.zoomIn());</span><br><span class="line"></span><br><span class="line"><span class="comment">// Zoom out to zoom level 10, animating with a duration of 2 seconds.</span></span><br><span class="line">map.animateCamera(CameraUpdateFactory.zoomTo(<span class="number">10</span>), <span class="number">2000</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Construct a CameraPosition focusing on Mountain View and animate the camera to that position.</span></span><br><span class="line">CameraPosition cameraPosition = <span class="keyword">new</span> CameraPosition.Builder()</span><br><span class="line">    .target(MOUNTAIN_VIEW)      <span class="comment">// Sets the center of the map to Mountain View</span></span><br><span class="line">    .zoom(<span class="number">17</span>)                   <span class="comment">// Sets the zoom</span></span><br><span class="line">    .bearing(<span class="number">90</span>)                <span class="comment">// Sets the orientation of the camera to east</span></span><br><span class="line">    .tilt(<span class="number">30</span>)                   <span class="comment">// Sets the tilt of the camera to 30 degrees</span></span><br><span class="line">    .build();                   <span class="comment">// Creates a CameraPosition from the builder</span></span><br><span class="line">map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));</span><br></pre></td></tr></table></figure>
+<p>具体参考<a href="https://developers.google.com/maps/documentation/android-api/views" target="_blank" rel="external">这里</a></p>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://www.cnblogs.com/inkheart0124/p/3536848.html" target="_blank" rel="external">Google Map API v2 （三）—– 地图上添加标记（Marker），标记info窗口，即指定经纬度获取地址字符串</a></li>
+<li><a href="http://blog.csdn.net/wannawang/article/details/17375111" target="_blank" rel="external">Android Google Maps V2之添加Pushpin(Marker)</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Anroid/" rel="tag">#Anroid</a>
+          
+            <a href="/tags/Java/" rel="tag">#Java</a>
+          
+            <a href="/tags/Map/" rel="tag">#Map</a>
+          
+            <a href="/tags/V2/" rel="tag">#V2</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/03/actionbar-basic/" rel="next" title="Android 开发笔记 1 - ActionBar">
+                <i class="fa fa-chevron-left"></i> Android 开发笔记 1 - ActionBar
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/04/nodejs-cmd-tutorial/" rel="prev" title="Node.js 命令行程序实例教程">
+                Node.js 命令行程序实例教程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/12/03/android-map-v2-basic/"
+           data-title="Android 开发笔记 2 - Google Map V2" data-url="http://wdxtub.com/2015/12/03/android-map-v2-basic/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5199_u5728_u524D_u9762"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6DFB_u52A0/_u5220_u9664_Marker"><span class="nav-number">2.</span> <span class="nav-text">添加/删除 Marker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4FEE_u6539_Marker__u7684_u7279_u6027"><span class="nav-number">3.</span> <span class="nav-text">修改 Marker 的特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Marker_Cluster"><span class="nav-number">4.</span> <span class="nav-text">Marker Cluster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5728_u4E24_u70B9_u4E4B_u95F4_u5212_u7EBF"><span class="nav-number">5.</span> <span class="nav-text">在两点之间划线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BBE_u7F6E_UI"><span class="nav-number">6.</span> <span class="nav-text">设置 UI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u955C_u5934_u8F6C_u79FB_u52A8_u753B"><span class="nav-number">7.</span> <span class="nav-text">镜头转移动画</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

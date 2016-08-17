@@ -1,0 +1,987 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CMU,云计算,多线程,思考," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="学习是一个不断改进方法论的过程，第 15 课 分区和复制中，因为自己缺乏对并发编程的基本认识，走了很多弯路。吃一堑长一智，本文着重讲三点：一是为什么我会犯错，二是对并发编程的一些思考，三是结合 Java 语言来探索相关细节。（感谢节瓜 @jiexing 的耐心指导）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云计算 反思课 2 并发编程的策略与思考">
+<meta property="og:url" content="http://wdxtub.com/2016/03/03/cc-rethink-2/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="学习是一个不断改进方法论的过程，第 15 课 分区和复制中，因为自己缺乏对并发编程的基本认识，走了很多弯路。吃一堑长一智，本文着重讲三点：一是为什么我会犯错，二是对并发编程的一些思考，三是结合 Java 语言来探索相关细节。（感谢节瓜 @jiexing 的耐心指导）">
+<meta property="og:updated_time" content="2016-03-15T12:22:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 反思课 2 并发编程的策略与思考">
+<meta name="twitter:description" content="学习是一个不断改进方法论的过程，第 15 课 分区和复制中，因为自己缺乏对并发编程的基本认识，走了很多弯路。吃一堑长一智，本文着重讲三点：一是为什么我会犯错，二是对并发编程的一些思考，三是结合 Java 语言来探索相关细节。（感谢节瓜 @jiexing 的耐心指导）">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 云计算 反思课 2 并发编程的策略与思考 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                云计算 反思课 2 并发编程的策略与思考
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-03T07:28:38+08:00" content="2016-03-03">
+              2016-03-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/03/cc-rethink-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/03/cc-rethink-2/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>学习是一个不断改进方法论的过程，<a href="http://wdxtub.com/2016/02/29/cc-15/">第 15 课 分区和复制</a>中，因为自己缺乏对并发编程的基本认识，走了很多弯路。吃一堑长一智，本文着重讲三点：一是为什么我会犯错，二是对并发编程的一些思考，三是结合 Java 语言来探索相关细节。（感谢节瓜 @jiexing 的耐心指导）</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5E94_u7528_u573A_u666F"><a href="#u5E94_u7528_u573A_u666F" class="headerlink" title="应用场景"></a>应用场景</h2><p>因为涉及到具体的问题，所以先大概说明一下应用场景，方便之后的叙述。事情大概是这样的：</p>
+<ul>
+<li>后端有三台数据库服务器</li>
+<li>需要支持两种不同的存储策略（复制机制与分区机制，详情参考<a href="http://wdxtub.com/2016/02/29/cc-15/">这里</a>）</li>
+<li>由前端来接收和处理请求（不使用任何缓存）</li>
+<li>请求有两种：GET（从数据库读取数据）与 PUT（向数据库写入数据）</li>
+<li>数据的格式是键值对</li>
+<li>保证数据的强一致性</li>
+<li>按照请求的顺序返回响应（按照时间戳来排序）</li>
+</ul>
+<p>难点在于，每来一个请求，服务器都会新开一个线程来进行处理，多个线程的访问需要保证数据一致性及顺序，如果没有真正理解场景本身，很容易陷入无谓的复杂度，写出冗长却不完备的代码。</p>
+<h2 id="u6211_u9519_u4E86"><a href="#u6211_u9519_u4E86" class="headerlink" title="我错了"></a>我错了</h2><p>写代码之前，我花了很多时间，试图找到一个合理的满足一致性和顺序的机制。根据文档的提示，用锁来保证一致性，用优先队列来保证顺序，万万没想到这就是一切复杂度的开端，最后我折腾出来的机制大概是这样的：</p>
+<ul>
+<li>每个 key 有自己的锁和优先队列</li>
+<li>每来一个请求，把它加入到对应 key 的优先队列中</li>
+<li>然后开一个线程，取出优先队列的队头进行处理</li>
+<li>具体线程之间的同步由锁完成（在停止尝试之前已经变得很复杂，这里不详细展开，总的来说我试图利用三个状态手动控制线程的执行）</li>
+<li>因为不同的线程可能需要访问同一个数据结构（这里我用 HashMap 来存储），也要考虑线程同步的问题，于是我决定依赖于『线程安全』的数据结构自动处理好访问冲突</li>
+</ul>
+<p>看起来还行，但是实际测试的时候既不能保证强一致性也没办法按顺序，甚至还引入了新的问题，这是为什么呢？我总结的原因如下：</p>
+<ul>
+<li>每次接收请求，新开的线程不一定执行这个请求对应的内容，而是执行队列头，让新线程做太复杂的工作</li>
+<li>为了保证逻辑一致性被迫设计状态判断的机制，但是没办法穷举出所有的可能</li>
+<li>控制线程时利用自动数据结构+手动逻辑控制，并没有得到半自动冲锋枪突突突的效果，而是乱成了一锅粥</li>
+</ul>
+<p>后来在瓜瓜的指引下找到了简单且有效的方法，关键点在于：</p>
+<ul>
+<li>要自动就全自动，要手动就全手动，不要依赖于自己并不完全理解的容器或者数据结构，因为很可能会和自己预期的表现不一样</li>
+<li>每个线程应该就处理好传入的请求，而不是可能执行另外的请求（我之前的机制这种情况是可能出现的）</li>
+<li>不要想当然去『控制』线程以达到最优性能，很多串行编程的思维在这里并不适用。</li>
+</ul>
+<p>从这样的思路拓展开去，就可以意识到自己之前的思路有多么『想当然』了。</p>
+<h2 id="u4E00_u4E9B_u601D_u8003"><a href="#u4E00_u4E9B_u601D_u8003" class="headerlink" title="一些思考"></a>一些思考</h2><blockquote>
+<p>Intuition is frequently wrong - be data intensive. [《Real-World Concurrency》 from ACM-Queue]</p>
+</blockquote>
+<p>如果要给云计算这门课一个关键词，当属 tradeoff。所谓权衡的艺术，从不同的角度来看，有不同的表现：</p>
+<ul>
+<li>从实现的角度，尽量以最小的代码换取最大的性能</li>
+<li>从架构的角度，尽量以简洁的架构满足需求，减少复杂性</li>
+<li>从经济的角度，尽力以最小的花费提供最好的服务质量</li>
+</ul>
+<p>同样的，对于并发编程，也是如此。</p>
+<blockquote>
+<p>Multi-threading is easy. Correct synchronization is hard</p>
+</blockquote>
+<p>最难的当属思维的转换，很多比较复杂的算法（或者说依赖比较多的算法），在并行环境中往往表现不好，比如说动态规划问题，原本是重复利用子问题的解，但是在多线程的条件下，子问题都不知道飞哪里去了；反而是分治算法，因为子问题独立，反而更适合并行。</p>
+<p>而提到并发编程，就不得不提 OpenMP 了，这个学期当助教，我主要负责这一部分的内容，所以也算是有一些理解。OpenMP 的思路是利用尽可能少的代价，把串行代码弄成并行的，核心的机制是共享内存，然后利用线程执行不同的子问题，可能只需要几条 OpenMP 预编译指令，就可以带来明显的性能提升效果。</p>
+<p>但是仔细想想，这种改进真的很大吗？在串行代码开发中，程序控制有一个清晰的流程。我们知道数据被访问和更改的方式，并了解其中的依赖关系。究其根本，OpenMP 依赖数据资源的锁定，和串行编程的思路是一样的，只是利用多核进行了简单的并行处理（相当于多叫几个人完成同一个工作，而不是大家做不同的工作）。如果使用不慎，除了带来性能问题之外，还可能造成数据不一致的问题。</p>
+<p>而真正的并行程序中，有多个状态会同时发生和改变，依赖关系也会发生变化。必须思考如何同时执行多个指令，以及这些指令会对你的数据结构、变量、算法及其它一切产生什么影响。</p>
+<p>总结一下：</p>
+<ul>
+<li>单线程逻辑设计的思路<ul>
+<li>所有数据结构的生存期，以及对这些数据结构的访问都在同一个线程，不存在竞争条件，耗时的操作都给其他线程（IO线程、定时器线程，数据库线程等）做，做完之后向事件队列（多线程安全的队列，其他线程是生产者，逻辑线程是消费者）发送事件</li>
+</ul>
+</li>
+<li>多线程逻辑设计的思路<ul>
+<li>所有数据结构的生存期，以及对这些数据结构的访问不一定在同一个线程。需要考虑数据结构的竞争条件。网络事件、定时器事件唤醒工作线程（比方说 <code>notifyAll</code>）执行所有工作，一般不需要交换到其他线程</li>
+</ul>
+</li>
+</ul>
+<p>我们可以看出，最关键的就是如何访问数据的问题！线程执行和访问数据的时间没有确定的顺序。操作系统负责对线程进行调度，而它对于数据访问模式一无所知。并行程序中唯一的顺序是我们利用同步方法明确创建的（前面我把这部分工作交给自己并不熟悉的并行库来做，导致出问题）。最重要的是要牢牢记住所有并发线程，这样才能够创建更简单更有约束性的结构来限制并发情况。还有一个需要记得的点是，可能最优化的串行算法并不是好的并行算法。</p>
+<p>最后的最后，并发编程真的是一门『纸上得来终觉浅』的艺术，最佳途径就是实践，实践，再实践。</p>
+<h2 id="u4E00_u4E9B_u5BF9_u7B56"><a href="#u4E00_u4E9B_u5BF9_u7B56" class="headerlink" title="一些对策"></a>一些对策</h2><p>这里结合了 CMU 18645 How to Write Fast Code 课程上的一些思路，虽然对于具体场景不算特别适用，不过总体原则放到哪里都能用。</p>
+<p>先说说优化并行部分的三个层面：</p>
+<ul>
+<li>逻辑层面：减少数据共享<ul>
+<li>这一部分需要注意 false sharing 的问题，不然反而会造成大量的缓存浪费</li>
+<li>解决方法也不算太难：线程本地存储 + 内存对齐，不过需要根据不同的机器不同处理</li>
+</ul>
+</li>
+<li>编码层面：减少锁粒度<ul>
+<li>同一个模块中，对不总是同时访问的数据，使用不同的锁（固定加锁顺序，防止死锁）</li>
+<li>使用锁（临界区）来保护数据，而不是操作</li>
+<li>将可能耗时的操作移到临界区外面（特别是 IO）</li>
+<li>避免在临界区中调用未知代码 </li>
+<li>谨慎使用读写锁，实现复杂，效率低下</li>
+</ul>
+</li>
+<li>工具层面：使用轻量同步机制<ul>
+<li>有些需要深入到内核态进行同步，对于基本的操作来说其实没必要这么兴师动众</li>
+</ul>
+</li>
+</ul>
+<p>换一个视角，可以总结出如下四条原则：</p>
+<ol>
+<li>单一职责：分离并发相关代码和其他代码（并发相关代码有自己的开发、修改和调优生命周期）</li>
+<li>限制数据作用域：两个线程修改共享对象的同一字段时可能会相互干扰，导致不可预期的行为，解决方案之一是构造临界区，但是必须限制临界区的数量</li>
+<li>使用数据副本：数据副本是避免共享数据的好方法，复制出来的对象只是以只读的方式对待</li>
+<li>线程应尽可能独立：让线程存在于自己的世界中，不与其他线程共享数据。Servlet 就是以单实例多线程的方式工作，和每个请求相关的数据都是通过 Servlet 子类的 service 方法（或者是 doGet 或 doPost 方法）的参数传入的。只要 Servlet 中的代码只使用局部变量，Servlet 就不会导致同步问题</li>
+</ol>
+<p>在搜索资料的时候发现一个不错的提纲，不过因为刚接触，很多概念理解得不算特别清楚这里列出来，作为一个索引，感兴趣的同学可以按图索骥去深入了解下（参考资料中第二项）：</p>
+<ul>
+<li>资源并发访问的策略<ul>
+<li>悲观策略<ul>
+<li>lock based concurrency(theory)</li>
+<li>java.util.concurrent (framework)</li>
+<li>锁还是不锁，这是个问题， 锁多还是锁少，也是个问题(practice)</li>
+</ul>
+</li>
+<li>乐观策略<ul>
+<li>lock free concurrency(theory) : CAS</li>
+<li>disruptor (framework)</li>
+<li>并发度高，还是并发度低的时候使用，这是个问题(practice)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>我拆我拆我拆拆拆（逻辑上拆分任务）<ul>
+<li>task-based concurrency (theory)<ul>
+<li>Runnable | Callable(model)</li>
+<li>Executor | ExecutorService(framework)</li>
+</ul>
+</li>
+<li>data-based concurrency(theory)<ul>
+<li>Actor (model)</li>
+<li>Akka(framework)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>从单机到分布式<ul>
+<li>divide and conquer<ul>
+<li>map reduce pattern</li>
+<li>master-worker pattern</li>
+</ul>
+</li>
+<li>swarm framework(move computation instead of data)</li>
+</ul>
+</li>
+<li>从软件到硬件<ul>
+<li>GPU<ul>
+<li>CUDA, jcuda, scuda</li>
+<li>floating point computation, e.g. image reader and processing</li>
+</ul>
+</li>
+<li>PPU<ul>
+<li>物理计算</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>看了这么多，唯一的感受就是</p>
+<blockquote>
+<p>路漫漫其修远兮，吾将上下而求索。</p>
+</blockquote>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://www.jianshu.com/p/053943a425c3" target="_blank" rel="external">Java并发编程的总结与思考</a></li>
+<li><a href="http://afoo.me/posts/2013-03-12-concurrency_theory_frameworks_and_practices.html" target="_blank" rel="external">并发编程： 理论，框架与实践</a></li>
+<li><a href="http://blog.csdn.net/lantian0802/article/details/19285937" target="_blank" rel="external">java并发编程学习总结（基础篇）</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CMU/" rel="tag">#CMU</a>
+          
+            <a href="/tags/云计算/" rel="tag">#云计算</a>
+          
+            <a href="/tags/多线程/" rel="tag">#多线程</a>
+          
+            <a href="/tags/思考/" rel="tag">#思考</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/27/fake-sadhu/" rel="next" title="第七周 - 假行僧">
+                <i class="fa fa-chevron-left"></i> 第七周 - 假行僧
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/04/walkway/" rel="prev" title="第八周 - 请走人行道">
+                第八周 - 请走人行道 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/03/cc-rethink-2/"
+           data-title="云计算 反思课 2 并发编程的策略与思考" data-url="http://wdxtub.com/2016/03/03/cc-rethink-2/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E94_u7528_u573A_u666F"><span class="nav-number">1.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6211_u9519_u4E86"><span class="nav-number">2.</span> <span class="nav-text">我错了</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_u4E9B_u601D_u8003"><span class="nav-number">3.</span> <span class="nav-text">一些思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_u4E9B_u5BF9_u7B56"><span class="nav-number">4.</span> <span class="nav-text">一些对策</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

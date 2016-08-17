@@ -1,0 +1,1001 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="之前的任务我们主要做的是 OLTP 的工作，这节课我们来接触一些 OLAP 数据仓库相关的内容，主要是 Hive, Impala 和 Redshift。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 第 18 课 基于云数据仓库的 OLAP">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-18.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="之前的任务我们主要做的是 OLTP 的工作，这节课我们来接触一些 OLAP 数据仓库相关的内容，主要是 Hive, Impala 和 Redshift。">
+<meta property="og:image" content="http://wdxtub.com/images/14591623554566.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591624417526.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591631754843.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591632985046.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591637730609.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591640336742.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591877430988.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591878082743.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591878384377.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591881378848.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591650668041.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591657300221.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591726196708.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591759536989.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591759704620.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591996447313.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14591764315378.jpg">
+<meta property="og:updated_time" content="2016-04-03T17:43:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 第 18 课 基于云数据仓库的 OLAP">
+<meta name="twitter:description" content="之前的任务我们主要做的是 OLTP 的工作，这节课我们来接触一些 OLAP 数据仓库相关的内容，主要是 Hive, Impala 和 Redshift。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 第 18 课 基于云数据仓库的 OLAP | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>之前的任务我们主要做的是 OLTP 的工作，这节课我们来接触一些 OLAP 数据仓库相关的内容，主要是 Hive, Impala 和 Redshift。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<li>比较 Online Transaction Processing(OLTP) 与 Online Analytic Processing(OLAP) 系统的异同，并讨论 OLAP 在商业智能系统中扮演的角色</li>
+<li>通过在 Hive 上运行典型的商业智能请求来分析在数据仓库中使用 MapReduce 编程模型的优劣</li>
+<li>通过在 Impala 上运行典型的商业智能请求来分析在数据仓库中使用 Massive Parallel Programming engine 的优劣，并对 schema 和 query 进行优化</li>
+<li>通过设计和优化表结构（sort key 与 distribution key）来利用诸如 Redshift 这样的大型并行系统的并行处理</li>
+</ol>
+<h2 id="u80CC_u666F_u77E5_u8BC6"><a href="#u80CC_u666F_u77E5_u8BC6" class="headerlink" title="背景知识"></a>背景知识</h2><h3 id="OLTP_vs_OLAP"><a href="#OLTP_vs_OLAP" class="headerlink" title="OLTP vs OLAP"></a>OLTP vs OLAP</h3><p>我们先来比较以下 OLTP 与 OLAP，这个<a href="https://www.youtube.com/watch?v=BNgouADOemg" target="_blank" rel="external">视频</a>介绍了相关内容。</p>
+<p>具体的定义介绍可以参阅 <a href="https://en.wikipedia.org/wiki/Online_transaction_processing" target="_blank" rel="external">OLTP</a> 与 <a href="https://en.wikipedia.org/wiki/Online_analytical_processing" target="_blank" rel="external">OLAP</a> </p>
+<p>下面是一个简单粗暴的对比图：</p>
+<p><img src="/images/14591623554566.jpg" alt="OLTP vs OLAP"></p>
+<p>具体的定义如名称所示，一个是处理事务，一个主要用来分析， OLTP 针对『写』优化，OLAP 针对『读』优化，大概知道这个就可以了，架构和分界线为：</p>
+<p><img src="/images/14591624417526.jpg" alt="Figure 1: Feedback loop in a Business Intelligence system"></p>
+<h3 id="Hive"><a href="#Hive" class="headerlink" title="Hive"></a>Hive</h3><p>具体的定义可以查阅官方文档，这里做简要介绍。</p>
+<ul>
+<li>基于 Hadoop</li>
+<li>数据存储在 HDFS（或其他文件系统，如 Amazon S3）</li>
+<li>使用类似 SQL 的语法（称为 HiveQL，与 SQL 的比较可以参考<a href="http://hortonworks.com/hadoop/hive/#section_5" target="_blank" rel="external">这里</a>）</li>
+<li>使用 MapReduce 框架进行查询带来了比较严重的延迟（每个请求都是一个 MapReduce job）</li>
+<li>主要用作批量数据处理</li>
+</ul>
+<p><img src="/images/14591631754843.jpg" alt="Figure 2: Hive Architecture"></p>
+<h3 id="Impala"><a href="#Impala" class="headerlink" title="Impala"></a>Impala</h3><p>具体的定义可以查阅官方文档，这里做简要介绍。</p>
+<ul>
+<li>基于 Hadoop</li>
+<li>数据存储在 HDFS（或其他文件系统，如 Amazon S3）</li>
+<li>使用类似 SQL 的语法</li>
+<li>为低延迟查询设计，最快的 SQL-on-Hadoop 系统</li>
+<li>使用 Massive Parallel Programming(MPP) engine 来直接访问集群中的数据</li>
+</ul>
+<p>主要组件</p>
+<ul>
+<li>Impala Daemon<ul>
+<li>集群中每个 DataStore 的守护进程，称为 <code>impalad</code>。可以通过 JDBC, ODBC 或者 <code>impala-shell</code> 进行查询。和 statestore 一直保持连接，也会从 <code>catalogd</code> 中接收广播消息</li>
+</ul>
+</li>
+<li>Impala Statestore<ul>
+<li>检查健康状况，守护进程为 <code>statestored</code>，整个集群只需要一个这样的进程</li>
+</ul>
+</li>
+<li>Impala Catalog Service<ul>
+<li>用来描述集群的基本信息，守护进程为 <code>catalogd</code>，整个集群只需要一个这样的进程</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14591632985046.jpg" alt="Figure 3: Impala Architecture"></p>
+<h3 id="Redshift"><a href="#Redshift" class="headerlink" title="Redshift"></a>Redshift</h3><p>具体的定义可以查阅官方文档以及这个<a href="https://www.youtube.com/watch?v=eQmiUW6bgKQ" target="_blank" rel="external">视频说明</a>，这里做简要介绍。</p>
+<ul>
+<li>Amazon AWS 提供的 Database-as-a-Service 产品</li>
+<li>并非基于 MapReduce 和 HDFS</li>
+<li>通常用于实时查询</li>
+</ul>
+<p><img src="/images/14591637730609.jpg" alt="Figure 4: Redshift Data Warehouse Archirecture"></p>
+<p>主要组件</p>
+<ul>
+<li>Leader Node<ul>
+<li>处理客户端请求，连接 compute nodes</li>
+</ul>
+</li>
+<li>Compute Nodes<ul>
+<li>执行由 leader node 发来的代码</li>
+<li>具体会分为不同的 node slices，一个核就是一个 slice，分别处理不同的数据</li>
+<li>创建表的时候需要指定 distribution key（用来分 slices）</li>
+<li>列存储（而非行存储），可以进行压缩，节约空间与 IO 带宽</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14591640336742.jpg" alt="Figure 5: Block level storage of columns in column store"></p>
+<p>创建步骤</p>
+<ol>
+<li>创建一个集群，输入数据库名称，用户名与密码</li>
+<li>选择机器类型与集群类型</li>
+<li>可以选择是否加密（不加密），选择安全组，其他默认即可</li>
+<li>开启即可</li>
+<li>点击『Connect Client』，可以下载对应的连接器（里面有详细的说明）</li>
+<li>建议使用 SQL WorkbenchJ 来进行测试连接（需要填写各种相关信息）</li>
+<li>使用完成之后注意关闭</li>
+</ol>
+<h3 id="Hadoop__u6587_u4EF6_u683C_u5F0F"><a href="#Hadoop__u6587_u4EF6_u683C_u5F0F" class="headerlink" title="Hadoop 文件格式"></a>Hadoop 文件格式</h3><blockquote>
+<p>SequenceFile</p>
+</blockquote>
+<p>SequenceFile是Hadoop API 提供的一种二进制文件，它将数据以 <code>&lt;key,value&gt;</code> 的形式序列化到文件中。这种二进制文件内部使用Hadoop 的标准的Writable 接口实现序列化和反序列化。它与Hadoop API中的MapFile 是互相兼容的。Hive 中的SequenceFile 继承自Hadoop API 的SequenceFile，不过它的key为空，使用value 存放实际的值， 这样是为了避免MR 在运行map 阶段的排序过程。如果你用Java API 编写SequenceFile，并让Hive 读取的话，请确保使用value字段存放数据，否则你需要自定义读取这种SequenceFile 的InputFormat class 和OutputFormat class。</p>
+<p><img src="/images/14591877430988.jpg" alt="Sequencefile 文件结构"></p>
+<blockquote>
+<p>RCFile</p>
+</blockquote>
+<p>RCFile是Hive推出的一种专门面向列的数据格式。 它遵循“先按列划分，再垂直划分”的设计理念。当查询过程中，针对它并不关心的列时，它会在IO上跳过这些列。需要说明的是，RCFile在map阶段从远端拷贝仍然是拷贝整个数据块，并且拷贝到本地目录后RCFile并不是真正直接跳过不需要的列，并跳到需要读取的列， 而是通过扫描每一个row group的头部定义来实现的，但是在整个HDFS Block 级别的头部并没有定义每个列从哪个row group起始到哪个row group结束。所以在读取所有列的情况下，RCFile的性能反而没有SequenceFile高。</p>
+<p><img src="/images/14591878082743.jpg" alt="RCFile 文件结构"></p>
+<blockquote>
+<p>Avro</p>
+</blockquote>
+<p>Avro是一种用于支持数据密集型的二进制文件格式。它的文件格式更为紧凑，若要读取大量数据时，Avro能够提供更好的序列化和反序列化性能。并且Avro数据文件天生是带Schema定义的，所以它不需要开发者在API 级别实现自己的Writable对象。最近多个Hadoop 子项目都支持Avro 数据格式，如Pig 、Hive、Flume、Sqoop和Hcatalog。</p>
+<p><img src="/images/14591878384377.jpg" alt="Avro MR 文件格式"></p>
+<blockquote>
+<p>TEXT</p>
+</blockquote>
+<p>文本格式的数据也是Hadoop中经常碰到的。如TextFile 、XML和JSON。 文本格式除了会占用更多磁盘资源外，对它的解析开销一般会比二进制格式高几十倍以上，尤其是XML 和JSON，它们的解析开销比Textfile 还要大，因此强烈不建议在生产系统中使用这些格式进行储存。 如果需要输出这些格式，请在客户端做相应的转换操作。 文本格式经常会用于日志收集，数据库导入，Hive默认配置也是使用文本格式，而且常常容易忘了压缩，所以请确保使用了正确的格式。另外文本格式的一个缺点是它不具备类型和模式，比如销售金额、利润这类数值数据或者日期时间类型的数据，如果使用文本格式保存，由于它们本身的字符串类型的长短不一，或者含有负数，导致MR没有办法排序，所以往往需要将它们预处理成含有模式的二进制格式，这又导致了不必要的预处理步骤的开销和储存资源的浪费。</p>
+<blockquote>
+<p>Parquet</p>
+</blockquote>
+<p>Parquet是面向分析型业务的列式存储格式，由Twitter和Cloudera合作开发，2015年5月从Apache的孵化器里毕业成为Apache顶级项目，最新的版本是1.8.0。</p>
+<p>列式存储和行式存储相比有哪些优势呢？</p>
+<ol>
+<li>可以跳过不符合条件的数据，只读取需要的数据，降低IO数据量。</li>
+<li>压缩编码可以降低磁盘存储空间。由于同一列的数据类型是一样的，可以使用更高效的压缩编码（例如Run Length Encoding和Delta Encoding）进一步节约存储空间。</li>
+<li>只读取需要的列，支持向量运算，能够获取更好的扫描性能。</li>
+</ol>
+<p>列式存储给数据压缩也提供了更大的发挥空间，除了我们常见的snappy, gzip等压缩方法以外，由于列式存储同一列的数据类型是一致的，所以可以使用更多的压缩算法。</p>
+<p><img src="/images/14591881378848.jpg" alt=""></p>
+<p>Parquet列式存储带来的性能上的提高在业内已经得到了充分的认可，特别是当你们的表非常宽（column非常多）的时候，Parquet无论在资源利用率还是性能上都优势明显。具体的性能指标详见参考文档。</p>
+<p>Spark已经将Parquet设为默认的文件存储格式，Cloudera投入了很多工程师到Impala+Parquet相关开发中，Hive/Pig都原生支持Parquet。Parquet现在为Twitter至少节省了1/3的存储空间，同时节省了大量的表扫描和反序列化的时间。这两方面直接反应就是节约成本和提高性能。</p>
+<p>如果说HDFS是大数据时代文件系统的事实标准的话，Parquet就是大数据时代存储格式的事实标准。</p>
+<h2 id="u4EFB_u52A1_u4ECB_u7ECD"><a href="#u4EFB_u52A1_u4ECB_u7ECD" class="headerlink" title="任务介绍"></a>任务介绍</h2><ul>
+<li>标签：<code>Project:3.5</code></li>
+<li>镜像<ul>
+<li>测试实例: <code>m1.small</code>, <code>ami-a13831cb</code></li>
+<li>Hive 集群: <code>EMR Cluster: 1 m1.large master and 2 m3.xlarge core</code>, Amazon EMR</li>
+<li>Impala 集群: <code>EMR Cluster: 1 m1.large master and 2 m3.xlarge core</code>, Amazon EMR</li>
+<li>Redshift 集群: <code>2 node ds2.xlarge cluster</code>, Amazon Redshift</li>
+</ul>
+</li>
+</ul>
+<p>主要需要处理的请求就是『一段时间』+『某些特定数值』的统计学数值（增长减少总和平均趋势等等）。具体的架构为：</p>
+<p><img src="/images/14591650668041.jpg" alt="Figure 6: Project 3.5 Task Overview"></p>
+<p>具体有三种请求，我们会分别在 Hive, Impala 和 Redshift 上跑来测试性能，具体优化的话，会针对 Impala 来优化 Query1，针对 Impala 和 Redshift 来优化 Query2 和 Query3。具体的请求如下：</p>
+<blockquote>
+<p>Query 1: restriction on only one dimension. quantify the amount of revenue increase that would have resulted from eliminating certain company-wide discounts in a given percentage range for products shipped in a given year</p>
+</blockquote>
+<p>例如：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">select</span> <span class="keyword">sum</span>(lo_extendedprice*lo_discount) <span class="keyword">as</span> revenue </span><br><span class="line"><span class="keyword">from</span> lineorder, dwdate </span><br><span class="line"><span class="keyword">where</span> lo_orderdate=d_datekey</span><br><span class="line"><span class="keyword">and</span> d_year=<span class="number">1997</span> </span><br><span class="line"><span class="keyword">and</span> lo_discount <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">3</span> </span><br><span class="line"><span class="keyword">and</span> lo_quantity &lt; <span class="number">24</span>;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Query 2: restrictions on two dimensions. compare revenue for some product classes, for suppliers in a certain region, grouped by more restrictive product classes and all years of order.</p>
+</blockquote>
+<p>例如：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">select</span> <span class="keyword">sum</span>(lo_revenue), d_year, p_brand1 </span><br><span class="line"><span class="keyword">from</span> lineorder, dwdate, part, supplier </span><br><span class="line"><span class="keyword">where</span> lo_orderdate = d_datekey </span><br><span class="line"><span class="keyword">and</span> lo_partkey = p_partkey </span><br><span class="line"><span class="keyword">and</span> lo_suppkey = s_suppkey </span><br><span class="line"><span class="keyword">and</span> p_category = <span class="string">'MFGR#12'</span> </span><br><span class="line"><span class="keyword">and</span> s_region = <span class="string">'AMERICA'</span> </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> d_year, p_brand1 </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> d_year, p_brand1 </span><br><span class="line"><span class="keyword">limit</span> <span class="number">500</span>;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Query 3: restrictions on three dimensions, including the remaining dimension, customer. The query is intended to provide revenue volume for lineorder transactions by customer nation and supplier nation and year within a given region, in a certain time period.</p>
+</blockquote>
+<p>例如：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">select</span> c_city, s_city, d_year, <span class="keyword">sum</span>(lo_revenue) <span class="keyword">as</span> revenue </span><br><span class="line"><span class="keyword">from</span> customer, lineorder, supplier, dwdate </span><br><span class="line"><span class="keyword">where</span> lo_custkey = c_custkey </span><br><span class="line"><span class="keyword">and</span> lo_suppkey = s_suppkey </span><br><span class="line"><span class="keyword">and</span> lo_orderdate = d_datekey </span><br><span class="line"><span class="keyword">and</span> (c_city=<span class="string">'UNITED KI1'</span> <span class="keyword">or</span> c_city=<span class="string">'UNITED KI5'</span>) </span><br><span class="line"><span class="keyword">and</span> (s_city=<span class="string">'UNITED KI1'</span> <span class="keyword">or</span> s_city=<span class="string">'UNITED KI5'</span>) </span><br><span class="line"><span class="keyword">and</span> d_yearmonth = <span class="string">'Dec1997'</span> </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> c_city, s_city, d_year </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> d_year <span class="keyword">asc</span>, revenue <span class="keyword">desc</span> </span><br><span class="line"><span class="keyword">limit</span> <span class="number">5</span>;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Star_Schema"><a href="#Star_Schema" class="headerlink" title="Star Schema"></a>Star Schema</h3><p>数据仓库一般会选择 star schema，说白了就是不同的信息分开组织，然后有一个中心表格把所有信息集成到一起，如下图所示：</p>
+<p><img src="/images/14591657300221.jpg" alt="Figure 7: The SSB data model"></p>
+<p>其中不同的小信息成为 lookup 表，而大的称为 fact 表。不同的 lookup 表不会相互连接，而 fact 表通过主键或外键来进行连接。</p>
+<p>具体的定义如下：</p>
+<ul>
+<li>A primary key, also called a primary keyword, is a key in a relational database that is unique for each record. A relational database must always have one and only one primary key. Any keys that individually identify unique records and could be chosen as the primary key are known as candidate keys.</li>
+<li>A foreign key is a field (or collection of fields) in one table that uniquely identifies a row of another table. The foreign key in one table (referencing table) matches a particular candidate key (not necessarily the primary key) column of another table (referenced table). The foreign key can be used to cross-reference tables.</li>
+<li>A star join is a primary-key to foreign-key join of the dimension tables to a fact table. All of the dimension tables have a primary key. The central fact table has a foreign key mapping to the dimension tables’ primary key. A star join selects rows from the central fact table for aggregation based on a restriction (filtering condition) on the dimension tables.</li>
+</ul>
+<h3 id="Hive__u4EFB_u52A1"><a href="#Hive__u4EFB_u52A1" class="headerlink" title="Hive 任务"></a>Hive 任务</h3><ul>
+<li>启动一个 <code>ami-a13831cb</code> 的 <code>m1.small</code> 实例</li>
+<li>修改 <code>config.properties</code>，填上对应的地址</li>
+<li>修改 <code>project3_5.sql</code> 中的内容，用 <code>Runner.jar</code> 来运行</li>
+<li>运行时间比较长，考虑使用 <code>byobu</code> 或者 <code>nohup</code> 来保持 SSH 连接</li>
+</ul>
+<p>具体的用法</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="tag">Usage</span>: <span class="tag">java</span> <span class="tag">-jar</span> <span class="tag">Runner</span><span class="class">.jar</span> <span class="attr_selector">[backend]</span> <span class="attr_selector">[section_name]</span></span><br><span class="line"><span class="attr_selector">[backend]</span> : <span class="tag">hive</span></span><br><span class="line"><span class="attr_selector">[section_name]</span> : <span class="tag">section</span> <span class="tag">name</span> <span class="tag">to</span> <span class="tag">run</span> <span class="tag">from</span> <span class="tag">the</span> <span class="tag">project3_5</span><span class="class">.sql</span></span><br></pre></td></tr></table></figure>
+<p>创建 Hive 时可以一并创建好 Impala（因为之后也要用，就不用重新开一个 EMR 了），具体的参数为：</p>
+<ul>
+<li>Cluster Name: &lt; Your choice of EMR Cluster Name &gt;</li>
+<li>Termination Protection: Yes </li>
+<li>Tags: <code>Project:3.5</code></li>
+<li>AMI Version: 3.11.0</li>
+<li>Applications to be installed: Hive 0.13.1 (optionally Impala 1.2.4)</li>
+<li>Hardware Configuration: Master <code>m1.large*1</code> ; Core <code>m3.xlarge*2</code></li>
+<li>EC2 Keypair: &lt; your ec2 key pair &gt;</li>
+<li>确认开启 10000 及 21050 端口（JDBC 连接）</li>
+</ul>
+<p>因为不需要做任何优化，所以只要运行一下就好，具体的步骤为：</p>
+<ol>
+<li>在 <code>config.properites</code> 文件中填写 master 实例的 DNS</li>
+<li>使用 <code>Runner.jar</code> 执行 <code>project3_5.sql</code> 的 <code>hive_create_table</code> 部分：<code>java -jar Runner.jar hive hive_create_table</code><ul>
+<li><code>Hive hive_create_table finishes in 14368msec</code></li>
+</ul>
+</li>
+<li>执行 <code>submitter_hive</code> 来跑 query1 和 query2，会生成 <code>hive_query1</code> 和 <code>hive_query2</code> 这俩文件，完成之后记录下运行时间</li>
+<li>使用 <code>Runner.jar</code> 执行 <code>project3_5.sql</code> 的 <code>drop_tables</code> 部分来清理：<code>java -jar Runner.jar hive drop_tables</code></li>
+<li>具体的数据在 <code>s3://cmucc-public/p35/ssbgz/</code> 中，而获取数据代码会自动完成，我们不用操作。</li>
+</ol>
+<p>这部分比较简单，按部就班即可：</p>
+<ul>
+<li>连接到实例 <code>ssh -i ../demo.pem ubuntu@ec2-54-210-15-148.compute-1.amazonaws.com</code></li>
+<li>复制文件到本地 <ul>
+<li>config <code>scp -i ../demo.pem ubuntu@ec2-54-210-15-148.compute-1.amazonaws.com:~/Project3_5/config.properties ./</code></li>
+<li>schema <code>scp -i ../demo.pem ubuntu@ec2-54-210-15-148.compute-1.amazonaws.com:~/Project3_5/schema.sql ./</code></li>
+<li>sql <code>scp -i ../demo.pem ubuntu@ec2-54-210-15-148.compute-1.amazonaws.com:~/Project3_5/project3_5.sql ./</code></li>
+</ul>
+</li>
+<li>复制到服务器上 <ul>
+<li>config <code>scp -i ../demo.pem ./config.properties ubuntu@ec2-54-210-15-148.compute-1.amazonaws.com:~/Project3_5/</code></li>
+<li>schema <code>scp -i ../demo.pem ./schema.sql ubuntu@ec2-54-210-15-148.compute-1.amazonaws.com:~/Project3_5/</code></li>
+<li>sql <code>scp -i ../demo.pem ./project3_5.sql ubuntu@ec2-54-210-15-148.compute-1.amazonaws.com:~/Project3_5/</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="Impala__u4EFB_u52A1"><a href="#Impala__u4EFB_u52A1" class="headerlink" title="Impala 任务"></a>Impala 任务</h3><p>开 EMR 和 Hive 一样（前面开了现在就不用操心了），具体的任务为：</p>
+<ol>
+<li>创建测试数据</li>
+<li>测试基本性能</li>
+<li>优化</li>
+</ol>
+<p>创建测试数据的步骤：</p>
+<ol>
+<li>在 <code>config.properites</code> 文件中填写 master 实例的 DNS</li>
+<li>ssh 过去 <code>ssh -i ../demo.pem hadoop@ec2-52-91-242-156.compute-1.amazonaws.com</code></li>
+<li>因为 Impala 1.2.4 不支持 S3 作为数据源，所以要先下载<ul>
+<li>在 HDFS 上创建文件夹 <code>hdfs dfs -mkdir /data</code></li>
+<li>载入数据 <code>hadoop distcp s3://cmucc-public/p35/ssb/* /data/</code></li>
+<li>验证数据 <code>hdfs dfs -ls -R /data</code> </li>
+</ul>
+</li>
+<li>使用 <code>RunnerImpala.jar</code> 执行 <code>project3_5.sql</code> 的 <code>impala_create_table_unoptimized</code> 部分：<code>java -jar RunnerImpala.jar impala impala_create_table_unoptimized</code>，注意这不会进行数据压缩，顺带记录下五个表的导入时间</li>
+<li>检验一下数据 <code>java -jar RunnerImpala.jar impala count_tables</code>，具体如下</li>
+</ol>
+<p><img src="/images/14591726196708.jpg" alt=""></p>
+<p>测试的时候要跑两次，第一次的不算数（因为还没缓存），具体的命令为：</p>
+<ul>
+<li><code>java -jar RunnerImpala.jar impala query1</code></li>
+<li><code>java -jar RunnerImpala.jar impala query2</code></li>
+<li><code>java -jar RunnerImpala.jar impala query3</code></li>
+</ul>
+<p>记得记录下每次的时间，查询的时候可能会有错误，简单来说就是内存不够，没办法把整个哈希表放进去，或者就是查询没有优化好。我们啥都不用做，等节点自己重启就好。</p>
+<p>优化部分的具体步骤是：</p>
+<ol>
+<li>用 <code>impala shell</code> 来创建对应的优化后的表格，名称为 <code>[table_name]_opt</code>，比方说 <code>customer</code> 对应 <code>customer_opt</code><ul>
+<li>根据不同文件格式的分析，因为是列式存储，没啥悬念，直接 Parquet 即可</li>
+<li>这里需要进入到对应的文件夹(<code>/impala/impala-shell/</code>)里执行，直接打这个命令无效</li>
+</ul>
+</li>
+<li>自己把数据载入到优化后的数据表中</li>
+<li>验证导入的数据对不对 <code>java -jar RunnerImpala.jar impala count_tables_opt</code></li>
+<li>优化 query 部分，对应 <code>query1_opt</code>, <code>query2_opt</code>, <code>query3_opt</code></li>
+<li>执行对应请求，不仅要返回正确结果，还要够快<ul>
+<li><code>java -jar RunnerImpala.jar impala query1_opt</code></li>
+<li><code>java -jar RunnerImpala.jar impala query2_opt</code></li>
+<li><code>java -jar RunnerImpala.jar impala query3_opt</code></li>
+</ul>
+</li>
+<li>把 SQL 命令都放在 <code>schema.sql</code> 这个文件中，记得加注释</li>
+<li>执行 <code>submitter_impala</code> 来提交，可能需要多跑几次来拿到分数</li>
+<li>完成之后关掉 EMR</li>
+</ol>
+<blockquote>
+<p>一些提示</p>
+</blockquote>
+<ul>
+<li>使用 <code>impala-shell</code> 来进行其他命令的执行</li>
+<li>Impala 支持各种 Hadoop 支持的文件格式，包括 <code>Parquet</code>, <code>Text</code>, <code>Avro</code> 和 <code>SequenceFile</code>，不同的格式有不同的表现，选择个最合适的(columnar storage layout, large I/O request size, compression, encoding)</li>
+<li>join 操作很费时，Impala 是通过构造 hash table 来处理查询的，默认使用 broadcast join右边的表格最好比左边的小</li>
+<li>考虑使用 cache</li>
+<li>分隔数据，这样查询的时候就不用扫描整个表格，最好使用经常用作过滤条件的列来进行分隔</li>
+<li>利用查询的数据来进行优化，但注意不要使用 <code>COMPUTE STATS</code> 命令</li>
+<li>查看 <a href="http://www.cloudera.com/content/www/en-us/documentation/archive/impala/1-x/1-2-4/Cloudera-Impala-Frequently-Asked-Questions/Cloudera-Impala-Frequently-Asked-Questions.html?scroll=faq_performance_unique_1" target="_blank" rel="external">Impala 1.2.4 documentation</a>，尝试各种可能的优化</li>
+</ul>
+<blockquote>
+<p>优化思路</p>
+</blockquote>
+<p>我们根据具体的查询来看看相关查询中对几个不同的表的请求情况</p>
+<ul>
+<li>表 <code>LINEORDER</code><ul>
+<li>相关查询：query1, query2, query3</li>
+<li>Query1 相关列：<code>lo_orderdate</code>, <code>lo_discount</code>, <code>lo_quantity</code>, <code>lo_extendedprice</code></li>
+<li>Query2 相关列：<code>lo_revenue</code>, <code>lo_partkey</code>, <code>lo_suppkey</code></li>
+<li>Query3 相关列：<code>lo_revenue</code>, <code>lo_custkey</code>, <code>lo_suppkey</code>, <code>lo_orderdate</code></li>
+</ul>
+</li>
+<li>表 <code>PART</code><ul>
+<li>相关查询：query2</li>
+<li>Query2 相关列：<code>p_partkey</code>, <code>p_category</code>, <code>p_brand1</code> </li>
+</ul>
+</li>
+<li>表 <code>CUSTOMER</code><ul>
+<li>相关查询：query3</li>
+<li>Query3 相关列：<code>c_city</code>, <code>c_custkey</code></li>
+</ul>
+</li>
+<li>表 <code>SUPPLIER</code><ul>
+<li>相关查询：query2, query3</li>
+<li>Query2 相关列：<code>s_suppkey</code>, <code>s_region</code></li>
+<li>Query3 相关列：<code>s_city</code>, <code>s_suppkey</code></li>
+</ul>
+</li>
+<li>表 <code>DWDATE</code><ul>
+<li>相关查询：query1, query2, query3</li>
+<li>Query1 相关列：<code>d_datekey</code>, <code>d_year</code></li>
+<li>Query2 相关列：<code>d_year</code>, <code>d_datekey</code></li>
+<li>Query3 相关列：<code>d_year</code>, <code>d_yearmonth</code>, <code>d_datekey</code></li>
+</ul>
+</li>
+</ul>
+<p>基本上需要根据范围来进行分隔，比以此确定 partition key，通过观察应该能够找到合适的 key。其他的部分根据原来的代码复制粘贴即可。</p>
+<p>如果使用了 EXTERNAL 关键字，删除的时候还需要对应删除 hdfs 中的文件。然而 EMR 很可能没权限删，所以，插入的时候使用 <code>INSERT OVERWRITE</code> 关键词（感谢 @vera @shuangling）</p>
+<p>这部分不算太难。需要仔细。另外注意 <code>project3_5.sql</code> 中不要写注释，会出错。</p>
+<h3 id="Redshift__u4EFB_u52A1"><a href="#Redshift__u4EFB_u52A1" class="headerlink" title="Redshift 任务"></a>Redshift 任务</h3><p>Redshift 很贵，确定弄清楚了要做的事情，才开启，启动的配置如下：</p>
+<ul>
+<li>Node Type: <code>ds2.xlarge</code></li>
+<li>Cluster Type: <code>Multi Node</code></li>
+<li>Number of Compute Nodes: <code>2</code></li>
+<li>记得在 Manage Tag 中打上 tag</li>
+<li>其他基本都是默认，具体参考下面的图</li>
+</ul>
+<p><img src="/images/14591759536989.jpg" alt="检查配置"></p>
+<p><img src="/images/14591759704620.jpg" alt="具体状态"></p>
+<p>需要完成的工作和前面 Impala 的类似，一共 4 步：</p>
+<ol>
+<li>创建 schema 并载入数据</li>
+<li>测试基准性能</li>
+<li>优化</li>
+<li>重新载入数据集，再次测试</li>
+</ol>
+<p><img src="/images/14591996447313.jpg" alt="这里才是地址"></p>
+<p>创建 schema 和载入数据的步骤为：</p>
+<ul>
+<li>创建表 <code>java -jar Runner.jar redshift redshift_create_table_unoptimized</code></li>
+<li>载入数据 <code>java -jar Runner.jar redshift redshift_load_uncompressed</code>，注意需要填写 <code>[AWS_ACCESS_KEY_ID]</code> 和 <code>[AWS_SECRET_ACCESS_KEY]</code>，提交的时候一定要注意删除（这里并不会进行压缩，因为 <code>gzip compupdate off</code> 选项）</li>
+<li>验证数据 <code>java -jar Runner.jar redshift count_tables</code>，并记录下各个表的载入时间</li>
+</ul>
+<p><img src="/images/14591764315378.jpg" alt=""></p>
+<p>测试基准性能的时候要跑两次，第一次的不算数，具体的命令为：</p>
+<ul>
+<li><code>java -jar Runner.jar redshift query1</code></li>
+<li><code>java -jar Runner.jar redshift query2</code></li>
+<li><code>java -jar Runner.jar redshift query3</code></li>
+</ul>
+<p>优化部分需要做的有</p>
+<ul>
+<li>更新 <code>redshift_create_tables_optimized</code> 部分，包括 sortkey, distribution styles 和 distkeys 来优化性能</li>
+<li>可以用 <code>explain_query1</code>, <code>explain_query2</code> 和 <code>explain_query3</code> 部分来查看具体是怎么执行的，根据这个信息来进行优化（决定最合适的 distkey），我调用的时候有 bug，不知道为啥</li>
+</ul>
+<p>对应的提示</p>
+<ul>
+<li>Query 1 has range filtering on the lineorder table for one of its fields</li>
+<li>Clearly, we have to co-locate one of the tables with lineorder based on a join column. Only 1 table can be co-located with it based on the join column.</li>
+</ul>
+<p>重新载入数据的步骤</p>
+<ul>
+<li>先删掉原来的表 <code>java -jar Runner.jar redshift drop_tables</code></li>
+<li>创建之前优化的表格 <code>java -jar Runner.jar redshift redshift_create_table_optimized</code></li>
+<li>导入数据 <code>java -jar Runner.jar redshift redshift_load_compressed</code></li>
+</ul>
+<p>执行命令</p>
+<ul>
+<li><code>java -jar Runner.jar redshift query1</code></li>
+<li><code>java -jar Runner.jar redshift query2</code></li>
+<li><code>java -jar Runner.jar redshift query3</code></li>
+</ul>
+<p>使用 <code>submitter_redshift</code> 来提交，记得移除 AWS 的密码。可能需要多跑几次来拿到分数，完成之后记得关掉。</p>
+<p>总结经验就是一条，观察法 + 碰运气，反正每个表需要加一个 <code>sortkey</code> 和 <code>distkey</code>，大概试验一下就知道了。</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://datawarehouse4u.info/OLTP-vs-OLAP.html" target="_blank" rel="external">OLTP vs. OLAP</a></li>
+<li><a href="http://www.infoq.com/cn/articles/hadoop-file-format" target="_blank" rel="external">浅析Hadoop文件格式</a></li>
+<li><a href="http://www.infoq.com/cn/articles/in-depth-analysis-of-parquet-column-storage-format" target="_blank" rel="external">深入分析Parquet列式存储格式</a></li>
+<li><a href="http://www.cloudera.com/documentation/archive/impala/1-x/1-2-4/Installing-and-Using-Impala/ciiu_performance.html" target="_blank" rel="external">Impala Performance Guidelines and Best Practices</a></li>
+<li><a href="http://docs.aws.amazon.com/redshift/latest/dg/tutorial-tuning-tables.html" target="_blank" rel="external">Tutorial: Tuning Table Design</a></li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-18.html"
+           data-title="云计算 第 18 课 基于云数据仓库的 OLAP" data-url="http://wdxtub.com/vault/cc-18.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

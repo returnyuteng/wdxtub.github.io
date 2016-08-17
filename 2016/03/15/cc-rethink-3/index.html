@@ -1,0 +1,900 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CMU,云计算,优化,思考," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="学习是一个不断改进方法论的过程，课程项目 6 MySQL 和 HBase 配置及测试，因为自己对于搭建基于 NoSQL 数据库的 Web 服务缺乏足够的经验，在具体对前后端进行优化的时候走了很多弯路，也意识到了没有目的的优化很可能是劣化，这里主要整理一下自己对于优化问题的思考。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云计算 反思课 3 提高 Web 服务性能的策略与思考">
+<meta property="og:url" content="http://wdxtub.com/2016/03/15/cc-rethink-3/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="学习是一个不断改进方法论的过程，课程项目 6 MySQL 和 HBase 配置及测试，因为自己对于搭建基于 NoSQL 数据库的 Web 服务缺乏足够的经验，在具体对前后端进行优化的时候走了很多弯路，也意识到了没有目的的优化很可能是劣化，这里主要整理一下自己对于优化问题的思考。">
+<meta property="og:updated_time" content="2016-03-15T13:37:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 反思课 3 提高 Web 服务性能的策略与思考">
+<meta name="twitter:description" content="学习是一个不断改进方法论的过程，课程项目 6 MySQL 和 HBase 配置及测试，因为自己对于搭建基于 NoSQL 数据库的 Web 服务缺乏足够的经验，在具体对前后端进行优化的时候走了很多弯路，也意识到了没有目的的优化很可能是劣化，这里主要整理一下自己对于优化问题的思考。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 云计算 反思课 3 提高 Web 服务性能的策略与思考 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                云计算 反思课 3 提高 Web 服务性能的策略与思考
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-15T08:17:53+08:00" content="2016-03-15">
+              2016-03-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/15/cc-rethink-3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/15/cc-rethink-3/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>学习是一个不断改进方法论的过程，<a href="http://wdxtub.com/2016/03/11/cc-p6/">课程项目 6 MySQL 和 HBase 配置及测试</a>，因为自己对于搭建基于 NoSQL 数据库的 Web 服务缺乏足够的经验，在具体对前后端进行优化的时候走了很多弯路，也意识到了没有目的的优化很可能是劣化，这里主要整理一下自己对于优化问题的思考。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5E94_u7528_u573A_u666F"><a href="#u5E94_u7528_u573A_u666F" class="headerlink" title="应用场景"></a>应用场景</h2><p>因为涉及到具体的问题，所以先大概说明一下应用场景，方便之后的叙述。事情大概是这样的：</p>
+<ul>
+<li>数据是 5100W 条左右带 tag 的 tweet</li>
+<li>这些 tweet 有各种语言</li>
+<li>只有读请求，每次需要返回指定用户用指定 tag 发送的 tweet</li>
+<li>前端使用 Undertow，后端是部署在 Amazon EMR 的 HBase</li>
+<li>有一定的预算限制（不能开多台机器来凑）</li>
+</ul>
+<p>难点在于，优化问题其实是一个涉及多层级多组件的『复杂』问题，需要考虑的东西很多，更纠结的是，整个系统是符合『木桶理论』的，也就是最短板决定了系统的整体性能。那么就牵扯出两个关键问题：短板在哪里？短板怎么解决。</p>
+<h2 id="u4E00_u4E9B_u601D_u8003"><a href="#u4E00_u4E9B_u601D_u8003" class="headerlink" title="一些思考"></a>一些思考</h2><p>对于 Web 服务来说，所谓优化，可以简单粗暴分为两个子类，一是增加吞吐量，二是增加并发数。优化的整体思路，按照实施的顺序来看，大概是这样的：</p>
+<ol>
+<li>充分理解应用场景<ul>
+<li>服务具体接收的请求的格式和具体需要返回的内容是什么</li>
+<li>是偏向于读，还是偏向于写，亦或者是读写比较均衡</li>
+<li>数据量大概是多少，分布式集群（如果要用）的基本配置是什么</li>
+</ul>
+</li>
+<li>数据格式设计<ul>
+<li>根据具体的场景，需要思考具体数据库的设计</li>
+<li>如果是读比较多，可以考虑对数据进行预处理，用空间换时间</li>
+<li>如果是写比较多，则需要尽可能减少冗余，减少改动时需要同步更新的记录</li>
+</ul>
+</li>
+<li>分析服务瓶颈（慢在哪里）<ul>
+<li>使用什么工具，监控什么指标来寻找瓶颈</li>
+<li>根据输出的日志（这里需要自己决定输出什么）来找寻请求的规律</li>
+<li>根据日志的数据统计，找到短板所在</li>
+<li>这一步其实并不简单，更可怕的是，如果在这里分析错误，就会把整个优化带入死胡同（去优化并不需要优化的问题）</li>
+</ul>
+</li>
+<li>充分利用硬件资源<ul>
+<li>在预算限制下有没有开够机器</li>
+<li>对于每台机器，其 CPU，内存，带宽等资源有没有尽可能使用</li>
+<li>如果没有尽量利用，就说明钱没有花在刀刃上，可以考虑更换不同类型的机器，Amazon 提供了『通用』，『内存优化』和『计算优化』这几种不同的机器，可以根据监控的数据，根据前后端不同的任务来决定具体使用什么类型的机器</li>
+</ul>
+</li>
+<li>解决木桶效应，不同层优化<ul>
+<li>算法 + 数据结构优化</li>
+<li>事务处理逻辑优化，尽可能减少单次请求需要的资源（包括计算、内存和带宽资源）</li>
+<li>硬件优化，vertical scaling 或者 horizontal scaling</li>
+<li>分布式结构优化，采用 ELB 或 Hadoop</li>
+</ul>
+</li>
+</ol>
+<h2 id="u4E00_u4E9B_u7B56_u7565"><a href="#u4E00_u4E9B_u7B56_u7565" class="headerlink" title="一些策略"></a>一些策略</h2><p>前面从总体的思路切入，这里因为涉及到具体的指标要求，所以会从细节方面切入。</p>
+<p>首先要意识到从我们在浏览器中输入网址，到最后看到显示的内容之间发生了什么。因为这里不是网络分析课（Amazon 的网络我们能调优的范围也有限），所以 DNS 路由之类的内容这里不提，具体可以参考<a href="http://wdxtub.com/2016/02/10/internet-protocol/">计算机网络</a>一文。</p>
+<p>那么到底中间的过程是什么呢？其实就 3 步：</p>
+<ol>
+<li>页面模板根据实际内容渲染成网页。这部分我们不需要考虑，并没有用任何渲染引擎，就是单纯返回一段数据而已</li>
+<li>业务逻辑部分。显示内容之前做的预处理，对应配套的缓存，连接池等等内容。这部分理论上是需要考虑的，但是在具体的测试中，影响不算特别大（和后面相比）</li>
+<li>数据库与网络传输部分。这部分是主要的瓶颈所在，接下来会细说。</li>
+</ol>
+<p>网络部分优化，其实是比较简单粗暴的，因为是只读操作，所以不需要考虑一致性问题，努力增加并发数即可，另一个角度则是减少每次传输所需要的带宽，综合来看，有下面的策略：</p>
+<ul>
+<li>使用 ELB 增加多台前端，多台机器并发请求</li>
+<li>每台机器增加线程数（当然要在内存的允许范围内），但是加到一定程度也就足够了（毕竟带宽是有限的）</li>
+<li>在后端对数据进行压缩，在前端进行解压缩，这样就减少了需要网络传输的数据</li>
+</ul>
+<p>（这部分策略我还没有具体尝试，因为用下面的方法已经满足要求了）</p>
+<p>后台数据库和前台缓存实际上类似于 Memory Hierarchy，需要利用看似不大存在的 Locality 来获得最快的访问速度（经过测试如果缓存命中基本上可以认为是无延迟）。这里的 Locality，可以认为是具体流量模式的 Locality，而并非是在数据库中顺序访问。</p>
+<p>有缓存，那么肯定就有预热，预热的重要性在于，把常用的记录缓存下来，具体缓存要多大呢？我也不知道，反正可能情况下，越大是越好的（这就是为啥最好开一个内存优化的机器，比其他系列多一倍内存）</p>
+<p>最后说一下数据库的参数优化，不知道是不是 Amazon EMR 本身根据不同的配置会进行一定的优化，我并没有改动 HBase 的任何设置。这里的问题在于，因为刚接触 HBase，很多内容不熟悉，所以看着网上的教程瞎折腾很容易弄巧成拙，在优化的时候，一定要确定每一步都清楚自己在干嘛，不然就会出现自己以为正确的错误，而这种错误往往是最难解决的（因为自己压根不知道错了）</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>总体来说，这次的任务还是很有趣的，我也已经意识到了优化真心是一个牵一发动全身的问题，还是要有更加清晰的大局观和思路，才不至于迷失方向。不过话说回来，遇到不懂的问题，最好的方法是停下来，把相关的概念都捋一遍（比方说官方文档就不错），思考具体的问题所在，大胆假设小心验证，才更能找到令自己满意的答案。</p>
+<p>另外，对于分析 web 服务的各类工具一头雾水（甚至都不知道有啥），还是得抽空研究一下，不然依靠手动输出计算时间效率太低，得到的数据可能也不准确。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CMU/" rel="tag">#CMU</a>
+          
+            <a href="/tags/云计算/" rel="tag">#云计算</a>
+          
+            <a href="/tags/优化/" rel="tag">#优化</a>
+          
+            <a href="/tags/思考/" rel="tag">#思考</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/14/presentation-basics-1/" rel="next" title="Presentation Basics 1 理解美国式演讲风格">
+                <i class="fa fa-chevron-left"></i> Presentation Basics 1 理解美国式演讲风格
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/15/advanced-grammar-monitoring-1/" rel="prev" title="高级语法教程 1 Challenging your grammar assumptions">
+                高级语法教程 1 Challenging your grammar assumptions <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/15/cc-rethink-3/"
+           data-title="云计算 反思课 3 提高 Web 服务性能的策略与思考" data-url="http://wdxtub.com/2016/03/15/cc-rethink-3/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E94_u7528_u573A_u666F"><span class="nav-number">1.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_u4E9B_u601D_u8003"><span class="nav-number">2.</span> <span class="nav-text">一些思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_u4E9B_u7B56_u7565"><span class="nav-number">3.</span> <span class="nav-text">一些策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

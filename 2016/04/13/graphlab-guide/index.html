@@ -1,0 +1,885 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="GraphLab,云计算,分布式," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="因为课程的机会接触了一下 GraphLab，许多概念以及对应的思维方式需要改变。这里主要介绍一下基本概念，以及如何启动 GraphLab 集群并进行简单的计算。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GraphLab 入门实例指南">
+<meta property="og:url" content="http://wdxtub.com/2016/04/13/graphlab-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="因为课程的机会接触了一下 GraphLab，许多概念以及对应的思维方式需要改变。这里主要介绍一下基本概念，以及如何启动 GraphLab 集群并进行简单的计算。">
+<meta property="og:image" content="http://wdxtub.com/images/14604025416778.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14605602879933.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14606382712570.png">
+<meta property="og:updated_time" content="2016-04-14T13:29:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GraphLab 入门实例指南">
+<meta name="twitter:description" content="因为课程的机会接触了一下 GraphLab，许多概念以及对应的思维方式需要改变。这里主要介绍一下基本概念，以及如何启动 GraphLab 集群并进行简单的计算。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> GraphLab 入门实例指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                GraphLab 入门实例指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-13T09:48:49+08:00" content="2016-04-13">
+              2016-04-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/13/graphlab-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/13/graphlab-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>因为课程的机会接触了一下 GraphLab，许多概念以及对应的思维方式需要改变。这里主要介绍一下基本概念，以及如何启动 GraphLab 集群并进行简单的计算。</p>
+<a id="more"></a>
+<hr>
+<p>GraphLab 是 CMU 开发的分布式 graph parallel 框架，用来在大数据上执行机器学习和数据挖掘算法。GraphLab 把具体的计算抽象成为节点(vertex)，而计算之间的数据关系抽象成为边(edge)。</p>
+<p>简单来说就是具体的计算会在每个节点上进行，有三个步骤：</p>
+<ol>
+<li>Gather: 对于每个节点来说，其 master 和 mirror 节点会从相邻的边和节点收集所需信息</li>
+<li>Apply: 所有收集到的信息会在 master 节点完成计算并更新节点，完成之后这个改动会同步到其他的 mirror 节点中</li>
+<li>Scatter: master 和 mirror 节点选择更新对应相邻的边和节点，收到消息的节点会被激活，继续执行对应的计算</li>
+</ol>
+<p><img src="/images/14604025416778.jpg" alt="步骤过程"></p>
+<p>另外有一个需要注意的地方是在最新的版本中，采用 Vertex-Cut 来进行数据分隔。这样的好处是，一条边连接的两个节点肯定在一台机器上，对于每个节点来说，可能会有几个不同的复制，其中一个将成为 master，其他的则是 mirror。</p>
+<h2 id="u5B89_u88C5_u90E8_u7F72"><a href="#u5B89_u88C5_u90E8_u7F72" class="headerlink" title="安装部署"></a>安装部署</h2><p>手动配置的步骤还是比较繁琐的，不过 GraphLab 提供了启动 Amazon EC2 的脚本，可以自动进行机器的申请和部署。这里也主要以这种方式来进行之后的步骤。</p>
+<p>从<a href="https://github.com/dato-code/PowerGraph" target="_blank" rel="external">官方 Github</a> 下载好源代码之后，解压之后进入 <code>scripts</code> 文件夹。然后需要在环境变量中进行如下配置（这个只对当前的终端有效）：</p>
+<ul>
+<li><code>export AWS_ACCESS_KEY_ID=[your AWS access key]</code></li>
+<li><code>export AWS_SECRET_ACCESS_KEY=[your AWS secret key]</code></li>
+</ul>
+<p>完成之后可以通过如下的命令来启动集群</p>
+<p><code>./gl-ec2 -k [密钥名] -i [密钥文件路径] -t [实例类型] -s [slave 数量] -r us-east-1 launch [集群名称]</code></p>
+<p>这里的实例类型默认是 <code>m1.large</code>，这里我们可以简单测试一下（对于大的图可能 m4.large 内存会不够），我使用的命令是</p>
+<p><code>./gl-ec2 -k demo -i demo.pem -t m4.large -s 10 -r us-east-1 -a ami-89adafe3 launch p423</code></p>
+<p>没啥意外的话（如果有意外的话一般是当前区域没有足够的主机，换一个机器类型即可），就可以看到机器正在启动，如下图所示</p>
+<p><img src="/images/14605602879933.jpg" alt=""></p>
+<p>启动脚本执行完毕之后。我们就可以进行登录了，命令为：</p>
+<p><code>./gl-ec2 -k [keypair] -i [key-file] -r us-east-1 login [cluster-name]</code></p>
+<p>对于当前的例子来说就是</p>
+<p><code>./gl-ec2 -k demo -i demo.pem -r us-east-1 login p422</code></p>
+<p>执行的话也可以用脚本进行，编译之后（具体参考官方的例子）使用 <code>~/graphlab/scripts/mpirsync</code> 把程序分发到集群的每一台机器上，然后使用 <code>mpiexec</code> 命令来具体执行。</p>
+<p>如果要关闭集群的话，命令为：</p>
+<p><code>./gl-ec2 -k [keypair] -i [key-file] -r us-east-1 destroy [cluster-name]</code></p>
+<p>对于当前的例子就是 </p>
+<p><code>./gl-ec2 -k demo -i demo.pem -r us-east-1 destroy p422</code></p>
+<h2 id="PageRank"><a href="#PageRank" class="headerlink" title="PageRank"></a>PageRank</h2><p>接下来我们试着用 GraphLab 把 PageRank 实现一次。首先当然是要搞到文档，用如下命令 <code>brew install doxygen; doxygen</code>。等待一段时间之后，就可以在 <code>doc/doxygen/index.html</code> 中查看文档了。</p>
+<p>PageRank 的具体介绍可以查看<a href="https://en.wikipedia.org/wiki/PageRank" target="_blank" rel="external">维基</a>，这里做一个简要介绍。我们先来看看具体的公式</p>
+<p><img src="/images/14606382712570.png" alt=""></p>
+<p>这个公式是什么意思呢？这里我们取 <code>N = 1, d = 0.85</code>，也就是说，一个页面的 PageRank 值，等于一个常数加上其他指向它的页面所贡献的 PageRank 值。每个指向该页面的页面具体贡献的数值，是指向该页面的页面自己的 PageRank 值除以外链的个数，即简单的平均数，一个页面把自己的 PageRank 分散出去。一个简单的例子</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">page1, <span class="string">rank:</span> <span class="number">1.0</span>, point <span class="string">to:</span> page2, page3</span><br><span class="line">page2, <span class="string">rank:</span> <span class="number">1.0</span>, point <span class="string">to:</span> page3, page1</span><br></pre></td></tr></table></figure>
+<p>经过第一次迭代之后，会得到如下的分布，这里稍微解释一下，为什么 page1 得到的是 0.5 呢？因为我们可以看到只有 page2 指向 page1，而 page2 一共有 2 个外链，所以其权重被平均分成两份，于是就是 0.5；page2 得到 0.5 也是同理。而 page1 和 page2 都指向 page3，page3 从他们身上拿到了 0.5，所以是 1.</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line"><span class="string">key:</span> page1 contributions <span class="string">received:</span> <span class="number">0.5</span> point <span class="string">to:</span> page2 page3 </span><br><span class="line"><span class="string">key:</span> page2 contributions <span class="string">received:</span> <span class="number">0.5</span> point <span class="string">to:</span> page3 page1 </span><br><span class="line"><span class="string">key:</span> page3 contributions <span class="string">received:</span> <span class="number">1.0</span> point <span class="string">to:</span></span><br></pre></td></tr></table></figure>
+<p>这里 page3 没有外链，就成了『异类』，所以必须把这类节点的权重平均分给所有的节点，这里 user3 的初始权重是 1，因为一共有 3 个用户，可得：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">page1 = <span class="number">0.15</span> + <span class="number">0.85</span> * (<span class="number">0.5</span> + <span class="number">1.0</span>/<span class="number">3</span>) = <span class="number">0.8583</span></span><br><span class="line">page2 = <span class="number">0.15</span> + <span class="number">0.85</span> * (<span class="number">0.5</span> + <span class="number">1.0</span>/<span class="number">3</span>) = <span class="number">0.8583</span></span><br><span class="line">page3 = <span class="number">0.15</span> + <span class="number">0.85</span> * (<span class="number">1.0</span> + <span class="number">1.0</span>/<span class="number">3</span>) = <span class="number">1.2834</span></span><br></pre></td></tr></table></figure>
+<p>之后就继续按照这样的模式计算下去，直到指定次数或者收敛（排名不再变动）。</p>
+<h2 id="u5177_u4F53_u5B9E_u73B0"><a href="#u5177_u4F53_u5B9E_u73B0" class="headerlink" title="具体实现"></a>具体实现</h2><p>我们从官方给出的<a href="/(https://github.com/dato-code/PowerGraph/blob/master/demoapps/pagerank/simple_pagerank.cpp">例子</a>)中可以大概了解具体要如何编写。还是用之前提到的几个步骤：<code>gather</code>, <code>apply</code>, <code>scatter</code> （以下代码来自官方例子）</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">gather</span><span class="params">(icontext_type&amp; context, <span class="keyword">const</span> vertex_type&amp; vertex, </span><br><span class="line">    edge_type&amp; edge)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> ((<span class="number">1.0</span> - RESET_PROB) / edge.source().num_out_edges()) * edge.source().data();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Use the total rank of adjacent pages to update this page */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">apply</span><span class="params">(icontext_type&amp; context, vertex_type&amp; vertex,</span><br><span class="line">        <span class="keyword">const</span> gather_type&amp; total)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> newval = total + RESET_PROB;</span><br><span class="line">    last_change = <span class="built_in">std</span>::<span class="built_in">fabs</span>(newval - vertex.data());</span><br><span class="line">    vertex.data() = newval;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* The scatter edges depend on whether the pagerank has converged */</span></span><br><span class="line"><span class="function">edge_dir_type <span class="title">scatter_edges</span><span class="params">(icontext_type&amp; context,</span><br><span class="line">        <span class="keyword">const</span> vertex_type&amp; vertex)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> (last_change &gt; TOLERANCE) <span class="keyword">return</span> graphlab::OUT_EDGES;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> graphlab::NO_EDGES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* The scatter function just signal adjacent pages */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">scatter</span><span class="params">(icontext_type&amp; context, <span class="keyword">const</span> vertex_type&amp; vertex,</span><br><span class="line">          edge_type&amp; edge)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    context.signal(edge.target());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为我们现在是针对于某个节点在运算，所以不需要考虑全局的状况，甚至也不需要在意怎么获取邻接节点，都可以认为框架会帮我们处理好，我们直接专注于需要在节点上进行的计算即可！所以可以看到整个 PageRank 在 GraphLab 上的实现非常简单明了！</p>
+<p>不过需要注意的是，这个例子中并没有处理没有外链的页面，也就是 dangling page 的情况，如果想要得到更准确的 pagerank，需要进行处理。</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://github.com/dato-code/PowerGraph" target="_blank" rel="external">官方 Github</a></li>
+<li><a href="https://github.com/dato-code/PowerGraph/blob/master/demoapps/pagerank/simple_pagerank.cpp" target="_blank" rel="external">PageRank Code</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GraphLab/" rel="tag">#GraphLab</a>
+          
+            <a href="/tags/云计算/" rel="tag">#云计算</a>
+          
+            <a href="/tags/分布式/" rel="tag">#分布式</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/11/spark-guide/" rel="next" title="Spark 入门实例指南">
+                <i class="fa fa-chevron-left"></i> Spark 入门实例指南
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/15/wind-cloud/" rel="prev" title="第十四周 - 风云">
+                第十四周 - 风云 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/13/graphlab-guide/"
+           data-title="GraphLab 入门实例指南" data-url="http://wdxtub.com/2016/04/13/graphlab-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B89_u88C5_u90E8_u7F72"><span class="nav-number">1.</span> <span class="nav-text">安装部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PageRank"><span class="nav-number">2.</span> <span class="nav-text">PageRank</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5177_u4F53_u5B9E_u73B0"><span class="nav-number">3.</span> <span class="nav-text">具体实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

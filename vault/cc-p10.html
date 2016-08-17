@@ -1,0 +1,861 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="这是 Twitter 语料分析的最后一个阶段，我们需要搭建一个完整的数据分析网络应用">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 Twitter 语料分析 10 搭建数据分析网络应用">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-p10.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="这是 Twitter 语料分析的最后一个阶段，我们需要搭建一个完整的数据分析网络应用">
+<meta property="og:image" content="http://wdxtub.com/images/14595094971909.jpg">
+<meta property="og:updated_time" content="2016-04-14T12:11:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 Twitter 语料分析 10 搭建数据分析网络应用">
+<meta name="twitter:description" content="这是 Twitter 语料分析的最后一个阶段，我们需要搭建一个完整的数据分析网络应用">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 Twitter 语料分析 10 搭建数据分析网络应用 | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>这是 Twitter 语料分析的最后一个阶段，我们需要搭建一个完整的数据分析网络应用</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<li>探索和使用不同的方法和工具来提高 web 服务的性能</li>
+<li>拓展服务器使其可以处理不同的请求</li>
+<li>开发后端服务器处理范围请求</li>
+<li>开发支持写入请求的 web 服务</li>
+<li>开发容错可拓展的服务</li>
+<li>评估主流数据库的写入性能，并探索不同的优化技术</li>
+<li>实现强一致性</li>
+<li>比较不同数据库的写入性能和特点</li>
+<li>分析写入操作对系统中每个组件的影响</li>
+</ol>
+<h2 id="u4EFB_u52A1_u76EE_u6807"><a href="#u4EFB_u52A1_u76EE_u6807" class="headerlink" title="任务目标"></a>任务目标</h2><p>Q1 中我们学会了如何处理简单的并发请求。Q2 中我们结合后端（MySQL 和 HBase） 完成了简单的键值对存储和查询工作。Q3 中我们利用 MySQL 和 HBase 的特性处理更加复杂的请求。</p>
+<p>但是之前我们处理的都是读请求，这次我们会处理大量写请求</p>
+<ul>
+<li>只能使用 M 系列不大于 large 型号的机器</li>
+<li>打标签 <code>15619project:phase3</code></li>
+<li>预算是 $0.85/h，按照标注计费</li>
+<li>队伍的预算是 <code>$50</code>（包括 Live Test）</li>
+</ul>
+<p>这次我们可以从 MySQL 和 HBase 中选择一个来实现（或者混合也可以）</p>
+<p>具体的测试计划为：</p>
+<p><img src="/images/14595094971909.jpg" alt=""></p>
+<h2 id="Query_4__28Tweet_Server_29"><a href="#Query_4__28Tweet_Server_29" class="headerlink" title="Query 4 (Tweet Server)"></a>Query 4 (Tweet Server)</h2><p>目标 10000 rps</p>
+<p>给定 tweet id，我们需要处理针对一个或多个部分的 set 和 get 请求。</p>
+<blockquote>
+<p>set 请求的格式</p>
+</blockquote>
+<p><code>q4?tweetid=&lt;tweetid&gt;&amp;op=set&amp;seq=&lt;sequence number&gt;&amp;fields=&lt;comma separated list of fields&gt;&amp;payload=&lt;comma separated list of base64 * encoded fields&gt;</code></p>
+<ul>
+<li><code>tweetid</code> - 每条 tweet 的独立标识符</li>
+<li><code>op</code> - 一定为 set</li>
+<li><code>seq</code> - 对于某个 tweetid 的操作编号，从 1 开始，假设一个操作的编号是 <code>s</code>，那么只有在前面 <code>s-1</code> 个操作都完成了之后，才能继续执行</li>
+<li><code>fields</code> - 需要写入的部分</li>
+<li><code>payload</code> - 需要写入的数据，以逗号分隔</li>
+</ul>
+<p>例如：</p>
+<p><code>GET /q4?tweetid=15213&amp;op=set&amp;seq=1&amp;fields=repliedby,reply_count&amp;payload=MzM2NDE5MzE2NjUsMTc0Mjg5OTA1OTksOTQ5MDczNzc5NjQsMzkzMjIxMzU4NjQsMTg0NDA4MDg5NTUsNTE2MjU1MzMxOTgsOTI4MzA3NTgwNzQ=,Nw==</code></p>
+<p>响应格式</p>
+<figure class="highlight livescript"><table><tr><td class="code"><pre><span class="line">TEAMID,TEAM_AWS_ACCOUNT_ID<span class="string">\n</span></span><br><span class="line">success<span class="string">\n</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>get 请求的格式</p>
+</blockquote>
+<p><code>q4?tweetid=&lt;tweetid&gt;&amp;op=get&amp;seq=&lt;sequence number&gt;&amp;fields=&lt;comma separated list of fields&gt;&amp;payload=&lt;empty&gt;</code></p>
+<ul>
+<li><code>tweetid</code> - 每条 tweet 的独立标识符</li>
+<li><code>op</code> - 一定为 get</li>
+<li><code>seq</code> - 对于某个 tweetid 的操作编号，从 1 开始，假设一个操作的编号是 <code>s</code>，那么只有在前面 <code>s-1</code> 个操作都完成了之后，才能继续执行</li>
+<li><code>fields</code> -需要读入的部分，只会有一个部分</li>
+<li><code>payload</code> - 为空</li>
+</ul>
+<p>例如</p>
+<p><code>GET /q4?tweetid=15213&amp;op=get&amp;seq=2&amp;fields=repliedby&amp;payload=</code></p>
+<p>如果有对应的数据，响应为</p>
+<figure class="highlight livescript"><table><tr><td class="code"><pre><span class="line">TEAMID,TEAM_AWS_ACCOUNT_ID<span class="string">\n</span></span><br><span class="line">MzM2NDE5MzE2NjUsMTc0Mjg5OTA1OTksOTQ5MDczNzc5NjQsMzkzMjIxMzU4NjQsMTg0NDA4MDg5NTUsNTE2MjU1MzMxOTgsOTI4MzA3NTgwNzQ=<span class="string">\n</span></span><br></pre></td></tr></table></figure>
+<p>如果对应 field 未空，响应为</p>
+<figure class="highlight livescript"><table><tr><td class="code"><pre><span class="line">TEAMID,TEAM_AWS_ACCOUNT_ID<span class="string">\n</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>不同 field 的规格</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">field</th>
+<th style="text-align:center">type</th>
+<th style="text-align:center">example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">tweetid</td>
+<td style="text-align:center">long int</td>
+<td style="text-align:center">15213 </td>
+</tr>
+<tr>
+<td style="text-align:center">userid</td>
+<td style="text-align:center">long int</td>
+<td style="text-align:center">156190000001</td>
+</tr>
+<tr>
+<td style="text-align:center">username</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">CloudComputing </td>
+</tr>
+<tr>
+<td style="text-align:center">timestamp</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">Mon Feb 15 19:19:57 2016 </td>
+</tr>
+<tr>
+<td style="text-align:center">text</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">Welcome to P4!#CC15619#P3 </td>
+</tr>
+<tr>
+<td style="text-align:center">hashtag</td>
+<td style="text-align:center">comma separated string</td>
+<td style="text-align:center">CC15619,P3 </td>
+</tr>
+<tr>
+<td style="text-align:center">ip</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">128.2.217.13 </td>
+</tr>
+<tr>
+<td style="text-align:center">coordinates</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">-75.14310264,40.05701649 </td>
+</tr>
+<tr>
+<td style="text-align:center">repliedby</td>
+<td style="text-align:center">comma separated userid</td>
+<td style="text-align:center">156190000001,156190000002,156190000003 </td>
+</tr>
+<tr>
+<td style="text-align:center">reply_count</td>
+<td style="text-align:center">long int</td>
+<td style="text-align:center">3 </td>
+</tr>
+<tr>
+<td style="text-align:center">mentioned</td>
+<td style="text-align:center">comma separated userid</td>
+<td style="text-align:center">156190000004,156190000005,156190000006 </td>
+</tr>
+<tr>
+<td style="text-align:center">mentioned_count</td>
+<td style="text-align:center">long int</td>
+<td style="text-align:center">3 </td>
+</tr>
+<tr>
+<td style="text-align:center">favoritedby</td>
+<td style="text-align:center">comma separated userid</td>
+<td style="text-align:center">156190000007,156190000008,156190000009  </td>
+</tr>
+<tr>
+<td style="text-align:center">favorite_count</td>
+<td style="text-align:center">long int</td>
+<td style="text-align:center">3 </td>
+</tr>
+<tr>
+<td style="text-align:center">useragent</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">Mozilla/5.0 (iPhone; CPU iPhone OS …) </td>
+</tr>
+<tr>
+<td style="text-align:center">filter_level</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">PG-13 </td>
+</tr>
+<tr>
+<td style="text-align:center">lang</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">American </td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>一些提示</p>
+</blockquote>
+<ul>
+<li>RFC 3548 定义的 Base64 在大多数编程语言中都有内置支持</li>
+<li>处理请求的时候要按照 sequence number</li>
+<li>数据的一致性很重要，正确率很重要</li>
+<li>想想最影响性能的因素是什么，然后解决</li>
+<li>最好对不同的 tweetid 进行 sharding，这样更容易维持一致性</li>
+</ul>
+<h2 id="u9879_u76EE_u65E5_u5FD7"><a href="#u9879_u76EE_u65E5_u5FD7" class="headerlink" title="项目日志"></a>项目日志</h2><blockquote>
+<p>架构</p>
+</blockquote>
+<ul>
+<li>前端<ul>
+<li>ELB + 4 台 m4.large(用 slaves 同时做前端)</li>
+</ul>
+</li>
+<li>后端<ul>
+<li>HBase(1 master +  4 slaves)</li>
+<li>使用 Cloudera</li>
+</ul>
+</li>
+</ul>
+<p>具体的步骤需要参考</p>
+<ul>
+<li><a href="/./vault/cc-p6.html">MySQL 和 HBase 配置及测试</a></li>
+<li><a href="/./vault/cc-p8.html">处理复杂读请求</a></li>
+<li><a href="/./vault/cc-p9.html">用 CDH 5 搭建基于 Hadoop 2.0 的 HBase</a></li>
+</ul>
+<h3 id="u7B2C_u4E00_u6B21_u6D4B_u8BD5"><a href="#u7B2C_u4E00_u6B21_u6D4B_u8BD5" class="headerlink" title="第一次测试"></a>第一次测试</h3><p>ELB + 2 m4.large + 1 master + 3 slaves</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># hbase 配置</span></span><br><span class="line">ec2-<span class="number">52</span>-<span class="number">91</span>-<span class="number">15</span>-<span class="number">30</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ec2-<span class="number">52</span>-<span class="number">91</span>-<span class="number">229</span>-<span class="number">223</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line">master ec2-<span class="number">52</span>-<span class="number">207</span>-<span class="number">240</span>-<span class="number">75</span>.compute-<span class="number">1</span>.amazonaws.com </span><br><span class="line"></span><br><span class="line">ec2-<span class="number">52</span>-<span class="number">23</span>-<span class="number">207</span>-<span class="number">148</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line">ip-<span class="number">172</span>-<span class="number">31</span>-<span class="number">58</span>-<span class="number">2</span>.ec2.internal</span><br><span class="line">ip-<span class="number">172</span>-<span class="number">31</span>-<span class="number">63</span>-<span class="number">205</span>.ec2.internal</span><br><span class="line">ip-<span class="number">172</span>-<span class="number">31</span>-<span class="number">55</span>-<span class="number">86</span>.ec2.internal</span><br><span class="line">ip-<span class="number">172</span>-<span class="number">31</span>-<span class="number">63</span>-<span class="number">90</span>.ec2.internal</span><br><span class="line"></span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">52</span>-<span class="number">91</span>-<span class="number">15</span>-<span class="number">30</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">52</span>-<span class="number">91</span>-<span class="number">229</span>-<span class="number">223</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">52</span>-<span class="number">207</span>-<span class="number">240</span>-<span class="number">75</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">52</span>-<span class="number">23</span>-<span class="number">207</span>-<span class="number">148</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据导入参考 Cloudera 配置</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试地址</span></span><br><span class="line">address/q1?key=<span class="number">40845969093821</span>&amp;message=URYEXYBJB</span><br><span class="line">address/q2?userid=<span class="number">1000001233</span>&amp;hashtag=BabyyO</span><br><span class="line">address/q3?start_date=<span class="number">2014</span>-<span class="number">04</span>-<span class="number">01</span>&amp;end_date=<span class="number">2014</span>-<span class="number">05</span>-<span class="number">28</span>&amp;start_userid=<span class="number">51538630</span>&amp;end_userid=<span class="number">51539182</span>&amp;words=u,petition,loving</span><br><span class="line"></span><br><span class="line">scan <span class="string">'q2db'</span></span><br><span class="line">scan <span class="string">'q3db'</span>,  &#123;STARTROW =&gt; <span class="string">'00952122372'</span>, STOPROW =&gt; <span class="string">'00952124492'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 前端配置</span></span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">173</span>-<span class="number">74</span>-<span class="number">154</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ec2-<span class="number">52</span>-<span class="number">90</span>-<span class="number">195</span>-<span class="number">221</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新前端</span></span><br><span class="line"><span class="comment"># 注意做好镜像</span></span><br><span class="line">scp -i ../group.pem -r ./* ubuntu@ec2-<span class="number">54</span>-<span class="number">173</span>-<span class="number">74</span>-<span class="number">154</span>.compute-<span class="number">1</span>.amazonaws.com:~/undertow-server/</span><br><span class="line">scp -i ../group.pem -r ./* ubuntu@ec2-<span class="number">52</span>-<span class="number">90</span>-<span class="number">195</span>-<span class="number">221</span>.compute-<span class="number">1</span>.amazonaws.com:~/undertow-server/</span><br><span class="line"></span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">173</span>-<span class="number">74</span>-<span class="number">154</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">52</span>-<span class="number">90</span>-<span class="number">195</span>-<span class="number">221</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动前端</span></span><br><span class="line">mvn clean; mvn compile; sudo mvn <span class="built_in">exec</span>:java</span><br></pre></td></tr></table></figure>
+<p>第一次测试收获：</p>
+<ul>
+<li>Q1 部分基本代码没有太大改动，单机 9000 基本没问题（运气好甚至可以到 2W+），加上 elb 应该没有太大压力</li>
+<li>Q2 部分代码进行了优化，正常水平在单机 4000（split 均匀之后），错误格式检查也加入了，再优化一下配合 elb 试试看</li>
+<li>Q3 部分代码进行了优化，估计是因为检查格式的问题导致性能有比较大影响（测试了，并不是），现在大概在单机 1200 左右徘徊，具体改进方法仍需测试</li>
+<li>机器的健康状况需要注意</li>
+<li>HBase 数据 split 之后性能会好很多，需要一段时间等待（根据请求来 split，指标监控）</li>
+</ul>
+<p>一些据（瓜瓜）说</p>
+<ul>
+<li>Base64编码一定要弄好</li>
+<li>Vertx 自己做 lb 性能不错</li>
+<li>string 和byte之间转换，decode的时候不要用Byte</li>
+</ul>
+<hr>
+<h3 id="u7B2C_u4E8C_u6B21_u6D4B_u8BD5"><a href="#u7B2C_u4E8C_u6B21_u6D4B_u8BD5" class="headerlink" title="第二次测试"></a>第二次测试</h3><p>ELB + 4 m4.large + 1 master + 4 slaves（前端在 slaves 上）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># hbase 配置</span></span><br><span class="line"></span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">174</span>-<span class="number">161</span>-<span class="number">64</span>.compute-<span class="number">1</span>.amazonaws.com master</span><br><span class="line"></span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">86</span>-<span class="number">63</span>-<span class="number">49</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">165</span>-<span class="number">177</span>-<span class="number">0</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">152</span>-<span class="number">97</span>-<span class="number">180</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">152</span>-<span class="number">18</span>-<span class="number">227</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">174</span>-<span class="number">161</span>-<span class="number">64</span>.compute-<span class="number">1</span>.amazonaws.com master</span><br><span class="line"></span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">86</span>-<span class="number">63</span>-<span class="number">49</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">165</span>-<span class="number">177</span>-<span class="number">0</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">152</span>-<span class="number">97</span>-<span class="number">180</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">152</span>-<span class="number">18</span>-<span class="number">227</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据导入参考 Cloudera 配置</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试地址</span></span><br><span class="line">address/q1?key=<span class="number">40845969093821</span>&amp;message=URYEXYBJB</span><br><span class="line">address/q2?userid=<span class="number">1000001233</span>&amp;hashtag=BabyyO</span><br><span class="line">address/q3?start_date=<span class="number">2014</span>-<span class="number">04</span>-<span class="number">01</span>&amp;end_date=<span class="number">2014</span>-<span class="number">05</span>-<span class="number">28</span>&amp;start_userid=<span class="number">51538630</span>&amp;end_userid=<span class="number">51539182</span>&amp;words=u,petition,loving</span><br><span class="line"></span><br><span class="line">scan <span class="string">'q2db'</span></span><br><span class="line">scan <span class="string">'q3db'</span>,  &#123;STARTROW =&gt; <span class="string">'00952122372'</span>, STOPROW =&gt; <span class="string">'00952124492'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新前端，注意做好镜像</span></span><br><span class="line">./updatefe.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 Java 版本，都换成 1.7 的，因为 cloudera 会修改之前的默认配置</span></span><br><span class="line">sudo update-alternatives --config java</span><br><span class="line">sudo update-alternatives --config javac</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动前端，端口号也换了</span></span><br><span class="line">mvn clean; mvn compile; mvn <span class="built_in">exec</span>:java</span><br><span class="line"></span><br><span class="line"><span class="comment"># elb 地址</span></span><br><span class="line"></span><br><span class="line">phase3-test-<span class="number">2025663654</span>.us-east-<span class="number">1</span>.elb.amazonaws.com</span><br><span class="line"></span><br><span class="line">sudo apt-get install htop</span><br></pre></td></tr></table></figure>
+<p>第二次测试收获</p>
+<ul>
+<li>ELB 热机时间半个小时远远不够，提前热机吧</li>
+<li>用 Slave 节点做前端效果还是可以，机器利用率比较充分</li>
+<li>但是可能会对 HBase 的性能有影响，具体还需要评估</li>
+<li>Base64 的库，jdk1.8 和 google 的不行，用 apache 的或者 <code>import com.sun.jersey.core.util.Base64;</code></li>
+<li>Split 数据也需要比较长的时间，注意留足</li>
+<li>可能还是需要前后端分开，很容易出现一台机利用率高（同时做前后端压力比较大）但其他机器不怎么在运行的状态，另外 split 分区的时候其实也不需要 4 个 region</li>
+</ul>
+<hr>
+<h3 id="u7B2C_u4E09_u6B21_u6D4B_u8BD5"><a href="#u7B2C_u4E09_u6B21_u6D4B_u8BD5" class="headerlink" title="第三次测试"></a>第三次测试</h3><p>ELB + 2 FE + (1+3) HBase</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ec2-<span class="number">52</span>-<span class="number">87</span>-<span class="number">253</span>-<span class="number">19</span>.compute-<span class="number">1</span>.amazonaws.com master</span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">87</span>-<span class="number">201</span>-<span class="number">211</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ec2-<span class="number">52</span>-<span class="number">91</span>-<span class="number">98</span>-<span class="number">143</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">88</span>-<span class="number">169</span>-<span class="number">155</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">52</span>-<span class="number">87</span>-<span class="number">253</span>-<span class="number">19</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">87</span>-<span class="number">201</span>-<span class="number">211</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">52</span>-<span class="number">91</span>-<span class="number">98</span>-<span class="number">143</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">88</span>-<span class="number">169</span>-<span class="number">155</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line">ec2-<span class="number">107</span>-<span class="number">23</span>-<span class="number">21</span>-<span class="number">131</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">210</span>-<span class="number">109</span>-<span class="number">107</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line">ssh -i group2.pem ubuntu@ec2-<span class="number">107</span>-<span class="number">23</span>-<span class="number">21</span>-<span class="number">131</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group2.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">210</span>-<span class="number">109</span>-<span class="number">107</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># inverted index</span></span><br><span class="line">hbase(main):<span class="number">001</span>:<span class="number">0</span>&gt; create <span class="string">'q2db'</span>, &#123;NAME =&gt; <span class="string">'data'</span>, DATA_BLOCK_ENCODING =&gt; <span class="string">'FAST_DIFF'</span>, IN_MEMORY =&gt; <span class="string">'true'</span>, COMPRESSION =&gt; <span class="string">'SNAPPY'</span>, BLOCKCACHE =&gt; <span class="string">'true'</span>&#125;, SPLITS=&gt; [<span class="string">'1'</span>, <span class="string">'2'</span>, <span class="string">'3'</span>, <span class="string">'4'</span>, <span class="string">'5'</span>, <span class="string">'6'</span>, <span class="string">'7'</span> , <span class="string">'8'</span> , <span class="string">'9'</span>]</span><br><span class="line"></span><br><span class="line">hbase(main):<span class="number">001</span>:<span class="number">0</span>&gt; create <span class="string">'q3db'</span>, &#123;NAME =&gt; <span class="string">'data'</span>,DATA_BLOCK_ENCODING =&gt; <span class="string">'FAST_DIFF'</span>, IN_MEMORY =&gt; <span class="string">'true'</span>, COMPRESSION =&gt; <span class="string">'SNAPPY'</span>, BLOCKCACHE =&gt; <span class="string">'true'</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># inverted index</span></span><br><span class="line">hbase(main):<span class="number">001</span>:<span class="number">0</span>&gt; create <span class="string">'q4db'</span>, &#123;NAME =&gt; <span class="string">'data'</span>, DATA_BLOCK_ENCODING =&gt; <span class="string">'FAST_DIFF'</span>, COMPRESSION =&gt; <span class="string">'SNAPPY'</span>, IN_MEMORY =&gt; <span class="string">'true'</span>, BLOCKCACHE =&gt; <span class="string">'true'</span>&#125;, SPLITS=&gt; [<span class="string">'1'</span>, <span class="string">'2'</span>, <span class="string">'3'</span>, <span class="string">'4'</span>, <span class="string">'5'</span>, <span class="string">'6'</span>, <span class="string">'7'</span> , <span class="string">'8'</span> , <span class="string">'9'</span>]</span><br></pre></td></tr></table></figure>
+<p>重洗 q2 数据</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">87</span>-<span class="number">214</span>-<span class="number">132</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line">scp -i group.pem ./Wash.java ubuntu@ec2-<span class="number">54</span>-<span class="number">87</span>-<span class="number">214</span>-<span class="number">132</span>.compute-<span class="number">1</span>.amazonaws.com:/mnt</span><br><span class="line"></span><br><span class="line">javac Wash.java</span><br><span class="line">java Wash</span><br><span class="line"></span><br><span class="line">aws s3 cp ./hbasedata-inv s3://housailei15619/alloutput/</span><br><span class="line"></span><br><span class="line"><span class="comment"># q3</span></span><br><span class="line">sudo -u hdfs hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.bulk.output=/hfile_groupt38 -Dimporttsv.columns=HBASE_ROW_KEY,data:t q3db /housailei/csv/q3-hbase-data</span><br><span class="line"></span><br><span class="line">// --</span><br><span class="line">sudo -u hdfs hdfs dfs -chmod -R +rwx /hfile_groupt38</span><br><span class="line"></span><br><span class="line">sudo -u hdfs hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /hfile_groupt38 q3db</span><br><span class="line"></span><br><span class="line"><span class="comment"># q2</span></span><br><span class="line">wget http://s3.amazonaws.com/housailei15619/alloutput/hbasedata-inv</span><br><span class="line"></span><br><span class="line">sudo -u hdfs hadoop fs -put ./hbasedata-inv /housailei/csv/</span><br><span class="line"></span><br><span class="line">sudo -u hdfs hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.bulk.output=/hfile_groupt22 -Dimporttsv.columns=HBASE_ROW_KEY,data:t q2db /housailei/csv/hbasedata-inv</span><br><span class="line"></span><br><span class="line">// --</span><br><span class="line">sudo -u hdfs hdfs dfs -chmod -R +rwx /hfile_groupt22</span><br><span class="line"></span><br><span class="line">sudo -u hdfs hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /hfile_groupt22 q2db</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mvn clean; mvn compile; sudo mvn <span class="built_in">exec</span>:java</span><br></pre></td></tr></table></figure>
+<p>第三次测试收获</p>
+<ul>
+<li>q2, q4 预先 split，q3 还是根据具体的请求分布来 split</li>
+<li>q3 预 split 的效果并不好，还是根据具体情况来 split</li>
+</ul>
+<h3 id="Live_Test"><a href="#Live_Test" class="headerlink" title="Live Test"></a>Live Test</h3><p>ELB + 2 FE + (1+3) HBase</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># HBase 地址</span></span><br><span class="line"><span class="comment"># master</span></span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">84</span>-<span class="number">31</span>-<span class="number">226</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"><span class="number">172.31</span>.<span class="number">39.83</span></span><br><span class="line"><span class="comment"># slave</span></span><br><span class="line">ec2-<span class="number">52</span>-<span class="number">87</span>-<span class="number">152</span>-<span class="number">246</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">87</span>-<span class="number">177</span>-<span class="number">113</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">152</span>-<span class="number">61</span>-<span class="number">115</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">84</span>-<span class="number">31</span>-<span class="number">226</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">52</span>-<span class="number">87</span>-<span class="number">152</span>-<span class="number">246</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">87</span>-<span class="number">177</span>-<span class="number">113</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">152</span>-<span class="number">61</span>-<span class="number">115</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line">sudo sysctl -w vm.swappiness=<span class="number">0</span></span><br><span class="line">sudo apt-get install htop</span><br><span class="line"><span class="comment"># 修改最大可打开文件数目，前后端都需要</span></span><br><span class="line"><span class="built_in">ulimit</span> -n <span class="number">2048</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调整一些参数</span></span><br><span class="line">HBASE_HEAPSIZE <span class="number">4000</span>   HBase使用的 JVM 堆的大小</span><br><span class="line">HBASE_OPTS  <span class="string">"‐server ‐XX:+UseConcMarkSweepGC"</span>JVM GC 选项</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这俩加起来不能超过 0.8</span></span><br><span class="line">hbase.regionserver.global.memstore.upperLimit <span class="number">0.3</span></span><br><span class="line">hfile.block.cache.size <span class="number">0.5</span></span><br><span class="line">hbase.master.handler.count <span class="number">35</span></span><br><span class="line">hbase.regionserver.handler.count <span class="number">100</span></span><br><span class="line">hbase.hregion.max.filesize <span class="number">512</span> MB</span><br><span class="line"></span><br><span class="line">Java Heap Size of HBase Master <span class="keyword">in</span> Bytes <span class="number">768</span>mb</span><br><span class="line">Java Heap Size of HBase RegionServer <span class="keyword">in</span> Bytes <span class="number">2</span> gb</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 复制代码</span></span><br><span class="line"><span class="comment"># 1</span></span><br><span class="line">scp -i group.pem -r ubuntu@ec2-<span class="number">52</span>-<span class="number">23</span>-<span class="number">179</span>-<span class="number">24</span>.compute-<span class="number">1</span>.amazonaws.com:~/undertow-server/* ./frontend1</span><br><span class="line"><span class="comment"># 2</span></span><br><span class="line">scp -i group.pem -r ubuntu@ec2-<span class="number">54</span>-<span class="number">89</span>-<span class="number">28</span>-<span class="number">200</span>.compute-<span class="number">1</span>.amazonaws.com:~/undertow-server/* ./frontend2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 新前端</span></span><br><span class="line">phase3-live-test-<span class="number">909770649</span>.us-east-<span class="number">1</span>.elb.amazonaws.com</span><br><span class="line"><span class="comment"># 1</span></span><br><span class="line">ec2-<span class="number">52</span>-<span class="number">23</span>-<span class="number">179</span>-<span class="number">24</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"><span class="number">172.31</span>.<span class="number">44.202</span></span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">52</span>-<span class="number">23</span>-<span class="number">179</span>-<span class="number">24</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"><span class="comment"># 2</span></span><br><span class="line">ec2-<span class="number">54</span>-<span class="number">89</span>-<span class="number">28</span>-<span class="number">200</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"><span class="number">172.31</span>.<span class="number">44.201</span></span><br><span class="line">ssh -i group.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">89</span>-<span class="number">28</span>-<span class="number">200</span>.compute-<span class="number">1</span>.amazonaws.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新代码</span></span><br><span class="line"><span class="comment"># 1</span></span><br><span class="line">scp -i group.pem -r ./frontend1/* ubuntu@ec2-<span class="number">52</span>-<span class="number">23</span>-<span class="number">179</span>-<span class="number">24</span>.compute-<span class="number">1</span>.amazonaws.com:~/undertow-server/</span><br><span class="line"><span class="comment"># 2</span></span><br><span class="line">scp -i group.pem -r ./frontend2/* ubuntu@ec2-<span class="number">54</span>-<span class="number">89</span>-<span class="number">28</span>-<span class="number">200</span>.compute-<span class="number">1</span>.amazonaws.com:~/undertow-server/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">vim src/main/java/housailei/undertow/util/HBaseUtil.java</span><br><span class="line"></span><br><span class="line">mvn clean; mvn compile; sudo mvn <span class="built_in">exec</span>:java</span><br></pre></td></tr></table></figure>
+<ul>
+<li>q2 不用 cache，数量过大影响性能，O(1) 是理论上的查询速度</li>
+<li>解码的问题 q4，read timeout 设置</li>
+<li>上过这个课的知道坑在哪里，才能避过，不然我们要如何解决自己都不知道可能会存在的问题？</li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-p10.html"
+           data-title="云计算 Twitter 语料分析 10 搭建数据分析网络应用" data-url="http://wdxtub.com/vault/cc-p10.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

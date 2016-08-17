@@ -1,0 +1,672 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="因为项目有一定的性能要求，所以我们选择 Undertow 这个微框架来降低框架本身带来的性能影响，但是因为比较小众，所以网上很多资料都不全，这里记录下具体在 EC2 上如何配置和部署 Undertow。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 Twitter 语料分析 2 Undertow 配置部署">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-p2.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="因为项目有一定的性能要求，所以我们选择 Undertow 这个微框架来降低框架本身带来的性能影响，但是因为比较小众，所以网上很多资料都不全，这里记录下具体在 EC2 上如何配置和部署 Undertow。">
+<meta property="og:image" content="http://wdxtub.com/images/14568475090854.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14568478192103.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14568488280327.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14568573432825.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14568573815710.jpg">
+<meta property="og:updated_time" content="2016-04-11T23:57:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 Twitter 语料分析 2 Undertow 配置部署">
+<meta name="twitter:description" content="因为项目有一定的性能要求，所以我们选择 Undertow 这个微框架来降低框架本身带来的性能影响，但是因为比较小众，所以网上很多资料都不全，这里记录下具体在 EC2 上如何配置和部署 Undertow。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 Twitter 语料分析 2 Undertow 配置部署 | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>因为项目有一定的性能要求，所以我们选择 Undertow 这个微框架来降低框架本身带来的性能影响，但是因为比较小众，所以网上很多资料都不全，这里记录下具体在 EC2 上如何配置和部署 Undertow。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u73AF_u5883_u914D_u7F6E"><a href="#u73AF_u5883_u914D_u7F6E" class="headerlink" title="环境配置"></a>环境配置</h2><p>先启动一个标准的 Ubuntu 镜像（因为有 apt-get 安装软件比较方便）</p>
+<p>我们需要安装 java 和 maven，并配置好对应的路径，具体参考下面的命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装 java,maven</span></span><br><span class="line">sudo add-apt-repository ppa:webupd8team/java</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install oracle-java7-installer</span><br><span class="line"><span class="comment"># 可能需要先删除原来的 maven2</span></span><br><span class="line">sudo apt-get remove maven2</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install maven <span class="comment"># 安装 maven3，2 在之后会有 bug</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置默认 jdk</span></span><br><span class="line">sudo update-alternatives --config java</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置 Java Home 编辑 ~/.bashrc</span></span><br><span class="line">JAVA_HOME=/usr/lib/jvm/java-<span class="number">7</span>-oracle</span><br><span class="line"><span class="built_in">export</span> JAVA_HOME</span><br><span class="line">PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span></span><br><span class="line"><span class="built_in">export</span> PATH</span><br></pre></td></tr></table></figure>
+<p>如果一切正常的话，使用 <code>java -version</code> 可以看到：</p>
+<p><img src="/images/14568475090854.jpg" alt="java -version"></p>
+<h2 id="Hello_World"><a href="#Hello_World" class="headerlink" title="Hello World"></a>Hello World</h2><p>我们创建一个项目来搭建服务器，因为 undertow 是使用 maven 来管理包和依赖的，所以我们也直接用 maven 来创建项目</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建项目，注意设置包名和项目名称</span></span><br><span class="line">mvn archetype:generate -DgroupId=housailei.undertow -DartifactId=p1_front -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=<span class="literal">false</span> -DartifactId=undertow-server</span><br></pre></td></tr></table></figure>
+<p>为了编辑方便，我们把项目复制到本地</p>
+<p><code>scp -i group.pem -r ubuntu@dns.amazonaws.com:~/undertow-server/* ./</code></p>
+<p> 编辑完成可以用下面的命令上传回去（注意所在文件夹，我这里新建了一个文件夹用来存放源代码，密钥放在上一层）</p>
+<p><code>scp -i ../group.pem -r ./* ubuntu@dns.compute-1.amazonaws.com:~/undertow-server/</code></p>
+<p><img src="/images/14568478192103.jpg" alt="目录层级"></p>
+<p>我们需要对 <code>App.java</code> 和 <code>pom.xml</code> 做一些修改</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> housailei.undertow;</span><br><span class="line"><span class="keyword">import</span> io.undertow.Undertow;</span><br><span class="line"><span class="keyword">import</span> io.undertow.server.*;</span><br><span class="line"><span class="keyword">import</span> io.undertow.util.Headers;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">( String[] args )</span></span><br><span class="line">    </span>&#123;</span><br><span class="line">        <span class="comment">// 设置成 0.0.0.0 开放访问以便测试</span></span><br><span class="line">        Undertow server = Undertow.builder().addHttpListener(<span class="number">8080</span>, <span class="string">"0.0.0.0"</span>)</span><br><span class="line">            .setHandler(<span class="keyword">new</span> HttpHandler() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleRequest</span><span class="params">(<span class="keyword">final</span> HttpServerExchange exchange)</span></span><br><span class="line">                       <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                   exchange.getResponseHeaders().put(Headers.CONTENT_TYPE,</span><br><span class="line">                           <span class="string">"text/plain"</span>);</span><br><span class="line">               exchange.getResponseSender().send(<span class="string">"Hello World! This is wdxtub."</span>);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;).build();</span><br><span class="line">        server.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对 pom 文件的修改主要就是加上各类依赖，已经添加构建插件，我们这里选用了最新的 undertow，具体需要添加以下两个部分：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">dependency</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>io.undertow<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>undertow-core<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="title">version</span>&gt;</span>1.3.18.Final<span class="tag">&lt;/<span class="title">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="title">dependency</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>io.undertow<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>undertow-servlet<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="title">version</span>&gt;</span>1.3.18.Final<span class="tag">&lt;/<span class="title">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>和 </p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">build</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="title">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">plugin</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.codehaus.mojo<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>exec-maven-plugin<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="title">version</span>&gt;</span>1.2.1<span class="tag">&lt;/<span class="title">version</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="title">executions</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">execution</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="title">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">goal</span>&gt;</span>java<span class="tag">&lt;/<span class="title">goal</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;/<span class="title">goals</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="title">execution</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="title">executions</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="title">configuration</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="title">mainClass</span>&gt;</span>housailei.undertow.App<span class="tag">&lt;/<span class="title">mainClass</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="title">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">plugin</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="title">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后上传回 EC2 实例，就可以用以下代码执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mvn compile &amp;&amp; mvn <span class="built_in">exec</span>:java</span><br></pre></td></tr></table></figure>
+<p>服务器正常开启之后，我们就可以在浏览器中访问了：</p>
+<p><img src="/images/14568488280327.jpg" alt="访问网站"></p>
+<h2 id="u6DFB_u52A0_Servlet"><a href="#u6DFB_u52A0_Servlet" class="headerlink" title="添加 Servlet"></a>添加 Servlet</h2><p>现在我们的服务器基本除了展示个页面没办法做任何事情，我们需要能让服务器运行 servlet 才行（最新版本的 undertow 会有一些小问题，会具体标记出来）</p>
+<p>我们先写两个简单的 servlet，具体代码如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 第一个 servlet</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HouServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">throws</span> ServletException</span>&#123;</span><br><span class="line">        message = <span class="string">"Hou HOu HOU!!!! Servlet!!"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span><br><span class="line">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">        response.setContentType(<span class="string">"text/html"</span>);</span><br><span class="line"></span><br><span class="line">        PrintWriter out = response.getWriter();</span><br><span class="line">        out.println(<span class="string">"&lt;h1&gt;"</span> + message + <span class="string">"&lt;/h1&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第二个 servlet</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SaiServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">throws</span> ServletException</span>&#123;</span><br><span class="line">        message = <span class="string">"Sai SAi SAI!!!! Servlet!!"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span><br><span class="line">        <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">        response.setContentType(<span class="string">"text/html"</span>);</span><br><span class="line"></span><br><span class="line">        PrintWriter out = response.getWriter();</span><br><span class="line">        out.println(<span class="string">"&lt;h1&gt;"</span> + message + <span class="string">"&lt;/h1&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后修改 <code>App.java</code> 把这两个 servlet 载入进去</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MYAPP = <span class="string">"/hsl"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">( String[] args )</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 官方例子中使用的 addServlets 方法不可用</span></span><br><span class="line">            <span class="comment">// 这里我用了 addServlet 方法</span></span><br><span class="line">            DeploymentInfo servletBuilder = Servlets.deployment()</span><br><span class="line">                .setClassLoader(App.class.getClassLoader())</span><br><span class="line">                .setContextPath(MYAPP)</span><br><span class="line">                .setDeploymentName(<span class="string">"test.war"</span>)</span><br><span class="line">                .addServlet(</span><br><span class="line">                        Servlets.servlet(<span class="string">"HouServlet"</span>, HouServlet.class)</span><br><span class="line">                                .addMapping(<span class="string">"/hou"</span>))</span><br><span class="line">                .addServlet(</span><br><span class="line">                        Servlets.servlet(<span class="string">"SaiServlet"</span>, SaiServlet.class)</span><br><span class="line">                                .addMapping(<span class="string">"/sai"</span>));</span><br><span class="line"></span><br><span class="line">            DeploymentManager manager = Servlets.defaultContainer().addDeployment(servletBuilder);</span><br><span class="line">            manager.deploy();</span><br><span class="line"></span><br><span class="line">            HttpHandler servletHandler = manager.start();</span><br><span class="line">            PathHandler path = Handlers</span><br><span class="line">                .path(Handlers.redirect(MYAPP))</span><br><span class="line">                .addPrefixPath(MYAPP, servletHandler);</span><br><span class="line"></span><br><span class="line">            Undertow server = Undertow.builder()</span><br><span class="line">                .addHttpListener(<span class="number">8080</span>, <span class="string">"0.0.0.0"</span>)</span><br><span class="line">                .setHandler(path)</span><br><span class="line">                .build();</span><br><span class="line">            server.start();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (ServletException e) &#123;</span><br><span class="line">            <span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接着还是传到服务器上并 <code>mvn compile &amp;&amp; mvn exec:java</code>，就可以看到结果</p>
+<p><img src="/images/14568573432825.jpg" alt="SaiServlet 结果"></p>
+<p><img src="/images/14568573815710.jpg" alt="HouServlet 结果"></p>
+<p>之后的任务就可以在 Servlet 的 <code>doGet</code> 方法中对应写代码完成了。</p>
+<p>后面应该会写一些脚本把配置的工作自动化，因为每次新建 EC2 都得重新配置还是挺麻烦的。</p>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://undertow.io/undertow-docs/undertow-docs-1.3.0/index.html#introduction" target="_blank" rel="external">官方文档</a></li>
+<li><a href="http://undertow.io/javadoc/1.3.x/index.html" target="_blank" rel="external">官方 JavaDoc</a></li>
+<li><a href="https://github.com/undertow-io/undertow/tree/master/examples/src/main/java/io/undertow/examples" target="_blank" rel="external">官方样例代码</a></li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-p2.html"
+           data-title="云计算 Twitter 语料分析 2 Undertow 配置部署" data-url="http://wdxtub.com/vault/cc-p2.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

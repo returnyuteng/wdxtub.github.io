@@ -1,0 +1,979 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CSAPP,Shell,实验,读厚," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="前面的实验都要在 shell 中运行，这次我们直接做一个自己的 shell！这之后无论是异常还是信号，都难不倒我们啦。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【读厚 CSAPP】V Shell Lab">
+<meta property="og:url" content="http://wdxtub.com/2016/04/16/thick-csapp-lab-5/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="前面的实验都要在 shell 中运行，这次我们直接做一个自己的 shell！这之后无论是异常还是信号，都难不倒我们啦。">
+<meta property="og:image" content="http://wdxtub.com/images/14575490108688.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14575497659305.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14575502436640.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14575550290784.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14575529137049.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14620371208361.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14620371795813.jpg">
+<meta property="og:updated_time" content="2016-05-01T03:42:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【读厚 CSAPP】V Shell Lab">
+<meta name="twitter:description" content="前面的实验都要在 shell 中运行，这次我们直接做一个自己的 shell！这之后无论是异常还是信号，都难不倒我们啦。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 【读厚 CSAPP】V Shell Lab | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【读厚 CSAPP】V Shell Lab
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-16T09:08:05+08:00" content="2016-04-16">
+              2016-04-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/16/thick-csapp-lab-5/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/16/thick-csapp-lab-5/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前面的实验都要在 shell 中运行，这次我们直接做一个自己的 shell！这之后无论是异常还是信号，都难不倒我们啦。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u4EFB_u52A1_u76EE_u6807"><a href="#u4EFB_u52A1_u76EE_u6807" class="headerlink" title="任务目标"></a>任务目标</h2><p>这次的实验，我们需要自己完成一个简单的 shell 程序，通过具体的实现，我们可以更加深入地计算机运行的机制（尤其是 Exceptional Control Flow 和进程）。</p>
+<p>在具体开始之前，最好先复习一下基本概念。注意！这次任务不简单！但是老师提供了很多辅助函数，确定先读懂已有代码再开始（注意代码风格），需要仔细查看的 man pages：</p>
+<ul>
+<li><code>sigemptyset()</code></li>
+<li><code>sigaddset()</code></li>
+<li><code>sigprocmask()</code></li>
+<li><code>sigsuspend()</code></li>
+<li><code>waitpid()</code></li>
+<li><code>open()</code></li>
+<li><code>dup2()</code></li>
+<li><code>setpgid()</code></li>
+<li><code>kill()</code></li>
+</ul>
+<p>我们具体要做的是在 <code>tsh.c</code> 中补全下列空函数，这个文件中已经包含了一个基本的 shell 程序，但是还有很多东西没有完成：</p>
+<ul>
+<li><code>void eval(char *cmdline)</code>：解析命令与执行，约 300 行</li>
+<li><code>void sigchld_handler(int sig)</code>：捕获 SIGCHLD 信号</li>
+<li><code>void sigtstp_handler(int sig)</code>：捕获 SIGTSTP(ctrl-z) 信号</li>
+<li><code>void sigint_handler(int sig)</code>：捕获 SIGINT(ctrl-c) 信号</li>
+</ul>
+<p>具体的实现规格：</p>
+<ul>
+<li>每一行会输出一个 <code>tsh&gt;</code>，然后等待用户输入</li>
+<li>用户的输入包括 <code>name</code> 加上零个或多个参数，这些参数之间用一个或多个空格分隔。如果 <code>name</code> 是内置命令，那么直接执行，否则需要新建一个子进程，并在子进程中完成具体的工作</li>
+<li>不需要支持管道，但是需要支持输入输出重定向，如 <code>tsh&gt; /bin/cat &lt; foo &gt; bar</code>（必须支持在同一行重定向输入以及输出）<ul>
+<li>也需要支持内置命令的重定向，如 <code>tsh&gt; jobs &gt; foo</code> </li>
+</ul>
+</li>
+<li>输入 <code>ctrl-c</code> 或 <code>ctrl-z</code> 会给当前的前台进程（包括其子进程）发送 SIGINT(SIGTSTP) 信号，如果没有前台任务，那么这俩信号没有任何效果</li>
+<li>如果输入的命令以 <code>&amp;</code> 结尾，那么就要以后台任务的方式执行，否则按照前台执行</li>
+<li>每个 job 都有其进程 ID(PID) 和 job ID(JID)，都是由 tsh 指定的正整数，JID 以 <code>%</code> 开头（如 <code>%5</code> 表示 JID 为 5，而 <code>5</code> 则表示 PID 为 5），这部分已提供了辅助函数</li>
+<li>支持的内置命令有<ul>
+<li><code>quit</code> 退出 shell</li>
+<li><code>jobs</code> 列出所有的后台任务</li>
+<li><code>bg job</code> 给后台 <code>job</code> 发送 SIGCONT 信号来继续执行该任务，具体的 <code>job</code> 数值可以是 PID 或 JID</li>
+<li><code>fg job</code> 给前台 <code>job</code> 发送 SIGCONT 信号来继续执行该任务，具体的 <code>job</code> 数值可以是 PID 或 JID</li>
+</ul>
+</li>
+<li>tsh 应该回收所有的僵尸进程，如果任何 job 因为接收了没有 catch 的信号而终止，tsh 应该识别出这个时间并且打印出 JID 和相关信号的信息</li>
+</ul>
+<p>测试的时候先 <code>make</code> 然后 <code>./tsh</code> 即可，不过一开始好像没办法退出。如果需要参考，可以试试 <code>tshref</code> 这个程序。确定无误之后可以进行完整测试。</p>
+<p>这里我们用 trace 文件来测试，具体使用命令 <code>./runtrace</code> 来测试，具体用法如下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看帮助</span></span><br><span class="line">./runtrace -h</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试某个特性</span></span><br><span class="line">./runtrace <span class="operator">-f</span> trace05.txt <span class="operator">-s</span> ./tsh</span><br></pre></td></tr></table></figure>
+<p>如果想要进行完整的测试，可以使用 <code>./sdriver</code>，具体用法如下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看帮助</span></span><br><span class="line">./sdriver -h</span><br><span class="line"></span><br><span class="line"><span class="comment"># 一般来说可以直接使用默认设置测试</span></span><br><span class="line">./sdriver</span><br></pre></td></tr></table></figure>
+<p>系统会自动评分，具体每个文件在测试的内容是：</p>
+<p><img src="/images/14575490108688.jpg" alt="trace 文件内容"></p>
+<h2 id="Shell__u7B80_u4ECB"><a href="#Shell__u7B80_u4ECB" class="headerlink" title="Shell 简介"></a>Shell 简介</h2><p>简单来说，shell 有两种执行模式：</p>
+<ol>
+<li>如果用户输入的命令是内置命令，那么 shell 会直接在当前进程执行（例如 <code>jobs</code>）</li>
+<li>如果用户输入的是一个可执行程序的路径，那么 shell 会 fork 出一个新进程，并且在这个子进程中执行该程序（例如 <code>/bin/ls -l -d</code>）</li>
+</ol>
+<p>第二种情况中，每个子进程称为一个 job（当然也可以不止一个，通过管道机制，不过我们这里的实现不需要考虑管道）</p>
+<p>如果命令以 <code>&amp;</code> 结束，那么这个 job 会在后台执行（比如 <code>/bin/ls -l -d &amp;</code>），也就是说 shell 本身不会等待 job 执行完成，直接可以继续输入其他命令；而在其他情况下，则是在前台运行，shell 会等待 job 完成，用户才可以继续输入命令。也就是说同一个时间只可能有一个前台任务，但是后台任务可以有任意多个。</p>
+<p>程序的入口是 <code>int main(int argc, char *argv[])</code>，对于 <code>/bin/ls -l -d</code> 来说，我们有：</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line"><span class="built_in">argc</span> == <span class="number">3</span></span><br><span class="line"><span class="built_in">argv</span>[<span class="number">0</span>] == <span class="string">''</span>/bin/<span class="keyword">ls</span><span class="string">''</span></span><br><span class="line"><span class="built_in">argv</span>[<span class="number">1</span>] == <span class="string">''</span>-<span class="keyword">l</span><span class="string">''</span></span><br><span class="line"><span class="built_in">argv</span>[<span class="number">2</span>] == <span class="string">''</span>-<span class="keyword">d</span><span class="string">''</span></span><br></pre></td></tr></table></figure>
+<p>另外两个需要支持功能是：</p>
+<ul>
+<li>job control：允许用户更改进程的前台/后台状态以及京城的状态(running, stopped, or terminated)<ul>
+<li>ctrl-c 会触发 SIGINT 信号并发送给每个前台进程，默认的动作是终止该进程</li>
+<li>ctrl-z 会触发 SIGTSTP 信号并发送给每个前台进程，默认的动作是挂起该进程，直到再收到 SIGCONT 信号才继续</li>
+<li><code>jobs</code> 命令会列出正在执行和被挂起的后台任务</li>
+<li><code>bg job</code> 命令可以让一个被挂起的后台任务继续执行</li>
+<li><code>fg job</code> 命令可以让一个被挂起的前台任务继续执行</li>
+</ul>
+</li>
+<li>I/O redirection：重定向输入输出<ul>
+<li><code>tsh&gt; /bin/ls &gt; foo</code></li>
+<li><code>tsh&gt; /bin/cat &lt; foo</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="u63D0_u793A"><a href="#u63D0_u793A" class="headerlink" title="提示"></a>提示</h2><ul>
+<li>不要使用 <code>sleep()</code> 来同步</li>
+<li>不要使用忙等待 <code>while(1);</code></li>
+<li>使用 <code>sigsuspend</code> 来同步</li>
+<li>竞争条件</li>
+<li>僵尸进程回收（注意竞争条件以及正确处理信号）</li>
+<li>等待前台任务（仔细思考怎么样才是好的方式）</li>
+<li>不要假定进程的执行顺序</li>
+<li>子进程挂掉的时候应该在一个限定时间内被回收</li>
+<li>不要在多个地方调用 <code>waitpid</code>，很容易造成竞争条件，也会造成程序过分复杂</li>
+<li>不要使用任何系统调用来管理 terminal group</li>
+<li><code>waitpid</code>, <code>kill</code>, <code>fork</code>, <code>execve</code>, <code>setpgid</code>, <code>sigprocmask</code> 和 <code>sigsuspend</code> 都非常有用，<code>waitpid</code> 中的 WUNTRACED 和 WNOHANG 选项也是如此。</li>
+<li>遇到不清晰的用 <code>man</code> 来查看细节</li>
+<li>实现 signal handler 的时候注意给全部的前台进程组发送 SIGINT 和 SIGTSTP 信号</li>
+<li>在 <code>kill</code> 函数中使用 <code>-pid</code> 的格式作为参数</li>
+<li>在 shell 等待前台工作完成时，需要决定在 <code>eval</code> 及 <code>sigchold handler</code> 具体的分配，这里有一定技巧</li>
+<li>在函数 <code>eval</code> 中，在 fork 出子进程之前，必须使用 <code>sigprocmask</code> 来阻塞 SIGCHLD, SIGINT 和 SIGTSTP 信号，完成之后再取消阻塞。调用 <code>addjob</code> 的时候也需要如此。注意，因为子进程也继承了之前的各种状态，所以在子进程中调用 <code>exec</code> 执行新程序的时候注意需要取消阻塞，同样也需要恢复默认的 handler（shell 本身已经忽略了这些信号），具体可以看书本的 8.5.6 节</li>
+<li>不要使用 <code>top</code>, <code>less</code>, <code>vi</code>, <code>emacs</code> 之类的复杂程序，使用简单的文本程序如：<code>/bin/cat</code>, <code>/bin/ls</code>, <code>/bin/ps</code>, <code>/bin/echo</code></li>
+<li>因为毕竟不是真正的 shell，所以在 fork 之后，execve 之前，子进程需要调用 <code>setpgid(0, 0)</code>，这样就把子进程放到一个新的进程组里。这样就保证我们的 shell 前台进程组中唯一的进程，当按下 ctrl-c 时，应该捕获 SIGINT 信号并发送给对应的前台进程组中。</li>
+</ul>
+<p>同样提供一个 <code>tshref</code> 参考程序来作为比对输出（除了进程 id 之外其他需要一模一样），具体是通过 <code>runtrace</code> 文件来测试，每个 trace 文件会测试一个特性</p>
+<h2 id="u89E3_u9898_u653B_u7565"><a href="#u89E3_u9898_u653B_u7565" class="headerlink" title="解题攻略"></a>解题攻略</h2><p>最开始当时是要先读懂代码，尤其是整个程序到底在干什么，如果有仔细看我前面的介绍和课本的话，应该比较轻松能找到对应（毕竟这是一个简化的版本），所以这里废话不多说，直接开始完成基础工作。我们先来看看如何改动 <code>eval</code> 这个函数。</p>
+<p>在这个函数中，我们会先解析命令（具体的解析已经有工具函数），然后得到一系列 token，结构如下</p>
+<p><img src="/images/14575497659305.jpg" alt="token 的结构"></p>
+<p>目前来说，对我们最有用的是这里面的枚举类型，我们可以先用这个来判断是否是内置函数，据此来决定走哪条分支。我们先把最基本的退出功能做了，这样就不会出现一旦开始就没办法结束的情况，具体方法也很简单，直接 <code>exit(0);</code> 即可，我们测试一下，发现已经可以正确退出了：</p>
+<p><img src="/images/14575502436640.jpg" alt="退出程序"></p>
+<p>接着我们来实现 <code>jobs</code> 这个命令，因为已经提供了 <code>listjobs</code> 这个函数，所以我们直接围绕着这个函数来做文章即可。留意到 token 结构体中有 <code>infile</code> 和 <code>outfile</code> 两项，这个就是用来重定向的判断（我们不需要担心解析的问题，可以直接用）。同样，我们来判断一下有没有 <code>outfile</code>，对应进行处理即可。注意输出的时候如果不需要重定向，那么就输出到 stdout，如果需要重定向，就输出到对应的 file descriptor 中（打开文件的时候需要设定 flag，具体可以 <code>man open</code> 进行查看）。</p>
+<p>接着我们来实现 FG 和 BG 这两个命令，我们需要注意的地方有两个，一个是先根据判断传入的是 JID 还是 PID，然后发送信号之后需要等待进程完成（这里注意使用 <code>sigsuspend</code>）。</p>
+<p>这里需要注意 <code>.</code> 和 <code>-&gt;</code> 这两个操作符的不同，简单来说，就是如果左边是一个指向结构体的指针，那么就要用 <code>-&gt;</code>；如果是一个结构体，那么就要用 <code>.</code>。</p>
+<p>这些做完之后我们可以先来简单测试一下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./runtrace <span class="operator">-f</span> trace00.txt <span class="operator">-s</span> ./tsh</span><br><span class="line">./runtrace <span class="operator">-f</span> trace00.txt <span class="operator">-s</span> ./tshref</span><br><span class="line">./runtrace <span class="operator">-f</span> trace01.txt <span class="operator">-s</span> ./tsh</span><br><span class="line">./runtrace <span class="operator">-f</span> trace01.txt <span class="operator">-s</span> ./tshref</span><br></pre></td></tr></table></figure>
+<p><img src="/images/14575550290784.jpg" alt="测试结果"></p>
+<p>看到和参考程序输出至少是一致的，我们就可以继续了。</p>
+<p>接着我们需要来处理非内置命令的情况，参考课件中的代码，先把需要用到的 mask 之类的弄好，并且我们暂时不考虑重定向的问题。然后需要把对应的 signal handler 补充完整。</p>
+<p>这之后我们可以来跑一次测试 <code>./sdriver</code>，最后的得分是 60/100，第一个错误出现在 trace08.txt 这个文件中，查表得知是发送 fatal SIGINT 给前台进程。我自己用 <code>./runtrace -f trace08.txt -s ./tsh</code> 测试了几次，发现有时候可以正确输出，有时候则会超时，说明是处理进程同步的时候出了问题。经过检查发现，阻塞信号的时候需要阻塞全部信号（之前我只阻塞了 SIGCHLD 会出问题），再测试的话，发现已经有了 80/100 分。</p>
+<p>继续看看哪里出了问题，在输出的日志中寻找最先出错的地方，发现是 trace22.txt，功能是 I/O redirection(input)，这就对了，毕竟我们还没写这个功能。</p>
+<p>我们现在就来写一下。不过在此之前，回答一下前面的问题，前面提到过：</p>
+<blockquote>
+<p>在 shell 等待前台工作完成时，需要决定在 <code>eval</code> 及 <code>sigchold handler</code> 具体的分配，这里有一定技巧</p>
+</blockquote>
+<p>那么技巧是什么呢？其实很简单，就是都在 eval 里做，handler 尽量短小精悍。</p>
+<p>好，我们继续来做输入输出重定向，同样分为内置函数与其他两个类型，内置函数唯一需要输出的是 <code>jobs</code> 这个函数，不过我们之前已经处理过，这里暂且不管（出问题再说）。所以把主要精力集中在非内置的函数上。具体应该在 <code>setpgid(0,0)</code> 这句之后，且应该在 <code>execve</code> 之前。具体的操作也比较简单，就是打开文件（只读），然后利用 <code>dups</code> 重定向到 STDIN 中即可。对于输出的情况也是类似的，这里不赘述。唯一需要注意的一点是打开文件时候的 flag，设置错误会导致没办法正确重定向。</p>
+<p>改完错误之后发现 trace15.txt 又出错了，而且经过测试发现死锁的问题还在，而且是内置函数的问题（果然一开始有小问题），后来发现是搞错了一个变量（但是仍旧有小概率会出现死锁，不过提交的时候似乎一切正常）</p>
+<p>最后需要注意的是有些测试会直接修改源代码，所以每次都需要重新解压（还是蛮讨厌的）。总体来说只要理解了整个过程就不算太难，使用 <code>csapp.h</code> 的时候可能需要把代码复制到 <code>tsh.c</code> 中。</p>
+<h2 id="u9644_u5F55_3A__u4E2D_u6587_man__u6587_u6863"><a href="#u9644_u5F55_3A__u4E2D_u6587_man__u6587_u6863" class="headerlink" title="附录: 中文 man 文档"></a>附录: 中文 man 文档</h2><p>如果觉得看英文太累（虽然建议看英文），可以使用中文的 man 文档，具体的使用步骤如下：</p>
+<p>在<a href="http://manpages-zh.googlecode.com/files/manpages-zh-1.5.1.tar.gz" target="_blank" rel="external">这里</a>下载安装包，然后通过如下命令进行安装：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar zxvf manpages-zh-<span class="number">1.5</span>.<span class="number">1</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> manpages-zh-<span class="number">1.5</span>.<span class="number">1</span></span><br><span class="line">./configure --prefix=/usr/<span class="built_in">local</span>/zhman --disable-zhtw</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>在 Mac 上会乱码，所以需要安装 groff，具体命令为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">brew install homebrew/dupes/groff</span><br></pre></td></tr></table></figure>
+<p>然后打开 <code>/etc/man.conf</code>，把 <code>NROFF</code> 的那一行改为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">NROFF preconv <span class="operator">-e</span> UTF8 | /usr/<span class="built_in">local</span>/bin/nroff -Tutf8 -mandoc -c</span><br></pre></td></tr></table></figure>
+<p>最后我么加一个别名，方便使用（根据自己使用的 shell 来针对改，bash 的话是 ~/.bashrc，zsh 的话是 ~/.zshrc），在文件中加入这么一句：</p>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">alias cman='<span class="keyword">man</span> -<span class="keyword">M</span> /usr/<span class="keyword">local</span>/zhman/share/<span class="keyword">man</span>/zh_CN'</span><br></pre></td></tr></table></figure>
+<p>然后 <code>source .zshrc</code> 启用，我们就可以通过 <code>cman</code> 命令来查看了，比如说输入 <code>cman kill</code>，就可以看到</p>
+<p><img src="/images/14575529137049.jpg" alt="效果"></p>
+<p>另外推荐一个比 man 更好用的文档，叫做 <a href="http://www.ostera.io/tldr.jsx/#/?_k=9t2oqt" target="_blank" rel="external">TLDR</a>，具体效果如下</p>
+<p><img src="/images/14620371208361.jpg" alt=""></p>
+<p>直接给出最常用的用法，不用自己搜索了，安装之后在终端里也可以直接使用，如下图所示</p>
+<p><img src="/images/14620371795813.jpg" alt=""></p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>这一次我们实现了一个简单的 shell，相信对于这个我们平时都在用的『老朋友』有了更多的理解，更重要的是，在 shell 背后所隐含的进程线程异常控制流等等都需要彻底搞明白，这个过程可能会比较烦躁，但是一通百通，这次实验是很好的练习。</p>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://www.yurendu.com/read/install-man-command-chinese-help-documentation-on-mac-and-linux.html" target="_blank" rel="external">Mac/Linux 安装man命令的中文帮助文档</a></li>
+<li><a href="http://tldr-pages.github.io/#cli-installation" target="_blank" rel="external">TLDR</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CSAPP/" rel="tag">#CSAPP</a>
+          
+            <a href="/tags/Shell/" rel="tag">#Shell</a>
+          
+            <a href="/tags/实验/" rel="tag">#实验</a>
+          
+            <a href="/tags/读厚/" rel="tag">#读厚</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/16/thick-csapp-lab-4/" rel="next" title="【读厚 CSAPP】IV Cache Lab">
+                <i class="fa fa-chevron-left"></i> 【读厚 CSAPP】IV Cache Lab
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/16/thick-csapp-lab-6/" rel="prev" title="【读厚 CSAPP】VI Malloc Lab">
+                【读厚 CSAPP】VI Malloc Lab <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/16/thick-csapp-lab-5/"
+           data-title="【读厚 CSAPP】V Shell Lab" data-url="http://wdxtub.com/2016/04/16/thick-csapp-lab-5/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4EFB_u52A1_u76EE_u6807"><span class="nav-number">1.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shell__u7B80_u4ECB"><span class="nav-number">2.</span> <span class="nav-text">Shell 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u63D0_u793A"><span class="nav-number">3.</span> <span class="nav-text">提示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u89E3_u9898_u653B_u7565"><span class="nav-number">4.</span> <span class="nav-text">解题攻略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9644_u5F55_3A__u4E2D_u6587_man__u6587_u6863"><span class="nav-number">5.</span> <span class="nav-text">附录: 中文 man 文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

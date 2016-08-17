@@ -1,0 +1,1666 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Swift 千金方,iOS,教程,斯坦福 CS193p," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="大名鼎鼎的经典 iOS 开发教程。我在 iOS 9.2, Swift 2.1 和 Xcode 7 上重写了一次（课程默认是 iOS8 以及旧版本的 Swift，会有些不同），项目代码在这里">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift 千金方 2 - Stanford CS193p 学习笔记">
+<meta property="og:url" content="http://wdxtub.com/2015/12/18/swift-tricks-2/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="大名鼎鼎的经典 iOS 开发教程。我在 iOS 9.2, Swift 2.1 和 Xcode 7 上重写了一次（课程默认是 iOS8 以及旧版本的 Swift，会有些不同），项目代码在这里">
+<meta property="og:updated_time" content="2015-12-18T20:22:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift 千金方 2 - Stanford CS193p 学习笔记">
+<meta name="twitter:description" content="大名鼎鼎的经典 iOS 开发教程。我在 iOS 9.2, Swift 2.1 和 Xcode 7 上重写了一次（课程默认是 iOS8 以及旧版本的 Swift，会有些不同），项目代码在这里">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Swift 千金方 2 - Stanford CS193p 学习笔记 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Swift 千金方 2 - Stanford CS193p 学习笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-18T15:03:17+08:00" content="2015-12-18">
+              2015-12-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/18/swift-tricks-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/18/swift-tricks-2/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>大名鼎鼎的经典 iOS 开发教程。我在 iOS 9.2, Swift 2.1 和 Xcode 7 上重写了一次（课程默认是 iOS8 以及旧版本的 Swift，会有些不同），项目代码在<a href="https://github.com/wdxtub/Developing-iOS-8-Apps-with-Swift-Learning" target="_blank" rel="external">这里</a></p>
+<a id="more"></a>
+<hr>
+<p>总体来说课程非常规范，但是因为时间所限没有办法覆盖到方方面面，比方说如何测试一个 app，如何优化 app 的性能等等。最好自己学过 Swift，以及对于函数式编程，闭包等有一定的了解。</p>
+<p>我当前的开发环境</p>
+<ul>
+<li>Xcode 7.2</li>
+<li>OS X 10.11.2</li>
+<li>Swift 2.1</li>
+<li>iOS 9.2 (iPhone 6s, iPod Touch 6th, iPad 3)</li>
+</ul>
+<h2 id="1_Logistics_2C_iOS_8_Overview"><a href="#1_Logistics_2C_iOS_8_Overview" class="headerlink" title="1 Logistics, iOS 8 Overview"></a>1 Logistics, iOS 8 Overview</h2><h3 id="What_u2019s_in_iOS"><a href="#What_u2019s_in_iOS" class="headerlink" title="What’s in iOS"></a>What’s in iOS</h3><ul>
+<li>Cocoa Touch<ul>
+<li>Multi-Touch, Alerts, Core Motion, Web View, View Hierarchy, Map Kit, Localization, Image Picker, Controls, Camera</li>
+</ul>
+</li>
+<li>Media<ul>
+<li>Core Audio, JPEG/PNG/TIFF, OpenAL, PDF, Audio Mixing, Quartz(2D), Audio Recording, Core Animation, Video Playback, OpenGL ES</li>
+</ul>
+</li>
+<li>Core Services<ul>
+<li>Collections, Core Location, Address Book, Net Services, Networking, Threading, File Access, Preferences, SQLite, URL Utilities</li>
+</ul>
+</li>
+<li>Core OS<ul>
+<li>OSX kernel, Power Management, Mach 3.0, Keychain Access, BSD, Certificates, Sockets, File System, Security, Bonjour</li>
+</ul>
+</li>
+</ul>
+<h3 id="Platform_Components"><a href="#Platform_Components" class="headerlink" title="Platform Components"></a>Platform Components</h3><ul>
+<li>Tools<ul>
+<li>Xcode 6 (Latest is 7)</li>
+</ul>
+</li>
+<li>Language(s)<ul>
+<li>Swift, Modern Language</li>
+<li><code>let value = formatter.numberFromString(display.text!)?.doubleValue</code></li>
+</ul>
+</li>
+<li>Frameworks<ul>
+<li>Foundation, Core Data, UIKit, Core Motion, Map Kit</li>
+</ul>
+</li>
+<li>Design Strategy<ul>
+<li>MVC</li>
+</ul>
+</li>
+</ul>
+<h3 id="Calculator_Tutorial"><a href="#Calculator_Tutorial" class="headerlink" title="Calculator Tutorial"></a>Calculator Tutorial</h3><ul>
+<li>Organization Identifier 是你的身份验证，需要保证独立性</li>
+<li>尽可能把控件放到蓝线上，也就意味着某种对齐</li>
+<li>weak 关键字，与 reference counting 相关，具体后面会说</li>
+<li>对象都在 heap 中存在</li>
+<li>能用 let 尽量用 let，增加可读性</li>
+<li>option(alt) 点击变量可以查看帮助</li>
+<li>optional 类型，可能是当前类型的值，或者是 <code>nil</code>，例如 <code>String?</code><ul>
+<li><code>nil</code> 就是 not set</li>
+</ul>
+</li>
+<li>在 optional 类型后面加 <code>!</code> 可以取出对应的值，但如果原来值是 <code>nil</code>，就会崩溃</li>
+<li>所有的变量都必须被初始化</li>
+</ul>
+<h2 id="2_More_Xcode_and_Swift_2C_MVC"><a href="#2_More_Xcode_and_Swift_2C_MVC" class="headerlink" title="2 More Xcode and Swift, MVC"></a>2 More Xcode and Swift, MVC</h2><ul>
+<li>为什么 <code>UILabel</code> 之类的 outlet 可以直接声明 <code>!</code> 而不需要像之前所说的那样所有变量都必须被初始化呢？因为作为控件变量称为 implicit unwrap，走 storyboard 另外的机制</li>
+<li>右键点击一个控件会显示当前和该控件绑定的事件，可以在这里操作进行绑定和解绑定</li>
+<li>新建数组 <code>var operandStack = Array&lt;Double&gt;()</code>，可以被 infer 的类型最好就不要明写出来</li>
+<li>变量的 set get 中有神奇变量 <code>newValue</code></li>
+<li>command + / 可以快速注释</li>
+<li>利用 Swift 本身的特性可以写出非常精简的代码</li>
+<li>之后是 MVC 的介绍</li>
+</ul>
+<h2 id="3_Applying_MVC"><a href="#3_Applying_MVC" class="headerlink" title="3 Applying MVC"></a>3 Applying MVC</h2><ul>
+<li>新建一个 class：File -&gt; New -&gt; File -&gt; Swift File</li>
+<li>虽然没有要求类名和文件名一致，但是最好还是一样，这样比较符合惯例</li>
+<li>理论上来说不应该在一个 Model 类中 <code>import UIkit</code></li>
+<li>可以用快捷语法来生成数组 <code>[TypeName]()</code></li>
+<li>可以用快捷语法来生成字典 <code>[KeyType: ValueType]()</code></li>
+<li><code>*</code>, <code>+</code>, <code>sqrt</code> 这些内置函数可以直接当参数传</li>
+<li>在字典里返回的是 optional 类型</li>
+<li>传参时除非传的是 class，不然都是传入一个复制的值</li>
+<li>传值的时候参数隐含是 <code>let</code> 的，即不可变</li>
+<li>函数可以直接返回一个 tuple</li>
+<li>option(alt) 加点击文件可以把文件放到另一边</li>
+<li>if let xxx = xxx {} 是通常的处理 optional 类型的方式</li>
+<li>switch 如果列举了所有情况就不需要 <code>default: break</code></li>
+<li><code>private enum Op: CustomStringConvertible</code> 由 <code>Printable</code> 更名而来</li>
+</ul>
+<h2 id="4_More_Swift_and_Foundation_Frameworks"><a href="#4_More_Swift_and_Foundation_Frameworks" class="headerlink" title="4 More Swift and Foundation Frameworks"></a>4 More Swift and Foundation Frameworks</h2><p>不是所有的都记录，只挑了一些我觉得和之前学的语言差异比较大的，很多内容在我之前的学习笔记里都有覆盖</p>
+<h3 id="Optional"><a href="#Optional" class="headerlink" title="Optional"></a>Optional</h3><p>An Optional is just an <code>enum</code></p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Optional</span>&lt;<span class="title">T</span>&gt;</span>&#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="type">None</span></span><br><span class="line">	<span class="keyword">case</span> <span class="type">Some</span>(<span class="type">T</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> x: <span class="type">String</span>? = <span class="literal">nil</span></span><br><span class="line"><span class="comment">// is</span></span><br><span class="line"><span class="keyword">let</span> x = <span class="type">Optional</span>&lt;<span class="type">String</span>&gt;.<span class="type">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> x: <span class="type">String</span>? = <span class="string">"hello"</span></span><br><span class="line"><span class="comment">// is</span></span><br><span class="line"><span class="keyword">let</span> x = <span class="type">Optional</span>&lt;<span class="type">String</span>&gt;.<span class="type">Some</span>(<span class="string">"hello"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> y = x!</span><br><span class="line"><span class="comment">// is</span></span><br><span class="line"><span class="keyword">switch</span> x &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="type">Some</span>(<span class="keyword">let</span> value): y = value</span><br><span class="line">	<span class="keyword">case</span> <span class="type">None</span>: <span class="comment">// raise an exception</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Other_Classes"><a href="#Other_Classes" class="headerlink" title="Other Classes"></a>Other Classes</h3><ul>
+<li><code>NSObject</code><ul>
+<li>Base class for all objective-C classes. Some advanced features will require you to subclass from <code>NSObject</code></li>
+</ul>
+</li>
+<li><code>NSNumber</code><ul>
+<li>Generic number-holding class</li>
+</ul>
+</li>
+<li><code>NSDate</code><ul>
+<li>Used to find out the date and time right now or to store past or future dates</li>
+</ul>
+</li>
+<li><code>NSData</code><ul>
+<li>A “bag of bits”</li>
+</ul>
+</li>
+</ul>
+<h3 id="Data_Structures"><a href="#Data_Structures" class="headerlink" title="Data Structures"></a>Data Structures</h3><p>Three Types: Classes, Structures, Enumerations</p>
+<ul>
+<li>Similarities<ul>
+<li>Declasration syntax</li>
+<li>Properties and Functions</li>
+<li>Initializers</li>
+</ul>
+</li>
+<li>Differences<ul>
+<li>Inheritance (class only)</li>
+<li>Introspection and casting (class only)</li>
+<li>Value type (struct, enum) vs. Reference type (class) </li>
+</ul>
+</li>
+</ul>
+<h3 id="Value_vs-_Reference"><a href="#Value_vs-_Reference" class="headerlink" title="Value vs. Reference"></a>Value vs. Reference</h3><ul>
+<li>Value (<code>struct</code> and <code>enum</code>)<ul>
+<li><strong>Copied</strong> when passed as an argument to a function</li>
+<li><strong>Copied</strong> when assigned to a different variable</li>
+<li><strong>Immutable</strong> if assigned to a variable with <code>let</code></li>
+<li>Remember that function parameters are, by default, constants</li>
+<li>You can put the keyword <code>var</code> on an parameter, and it will be mutable, but it’s still a copy</li>
+<li>You must note any <code>func</code> that can mutate a struct/enum with the keyword <code>mutating</code></li>
+</ul>
+</li>
+<li>Reference (<code>class</code>)<ul>
+<li>Stored in the heap and reference counted (automatically)</li>
+<li>Constant pointers to a class (<code>let</code>) still can mutate by calling methods and changing properites</li>
+<li>When passed as an argument, does not make a copy (just passing a pointer to same instance)</li>
+</ul>
+</li>
+<li>Choosing which to use?<ul>
+<li>Usually you will choose <code>class</code> over <code>struct</code>. <code>struct</code> tends to be more for fundamental types. Use of <code>enum</code> is situational (any time you have a type of data with discret values)</li>
+</ul>
+</li>
+</ul>
+<h3 id="AnyObject"><a href="#AnyObject" class="headerlink" title="AnyObject"></a>AnyObject</h3><ul>
+<li>Special “Type” (actually it’s a Protocol)<ul>
+<li>Used primarily for compatibility with exsiting Objective-C-based APIs</li>
+</ul>
+</li>
+<li>Where will you see it?<ul>
+<li>As properties (eigher singularly or as an array of them), e.g. …</li>
+<li><code>var destinationViewController: AnyObject</code></li>
+<li><code>var toolbarItems: [AnyObject]</code></li>
+</ul>
+</li>
+<li>How do we use <code>AnyObject</code><ul>
+<li>We don’t usually use it directly</li>
+<li>Instead, we convert it to another, known type </li>
+</ul>
+</li>
+<li>How do we convert it?<ul>
+<li>We need to create a new vairable which is of a known object type</li>
+</ul>
+</li>
+<li>Casting AnyObject<ul>
+<li>We “force” an <code>AnyObject</code> to be something else by “casting” it using the <code>as</code> keyword </li>
+</ul>
+</li>
+</ul>
+<h3 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h3><p>语言的细节还有很多，需要在实践中不断熟悉，这里不需要过度在意细节，动手最重要</p>
+<h2 id="5_Objective_C_Compatibility_2C_Property_List_2C_Views"><a href="#5_Objective_C_Compatibility_2C_Property_List_2C_Views" class="headerlink" title="5 Objective C Compatibility, Property List, Views"></a>5 Objective C Compatibility, Property List, Views</h2><ul>
+<li>主要介绍了 Swift 与 Objc 的桥接，这里官方的指南都有介绍，具体不赘述</li>
+<li>Property List is really just the definition of a term<ul>
+<li>pass around data “blindly”</li>
+<li>“generic data structure”, be passed to API</li>
+<li>example: <code>NSUserDefaults</code>, small database</li>
+<li>持久化的方式</li>
+</ul>
+</li>
+<li>Views<ul>
+<li><code>UIView</code> subclass</li>
+<li>Defines a coordinate space, for drawing, and for handling touch events</li>
+<li>Hierarchical (only one superview, but many/zero subviews)</li>
+<li>The hierarchy is most often constructed in Xcode graphically<ul>
+<li>But it can be done in code as well</li>
+</ul>
+</li>
+<li>Where does the view hierarchy start?<ul>
+<li>THe top of the (usable) view hierarchy is the Controller’s <code>var view: UIView</code></li>
+<li>This view is the one whose bounds will change on rotation</li>
+<li>This view is likely the ones you will programmatically add <code>subview</code> to</li>
+<li>All of your MVC’s View’s <code>UIView</code> will have this view as an ancestro</li>
+<li>It’s wutomatically hooked up for you when you create an MVC in Xcode</li>
+</ul>
+</li>
+<li>在代码中初始化 <code>UIView</code> 需要实现两个必要 <code>init</code> 函数，因为有两种方式可以创建</li>
+<li>或者也可以用 <code>awakeFromNib</code> 针对 storyboard</li>
+</ul>
+</li>
+<li>View Coordinate System<ul>
+<li>Origin is upper left</li>
+<li>Units are points, not pixels<ul>
+<li>Pixels are the minimum-sized unit of drawing your device is capable of</li>
+<li>Points are the units in the coordinate system</li>
+<li>Most of the time there are 2 pixels per point, but it could be only 1 or something else</li>
+<li>How many pixels per point are there? <code>UIView</code>‘s <code>var contentScaleFactor: CGFloat</code></li>
+</ul>
+</li>
+<li>The boundaries of where drawing happends<ul>
+<li><code>var bounds: CGRect</code> // a view’s internal drawing space’s origin and size</li>
+<li>This is the rectangle containing the drawing space <strong>in its own coordinate system</strong></li>
+<li>It is up to your views’ implementation to interpret what <code>bounds.origin</code> means (often nothing)   </li>
+</ul>
+</li>
+<li>Where is the <code>UIView</code>? 注意都是在 superview 里的，不是自己的<ul>
+<li><code>var center: CGPoint</code> // the center of a <code>UIView</code> <strong>in its superview’s coordinate system</strong></li>
+<li><code>var frame: CGRect</code> // the rect containing a <code>UIView</code> <strong>in its superview’s coordinate system</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>bounds vs frame<ul>
+<li>Use <code>frame</code> and/or <code>center</code> to <strong>position</strong> a <code>UIView</code></li>
+<li><code>frame.size</code> 不总是等于 <code>bounds.size</code> -&gt; 因为旋转的时候 frame 要大得多！</li>
+</ul>
+</li>
+<li>Creating Views<ul>
+<li>Most often your views are created via your storyboard</li>
+<li>To draw, just create a <code>UIView</code> subclass and override <code>drawRect</code></li>
+<li>NEVER call drawRect!! EVER! Or else!</li>
+</ul>
+</li>
+<li>绘制的方法也有很多，主要是 Bezier 已经一些 UIKit 的设定</li>
+<li><code>UIColor</code>: RGB, HSB or even a pattern (using UIImage)<ul>
+<li>have alpha (transparency) 0(fully transparent) 1.0(fully opaque)</li>
+<li>如果需要透明需要把 <code>UIView</code> 的 <code>var opaque = false</code></li>
+</ul>
+</li>
+<li>Drawing Text<ul>
+<li>Usually we use a <code>UILabel</code> to put text on screen</li>
+<li>To draw in <code>drawRect</code>, use <code>NSAtrributedString</code></li>
+<li>Mutability is done with <code>NSMutableAttributedString</code></li>
+<li><code>NSattributedString</code> is not a String, nor an NSString</li>
+</ul>
+</li>
+<li>Fonts<ul>
+<li>The absolutely best way to get a font in code<ul>
+<li>`class func preferredFontForTextStyle(UIFontTextStyle) -&gt; UIFont</li>
+<li><code>UIFontTextStyle.Headline</code></li>
+<li><code>UIFontTextStyle.Body</code></li>
+<li><code>UIFontTextStyle.Footnote</code></li>
+</ul>
+</li>
+<li>There are also “system fonts”<ul>
+<li>Don’t use for user’s <strong>content</strong>. Use preferred fonts for that </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在 storyboard 中按着 <code>ctrl + shift</code> 再点击控件会出现一个界面让你选择你想要选择的控件，很有用</li>
+<li>如果需要在更新某个值的时候同时更新绘制，利用 <code>didSet</code> 方式声明变量</li>
+<li>如果需要一个 view 在旋转之后更新，在其 attribute inspector 中把 Mode 改为 Redraw</li>
+</ul>
+<h2 id="6_Protocols_and_Delegation_2C_Gestures"><a href="#6_Protocols_and_Delegation_2C_Gestures" class="headerlink" title="6 Protocols and Delegation, Gestures"></a>6 Protocols and Delegation, Gestures</h2><ul>
+<li>在一个 UIView 的代码前加上 <code>@IBDesignable</code> 可以直接在 storyboard 中绘制图案</li>
+<li>在一个 UIView 中的变量前加上 <code>@IBInspectable</code> 就可以直接在 storyboard 中更改</li>
+<li>Extension 只能添加，不能修改原来的方法或者属性<ul>
+<li>是一个很容易滥用的机制！注意场景</li>
+</ul>
+</li>
+<li>Protocol - A way to express an API minimally<ul>
+<li>is a TYPE just like any other type, except <ul>
+<li>It has no storage or implementation associated with it</li>
+<li>没有对应的实现，只是一个羊头，没有狗肉</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Delegation<ul>
+<li>A very important use of <code>protocols</code></li>
+<li>How it plays out<ul>
+<li>Create a delegation <code>protocol</code> (defines what the View wants the Controller to take care of)</li>
+<li>Create <code>delegate</code> property in the View whose type is that delegation <code>protocol</code></li>
+<li>Use the <code>delegate</code> property in the View to get/do things it can’t own or control</li>
+<li>Controller declares that it implements the <code>protocol</code></li>
+<li>Controller sets <code>self</code> as the delegate of the View by setting the property in #2 above</li>
+<li>Implement the <code>protocol</code> in the Controller</li>
+</ul>
+</li>
+<li>Now the View is hooked up to the Controlle</li>
+<li>weak 用来避免循环引用</li>
+<li><code>let smiliness = dataSource?.smilinessForFaceView(self) ?? -0.0</code><ul>
+<li><code>??</code> 符号表示，如果左边的表达式是 nil，那么用右边的值</li>
+</ul>
+</li>
+<li>comman + shift + o 可以快速检索并打开文件</li>
+</ul>
+</li>
+<li>Gestures<ul>
+<li>we can get notified of the raw touch events</li>
+<li>Gestrues are recognized by instances of <code>UIGestureRecognizer</code></li>
+<li>Two sides to using a gesture recognizer<ol>
+<li>Adding a gesture recognizer to a <code>UIView</code></li>
+<li>Providing a method to “handle” that gesture</li>
+</ol>
+</li>
+<li>Usually the first is done by a Controller</li>
+<li>The second is provided either by the <code>UIView</code> or a controller</li>
+</ul>
+</li>
+<li>UISplitViewController (Two MVCs side by side)<ul>
+<li>左边 Master，右边 Detail</li>
+</ul>
+</li>
+</ul>
+<h2 id="7_Multiple_MVCs"><a href="#7_Multiple_MVCs" class="headerlink" title="7 Multiple MVCs"></a>7 Multiple MVCs</h2><ul>
+<li>UINaviationController<ul>
+<li>Pushes and pops MVCs off of a stack</li>
+<li>只有顶上的 title bar 是 <code>UINavigationController</code> 绘制的</li>
+<li><code>rootViewController</code> 用来切换显示不同的 MVC</li>
+</ul>
+</li>
+<li>You can get the sub-MVCs via the <code>viewControllers</code> property<ul>
+<li>`var viewControllers: [UIViewController] { get set }</li>
+</ul>
+</li>
+<li>Every <code>UIViewController</code> knows the Split View, Tab Bar or Navigation Controller it is currently in </li>
+<li>Wirting up MVCs<ul>
+<li>ctrl + drag in storyboard</li>
+<li>当然也可以在代码中实现，不过这个课程里只用 storyboard，我个人也觉得交给 storyboard 就好</li>
+<li>Editor -&gt; Embed in -&gt; Navigation Controller</li>
+</ul>
+</li>
+<li>Segue<ul>
+<li>Four Basic Segues</li>
+<li>Show Segue, Show Detail Segue, Modal Segue(better not), Popover Segue</li>
+<li>always create a new instance of an MVC，不会用已有的</li>
+<li>要保证 identifier 和代码里用的一致</li>
+<li>More important use of the identifier: <strong>preparing</strong> for a segue</li>
+</ul>
+</li>
+<li>Preparing for a Segue<ul>
+<li>It is crucial to understand that this preparation is happening BEFORE outlets get set!</li>
+<li>It is a very common bug to prepare an MVC thinking its outlets are set</li>
+</ul>
+</li>
+<li>Preventing Segues<ul>
+<li>You can prevent a segue from happening too</li>
+<li><code>shouldPerformSegueWithIdentifier</code> 返回 false 即可</li>
+</ul>
+</li>
+<li>Label 的 Autoshrink 属性可以避免出现文字过长</li>
+<li>Popovers<ul>
+<li>Popovers pop an entire MVC over the rest of the screen</li>
+<li>is not a <code>UIViewController</code></li>
+<li>Things to note when <strong>preparing</strong> for a popover segue</li>
+<li><code>popOverPresentationController</code> 针对 iphone 和 ipad 有不同的表现形式，但是也是可以自由定制的，有对应的方法</li>
+</ul>
+</li>
+<li>override 基类的 property 的 didSet 方法不会覆盖原来的，而是在原来的基础上添加</li>
+</ul>
+<h2 id="8_View_Controller_Lifecycle_2C_Autolayout"><a href="#8_View_Controller_Lifecycle_2C_Autolayout" class="headerlink" title="8 View Controller Lifecycle, Autolayout"></a>8 View Controller Lifecycle, Autolayout</h2><ul>
+<li>After instantiation and outlet-setting, <code>viewDidLoad</code> is called<ul>
+<li>This is an exceptionally good place to put a lot of setup code</li>
+<li>It’s better than an <code>init</code> because your outlets are all set up by the thime this is called</li>
+<li>update your UI from your model</li>
+<li>but <strong>geometry</strong> of your view (<code>bounds</code>) is not set yet!</li>
+</ul>
+</li>
+<li>Just before your <code>view</code> appears on screen, you get notified<ul>
+<li><code>func viewWillAppear(animated: Bool)</code></li>
+<li>don’t pu something in this method that really wants to be in <code>viewDidLoad</code></li>
+<li>Do something here if things your display is changing while your MVC is off-screen</li>
+<li>Your view’s geometry is set here, but there are other plaes to react to geometry</li>
+</ul>
+</li>
+<li>You get notified when you will disappear off screen too<ul>
+<li>This is where you put “remember what’s going on” and cleanup code</li>
+</ul>
+</li>
+<li>Geometry changed?<ul>
+<li>Most of the time this will be automatically handled with Autolayout</li>
+<li>But you can get involved in geometry changes directly with<ul>
+<li><code>func viewWillLayoutSubviews()</code></li>
+<li>Autolayout happens between these two method</li>
+<li><code>func viewDidLayoutSubviews()</code> </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Autorotation<ul>
+<li>You can control which orientations your app supports in the Settings of your project</li>
+<li>Almost always, your UI just responds naturally to rotation with autolayout</li>
+</ul>
+</li>
+<li>In low-memory situations, <code>didReceiveMemoryWarning</code> get called</li>
+<li><code>awakeFromNib</code><ul>
+<li>This method is sent to all objects that come out of a storyboard (including your Controller)</li>
+<li>Happens before outlets are set!</li>
+<li><strong>Put code somewhere else</strong> if at all possible</li>
+</ul>
+</li>
+<li>Size Classes<ul>
+<li>Compact, Regular, Any</li>
+<li>可以在 storyboard 中进行不同组合的配置，下面也会有说明</li>
+<li>可以在 Inspector 里设置不同控件和 constrain 的范围（最下面的部分）</li>
+</ul>
+</li>
+</ul>
+<h2 id="9_ScrollView_and_Multithreading"><a href="#9_ScrollView_and_Multithreading" class="headerlink" title="9 ScrollView and Multithreading"></a>9 ScrollView and Multithreading</h2><ul>
+<li>先设置 scrollView 的 contentSize，然后就可以正常添加不同的 frame</li>
+<li>注意不同坐标系的转换</li>
+<li>UIScrollView<ul>
+<li>add your “too big” <code>UIView</code> in code using <code>addSubview</code></li>
+<li>Now don’t forget to set the <code>contentSize</code></li>
+</ul>
+</li>
+<li>Scolling programmatically<ul>
+<li><code>func scrollRectToVisible(CGRect, animated: Bool)</code></li>
+</ul>
+</li>
+<li>Zooming (affine transform)，可以设置最大最小的放大<ul>
+<li>Will not work without <strong>delegate</strong> method to specify view to zoom</li>
+<li>也可以编程 zoom  </li>
+</ul>
+</li>
+<li>Closure<ul>
+<li>capture variables in the surrounding context</li>
+<li>can lead to very elegant code</li>
+<li>使用时需要小心，因为可能会出现循环引用 <code>[unowned self] in ...</code></li>
+</ul>
+</li>
+<li>Queues<ul>
+<li>Multithreading is mostly about “queues” in iOS.</li>
+<li>Functions (usually closures) are lined up in a queue.</li>
+<li>Then thos functions are pulled off the queue and executed on an associated thread</li>
+</ul>
+</li>
+<li>Main Queue<ul>
+<li>All UI activity MUST occur on this queue and this queue only.</li>
+<li>non-UI activity that is at all time consuming must NOT occur on that queue.</li>
+<li>We want our UI to be responsive!</li>
+<li>Functions are pulled off and worked on in the main queue only when it is “quiet”</li>
+<li><code>dispatch)async(queue)</code> 执行完成后再 dispatch main queue 以更新 UI</li>
+</ul>
+</li>
+<li>Other Queue 不同的优先级<ul>
+<li>QOS_CLASS_USER_INTERACTIVE // quick and high priority</li>
+<li>QOS_CLASS_USER_INITIATED // high priority, might take time</li>
+<li>QOS_CLASS_UTILITY // long running</li>
+<li>QOS_CLASS_BACKGROUND // user not concerned with this </li>
+</ul>
+</li>
+<li>还可以执行一些延迟排队的任务</li>
+</ul>
+<h2 id="10_Table_View"><a href="#10_Table_View" class="headerlink" title="10 Table View"></a>10 Table View</h2><ul>
+<li>UITextField<ul>
+<li>Like UILabel, but editable</li>
+<li>Keyboard appear when <code>UITextField</code> becomes “first responder”</li>
+<li><code>becomeFirstResponder</code> and <code>resignFirstResponder</code></li>
+<li>Delegate can get involved with Return key, etc</li>
+</ul>
+</li>
+<li>UITableView<ul>
+<li>displayer data in a table</li>
+<li>one-dimensional table</li>
+<li>subclass of <code>UIScrollView</code></li>
+<li>Displaying multi-dimensional tables<ul>
+<li>uaually done via a UINavigationController with multiple MVC’s where View is <code>UITableView</code></li>
+</ul>
+</li>
+<li>Group style and plain style</li>
+<li>Table Header, Table Footer, Section, Section header</li>
+<li>Subtitle, Basic, Right Detail, Left Detail</li>
+</ul>
+</li>
+<li>UITableViewCell 用来自定义</li>
+<li>两个重要部分 delegate 和 dataSource，如果需要动态的列表</li>
+<li><code>dequeueReusableCellWithIndentifier</code> 来重用 cell  </li>
+<li><code>UITableViewDataSource</code><ul>
+<li>Number of sections is 1 by default</li>
+<li>No default for <code>numberOfRowsInSection</code></li>
+<li>do not implement these <code>dataSource</code> method for a static table</li>
+</ul>
+</li>
+<li>Loading your table view with data<ol>
+<li>set the table view’s <code>dataSource</code> to your Controller (automatic with <code>UITableViewController</code>)</li>
+<li>implement <code>numberOfSectionsInTableView</code> and <code>numberOfRowsInSection</code></li>
+<li>implement <code>cellForRowAtIndexPath</code> to return loaded-up <code>UITableViewCells</code></li>
+</ol>
+</li>
+<li>UITableView Target/Action<ul>
+<li><code>UITableViewDelegate</code> method sent when row is selected</li>
+<li><code>func reloadData()</code></li>
+</ul>
+</li>
+<li>这一部分很重要，要重点掌握</li>
+</ul>
+<h2 id="11_Unwind_Segues_2C_Alerts_2C_Timers_2C_View_Animation"><a href="#11_Unwind_Segues_2C_Alerts_2C_Timers_2C_View_Animation" class="headerlink" title="11 Unwind Segues, Alerts, Timers, View Animation"></a>11 Unwind Segues, Alerts, Timers, View Animation</h2><ul>
+<li>Unwind Segue<ul>
+<li>The only segue that does NOT create a new MVC</li>
+<li>Jumping up the stack of cards in a navigation controller</li>
+<li>Dismissing a Modally segued-to MVC while reporting information back to the presenter</li>
+<li>ctrl+drag to the exit icon</li>
+</ul>
+</li>
+<li>Alerts and Action Sheets<ul>
+<li>pop up and ask the user something mechanism</li>
+</ul>
+</li>
+<li>Alerts<ul>
+<li>Pop up in the middle of the screen</li>
+<li>Usually ask questions with only two(or one) answers</li>
+<li>Can be disruptive to your user-iterface, so use carefully</li>
+<li>Often used for “asynchronous” problems</li>
+<li>Can have a text field to get a quikc answer</li>
+</ul>
+</li>
+<li>Action Sheets<ul>
+<li>Usually slide in from the bottom of the screen on iPhone, and in a popover on iPad</li>
+<li>Can be displayed from bar button item or from any rectangular area in a view</li>
+<li>Generally asks questions that have more than two answers</li>
+</ul>
+</li>
+<li>Timer <code>NSTimer</code><ul>
+<li>Setting up a timer to call a method periodically</li>
+<li>more for larger-grained activities </li>
+<li>It might help system performance to set a tolerance for “late firing”</li>
+<li>the firing time is relative to the start of the timer</li>
+</ul>
+</li>
+<li>Kinds of Animation<ul>
+<li>Animating <code>UIView</code> properties</li>
+<li>Animation of View Controller transition</li>
+<li>Core Animation </li>
+</ul>
+</li>
+<li>UIView Animation<ul>
+<li>Change to certain <code>UIView</code> properties can be animated over time<ul>
+<li>frame, transform(translation, rotation and scale), alpha(opacity)</li>
+</ul>
+</li>
+<li>Done with <code>UIView</code> class method(s) using closure</li>
+<li><code>animateWithDuration</code></li>
+<li><code>UIViewAnimationOptions</code>: BeginFromCurrentState, AllowUserInteraction, LayoutSubview, Repeat, Autoreverse, OverrideInheritedDuration, OverrideInheritedCurve, AllowAnimatedContent, CurveEaseInEaseOut, CurveEaseIn, CurveLinear</li>
+<li>Sometimes you want to make an entire view modification at once</li>
+<li>Use closures again with this <code>UIView</code> class method</li>
+</ul>
+</li>
+</ul>
+<h2 id="12_Dynamic_Animation"><a href="#12_Dynamic_Animation" class="headerlink" title="12 Dynamic Animation"></a>12 Dynamic Animation</h2><ul>
+<li>Set up physics relating animatable objects and let them run until they resulve to stasis</li>
+<li>Steps<ul>
+<li>Create a <code>UIDynamicAnimator</code></li>
+<li>Add <code>UIDynamicBehaviro</code>s to it (gravity, collisions, etc)</li>
+<li>Add <code>UIDynamicItem</code>s (usualy <code>UIView</code>s) to the <code>UIDynamicBehavior</code>s</li>
+</ul>
+</li>
+<li>UIGravityBehavior<ul>
+<li>angle, magnitude</li>
+</ul>
+</li>
+<li>Stasis<ul>
+<li><code>UIDynamicAnimator</code>‘s delegate tells you when animation pauses</li>
+<li><code>dynamicAnimatorDidPause(UIDynamicAnimator)</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="13_Application_Lifecycle_and_Core_Motion"><a href="#13_Application_Lifecycle_and_Core_Motion" class="headerlink" title="13 Application Lifecycle and Core Motion"></a>13 Application Lifecycle and Core Motion</h2><ul>
+<li>Notification<ul>
+<li>For Model (or global) to Controller communication</li>
+<li><code>NSnotificationCenter</code>，类似一个观察者模式，注册并获取变动时的通知</li>
+</ul>
+</li>
+<li>Application Lifecycle<ul>
+<li>Not running, Inactive, Active, Background, Suspended</li>
+<li><code>application(UIApplication, didFinishLauchingWithOptions: [NSObject: AnyObject])</code></li>
+<li>用来知道自己的 app 是在什么情况下被打开的（不只是用户点击这一种）</li>
+</ul>
+</li>
+<li>UIApplication<ul>
+<li>Shared instance<ul>
+<li>manages all global behavior</li>
+<li>never need to subclass it</li>
+<li>It delegates everything you need to be involved in to its <code>UIApplicationDelegate</code> </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Info.plist<ul>
+<li>Many of your application’s settings are in Info.plist</li>
+</ul>
+</li>
+<li>Capabilities<ul>
+<li>Some features require enabling (iCloud, Game Center, etc)</li>
+<li>Switch on in Capabilities tab (Inside your Project Settings)</li>
+</ul>
+</li>
+<li>Airdrop 需要先注册，参考 Trak 的 info.plist</li>
+<li>Core Motion<ul>
+<li>API to access motion sensing hardware on your device</li>
+<li>Primary inputs: Accelerometer, Gyro, Magnetometer</li>
+<li>Class used to get this input is <code>CMMotionManager</code></li>
+<li>Usage<ul>
+<li>Check to see what hardware is available</li>
+<li>Start the sampling going and poll the motion manager for the latest sample it have</li>
+<li>…or…</li>
+<li>check to see what hardware is available</li>
+<li>Set the rate at which you want data to be reported from the hardware</li>
+<li>Register a closure (and a queue to run it on) to call each time a sample is taken</li>
+</ul>
+</li>
+<li>Checking availability of hardware sensor<ul>
+<li><code>var {accelerometer, gyro, magnetometer, deviceMotion}Available: Bool</code></li>
+</ul>
+</li>
+<li>Starting the hardware sensors collecting data<ul>
+<li>you only need to do this if you are going to poll for data</li>
+<li><code>func start{Accelerometer, Gyro, Magnetometer, DeviceMotion}Updates()</code></li>
+</ul>
+</li>
+<li>Is the hardware currently collection data?<ul>
+<li><code>var {accelerometer,gyro,magnetometer,deviceMotion}Active: Bool</code></li>
+</ul>
+</li>
+<li>Stop the hardware collecting data<ul>
+<li><code>func stop{Accelerometer,Gyro,Magnetometer,DeviceMotion}Updates()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>CMDeviceMotion<ul>
+<li>各种传感器的组合 </li>
+</ul>
+</li>
+</ul>
+<h2 id="14_Core_Location_and_MapKit"><a href="#14_Core_Location_and_MapKit" class="headerlink" title="14 Core Location and MapKit"></a>14 Core Location and MapKit</h2><ul>
+<li>Core Location<ul>
+<li>Framework for managing location and heading<ul>
+<li>No user-interface</li>
+</ul>
+</li>
+<li>Basic object is <code>CLLocation</code><ul>
+<li>Properties: <code>coordinate</code>, <code>altitude</code>, <code>horizontal/verticallAccuracy</code>, <code>timestamp</code>, <code>speed</code>, <code>course</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>The more accuracy you request, the more battery will be used</li>
+<li><code>CLLocationManager</code><ul>
+<li>Check if the hardware you are on/user supports the kind of location updating you want</li>
+<li>Create a <code>CLLocationManager</code> instance and set the <code>delegate</code> to receive updates</li>
+<li>Configure the manager according to what kind of location updating you want</li>
+<li>Start the manager monitoring for location changes</li>
+</ul>
+</li>
+<li>Kinds of location monitoring<ul>
+<li>Accuracy-based continual updates</li>
+<li>Updates only when “significant” changes in location occur</li>
+<li>Region-based updates</li>
+<li>Heading monitoring </li>
+</ul>
+</li>
+<li>Asking <code>CLLocationManager</code> what your hardware can do<ul>
+<li><code>class func authorizationStatus() -&gt; CLAuthorizationStatus</code> // Authorized, Denied or Restricted</li>
+<li><code>class func locationServicesEnabled() -&gt; Bool</code> // user enabled (or not) locations for your app</li>
+</ul>
+</li>
+<li>You must add an Info.plist entry <ul>
+<li><code>NSLocationWhenInUseUsageDescription</code></li>
+<li><code>NSLocationAlwaysUsageDescription</code></li>
+</ul>
+</li>
+<li>Error reporting to the <code>delegate</code><ul>
+<li><code>func locationManager(CLLocationManager, didFailWithError: NSError)</code></li>
+<li>Not always a fatal thing, so pay attention to this <code>delegate</code> method</li>
+</ul>
+</li>
+<li>也可以进行后台更新</li>
+<li>Map Kit<ul>
+<li>UI, can have annotations on it</li>
+<li>Each annotation is a <code>coordinate</code>, a <code>title</code> and a <code>subtitle</code></li>
+<li>Annotation can have a <code>callout</code>. It appears when the annotation view is clicked</li>
+<li><code>import MapKit</code></li>
+<li>地图部分也是玩法很多的，需要仔细研究研究 </li>
+</ul>
+</li>
+<li>MKLocalSearch<ul>
+<li>Can search by natural language strings asynchronously</li>
+</ul>
+</li>
+<li>MKDirections, MKRoute, MKPolyline</li>
+<li>Overlays, MKOverlayView</li>
+<li>callout 只能代码配合 storyboard 实现，因为 storyboard 压根不会显示这个 callout</li>
+</ul>
+<h2 id="15_Modal_Segues"><a href="#15_Modal_Segues" class="headerlink" title="15 Modal Segues"></a>15 Modal Segues</h2><ul>
+<li>Modal View Controller<ul>
+<li>A way of segueing that takes over the screen (should be used with care)</li>
+<li>Example (Contacts application)</li>
+<li>No back button (only Cancel)</li>
+</ul>
+</li>
+<li>Hearing back from a Modally segue-to View Controller<ul>
+<li>To communicate results, generally you would Unwind (though delegation possible too)</li>
+<li><code>func dismissViewControllerAnimated(Bool, completion: () -&gt; Void)</code></li>
+<li>Remember that unwind automatically dismisses</li>
+</ul>
+</li>
+<li>How is the modal view controller animated<ul>
+<li><code>var modalTransitionStyle: UIModalTransitionStyle</code></li>
+<li><code>.CoverVertical</code>, <code>.FlipHorizontal</code>, <code>.CrossDissolve</code>, <code>.PartialCurl</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="16_Camera_2C_Persistence_and_Embed_Segues"><a href="#16_Camera_2C_Persistence_and_Embed_Segues" class="headerlink" title="16 Camera, Persistence and Embed Segues"></a>16 Camera, Persistence and Embed Segues</h2><ul>
+<li>UIImagePickerController<ul>
+<li>Modal view to get media from camera or photo library</li>
+<li>Usage<ol>
+<li>Create it &amp; set its delegate</li>
+<li>Configure it (source, kind of media, user edibility)</li>
+<li>Present it</li>
+<li>Respond to delegate method when user is done/cancels picking the media</li>
+</ol>
+</li>
+<li>Sources: <code>.PhotoLibrary</code>, <code>.Camera</code>, <code>.SavedPhotosAlbum</code></li>
+<li><code>kUTTypeImage</code>, <code>kUTTypeMovie</code> from <code>import MobileCoreServices</code></li>
+</ul>
+</li>
+<li>相机这部分等移植图像处理库的时候再细细研究</li>
+<li>Persistence<ul>
+<li>Archiving, SQLite, File System, Core Data</li>
+</ul>
+</li>
+<li>Archiving<ul>
+<li>A mechanism for making ANY object graph persistent</li>
+<li>Requires all object in the graph to implement <code>USCoding</code> protocol</li>
+</ul>
+</li>
+<li>SQLite<ul>
+<li>SQL in a single file</li>
+<li>Fast, low memory, reliable</li>
+<li>Open SOurce, comes bundled in iOS</li>
+<li>Not good for everything</li>
+<li>Not a server-based technology</li>
+<li>In used by Core Data</li>
+</ul>
+</li>
+<li>File System<ul>
+<li>Acess files in the Unix filesystem<ol>
+<li>Get the root of a path into an NSURL</li>
+<li>Append path componnets to the URL</li>
+<li>Write to/read from the files</li>
+<li>Manage the filesystem with <code>NSFileManager</code> </li>
+</ol>
+</li>
+<li>You can only write inside your application’s sandbox<ul>
+<li>Security, Privacy, Cleanup</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Core Data<ul>
+<li>Object-oriented database</li>
+<li>Very, very powerful framework in iOS</li>
+<li>How does it work?<ul>
+<li>Create a visual mapping (using Xcode tool) between database and objects</li>
+<li>Create and query for objects using object-oriented API</li>
+<li>Access the “columns in the database table” using <code>@NSManaged var</code>s on those objects</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Embed Segues<ul>
+<li>Putting a VC’s self.view in another VC’s view hierarchy</li>
+<li>This can be a very powerful encapsulation technique </li>
+<li>Drag out a `Container View from the object palette into the scene you want to embed it in</li>
+<li>Automatically sets up an “Embed Segue” from container VC to the contained VC</li>
+<li>The embedded VC’s outlets are not set at the time <code>prepareForSegue(sender:)</code> is called</li>
+</ul>
+</li>
+</ul>
+<h2 id="17_Internationalization_and_Settings"><a href="#17_Internationalization_and_Settings" class="headerlink" title="17 Internationalization and Settings"></a>17 Internationalization and Settings</h2><ul>
+<li>Two steps to making international versions of your application<ul>
+<li>Internationalization (i18n)</li>
+<li>Localization (l10n)</li>
+</ul>
+</li>
+<li>Internationalization<ul>
+<li>This is a process of making string externally editable (from storyboard or code)</li>
+<li>It also involves using certain “formatting” classes for things like dates, number, etc</li>
+</ul>
+</li>
+<li>Localization<ul>
+<li>A process of translating those externalized strings for a given language</li>
+</ul>
+</li>
+<li>Storyboards are localized by changing the strings inside only<ul>
+<li>And we rely on Autolayout to make it all look nice</li>
+</ul>
+</li>
+<li>First step: Registering Localizable Languages<ul>
+<li>Go to the Project pane in Xcode then Info tab to add Localizations</li>
+<li>注意是 project 不是 target </li>
+</ul>
+</li>
+<li>Formatters<ul>
+<li>locale, region of the world</li>
+<li>It is separate from language</li>
+<li>In different regions some things might display differently: numbers, dates, currency, etc</li>
+<li>有各种 Formatter，可以仔细看看</li>
+<li>Date 是一个比较难处理的，需要注意</li>
+</ul>
+</li>
+<li>UIImage<ul>
+<li>There are a number of ways to approach this.</li>
+<li>The image files themselves (if not in Images.xcassets) can be made localizable (File Inspector)</li>
+<li>Or you can keep them in Images.scassets and use NSLocalizedString for the image name</li>
+</ul>
+</li>
+<li>Editor -&gt; Export For Localization<ul>
+<li><code>.xliff</code> cantain all of your resources</li>
+</ul>
+</li>
+<li>可以创建不同的 scheme 来以不同的语言来运行 app</li>
+<li>Settings<ul>
+<li>A little bit of UI for your application</li>
+<li>在类似 Info.plist 里进行创建 -&gt; Settings Bundle</li>
+<li>创建时会有一个例子，是很好的参考学习方式</li>
+<li>每个 item 有 identifier</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Swift-千金方/" rel="tag">#Swift 千金方</a>
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/教程/" rel="tag">#教程</a>
+          
+            <a href="/tags/斯坦福-CS193p/" rel="tag">#斯坦福 CS193p</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/17/strange-ios-2/" rel="next" title="iOS 杂病论 2 - HTTP? HTTPS!">
+                <i class="fa fa-chevron-left"></i> iOS 杂病论 2 - HTTP? HTTPS!
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/19/pragmatic-programmer-note/" rel="prev" title="【程序员修炼之道】读书笔记">
+                【程序员修炼之道】读书笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/12/18/swift-tricks-2/"
+           data-title="Swift 千金方 2 - Stanford CS193p 学习笔记" data-url="http://wdxtub.com/2015/12/18/swift-tricks-2/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1_Logistics_2C_iOS_8_Overview"><span class="nav-number">1.</span> <span class="nav-text">1 Logistics, iOS 8 Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What_u2019s_in_iOS"><span class="nav-number">1.1.</span> <span class="nav-text">What’s in iOS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Platform_Components"><span class="nav-number">1.2.</span> <span class="nav-text">Platform Components</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Calculator_Tutorial"><span class="nav-number">1.3.</span> <span class="nav-text">Calculator Tutorial</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2_More_Xcode_and_Swift_2C_MVC"><span class="nav-number">2.</span> <span class="nav-text">2 More Xcode and Swift, MVC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3_Applying_MVC"><span class="nav-number">3.</span> <span class="nav-text">3 Applying MVC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4_More_Swift_and_Foundation_Frameworks"><span class="nav-number">4.</span> <span class="nav-text">4 More Swift and Foundation Frameworks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Optional"><span class="nav-number">4.1.</span> <span class="nav-text">Optional</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Other_Classes"><span class="nav-number">4.2.</span> <span class="nav-text">Other Classes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data_Structures"><span class="nav-number">4.3.</span> <span class="nav-text">Data Structures</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Value_vs-_Reference"><span class="nav-number">4.4.</span> <span class="nav-text">Value vs. Reference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AnyObject"><span class="nav-number">4.5.</span> <span class="nav-text">AnyObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">4.6.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5_Objective_C_Compatibility_2C_Property_List_2C_Views"><span class="nav-number">5.</span> <span class="nav-text">5 Objective C Compatibility, Property List, Views</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6_Protocols_and_Delegation_2C_Gestures"><span class="nav-number">6.</span> <span class="nav-text">6 Protocols and Delegation, Gestures</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7_Multiple_MVCs"><span class="nav-number">7.</span> <span class="nav-text">7 Multiple MVCs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8_View_Controller_Lifecycle_2C_Autolayout"><span class="nav-number">8.</span> <span class="nav-text">8 View Controller Lifecycle, Autolayout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9_ScrollView_and_Multithreading"><span class="nav-number">9.</span> <span class="nav-text">9 ScrollView and Multithreading</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10_Table_View"><span class="nav-number">10.</span> <span class="nav-text">10 Table View</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11_Unwind_Segues_2C_Alerts_2C_Timers_2C_View_Animation"><span class="nav-number">11.</span> <span class="nav-text">11 Unwind Segues, Alerts, Timers, View Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12_Dynamic_Animation"><span class="nav-number">12.</span> <span class="nav-text">12 Dynamic Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13_Application_Lifecycle_and_Core_Motion"><span class="nav-number">13.</span> <span class="nav-text">13 Application Lifecycle and Core Motion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14_Core_Location_and_MapKit"><span class="nav-number">14.</span> <span class="nav-text">14 Core Location and MapKit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#15_Modal_Segues"><span class="nav-number">15.</span> <span class="nav-text">15 Modal Segues</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#16_Camera_2C_Persistence_and_Embed_Segues"><span class="nav-number">16.</span> <span class="nav-text">16 Camera, Persistence and Embed Segues</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#17_Internationalization_and_Settings"><span class="nav-number">17.</span> <span class="nav-text">17 Internationalization and Settings</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

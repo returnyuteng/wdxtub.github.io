@@ -1,0 +1,885 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ActionBar,Android,Java," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="因为在项目中需要使用 ActionBar 进行一些自定义操作以提高整体的视觉效果，所以研究了一下 ActionBar 的用法，在这里记录一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 开发笔记 1 - ActionBar">
+<meta property="og:url" content="http://wdxtub.com/2015/12/03/actionbar-basic/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="因为在项目中需要使用 ActionBar 进行一些自定义操作以提高整体的视觉效果，所以研究了一下 ActionBar 的用法，在这里记录一下。">
+<meta property="og:image" content="http://wdxtub.com/images/14491739226392.png">
+<meta property="og:updated_time" content="2015-12-03T23:59:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 开发笔记 1 - ActionBar">
+<meta name="twitter:description" content="因为在项目中需要使用 ActionBar 进行一些自定义操作以提高整体的视觉效果，所以研究了一下 ActionBar 的用法，在这里记录一下。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Android 开发笔记 1 - ActionBar | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android 开发笔记 1 - ActionBar
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-03T18:52:23+08:00" content="2015-12-03">
+              2015-12-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/03/actionbar-basic/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/03/actionbar-basic/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>因为在项目中需要使用 ActionBar 进行一些自定义操作以提高整体的视觉效果，所以研究了一下 ActionBar 的用法，在这里记录一下。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u9690_u85CF_ActionBar"><a href="#u9690_u85CF_ActionBar" class="headerlink" title="隐藏 ActionBar"></a>隐藏 ActionBar</h2><p>比较简单的方式就是换主题，在 Android 5 中就是在对应的 xml 文件里修改 <code>android:theme</code> 字段，或者也可以直接在 Activity 中用以下代码来隐藏：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">ActionBar actionBar = getActionBar();&#10;actionBar.hide();</span><br></pre></td></tr></table></figure>
+<h2 id="u4FEE_u6539_u56FE_u6807_u548C_u6807_u9898"><a href="#u4FEE_u6539_u56FE_u6807_u548C_u6807_u9898" class="headerlink" title="修改图标和标题"></a>修改图标和标题</h2><p>这一部分的操作都需要在 <code>AndroidManifest.xml</code> 中进行，而对于标题的绑定一般来说是在 <code>strings.xml</code> 里进行统一管理</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">activity</span></span><br><span class="line">  <span class="attribute">android:name</span>=<span class="value">".ui.MainActivity"</span></span><br><span class="line">  <span class="attribute">android:label</span>=<span class="value">"@string/title_activity_main"</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">activity</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>修改标题，就是修改 label 属性，需要添加图标的话，就是添加一个 <code>android:logo</code> 字段即可</p>
+<h2 id="u6DFB_u52A0_u6309_u94AE"><a href="#u6DFB_u52A0_u6309_u94AE" class="headerlink" title="添加按钮"></a>添加按钮</h2><p>ActionBar还可以根据应用程序当前的功能来提供与其相关的Action按钮，这些按钮都会以图标或文字的形式直接显示在ActionBar上。当然，如果按钮过多，ActionBar上显示不完，多出的一些按钮可以隐藏在overflow里面（最右边的三个点就是overflow按钮），点击一下overflow按钮就可以看到全部的Action按钮了。</p>
+<p>当Activity启动的时候，系统会调用Activity的 <code>onCreateOptionsMenu()</code>方法来取出所有的Action按钮，我们只需要在这个方法中去加载一个menu资源，并把所有的Action按钮都定义在资源文件里面就可以了。像下面这样</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">menu</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:app</span>=<span class="value">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span></span><br><span class="line">    <span class="attribute">tools:context</span>=<span class="value">"lgm.cmu.spotagram.ui.MainActivity"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">item</span> <span class="attribute">android:id</span>=<span class="value">"@+id/action_search"</span></span><br><span class="line">        <span class="attribute">android:title</span>=<span class="value">"Search"</span></span><br><span class="line">        <span class="attribute">android:icon</span>=<span class="value">"@drawable/ic_check"</span></span><br><span class="line">        <span class="attribute">app:showAsAction</span>=<span class="value">"always"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">item</span> <span class="attribute">android:id</span>=<span class="value">"@+id/action_nearby"</span></span><br><span class="line">        <span class="attribute">android:title</span>=<span class="value">"Near By"</span></span><br><span class="line">        <span class="attribute">android:logo</span>=<span class="value">"@drawable/ic_cast_dark"</span></span><br><span class="line">        <span class="attribute">app:showAsAction</span>=<span class="value">"always"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">item</span> <span class="attribute">android:id</span>=<span class="value">"@+id/action_settings"</span></span><br><span class="line">        <span class="attribute">android:title</span>=<span class="value">"Settings"</span></span><br><span class="line">        <span class="attribute">android:orderInCategory</span>=<span class="value">"100"</span></span><br><span class="line">        <span class="attribute">app:showAsAction</span>=<span class="value">"never"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">menu</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这里主要注意一下 <code>showAsAction</code> 属性即可：<code>always</code> 表示永远显示在 ActionBar 中，如果屏幕空间不够则无法显示，<code>ifRoom</code> 表示屏幕空间够的情况下显示在 ActionBar 中，不够的话就显示在 overflow 中，<code>never</code> 则表示永远显示在 overflow 中</p>
+<p>然后重写对应 Activity 的 <code>onCreateOpitonsMenu()</code> 方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCreateOptionsMenu</span><span class="params">(Menu menu)</span></span>&#123;</span><br><span class="line">   MenuInflater inflater = getMenuInflater();</span><br><span class="line">   inflater.inflate(R.menu.menu_main, menu);</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">super</span>.onCreateOptionsMenu(menu);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>是显示图标还是文字这个大家可以根据具体的需求来做，但是给每个 item 一个 title 属性是比较好的习惯，因为：</p>
+<ul>
+<li>当 ActionBar 中的剩余空间不足的时候，如果 Action 按钮指定的 showAsAction 属性是 ifRoom 的话，该 Action 按钮就会出现在 overflow 当中，此时就只有 title 能够显示了。</li>
+<li>如果 Action 按钮在 ActionBar 中显示，用户可能通过长按该 Action 按钮的方式来查看到 title 的内容。</li>
+</ul>
+<h2 id="u7ED9_u6309_u94AE_u6DFB_u52A0_u70B9_u51FB_u4E8B_u4EF6"><a href="#u7ED9_u6309_u94AE_u6DFB_u52A0_u70B9_u51FB_u4E8B_u4EF6" class="headerlink" title="给按钮添加点击事件"></a>给按钮添加点击事件</h2><p>当用户点击 Action 按钮的时候，系统会调用 Activity 的 <code>onOptionsItemSelected()</code> 方法，通过方法传入的 <code>MenuItem</code> 参数，我们可以调用它的 <code>getItemId()</code> 方法和 menu 资源中的 id 进行比较，从而辨别出用户点击的是哪一个 Action 按钮</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">   Intent intent;</span><br><span class="line">   <span class="keyword">switch</span> (item.getItemId())&#123;</span><br><span class="line">       <span class="keyword">case</span> R.id.action_search:</span><br><span class="line">           Toast.makeText(<span class="keyword">this</span>, <span class="string">"Search"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       <span class="keyword">case</span> R.id.action_nearby:</span><br><span class="line">           intent = <span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, NearByActivity.class);</span><br><span class="line">           startActivity(intent);</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       <span class="keyword">case</span> R.id.action_settings:</span><br><span class="line">           intent = <span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, SettingsActivity.class);</span><br><span class="line">           startActivity(intent);</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       <span class="keyword">case</span> R.id.action_aboutme:</span><br><span class="line">           intent = <span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, AboutMeActivity.class);</span><br><span class="line">           startActivity(intent);</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       <span class="keyword">default</span>:</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">super</span>.onOptionsItemSelected(item);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="u901A_u8FC7_ActionBar__u8FDB_u884C_u5BFC_u822A"><a href="#u901A_u8FC7_ActionBar__u8FDB_u884C_u5BFC_u822A" class="headerlink" title="通过 ActionBar 进行导航"></a>通过 ActionBar 进行导航</h2><p>除了通过 back 按钮，同样可以在 ActionBar 上实现导航，只需要调用 <code>setDisplayHomeAsUpEnabled()</code> 方法启用即可：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">   setContentView(R.layout.activity_near_by);</span><br><span class="line">   <span class="comment">// 重点是这行</span></span><br><span class="line">   getSupportActionBar().setDisplayHomeAsUpEnabled(<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">	 <span class="comment">// 以下是其他代码</span></span><br><span class="line">   initComponments();</span><br><span class="line">   initViews();</span><br><span class="line">   initListeners();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样一来就会出现一个向左的箭头，我们给它加上点击事件，注意这里一定要是 <code>android.R.id.home</code> 才可以：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">switch</span> (item.getItemId())&#123;</span><br><span class="line">       <span class="keyword">case</span> android.R.id.home:</span><br><span class="line">           finish();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       <span class="keyword">default</span>:</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">super</span>.onOptionsItemSelected(item);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但这样的用法实际上和 back 键没啥区别，不过其设计的初衷是支持层次调用的，比如说：</p>
+<p><img src="/images/14491739226392.png" alt=""></p>
+<p>上图中的 Conversation List 是收件箱的主界面，现在我们点击第一封邮件会进入到Conversation1 details 界面，然后点击下一封邮件会进入到 Conversation 2 details 界面，再点击下一封邮箱会进入到 Conversation3 details 界面。好的，这个时候如果我们按下 Back 键，应该会回到 Conversation 2 details 界面，再按一次 Back 键应该回到 Conversation1 details 界面，再按一次 Back 键才会回到 Conversation List。而 ActionBar 导航则不应该表现出这种行为，无论我们当前在哪一个 Conversation details 界面，点击一下导航按钮都应该回到 Conversation List 界面才对。</p>
+<p>实现标准的ActionBar导航功能只需三步走。</p>
+<p>第一步我们已经实现了，就是调用setDisplayHomeAsUpEnabled()方法，并传入true。</p>
+<p>第二步需要在AndroidManifest.xml中配置父Activity，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">activity</span></span><br><span class="line">    <span class="attribute">android:name</span>=<span class="value">"com.example.actionbartest.MainActivity"</span></span><br><span class="line">    <span class="attribute">android:logo</span>=<span class="value">"@drawable/weather"</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">meta-data</span></span><br><span class="line">        <span class="attribute">android:name</span>=<span class="value">"android.support.PARENT_ACTIVITY"</span></span><br><span class="line">        <span class="attribute">android:value</span>=<span class="value">"com.example.actionbartest.LaunchActivity"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">activity</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，这里通过meta-data标签指定了 MainActivity 的父 Activity 是LaunchActivity，在 Android 4.1 版本之后，也可以直接使用<code>android:parentActivityName</code> 这个属性来进行指定，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">activity</span></span><br><span class="line">    <span class="attribute">android:name</span>=<span class="value">"com.example.actionbartest.MainActivity"</span></span><br><span class="line">    <span class="attribute">android:logo</span>=<span class="value">"@drawable/weather"</span></span><br><span class="line">    <span class="attribute">android:parentActivityName</span>=<span class="value">"com.example.actionbartest.LaunchActivity"</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">activity</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>第三步则需要对android.R.id.home这个事件进行一些特殊处理，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">switch</span> (item.getItemId()) &#123;</span><br><span class="line">	<span class="keyword">case</span> android.R.id.home:</span><br><span class="line">		Intent upIntent = NavUtils.getParentActivityIntent(<span class="keyword">this</span>);</span><br><span class="line">		<span class="keyword">if</span> (NavUtils.shouldUpRecreateTask(<span class="keyword">this</span>, upIntent)) &#123;</span><br><span class="line">			TaskStackBuilder.create(<span class="keyword">this</span>)</span><br><span class="line">					.addNextIntentWithParentStack(upIntent)</span><br><span class="line">					.startActivities();</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);</span><br><span class="line">			NavUtils.navigateUpTo(<span class="keyword">this</span>, upIntent);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        ......</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中，调用NavUtils.getParentActivityIntent()方法可以获取到跳转至父Activity的Intent，然后如果父Activity和当前Activity是在同一个Task中的，则直接调用navigateUpTo()方法进行跳转，如果不是在同一个Task中的，则需要借助TaskStackBuilder来创建一个新的Task。</p>
+<p>这样，就按照标准的规范成功实现ActionBar导航的功能了。</p>
+<h2 id="u6DFB_u52A0_Action_View"><a href="#u6DFB_u52A0_Action_View" class="headerlink" title="添加 Action View"></a>添加 Action View</h2><p>ActionView 是一种可以在 ActionBar 中替换 Action 按钮的控件，它可以允许用户在不切换界面的情况下通过 ActionBar 完成一些较为丰富的操作。比如说，你需要完成一个搜索功能，就可以将 SeachView 这个控件添加到 ActionBar 中。在我的这个应用中，将提供在搜索地点功能。</p>
+<p>为了声明一个ActionView，我们可以在 menu 资源中通过 actionViewClass 属性来指定一个控件，例如可以使用如下方式添加 SearchView:</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">menu</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">	  <span class="attribute">xmlns:appcompat</span>=<span class="value">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    <span class="attribute">xmlns:app</span>=<span class="value">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span></span><br><span class="line">    <span class="attribute">tools:context</span>=<span class="value">"lgm.cmu.spotagram.ui.MainActivity"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">item</span> <span class="attribute">android:id</span>=<span class="value">"@+id/action_search"</span></span><br><span class="line">        <span class="attribute">android:title</span>=<span class="value">"Search"</span></span><br><span class="line">        <span class="attribute">app:showAsAction</span>=<span class="value">"ifRoom|collapseActionView"</span></span><br><span class="line">        <span class="attribute">appcompat:actionViewClass</span>=<span class="value">"android.support.v7.widget.SearchView"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    ....</span><br><span class="line"><span class="tag">&lt;/<span class="title">menu</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意在 showAsAction 属性中我们还声明了一个 collapseActionView，这个值表示该控件可以被合并成一个 Action 按钮。然后需要在对应的 Activity 中添加方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCreateOptionsMenu</span><span class="params">(Menu menu)</span></span>&#123;</span><br><span class="line">   MenuInflater inflater = getMenuInflater();</span><br><span class="line">   inflater.inflate(R.menu.menu_main, menu);</span><br><span class="line"></span><br><span class="line">   MenuItem searchItem = menu.findItem(R.id.action_search);</span><br><span class="line">   SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">   searchView.setOnQueryTextListener(<span class="keyword">new</span> SearchView.OnQueryTextListener() &#123;</span><br><span class="line">       <span class="annotation">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onQueryTextChange</span><span class="params">(String queryText)</span> </span>&#123;</span><br><span class="line">           Toast.makeText(getApplicationContext(), <span class="string">"onQueryTextChange:"</span> + queryText, Toast.LENGTH_SHORT).show();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="annotation">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onQueryTextSubmit</span><span class="params">(String queryText)</span> </span>&#123;</span><br><span class="line">           Toast.makeText(getApplicationContext(), <span class="string">"onQueryTextSubmit:"</span> + queryText, Toast.LENGTH_SHORT).show();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;);</span><br><span class="line"></span><br><span class="line">   MenuItemCompat.OnActionExpandListener expandListener = <span class="keyword">new</span> OnActionExpandListener() &#123;</span><br><span class="line">       <span class="annotation">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onMenuItemActionCollapse</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">           Toast.makeText(getApplicationContext(), <span class="string">"onMenuItemActionCollapse"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="annotation">@Override</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onMenuItemActionExpand</span><span class="params">(MenuItem item)</span> </span>&#123;</span><br><span class="line">           Toast.makeText(getApplicationContext(), <span class="string">"onMenuItemActionExpand"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   MenuItemCompat.setOnActionExpandListener(searchItem, expandListener);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">super</span>.onCreateOptionsMenu(menu);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里同时也注册了监听器，所以只要在监听器中进行时间处理即可</p>
+<h2 id="Overflow__u663E_u793A_u95EE_u9898"><a href="#Overflow__u663E_u793A_u95EE_u9898" class="headerlink" title="Overflow 显示问题"></a>Overflow 显示问题</h2><p>overflow 按钮的显示情况和手机的硬件情况是有关系的，如果手机没有物理 Menu 键的话， overflow 按钮就可以显示，如果有物理 Menu 键的话，overflow 按钮就不会显示出来。</p>
+<p>根据这个原理，我们只要默认无论如何都是没有 menu 按键即可。在 ViewConfiguration 这个类中有一个叫做 sHasPermanentMenuKey 的静态变量，系统就是根据这个变量的值来判断手机有没有物理 Menu 键的。当然这是一个内部变量，我们无法直接访问它，但是可以通过反射的方式修改它的值，让它永远为 false 就可以了，代码如下所示</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">	......</span><br><span class="line">	setOverflowShowingAlways();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setOverflowShowingAlways</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		ViewConfiguration config = ViewConfiguration.get(<span class="keyword">this</span>);</span><br><span class="line">		Field menuKeyField = ViewConfiguration.class.getDeclaredField(<span class="string">"sHasPermanentMenuKey"</span>);</span><br><span class="line">		menuKeyField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">		menuKeyField.setBoolean(config, <span class="keyword">false</span>);</span><br><span class="line">	&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Overflow__u4E2D_u7684_u9009_u9879_u663E_u793A_u56FE_u6807"><a href="#Overflow__u4E2D_u7684_u9009_u9879_u663E_u793A_u56FE_u6807" class="headerlink" title="Overflow 中的选项显示图标"></a>Overflow 中的选项显示图标</h2><p>如果你点击一下overflow按钮去查看隐藏的Action按钮，你会发现这部分Action按钮都是只显示文字不显示图标的。这是官方的默认效果，Google 认为隐藏在 overflow 中的 Action 按钮都应该只显示文字。当然，如果你认为这样不够美观，希望在 overflow 中的 Action 按钮也可以显示图标，我们仍然可以想办法来改变这一默认行为。<br>其实，overflow 中的 Action 按钮应不应该显示图标，是由 MenuBuilder 这个类的 setOptionalIconsVisible 方法来决定的，如果我们在 overflow 被展开的时候给这个方法传入 true，那么里面的每一个 Action 按钮对应的图标就都会显示出来了。调用的方法当然仍然是用反射了，代码如下所示</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onMenuOpened</span><span class="params">(<span class="keyword">int</span> featureId, Menu menu)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (featureId == Window.FEATURE_ACTION_BAR &amp;&amp; menu != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (menu.getClass().getSimpleName().equals(<span class="string">"MenuBuilder"</span>)) &#123;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				Method m = menu.getClass().getDeclaredMethod(<span class="string">"setOptionalIconsVisible"</span>, Boolean.TYPE);</span><br><span class="line">				m.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">				m.invoke(menu, <span class="keyword">true</span>);</span><br><span class="line">			&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">super</span>.onMenuOpened(featureId, menu);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，这里我们重写了一个 onMenuOpened() 方法，当 overflow 被展开的时候就会回调这个方法，接着在这个方法的内部通过返回反射的方法将 MenuBuilder 的 setOptionalIconsVisible 变量设置为 true 就可以了。</p>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://blog.csdn.net/guolin_blog/article/details/18234477" target="_blank" rel="external">Android ActionBar完全解析，使用官方推荐的最佳导航栏(上)</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ActionBar/" rel="tag">#ActionBar</a>
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/Java/" rel="tag">#Java</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/30/game-design/" rel="next" title="游戏的架构与细节梳理">
+                <i class="fa fa-chevron-left"></i> 游戏的架构与细节梳理
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/03/android-map-v2-basic/" rel="prev" title="Android 开发笔记 2 - Google Map V2">
+                Android 开发笔记 2 - Google Map V2 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/12/03/actionbar-basic/"
+           data-title="Android 开发笔记 1 - ActionBar" data-url="http://wdxtub.com/2015/12/03/actionbar-basic/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u9690_u85CF_ActionBar"><span class="nav-number">1.</span> <span class="nav-text">隐藏 ActionBar</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4FEE_u6539_u56FE_u6807_u548C_u6807_u9898"><span class="nav-number">2.</span> <span class="nav-text">修改图标和标题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6DFB_u52A0_u6309_u94AE"><span class="nav-number">3.</span> <span class="nav-text">添加按钮</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7ED9_u6309_u94AE_u6DFB_u52A0_u70B9_u51FB_u4E8B_u4EF6"><span class="nav-number">4.</span> <span class="nav-text">给按钮添加点击事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u901A_u8FC7_ActionBar__u8FDB_u884C_u5BFC_u822A"><span class="nav-number">5.</span> <span class="nav-text">通过 ActionBar 进行导航</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6DFB_u52A0_Action_View"><span class="nav-number">6.</span> <span class="nav-text">添加 Action View</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Overflow__u663E_u793A_u95EE_u9898"><span class="nav-number">7.</span> <span class="nav-text">Overflow 显示问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Overflow__u4E2D_u7684_u9009_u9879_u663E_u793A_u56FE_u6807"><span class="nav-number">8.</span> <span class="nav-text">Overflow 中的选项显示图标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

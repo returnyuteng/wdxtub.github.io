@@ -1,0 +1,832 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="上手 AWS 后，这一讲我们继续来看看另一个云服务提供商 Azure 要如何上手。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 第 8 课 Azure 动手玩">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-8.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="上手 AWS 后，这一讲我们继续来看看另一个云服务提供商 Azure 要如何上手。">
+<meta property="og:image" content="http://wdxtub.com/images/14529892365625.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14529894432878.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14529899780201.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14529899840018.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14529900566991.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/cc22.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14529800450459.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14529809204231.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/cc14.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/cc23.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14529979521284.jpg">
+<meta property="og:updated_time" content="2016-01-22T20:36:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 第 8 课 Azure 动手玩">
+<meta name="twitter:description" content="上手 AWS 后，这一讲我们继续来看看另一个云服务提供商 Azure 要如何上手。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 第 8 课 Azure 动手玩 | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>上手 AWS 后，这一讲我们继续来看看另一个云服务提供商 Azure 要如何上手。</p>
+<a id="more"></a>
+<hr>
+<p>通常来说在云平台上用来计算的资源叫做虚拟机，也叫实例 instance。不是所有的实例都是一样的，在 AWS 中有一些可以定制的选择，比如说操作系统和硬件配置等等。</p>
+<p>这一讲的主要任务是了解虚拟机并在上面跑一些应用程序，借此来理解不同配置的不同表现。我们都知道更好的配置就性能更强，但是：</p>
+<ul>
+<li>更贵的是不是真的更好？</li>
+<li>有没有什么办法来测量其性能表现？</li>
+<li>性能的差别有多少？</li>
+</ul>
+<p>这些问题都不简单，但是这一讲会给你一点点启发。</p>
+<p>我们首先会启动三种不同的 Azure 虚拟机，利用内置的性能测评来比较它们的相对性能表现，最后用公共访问的 web 服务器来测试性能。</p>
+<p>项目的最后会探索一下名为 vertical scaling 的常见规模化技术。这个过程中需要把 Azure 虚拟机的镜像拷贝到自己的存储账户中（很耗时），所以最好尽快开始。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Data Center: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-<span class="number">782</span>c-<span class="number">43</span>b5<span class="operator">-a</span>7df-<span class="number">1896844377</span>aa.vhd</span><br><span class="line">Load Generator: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.<span class="number">838</span>bf28c-ed03-<span class="number">41</span>f9-<span class="number">9810</span>-<span class="number">4</span>cbfa668d22e.vhd</span><br></pre></td></tr></table></figure>
+<h2 id="u542F_u52A8_u865A_u62DF_u673A"><a href="#u542F_u52A8_u865A_u62DF_u673A" class="headerlink" title="启动虚拟机"></a>启动虚拟机</h2><p>我们先来创建几个通用的虚拟机，并在上面做一些试验</p>
+<p><strong>第一步</strong></p>
+<p>访问 <a href="https://portal.azure.com/" target="_blank" rel="external">Azure portal</a>并创建一个新的虚拟机，运行 Ubuntu 14.04 LTS，使用 资源管理器作为部署模型。地区选择 East US，以及 Azure pass subscription。</p>
+<p><strong>第二步</strong></p>
+<p>我们需要创建三个不同大小的虚拟机：A1, A2, A3</p>
+<p><img src="/images/14529892365625.jpg" alt=""></p>
+<p><strong>第三步</strong></p>
+<p>在设置-&gt;存储中，选择标准，并创建新的存储账户(Standard-LRS)和位于 East US 的网络</p>
+<p><img src="/images/14529894432878.jpg" alt=""></p>
+<p><strong>第四步</strong></p>
+<p>创建好了虚拟机之后，修改对应的网络安全组，在入站安全规则中添加 TCP 80 端口</p>
+<p><img src="/images/14529899780201.jpg" alt=""></p>
+<p><img src="/images/14529899840018.jpg" alt=""></p>
+<p>注意三台机器都需要进行添加</p>
+<p><strong>第五步</strong></p>
+<p>给每个虚拟机打上标签</p>
+<p><img src="/images/14529900566991.jpg" alt=""></p>
+<p><strong>第六步</strong></p>
+<p>虚拟机正在运行的时候，就可以通过 IP 来进行访问了，如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh [username]@[Public IP address]</span><br></pre></td></tr></table></figure>
+<p>都登录上之后类似这样：</p>
+<p><img src="/images/cc22.jpg" alt="c"></p>
+<h2 id="u7CFB_u7EDF_u6027_u80FD_u6D4B_u8BC4"><a href="#u7CFB_u7EDF_u6027_u80FD_u6D4B_u8BC4" class="headerlink" title="系统性能测评"></a>系统性能测评</h2><p>我们需要在已经启动的实例中安装性能测评工具。通过这个来评估完成一个任务所需的最佳实例组合以做到多快好省。</p>
+<p>虽然云服务提供商是利用虚拟化技术来提供资源，但是需要知道实例的性能一来不是稳定的，二来也不保证达到某个水平。这里我们使用 <code>sysbench</code> 来评估性能，它是一个轻量级跨平台的性能测试软件，能够快速评估 CPU，内存和文件读写性能。</p>
+<p>执行下面的命令安装：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install sysbench</span><br></pre></td></tr></table></figure>
+<p>安装完成之后就可以按照给出的三个配置来进行测试。</p>
+<h3 id="CPU__u6D4B_u8BD5"><a href="#CPU__u6D4B_u8BD5" class="headerlink" title="CPU 测试"></a>CPU 测试</h3><p>分别在三个不同的机器运行下列命令，统计结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sysbench --num-threads=<span class="number">8</span> --test=cpu --cpu-max-prime=<span class="number">20000</span> run</span><br><span class="line">sysbench --num-threads=<span class="number">1</span> --test=cpu --cpu-max-prime=<span class="number">40000</span> run</span><br><span class="line">sysbench --num-threads=<span class="number">4</span> --test=cpu --cpu-max-prime=<span class="number">50000</span> run</span><br></pre></td></tr></table></figure>
+<p>表后面的三列分别是 A1, A2, A3 的总时间</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Max Prime</th>
+<th style="text-align:center">Thread</th>
+<th style="text-align:center">Time(A1)</th>
+<th style="text-align:center">Time(A2)</th>
+<th style="text-align:center">Time(A3)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">20000</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">74.8729s</td>
+<td style="text-align:center">35.7929s</td>
+<td style="text-align:center">18.6264s </td>
+</tr>
+<tr>
+<td style="text-align:center">40000</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">195.5052s</td>
+<td style="text-align:center">190.4013s</td>
+<td style="text-align:center">194.2614s</td>
+</tr>
+<tr>
+<td style="text-align:center">50000</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">263.7678s</td>
+<td style="text-align:center">125.2128</td>
+<td style="text-align:center">65.6631s</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到 Azure 的区分度比 AWS 大很多，不同等级基本上是一倍的性能提高。</p>
+<h3 id="u6587_u4EF6_IO__u6027_u80FD_u6D4B_u8BD5"><a href="#u6587_u4EF6_IO__u6027_u80FD_u6D4B_u8BD5" class="headerlink" title="文件 IO 性能测试"></a>文件 IO 性能测试</h3><p>Azure 通常会保证 Input/Output Operations per Second (IOPS)。不同的硬盘访问逻辑对性能影响很大（缓存导致），传统的机械硬盘受寻址时间和旋转速度的影响，固态硬盘受驱动和设备控制器的影响。</p>
+<p>同样用下面的命令来进行测试：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sysbench --test=fileio --file-total-size=<span class="number">20</span>G prepare </span><br><span class="line"><span class="comment"># 可能需要等待30分钟，使用 byobu / screen / tmux 来保持连接</span></span><br><span class="line"><span class="comment"># 或者可以在 iterm 设置中 profiles -&gt; sessions -&gt; When idel, send ASCII code</span></span><br><span class="line"><span class="comment"># 又或者 在客户端的 ~/.ssh/ 文件夹中添加 config 文件，并添加配置： ServerAliveInterval 60 </span></span><br><span class="line"></span><br><span class="line">sysbench --test=fileio --file-total-size=<span class="number">20</span>G --file-test-mode=rndrw --init-rng=on --max-time=<span class="number">300</span> --max-requests=<span class="number">0</span> run</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">\</th>
+<th style="text-align:center">A1</th>
+<th style="text-align:center">A2</th>
+<th style="text-align:center">A3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Read(Mb)</td>
+<td style="text-align:center">167.81</td>
+<td style="text-align:center">170.62</td>
+<td style="text-align:center">195.94</td>
+</tr>
+<tr>
+<td style="text-align:center">Written(Mb)</td>
+<td style="text-align:center">111.88</td>
+<td style="text-align:center">113.75</td>
+<td style="text-align:center">130.62</td>
+</tr>
+<tr>
+<td style="text-align:center">Total trans(Mb)</td>
+<td style="text-align:center">279.69</td>
+<td style="text-align:center">284.38</td>
+<td style="text-align:center">326.56</td>
+</tr>
+<tr>
+<td style="text-align:center">Speed(Mb/sec)</td>
+<td style="text-align:center">0.9547</td>
+<td style="text-align:center">0.9706</td>
+<td style="text-align:center">1.0884</td>
+</tr>
+</tbody>
+</table>
+<p>比较一下表中的数据，是不是随着价格的提高，性能也有对应比例的提高？</p>
+<p>可以看到从 A1 到 A3 几乎没有提升，而且与 aws 的相比，速度也是非常慢，估计是因为机械硬盘的缘故。</p>
+<h2 id="Web__u670D_u52A1_u5668_u6027_u80FD_u6D4B_u8BD5"><a href="#Web__u670D_u52A1_u5668_u6027_u80FD_u6D4B_u8BD5" class="headerlink" title="Web 服务器性能测试"></a>Web 服务器性能测试</h2><p>这门课上我们会学会如何配置，搭建和部署 web 服务。所以需要熟悉如何折腾服务器。这里我们会在每个实例中安装和部署一个简单的 web 服务器，修改一下主页以便测试和评分。</p>
+<p><a href="https://youtu.be/6_tPobCyF9o" target="_blank" rel="external">Apache 简介视频（墙外）</a></p>
+<p>LAMP = Linux + Apache + MySQL + PHP</p>
+<p>用以下命令安装 apache：<code>sudo apt-get install apache2</code></p>
+<p>安装完成之后，用自己的浏览器访问这个实例的地址，应该就可以看到 Apache 的欢迎页面</p>
+<p><img src="/images/14529800450459.jpg" alt=""></p>
+<p>如果访问 <code>cd /var/www/html</code> 就可以看到有一个 <code>index.html</code> 页面。</p>
+<p>我们把这个页面的内容替换成：</p>
+<p><code>15619 is awesome!</code> （<code>sudo vim index.html</code> 然后命令模式下 <code>dG</code>）</p>
+<p>再次访问的时候就可以看到变化了</p>
+<p>然后我们来安装 apachebench，也就是服务器管理器，命令如下：</p>
+<p><code>sudo apt-get install apache2-utils</code></p>
+<p>安装完成后，输入 <code>ab</code> 应该能看到命令界面，一个简单的测试命令为：</p>
+<p><code>ab -n 1000 -c 100 http://localhost/</code> (一次 1000 个 request，一共 100 次，最后是想要测试的页面)，然后就可以看到各种数据统计。</p>
+<p>在之后项目中，可能会用一组 load generators 来访问 web service 以检验你的 web 服务的性能和正确性。通常来说用平均每秒可以处理的请求数来衡量性能。正确率会基于字符串或正则表达式来拼配。类似于下图：</p>
+<p><img src="/images/14529809204231.jpg" alt=""></p>
+<p>地址为 <code>http://p0.loadgen.theproject.zone</code></p>
+<p>VM 的地址就是 EC2 的 public dns 地址；然后输入 andrew id 和提交密码(在页面上方)</p>
+<p>测试成功的话会显示 <code>Success!! Check TPZ for your score</code>，然后就可以课程网站上查看自己的成绩。</p>
+<h2 id="Vertical_Scaling"><a href="#Vertical_Scaling" class="headerlink" title="Vertical Scaling"></a>Vertical Scaling</h2><p>根据需要来改变所需的系统资源称为 Vertical Scaling。</p>
+<p>在这个场景中，我要启动一个 load generator，它会在一个数据中心实例上创造一些负载。通过一个恒定的负载，来比较不同类型实例的吞吐量（用 rps 来衡量，每秒处理的访问量）。</p>
+<p>在这里我们不能 SSH 连接到这些实例，但是可以通过访问特定的 endpoint 来查看当前的情况，具体步骤如下：</p>
+<p>先要把 load generator 和数据中心的镜像拷贝到自己的存储账户中。地址是：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Data Center: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-<span class="number">782</span>c-<span class="number">43</span>b5<span class="operator">-a</span>7df-<span class="number">1896844377</span>aa.vhd</span><br><span class="line"></span><br><span class="line">Load Generator: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.<span class="number">838</span>bf28c-ed03-<span class="number">41</span>f9-<span class="number">9810</span>-<span class="number">4</span>cbfa668d22e.vhd</span><br></pre></td></tr></table></figure>
+<p>和 <a href="http://wdxtub.com/2016/01/15/cc-5/">云计算 第 5 课 Azure API</a> 的方法是一样的，因为我们之前已经创建了 AD 应用之类的东西，有所需的 AppId, AppKey, TenantId 等内容，所以现在可以直接用之前的命令，但是要拷贝的内容换成上面的地址</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Data Center</span></span><br><span class="line">azure storage blob copy start https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-<span class="number">782</span>c-<span class="number">43</span>b5<span class="operator">-a</span>7df-<span class="number">1896844377</span>aa.vhd  --dest-account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --dest-account-key PUT_YOUR_KEY1_HERE --dest-container system</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load Generator</span></span><br><span class="line">azure storage blob copy start https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.<span class="number">838</span>bf28c-ed03-<span class="number">41</span>f9-<span class="number">9810</span>-<span class="number">4</span>cbfa668d22e.vhd  --dest-account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --dest-account-key PUT_YOUR_KEY1_HERE --dest-container system</span><br></pre></td></tr></table></figure>
+<p>也需要一定时间，可以用下面的命令来查看进度</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Data Center</span></span><br><span class="line">azure storage blob copy show --account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --account-key PUT_YOUR_KEY1_HERE --container system --blob Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-<span class="number">782</span>c-<span class="number">43</span>b5<span class="operator">-a</span>7df-<span class="number">1896844377</span>aa.vhd</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load Generator</span></span><br><span class="line">azure storage blob copy show --account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --account-key PUT_YOUR_KEY1_HERE --container system --blob Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.<span class="number">838</span>bf28c-ed03-<span class="number">41</span>f9-<span class="number">9810</span>-<span class="number">4</span>cbfa668d22e.vhd</span><br></pre></td></tr></table></figure>
+<p>类似下图</p>
+<p><img src="/images/cc14.jpg" alt="c"></p>
+<p>当结果从 pending 变成 success 的时候，就可以用这个镜像来创建一台虚拟机了，具体镜像的 url 可以在存储账户中对应镜像的</p>
+<p>创建镜像同样可以用<a href="http://wdxtub.com/2016/01/15/cc-5/">云计算 第 5 课 Azure API</a>中的 python 脚本来创建，我创建了两个新文件：<code>azure_p0_create_lg.py</code> 和 <code>azure_p0_create_dc.py</code></p>
+<p>这两个文件基本只需要改动 <code>create_vm_from_ami</code> 这个函数，因为参数默认值只有在参数不够的时候才会启用，所以保险起见，在函数体里面把需要更新的内容都再写一次。</p>
+<p>这里需要注意 <code>machine_size</code> 并没有对应的 D1 类型，所以先随便创建一个，之后去 web 控制台里进行修改</p>
+<p>命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># lg</span></span><br><span class="line">python azure_p0_create_lg.py STORAGE_ACCOUNT_NAME SUBSCRIPTION_ID ENDPOINT_URI APPLICATION_ID APPLICATION_SECRET_KEY</span><br><span class="line"></span><br><span class="line"><span class="comment">#dc</span></span><br><span class="line">python azure_p0_create_dc.py STORAGE_ACCOUNT_NAME SUBSCRIPTION_ID ENDPOINT_URI APPLICATION_ID APPLICATION_SECRET_KEY</span><br></pre></td></tr></table></figure>
+<p>创建完成之后，先把 load generator 在 Web 界面改成 D1（可能需要停止虚拟机才能调整）</p>
+<p>然后访问 load generator 的 ip，可以看到下面的界面</p>
+<p><img src="/images/cc23.jpg" alt="c"></p>
+<p>注意测试的时候数据中心需要填写 dns 而不是 ip 地址，可以在下图这里找到：</p>
+<p><img src="/images/14529979521284.jpg" alt=""></p>
+<p>然后按照与上一讲类似的过程，记录下 A1 A2 两种数据中心的测试结果即可。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">RPS</th>
+<th style="text-align:center">Minute 1</th>
+<th style="text-align:center">Minute 2</th>
+<th style="text-align:center">Minute 3</th>
+<th style="text-align:center">Minute 4</th>
+<th style="text-align:center">Minute 5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">A1</td>
+<td style="text-align:center">494.42</td>
+<td style="text-align:center">704.12</td>
+<td style="text-align:center">712.61</td>
+<td style="text-align:center">715.48</td>
+<td style="text-align:center">718.92</td>
+</tr>
+<tr>
+<td style="text-align:center">A2</td>
+<td style="text-align:center">991.50</td>
+<td style="text-align:center">1298.85</td>
+<td style="text-align:center">1322.22</td>
+<td style="text-align:center">1329.14</td>
+<td style="text-align:center">1324.32</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到从 A1 到 A2 的提升还是非常大的（从配置中也能看得出来）</p>
+<p>完成之后记得删除对应的虚拟机</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-8.html"
+           data-title="云计算 第 8 课 Azure 动手玩" data-url="http://wdxtub.com/vault/cc-8.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

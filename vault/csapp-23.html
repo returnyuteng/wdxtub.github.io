@@ -1,0 +1,720 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="并行编程中最重要的问题就是同步，这节课我们来了解同步相关的基础知识">
+<meta property="og:type" content="website">
+<meta property="og:title" content="深入理解计算机系统 第 23 课 Synchronization - Basics">
+<meta property="og:url" content="http://wdxtub.com/vault/csapp-23.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="并行编程中最重要的问题就是同步，这节课我们来了解同步相关的基础知识">
+<meta property="og:image" content="http://wdxtub.com/images/14600480676890.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600483444019.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600486014966.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600488439280.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600574108297.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600579848706.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600580383523.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600581230106.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600582550787.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600583380649.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600591923220.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600599945369.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600600984591.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600602184868.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14600602784245.jpg">
+<meta property="og:updated_time" content="2016-04-07T20:19:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统 第 23 课 Synchronization - Basics">
+<meta name="twitter:description" content="并行编程中最重要的问题就是同步，这节课我们来了解同步相关的基础知识">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    深入理解计算机系统 第 23 课 Synchronization - Basics | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>并行编程中最重要的问题就是同步，这节课我们来了解同步相关的基础知识</p>
+<a id="more"></a>
+<hr>
+<h2 id="u5171_u4EAB_u53D8_u91CF"><a href="#u5171_u4EAB_u53D8_u91CF" class="headerlink" title="共享变量"></a>共享变量</h2><p>在介绍同步之前，我们需要弄清楚一个定义，什么是 Shared variable（共享变量）？</p>
+<blockquote>
+<p>A variable <code>x</code> is <em>shared</em> if and only if multiple threads reference some instance of <code>x</code></p>
+</blockquote>
+<p>另外一个需要注意的是线程的内存模型，因为概念上的模型和实际的模型有一些差异，非常容易导致错误。</p>
+<p>在概念上的模型中：</p>
+<ul>
+<li>多个线程在一个单独进程的上下文中运行</li>
+<li>每个线程有单独的线程上下文（线程 ID，栈，栈指针，PC，条件码，GP 寄存器）</li>
+<li>所有的线程共享剩下的进程上下文<ul>
+<li>Code, data, heap, and shared library segments of the process virtual address space</li>
+<li>Open files and installed handlers</li>
+</ul>
+</li>
+</ul>
+<p>在实际的模型中，寄存器的值虽然是隔离且被保护的，但是在栈中的值并不是这样的（其他线程也可以访问）。</p>
+<p>我们来看一个简单的例子：</p>
+<p><img src="/images/14600480676890.jpg" alt="Example Program to Illustrate Sharing"></p>
+<p>这里有几个不同类型的变量，我们一一来看一下：</p>
+<ul>
+<li>全局变量：在函数外声明的变量<ul>
+<li>虚拟内存中有全局唯一的一份实例</li>
+</ul>
+</li>
+<li>局部变量：在函数内声明，且没有用 static 关键字<ul>
+<li>每个线程的栈中都保存着对应线程的局部变量</li>
+</ul>
+</li>
+<li>局部静态变量：在函数内用 static 关键字声明的变量<ul>
+<li>虚拟内存中有全局唯一的一份实例</li>
+</ul>
+</li>
+</ul>
+<p>具体分析下上面例子中的变量，有：</p>
+<p><img src="/images/14600483444019.jpg" alt="Mapping Variable Instances to Memory"></p>
+<p>具体来分析下，一个变量只有在被多个线程引用的时候才算是共享，在这个例子中，共享变量有 <code>ptr</code>, <code>cnt</code> 和 <code>msgs</code>；非共享变量有 <code>i</code> 和 <code>myid</code>。</p>
+<p><img src="/images/14600486014966.jpg" alt="Shared Vairable Analysis"></p>
+<p>共享变量看起来不难，但是会导致一个并行编程中最重要的问题——同步问题。</p>
+<h2 id="Critical_Section"><a href="#Critical_Section" class="headerlink" title="Critical Section"></a>Critical Section</h2><p>我们直接来看例子</p>
+<p><img src="/images/14600488439280.jpg" alt="Improper Synchronization"></p>
+<p>为什么运行的时候，会出现不一样的结果呢？我们把操作 <code>cnt</code> 的部分抽出来单独看一看：</p>
+<p><img src="/images/14600574108297.jpg" alt="Assembly Code for Counter Loop"></p>
+<p>这里有一点需要注意，<code>cnt</code> 使用了 <code>volatile</code> 关键字声明，意思是不要在寄存器中保存值，无论是读取还是写入，都要对内存操作（还记得 write-through 吗？）。这里把具体的步骤分成 5 步：HLUST，尤其要注意的 LUS 这三个操作，后面会继续说。</p>
+<p>我们先来看看没有问题的情况：</p>
+<p><img src="/images/14600579848706.jpg" alt=""></p>
+<p>这里我们可以看到，有颜色的指令连在一起，所以没有问题。但是一旦交叉，就有问题了，如：</p>
+<p><img src="/images/14600580383523.jpg" alt=""></p>
+<h2 id="Progress_Graph__26amp_3B_Trajectory"><a href="#Progress_Graph__26amp_3B_Trajectory" class="headerlink" title="Progress Graph &amp; Trajectory"></a>Progress Graph &amp; Trajectory</h2><p>为了描述上面这种情况，我们可以用 Progress Graph 来辅助，比如：</p>
+<p><img src="/images/14600581230106.jpg" alt="Progress Graph"></p>
+<p>不同的轴代表在某线程中的指令执行顺序，每个点对应一个可能的执行状态，比如说图中的红点，表示线程 1 执行完了 L1，而线程 2 执行完了 S2。</p>
+<p>Trajectory 的概念也很好理解，即可行的执行顺序，如下图：</p>
+<p><img src="/images/14600582550787.jpg" alt="Trajectory"></p>
+<p>我们把 critical section 的边界画出来，就可以判断不同的 trajectory 是否是安全的了：</p>
+<p><img src="/images/14600583380649.jpg" alt=""></p>
+<p>怎么样保证我们的执行不会走到不安全的区域里呢？有几种方法，这里我们只介绍 Semaphores。下面是比较常用的：</p>
+<ul>
+<li>Semaphores - Edsger Dijkstra</li>
+<li>Mutex &amp; condition variables - Pthreads</li>
+<li>Monitors - Java</li>
+</ul>
+<h2 id="Semaphores"><a href="#Semaphores" class="headerlink" title="Semaphores"></a>Semaphores</h2><p>先看定义</p>
+<blockquote>
+<p>Semaphore: non-negative global integer synchronization vairable. Manipulated by P and V operations.</p>
+</blockquote>
+<p>具体的操作为：</p>
+<p><img src="/images/14600591923220.jpg" alt=""></p>
+<p>根据这样的设计，我们可以知道作为 Semaphore 变量其值一定是非负的。另外样例代码中已经封装了 Pthreads 的函数，如下：</p>
+<p><img src="/images/14600599945369.jpg" alt="C Semaphore Operations"></p>
+<p>用法也很简单，在进入 critical section 之前，用 P 操作锁住，操作完成之后，用 V 才做释放。一些术语为：</p>
+<p><img src="/images/14600600984591.jpg" alt="Terminology"></p>
+<p>就可以用 Semaphore 来保证前面的程序不会算错数了，但是因为要同步的缘故，速度会慢</p>
+<p><img src="/images/14600602184868.jpg" alt="Proper Synchronization"></p>
+<p>具体的机制就是给不安全的区域上了个『锁』：</p>
+<p><img src="/images/14600602784245.jpg" alt="Why Mutexes Work"></p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>总结一下，在使用线程时，程序员脑中需要又一个清晰的分享变量的概念，共享变量需要互斥访问，而 Semaphores 是一个基础的机制。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/csapp-23.html"
+           data-title="深入理解计算机系统 第 23 课 Synchronization - Basics" data-url="http://wdxtub.com/vault/csapp-23.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

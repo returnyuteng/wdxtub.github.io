@@ -1,0 +1,897 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Javascript,Node.js,命令行,编辑距离," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="这个学期 Coding Bootcamp 最后一个作业是用 Node.js 做一个小程序，正好借此机会学习一下 Node.js。这个教程主要是关于如何用 Node.js 做命令行程序的，涉及服务器和 web 的部分基本上是没有的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js 命令行程序实例教程">
+<meta property="og:url" content="http://wdxtub.com/2015/12/04/nodejs-cmd-tutorial/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="这个学期 Coding Bootcamp 最后一个作业是用 Node.js 做一个小程序，正好借此机会学习一下 Node.js。这个教程主要是关于如何用 Node.js 做命令行程序的，涉及服务器和 web 的部分基本上是没有的。">
+<meta property="og:updated_time" content="2015-12-05T02:44:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node.js 命令行程序实例教程">
+<meta name="twitter:description" content="这个学期 Coding Bootcamp 最后一个作业是用 Node.js 做一个小程序，正好借此机会学习一下 Node.js。这个教程主要是关于如何用 Node.js 做命令行程序的，涉及服务器和 web 的部分基本上是没有的。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Node.js 命令行程序实例教程 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Node.js 命令行程序实例教程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-04T21:06:21+08:00" content="2015-12-04">
+              2015-12-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/04/nodejs-cmd-tutorial/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/04/nodejs-cmd-tutorial/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这个学期 Coding Bootcamp 最后一个作业是用 Node.js 做一个小程序，正好借此机会学习一下 Node.js。这个教程主要是关于如何用 Node.js 做命令行程序的，涉及服务器和 web 的部分基本上是没有的。</p>
+<a id="more"></a>
+<hr>
+<h2 id="Node-js__u57FA_u672C_u4ECB_u7ECD"><a href="#Node-js__u57FA_u672C_u4ECB_u7ECD" class="headerlink" title="Node.js 基本介绍"></a>Node.js 基本介绍</h2><p>简单的说 Node.js 就是运行在服务端的 JavaScript。</p>
+<ul>
+<li>Node.js 是一个基于Chrome JavaScript 运行时建立的一个平台。</li>
+<li>Node.js是一个事件驱动I/O服务端 JavaScript 环境，基于 Google 的V8 引擎，V8 引擎执行 Javascript 的速度非常快，性能非常好。</li>
+</ul>
+<p>换个角度来看，JavaScript 是脚本语言，脚本语言都需要一个解析器才能运行。对于写在 HTML 页面里的 JavaScript，浏览器充当了解析器的角色。而对于需要独立运行的 JavaScript，Node.js 就是一个解析器。</p>
+<p>Node.js 的作者说，他创造 Node.js 的目的是为了实现高性能 Web 服务器，他首先看重的是事件机制和异步IO模型的优越性，而不是 JavaScript。但是他需要选择一种编程语言实现他的想法，这种编程语言不能自带IO功能，并且需要能良好支持事件机制。JavaScript 没有自带IO功能，天生就用于处理浏览器中的 DOM 事件，并且拥有一大群程序员，因此就成为了天然的选择。</p>
+<p>开发之前的准备工作这里不赘述，在<a href="https://nodejs.org/en/" target="_blank" rel="external">官网</a>上有详细的文档</p>
+<p>唯一需要提的是最好安装一个 <a href="https://github.com/creationix/nvm" target="_blank" rel="external">NVM</a>。NVM 的全称是 Node Version Manager，之所以需要这个工具，是因为 Node.js 的各种特性都没有稳定下来，所以我们经常由于老项目或尝新的原因，需要切换各种版本。</p>
+<p>安装也很简单</p>
+<p><code>curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.2/install.sh | bash</code></p>
+<p>装好之后在终端中输入 <code>$ node</code>，REPL(read–eval–print loop) 应该就出来了，那我们就成功了。</p>
+<h2 id="u4EFB_u52A1_u4ECB_u7ECD"><a href="#u4EFB_u52A1_u4ECB_u7ECD" class="headerlink" title="任务介绍"></a>任务介绍</h2><p>既然是实例教程，我们需要有一个例子，这里我们要做的事情有四个</p>
+<ol>
+<li>读入一个<a href="http://www.gutenberg.org/cache/epub/45/pg45.txt" target="_blank" rel="external">文本文件</a></li>
+<li>根据读入的内容进行一些数据计算<ul>
+<li>词数</li>
+<li>行数</li>
+<li>列出所有的词以及对应的出现次数，降序排列</li>
+<li>出现次数最多的十个 trigram</li>
+<li>出现次数最多的 trigram 与之后的十个出现次数最多的 trigram 的编辑距离，列出比较的对象以及编辑距离的值 </li>
+</ul>
+</li>
+<li>把得到的结果写成 HTML 文件保存在本地</li>
+<li>支持自定义参数调用，例如可以在命令行中输入文件名</li>
+</ol>
+<h2 id="Hello_World"><a href="#Hello_World" class="headerlink" title="Hello World"></a>Hello World</h2><p>配置好了环境，就可以开始这次的任务了，但是开始之前，万变不离其宗，先要来一发 hello world。步骤如下</p>
+<ol>
+<li>新建一个文件夹</li>
+<li>文件夹里新建一个名为 <code>hello.js</code> 的文件</li>
+</ol>
+<p>文件内容</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'Hello World, this is wdx'</span>);</span><br></pre></td></tr></table></figure>
+<p>用命令行进入刚才新建的文件夹，然后 <code>node hello.js</code>，可以看到输出了 <code>Hello World, this is wdx</code>，于是第一步就完成了。</p>
+<h2 id="u4E00_uFF1A_u8BFB_u53D6_u6587_u4EF6"><a href="#u4E00_uFF1A_u8BFB_u53D6_u6587_u4EF6" class="headerlink" title="一：读取文件"></a>一：读取文件</h2><p>知道了基本的执行操作，我们可以开始读入指定的 txt 文件，下载好<a href="http://www.gutenberg.org/cache/epub/45/pg45.txt" target="_blank" rel="external">文件</a> 并放在同一个文件夹里，就可以利用 node.js 自带的库来进行操作了。</p>
+<p>然后我们新建另外一个文件 <code>parser.js</code>，具体的操作请参看注释，这里用了一些变量名方便以后拓展，也有把函数作为参数传给另外的函数，这个是函数式编程的做法，在这里不展开。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// load file system module</span></span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> filename = <span class="string">'pg45.txt'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'loading content from '</span> + filename);</span><br><span class="line"></span><br><span class="line"><span class="comment">// read the contents of the file into memory</span></span><br><span class="line">fs.readFile(filename, <span class="function"><span class="keyword">function</span> (<span class="params">err, buffer</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// If an error occurred, throwing it will</span></span><br><span class="line">    <span class="comment">// display the exception and end our app</span></span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// buffer is a Buffer, convert to string</span></span><br><span class="line">    <span class="keyword">var</span> text = buffer.toString();</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'loading done'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>载入之后我们就可以对内容进行操作了</p>
+<h2 id="u4E8C_uFF1A_u6570_u636E_u7EDF_u8BA1"><a href="#u4E8C_uFF1A_u6570_u636E_u7EDF_u8BA1" class="headerlink" title="二：数据统计"></a>二：数据统计</h2><h3 id="u884C_u6570/_u8BCD_u6570/_u8BCD_u9891"><a href="#u884C_u6570/_u8BCD_u6570/_u8BCD_u9891" class="headerlink" title="行数/词数/词频"></a>行数/词数/词频</h3><p>完成了上一节，我们已经拿到了文本的内容，可以开始具体操作了。直接在刚才的文件后面继续添加代码，统计单词数量，行数，以及每个单词出现的次数。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'start processing content'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// the stats variable</span></span><br><span class="line"><span class="keyword">var</span> linecount = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> wordcount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// get line count</span></span><br><span class="line"><span class="keyword">var</span> lines = text.split(<span class="string">'\n'</span>);</span><br><span class="line">linecount = lines.length;</span><br><span class="line"></span><br><span class="line"><span class="comment">// get words count and their number of appearance</span></span><br><span class="line"><span class="keyword">var</span> index = &#123;&#125;;</span><br><span class="line">lines.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">line</span>)</span>&#123;</span><br><span class="line">   <span class="keyword">var</span> words = line</span><br><span class="line">               .replace(<span class="regexp">/[.,?!;()"-]/g</span>, <span class="string">" "</span>)</span><br><span class="line">               .replace(<span class="regexp">/\s+/g</span>, <span class="string">" "</span>)</span><br><span class="line">               .toLowerCase()</span><br><span class="line">               .split(<span class="string">" "</span>);</span><br><span class="line">   <span class="comment">// count words</span></span><br><span class="line">   wordcount += words.length;</span><br><span class="line">   <span class="comment">// build index dictionary</span></span><br><span class="line">   words.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">word</span>) </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (word != <span class="string">''</span>)&#123;</span><br><span class="line">           <span class="keyword">if</span> (!(index.hasOwnProperty(word)))&#123;</span><br><span class="line">               index[word] = <span class="number">0</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           index[word]++;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// change dict to array for sort</span></span><br><span class="line"><span class="keyword">var</span> indexarr = [];</span><br><span class="line"><span class="keyword">var</span> i = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">of</span> <span class="built_in">Object</span>.keys(index).sort())&#123;</span><br><span class="line">   indexarr[i] = [key, index[key]];</span><br><span class="line">   i += <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// sort the array</span></span><br><span class="line">indexarr = indexarr.sort(<span class="function"><span class="keyword">function</span>(<span class="params">x,y</span>)</span>&#123;</span><br><span class="line">   <span class="keyword">return</span> y[<span class="number">1</span>] - x[<span class="number">1</span>];</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'processing content done'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'--------statistics--------'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'Line Count: '</span> + linecount);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'Word Count: '</span> + wordcount);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; <span class="number">10</span>; j++)&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(indexarr[j]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Trigram__u7EDF_u8BA1"><a href="#Trigram__u7EDF_u8BA1" class="headerlink" title="Trigram 统计"></a>Trigram 统计</h3><p>Triagram 的定义可以从 <a href="https://en.wikipedia.org/wiki/Trigram" target="_blank" rel="external">wiki</a> 找到，其实就是遍历一次所有的单词，三个三个一组，然后统计频率，其实逻辑和前面统计词频是一样的。所以思路是增加一个存所有单词的数组，然后遍历生成字典，然后字典转数组进行排序找到前十一个，这样就可以显示前十个，并且计算第一个和后面十个的编辑距离。</p>
+<p>我们先修改一下之前统计词频的代码</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// get words count and their number of appearance</span></span><br><span class="line"><span class="keyword">var</span> index = &#123;&#125;;</span><br><span class="line"><span class="comment">// save each word to an array</span></span><br><span class="line"><span class="keyword">var</span> wordarr = [];</span><br><span class="line"><span class="comment">// save the trigram to an dictionary</span></span><br><span class="line"><span class="keyword">var</span> trigrams = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">lines.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">line</span>)</span>&#123;</span><br><span class="line">   <span class="keyword">var</span> words = line</span><br><span class="line">               .replace(<span class="regexp">/[.,?!;()"-]/g</span>, <span class="string">" "</span>)</span><br><span class="line">               .replace(<span class="regexp">/\s+/g</span>, <span class="string">" "</span>)</span><br><span class="line">               .toLowerCase()</span><br><span class="line">               .split(<span class="string">" "</span>);</span><br><span class="line">   <span class="comment">// count words</span></span><br><span class="line">   wordcount += words.length;</span><br><span class="line">   <span class="comment">// build index dictionary</span></span><br><span class="line">   words.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">word</span>) </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (word != <span class="string">''</span>)&#123;</span><br><span class="line">           wordarr.push(word);</span><br><span class="line">           <span class="keyword">if</span> (!(index.hasOwnProperty(word)))&#123;</span><br><span class="line">               index[word] = <span class="number">0</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           index[word]++;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>接下来就主要处理这个 <code>wordarr</code> 数组了，利用 <code>slice()</code> 和 <code>join()</code> 的功能就可以很方便地实现：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// get trigram</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; wordarr.length-<span class="number">3</span>; j++)&#123;</span><br><span class="line">   <span class="keyword">var</span> temp = wordarr.slice(j, j+<span class="number">3</span>).join(<span class="string">' '</span>);</span><br><span class="line">   <span class="keyword">if</span> (!(trigrams.hasOwnProperty(temp)))&#123;</span><br><span class="line">       trigrams[temp] = <span class="number">0</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   trigrams[temp]++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// change dict to array for sort</span></span><br><span class="line"><span class="keyword">var</span> trigramsarr = [];</span><br><span class="line"><span class="keyword">var</span> i = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">of</span> <span class="built_in">Object</span>.keys(trigrams).sort())&#123;</span><br><span class="line">   trigramsarr[i] = [key, trigrams[key]];</span><br><span class="line">   i += <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// sort the array</span></span><br><span class="line">trigramsarr = trigramsarr.sort(<span class="function"><span class="keyword">function</span>(<span class="params">x,y</span>)</span>&#123;</span><br><span class="line">   <span class="keyword">return</span> y[<span class="number">1</span>] - x[<span class="number">1</span>];</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Get Top 11 trigrams</span></span><br><span class="line">trigramtop11 = trigramsarr.slice(<span class="number">0</span>,<span class="number">11</span>);</span><br></pre></td></tr></table></figure>
+<p>再运行一下，就可以看到结果没有问题了，就剩最后一个问题，编辑距离</p>
+<h3 id="u7F16_u8F91_u8DDD_u79BB"><a href="#u7F16_u8F91_u8DDD_u79BB" class="headerlink" title="编辑距离"></a>编辑距离</h3><p>编辑距离又叫 levenshtein 距离，是一种比较两个字符串相似程度的算法，具体的原理不赘述，利用动态规划就可以解决，我们这里写一个函数方便调用。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">levenshtein</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> al = a.length + <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">var</span> bl = b.length + <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">var</span> result = [];</span><br><span class="line">	<span class="keyword">var</span> temp = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">// 创建一个二维数组</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; al; result[i] = [i++]) &#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; bl; result[<span class="number">0</span>][i] = i++) &#123;&#125;		</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; al; i++) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">1</span>; j &lt; bl; j++) &#123;</span><br><span class="line">			<span class="comment">// 判断最上方和最左方数字是否相等</span></span><br><span class="line">			temp = a[i - <span class="number">1</span>] == b[j - <span class="number">1</span>] ? <span class="number">0</span> : <span class="number">1</span>;</span><br><span class="line">			<span class="comment">// result[i - 1][j] + 1 左方数字</span></span><br><span class="line">			<span class="comment">// result[i][j - 1] + 1 上方数字</span></span><br><span class="line">			<span class="comment">// result[i - 1][j - 1] + temp 左上方数字</span></span><br><span class="line">			result[i][j] = <span class="built_in">Math</span>.min(result[i - <span class="number">1</span>][j] + <span class="number">1</span>, result[i][j - <span class="number">1</span>] + <span class="number">1</span>, result[i - <span class="number">1</span>][j - <span class="number">1</span>] + temp);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result[i-<span class="number">1</span>][j-<span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后只要在代码中调用这个函数即可</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Calculate edit distance and sort by distance value</span></span><br><span class="line"><span class="comment">// create an array to save the result</span></span><br><span class="line"><span class="keyword">var</span> resultstr = [];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">1</span>; j &lt; <span class="number">11</span>; j++)&#123;</span><br><span class="line">   <span class="keyword">var</span> dis = levenshtein(trigramtop11[<span class="number">0</span>][<span class="number">0</span>], trigramtop11[j][<span class="number">0</span>]);</span><br><span class="line">   <span class="keyword">var</span> str = <span class="string">"["</span> + trigramtop11[<span class="number">0</span>][<span class="number">0</span>] + <span class="string">"] vs ["</span> + trigramtop11[j][<span class="number">0</span>] + <span class="string">"]: "</span>;</span><br><span class="line">   resultstr.push([str, dis]);</span><br><span class="line">&#125;</span><br><span class="line">resultstr.sort(<span class="function"><span class="keyword">function</span>(<span class="params">x, y</span>)</span>&#123;</span><br><span class="line">   <span class="keyword">return</span> y[<span class="number">1</span>] - x[<span class="number">1</span>];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这样一来，第二步也就完成了</p>
+<h2 id="u4E09_uFF1A_u8F93_u51FA_HTML"><a href="#u4E09_uFF1A_u8F93_u51FA_HTML" class="headerlink" title="三：输出 HTML"></a>三：输出 HTML</h2><p>写入文件我们同样使用 fs 模块，思路是我们先把要展示的内容存到一个 string 中，然后一次写入到 html 文件里，就算完成。具体代码比较简单，这也是之前为什么我要把所有的计算结果都换存起来的原因，方便写入。注意 HTML 输出的格式即可，代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'Creating HTML content'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> htmlcontent = <span class="string">'&lt;html&gt;&lt;head&gt;&lt;title&gt;'</span> + filename + <span class="string">' Analysis Result&lt;/title&gt;&lt;head&gt;'</span>;</span><br><span class="line">htmlcontent += <span class="string">'&lt;body&gt;&lt;h1&gt;'</span> + filename + <span class="string">' Analysis Result&lt;/h1&gt;'</span>;</span><br><span class="line">htmlcontent += <span class="string">'&lt;h2&gt;Line Count: '</span> + linecount + <span class="string">'&lt;/h2&gt;'</span>;</span><br><span class="line">htmlcontent += <span class="string">'&lt;h2&gt;Word Count: '</span> + wordcount + <span class="string">'&lt;/h2&gt;'</span>;</span><br><span class="line">htmlcontent += <span class="string">'&lt;h2&gt;Trigram Frequency (Top 10)&lt;/h2&gt;&lt;ol&gt;'</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; <span class="number">10</span>; j++)&#123;</span><br><span class="line">   htmlcontent += <span class="string">'&lt;li&gt;'</span> + trigramtop11[j] + <span class="string">'&lt;/li&gt;'</span>;</span><br><span class="line">&#125;</span><br><span class="line">htmlcontent += <span class="string">'&lt;/ol&gt;&lt;h2&gt;Trigram Edit Distance&lt;/h2&gt;&lt;ol&gt;'</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; <span class="number">10</span>; j++)&#123;</span><br><span class="line">   htmlcontent += <span class="string">'&lt;li&gt;'</span> + resultstr[j] + <span class="string">'&lt;/li&gt;'</span>;</span><br><span class="line">&#125;</span><br><span class="line">htmlcontent += <span class="string">'&lt;/ol&gt;&lt;h2&gt;Word Frequency&lt;/h2&gt;&lt;ul&gt;'</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; indexarr.length; j++)&#123;</span><br><span class="line">   htmlcontent += <span class="string">'&lt;li&gt;'</span> + indexarr[j] + <span class="string">'&lt;/li&gt;'</span>;</span><br><span class="line">&#125;</span><br><span class="line">htmlcontent += <span class="string">'&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">''</span>)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'Generating HTML file'</span>);</span><br><span class="line"><span class="keyword">var</span> filenamearr = filename.split(<span class="string">'.'</span>);</span><br><span class="line"></span><br><span class="line">fs.writeFile(filenamearr[<span class="number">0</span>] + <span class="string">'-result.html'</span>, htmlcontent, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>)</span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (err)&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'Generation Success'</span>);</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'Filename: '</span> + filenamearr[<span class="number">0</span>] + <span class="string">'-result.hmtl'</span>);</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'---------------------'</span>);</span><br><span class="line">   <span class="built_in">console</span>.log(<span class="string">'All Job Done'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="u56DB_uFF1A_u4F20_u5165_u53C2_u6570"><a href="#u56DB_uFF1A_u4F20_u5165_u53C2_u6570" class="headerlink" title="四：传入参数"></a>四：传入参数</h2><p>现在我们读入的内容是写死在代码里的，如果我们需要更灵活，从命令行传入参数的话，还需要对代码做一些改动。现在我们调用 <code>parser.js</code> 的方式是使用 <code>node parser.js</code>，现在需要实现用 <code>node parser.js pg45.txt</code> 这样的方式，可以把代码改为：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> filename = process.argv[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (filename == <span class="literal">undefined</span>)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'No input argument, use default file'</span>);</span><br><span class="line">    filename = <span class="string">'pg45.txt'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里也做了一些错误处理以防用户没有输入第二个参数，如果命令是 <code>node parser.js pg45.txt</code>，那么参数实际是 <code>[&#39;node&#39;, &#39;/path/to/parser&#39;, &#39;pg45.txt&#39;]</code></p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>至此，所有的任务就已经完成了，具体的代码可以在<a href="https://github.com/wdxtub/11601-summary-stat-nodejs" target="_blank" rel="external">这里</a>找到，这个教程不涉及网络，也只使用了 fs 一个模块，但是对于熟悉 javascript 和 nodejs，是一个很好的练习。</p>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html" target="_blank" rel="external">Node.js 命令行程序开发教程</a></li>
+<li><a href="http://www.html-js.com/article/A-day-to-learn-JavaScript-create-commandline-tools-with-Nodejs" target="_blank" rel="external">用Node.js创建命令行工具</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag">#Javascript</a>
+          
+            <a href="/tags/Node-js/" rel="tag">#Node.js</a>
+          
+            <a href="/tags/命令行/" rel="tag">#命令行</a>
+          
+            <a href="/tags/编辑距离/" rel="tag">#编辑距离</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/03/android-map-v2-basic/" rel="next" title="Android 开发笔记 2 - Google Map V2">
+                <i class="fa fa-chevron-left"></i> Android 开发笔记 2 - Google Map V2
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/04/now-or-never/" rel="prev" title="第十四周 - Now or Never">
+                第十四周 - Now or Never <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/12/04/nodejs-cmd-tutorial/"
+           data-title="Node.js 命令行程序实例教程" data-url="http://wdxtub.com/2015/12/04/nodejs-cmd-tutorial/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-js__u57FA_u672C_u4ECB_u7ECD"><span class="nav-number">1.</span> <span class="nav-text">Node.js 基本介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4EFB_u52A1_u4ECB_u7ECD"><span class="nav-number">2.</span> <span class="nav-text">任务介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello_World"><span class="nav-number">3.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_uFF1A_u8BFB_u53D6_u6587_u4EF6"><span class="nav-number">4.</span> <span class="nav-text">一：读取文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E8C_uFF1A_u6570_u636E_u7EDF_u8BA1"><span class="nav-number">5.</span> <span class="nav-text">二：数据统计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u884C_u6570/_u8BCD_u6570/_u8BCD_u9891"><span class="nav-number">5.1.</span> <span class="nav-text">行数/词数/词频</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trigram__u7EDF_u8BA1"><span class="nav-number">5.2.</span> <span class="nav-text">Trigram 统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7F16_u8F91_u8DDD_u79BB"><span class="nav-number">5.3.</span> <span class="nav-text">编辑距离</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E09_uFF1A_u8F93_u51FA_HTML"><span class="nav-number">6.</span> <span class="nav-text">三：输出 HTML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u56DB_uFF1A_u4F20_u5165_u53C2_u6570"><span class="nav-number">7.</span> <span class="nav-text">四：传入参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

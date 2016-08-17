@@ -1,0 +1,935 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CMU,SVM,图像分类,支持向量机,机器学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="CMU 15 Fall 10601b 机器学习的期末作业是在 CIFAR-10 数据集上的图像分类，我们小组已经实现了 LR, NN, NB 等比较『朴素』的机器学习算法，对于如何实现 SVM 倒是一直没有什么思路。他山之石，可以攻玉，我打算从 libSVM 入手，看看能不能找到点思路。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="libsvm 简易指南">
+<meta property="og:url" content="http://wdxtub.com/2015/12/08/libsvm-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="CMU 15 Fall 10601b 机器学习的期末作业是在 CIFAR-10 数据集上的图像分类，我们小组已经实现了 LR, NN, NB 等比较『朴素』的机器学习算法，对于如何实现 SVM 倒是一直没有什么思路。他山之石，可以攻玉，我打算从 libSVM 入手，看看能不能找到点思路。">
+<meta property="og:updated_time" content="2015-12-09T02:59:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="libsvm 简易指南">
+<meta name="twitter:description" content="CMU 15 Fall 10601b 机器学习的期末作业是在 CIFAR-10 数据集上的图像分类，我们小组已经实现了 LR, NN, NB 等比较『朴素』的机器学习算法，对于如何实现 SVM 倒是一直没有什么思路。他山之石，可以攻玉，我打算从 libSVM 入手，看看能不能找到点思路。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> libsvm 简易指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                libsvm 简易指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-12-08T20:44:33+08:00" content="2015-12-08">
+              2015-12-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/12/08/libsvm-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/08/libsvm-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>CMU 15 Fall 10601b 机器学习的期末作业是在 CIFAR-10 数据集上的图像分类，我们小组已经实现了 LR, NN, NB 等比较『朴素』的机器学习算法，对于如何实现 SVM 倒是一直没有什么思路。他山之石，可以攻玉，我打算从 libSVM 入手，看看能不能找到点思路。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u4E00_uFF1A_u4E0B_u8F7D_u7F16_u8BD1_u5B89_u88C5"><a href="#u4E00_uFF1A_u4E0B_u8F7D_u7F16_u8BD1_u5B89_u88C5" class="headerlink" title="一：下载编译安装"></a>一：下载编译安装</h2><p>这三个统称『配置环境』，从<a href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/index.html" target="_blank" rel="external">官网</a>下载，然后自己想办法编译（我是直接找别人编译好的），接着重命名避免和 matlab 自带的 svmtrain 重名。说明一下我用的版本是 3.20</p>
+<blockquote>
+<p>在当前目录下会出现svmtrain.mexw64、svmpredict.mexw64（64位系统）或者svmtrain.mexw32、svmpredict.mexw32（32位系统）这两个文件，把文件名svmtrain和svmpredict相应改成libsvmtrain和libsvmpredict。</p>
+<p>这是因为Matlab中自带有SVM的工具箱，而且其函数名字就是svmtrain和svmpredict，和LIBSVM默认的名字一样，在实际使用的时候有时会产生一定的问题，比如想调用LIBSVM的变成了调用Matlab SVM。</p>
+<p>如果有进行重命名的，以后使用LIBSVM时一律使用libsvmtrain和libsvmpredict这两个名字进行调用。</p>
+</blockquote>
+<h2 id="u4E8C_uFF1A_u539F_u7406"><a href="#u4E8C_uFF1A_u539F_u7406" class="headerlink" title="二：原理"></a>二：原理</h2><p>SVM 的原理这里不介绍，关键词：监督学习，二分类，核函数。这里提到是二分类，那么要如何扩展成多分类呢？比方说在我们的这个项目中，图片有十个类别，就要想办法把一个二分类的用到十分类上。比较基本的思路有两种，一对多(one-versus-rest)和一对一(one-versus-one)。</p>
+<p>举个例子，一对多实际上是训练十个分类器，对于第一个分类器，类别 1 是一类，类别 2-10 是一类；对于第二个分类器，类别 2 是一类，类别 1 + 类别 3-10 是一类，这样就得到了十个分类器。预测的时候，分别用这十个分类器分类，然后将分类结果中出现最多的那个类别作为结果。</p>
+<p>继续举例子，一对一的话实际要训练 $\frac{10\times9}{2}$ 个分类器，然后预测的时候需要跑所有的分类器，选出现最多的那个类别作为最终分类结果。</p>
+<p>libSVM 是使用一对一的方式来实现的</p>
+<h2 id="u4E09_uFF1A_u4F7F_u7528"><a href="#u4E09_uFF1A_u4F7F_u7528" class="headerlink" title="三：使用"></a>三：使用</h2><p>基本来说，因为不需要在意具体的实现，所以使用起来还是简单粗暴的</p>
+<h3 id="u8BAD_u7EC3"><a href="#u8BAD_u7EC3" class="headerlink" title="训练"></a>训练</h3><p>如果数据准备好了的话，一句话就可以搞定。</p>
+<figure class="highlight matlab"><table><tr><td class="code"><pre><span class="line">model = libsvmtrain(training_label_vector, training_instance_matrix <span class="matrix">[, <span class="string">'libsvm_options'</span>]</span>);</span><br></pre></td></tr></table></figure>
+<p>这个函数有三个参数，其中</p>
+<ul>
+<li><code>-training_label_vector</code>:训练样本的类标，如果有m个样本，就是m x 1的矩阵（类型必须为double）。这里可以是二分类和多分类，类标是（-1,1）、（1,2,3）或者其他任意用来表示不同的类别的数字，要转成double类型。</li>
+<li><code>-training_instance_matrix</code>:训练样本的特征，如果有m个样本，每个样本特征是n维，则为m x n的矩阵（类型必须为double）。</li>
+<li><code>-libsvm_options</code>:训练的参数，会专门开一章来介绍。</li>
+</ul>
+<h3 id="u9884_u6D4B"><a href="#u9884_u6D4B" class="headerlink" title="预测"></a>预测</h3><p>如果有了训练出来的模型的话，一句话搞定。<code>libpredict</code> 函数用于对测试集的数据进行测试，还能对未知样本进行预测。</p>
+<figure class="highlight matlab"><table><tr><td class="code"><pre><span class="line"><span class="matrix">[predicted_label, accuracy, decision_values/prob_estimates]</span> </span><br><span class="line">　　　　= libsvmpredict(testing_label_vector, testing_instance_matrix, model <span class="matrix">[, <span class="string">'libsvm_options'</span>]</span>);</span><br></pre></td></tr></table></figure>
+<p>这个函数包括四个参数，其中</p>
+<ul>
+<li><code>-testing_label_vector</code>:测试样本的类标，如果有m个样本，就是m x 1的矩阵（类型必须为double）。如果类标未知，可以初始化为任意m x 1的double数组。</li>
+<li><code>-testing_instance_matrix</code>:测试样本的特征，如果有m个样本，每个样本特征是n维，则为m x n的矩阵（类型必须为double）。</li>
+<li><code>-model</code>:使用libsvmtrain返回的模型</li>
+<li><code>-libsvm_options</code>:预测的参数，与训练的参数形式一样。</li>
+</ul>
+<h2 id="u56DB_uFF1A_u53C2_u6570"><a href="#u56DB_uFF1A_u53C2_u6570" class="headerlink" title="四：参数"></a>四：参数</h2><p>参数这一部分比较多，而且需要一定的理论基础，很多参数我都不大明白是干嘛的，所以我就先挑一些我懂的参数，然后剩下的就是文档里的大概翻译。所以下面的列表是有先后顺序的</p>
+<ul>
+<li><code>-s</code> svm类型：SVM设置类型（默认0，我就用默认的)<ul>
+<li>0 — C-SVC； </li>
+<li>1 – v-SVC； </li>
+<li>2 – one-class SVM； </li>
+<li>3 — e-SVR； </li>
+<li>4 — v-SVR</li>
+</ul>
+</li>
+<li><code>-t</code> 核函数类型：核函数设置类型（默认2，据说2的效果也比较好，所以继续用2）<ul>
+<li>0 – 线性核函数：<code>u’v</code></li>
+<li>1 – 多项式核函数：<code>（r*u’v + coef0)^degree</code></li>
+<li>2 – RBF(径向基)核函数：<code>exp(-r|u-v|^2）</code></li>
+<li>3 – sigmoid核函数：<code>tanh(r*u’v + coef0)</code></li>
+</ul>
+</li>
+<li><code>-h</code> shrinking：是否使用启发式，0或1（默认1）<ul>
+<li>用 0 的话训练会快一些，</li>
+</ul>
+</li>
+<li><code>-d</code> degree：核函数中的degree设置（针对多项式核函数）（默认3）</li>
+<li><code>-g</code> r(gamma）：核函数中的gamma函数设置（针对多项式/rbf/sigmoid核函数）（默认1/k，k为总类别数)</li>
+<li><code>-r</code> coef0：核函数中的coef0设置（针对多项式/sigmoid核函数）（（默认0)</li>
+<li><code>-c</code> cost：设置C-SVC，e -SVR和v-SVR的参数（损失函数）（默认1）</li>
+<li><code>-n</code> nu：设置v-SVC，一类SVM和v- SVR的参数（默认0.5）</li>
+<li><code>-p</code> p：设置e -SVR 中损失函数p的值（默认0.1）</li>
+<li><code>-m</code> cachesize：设置cache内存大小，以MB为单位（默认40）</li>
+<li><code>-e</code> eps：设置允许的终止判据（默认0.001）</li>
+<li><code>-wi</code> weight：设置第几类的参数C为weight*C (C-SVC中的C) （默认1）</li>
+<li><code>-v</code> n: n-fold交互检验模式，n为fold的个数，必须大于等于2</li>
+</ul>
+<p>以上这些参数设置可以按照SVM的类型和核函数所支持的参数进行任意组合，如果设置的参数在函数或SVM类型中没有也不会产生影响，程序不会接受该参数；如果应有的参数设置不正确，参数将采用默认值。</p>
+<h2 id="u4E94_uFF1A_u8FD4_u56DE_u6570_u636E_u6A21_u578B"><a href="#u4E94_uFF1A_u8FD4_u56DE_u6570_u636E_u6A21_u578B" class="headerlink" title="五：返回数据模型"></a>五：返回数据模型</h2><p>训练会返回一个结构体，预测会返回三个结果，这里分别说明一下</p>
+<h3 id="u8BAD_u7EC3_u8FD4_u56DE_u7684_u5185_u5BB9"><a href="#u8BAD_u7EC3_u8FD4_u56DE_u7684_u5185_u5BB9" class="headerlink" title="训练返回的内容"></a>训练返回的内容</h3><p>libsvmtrain函数返回训练好的SVM分类器模型，可以用来对未知的样本进行预测。这个模型是一个结构体，包含以下成员：</p>
+<ul>
+<li><code>-Parameters</code>: 一个5 x 1的矩阵，从上到下依次表示：<ul>
+<li><code>-s</code> SVM类型（默认0）；</li>
+<li><code>-t</code> 核函数类型（默认2）</li>
+<li><code>-d</code> 核函数中的degree设置(针对多项式核函数)(默认3)；</li>
+<li><code>-g</code> 核函数中的r(gamma）函数设置(针对多项式/rbf/sigmoid核函数) (默认类别数目的倒数)；</li>
+<li><code>-r</code> 核函数中的coef0设置(针对多项式/sigmoid核函数)((默认0)</li>
+</ul>
+</li>
+<li><code>-nr_class</code>: 表示数据集中有多少类别，比如二分类时这个值即为2。</li>
+<li><code>-totalSV</code>: 表示支持向量的总数。</li>
+<li><code>-rho</code>: 决策函数wx+b中的常数项的相反数（-b）。</li>
+<li><code>-Label</code>: 表示数据集中类别的标签，比如二分类常见的1和-1。</li>
+<li><code>-ProbA</code>: 使用-b参数时用于概率估计的数值，否则为空。</li>
+<li><code>-ProbB</code>: 使用-b参数时用于概率估计的数值，否则为空。</li>
+<li><code>-nSV</code>: 表示每类样本的支持向量的数目，和Label的类别标签对应。如Label=[1; -1],nSV=[63; 67]，则标签为1的样本有63个支持向量，标签为-1的有67个。</li>
+<li><code>-sv_coef</code>: 表示每个支持向量在决策函数中的系数。</li>
+<li><code>-SVs</code>: 表示所有的支持向量，如果特征是n维的，支持向量一共有m个，则为m x n的稀疏矩阵。</li>
+</ul>
+<p>另外，如果在训练中使用了-v参数进行交叉验证时，返回的不是一个模型，而是交叉验证的分类的正确率或者回归的均方根误差。</p>
+<h3 id="u9884_u6D4B_u8FD4_u56DE_u7684_u5185_u5BB9"><a href="#u9884_u6D4B_u8FD4_u56DE_u7684_u5185_u5BB9" class="headerlink" title="预测返回的内容"></a>预测返回的内容</h3><p>libsvmtrain函数有三个返回值，不需要的值在Matlab可以用~进行代替。</p>
+<ul>
+<li><code>-predicted_label</code>：第一个返回值，表示样本的预测类标号。</li>
+<li><code>-accuracy</code>：第二个返回值，一个3 x 1的数组，表示分类的正确率、回归的均方根误差、回归的平方相关系数。</li>
+<li>-<code>decision_values/prob_estimates</code>：第三个返回值，一个矩阵包含决策的值或者概率估计。对于n个预测样本、k类的问题，如果指定“-b 1”参数，则n x k的矩阵，每一行表示这个样本分别属于每一个类别的概率；如果没有指定“-b 1”参数，则为n x k*(k-1)/2的矩阵，每一行表示k(k-1)/2个二分类SVM的预测结果。</li>
+</ul>
+<h2 id="u516D_uFF1A_u8BFB_u53D6_u6216_u4FDD_u5B58"><a href="#u516D_uFF1A_u8BFB_u53D6_u6216_u4FDD_u5B58" class="headerlink" title="六：读取或保存"></a>六：读取或保存</h2><p><strong><code>libsvmread</code>函数可以读取以LIBSVM格式存储的数据文件。</strong></p>
+<figure class="highlight matlab"><table><tr><td class="code"><pre><span class="line"><span class="matrix">[label_vector, instance_matrix]</span> = libsvmread(‘data.txt’);</span><br></pre></td></tr></table></figure>
+<p>这个函数输入的是文件的名字，输出为样本的类标和对应的特征。</p>
+<p><strong><code>libsvmwrite</code>函数可以把Matlab的矩阵存储称为LIBSVM格式的文件。</strong></p>
+<figure class="highlight matlab"><table><tr><td class="code"><pre><span class="line">libsvmwrite(‘data.txt’, label_vector, instance_matrix]</span><br></pre></td></tr></table></figure>
+<p>这个函数有三个输入，分别为保存的文件名、样本的类标和对应的特征（必须为double类型的稀疏矩阵）。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>总体来说训练时间还是很长的（怪电脑），尤其是随着分类的增多所需要的分类器会增长得更快，难以想象要分一百类会怎么样。不过 libSVM 在不同的平台下都有实现，哪怕想要在手机上实现最简单的机器学习，也都可以用这个包，还是非常方便的。</p>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="http://noalgo.info/363.html" target="_blank" rel="external">LIBSVM在Matlab下的使用</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CMU/" rel="tag">#CMU</a>
+          
+            <a href="/tags/SVM/" rel="tag">#SVM</a>
+          
+            <a href="/tags/图像分类/" rel="tag">#图像分类</a>
+          
+            <a href="/tags/支持向量机/" rel="tag">#支持向量机</a>
+          
+            <a href="/tags/机器学习/" rel="tag">#机器学习</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/06/hexo-plugins-guide/" rel="next" title="Hexo 插件指南">
+                <i class="fa fa-chevron-left"></i> Hexo 插件指南
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/08/md-editor-ios/" rel="prev" title="iOS 上 Markdown 编辑器简评">
+                iOS 上 Markdown 编辑器简评 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/12/08/libsvm-guide/"
+           data-title="libsvm 简易指南" data-url="http://wdxtub.com/2015/12/08/libsvm-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_uFF1A_u4E0B_u8F7D_u7F16_u8BD1_u5B89_u88C5"><span class="nav-number">1.</span> <span class="nav-text">一：下载编译安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E8C_uFF1A_u539F_u7406"><span class="nav-number">2.</span> <span class="nav-text">二：原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E09_uFF1A_u4F7F_u7528"><span class="nav-number">3.</span> <span class="nav-text">三：使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u8BAD_u7EC3"><span class="nav-number">3.1.</span> <span class="nav-text">训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u9884_u6D4B"><span class="nav-number">3.2.</span> <span class="nav-text">预测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u56DB_uFF1A_u53C2_u6570"><span class="nav-number">4.</span> <span class="nav-text">四：参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E94_uFF1A_u8FD4_u56DE_u6570_u636E_u6A21_u578B"><span class="nav-number">5.</span> <span class="nav-text">五：返回数据模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u8BAD_u7EC3_u8FD4_u56DE_u7684_u5185_u5BB9"><span class="nav-number">5.1.</span> <span class="nav-text">训练返回的内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u9884_u6D4B_u8FD4_u56DE_u7684_u5185_u5BB9"><span class="nav-number">5.2.</span> <span class="nav-text">预测返回的内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u516D_uFF1A_u8BFB_u53D6_u6216_u4FDD_u5B58"><span class="nav-number">6.</span> <span class="nav-text">六：读取或保存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

@@ -1,0 +1,1008 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Mac,bash,zsh,命令行," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="新年新气象，打算从 bash 迁移到 zsh 上来。网上教程很多，但是大多比较零散也不够让人知其所以然，而且很多配置也不符合我个人的习惯，于是打算『贪天之功』，写这么一个『全程指南』，希望能给大家带来些帮助。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zsh 全程指南">
+<meta property="og:url" content="http://wdxtub.com/2016/02/18/oh-my-zsh/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="新年新气象，打算从 bash 迁移到 zsh 上来。网上教程很多，但是大多比较零散也不够让人知其所以然，而且很多配置也不符合我个人的习惯，于是打算『贪天之功』，写这么一个『全程指南』，希望能给大家带来些帮助。">
+<meta property="og:image" content="http://wdxtub.com/images/14558361988595.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14558366464605.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14558402138712.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14558436247342.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14558437933171.jpg">
+<meta property="og:updated_time" content="2016-02-19T13:43:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="zsh 全程指南">
+<meta name="twitter:description" content="新年新气象，打算从 bash 迁移到 zsh 上来。网上教程很多，但是大多比较零散也不够让人知其所以然，而且很多配置也不符合我个人的习惯，于是打算『贪天之功』，写这么一个『全程指南』，希望能给大家带来些帮助。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> zsh 全程指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                zsh 全程指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-02-18T17:09:15+08:00" content="2016-02-18">
+              2016-02-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/02/18/oh-my-zsh/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/02/18/oh-my-zsh/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>新年新气象，打算从 bash 迁移到 zsh 上来。网上教程很多，但是大多比较零散也不够让人知其所以然，而且很多配置也不符合我个人的习惯，于是打算『贪天之功』，写这么一个『全程指南』，希望能给大家带来些帮助。</p>
+<a id="more"></a>
+<hr>
+<p>工欲善其事，必先利其器。工欲利其器，必先思其行。凡事谋定而后动，得有个基本的目标，才好一步一步细化并实施。实话说，zsh 真的比 bash 好很多吗？从小处着眼，是的，无论是历史记录还是搜索还是自定义插件，zsh 都比 bash 强，但是看看隔壁的 powershell(windows)，才算得上真正现代化面向对象的命令行工具。而且很多时候我们都是连接到远程的机器上进行编程和配置，在那里 bash 可是一统天下的（当然每次都愿意配置折腾一次，zsh 也不是不行）。那么问题就来了，为什么还要折腾呢？</p>
+<p>答案很简单，充分利用高级功能，来提高自己的效率。当然，如果顺带能让界面更漂亮一点的话，何乐不为呢？不过有一点需要注意，如果要用 shell 脚本进行编程的话，最好还是按照 bash 的语法来做，不然把自己绑定到『非标准』的语法上，换个环境就可能导致巨大的问题。</p>
+<p>如果只是想要换个主题弄得花里胡哨的话，那么还不如节省点时间去做有意义的事情，虽然网上都说 zsh 是『终结 shell』，但是其实哪有所谓的『终极』？只有自己成为了大师，才能『飞花落叶皆可伤人』。</p>
+<p>不过既然说是『全程指南』，还是会尽量事无巨细介绍清楚，总体来说选择标准取决于我个人的审美和习惯，这点需要注意。</p>
+<h2 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h2><ol>
+<li>安装 <a href="http://www.iterm2.com/" target="_blank" rel="external">iTerm2</a>（最近要出新版了，很多新特性还是值得期待的）</li>
+<li>安装完成后可以在 iTerm2 中输入命令安装 <a href="https://github.com/robbyrussell/oh-my-zsh" target="_blank" rel="external">oh-my-zsh</a><ul>
+<li><code>curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh</code> </li>
+<li>因为 zsh 配置比较繁琐，所以这里可以直接用配置好的配置文件的基础上进行使用</li>
+</ul>
+</li>
+<li>安装 <a href="http://powerline.readthedocs.org/en/latest/installation.html" target="_blank" rel="external">Powerline</a> （一个 vim 的插件，随后有用）<ul>
+<li><code>pip install powerline-status</code></li>
+<li>如果没有 <code>pip</code> 命令的话，先把 <code>pip</code> 装上：<code>sudo easy_install pip</code></li>
+</ul>
+</li>
+<li>有些 zsh 中的主题需要使用额外的字体，我们也一并装好，<a href="https://github.com/powerline/fonts" target="_blank" rel="external">下载地址</a>。把所有东西下载下来，然后用命令行进入到 <code>install.sh</code> 所在文件夹，执行 <code>./install.sh</code> 进行安装</li>
+</ol>
+<h2 id="u73AF_u5883_u914D_u7F6E"><a href="#u73AF_u5883_u914D_u7F6E" class="headerlink" title="环境配置"></a>环境配置</h2><h3 id="u5B57_u4F53"><a href="#u5B57_u4F53" class="headerlink" title="字体"></a>字体</h3><p>前面我们安装了额外的字体，但是还是需要在 iTerm2 中配置一下，具体的字体选择有很多，只要是后面带有 Powerline 字样的就可以，注意 Regular Font 和 Non-ASCII Font 都需要进行修改</p>
+<p><img src="/images/14558361988595.jpg" alt="Preference -&gt; Profiles -&gt; Text"></p>
+<p>我觉得比较不错的字体有：</p>
+<ul>
+<li>Incosolata-dz for Powerline</li>
+<li>Roboto Mono Light for Powerline</li>
+<li>Ubuntu Mono derivative Powerline</li>
+</ul>
+<p>我自己在用的是</p>
+<ul>
+<li>Regular Font: 18pt Ubuntu Mono derivative Powerline</li>
+<li>Non-ASCII Font: 14pt Roboto Mono for Powerline</li>
+</ul>
+<p><img src="/images/14558366464605.jpg" alt="效果图"></p>
+<h3 id="u914D_u8272"><a href="#u914D_u8272" class="headerlink" title="配色"></a>配色</h3><p>这里就不推荐烂大街的 Solarized 配色了，而是直接给成吨选择，在<a href="http://iterm2colorschemes.com" target="_blank" rel="external">配色页面</a>中下载，然后根据截图自己选择，选择好之后在 Preference -&gt; Profiles -&gt; Colors 里面的 Load Presets 进行导入即可。我比较喜欢的是 Tomorrow Night 这个主题，并且稍微把颜色调亮了一点，显得比较活泼。像下面这样：</p>
+<p><img src="/images/14558402138712.jpg" alt="Tomorrow Night"></p>
+<p>其他我觉得比较不错的还有：</p>
+<ul>
+<li>Argonaut</li>
+<li>Cobalt2</li>
+<li>Molokai</li>
+<li>Monokai Soda</li>
+<li>PaulMillr</li>
+<li>Solarized Dark Higher Contrast</li>
+<li>SpaceGray Eighties</li>
+<li>Thayer Bright</li>
+<li>Tomorrow Night 全系列</li>
+<li>Wez</li>
+</ul>
+<h3 id="u914D_u7F6E_u6587_u4EF6"><a href="#u914D_u7F6E_u6587_u4EF6" class="headerlink" title="配置文件"></a>配置文件</h3><p>大部分配置都可以在配置文件中进行设置，这里我大概翻译一下，以及给出自己的一些使用偏好。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ZSH的环境变量</span></span><br><span class="line"><span class="built_in">export</span> ZSH=/Users/dawang/.oh-my-zsh</span><br><span class="line"></span><br><span class="line"><span class="comment"># 主题设置</span></span><br><span class="line"><span class="comment"># 主题列表在 ~/.oh-my-zsh/themes/</span></span><br><span class="line"><span class="comment"># 如果设置为 "random", 每次开启都会是不同的主题</span></span><br><span class="line">ZSH_THEME=<span class="string">"agnoster"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果想要大小写敏感，可以取消注释下面的一行</span></span><br><span class="line"><span class="comment"># CASE_SENSITIVE="true"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果想要连接符不敏感，可以取消注释下面的一行。_ 和 - 将可以互换</span></span><br><span class="line"><span class="comment"># HYPHEN_INSENSITIVE="true"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果不想要自动更新，可以取消注释下面的一行</span></span><br><span class="line"><span class="comment"># DISABLE_AUTO_UPDATE="true"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 自动更新的时间间隔，单位是天，这里设置 30 天更新一次</span></span><br><span class="line"><span class="built_in">export</span> UPDATE_ZSH_DAYS=<span class="number">30</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果不想要 ls 命令输出带颜色，可以取消注释下面的一行</span></span><br><span class="line"><span class="comment"># DISABLE_LS_COLORS="true"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 是否禁止更改终端标题,不要禁止,不然所有终端tab只显示zsh了,而不随着目录的改变而改变显示</span></span><br><span class="line"><span class="comment"># DISABLE_AUTO_TITLE="true"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 自动纠正命令,不启用,不怎么好用</span></span><br><span class="line"><span class="comment"># ENABLE_CORRECTION="true"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 按tab键补全命令的时候,如果没什么可补全的就会出现三个红点,更人性化显示，这里我们启用</span></span><br><span class="line">COMPLETION_WAITING_DOTS=<span class="string">"true"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Uncomment the following line if you want to disable marking untracked files</span></span><br><span class="line"><span class="comment"># under VCS as dirty. This makes repository status check for large repositories</span></span><br><span class="line"><span class="comment"># much, much faster.</span></span><br><span class="line"><span class="comment"># 不要在意这些细节，不需要改动</span></span><br><span class="line"><span class="comment"># DISABLE_UNTRACKED_FILES_DIRTY="true"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 历史命令日期显示格式</span></span><br><span class="line"><span class="comment"># 有三种方式: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"，我比较习惯最后那种</span></span><br><span class="line">HIST_STAMPS=<span class="string">"yyyy-mm-dd"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Would you like to use another custom folder than $ZSH/custom?</span></span><br><span class="line"><span class="comment"># ZSH_CUSTOM=/path/to/new-custom-folder</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)</span></span><br><span class="line"><span class="comment"># Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/</span></span><br><span class="line"><span class="comment"># Example format: plugins=(rails git textmate ruby lighthouse)</span></span><br><span class="line"><span class="comment"># 插件设置，如果添加太多启动速度会比较慢</span></span><br><span class="line">plugins=(git autojump)</span><br><span class="line"></span><br><span class="line">[[ <span class="operator">-s</span> ~/.autojump/etc/profile.d/autojump.zsh ]] &amp;&amp; . ~/.autojump/etc/profile.d/autojump.zsh</span><br><span class="line"></span><br><span class="line"><span class="comment"># 剩下部分比较不常改动 </span></span><br><span class="line"><span class="comment"># User configuration</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="string">"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/TeX/texbin"</span></span><br><span class="line"><span class="comment"># export MANPATH="/usr/local/man:$MANPATH"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> <span class="variable">$ZSH</span>/oh-my-zsh.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># You may need to manually set your language environment</span></span><br><span class="line"><span class="comment"># export LANG=en_US.UTF-8</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Preferred editor for local and remote sessions</span></span><br><span class="line"><span class="comment"># if [[ -n $SSH_CONNECTION ]]; then</span></span><br><span class="line"><span class="comment">#   export EDITOR='vim'</span></span><br><span class="line"><span class="comment"># else</span></span><br><span class="line"><span class="comment">#   export EDITOR='mvim'</span></span><br><span class="line"><span class="comment"># fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Compilation flags</span></span><br><span class="line"><span class="comment"># export ARCHFLAGS="-arch x86_64"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ssh</span></span><br><span class="line"><span class="comment"># export SSH_KEY_PATH="~/.ssh/dsa_id"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Set personal aliases, overriding those provided by oh-my-zsh libs,</span></span><br><span class="line"><span class="comment"># plugins, and themes. Aliases can be placed here, though oh-my-zsh</span></span><br><span class="line"><span class="comment"># users are encouraged to define aliases within the ZSH_CUSTOM folder.</span></span><br><span class="line"><span class="comment"># For a full list of active aliases, run `alias`.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Example aliases</span></span><br><span class="line"><span class="comment"># alias zshconfig="mate ~/.zshrc"</span></span><br><span class="line"><span class="comment"># alias ohmyzsh="mate ~/.oh-my-zsh"</span></span><br></pre></td></tr></table></figure>
+<h2 id="u9AD8_u7EA7_u529F_u80FD"><a href="#u9AD8_u7EA7_u529F_u80FD" class="headerlink" title="高级功能"></a>高级功能</h2><h3 id="u5E38_u7528_u5FEB_u6377_u952E"><a href="#u5E38_u7528_u5FEB_u6377_u952E" class="headerlink" title="常用快捷键"></a>常用快捷键</h3><ul>
+<li>命令历史记录<ul>
+<li>一旦在 shell 敲入正确命令并能执行后，shell 就会存储你所敲入命令的历史记录（存放在<code>~/.zsh_history</code> 文件中），方便再次运行之前的命令。可以按方向键↑和↓来查看之前执行过的命令</li>
+<li>可以用 <code>!!</code>来执行上一条命令</li>
+<li>使用 <code>ctrl-r</code> 来搜索命令历史记录</li>
+</ul>
+</li>
+<li>命令和文件补全(按tab键)</li>
+<li>命令别名<ul>
+<li>可以简化命令输入，在 <code>.zshrc</code> 中添加 <code>alias shortcut=&#39;this is the origin command&#39;</code> 一行就相当于添加了别名</li>
+<li>在命令行中输入 <code>alias</code> 可以查看所有的命令别名</li>
+</ul>
+</li>
+</ul>
+<p>一些比较好用的设置</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> cls=<span class="string">'clear'</span></span><br><span class="line"><span class="built_in">alias</span> ll=<span class="string">'ls -l'</span></span><br><span class="line"><span class="built_in">alias</span> la=<span class="string">'ls -a'</span></span><br><span class="line"><span class="built_in">alias</span> grep=<span class="string">"grep --color=auto"</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> html=<span class="string">'vim'</span>   <span class="comment"># 在命令行直接输入后缀为 html 的文件名，会在 Vim 中打开</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> rb=<span class="string">'vim'</span>     <span class="comment"># 在命令行直接输入 ruby 文件，会在 Vim 中打开</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> py=<span class="string">'vim'</span>      <span class="comment"># 在命令行直接输入 python 文件，会用 vim 中打开，以下类似</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> js=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> c=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> java=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> txt=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> gz=<span class="string">'tar -xzvf'</span> <span class="comment"># 在命令行直接输入后缀为 gz 的文件名，会自动解压打开</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> tgz=<span class="string">'tar -xzvf'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> zip=<span class="string">'unzip'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="operator">-s</span> bz2=<span class="string">'tar -xjvf'</span></span><br></pre></td></tr></table></figure>
+<h3 id="u63D2_u4EF6"><a href="#u63D2_u4EF6" class="headerlink" title="插件"></a>插件</h3><p><strong>git</strong></p>
+<p>在进入一个 git 文件夹后会切换显示的模式：</p>
+<p><img src="/images/14558436247342.jpg" alt=""></p>
+<p>自带大部分 git 命令的缩写，命令内容可以参考 <code>~/.oh-my-zsh/plugins/git/git.plugin.zsh</code></p>
+<p>Oh My Zsh 提供了一套系统别名（alias），来达到相同的功能。比如<code>gst</code>作为<code>git status</code>的别名。而且 Git 插件是 Oh My Zsh 默认启用的，相当于你使用了 Oh My Zsh，你就拥有了一套高效率的别名，而且还是全球通用的。是不是棒棒哒？下面是一些我常用的别名：</p>
+<table>
+<thead>
+<tr>
+<th>Alias</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gapa</td>
+<td><code>git add --patch</code></td>
+</tr>
+<tr>
+<td>gc!</td>
+<td><code>git commit -v --amend</code></td>
+</tr>
+<tr>
+<td>gcl</td>
+<td><code>git clone --recursive</code></td>
+</tr>
+<tr>
+<td>gclean</td>
+<td><code>git reset --hard &amp;&amp; git clean -dfx</code></td>
+</tr>
+<tr>
+<td>gcm</td>
+<td><code>git checkout master</code></td>
+</tr>
+<tr>
+<td>gcmsg</td>
+<td><code>git commit -m</code></td>
+</tr>
+<tr>
+<td>gco</td>
+<td><code>git checkout</code></td>
+</tr>
+<tr>
+<td>gd</td>
+<td><code>git diff</code></td>
+</tr>
+<tr>
+<td>gdca</td>
+<td><code>git diff --cached</code></td>
+</tr>
+<tr>
+<td>gp</td>
+<td><code>git push</code></td>
+</tr>
+<tr>
+<td>grbc</td>
+<td><code>git rebase --continue</code></td>
+</tr>
+<tr>
+<td>gst</td>
+<td><code>git status</code></td>
+</tr>
+<tr>
+<td>gup</td>
+<td><code>git pull --rebase</code></td>
+</tr>
+</tbody>
+</table>
+<p>完整列表请参考：<a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Plugin:git" target="_blank" rel="external">https://github.com/robbyrussell/oh-my-zsh/wiki/Plugin:git</a></p>
+<p><strong>osx</strong></p>
+<ul>
+<li>tab - 在一个新标签打开当前目录</li>
+<li>cdf - cd到当前Finder目录</li>
+<li>quick-look - 快速浏览特殊的文件</li>
+<li>man-preview - 在Preview应用打开特定的man page</li>
+<li>trash - 将特定的文件移到垃圾桶</li>
+</ul>
+<p><strong>autojump</strong></p>
+<p>这个插件会记录进入过的文件夹，下次再进入只要输入很少的内容即可，如下图所示：</p>
+<p><img src="/images/14558437933171.jpg" alt=""></p>
+<p><strong>zsh-syntax-highlighting</strong></p>
+<p>这是一个类似 fish 的命令高亮插件，安装也很简单 <code>brew install zsh-syntax-highlighting</code>，需要把 <code>source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh</code> 添加到 <code>.zshrc</code> 的最后面。</p>
+<p>其他的<a href="https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md" target="_blank" rel="external">安装方法</a></p>
+<h3 id="u4F7F_u7528_u6280_u5DE7"><a href="#u4F7F_u7528_u6280_u5DE7" class="headerlink" title="使用技巧"></a>使用技巧</h3><ol>
+<li>连按两次Tab会列出所有的补全列表并直接开始选择，补全项可以使用 ctrl+n/p/f/b上下左右切换</li>
+<li>命令选项补全。在zsh中只需要键入 <code>tar -&lt;tab&gt;</code> 就会列出所有的选项和帮助说明</li>
+<li>命令参数补全。键入 <code>kill &lt;tab&gt;</code> 就会列出所有的进程名和对应的进程号</li>
+<li>更智能的历史命令。在用<ctrl-p>或者方向上键查找历史命令时，zsh支持限制查找。比如，输入<code>ls</code>,然后再按方向上键，则只会查找用过的ls命令。而此时使用<ctrl-p>则会仍然按之前的方式查找，忽略 <code>ls</code></ctrl-p></ctrl-p></li>
+<li>多个终端会话共享历史记录</li>
+<li>智能跳转，安装了 autojump 之后，zsh 会自动记录你访问过的目录，通过 <code>j 目录名</code> 可以直接进行目录跳转，而且目录名支持模糊匹配和自动补全，例如你访问过 hadoop-1.0.0 目录，输入<code>j hado</code> 即可正确跳转。<code>j --stat</code> 可以看你的历史路径库。</li>
+<li>目录浏览和跳转：输入 d，即可列出你在这个会话里访问的目录列表，输入列表前的序号，即可直接跳转。</li>
+<li>在当前目录下输入 <code>..</code> 或 <code>...</code> ，或直接输入当前目录名都可以跳转，你甚至不再需要输入 cd 命令了。在你知道路径的情况下，比如 <code>/usr/local/bin</code> 你可以输入 <code>cd /u/l/b</code> 然后按<tab>进行补全快速输入</tab></li>
+<li>通配符搜索：<code>ls -l **/*.sh</code>，可以递归显示当前目录下的 shell 文件，文件少时可以代替 find。使用 <code>**/</code> 来递归搜索</li>
+<li>扩展环境变量，输入环境变量然后按 <tab> 就可以转换成表达的值</tab></li>
+<li>在 <code>.zshrc</code> 中添加 <code>setopt HIST_IGNORE_DUPS</code> 可以消除重复记录，也可以利用 <code>sort -t &quot;;&quot; -k 2 -u ~/.zsh_history | sort -o ~/.zsh_history</code> 手动清除</li>
+</ol>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://macshuo.com/?p=676" target="_blank" rel="external">终极 Shell</a></li>
+<li><a href="http://hackerxu.com/2014/11/19/ZSH.html" target="_blank" rel="external">Zsh使用指南(译)</a></li>
+<li><a href="http://www.jianshu.com/p/dc4ee939a08d" target="_blank" rel="external">zsh调研(2)配置和使用</a></li>
+<li><a href="http://blog.csdn.net/yangcs2009/article/details/45720193" target="_blank" rel="external">Shell（一）：功能、配置和插件（附iTerm 2(for mac) &amp;&amp; Oh My Zsh教程）</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/Zsh_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87" target="_blank" rel="external">Zsh (简体中文)</a>)</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Mac/" rel="tag">#Mac</a>
+          
+            <a href="/tags/bash/" rel="tag">#bash</a>
+          
+            <a href="/tags/zsh/" rel="tag">#zsh</a>
+          
+            <a href="/tags/命令行/" rel="tag">#命令行</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/17/programming-ios9-translation-9/" rel="next" title="Programming iOS9 学习笔记 9 - iPad Interface">
+                <i class="fa fa-chevron-left"></i> Programming iOS9 学习笔记 9 - iPad Interface
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/18/mac-tips/" rel="prev" title="Mac 技巧指南">
+                Mac 技巧指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/02/18/oh-my-zsh/"
+           data-title="zsh 全程指南" data-url="http://wdxtub.com/2016/02/18/oh-my-zsh/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u51C6_u5907_u5DE5_u4F5C"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u73AF_u5883_u914D_u7F6E"><span class="nav-number">2.</span> <span class="nav-text">环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5B57_u4F53"><span class="nav-number">2.1.</span> <span class="nav-text">字体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u914D_u8272"><span class="nav-number">2.2.</span> <span class="nav-text">配色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u914D_u7F6E_u6587_u4EF6"><span class="nav-number">2.3.</span> <span class="nav-text">配置文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9AD8_u7EA7_u529F_u80FD"><span class="nav-number">3.</span> <span class="nav-text">高级功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5E38_u7528_u5FEB_u6377_u952E"><span class="nav-number">3.1.</span> <span class="nav-text">常用快捷键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u63D2_u4EF6"><span class="nav-number">3.2.</span> <span class="nav-text">插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4F7F_u7528_u6280_u5DE7"><span class="nav-number">3.3.</span> <span class="nav-text">使用技巧</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

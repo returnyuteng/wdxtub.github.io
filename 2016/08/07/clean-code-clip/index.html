@@ -1,0 +1,1180 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="代码,读书笔记,质量," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="小处诚实非小事，神在细节之中。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【代码整洁之道】读书笔记">
+<meta property="og:url" content="http://wdxtub.com/2016/08/07/clean-code-clip/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="小处诚实非小事，神在细节之中。">
+<meta property="og:updated_time" content="2016-08-08T14:57:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【代码整洁之道】读书笔记">
+<meta name="twitter:description" content="小处诚实非小事，神在细节之中。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 【代码整洁之道】读书笔记 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【代码整洁之道】读书笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-07T23:00:15+08:00" content="2016-08-07">
+              2016-08-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Reading/" itemprop="url" rel="index">
+                    <span itemprop="name">Reading</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/07/clean-code-clip/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/07/clean-code-clip/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>小处诚实非小事，神在细节之中。</p>
+<a id="more"></a>
+<hr>
+<p>习艺之要有二：知和行。你应当习得有关原则、模式和实践的知识，穷尽应知之事，并且要对其了如指掌，通过刻苦实践掌握它。</p>
+<h2 id="u6574_u6D01_u4EE3_u7801"><a href="#u6574_u6D01_u4EE3_u7801" class="headerlink" title="整洁代码"></a>整洁代码</h2><p>Bjarne Stroustrup: 我喜欢优雅和高效的代码，代码逻辑应当直截了当，叫缺陷难以隐藏；尽量减少依赖关系，使之便于维护；依据某种分层战略完善错误处理代码；性能调至最优，省得引诱别人做没规矩的优化，搞出一堆混乱来。整洁的代码只做好一件事。</p>
+<p>Grady Booch: 整洁的代码简单直接。整洁的代码如同优美的散文。整洁的代码从不隐藏设计者的意图，充满了干净利落的抽象和直截了当的控制语句。</p>
+<p>Dave Thomas: 整洁的代码应可由作者之外的开发者阅读和增补。它应有单元测试和验收测试。它使用有意义的命名。它只提供一种而非多种做一件事的途径。它只有尽量少的依赖关系，而且要明确地定义和提供清晰、尽量少的 API。代码应通过其字面表达含义，因为不同的语言导致并非所有必需信息均可通过代码自身清晰表达。</p>
+<p>Michael Feathers: 我可以列出我留意到的整洁代码的所有特点，但其中有一条是根本性的。整洁的代码总是看起来像是某位特别在意它的人写的，几乎没有改进的余地。代码作者什么都想到了，如果你企图改进它，总会回到原点，赞叹某人留给你的代码——全心投入的某人留下的代码。</p>
+<p>Ron Jeffries: 近年来，我开始研究贝克的简单代码规则，差不多也都琢磨透了。简单代码，依其重要顺序：能功过所有测试；没有重复代码；体现系统中的全部设计理念；包括尽量少的实体，比如类、方法、函数等</p>
+<p>Ward Cunningham: 如果每个例程都让你感到深合己意，那就是整洁代码，如果代码让编程语言看起来像是专为解决那个问题而存在的，就可以称之为漂亮的代码。</p>
+<p>光把代码写好可不够。必须时时<strong>保持代码整洁</strong>。我们都见过代码随时间流逝而腐坏。我们应当更积极地组织腐坏的发生。借用美国童子军一条简单的军规：</p>
+<blockquote>
+<p>让营地比你来时更干净</p>
+</blockquote>
+<h2 id="u6709_u610F_u4E49_u7684_u547D_u540D"><a href="#u6709_u610F_u4E49_u7684_u547D_u540D" class="headerlink" title="有意义的命名"></a>有意义的命名</h2><p>好名字的简单规则</p>
+<ul>
+<li>名副其实</li>
+<li>避免误导<ul>
+<li>别用 <code>accountList</code> 来指一组帐号，除非它真的是 List 类型</li>
+<li>提防使用不同之处较小的名称</li>
+</ul>
+</li>
+<li>做有意义的区分</li>
+<li>使用读得出来的名称</li>
+<li>使用可搜索的名称（单字母名称和数字常量很难在一大篇文字中找出来）</li>
+<li>避免使用编码</li>
+<li>避免使用思维映射</li>
+<li>类名不应当是动词</li>
+<li>方法名应当是动词或动词短语</li>
+<li>别扮可爱</li>
+<li>每个概念对应一个词</li>
+<li>别用双关语</li>
+<li>使用解决方案领域名称</li>
+<li>使用源自所涉问题领域的名称</li>
+<li>添加有意义的语境（实在不行可以添加前缀）</li>
+<li>不要添加没用的语境</li>
+</ul>
+<h2 id="u51FD_u6570"><a href="#u51FD_u6570" class="headerlink" title="函数"></a>函数</h2><ul>
+<li>短小</li>
+<li>只做一件事</li>
+<li>每个函数一个抽象层级</li>
+<li>switch 语句<ul>
+<li>如果只出现一次，用于创建多态对象，而且隐藏在某个继承关系中，在系统其他部分看不到，就还能容忍</li>
+</ul>
+</li>
+<li>使用描述性的名称</li>
+<li>函数参数<ul>
+<li>尽量避免三个或三个以上参数</li>
+</ul>
+</li>
+<li>无副作用</li>
+<li>分隔指令与询问</li>
+<li>使用异常替代返回错误码<ul>
+<li>错误处理代码就能从主路径代码中分离出来</li>
+<li>抽离 Try/Catch 代码块：最好把 try 和 catch 代码块的主题部分抽离出来，另外形成函数</li>
+<li>错误处理就是一件事</li>
+<li>返回错误码通常暗示有某个类或是枚举，定义了所有错误码，这样的类就是一块<strong>依赖磁铁(dependency magnet)</strong>，其他许多类都得导入和使用它</li>
+</ul>
+</li>
+<li>别重复自己</li>
+<li>结构化编程</li>
+</ul>
+<p>每个系统都是使用某种领域特定语言搭建的，而这种语言是程序员设计来描述那个系统的。函数是语言的动词，类是名词。编程艺术是且一直就是语言设计的艺术。</p>
+<p>大师级程序员把系统当作故事来讲，而不是当作程序来写。他们使用选定编程语言提供的工具构建一种更为丰富且更具表达力的语言，用来讲那个故事。</p>
+<h2 id="u6CE8_u91CA"><a href="#u6CE8_u91CA" class="headerlink" title="注释"></a>注释</h2><p>尽管有时也需要注释，我们也该多花心思尽量减少注释量</p>
+<ul>
+<li>注释不能美化糟糕的代码</li>
+<li>用代码来阐述</li>
+<li>好注释<ul>
+<li>法律信息</li>
+<li>提供信息的注释</li>
+<li>对意图的解释</li>
+<li>阐释</li>
+<li>警示</li>
+<li>TODO 注释</li>
+<li>放大</li>
+<li>公共 API 中的 Javadoc</li>
+</ul>
+</li>
+<li>坏注释<ul>
+<li>喃喃自语</li>
+<li>多余的注释</li>
+<li>误导性注释</li>
+<li>循规式注释</li>
+<li>日志式注释</li>
+<li>废话注释</li>
+<li>可怕的废话（Javadoc 也可能是废话）</li>
+<li>能用函数或变量时就别用注释</li>
+<li>位置标记</li>
+<li>括号后面的注释</li>
+<li>归属与署名（有源代码控制系统）</li>
+<li>注释掉的代码</li>
+<li>HTML 注释</li>
+<li>非本地信息</li>
+<li>信息过多</li>
+<li>不明显的联系</li>
+<li>函数头</li>
+<li>非公共代码中的 Javadoc（八股）</li>
+</ul>
+</li>
+</ul>
+<h2 id="u683C_u5F0F"><a href="#u683C_u5F0F" class="headerlink" title="格式"></a>格式</h2><ul>
+<li>向报纸学习<ul>
+<li>名称应当简单且一目了然。名称本身应该足够告诉我们是否在正确的模块中。源文件最顶部应该给出高层次概念和算法。细节应该往下渐次展开，直到找到源文件中最底层的函数和细节</li>
+<li>概念间垂直方向上的区隔</li>
+<li>垂直方向上的靠近</li>
+<li>垂直距离</li>
+<li>垂直顺序 </li>
+</ul>
+</li>
+<li>横向格式<ul>
+<li>水平方向上的区隔与靠近</li>
+<li>水平对齐</li>
+<li>缩进</li>
+<li>空范围</li>
+</ul>
+</li>
+<li>团队规则<ul>
+<li>在团队中，个人需要满足团队</li>
+</ul>
+</li>
+</ul>
+<h2 id="u5BF9_u8C61_u548C_u6570_u636E_u7ED3_u6784"><a href="#u5BF9_u8C61_u548C_u6570_u636E_u7ED3_u6784" class="headerlink" title="对象和数据结构"></a>对象和数据结构</h2><ul>
+<li>数据抽象</li>
+<li>数据、对象的反对称性</li>
+<li>得墨忒耳律：模块不应了解它所操作对象的内部情形<ul>
+<li>火车失事：连串的调用通常被认为是肮脏的风格</li>
+<li>混杂</li>
+<li>隐藏结构</li>
+</ul>
+</li>
+<li>数据传送对象<ul>
+<li>最为精炼的数据结构，是一个只有公共变量、没有函数的类。这种数据结构有时被称为数据传送对象，或 DTO(Data Transfer Objects)。DTO 是非常有用的结构，尤其是在与数据库通信、或解析套接字传递的消息之类的场景中</li>
+</ul>
+</li>
+</ul>
+<h2 id="u9519_u8BEF_u5904_u7406"><a href="#u9519_u8BEF_u5904_u7406" class="headerlink" title="错误处理"></a>错误处理</h2><p>错误处理很重要，但如果它搞乱了代码逻辑，就是错误的做法。</p>
+<ul>
+<li>使用异常而非返回码</li>
+<li>先写 Try-Catch-Finally 语句</li>
+<li>使用不可控异常（可控异常的代价就是违反开放/闭合原则）</li>
+<li>给出异常发生的环境说明（创建信息充分的错误消息，并和异常一起传递出去）</li>
+<li>依调用者需要定义异常类</li>
+<li>定义常规流程</li>
+<li>别返回 null 值<ul>
+<li>返回 null 值，基本上是在给自己增加工作量，也是在给调用者添乱。只要有一处没检查 null 值，应用程序就会失控</li>
+</ul>
+</li>
+<li>别传递 null 值</li>
+</ul>
+<p>整洁代码是可读的，但也要强固。可读与强固。可读与强固并不冲突。如果将错误处理隔离看待，独立于主要逻辑之外，就能写出强固而整洁的代码。做到这一步，我们就能单独处理它，也极大地提升了代码的可维护性。</p>
+<h2 id="u8FB9_u754C"><a href="#u8FB9_u754C" class="headerlink" title="边界"></a>边界</h2><ul>
+<li>使用边界接口<ul>
+<li>如果你私用类似 Map 这样的边界接口，就把它保留在类或近亲类中。避免从公共 API 中返回边界接口，或将边界接口作为参数传递给公共 API</li>
+</ul>
+</li>
+<li>浏览和学习边界</li>
+<li>学习性测试的好处不只是免费</li>
+<li>使用尚不存在的代码</li>
+<li>整洁的边界<ul>
+<li>边界上会发生有趣的事。改动是其中之一。有良好的软件设计，无需重大投入和重写即可修改</li>
+</ul>
+</li>
+</ul>
+<h2 id="u5355_u5143_u6D4B_u8BD5"><a href="#u5355_u5143_u6D4B_u8BD5" class="headerlink" title="单元测试"></a>单元测试</h2><ul>
+<li>TDD 三定律<ul>
+<li>在编写不能通过的单元测试前，不可编写生产代码</li>
+<li>只可编写刚好无法通过的单元测试，不能编译也算不通过</li>
+<li>只可编写刚好足以通过当前失败测试的生产代码</li>
+</ul>
+</li>
+<li>保持测试整洁<ul>
+<li>测试代码和生产代码一样重要</li>
+</ul>
+</li>
+<li>整洁的测试<ul>
+<li>三要素：可读性、可读性和可读性。</li>
+<li>明确、简洁，还有足够的表达力</li>
+</ul>
+</li>
+<li>每个测试一个断言</li>
+<li>FIRST 原则<ul>
+<li>快速 Fast</li>
+<li>独立 Independent</li>
+<li>可重复 Repeatable</li>
+<li>自足验证 Self-Validating</li>
+<li>及时 Timely</li>
+</ul>
+</li>
+</ul>
+<h2 id="u7C7B"><a href="#u7C7B" class="headerlink" title="类"></a>类</h2><ul>
+<li>类的组织<ul>
+<li>从一组变量列表开始。如果有公共静态常量，应该先出现。然后是私有静态变量，以及私有实体变量。很少会有公共变量。</li>
+<li>公共函数应跟在变量列表之后。我们喜欢把某个公共函数调用的私有工具函数紧随在该公共函数后面。这符合了自顶向下原则</li>
+</ul>
+</li>
+<li>类应该短小<ul>
+<li>单一权责原则(SRP)：类或模块应有且仅有一条加以修改的理由</li>
+<li>系统应该由许多短小的类而不是少量巨大的类组成。每个小类封装一个权责，只有一个修改的原因，并与少数其他类一起协同达成期望的系统行为</li>
+<li>内聚：类应该只有少量实体变量。类中的每个方法都应该操作一个或多个这种变量</li>
+<li>保持内聚性就会得到许多短小的类</li>
+</ul>
+</li>
+<li>为了修改而组织 </li>
+</ul>
+<h2 id="u7CFB_u7EDF"><a href="#u7CFB_u7EDF" class="headerlink" title="系统"></a>系统</h2><ul>
+<li>将系统的构造与使用分开<ul>
+<li>分解 main</li>
+<li>工厂</li>
+<li>依赖注入</li>
+</ul>
+</li>
+<li>扩容<ul>
+<li>软件系统与物理系统可以类比。它们的架构都可以递增式地增长，只要我们持续将关注面恰当地切分</li>
+</ul>
+</li>
+<li>测试驱动系统架构</li>
+<li>优化决策</li>
+<li>明智使用添加了可论证价值的标准</li>
+<li>系统需要领域特定语言</li>
+</ul>
+<p>系统也应该是整洁的。侵害性架构会湮灭领域逻辑，冲击敏捷能力。当领域逻辑受到困扰，质量也就堪忧，因为缺陷更易隐藏，用户故事更难实现。当敏捷能力受到损害时，生产力会降低，TDD 的好处也遗失殆尽。</p>
+<h2 id="u8FED_u8FDB"><a href="#u8FED_u8FDB" class="headerlink" title="迭进"></a>迭进</h2><ul>
+<li>简单设计规则 1：运行所有测试</li>
+<li>简单设计规则 2~4：重构</li>
+<li>不可重复</li>
+<li>表达力</li>
+<li>尽可能少的类和方法</li>
+</ul>
+<h2 id="u5E76_u53D1_u7F16_u7A0B"><a href="#u5E76_u53D1_u7F16_u7A0B" class="headerlink" title="并发编程"></a>并发编程</h2><blockquote>
+<p>对象是过程的抽象，线程是调度的抽象</p>
+</blockquote>
+<p>编写整洁的并发程序很难——非常难。并发是一种解耦策略。它帮助我们把做什么（目的）和何时（时机）做分解开。在单线程应用中，目的与时机紧密耦合，很多时候只要查看堆栈追踪即可断定应用程序的状态。</p>
+<p>解耦目的与时机能明显地改进应用程序的吞吐量和结构。从结构的角度看，应用程序看起来更像是许多台协同工作的计算机，而不是一个大循环。系统因此会更易于被理解，给出了许多切分关注面的有力手段。</p>
+<p>并发防御原则</p>
+<ul>
+<li>单一权责原则：建议分离并发相关代码与其他代码</li>
+<li>限制数据作用域：谨记数据封装；严格限制对可能被共享的数据的访问</li>
+<li>使用数据副本</li>
+<li>线程应尽可能地独立</li>
+</ul>
+<p>其他需要注意的</p>
+<ul>
+<li>警惕同步方法之间的依赖</li>
+<li>保持同步区域微小</li>
+</ul>
+<p>测试线程代码的方法：</p>
+<ul>
+<li>将伪失败看作可能的线程问题</li>
+<li>先使非线程代码科工作</li>
+<li>编写可插拔的线程代码</li>
+<li>编写可调整的线程代码</li>
+<li>运行多于处理器数量的线程</li>
+<li>在不同平台上运行</li>
+<li>调整代码并强迫错误发生</li>
+</ul>
+<h2 id="u5473_u9053_u4E0E_u542F_u53D1"><a href="#u5473_u9053_u4E0E_u542F_u53D1" class="headerlink" title="味道与启发"></a>味道与启发</h2><p>以下这些都是不好的，需要避免</p>
+<ul>
+<li>注释<ul>
+<li>不恰当的信息</li>
+<li>废弃的注释</li>
+<li>冗余注释</li>
+<li>糟糕的注释</li>
+<li>注释掉的代码</li>
+</ul>
+</li>
+<li>环境<ul>
+<li>需要多步才能实现的构建</li>
+<li>需要多步才能做到的测试</li>
+</ul>
+</li>
+<li>函数<ul>
+<li>过多的参数</li>
+<li>输出参数</li>
+<li>标识参数</li>
+<li>死函数</li>
+</ul>
+</li>
+<li>一般性问题<ul>
+<li>一个源文件中存在多个语言</li>
+<li>明显的行为未被实现</li>
+<li>不正确的边界行为</li>
+<li>忽视安全</li>
+<li>重复</li>
+<li>在错误的抽象层级上的代码</li>
+<li>基类依赖于派生类</li>
+<li>信息过多</li>
+<li>死代码</li>
+<li>垂直分隔</li>
+<li>前后不一致</li>
+<li>混淆视听</li>
+<li>人为耦合</li>
+<li>特性依赖</li>
+<li>选择算子参数</li>
+<li>晦涩的意图</li>
+<li>位置错误的权责</li>
+<li>不恰当的静态方法</li>
+</ul>
+</li>
+</ul>
+<p>应该做的    </p>
+<ul>
+<li>使用解释性变量</li>
+<li>函数名称应该表达其行为</li>
+<li>理解算法</li>
+<li>把逻辑依赖改为物理依赖</li>
+<li>用多态替代 If/Else 或 Switch/Case</li>
+<li>遵循标准约定</li>
+<li>用命名常量代替 Magic Number</li>
+<li>准确</li>
+<li>接哦古甚于约定</li>
+<li>封装条件</li>
+<li>避免否定性条件</li>
+<li>函数只该做一件事</li>
+<li>掩蔽时序耦合</li>
+<li>别随意</li>
+<li>封装边界条件</li>
+<li>函数应该只在一个抽象层级上</li>
+<li>在较高层级放置科配置数据</li>
+<li>避免传递浏览</li>
+</ul>
+<p>Java 技巧</p>
+<ul>
+<li>通过使用通配符避免过长的导入清单</li>
+<li>不要继承常量</li>
+<li>用枚举代替常量</li>
+</ul>
+<p>名称</p>
+<ul>
+<li>采用描述性名称</li>
+<li>名称应与抽象层级相符</li>
+<li>尽可能使用标准命名法</li>
+<li>五歧义的名称</li>
+<li>为较大做用范围选用较长名称</li>
+<li>避免编码（前缀等没必要）</li>
+<li>名称应该说明副作用</li>
+</ul>
+<p>测试</p>
+<ul>
+<li>测试不足</li>
+<li>使用覆盖率工具</li>
+<li>别略过小测试</li>
+<li>被忽略的测试是对不确定事物的疑问</li>
+<li>测试边界条件</li>
+<li>全面测试相近的缺陷</li>
+<li>测试失败的模式有启发性</li>
+<li>测试覆盖率的模式有启发性</li>
+<li>测试应该快速</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/代码/" rel="tag">#代码</a>
+          
+            <a href="/tags/读书笔记/" rel="tag">#读书笔记</a>
+          
+            <a href="/tags/质量/" rel="tag">#质量</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/07/working-effectively-with-legacy-code-clip/" rel="next" title="【修改代码的艺术】读书笔记">
+                <i class="fa fa-chevron-left"></i> 【修改代码的艺术】读书笔记
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/08/mac-work-env/" rel="prev" title="Mac 工作环境搭建">
+                Mac 工作环境搭建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/07/clean-code-clip/"
+           data-title="【代码整洁之道】读书笔记" data-url="http://wdxtub.com/2016/08/07/clean-code-clip/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u6574_u6D01_u4EE3_u7801"><span class="nav-number">1.</span> <span class="nav-text">整洁代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6709_u610F_u4E49_u7684_u547D_u540D"><span class="nav-number">2.</span> <span class="nav-text">有意义的命名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u51FD_u6570"><span class="nav-number">3.</span> <span class="nav-text">函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6CE8_u91CA"><span class="nav-number">4.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u683C_u5F0F"><span class="nav-number">5.</span> <span class="nav-text">格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5BF9_u8C61_u548C_u6570_u636E_u7ED3_u6784"><span class="nav-number">6.</span> <span class="nav-text">对象和数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9519_u8BEF_u5904_u7406"><span class="nav-number">7.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FB9_u754C"><span class="nav-number">8.</span> <span class="nav-text">边界</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5355_u5143_u6D4B_u8BD5"><span class="nav-number">9.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7C7B"><span class="nav-number">10.</span> <span class="nav-text">类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7CFB_u7EDF"><span class="nav-number">11.</span> <span class="nav-text">系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FED_u8FDB"><span class="nav-number">12.</span> <span class="nav-text">迭进</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E76_u53D1_u7F16_u7A0B"><span class="nav-number">13.</span> <span class="nav-text">并发编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5473_u9053_u4E0E_u542F_u53D1"><span class="nav-number">14.</span> <span class="nav-text">味道与启发</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

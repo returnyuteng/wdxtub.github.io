@@ -1,0 +1,980 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,,," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="项目名称：Twitter Analytics on the Cloud
+从这次作业开始，就要小组作业和个人作业并行了。这次的项目主要是在云上分析 Twitter 的相关内容，与以前 GB 级数据不一样，这次我们要处理 TB 级的数据，还是很刺激的。另，这是小组作业，在此先感谢我的队友 @leiyu 和 @shushanc">
+<meta property="og:type" content="website">
+<meta property="og:title" content="云计算 Twitter 语料分析 1 项目简介">
+<meta property="og:url" content="http://wdxtub.com/vault/cc-p1.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="项目名称：Twitter Analytics on the Cloud
+从这次作业开始，就要小组作业和个人作业并行了。这次的项目主要是在云上分析 Twitter 的相关内容，与以前 GB 级数据不一样，这次我们要处理 TB 级的数据，还是很刺激的。另，这是小组作业，在此先感谢我的队友 @leiyu 和 @shushanc">
+<meta property="og:image" content="http://wdxtub.com/images/14564545973314.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14567964930323.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14567965454003.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14567965837212.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14567966154182.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14567966534438.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14567966771945.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564602178732.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564603584769.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564607523532.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14564607621256.jpg">
+<meta property="og:updated_time" content="2016-03-11T10:59:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="云计算 Twitter 语料分析 1 项目简介">
+<meta name="twitter:description" content="项目名称：Twitter Analytics on the Cloud
+从这次作业开始，就要小组作业和个人作业并行了。这次的项目主要是在云上分析 Twitter 的相关内容，与以前 GB 级数据不一样，这次我们要处理 TB 级的数据，还是很刺激的。另，这是小组作业，在此先感谢我的队友 @leiyu 和 @shushanc">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    云计算 Twitter 语料分析 1 项目简介 | 小土刀
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>项目名称：Twitter Analytics on the Cloud</p>
+<p>从这次作业开始，就要小组作业和个人作业并行了。这次的项目主要是在云上分析 Twitter 的相关内容，与以前 GB 级数据不一样，这次我们要处理 TB 级的数据，还是很刺激的。另，这是小组作业，在此先感谢我的队友 @leiyu 和 @shushanc</p>
+<a id="more"></a>
+<hr>
+<h2 id="u4EFB_u52A1_u76EE_u6807"><a href="#u4EFB_u52A1_u76EE_u6807" class="headerlink" title="任务目标"></a>任务目标</h2><ol>
+<li>在一定预算限制下利用所学知识搭建一个性能高可靠性又好的 web 服务</li>
+<li>设计、开发、部署和优化服务器以处理比较高的负载（大约每秒上万次请求）</li>
+<li>在一个大数据集上（约 1TB）实现 Extract Transform and Load (ETL) 并载入到 MySQL  和 HBase 中</li>
+<li>设计 MySQL 和 HBase 的 schema 并优化配置来提高性能</li>
+<li>探索寻找基于云的 web 服务中潜在瓶颈的方法，并提高性能</li>
+</ol>
+<p>我们需要搭建并优化一个有两个组件的 web 服务，前端负责处理请求，后端负责查询数据，架构如图：</p>
+<p><img src="/images/14564545973314.jpg" alt="系统架构"></p>
+<ol>
+<li>前端：能够接收和响应查询请求的 web 服务<ul>
+<li>用过通过指定网址发送 HTTP GET 请求来访问 web 服务。不同的请求有不同的地址，后面跟有不同的参数</li>
+<li>要返回适当的响应，并且一定要按照指定的格式</li>
+<li>Web 服务需要在持续若干小时的测试中正常运行</li>
+<li>Web 服务不能拒绝请求，应该能够承受高负载</li>
+</ul>
+</li>
+<li>后端：保存用来查询的数据文件<ul>
+<li>需要评估 SQL(MySQL) 和 NoSQL(HBase)</li>
+<li>比较不同数据集不同查询类型的性能表现，然后由此来决定如何实现后端</li>
+</ul>
+</li>
+<li>Web 服务应该在不超过预算的情况下达到指定的吞吐量</li>
+<li>钱花得越少越好</li>
+<li>前端和后端均使用 M 系列的实例，批量处理的时候注意使用竞价实例（总之就是要省钱）</li>
+</ol>
+<blockquote>
+<p>数据集</p>
+</blockquote>
+<ul>
+<li>数据集地址为：<code>s3://cmucc-datasets/twitter/s16/</code></li>
+<li>大小超过 1 TB，还会有重复和损坏的记录</li>
+<li><a href="http://en.wikipedia.org/wiki/JSON" target="_blank" rel="external">JSON</a> 格式，每行表示一个 tweet，具体看<a href="https://dev.twitter.com/docs/platform-objects/tweets" target="_blank" rel="external">Twitter API</a>.</li>
+<li>字符编码是 unicode，建议使用下面的库<ul>
+<li>simple json/gson(Java)</li>
+<li>标准库中的 json module(python)</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>进度安排及制品</p>
+</blockquote>
+<p>项目分三个阶段，每个阶段完成不同的任务，每个阶段完成之后都需要提交制品：</p>
+<ol>
+<li>性能数据</li>
+<li>开销分析</li>
+<li>源代码</li>
+<li>问答题的答案</li>
+<li>阶段报告，包括设计选择和制品描述 </li>
+</ol>
+<h3 id="u5E38_u89C1_u95EE_u9898"><a href="#u5E38_u89C1_u95EE_u9898" class="headerlink" title="常见问题"></a>常见问题</h3><blockquote>
+<p>如何提交测试请求？</p>
+</blockquote>
+<p>提交 web 服务的地址即可开始测试，提供不同时间长度的测试，可以有针对性进行选择，比方说如果只是为了检测服务能否正常运行，那么可能几分钟的测试就够了；如果想要看看长时间能否工作，就需要长时间的测试。</p>
+<blockquote>
+<p>到底测试什么？</p>
+</blockquote>
+<p>简单来说，每次提交测试请求之后，系统会产生特定的请求并发送到之前填写的地址，会检测性能和正确性。</p>
+<blockquote>
+<p>为什么提交不了请求了？</p>
+</blockquote>
+<p>为了省钱，每个队伍同时只能用一个测试在跑（或者在排队）</p>
+<p>还可以取消当前的测试请求并重新提交</p>
+<blockquote>
+<p>如何计算分数？</p>
+</blockquote>
+<p>主要考察下面几点</p>
+<ul>
+<li>吞吐量：测试期间平均 RPS</li>
+<li>延迟：平均每个请求的延迟</li>
+<li>错误率：不返回 2XX 都是错误</li>
+<li>正确率：检测是否返回正确的内容，注意仔细检查格式</li>
+</ul>
+<p>具体计算公式为：</p>
+<ul>
+<li>有效吞吐量 = 吞吐量 <em> (100 - 错误率 / 100) </em> (正确率 / 100)</li>
+<li>原始分 = 有效吞吐量 / 目标吞吐量</li>
+</ul>
+<p>注意，错误率与正确率都会极大影响最后的分数</p>
+<h2 id="u4EFB_u52A1_u6982_u89C8"><a href="#u4EFB_u52A1_u6982_u89C8" class="headerlink" title="任务概览"></a>任务概览</h2><h3 id="u524D_u7AEF"><a href="#u524D_u7AEF" class="headerlink" title="前端"></a>前端</h3><p>接收 RESTful 请求并返回响应，不限制所使用的 web 框架，但是需要至少使用两种，并比较他们的异同，最好使用竞价实例，省钱。</p>
+<p>最好考虑使用 auto-scaling，因为测试的过程中会有波动。设计前端的时候要考虑到开销，并且写好测试脚本，不然每次都要部署一次很麻烦。</p>
+<p>不同的 web 框架的性能也很不一样，如果一开始就选择了比较慢的框架，就相当于选择了 hard 模式，所以开始之前不妨看看主流框架的对比，详情参阅 <a href="https://www.techempower.com/benchmarks/" target="_blank" rel="external">Techempower</a></p>
+<p>还有一个需要考虑的问题是，选择的前端框架最好有支持 MySQL 和  HBase 的 API，不然可能后面会很麻烦。在报告中注意写清楚为什么选择用某个框架。</p>
+<p><strong>选择思路</strong></p>
+<p>打开前面给出的 <a href="https://www.techempower.com/benchmarks/" target="_blank" rel="external">Techempower</a> 网站，可以看到不同框架在不同机器上进行不同测试的成绩，因为我们是在 AWS 上进行部署，所以主要看 EC2 的测试结果（最新的结果是 Round 11 - 2015.11.23 的测试结果）</p>
+<p>分为六种测试：</p>
+<ol>
+<li>JSON 序列化</li>
+<li>单次查询</li>
+<li>多次查询</li>
+<li>Fortunes 测试（其实就是随机从数据库中返回一句话）</li>
+<li>数据更新</li>
+<li>纯文本</li>
+</ol>
+<p>因为之前的课程一直都是在用 Java 写，所以就直接只在 Java 框架中选择了，其他的一些过滤条件是：</p>
+<ul>
+<li>应用操作系统: Linux</li>
+<li>语言: Java</li>
+<li>数据库: MongoDB, MySQL</li>
+<li>数据库操作系统: Linux</li>
+</ul>
+<p>这样过滤一下，其实选择就少很多了，我们看看不同框架在这六个测试中的表现（只选取性能较好的一部分）：</p>
+<p><img src="/images/14567964930323.jpg" alt="JSON serialization"></p>
+<p><img src="/images/14567965454003.jpg" alt="Single query"></p>
+<p><img src="/images/14567965837212.jpg" alt="Multiple queries"></p>
+<p><img src="/images/14567966154182.jpg" alt="Fortunes"></p>
+<p><img src="/images/14567966534438.jpg" alt="Data updates"></p>
+<p><img src="/images/14567966771945.jpg" alt="Plaintext"></p>
+<p>综合一下来看，性能比较好的是：</p>
+<ul>
+<li>sabina</li>
+<li>jetty</li>
+<li>undertow</li>
+<li>gemini</li>
+</ul>
+<p>因为我们需要分别对 MySQL 和 HBase 进行操作，所以最好需要有对应的接口（不用自己写太多工具代码，不过其实 Java 都可以方便调用对应的连接器，所以还好），不过在此之前，因为这几个我都没听过，所以大概了解一下。</p>
+<ul>
+<li><a href="http://there4.co/sabina/" target="_blank" rel="external">Sabina</a>: A Sinatra inspired micro web framework for quickly creating web applications in Java with minimal effort<ul>
+<li>性能不错，但是因为是 Java 8 的框架，而且不算太热门（意味着除了问题难以得到社区支持），所以不考虑</li>
+</ul>
+</li>
+<li><a href="http://www.eclipse.org/jetty/" target="_blank" rel="external">Jetty</a>:<br>A Web server and javax.servlet container, plus support for HTTP/2, WebSocket, OSGi, JMX, JNDI, JAAS and many other integrations<ul>
+<li>HBase 在产品中还包含了 Jetty，在 HBase 启动时采用嵌入式的方式来启动 Jetty（刚好了）</li>
+<li>其实和 tomcat 很类似（从文件的组织方式也可以看出来）</li>
+</ul>
+</li>
+<li><a href="http://undertow.io/" target="_blank" rel="external">undertow</a>: A flexible performant web server written in java, providing both blocking and non-blocking API’s based on NIO<ul>
+<li>轻量级，比较简单和灵活</li>
+<li>感觉很适合，至少没有 tomcat 一样一上来就一堆不知道干嘛的文件和文件夹</li>
+</ul>
+</li>
+<li><a href="http://www.eclipse.org/gemini/" target="_blank" rel="external">gemini</a><ul>
+<li>企业级应用，感觉太重量级了，暂时不考虑 </li>
+</ul>
+</li>
+</ul>
+<p>根据以上分析，决定采用 <a href="http://undertow.io/" target="_blank" rel="external">undertow</a> 作为主要的开发框架。</p>
+<p>因为还需要再选择一个框架作为对比（只需要对比一次性能），为了熟悉框架，打算采用 vert.x 来进行测试。</p>
+<h3 id="ETL"><a href="#ETL" class="headerlink" title="ETL"></a>ETL</h3><p>这部分的工作，需要使用 extract, transform and load (ETL) 把 Twitter 的数据集载入到数据仓库中。先从 S3 中获取大约 200 million tweets，然后把数据存储到目标数据库中，具体的操作取决于数据库设计。最好使用竞价实例，不然很可能会超支。</p>
+<p>我们需要使用 AWS 精心设计 ETL 过程，选择合适的实例数量来完成这个工作，完成这个工作后，最好把数据库备份起来，不然每次都要做一次非常浪费钱，使用 EMR 的话，可以用下面这条命令把 HBase 备份到 S3 中</p>
+<p><code>aws emr create-hbase-backup --cluster-id j-3AEXXXXXX16F2 --dir s3://mybucket/backups/j-3AEXXXXXX16F2 --consistent</code></p>
+<p>详情请参阅<a href="http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-hbase-backup-restore.html" target="_blank" rel="external">这里</a></p>
+<p>最好先用小数据集（比如说 200MB）来测试 ETL，不然每次失误的代价就太大了。载入数据库之后最好测试不同的请求类型，确保无误之后再开始后面的工作。</p>
+<p>一定要仔细设计数据库的 schema，并据此好好设计 ETL，并确保 ETL 正确工作。因为每次都需要 10-30 个小时，如果需要做几次的话，很痛苦（虽然难以避免，很多时候可能在开发中会修改设计）</p>
+<p>早点开始，多多利用并行，比较推荐使用 map reduce 来完成这个工作</p>
+<h3 id="u540E_u7AEF"><a href="#u540E_u7AEF" class="headerlink" title="后端"></a>后端</h3><p>实际上就是所有数据存放的地方，前端会连接到后端来进行查询，最后返回对应结果。</p>
+<p>这里我们会使用 MySQL 和 HBase，记得阅读提供的资料，可以快速上手。因为预算问题，还是多使用竞价实例。</p>
+<p>在导入整个数据集之前，一定要用小数据集做一些测试，并确保后端数据库能返回正确的内容。</p>
+<p>详情参考 <a href="http://dev.mysql.com/doc/" target="_blank" rel="external">MySQL</a> 和 <a href="https://hbase.apache.org/" target="_blank" rel="external">HBase</a></p>
+<h3 id="u76F8_u5173_u8D44_u6E90_u4E0E_u53C2_u8003_u8D44_u6599"><a href="#u76F8_u5173_u8D44_u6E90_u4E0E_u53C2_u8003_u8D44_u6599" class="headerlink" title="相关资源与参考资料"></a>相关资源与参考资料</h3><p>Resources</p>
+<ol>
+<li><a href="https://www.techempower.com/benchmarks/" target="_blank" rel="external">Benchmarks of web servers</a></li>
+<li><a href="http://www.percona.com/blog/2010/05/04/goal-driven-performance-optimization-white-paper-available/" target="_blank" rel="external">Schwartz, B., and P. Zaitsev. “A brief introduction to goal-driven performance optimization.” White paper, Percona (2010).</a></li>
+<li><a href="http://www.percona.com/resources/mysql-webinars/practical-mysql-performance-optimization" target="_blank" rel="external">Practical MySQL Performance Optimization</a></li>
+<li><a href="http://refcardz.dzone.com/refcardz/hbase" target="_blank" rel="external">HBase Cheat Sheet</a></li>
+</ol>
+<p>Architecting web servers</p>
+<ol>
+<li><a href="http://vts.uni-ulm.de/docs/2012/8082/vts_8082_11772.pdf" target="_blank" rel="external">Erb, Benjamin. “Concurrent programming for scalable web architectures.” Informatiktage. 2012.</a></li>
+<li><a href="https://www.ece.cmu.edu/~ece845/docs/pariag-2007.pdf" target="_blank" rel="external">Pariag, David, et al. “Comparing the performance of web server architectures.” ACM SIGOPS Operating Systems Review. Vol. 41. No. 3. ACM, 2007.</a></li>
+<li><a href="http://mmcgrana.github.io/2010/07/threaded-vs-evented-servers.html" target="_blank" rel="external">McGranaghan, Mark. “Threaded vs Evented Servers”</a></li>
+<li><a href="https://www.dre.vanderbilt.edu/~schmidt/PDF/globalinternet.pdf" target="_blank" rel="external">Hu, James C., Irfan Pyarali, and Douglas C. Schmidt. “Measuring the impact of event dispatching and concurrency models on web server performance over high-speed networks.” Global Telecommunications Conference, 1997. GLOBECOM’97., IEEE. Vol. 3. IEEE, 1997.</a></li>
+</ol>
+<p>Clustering web servers</p>
+<ol>
+<li><a href="http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1083&amp;context=csearticles" target="_blank" rel="external">Schroeder, Trevor, Steve Goddard, and Byrov Ramamurthy. “Scalable web server clustering technologies.” Network, IEEE 14.3 (2000): 38-45.</a></li>
+<li><a href="http://www.ics.uci.edu/~cs230/reading/DLB.pdf" target="_blank" rel="external">Cardellini, Valeria, Michele Colajanni, and S. Yu Philip. “Dynamic load balancing on web-server systems.” IEEE Internet computing 3.3 (1999): 28-39.</a></li>
+<li><a href="http://uu.diva-portal.org/smash/get/diva2:443102/FULLTEXT01.pdf" target="_blank" rel="external">Paudyal, Umesh. “Scalable web application using node.js and couchdb.” (2011).</a></li>
+</ol>
+<p>Optimizing a Multi-tier System</p>
+<ol>
+<li><a href="http://www.linuxjournal.com/article/7451" target="_blank" rel="external">Fitzpatrick, Brad. “Distributed caching with memcached.” Linux journal 2004.124 (2004): 5.</a></li>
+<li><a href="http://www.linuxjournal.com/content/speed-your-web-site-varnish" target="_blank" rel="external">Graziano, Pablo. “Speed up your web site with Varnish.” Linux Journal 2013.227 (2013): 4.</a></li>
+<li><a href="http://www.linuxjournal.com/magazine/nginx-high-performance-web-server-and-reverse-proxy" target="_blank" rel="external">Reese, Will. “Nginx: the high-performance web server and reverse proxy.” Linux Journal 2008.173 (2008): 2.</a></li>
+</ol>
+<p>Scalable and Performant Data Stores</p>
+<ol>
+<li><a href="http://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf" target="_blank" rel="external">DeCandia, Giuseppe, et al. “Dynamo: amazon’s highly available key-value store.” ACM SIGOPS Operating Systems Review. Vol. 41. No. 6. ACM, 2007.</a></li>
+<li><a href="http://www.cattell.net/datastores/Datastores.pdf" target="_blank" rel="external">Cattell, Rick. “Scalable SQL and NoSQL data stores.” ACM SIGMOD Record 39.4 (2011): 12-27.</a></li>
+</ol>
+<p>Web Server Performance Measurement</p>
+<ol>
+<li><a href="http://www.oocities.org/webserverperformance/webmodel.pdf" target="_blank" rel="external">Slothouber, Louis P. “A model of web server performance.” Proceedings of the 5th International World wide web Conference. 1996.</a></li>
+<li><a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.61.3268&amp;rep=rep1&amp;type=pdf" target="_blank" rel="external">Banga, Gaurav, and Peter Druschel. “Measuring the Capacity of a Web Server.” USENIX Symposium on Internet Technologies and Systems. 1997.</a></li>
+<li><a href="https://www.mnot.net/blog/2011/05/18/http_benchmark_rules" target="_blank" rel="external">Nottingham, Mark. “On HTTP Load Testing”</a></li>
+</ol>
+<h2 id="u57FA_u672C_u8981_u6C42"><a href="#u57FA_u672C_u8981_u6C42" class="headerlink" title="基本要求"></a>基本要求</h2><ul>
+<li>给所有的实例打上 <code>15619project:phase1</code> 的标签</li>
+<li>另外，HBase 实例需要打上 <code>15619backend:hbase</code> 标签；MySQL 实例需要打上 <code>15619backend:mysql</code> 标签</li>
+<li>ETL 部分可以选择任何类型的实例</li>
+<li>前端和后端只能只用 M 系列不超过 large 的实例（large 也是可以用的）</li>
+<li>可以选择任何免费的镜像，这次需要自己搭建整个系统</li>
+<li>Web 服务的所有开销加起来不能超过每小时 <code>$0.85</code>（包括 EC2 实例，存储，EMR 和 ELB，不包括网络和磁盘 IO）</li>
+<li>这个阶段每组有 <code>$40</code> 的预算</li>
+</ul>
+<p>虽然这一部分只占 10%，但是打下的基础很重要，尽可能多学多了解一些。</p>
+<p><img src="/images/14564602178732.jpg" alt="任务要求"></p>
+<p><img src="/images/14564603584769.jpg" alt="惩罚措施"></p>
+<p>我们也提供了一个 <a href="http://q1-1848733628.us-east-1.elb.amazonaws.com/" target="_blank" rel="external">reference server</a> 方便大家检查结果的正确性，强烈建议在开始导入到数据库之前用 reference server 测试好。也可以利用这个服务器来检测可能出现的编码问题。</p>
+<p>这一阶段我们要处理两类请求，从存储系统中获取数据（这一部分我们需要设计和控制），web service 需要能够连接到两个不同的后端存储系统(MySQL 和 HBase)，前端需要通过端口 80 接收 HTTP GET 请求。</p>
+<p>这次的项目中，我们会设计并开发一个高并行的 web 服务器，可以连接到两种不同类型的数据库。在整个过程中，应该能够了解到不同后端实现的优势和劣势。</p>
+<p>最后需要撰写报告，模板在 <a href="https://docs.google.com/document/d/1VOjU9JRAZG49PSrKnJtMOjSj5e1Ugbv_cQj7Mc_krd0/edit?usp=sharing" target="_blank" rel="external">这里</a></p>
+<p>报告中需要包括 web 框架的如下信息：</p>
+<ul>
+<li>达到的 RPS</li>
+<li>资源利用(CPU, Memory)</li>
+<li>编程难度</li>
+<li>两个框架的异同</li>
+<li>适用的不同场景和优劣分析</li>
+<li>为什么选择这些 web 框架</li>
+</ul>
+<h2 id="Query_1__28Heartbeat_and_Authentication_29"><a href="#Query_1__28Heartbeat_and_Authentication_29" class="headerlink" title="Query 1 (Heartbeat and Authentication)"></a>Query 1 (Heartbeat and Authentication)</h2><blockquote>
+<p>目标吞吐量：25000 rps</p>
+</blockquote>
+<p>这部分的请求会询问 web 服务的状态，前端只需要返回 team id, AWS id, 时间戳以及一段加密的信息。这种机制通常称为心跳机制，但是也可以用来测试前端处理请求的能力。</p>
+<p>q1 中的每个请求都包含 key <code>Y</code> 和一段由 key <code>Z</code> 加密的文本，<code>Z</code> 是 <code>X</code> 和 <code>Y</code> 的最大公约数（这里 <code>X</code> 是私钥）。这里我们使用 mythical Phaistos Disc Cipher (PDC) 来加密和解密</p>
+<p>PDC 是为长度为完全平方数(4,9,16,25…)的大写英文字母(A-Z)组成的信息所设计的加密方式。我们需要自己进行解密的工作，也就是给定 key 和密文，获取原始的文本</p>
+<p>PDC 的过程有三个步骤：KeyGen, Caesarify 和 Spiralize.</p>
+<ol>
+<li>KeyGen 阶段：随机选择一个大整数 <code>Y</code>，计算 <code>Y</code> 和我们的密钥 <code>X</code> 的最大公约数，记为 <code>Z</code> </li>
+<li>Caesarify 阶段：利用 <code>Z</code> 生成一个 minikey <code>K = 1 + Z % 25</code>。我们把消息 <code>M</code> 中的每个字符都『偏移』<code>K</code> 个值，生成中间文本 <code>I</code></li>
+<li>Spiralize 阶段：把消息选择写成正方形矩阵（参考下面的例子），然后再一行一行读出来，重排之后的消息就是密文<code>C</code>.</li>
+</ol>
+<p><img src="/images/14564607523532.jpg" alt="Spiral Matrix Example"></p>
+<p>密文是：1,2,3,4,12,13,14,5,11,16,15,6,10,9,8,7（因为这里是数字，所以加上逗号方便区分）</p>
+<p>Phaistos Disc Cipher encryption 的例子</p>
+<p><img src="/images/14564607621256.jpg" alt="Phaistos Disc Cipher"></p>
+<p>我们需要做的是解密，也就是给定密文 <code>C</code> 和 key <code>Y</code>，需要利用私钥 <code>X</code> 生成 <code>Z</code>，然后用 <code>Z</code> 来还原消息</p>
+<blockquote>
+<p>请求格式</p>
+</blockquote>
+<p><code>GET /q1?key=&lt;large_number&gt;&amp;message=&lt;uppercase_ciphertext_message_C&gt;</code></p>
+<p>样例</p>
+<p><code>GET /q1?key=4024123659485622445001958636275419709073611535463684596712464059093821&amp;message=URYEXYBJB</code></p>
+<blockquote>
+<p>响应格式（美东时间 EST）</p>
+</blockquote>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">TEAMID,TEAM_AWS_ACCOUNT_ID\<span class="keyword">n</span></span><br><span class="line">yyyy-MM-dd HH:mm:ss\<span class="keyword">n</span></span><br><span class="line">[The decrypted message <span class="keyword">M</span>]\<span class="keyword">n</span></span><br></pre></td></tr></table></figure>
+<p>样例</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">TeamCoolCloud,<span class="number">1234</span>-<span class="number">0000</span>-<span class="number">0001</span></span><br><span class="line"><span class="number">2004</span>-<span class="number">08</span>-<span class="number">15</span> <span class="number">16</span>:<span class="number">23</span>:<span class="number">42</span></span><br><span class="line">HELLOWORK</span><br></pre></td></tr></table></figure>
+<p>这一部分我们只需要处理前端的问题，暂时不用考虑后端。</p>
+<h2 id="Query_2__28Text_Cleaning_and_Analysis_29"><a href="#Query_2__28Text_Cleaning_and_Analysis_29" class="headerlink" title="Query 2 (Text Cleaning and Analysis)"></a>Query 2 (Text Cleaning and Analysis)</h2><p>目标吞吐量: 10000 rps</p>
+<p>不允许使用任何已有的缓存应用 (Redis, Memcached, etc.) 或除了 MySQL 和 HBase 之外的数据库。但是可以自己写缓存应用。</p>
+<p>在 ETL 阶段可以使用任何类型的实例，比如 <code>c family (Compute Optimized)</code> 和 <code>r family (Memory Optimized)</code>，不必只局限于 <code>m family (General Purpose)</code></p>
+<p>MySQL 可以参考官方的优化文档，如果需要的话也可以使用其他版本的 MySQL</p>
+<p>HBase: 可以选择用 EMR 来设置 HBase，或者自己搭建，不过自己搭建就要装 zookeeper 之类的，可以自行研究一下。</p>
+<p>这里我们会对 Twitter 数据集进行分析，地址是 <code>s3://cmucc-datasets/twitter/s16/part-00XXX</code>，XXX 从 000 到 661。</p>
+<p>会查询某个用户用指定的 hashtag 发的 tweet，主要考察如何设计一个高效的后端来处理大量的请求。</p>
+<p>我们会提供 user id 和 hashtag（具体参考<a href="https://support.twitter.com/articles/49309?lang=en" target="_blank" rel="external">这里</a>），需要返回该用户所有带此 hashtag 的 tweet，具体格式如下：</p>
+<ul>
+<li>tweet 的 sentiment density</li>
+<li>tweet 的发布时间</li>
+<li>tweet id</li>
+<li>审查修改过的的 tweet 内容，这里有很多可能出问题的地方，比如 emoji 表情、反斜杠、其他语言的字符等等，都需要小心处理</li>
+</ul>
+<p>Here is how you can obtain this information:</p>
+<ol>
+<li>利用 tweet 的内容来计算 sentiment density</li>
+<li>tweet id 可以从 <code>id</code> 或 <code>id_str</code> 里获取</li>
+<li>时间可以从 <code>created_at</code> 里获取</li>
+<li>Tweet 的内容可以从 <code>text</code> 里获取，应该在计算完 sentiment density 再进行内容审查</li>
+<li>hashtag(s) 可以从 <code>entities</code> 里获取，如果同一个 hashtag 在一条 tweet 中出现多次，只应该返回那条 tweet 一次</li>
+</ol>
+<p>注意事项：</p>
+<ul>
+<li>需要过滤掉重复的 Tweets（有相同的 id），返回响应的时候一条 tweet 只应该出现一次</li>
+<li>满足下面条件的 tweet 也应该被过滤掉<ul>
+<li><code>id</code> 和 <code>id_str</code> 为空或者没有这两个域</li>
+<li><code>created_at</code>、<code>text</code> 或 <code>entities</code> 为空或者直接没有这几个域</li>
+<li>无法被解析为 JSON 对象的记录</li>
+</ul>
+</li>
+<li>Hashtag matching 需要百分百匹配（每个字节都一致），例如 “Naive”, “naive” 和 “naïve” 是不匹配的</li>
+</ul>
+<h3 id="u60C5_u611F_u5BC6_u5EA6"><a href="#u60C5_u611F_u5BC6_u5EA6" class="headerlink" title="情感密度"></a>情感密度</h3><p>按照下面四个步骤来计算 Sentiment Density</p>
+<ol>
+<li>文本切分：把推文分隔成一个一个词，注意，这里堆单词的定义是：one or more consecutive alphanumeric characters ([a-zA-Z0-9]+) separated by non-alphanumeric character(s) ([^a-zA-Z0-9])</li>
+<li>计算情感得分：简单来说，就是有一个小写字母的英文单词情感词典，只要推文中的某个词在这个词典里，就加上这个词的情感得分（初始分为零），情感词典来自 <a href="http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=6010" target="_blank" rel="external">AFINN</a> 数据集，在<a href="https://cmucc-datasets.s3.amazonaws.com/15619/f15/afinn.txt" target="_blank" rel="external">这里</a>下载 <ul>
+<li>例如：”I love Cloud Computing” 这句话的得分是 3，因为 love 这个单词在情感词典中，且分值为 3</li>
+</ul>
+</li>
+<li>计算有效词数量：也就是过滤掉 stop words。所谓 Effective Word Count(EWC) 可以这样计算 EWC = 总单词数目 - 停止词的数目<ul>
+<li>例如：”I love Cloud Computing” 的 EWC 是 3，因为 “I” 是一个停止词</li>
+</ul>
+</li>
+<li>计算 Sentiment Density：如果 EWC 是 0，那么 Sentiment Density 就是 0，如果 EWC 不为 0，那么计算公式是 Sentiment Score / EWC</li>
+</ol>
+<p>所有的计算结果都四舍五入保留三位小数 (1 -&gt; 1.000, 1.1-&gt;1.100, 1.0005 -&gt; 1.001, 1.9999 -&gt; 2.000, -1 -&gt; -1.000, -1.1-&gt; -1.100, -1.0005 -&gt; -1.001, -1.9999 -&gt; -2.000, etc.)</p>
+<p>一个完整的例子：</p>
+<p>“I love Cloud Computing” 的 Sentiment Density 为 1.000, 因为它的 Sentimental Score(3) 除以 EWC(3) 是 1.000.</p>
+<h3 id="u6587_u672C_u5BA1_u67E5"><a href="#u6587_u672C_u5BA1_u67E5" class="headerlink" title="文本审查"></a>文本审查</h3><p>简单来说就是有敏感词，列表是经过 <a href="http://en.wikipedia.org/wiki/ROT13" target="_blank" rel="external">ROT13ed</a> 处理的。例如，假如一个敏感词是 <code>15619ppgrfg</code> 那么原文就是 <code>15619cctest</code>。具体的敏感词列表在<a href="https://cmucc-datasets.s3.amazonaws.com/15619/f15/banned.txt" target="_blank" rel="external">这里</a>下载</p>
+<p>一定要先计算情感值然后再进行文本审查，遇到敏感词，把除第一个和最后一个单词都替换成星号(<code>*</code>).</p>
+<p>例如，假设 cloud 是敏感词，如果原文是</p>
+<p><code>I love Cloud compz... cloud TAs are the best... Yinz shld tell yr frnz: TAKE CLOUD COMPUTING NEXT SEMESTER!!! Awesome. It&#39;s cloudy tonight.</code></p>
+<p>那么返回的时候，应该是这样：</p>
+<p><code>I love C***d compz... c***d TAs are the best... Yinz shld tell yr frnz: TAKE C***D COMPUTING NEXT SEMESTER!!! Awesome. It&#39;s cloudy tonight.</code></p>
+<p>可以选择在 ETL 过程中完成所有的运算（MapReduce 的时间更长，花费也就更高），或者在每次返回请求的时候运算（如果你写的代码足够快的话）</p>
+<p>ETL 的过程中需要处理很多 corner case，可能会出现很多不清晰的地方，所以<a href="https://cmucc-datasets.s3.amazonaws.com/twitter/ref/part-00000-reference" target="_blank" rel="external">这里</a>提供了一个参考文件（小数据集），是第一个数据集(<code>s3://cmucc-datasets/twitter/s16/part-00000</code>) ETL之后的结果，每一行对应输入文件的的一行，每一列以 <code>\t</code> 分隔，具体如下；</p>
+<ul>
+<li>第 1 列：tweet id.</li>
+<li>第 2 列：user id.</li>
+<li>第 3 列：tweet date.</li>
+<li>第 4 列：sentiment density.</li>
+<li>第 5 列：审查后的 tweet 内容，去掉了某些字符，如 newline (\n), tab (\t) etc</li>
+<li>第 6 列：hashtags（可能为空）</li>
+</ul>
+<p>注意处理好各种可能的奇奇怪怪的情况，注意处理好各种可能的奇奇怪怪的情况，注意处理好各种可能的奇奇怪怪的情况。</p>
+<blockquote>
+<p>请求格式</p>
+</blockquote>
+<p><code>GET /q2?userid=uid&amp;hashtag=hashtag</code></p>
+<p>样例</p>
+<p><code>GET /q2?userid=2324314004&amp;hashtag=LinkedIn</code></p>
+<blockquote>
+<p>响应格式（如果有对应的推文）</p>
+</blockquote>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="tag">TEAMID</span>,<span class="tag">TEAM_AWS_ACCOUNT_ID</span>\<span class="tag">n</span></span><br><span class="line"><span class="tag">Sentiment_density1</span><span class="pseudo">:Tweet_time1</span><span class="pseudo">:Tweet_id1</span><span class="pseudo">:Cencored_text1</span>\<span class="tag">n</span></span><br><span class="line"><span class="tag">Sentiment_density2</span><span class="pseudo">:Tweet_time2</span><span class="pseudo">:Tweet_id2</span><span class="pseudo">:Cencored_text2</span>\<span class="tag">n</span></span><br><span class="line"><span class="tag">Sentiment_density3</span><span class="pseudo">:Tweet_time3</span><span class="pseudo">:Tweet_id3</span><span class="pseudo">:Cencored_text3</span>\<span class="tag">n</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>样例</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">TeamSecret,<span class="number">1123</span>-<span class="number">5813</span>-<span class="number">2134</span></span><br><span class="line"><span class="number">0.308</span>:<span class="number">2014</span>-<span class="number">04</span>-<span class="number">15</span> <span class="number">11</span>-<span class="number">42</span>-<span class="number">18</span>:<span class="number">456034778891169793</span>:RT @AlexanderCrepin: How To Find The Best <span class="preprocessor">#LinkedIn Groups To Join - - #personalbranding #jobhunt - - http:<span class="comment">//t.co/ixH5dOf88E</span></span></span><br><span class="line"><span class="number">0.267</span>:<span class="number">2014</span>-<span class="number">06</span>-<span class="number">01</span> <span class="number">19</span>-<span class="number">34</span>-<span class="number">25</span>:<span class="number">473185820636356608</span>:RT @tonyrestell: How To Build Relationships And Win Interviews Through <span class="preprocessor">#LinkedIn http:<span class="comment">//t.co/ELZgPnp4gY #jobhunt tips from @mocksource</span></span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>响应格式（如果没有对应的推文）</p>
+</blockquote>
+<figure class="highlight livescript"><table><tr><td class="code"><pre><span class="line">TEAMID,TEAM_AWS_ACCOUNT_ID<span class="string">\n</span></span><br><span class="line"><span class="string">\n</span></span><br></pre></td></tr></table></figure>
+<p>一些细节</p>
+<ul>
+<li><code>Tweet_time</code> 的时间格式是 format:yyyy-MM-dd HH-mm-ss (UTC time, 24-hour clock)</li>
+<li>在 ELT 阶段，换行符 ‘\n’ 应该被替换成两个符号 ‘\’ + ‘n’，而在返回请求时需要换回来</li>
+<li>Tab 需要替换成空格</li>
+<li>排序规则<ul>
+<li>首先看 <code>Sentimental_density</code>，降序</li>
+<li>如果前面数值相同，那么看 <code>Tweet_time</code>，时间按照升序排列</li>
+<li>如果还相同，看 <code>Tweet_id</code>，id 按照升序排列，小的在前面</li>
+</ul>
+</li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="vault/cc-p1.html"
+           data-title="云计算 Twitter 语料分析 1 项目简介" data-url="http://wdxtub.com/vault/cc-p1.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

@@ -1,0 +1,871 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Mina,Nginx,Puma,部署," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="开发是一回事，部署又是另一回事，往往部署要处理的东西比开发还要多，所以一套顺手的工具非常重要。现在虽然目前还做不到自动部署，但是一系列自动化工具也极大简化了繁琐的部署流程。这篇文章主要介绍如何使用 Mina+Puma+Nginx 部署一个 Ruby On Rails 的 Web 应用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ruby On Rails 部署指南">
+<meta property="og:url" content="http://wdxtub.com/2016/07/06/ror-deploy-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="开发是一回事，部署又是另一回事，往往部署要处理的东西比开发还要多，所以一套顺手的工具非常重要。现在虽然目前还做不到自动部署，但是一系列自动化工具也极大简化了繁琐的部署流程。这篇文章主要介绍如何使用 Mina+Puma+Nginx 部署一个 Ruby On Rails 的 Web 应用。">
+<meta property="og:updated_time" content="2016-07-06T14:31:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ruby On Rails 部署指南">
+<meta name="twitter:description" content="开发是一回事，部署又是另一回事，往往部署要处理的东西比开发还要多，所以一套顺手的工具非常重要。现在虽然目前还做不到自动部署，但是一系列自动化工具也极大简化了繁琐的部署流程。这篇文章主要介绍如何使用 Mina+Puma+Nginx 部署一个 Ruby On Rails 的 Web 应用。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Ruby On Rails 部署指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Ruby On Rails 部署指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-06T22:25:47+08:00" content="2016-07-06">
+              2016-07-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/06/ror-deploy-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/06/ror-deploy-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>开发是一回事，部署又是另一回事，往往部署要处理的东西比开发还要多，所以一套顺手的工具非常重要。现在虽然目前还做不到自动部署，但是一系列自动化工具也极大简化了繁琐的部署流程。这篇文章主要介绍如何使用 Mina+Puma+Nginx 部署一个 Ruby On Rails 的 Web 应用。</p>
+<a id="more"></a>
+<hr>
+<h2 id="Mina"><a href="#Mina" class="headerlink" title="Mina"></a>Mina</h2><p>Mina 是一个非常快的部署器，也是一个服务端自动化工具。至于为什么效率这么高，因为直接生成的是 bash 脚本，然后在远端服务器执行。和 Vlad 与 Capistrano 不同的是，Mina 不会每条指令都开一个新的 SSH 连接，而是每次部署只创建一个 SSH 连接，尽可能减少了 SSH 连接的开销。</p>
+<p>安装非常简单 <code>gem install mina</code> 即可。其实使用也很简单，这里简单介绍一下：</p>
+<p>首先，在项目中用命令 <code>mina init</code> 进行初始化，然后我们会得到 <code>config/deploy.rb</code> 文件。这是一个自带 task 的 Rake 文件，具体怎么写 task 可以参考<a href="https://github.com/mina-deploy/mina/blob/master/docs/writing_your_own_tasks.md" target="_blank" rel="external">这里</a>，一个简单的配置可以像这样：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">set <span class="symbol">:user</span>, <span class="string">'wdxtub'</span></span><br><span class="line">set <span class="symbol">:domain</span>, <span class="string">'wdxtub.com'</span></span><br><span class="line">set <span class="symbol">:deploy_to</span>, <span class="string">'/var/www/wdxtub.com'</span></span><br></pre></td></tr></table></figure>
+<p>然后，执行 <code>mina setup</code>，这里会根据 <code>deploy_to</code> 中的路径来配置好目录结构，有一点需要注意，该路径需要是可读可写的。大概的目录结构为</p>
+<figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">/var/www/wdxtub.com/     <span class="comment"># The deploy_to path</span></span><br><span class="line"> |<span class="string">-  releases/              # Holds releases, one subdir per release</span><br><span class="line"> </span>|<span class="string">   </span>|<span class="string">- 1/</span><br><span class="line"> </span>|<span class="string">   </span>|<span class="string">- 2/</span><br><span class="line"> </span>|<span class="string">   </span>|<span class="string">- 3/</span><br><span class="line"> </span>|<span class="string">   '- ...</span><br><span class="line"> </span>|<span class="string">-  shared/                # Holds files shared between releases</span><br><span class="line"> </span>|<span class="string">   </span>|<span class="string">- logs/               # Log files are usually stored here</span><br><span class="line"> </span>|<span class="string">   `- ...</span><br><span class="line"> '-  current/               # A symlink to the current release in releases/</span></span><br></pre></td></tr></table></figure>
+<p>最后就可以部署了，命令为 <code>mina deploy</code></p>
+<p>根据不同开发环境不同，有一些插件还是值得使用的，这里给出一个简单的列表：</p>
+<ul>
+<li><code>mina/multistage</code></li>
+<li><code>mina/bundler</code></li>
+<li><code>mina/rails</code></li>
+<li><code>mina/puma</code></li>
+<li><code>mina/git</code></li>
+<li><code>mina/rvm</code></li>
+<li><code>mina_sidekiq/tasks</code></li>
+</ul>
+<h2 id="Puma"><a href="#Puma" class="headerlink" title="Puma"></a>Puma</h2><p>Puma 是一个运行 Ruby/Rack 应用的简单快速多线程高并发的 HTTP 服务器程序，为了达到最好的性能，推荐使用实现了真线程的 Rubinius 或 JRuby。</p>
+<p>使用起来也非常简单，先在 <code>Gemfile</code> 中添加 <code>gem puma</code>，然后手动在 config 文件夹下创建一个 <code>puma.rb</code>(或者 <code>puma.rb.erb</code> 也行)，然后可以指定一些常见的参数，比如</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">workers <span class="constant">Integer</span>(<span class="constant">ENV</span>[<span class="string">"WEB_CONCURRENCY"</span>] || <span class="number">20</span>)</span><br><span class="line">threads_count = <span class="constant">Integer</span>(<span class="constant">ENV</span>[<span class="string">"MAX_THREADS"</span>] || <span class="number">20</span>)</span><br><span class="line">threads threads_count, threads_count</span><br><span class="line"></span><br><span class="line">bind <span class="string">"unix://&lt;%= settings.puma_socket %&gt;"</span></span><br><span class="line"></span><br><span class="line">daemonize</span><br><span class="line">pidfile <span class="string">"&lt;%= settings.puma_pid %&gt;"</span></span><br><span class="line">state_path <span class="string">"&lt;%= settings.puma_state %&gt;"</span></span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h2 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h2><p>Nginx 的配置不算特别难，但是有很多细节需要一定的 Nginx 基础。Nginx 部分之后会另外写一篇（等我慢慢熟悉一些后），这里简单提两点：</p>
+<ul>
+<li>upstream 中 server 要配置 puma 中 bind 的 socket</li>
+<li>root 要设置成服务器项目的根目录，也就是 <code>puma.rb</code> 中的 <code>directory</code></li>
+</ul>
+<p>最后需要重启服务器 <code>nginx -s reload</code></p>
+<p>这里因为各种不可抗力，不能贴出完整的配置代码，不过参考链接中的文章附有很全的代码，配置服务器这个事儿就是要劳神费力的，所以需要一个好运维！</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://github.com/mina-deploy/mina" target="_blank" rel="external">Mina Github</a></li>
+<li><a href="https://github.com/puma/puma" target="_blank" rel="external">Puma Github</a></li>
+<li><a href="https://segmentfault.com/a/1190000002918225" target="_blank" rel="external">Ruby on Rails 终极部署方案 nginx+mina+puma</a></li>
+<li><a href="http://www.rails365.net/articles/bu-shu-zhi-shi-yong-mina-lai-bu-shu-ruby-on-rails-ying-yong-zhi-ji-chu-qi" target="_blank" rel="external">部署之使用mina来部署ruby on rails应用之基础</a></li>
+<li><a href="http://www.rails365.net/articles/bu-shu-zhi-shi-yong-mina-lai-bu-shu-ruby-on-rails-ying-yong-zhi-jin-jie-ba" target="_blank" rel="external">部署之使用mina来部署ruby on rails应用之进阶</a></li>
+<li><a href="https://github.com/chinakr/programmer-notes/blob/master/ror/rails/rails-deploy-nginx-puma-mina.md" target="_blank" rel="external">用nginx+Puma+Mina部署Rails应用程序</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Mina/" rel="tag">#Mina</a>
+          
+            <a href="/tags/Nginx/" rel="tag">#Nginx</a>
+          
+            <a href="/tags/Puma/" rel="tag">#Puma</a>
+          
+            <a href="/tags/部署/" rel="tag">#部署</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/05/redis-guide/" rel="next" title="Redis 指南">
+                <i class="fa fa-chevron-left"></i> Redis 指南
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/06/sidekiq-guide/" rel="prev" title="异步队列 sidekiq 指南">
+                异步队列 sidekiq 指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/06/ror-deploy-guide/"
+           data-title="Ruby On Rails 部署指南" data-url="http://wdxtub.com/2016/07/06/ror-deploy-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mina"><span class="nav-number">1.</span> <span class="nav-text">Mina</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Puma"><span class="nav-number">2.</span> <span class="nav-text">Puma</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx"><span class="nav-number">3.</span> <span class="nav-text">Nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

@@ -1,0 +1,908 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CUDA,教程," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="简单的 CUDA 快速入门指南。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CUDA 简明指南">
+<meta property="og:url" content="http://wdxtub.com/2016/03/20/cuda-note/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="简单的 CUDA 快速入门指南。">
+<meta property="og:updated_time" content="2016-03-20T13:45:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CUDA 简明指南">
+<meta name="twitter:description" content="简单的 CUDA 快速入门指南。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> CUDA 简明指南 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                CUDA 简明指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-20T08:05:36+08:00" content="2016-03-20">
+              2016-03-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/03/20/cuda-note/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/03/20/cuda-note/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>简单的 CUDA 快速入门指南。</p>
+<a id="more"></a>
+<hr>
+<h2 id="CUDA_u67B6_u6784"><a href="#CUDA_u67B6_u6784" class="headerlink" title="CUDA架构"></a>CUDA架构</h2><p>在 CUDA 的架构下,一个程序分为两个部份:host 端和 device 端。Host 端是指在 CPU 上执行 的部份,而 device 端则是在显示芯片上执行的部份。Device 端的程序又称为 “kernel(核心)”。 通常 host 端程序会将数据准备好后,复制到显卡的内存中,再由显示芯片执行 device 端程序,完 成后再由 host 端程序将结果从显卡的内存中取回。</p>
+<p>在 CUDA 架构下,显示芯片执行时的最小单位是 thread(线程)。数个 thread 可以组成一个 block(块)。一个 block 中的 thread 能存取同一块共享的内存,而且可以快速进行同步的动作。</p>
+<p>每一个 block 所能包含的 thread 数目是有限的。不过,执行相同程序的 block,可以组成 grid(格子)。不同 block 中的 thread 无法存取同一个共享的内存,因此无法直接互通或进行同步。因此, 不同 block 中的 thread 能合作的程度是比较低的。不过,利用这个模式,可以让程序不用担心显示芯片实际上能同时执行的 thread 数目限制。例如,一个具有很少量执行单元的显示芯片,可能会 把各个 block 中的 thread 顺序执行,而非同时执行。不同的 grid 则可以执行不同的程序(即 kernel)。</p>
+<p>每个 thread 都有自己的一份 register 和 local memory 的空间。同一个 block 中的每个 thread 则有共享的一份 share memory。此外,所有的 thread(包括不同 block 的 thread)都共享一份 global memory、constant memory、和 texture memory。不同的 grid 则有各自的 global memory、 constant memory 和 texture memory。</p>
+<h2 id="u6267_u884C_u6A21_u5F0F"><a href="#u6267_u884C_u6A21_u5F0F" class="headerlink" title="执行模式"></a>执行模式</h2><p>由于显示芯片大量并行计算的特性,它处理一些问题的方式,和一般 CPU 是不同的。主要的特点包括:</p>
+<ol>
+<li>内存存取 latency 的问题:CPU 通常使用 cache 来减少存取主内存的次数,以避免内存 latency 影响到执行效率。显示芯片则多半没有 cache(或很小),而利用并行化执行的方式来隐藏内存的 latency(即,当第一个 thread 需要等待内存读取结果时,则开始执行第二 个 thread,依此类推)。</li>
+<li>分支指令的问题:CPU 通常利用分支预测等方式来减少分支指令造成的 pipeline bubble。显示芯片则多半使用类似处理内存 latency 的方式。不过,通常显示芯片处理分支的效率会比较差</li>
+</ol>
+<p>最适合利用 CUDA 处理的问题,是可以大量并行化的问题,才能有效隐藏内存的 latency, 并有效利用显示芯片上的大量执行单元。使用 CUDA 时,同时有上千个 thread 在执行是很正常的。 因此,如果不能大量并行化的问题,使用 CUDA 就没办法达到最好的效率了。</p>
+<h2 id="u57FA_u672C_u6982_u5FF5"><a href="#u57FA_u672C_u6982_u5FF5" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<li>streaming processor, sp: 最基本的处理单元，最后具体的指令和任务都是在 sp 上处理的。GPU 进行并行计算，也就是很多个 sp 同时做处理</li>
+<li>streaming multiprocessor, sm: 多个 sp 加上存储资源组成一个 sm</li>
+<li>warp: GPU 执行程序时的调度单位，目前 CUDA 的 warp 大小为32，同在一个 warp 的线程，以不同数据资源执行相同的指令。</li>
+<li>thread, block, grid: 利用 CUDA 进行编程时，一个 grid 分为多个 block，一个 block 分为多个 thread (From a programmer’s perspective)</li>
+</ul>
+<h3 id="Some_Restrictions_First"><a href="#Some_Restrictions_First" class="headerlink" title="Some Restrictions First"></a>Some Restrictions First</h3><ul>
+<li>All threads in a grid execute the same kernel function</li>
+<li>A grid is organized as a 2D array of blocks(gridDim.X and gridDim.y)</li>
+<li>Each block is organized as 3D array of threads(blockDim.x, blockDim.y, and blockDim.z)</li>
+<li>Once a kernel is launched, its dimensions cannot change.</li>
+<li>All blocks in a grid have the same dimension</li>
+<li>The total size of a block is limited to 512 threads(? I’m not sure?)</li>
+<li>Once assigned to an SM, the block must execute in its entirey by the SM.</li>
+<li>Thread ID is unique within a block</li>
+<li>Using block ID and thread ID we can make unique ID for each thread per kernel</li>
+<li>Threads assigned to execution resources on a block-by-block basis</li>
+<li>CUDA runtime automatically reduces number of blocks assigned to each SM</li>
+<li>until resource usage is under limit.</li>
+</ul>
+<h3 id="SM_-Streaming_multi-processors_with_multiple_processing_cores"><a href="#SM_-Streaming_multi-processors_with_multiple_processing_cores" class="headerlink" title="SM -Streaming multi-processors with multiple processing cores"></a>SM -Streaming multi-processors with multiple processing cores</h3><ul>
+<li>Each SM contains 32 processing cores</li>
+<li>Execute in a Single Instruction Multiple Thread (SIMT) fashion</li>
+<li>Up to 16 SMs on a card cor a maximum of 512 compute cores</li>
+</ul>
+<h3 id="Warps"><a href="#Warps" class="headerlink" title="Warps"></a>Warps</h3><ul>
+<li>Once a block is assigned to an SM, it is divided into units called warps.</li>
+<li>Thread IDs within a warp are consecutive and increasing</li>
+<li>Warp 0 starts with Thread ID 0</li>
+<li>Warp is unit of thread scheduling in SMs</li>
+<li>Partitioning is always the same</li>
+<li>DO NOT rely on any ordering between warps</li>
+<li>Each warp is executed in a SIMD fashion (all threads within a warp must execute the same instruction at any given time)</li>
+<li>Problem: branch divergence</li>
+</ul>
+<h3 id="Latency_Tolerance"><a href="#Latency_Tolerance" class="headerlink" title="Latency Tolerance"></a>Latency Tolerance</h3><ul>
+<li>When an instruction executed by the threads in a warp must wait for the result of a previously initiated long-latency operation, the warp is not selected for execution -&gt; lantency hiding</li>
+<li>Priority mechanism used to schedule ready warps</li>
+<li>Scheduling does not introduce idle time -&gt; zero-overhead thread scheduling</li>
+<li>Scheduling is used for tolerating long-latency operations, such as:</li>
+<li>piplined floating-point arithmetic</li>
+<li>branch instructions</li>
+</ul>
+<p>The only safe way to synchronize threads in different blocks is to terminate the kernel and start a new kernel for the acitivities after the synchronization point.</p>
+<h2 id="u4EE3_u7801_u76F8_u5173"><a href="#u4EE3_u7801_u76F8_u5173" class="headerlink" title="代码相关"></a>代码相关</h2><ul>
+<li>通过 cudaGetDeviceProperties 函数可以取得许多数据，除了装置支持的 CUDA 版本之外, 还有装置的名称、内存的大小、最大的 thread 数目、执行单元的频率等等</li>
+<li>需要包含头文件<code>&lt;cuda_runtime.h&gt;</code></li>
+<li>编译直接可以<code>nvcc xxx.cu</code></li>
+<li>nvcc 是 CUDA 的 compile 工具,它会将 .cu 檔拆解出在 GPU 上执行的部份,及在 host 上执 行的部份,并呼叫适当的程序进行 compile 动作。在 GPU 执行的部份会透过 NVIDIA 提供的 compiler 编译成中介码,而 host 执行的部份则会透过系统上的 C++ compiler 编译(在 Windows 上使用 Visual C++ 而在 Linux 上使用 gcc)</li>
+<li>cudaMalloc 和 cudaMemcpy 的用法和一般的 malloc 及 memcpy 类似,不过 cudaMemcpy 则多出一个参数,指示复制内存的方向。从主内存复制到显卡内存,所以使用 cudaMemcpyHostToDevice。如果是从显卡内存到主内存,则使用 cudaMemcpyDeviceToHost。</li>
+<li>在 CUDA 中，在函数前面加上 <code>__global__</code> 表示这个函数是要在显示芯片上执行的。</li>
+<li>在显卡上执行的程序有一些限制，例如它不能有返回值</li>
+<li>让 CUDA 执行函数的语法<ul>
+<li><code>function&lt;&lt;&lt;# block, # thread, shared memory size&gt;&gt;&gt;(para....)</code></li>
+</ul>
+</li>
+<li>在 CUDA 中,一般的数据复制到的显卡内存的部份,称为 global memory。这些内存是没有 cache 的,而且,存取 global memory 所需要的时间(即 latency)是非常长的,通常是数百个 cycles。由于我们的程序只有一 个 thread,所以每次它读取 global memory 的内容,就要等到实际读取到数据、累加到 sum 之后, 才能进行下一步。</li>
+<li>由于 global memory 并没有 cache,所以要避开巨大的 latency 的方法,就是要利用大量的 threads。假设现在有大量的 threads 在同时执行,那么当一个 thread 读取内存,开始等待结果的 时候,GPU 就可以立刻切换到下一个 thread,并读取下一个内存位置。因此,理想上当 thread 的 数目够多的时候,就可以完全把 global memory 的巨大 latency 隐藏起来了。</li>
+<li>显卡上的内存是 DRAM,因此最有效率的存取方式,是以连续的方式存取。前面的程序,虽然看起 来是连续存取内存位置(每个 thread 对一块连续的数字计算平方和),但是我们要考虑到实际上 thread 的执行方式。前面提过,当一个 thread 在等待内存的数据时,GPU 会切换到下一个 thread。 也就是说,实际上执行的顺序是类似 thread0 -&gt; thread1 -&gt; thread2。因此,在同一个 thread 中连续存取内存,在实际执行时反而不是连续了。要让实际执行结果是连续 的存取,我们应该要让 thread 0 读取第一个数字,thread 1 读取第二个数字…依此类推。</li>
+<li>在 CUDA 中,thread 是可以分组的,也就是 block。一个 block 中的 thread,具有一个共享的 shared memory,也可以进行同步工作。不同 block 之间的 thread 则不行。在我们的程序中,其 实不太需要进行 thread 的同步动作,因此我们可以使用多个 block 来进一步增加 thread 的数目</li>
+<li>利用 <code>__shared__</code> 声明的变量表示这是 shared memory,是一个 block 中每个 thread 都共享的 内存。它会使用在 GPU 上的内存,所以存取的速度相当快,不需要担心 latency 的问题。</li>
+<li>`__syncthreads()`` 是一个 CUDA 的内部函数,表示 block 中所有的 thread 都要同步到这个点,才能继续执行。</li>
+</ul>
+<h2 id="u7ECF_u9A8C_u6280_u5DE7"><a href="#u7ECF_u9A8C_u6280_u5DE7" class="headerlink" title="经验技巧"></a>经验技巧</h2><ul>
+<li>利用 <code>threadIdx.x</code> 来分 thread 执行，考虑好邻接性。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CUDA/" rel="tag">#CUDA</a>
+          
+            <a href="/tags/教程/" rel="tag">#教程</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/20/java-note/" rel="next" title="Java 学习笔记">
+                <i class="fa fa-chevron-left"></i> Java 学习笔记
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/20/sql-guide/" rel="prev" title="SQL 指南">
+                SQL 指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/03/20/cuda-note/"
+           data-title="CUDA 简明指南" data-url="http://wdxtub.com/2016/03/20/cuda-note/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">591</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">830</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/bookclips/" title="我的书摘" target="_blank">我的书摘</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CUDA_u67B6_u6784"><span class="nav-number">1.</span> <span class="nav-text">CUDA架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6267_u884C_u6A21_u5F0F"><span class="nav-number">2.</span> <span class="nav-text">执行模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u672C_u6982_u5FF5"><span class="nav-number">3.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Some_Restrictions_First"><span class="nav-number">3.1.</span> <span class="nav-text">Some Restrictions First</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SM_-Streaming_multi-processors_with_multiple_processing_cores"><span class="nav-number">3.2.</span> <span class="nav-text">SM -Streaming multi-processors with multiple processing cores</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Warps"><span class="nav-number">3.3.</span> <span class="nav-text">Warps</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Latency_Tolerance"><span class="nav-number">3.4.</span> <span class="nav-text">Latency Tolerance</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4EE3_u7801_u76F8_u5173"><span class="nav-number">4.</span> <span class="nav-text">代码相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7ECF_u9A8C_u6280_u5DE7"><span class="nav-number">5.</span> <span class="nav-text">经验技巧</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
