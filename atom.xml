@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Agony is my triumph]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://wdxtub.com/"/>
-  <updated>2016-08-23T14:39:01.000Z</updated>
+  <updated>2016-08-24T15:17:09.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -13,6 +13,118 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[【Go 之旅】IV 项目实战：一起看飞机 - 后台]]></title>
+    <link href="http://wdxtub.com/2016/08/24/go-plane-2/"/>
+    <id>http://wdxtub.com/2016/08/24/go-plane-2/</id>
+    <published>2016-08-24T14:57:38.000Z</published>
+    <updated>2016-08-24T15:17:09.000Z</updated>
+    <content type="html"><![CDATA[<p>前面已经了解了『一起看飞机』的基本需求，这次我们来搭建一个完整的基于 beego 框架的后台。同时也会涉及调试测试部署等一系列配套工作，我觉得这些反而是工作中很重要的能力，但不知道为啥大部分书都略过了。</p>
+<a id="more"></a>
+<hr>
+<p>本文更新中….</p>
+<h2 id="u5F00_u59CB_u4E4B_u524D"><a href="#u5F00_u59CB_u4E4B_u524D" class="headerlink" title="开始之前"></a>开始之前</h2><p>按照 <a href="http://beego.me/docs/install" target="_blank" rel="external">beego 的安装</a> 和 <a href="http://beego.me/docs/install/bee.md" target="_blank" rel="external">bee 工具简介</a> 中的介绍把 <code>beego</code> 和 <code>bee</code> 都安装好，然后在 <code>$GOPATH</code> 中我们能看到 <code>bin</code>, <code>pkg</code>, <code>src</code> 三个文件夹，进入 <code>src</code> 文件夹，之后的项目代码都会在这里。接着用以下命令来创建项目</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># dawang @ dawang in ~/Documents/GO/src [16-08-24 14:36:44] C:2</span></span><br><span class="line">$ bee new watch-plane-together</span><br><span class="line">[INFO] Creating application...</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/conf/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/controllers/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/models/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/routers/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/tests/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/static/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/static/js/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/static/css/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/static/img/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/views/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/conf/app.conf</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/controllers/default.go</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/views/index.tpl</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/routers/router.go</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/tests/default_test.go</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/main.go</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">14</span>:<span class="number">36</span>:<span class="number">51</span> [SUCC] New application successfully created!</span><br></pre></td></tr></table></figure>
+<p>进入 <code>watch-plane-together</code> 文件夹，然后先跑起来试试看：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># dawang @ dawang in ~/Documents/GO/src/watch-plane-together on git:master x [16-08-24 15:56:09] C:130</span></span><br><span class="line">$ bee run</span><br><span class="line">bee   :<span class="number">1.4</span>.<span class="number">1</span></span><br><span class="line">beego :<span class="number">1.6</span>.<span class="number">1</span></span><br><span class="line">Go    :go version go1.<span class="number">7</span> darwin/amd64</span><br><span class="line"></span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [INFO] Uses <span class="string">'watch-plane-together'</span> as <span class="string">'appname'</span></span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [INFO] Initializing watcher...</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [TRAC] Directory(/Users/dawang/Documents/GO/src/watch-plane-together/controllers)</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [TRAC] Directory(/Users/dawang/Documents/GO/src/watch-plane-together)</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [TRAC] Directory(/Users/dawang/Documents/GO/src/watch-plane-together/routers)</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [TRAC] Directory(/Users/dawang/Documents/GO/src/watch-plane-together/tests)</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [INFO] Start building...</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">13</span> [SUCC] Build was successful</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">13</span> [INFO] Restarting watch-plane-together ...</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">13</span> [INFO] ./watch-plane-together is running...</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">13</span> [asm_amd64.s:<span class="number">2086</span>][I] http server Running on :<span class="number">8080</span></span><br></pre></td></tr></table></figure>
+<p>一切正常的话，访问 <code>localhost:8080</code> 就可以见到：</p>
+<p><img src="/images/14720513974639.jpg" alt=""></p>
+<p>到底发生了什么？结合具体的目录结构，我们来看看：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># dawang @ dawang in ~/Documents/GO/src/watch-plane-together on git:master x [16-08-24 16:02:16]</span></span><br><span class="line">$ tree ./</span><br><span class="line">./</span><br><span class="line">├── README.md</span><br><span class="line">├── conf</span><br><span class="line">│   └── app.conf</span><br><span class="line">├── controllers</span><br><span class="line">│   └── default.go</span><br><span class="line">├── main.go</span><br><span class="line">├── models</span><br><span class="line">├── routers</span><br><span class="line">│   └── router.go</span><br><span class="line">├── static</span><br><span class="line">│   ├── css</span><br><span class="line">│   ├── favicon.ico</span><br><span class="line">│   ├── img</span><br><span class="line">│   └── js</span><br><span class="line">├── tests</span><br><span class="line">│   └── default_test.go</span><br><span class="line">├── views</span><br><span class="line">│   └── index.tpl</span><br><span class="line">└── watch-plane-together</span><br><span class="line"></span><br><span class="line"><span class="number">10</span> directories, <span class="number">9</span> files</span><br></pre></td></tr></table></figure>
+<p>我们运行 <code>bee run</code> 之后，程序从 <code>main.go</code> 中开始执行，具体做的工作是把 <code>routers</code> 文件夹中的对应路由规则与具体的控制器进行绑定，比方说 <code>routers/router.go</code> 中有一句为 </p>
+<p><code>beego.Router(&quot;/&quot;, &amp;controllers.MainController{})</code></p>
+<p>然后对应于 <code>controllers/default.go</code> 中的</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> MainController <span class="keyword">struct</span> &#123;</span><br><span class="line">	beego.Controller</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (c *MainController) Get() &#123;</span><br><span class="line">	c.Data[<span class="string">"Website"</span>] = <span class="string">"wdxtub.com"</span></span><br><span class="line">	c.Data[<span class="string">"Email"</span>] = <span class="string">"dacrocodilee@gmail.com"</span></span><br><span class="line">	c.TplName = <span class="string">"index.tpl"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里我们给 <code>MainController</code> 添加了 <code>Get()</code> 方法，用于处理基本的 get 请求。而在具体的模板中，使用两个大括号加点号（这里直接输入会导致 hexo 解析异常，所以就用文字描述了）进行引用。</p>
+<p>最后，我们可以在 <code>conf/app.conf</code> 中添加一行 <code>EnableAdmin = true</code>，我们就可以在 <code>localhost:8088</code> 中见到一个监控页面，像这样：</p>
+<p><img src="/images/14720514130726.jpg" alt=""></p>
+<p>基本的套路就是这么简单！然后我们来简单设计下 API，方便之后的开发。</p>
+<h2 id="API__u89C4_u5212"><a href="#API__u89C4_u5212" class="headerlink" title="API 规划"></a>API 规划</h2><p>服务 API 的设计其实不算特别难，类似于起函数名。不过随着项目的不断开发，随意的命名会导致项目复杂度指数爆炸。所以我们要采用更为现代化的套路 - RESTful API。</p>
+<h3 id="RESTful"><a href="#RESTful" class="headerlink" title="RESTful"></a>RESTful</h3><p>在我看来 RESTful API 和成语差不多，通过一定的规约和沉淀，把互联网连接的低语境拔高的高语境，所谓高语境的意思是大家已经了解一组通用的条件和原则，在此基础上沟通可以极大降低沟通成本。</p>
+<p>先来看几个基本概念：</p>
+<ul>
+<li>资源(Resources)：我们平常上网访问的一张图片、一个文档、一个视频等。这些资源我们通过URI来定位，也就是一个URI表示一个资源</li>
+<li>表现(Representation)：资源是做一个具体的实体信息，他可以有多种的展现方式。而把实体展现出来就是表现层，例如一个 txt 文本信息，他可以输出成 html、json、xml 等格式，一个图片他可以 jpg、png 等方式展现，这个就是表现层的意思。 URI 确定一个资源，而在 HTTP 请求的头信息中用 Accept 和 Content-Type 字段指定，这两个字段才是对”表现层”的描述</li>
+<li>状态转化(State Transfer)：访问一个网站，就代表了客户端和服务器的一个互动过程。在这个过程中，肯定涉及到数据和状态的变化。而 HTTP 协议是无状态的，那么这些状态肯定保存在服务器端，所以如果客户端想要通知服务器端改变数据和状态的变化，肯定要通过某种方式来通知它。客户端能通知服务器端的手段，只能是 HTTP 协议。具体来说，就是 HTTP 协议里面，四个表示操作方式的动词：GET、POST、PUT、DELETE。它们分别对应四种基本操作：GET 用来获取资源，POST 用来新建资源（也可以用于更新资源），PUT用 来更新资源，DELETE 用来删除资源。</li>
+</ul>
+<p>简单点来说，RESTful 的核心思想类似于面向对象，把原先的过程导向转变为资源导向，然后围绕着资源做文章。</p>
+<p>这里需要保证请求是无状态的，有以下几个好处：</p>
+<ul>
+<li>客户端可以缓存数据来改进性能</li>
+<li>在接口层帮助系统分层解耦，限制复杂度，底层可以更加独立</li>
+<li>易于扩展，没有机器间关联</li>
+</ul>
+<p><img src="/images/14720514271343.jpg" alt=""></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>前面已经了解了『一起看飞机』的基本需求，这次我们来搭建一个完整的基于 beego 框架的后台。同时也会涉及调试测试部署等一系列配套工作，我觉得这些反而是工作中很重要的能力，但不知道为啥大部分书都略过了。</p>]]>
+    
+    </summary>
+    
+      <category term="Go" scheme="http://wdxtub.com/tags/Go/"/>
+    
+      <category term="项目" scheme="http://wdxtub.com/tags/%E9%A1%B9%E7%9B%AE/"/>
+    
+      <category term="飞机" scheme="http://wdxtub.com/tags/%E9%A3%9E%E6%9C%BA/"/>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[【Go 之旅】III 项目实战：一起看飞机 - 项目介绍]]></title>
+    <link href="http://wdxtub.com/2016/08/24/go-plane-1/"/>
+    <id>http://wdxtub.com/2016/08/24/go-plane-1/</id>
+    <published>2016-08-24T14:57:34.000Z</published>
+    <updated>2016-08-24T15:06:01.000Z</updated>
+    <content type="html"><![CDATA[<p>经过之前的两篇文章，应该已经对 Go 有了一定的了解，不过想要真正掌握，还是得做项目，这里我结合工作的内容，设计了『一起看飞机』这么一个无厘头项目，将通过三篇文章来介绍具体的设计和实现。</p>
+<a id="more"></a>
+<hr>
+<p>实话实说，因为我对博客的热爱，本来我是打算做一个博客系统的，简单搜索了一下，已经有几百个轮子了，所以我只好开了这么一个奇怪的脑洞。</p>
+<h2 id="u603B_u4F53_u4ECB_u7ECD"><a href="#u603B_u4F53_u4ECB_u7ECD" class="headerlink" title="总体介绍"></a>总体介绍</h2><p>假设有很多飞机的狂热爱好者，假设这些爱好者都喜欢看飞机，假设这些看飞机的爱好者想要一起看飞机，在这么多假设时候，产品经理感觉找到了一个刚需，所以决定开发一个『一起看飞机』的 APP，帮助飞机爱好者凑到一起看飞机。</p>
+<p>为了早日上线，产品经理决定第一个版本只需要做很少的功能，甚至都不需要一个图形界面，用文字先凑合就行。我花了五分钟花了一个草图，产品经理表示可以，如下：</p>
+<p><img src="/images/14720510281192.jpg" alt=""></p>
+<p>只能说，简约不简单！</p>
+<h2 id="u57FA_u672C_u529F_u80FD"><a href="#u57FA_u672C_u529F_u80FD" class="headerlink" title="基本功能"></a>基本功能</h2><p>好吧，其实简约也简单，具体需要的功能是</p>
+<ul>
+<li>告知用户附近的人，包括距离和昵称</li>
+<li>获取位置告知用户当前的天气、温度、风向</li>
+<li>获取用户附近的航线</li>
+</ul>
+<p>如果不考虑具体展示的话，其实就是维护一个数据库，然后在用户上报位置的时候做一些查询并返回。</p>
+<p>虽然看起来很简单，但是也已经足够我们通过这个无厘头项目来了解 Go 了，将会涉及的后台相关技术和原理有：</p>
+<ul>
+<li>Web 基本工作方式</li>
+<li>连接数据库</li>
+<li>处理 JSON 格式的文件</li>
+<li>Socket 与 WebSocket</li>
+<li>RESTful API 的设计和实现</li>
+<li>数据的简单加密和解密</li>
+<li>错误处理、调试和测试</li>
+<li>部署与维护</li>
+</ul>
+<p>当然我们也会简单涉及一些客户端（Web 和 iOS）的编程，以及创建一些自己用的调试用接口。</p>
+<p>接下来的文章中，我会从后台开始搭建起，尽量用简单且清晰的方式把 Web 开发的方方面面展现给大家。</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://github.com/wdxtub/Watch-Plane-Together/tree/master" target="_blank" rel="external">项目源代码</a></li>
+<li><a href="https://astaxie.gitbooks.io/build-web-application-with-golang/content/zh/index.html" target="_blank" rel="external">Go Web 编程</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>经过之前的两篇文章，应该已经对 Go 有了一定的了解，不过想要真正掌握，还是得做项目，这里我结合工作的内容，设计了『一起看飞机』这么一个无厘头项目，将通过三篇文章来介绍具体的设计和实现。</p>]]>
+    
+    </summary>
+    
+      <category term="Go" scheme="http://wdxtub.com/tags/Go/"/>
+    
+      <category term="项目" scheme="http://wdxtub.com/tags/%E9%A1%B9%E7%9B%AE/"/>
+    
+      <category term="飞机" scheme="http://wdxtub.com/tags/%E9%A3%9E%E6%9C%BA/"/>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Git 指南]]></title>
@@ -2234,468 +2346,6 @@
       <category term="读书笔记" scheme="http://wdxtub.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
       <category term="重构" scheme="http://wdxtub.com/tags/%E9%87%8D%E6%9E%84/"/>
-    
-      <category term="Reading" scheme="http://wdxtub.com/categories/Reading/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Mac 工作环境搭建]]></title>
-    <link href="http://wdxtub.com/2016/08/08/mac-work-env/"/>
-    <id>http://wdxtub.com/2016/08/08/mac-work-env/</id>
-    <published>2016-08-08T13:38:14.000Z</published>
-    <updated>2016-08-15T14:36:01.000Z</updated>
-    <content type="html"><![CDATA[<p>正所谓磨刀不误砍柴工，与其每次在新电脑配置开发环境都要查阅各种各样的资料，不如按照自己的习惯整理一份，在这里跟大家分享一下我习惯的基于 Mac 的开发环境。</p>
-<a id="more"></a>
-<hr>
-<h2 id="u7CFB_u7EDF_u8BBE_u7F6E"><a href="#u7CFB_u7EDF_u8BBE_u7F6E" class="headerlink" title="系统设置"></a>系统设置</h2><p>几个基本原则：</p>
-<ul>
-<li>除非开发需要，不用 beta 版本的系统和软件 -&gt; 稳定</li>
-<li>尽量在屏幕上显示更多的信息，常用信息尽量避免需要二次操作才能看到 -&gt; 效率</li>
-<li>尽量保证屏幕空间的可用比例，去掉华而不实的效果</li>
-</ul>
-<h3 id="u9F20_u6807_/__u89E6_u63A7_u677F_/_Dock"><a href="#u9F20_u6807_/__u89E6_u63A7_u677F_/_Dock" class="headerlink" title="鼠标 / 触控板 / Dock"></a>鼠标 / 触控板 / Dock</h3><p>先说说一下鼠标，设置不多，主要就是把中键弄成了应用程序切换，可以稍微方便一点，直接看图（公司配的依然是旧版鼠标）：</p>
-<p><img src="/images/14706635532782.jpg" alt=""></p>
-<p>触摸板开启『轻拍来点按』『辅助点按』和『三指拖移』这三个功能，其他我用的不多，看个人了。</p>
-<p>Dock 的话把图标弄小，放到左边，不是天天用的，都不要固定在 dock 中，举个例子，我固定的程序只有：iTerm, Mweb 和设置。</p>
-<h3 id="Finder_/_Spotlight"><a href="#Finder_/_Spotlight" class="headerlink" title="Finder / Spotlight"></a>Finder / Spotlight</h3><p>显示选项中，把所有『隐藏』条目都弄成『显示』。在偏好设置的高级中，显示所有文件扩展名。搜索时的范围设置为搜索当前文件夹</p>
-<p>Spotlight 把快捷键改为 option+space，搜索范围根据自己需要调整，不调整也行，没有太大的区别。</p>
-<h2 id="u5F00_u53D1_u5DE5_u5177"><a href="#u5F00_u53D1_u5DE5_u5177" class="headerlink" title="开发工具"></a>开发工具</h2><ul>
-<li>Xcode 命令行工具<ul>
-<li>安装 <code>xcode-select --install</code></li>
-<li>安装完成之后就可以使用很多常用的命令，具体可以通过 <code>ls /Library/Developer/CommandLineTools/usr/bin</code> 来查看</li>
-</ul>
-</li>
-<li>Homebrew 包管理器<ul>
-<li>安装 <code>/usr/bin/ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</code></li>
-<li>添加到环境变量 <code>echo &#39;export PATH=&quot;/usr/local/bin:$PATH&quot;&#39; &gt;&gt; ~/.bash_profile</code></li>
-<li>检查并更新 <code>brew doctor; brew update</code></li>
-<li>安装包 <code>brew install &lt;package_name&gt;</code></li>
-<li>更新包 <code>brew upgrade &lt;package_name&gt;</code></li>
-<li>清理旧版本 <code>brew cleanup</code></li>
-<li>列出包 <code>brew list --versions</code></li>
-</ul>
-</li>
-<li>Homebrew Cask 安装图形界面程序<ul>
-<li>安装 <code>brew tap caskroom/cask</code></li>
-<li>可以在 <a href="https://caskroom.github.io/" target="_blank" rel="external">Caskroom.io</a> 搜索 app</li>
-<li>一些常用 quicklook 插件<ul>
-<li><code>brew cask install qlmarkdown</code></li>
-<li><code>brew cask install quicklook-json</code></li>
-<li><code>brew cask install quicklook-csv</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li>iTerm2<ul>
-<li>配色方案有更好，没有其实也行</li>
-<li>可以用 zsh，但是远程服务器一般都是 bash，所以就懒得换了</li>
-</ul>
-</li>
-</ul>
-<p>Bash 的配色更换，在 <code>~/.bash_profile</code> 中加入下面这段</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PS1=<span class="string">"\[\033[0;37m\]\342\224\214\342\224\200\$([[ \$? != 0 ]] &amp;&amp; echo \"[\[\033[0;31m\]\342\234\227\[\033[0;37m\]]\342\224\200\")[<span class="variable">$(if [[ $&#123;EUID&#125; == 0 ]]; then echo '\[\033[0;31m\]\h'; else echo '\[\033[0;33m\]\u\[\033[0;37m\]@\[\033[0;96m\]\h'; fi)</span>\[\033[0;37m\]]\342\224\200[\[\033[0;32m\]\w\[\033[0;37m\]]\n\[\033[0;37m\]\342\224\224\342\224\200\342\224\200\342\225\274 \[\033[0m\]"</span></span><br></pre></td></tr></table></figure>
-<h2 id="u5E94_u7528"><a href="#u5E94_u7528" class="headerlink" title="应用"></a>应用</h2><p>很多我在用的工具之前都写过教程，这里简单列一下：</p>
-<ul>
-<li><a href="http://wdxtub.com/2016/03/30/tmux-guide/">tmux</a> </li>
-<li><a href="http://wdxtub.com/2016/03/24/vim-basic-op/">vim</a></li>
-<li><a href="http://wdxtub.com/2016/03/24/sublime-guide/">sublime text</a></li>
-<li><a href="http://wdxtub.com/2016/03/24/visual-code-guide/">VS Code</a></li>
-</ul>
-<p>其他我还在用的：</p>
-<ul>
-<li>Chrome</li>
-<li>Parallels</li>
-<li>Github</li>
-<li>Dropbox</li>
-<li>MWeb</li>
-</ul>
-<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><a href="https://www.gitbook.com/book/mba811/mac-dev/details" target="_blank" rel="external">Mac 开发配置手册 by Ashu</a></li>
-<li><a href="https://caskroom.github.io/" target="_blank" rel="external">Caskroom.io</a></li>
-</ul>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>正所谓磨刀不误砍柴工，与其每次在新电脑配置开发环境都要查阅各种各样的资料，不如按照自己的习惯整理一份，在这里跟大家分享一下我习惯的基于 Mac 的开发环境。</p>]]>
-    
-    </summary>
-    
-      <category term="Mac" scheme="http://wdxtub.com/tags/Mac/"/>
-    
-      <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
-    
-      <category term="开发" scheme="http://wdxtub.com/tags/%E5%BC%80%E5%8F%91/"/>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[【代码整洁之道】读书笔记]]></title>
-    <link href="http://wdxtub.com/2016/08/07/clean-code-clip/"/>
-    <id>http://wdxtub.com/2016/08/07/clean-code-clip/</id>
-    <published>2016-08-07T15:00:15.000Z</published>
-    <updated>2016-08-08T14:57:56.000Z</updated>
-    <content type="html"><![CDATA[<p>小处诚实非小事，神在细节之中。</p>
-<a id="more"></a>
-<hr>
-<p>习艺之要有二：知和行。你应当习得有关原则、模式和实践的知识，穷尽应知之事，并且要对其了如指掌，通过刻苦实践掌握它。</p>
-<h2 id="u6574_u6D01_u4EE3_u7801"><a href="#u6574_u6D01_u4EE3_u7801" class="headerlink" title="整洁代码"></a>整洁代码</h2><p>Bjarne Stroustrup: 我喜欢优雅和高效的代码，代码逻辑应当直截了当，叫缺陷难以隐藏；尽量减少依赖关系，使之便于维护；依据某种分层战略完善错误处理代码；性能调至最优，省得引诱别人做没规矩的优化，搞出一堆混乱来。整洁的代码只做好一件事。</p>
-<p>Grady Booch: 整洁的代码简单直接。整洁的代码如同优美的散文。整洁的代码从不隐藏设计者的意图，充满了干净利落的抽象和直截了当的控制语句。</p>
-<p>Dave Thomas: 整洁的代码应可由作者之外的开发者阅读和增补。它应有单元测试和验收测试。它使用有意义的命名。它只提供一种而非多种做一件事的途径。它只有尽量少的依赖关系，而且要明确地定义和提供清晰、尽量少的 API。代码应通过其字面表达含义，因为不同的语言导致并非所有必需信息均可通过代码自身清晰表达。</p>
-<p>Michael Feathers: 我可以列出我留意到的整洁代码的所有特点，但其中有一条是根本性的。整洁的代码总是看起来像是某位特别在意它的人写的，几乎没有改进的余地。代码作者什么都想到了，如果你企图改进它，总会回到原点，赞叹某人留给你的代码——全心投入的某人留下的代码。</p>
-<p>Ron Jeffries: 近年来，我开始研究贝克的简单代码规则，差不多也都琢磨透了。简单代码，依其重要顺序：能功过所有测试；没有重复代码；体现系统中的全部设计理念；包括尽量少的实体，比如类、方法、函数等</p>
-<p>Ward Cunningham: 如果每个例程都让你感到深合己意，那就是整洁代码，如果代码让编程语言看起来像是专为解决那个问题而存在的，就可以称之为漂亮的代码。</p>
-<p>光把代码写好可不够。必须时时<strong>保持代码整洁</strong>。我们都见过代码随时间流逝而腐坏。我们应当更积极地组织腐坏的发生。借用美国童子军一条简单的军规：</p>
-<blockquote>
-<p>让营地比你来时更干净</p>
-</blockquote>
-<h2 id="u6709_u610F_u4E49_u7684_u547D_u540D"><a href="#u6709_u610F_u4E49_u7684_u547D_u540D" class="headerlink" title="有意义的命名"></a>有意义的命名</h2><p>好名字的简单规则</p>
-<ul>
-<li>名副其实</li>
-<li>避免误导<ul>
-<li>别用 <code>accountList</code> 来指一组帐号，除非它真的是 List 类型</li>
-<li>提防使用不同之处较小的名称</li>
-</ul>
-</li>
-<li>做有意义的区分</li>
-<li>使用读得出来的名称</li>
-<li>使用可搜索的名称（单字母名称和数字常量很难在一大篇文字中找出来）</li>
-<li>避免使用编码</li>
-<li>避免使用思维映射</li>
-<li>类名不应当是动词</li>
-<li>方法名应当是动词或动词短语</li>
-<li>别扮可爱</li>
-<li>每个概念对应一个词</li>
-<li>别用双关语</li>
-<li>使用解决方案领域名称</li>
-<li>使用源自所涉问题领域的名称</li>
-<li>添加有意义的语境（实在不行可以添加前缀）</li>
-<li>不要添加没用的语境</li>
-</ul>
-<h2 id="u51FD_u6570"><a href="#u51FD_u6570" class="headerlink" title="函数"></a>函数</h2><ul>
-<li>短小</li>
-<li>只做一件事</li>
-<li>每个函数一个抽象层级</li>
-<li>switch 语句<ul>
-<li>如果只出现一次，用于创建多态对象，而且隐藏在某个继承关系中，在系统其他部分看不到，就还能容忍</li>
-</ul>
-</li>
-<li>使用描述性的名称</li>
-<li>函数参数<ul>
-<li>尽量避免三个或三个以上参数</li>
-</ul>
-</li>
-<li>无副作用</li>
-<li>分隔指令与询问</li>
-<li>使用异常替代返回错误码<ul>
-<li>错误处理代码就能从主路径代码中分离出来</li>
-<li>抽离 Try/Catch 代码块：最好把 try 和 catch 代码块的主题部分抽离出来，另外形成函数</li>
-<li>错误处理就是一件事</li>
-<li>返回错误码通常暗示有某个类或是枚举，定义了所有错误码，这样的类就是一块<strong>依赖磁铁(dependency magnet)</strong>，其他许多类都得导入和使用它</li>
-</ul>
-</li>
-<li>别重复自己</li>
-<li>结构化编程</li>
-</ul>
-<p>每个系统都是使用某种领域特定语言搭建的，而这种语言是程序员设计来描述那个系统的。函数是语言的动词，类是名词。编程艺术是且一直就是语言设计的艺术。</p>
-<p>大师级程序员把系统当作故事来讲，而不是当作程序来写。他们使用选定编程语言提供的工具构建一种更为丰富且更具表达力的语言，用来讲那个故事。</p>
-<h2 id="u6CE8_u91CA"><a href="#u6CE8_u91CA" class="headerlink" title="注释"></a>注释</h2><p>尽管有时也需要注释，我们也该多花心思尽量减少注释量</p>
-<ul>
-<li>注释不能美化糟糕的代码</li>
-<li>用代码来阐述</li>
-<li>好注释<ul>
-<li>法律信息</li>
-<li>提供信息的注释</li>
-<li>对意图的解释</li>
-<li>阐释</li>
-<li>警示</li>
-<li>TODO 注释</li>
-<li>放大</li>
-<li>公共 API 中的 Javadoc</li>
-</ul>
-</li>
-<li>坏注释<ul>
-<li>喃喃自语</li>
-<li>多余的注释</li>
-<li>误导性注释</li>
-<li>循规式注释</li>
-<li>日志式注释</li>
-<li>废话注释</li>
-<li>可怕的废话（Javadoc 也可能是废话）</li>
-<li>能用函数或变量时就别用注释</li>
-<li>位置标记</li>
-<li>括号后面的注释</li>
-<li>归属与署名（有源代码控制系统）</li>
-<li>注释掉的代码</li>
-<li>HTML 注释</li>
-<li>非本地信息</li>
-<li>信息过多</li>
-<li>不明显的联系</li>
-<li>函数头</li>
-<li>非公共代码中的 Javadoc（八股）</li>
-</ul>
-</li>
-</ul>
-<h2 id="u683C_u5F0F"><a href="#u683C_u5F0F" class="headerlink" title="格式"></a>格式</h2><ul>
-<li>向报纸学习<ul>
-<li>名称应当简单且一目了然。名称本身应该足够告诉我们是否在正确的模块中。源文件最顶部应该给出高层次概念和算法。细节应该往下渐次展开，直到找到源文件中最底层的函数和细节</li>
-<li>概念间垂直方向上的区隔</li>
-<li>垂直方向上的靠近</li>
-<li>垂直距离</li>
-<li>垂直顺序 </li>
-</ul>
-</li>
-<li>横向格式<ul>
-<li>水平方向上的区隔与靠近</li>
-<li>水平对齐</li>
-<li>缩进</li>
-<li>空范围</li>
-</ul>
-</li>
-<li>团队规则<ul>
-<li>在团队中，个人需要满足团队</li>
-</ul>
-</li>
-</ul>
-<h2 id="u5BF9_u8C61_u548C_u6570_u636E_u7ED3_u6784"><a href="#u5BF9_u8C61_u548C_u6570_u636E_u7ED3_u6784" class="headerlink" title="对象和数据结构"></a>对象和数据结构</h2><ul>
-<li>数据抽象</li>
-<li>数据、对象的反对称性</li>
-<li>得墨忒耳律：模块不应了解它所操作对象的内部情形<ul>
-<li>火车失事：连串的调用通常被认为是肮脏的风格</li>
-<li>混杂</li>
-<li>隐藏结构</li>
-</ul>
-</li>
-<li>数据传送对象<ul>
-<li>最为精炼的数据结构，是一个只有公共变量、没有函数的类。这种数据结构有时被称为数据传送对象，或 DTO(Data Transfer Objects)。DTO 是非常有用的结构，尤其是在与数据库通信、或解析套接字传递的消息之类的场景中</li>
-</ul>
-</li>
-</ul>
-<h2 id="u9519_u8BEF_u5904_u7406"><a href="#u9519_u8BEF_u5904_u7406" class="headerlink" title="错误处理"></a>错误处理</h2><p>错误处理很重要，但如果它搞乱了代码逻辑，就是错误的做法。</p>
-<ul>
-<li>使用异常而非返回码</li>
-<li>先写 Try-Catch-Finally 语句</li>
-<li>使用不可控异常（可控异常的代价就是违反开放/闭合原则）</li>
-<li>给出异常发生的环境说明（创建信息充分的错误消息，并和异常一起传递出去）</li>
-<li>依调用者需要定义异常类</li>
-<li>定义常规流程</li>
-<li>别返回 null 值<ul>
-<li>返回 null 值，基本上是在给自己增加工作量，也是在给调用者添乱。只要有一处没检查 null 值，应用程序就会失控</li>
-</ul>
-</li>
-<li>别传递 null 值</li>
-</ul>
-<p>整洁代码是可读的，但也要强固。可读与强固。可读与强固并不冲突。如果将错误处理隔离看待，独立于主要逻辑之外，就能写出强固而整洁的代码。做到这一步，我们就能单独处理它，也极大地提升了代码的可维护性。</p>
-<h2 id="u8FB9_u754C"><a href="#u8FB9_u754C" class="headerlink" title="边界"></a>边界</h2><ul>
-<li>使用边界接口<ul>
-<li>如果你私用类似 Map 这样的边界接口，就把它保留在类或近亲类中。避免从公共 API 中返回边界接口，或将边界接口作为参数传递给公共 API</li>
-</ul>
-</li>
-<li>浏览和学习边界</li>
-<li>学习性测试的好处不只是免费</li>
-<li>使用尚不存在的代码</li>
-<li>整洁的边界<ul>
-<li>边界上会发生有趣的事。改动是其中之一。有良好的软件设计，无需重大投入和重写即可修改</li>
-</ul>
-</li>
-</ul>
-<h2 id="u5355_u5143_u6D4B_u8BD5"><a href="#u5355_u5143_u6D4B_u8BD5" class="headerlink" title="单元测试"></a>单元测试</h2><ul>
-<li>TDD 三定律<ul>
-<li>在编写不能通过的单元测试前，不可编写生产代码</li>
-<li>只可编写刚好无法通过的单元测试，不能编译也算不通过</li>
-<li>只可编写刚好足以通过当前失败测试的生产代码</li>
-</ul>
-</li>
-<li>保持测试整洁<ul>
-<li>测试代码和生产代码一样重要</li>
-</ul>
-</li>
-<li>整洁的测试<ul>
-<li>三要素：可读性、可读性和可读性。</li>
-<li>明确、简洁，还有足够的表达力</li>
-</ul>
-</li>
-<li>每个测试一个断言</li>
-<li>FIRST 原则<ul>
-<li>快速 Fast</li>
-<li>独立 Independent</li>
-<li>可重复 Repeatable</li>
-<li>自足验证 Self-Validating</li>
-<li>及时 Timely</li>
-</ul>
-</li>
-</ul>
-<h2 id="u7C7B"><a href="#u7C7B" class="headerlink" title="类"></a>类</h2><ul>
-<li>类的组织<ul>
-<li>从一组变量列表开始。如果有公共静态常量，应该先出现。然后是私有静态变量，以及私有实体变量。很少会有公共变量。</li>
-<li>公共函数应跟在变量列表之后。我们喜欢把某个公共函数调用的私有工具函数紧随在该公共函数后面。这符合了自顶向下原则</li>
-</ul>
-</li>
-<li>类应该短小<ul>
-<li>单一权责原则(SRP)：类或模块应有且仅有一条加以修改的理由</li>
-<li>系统应该由许多短小的类而不是少量巨大的类组成。每个小类封装一个权责，只有一个修改的原因，并与少数其他类一起协同达成期望的系统行为</li>
-<li>内聚：类应该只有少量实体变量。类中的每个方法都应该操作一个或多个这种变量</li>
-<li>保持内聚性就会得到许多短小的类</li>
-</ul>
-</li>
-<li>为了修改而组织 </li>
-</ul>
-<h2 id="u7CFB_u7EDF"><a href="#u7CFB_u7EDF" class="headerlink" title="系统"></a>系统</h2><ul>
-<li>将系统的构造与使用分开<ul>
-<li>分解 main</li>
-<li>工厂</li>
-<li>依赖注入</li>
-</ul>
-</li>
-<li>扩容<ul>
-<li>软件系统与物理系统可以类比。它们的架构都可以递增式地增长，只要我们持续将关注面恰当地切分</li>
-</ul>
-</li>
-<li>测试驱动系统架构</li>
-<li>优化决策</li>
-<li>明智使用添加了可论证价值的标准</li>
-<li>系统需要领域特定语言</li>
-</ul>
-<p>系统也应该是整洁的。侵害性架构会湮灭领域逻辑，冲击敏捷能力。当领域逻辑受到困扰，质量也就堪忧，因为缺陷更易隐藏，用户故事更难实现。当敏捷能力受到损害时，生产力会降低，TDD 的好处也遗失殆尽。</p>
-<h2 id="u8FED_u8FDB"><a href="#u8FED_u8FDB" class="headerlink" title="迭进"></a>迭进</h2><ul>
-<li>简单设计规则 1：运行所有测试</li>
-<li>简单设计规则 2~4：重构</li>
-<li>不可重复</li>
-<li>表达力</li>
-<li>尽可能少的类和方法</li>
-</ul>
-<h2 id="u5E76_u53D1_u7F16_u7A0B"><a href="#u5E76_u53D1_u7F16_u7A0B" class="headerlink" title="并发编程"></a>并发编程</h2><blockquote>
-<p>对象是过程的抽象，线程是调度的抽象</p>
-</blockquote>
-<p>编写整洁的并发程序很难——非常难。并发是一种解耦策略。它帮助我们把做什么（目的）和何时（时机）做分解开。在单线程应用中，目的与时机紧密耦合，很多时候只要查看堆栈追踪即可断定应用程序的状态。</p>
-<p>解耦目的与时机能明显地改进应用程序的吞吐量和结构。从结构的角度看，应用程序看起来更像是许多台协同工作的计算机，而不是一个大循环。系统因此会更易于被理解，给出了许多切分关注面的有力手段。</p>
-<p>并发防御原则</p>
-<ul>
-<li>单一权责原则：建议分离并发相关代码与其他代码</li>
-<li>限制数据作用域：谨记数据封装；严格限制对可能被共享的数据的访问</li>
-<li>使用数据副本</li>
-<li>线程应尽可能地独立</li>
-</ul>
-<p>其他需要注意的</p>
-<ul>
-<li>警惕同步方法之间的依赖</li>
-<li>保持同步区域微小</li>
-</ul>
-<p>测试线程代码的方法：</p>
-<ul>
-<li>将伪失败看作可能的线程问题</li>
-<li>先使非线程代码科工作</li>
-<li>编写可插拔的线程代码</li>
-<li>编写可调整的线程代码</li>
-<li>运行多于处理器数量的线程</li>
-<li>在不同平台上运行</li>
-<li>调整代码并强迫错误发生</li>
-</ul>
-<h2 id="u5473_u9053_u4E0E_u542F_u53D1"><a href="#u5473_u9053_u4E0E_u542F_u53D1" class="headerlink" title="味道与启发"></a>味道与启发</h2><p>以下这些都是不好的，需要避免</p>
-<ul>
-<li>注释<ul>
-<li>不恰当的信息</li>
-<li>废弃的注释</li>
-<li>冗余注释</li>
-<li>糟糕的注释</li>
-<li>注释掉的代码</li>
-</ul>
-</li>
-<li>环境<ul>
-<li>需要多步才能实现的构建</li>
-<li>需要多步才能做到的测试</li>
-</ul>
-</li>
-<li>函数<ul>
-<li>过多的参数</li>
-<li>输出参数</li>
-<li>标识参数</li>
-<li>死函数</li>
-</ul>
-</li>
-<li>一般性问题<ul>
-<li>一个源文件中存在多个语言</li>
-<li>明显的行为未被实现</li>
-<li>不正确的边界行为</li>
-<li>忽视安全</li>
-<li>重复</li>
-<li>在错误的抽象层级上的代码</li>
-<li>基类依赖于派生类</li>
-<li>信息过多</li>
-<li>死代码</li>
-<li>垂直分隔</li>
-<li>前后不一致</li>
-<li>混淆视听</li>
-<li>人为耦合</li>
-<li>特性依赖</li>
-<li>选择算子参数</li>
-<li>晦涩的意图</li>
-<li>位置错误的权责</li>
-<li>不恰当的静态方法</li>
-</ul>
-</li>
-</ul>
-<p>应该做的    </p>
-<ul>
-<li>使用解释性变量</li>
-<li>函数名称应该表达其行为</li>
-<li>理解算法</li>
-<li>把逻辑依赖改为物理依赖</li>
-<li>用多态替代 If/Else 或 Switch/Case</li>
-<li>遵循标准约定</li>
-<li>用命名常量代替 Magic Number</li>
-<li>准确</li>
-<li>接哦古甚于约定</li>
-<li>封装条件</li>
-<li>避免否定性条件</li>
-<li>函数只该做一件事</li>
-<li>掩蔽时序耦合</li>
-<li>别随意</li>
-<li>封装边界条件</li>
-<li>函数应该只在一个抽象层级上</li>
-<li>在较高层级放置科配置数据</li>
-<li>避免传递浏览</li>
-</ul>
-<p>Java 技巧</p>
-<ul>
-<li>通过使用通配符避免过长的导入清单</li>
-<li>不要继承常量</li>
-<li>用枚举代替常量</li>
-</ul>
-<p>名称</p>
-<ul>
-<li>采用描述性名称</li>
-<li>名称应与抽象层级相符</li>
-<li>尽可能使用标准命名法</li>
-<li>五歧义的名称</li>
-<li>为较大做用范围选用较长名称</li>
-<li>避免编码（前缀等没必要）</li>
-<li>名称应该说明副作用</li>
-</ul>
-<p>测试</p>
-<ul>
-<li>测试不足</li>
-<li>使用覆盖率工具</li>
-<li>别略过小测试</li>
-<li>被忽略的测试是对不确定事物的疑问</li>
-<li>测试边界条件</li>
-<li>全面测试相近的缺陷</li>
-<li>测试失败的模式有启发性</li>
-<li>测试覆盖率的模式有启发性</li>
-<li>测试应该快速</li>
-</ul>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>小处诚实非小事，神在细节之中。</p>]]>
-    
-    </summary>
-    
-      <category term="代码" scheme="http://wdxtub.com/tags/%E4%BB%A3%E7%A0%81/"/>
-    
-      <category term="读书笔记" scheme="http://wdxtub.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-      <category term="质量" scheme="http://wdxtub.com/tags/%E8%B4%A8%E9%87%8F/"/>
     
       <category term="Reading" scheme="http://wdxtub.com/categories/Reading/"/>
     

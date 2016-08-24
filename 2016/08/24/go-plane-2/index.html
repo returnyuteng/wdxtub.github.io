@@ -1,0 +1,866 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Go,项目,飞机," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="前面已经了解了『一起看飞机』的基本需求，这次我们来搭建一个完整的基于 beego 框架的后台。同时也会涉及调试测试部署等一系列配套工作，我觉得这些反而是工作中很重要的能力，但不知道为啥大部分书都略过了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Go 之旅】IV 项目实战：一起看飞机 - 后台">
+<meta property="og:url" content="http://wdxtub.com/2016/08/24/go-plane-2/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="前面已经了解了『一起看飞机』的基本需求，这次我们来搭建一个完整的基于 beego 框架的后台。同时也会涉及调试测试部署等一系列配套工作，我觉得这些反而是工作中很重要的能力，但不知道为啥大部分书都略过了。">
+<meta property="og:image" content="http://wdxtub.com/images/14720513974639.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14720514130726.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14720514271343.jpg">
+<meta property="og:updated_time" content="2016-08-24T15:17:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Go 之旅】IV 项目实战：一起看飞机 - 后台">
+<meta name="twitter:description" content="前面已经了解了『一起看飞机』的基本需求，这次我们来搭建一个完整的基于 beego 框架的后台。同时也会涉及调试测试部署等一系列配套工作，我觉得这些反而是工作中很重要的能力，但不知道为啥大部分书都略过了。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 【Go 之旅】IV 项目实战：一起看飞机 - 后台 | 小土刀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/life" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/booklist" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【Go 之旅】IV 项目实战：一起看飞机 - 后台
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-24T22:57:38+08:00" content="2016-08-24">
+              2016-08-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/24/go-plane-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/24/go-plane-2/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前面已经了解了『一起看飞机』的基本需求，这次我们来搭建一个完整的基于 beego 框架的后台。同时也会涉及调试测试部署等一系列配套工作，我觉得这些反而是工作中很重要的能力，但不知道为啥大部分书都略过了。</p>
+<a id="more"></a>
+<hr>
+<p>本文更新中….</p>
+<h2 id="u5F00_u59CB_u4E4B_u524D"><a href="#u5F00_u59CB_u4E4B_u524D" class="headerlink" title="开始之前"></a>开始之前</h2><p>按照 <a href="http://beego.me/docs/install" target="_blank" rel="external">beego 的安装</a> 和 <a href="http://beego.me/docs/install/bee.md" target="_blank" rel="external">bee 工具简介</a> 中的介绍把 <code>beego</code> 和 <code>bee</code> 都安装好，然后在 <code>$GOPATH</code> 中我们能看到 <code>bin</code>, <code>pkg</code>, <code>src</code> 三个文件夹，进入 <code>src</code> 文件夹，之后的项目代码都会在这里。接着用以下命令来创建项目</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># dawang @ dawang in ~/Documents/GO/src [16-08-24 14:36:44] C:2</span></span><br><span class="line">$ bee new watch-plane-together</span><br><span class="line">[INFO] Creating application...</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/conf/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/controllers/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/models/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/routers/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/tests/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/static/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/static/js/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/static/css/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/static/img/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/views/</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/conf/app.conf</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/controllers/default.go</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/views/index.tpl</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/routers/router.go</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/tests/default_test.go</span><br><span class="line">/Users/dawang/Documents/GO/src/watch-plane-together/main.go</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">14</span>:<span class="number">36</span>:<span class="number">51</span> [SUCC] New application successfully created!</span><br></pre></td></tr></table></figure>
+<p>进入 <code>watch-plane-together</code> 文件夹，然后先跑起来试试看：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># dawang @ dawang in ~/Documents/GO/src/watch-plane-together on git:master x [16-08-24 15:56:09] C:130</span></span><br><span class="line">$ bee run</span><br><span class="line">bee   :<span class="number">1.4</span>.<span class="number">1</span></span><br><span class="line">beego :<span class="number">1.6</span>.<span class="number">1</span></span><br><span class="line">Go    :go version go1.<span class="number">7</span> darwin/amd64</span><br><span class="line"></span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [INFO] Uses <span class="string">'watch-plane-together'</span> as <span class="string">'appname'</span></span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [INFO] Initializing watcher...</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [TRAC] Directory(/Users/dawang/Documents/GO/src/watch-plane-together/controllers)</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [TRAC] Directory(/Users/dawang/Documents/GO/src/watch-plane-together)</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [TRAC] Directory(/Users/dawang/Documents/GO/src/watch-plane-together/routers)</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [TRAC] Directory(/Users/dawang/Documents/GO/src/watch-plane-together/tests)</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">11</span> [INFO] Start building...</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">13</span> [SUCC] Build was successful</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">13</span> [INFO] Restarting watch-plane-together ...</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">13</span> [INFO] ./watch-plane-together is running...</span><br><span class="line"><span class="number">2016</span>/<span class="number">08</span>/<span class="number">24</span> <span class="number">15</span>:<span class="number">56</span>:<span class="number">13</span> [asm_amd64.s:<span class="number">2086</span>][I] http server Running on :<span class="number">8080</span></span><br></pre></td></tr></table></figure>
+<p>一切正常的话，访问 <code>localhost:8080</code> 就可以见到：</p>
+<p><img src="/images/14720513974639.jpg" alt=""></p>
+<p>到底发生了什么？结合具体的目录结构，我们来看看：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># dawang @ dawang in ~/Documents/GO/src/watch-plane-together on git:master x [16-08-24 16:02:16]</span></span><br><span class="line">$ tree ./</span><br><span class="line">./</span><br><span class="line">├── README.md</span><br><span class="line">├── conf</span><br><span class="line">│   └── app.conf</span><br><span class="line">├── controllers</span><br><span class="line">│   └── default.go</span><br><span class="line">├── main.go</span><br><span class="line">├── models</span><br><span class="line">├── routers</span><br><span class="line">│   └── router.go</span><br><span class="line">├── static</span><br><span class="line">│   ├── css</span><br><span class="line">│   ├── favicon.ico</span><br><span class="line">│   ├── img</span><br><span class="line">│   └── js</span><br><span class="line">├── tests</span><br><span class="line">│   └── default_test.go</span><br><span class="line">├── views</span><br><span class="line">│   └── index.tpl</span><br><span class="line">└── watch-plane-together</span><br><span class="line"></span><br><span class="line"><span class="number">10</span> directories, <span class="number">9</span> files</span><br></pre></td></tr></table></figure>
+<p>我们运行 <code>bee run</code> 之后，程序从 <code>main.go</code> 中开始执行，具体做的工作是把 <code>routers</code> 文件夹中的对应路由规则与具体的控制器进行绑定，比方说 <code>routers/router.go</code> 中有一句为 </p>
+<p><code>beego.Router(&quot;/&quot;, &amp;controllers.MainController{})</code></p>
+<p>然后对应于 <code>controllers/default.go</code> 中的</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> MainController <span class="keyword">struct</span> &#123;</span><br><span class="line">	beego.Controller</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (c *MainController) Get() &#123;</span><br><span class="line">	c.Data[<span class="string">"Website"</span>] = <span class="string">"wdxtub.com"</span></span><br><span class="line">	c.Data[<span class="string">"Email"</span>] = <span class="string">"dacrocodilee@gmail.com"</span></span><br><span class="line">	c.TplName = <span class="string">"index.tpl"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里我们给 <code>MainController</code> 添加了 <code>Get()</code> 方法，用于处理基本的 get 请求。而在具体的模板中，使用两个大括号加点号（这里直接输入会导致 hexo 解析异常，所以就用文字描述了）进行引用。</p>
+<p>最后，我们可以在 <code>conf/app.conf</code> 中添加一行 <code>EnableAdmin = true</code>，我们就可以在 <code>localhost:8088</code> 中见到一个监控页面，像这样：</p>
+<p><img src="/images/14720514130726.jpg" alt=""></p>
+<p>基本的套路就是这么简单！然后我们来简单设计下 API，方便之后的开发。</p>
+<h2 id="API__u89C4_u5212"><a href="#API__u89C4_u5212" class="headerlink" title="API 规划"></a>API 规划</h2><p>服务 API 的设计其实不算特别难，类似于起函数名。不过随着项目的不断开发，随意的命名会导致项目复杂度指数爆炸。所以我们要采用更为现代化的套路 - RESTful API。</p>
+<h3 id="RESTful"><a href="#RESTful" class="headerlink" title="RESTful"></a>RESTful</h3><p>在我看来 RESTful API 和成语差不多，通过一定的规约和沉淀，把互联网连接的低语境拔高的高语境，所谓高语境的意思是大家已经了解一组通用的条件和原则，在此基础上沟通可以极大降低沟通成本。</p>
+<p>先来看几个基本概念：</p>
+<ul>
+<li>资源(Resources)：我们平常上网访问的一张图片、一个文档、一个视频等。这些资源我们通过URI来定位，也就是一个URI表示一个资源</li>
+<li>表现(Representation)：资源是做一个具体的实体信息，他可以有多种的展现方式。而把实体展现出来就是表现层，例如一个 txt 文本信息，他可以输出成 html、json、xml 等格式，一个图片他可以 jpg、png 等方式展现，这个就是表现层的意思。 URI 确定一个资源，而在 HTTP 请求的头信息中用 Accept 和 Content-Type 字段指定，这两个字段才是对”表现层”的描述</li>
+<li>状态转化(State Transfer)：访问一个网站，就代表了客户端和服务器的一个互动过程。在这个过程中，肯定涉及到数据和状态的变化。而 HTTP 协议是无状态的，那么这些状态肯定保存在服务器端，所以如果客户端想要通知服务器端改变数据和状态的变化，肯定要通过某种方式来通知它。客户端能通知服务器端的手段，只能是 HTTP 协议。具体来说，就是 HTTP 协议里面，四个表示操作方式的动词：GET、POST、PUT、DELETE。它们分别对应四种基本操作：GET 用来获取资源，POST 用来新建资源（也可以用于更新资源），PUT用 来更新资源，DELETE 用来删除资源。</li>
+</ul>
+<p>简单点来说，RESTful 的核心思想类似于面向对象，把原先的过程导向转变为资源导向，然后围绕着资源做文章。</p>
+<p>这里需要保证请求是无状态的，有以下几个好处：</p>
+<ul>
+<li>客户端可以缓存数据来改进性能</li>
+<li>在接口层帮助系统分层解耦，限制复杂度，底层可以更加独立</li>
+<li>易于扩展，没有机器间关联</li>
+</ul>
+<p><img src="/images/14720514271343.jpg" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Go/" rel="tag">#Go</a>
+          
+            <a href="/tags/项目/" rel="tag">#项目</a>
+          
+            <a href="/tags/飞机/" rel="tag">#飞机</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/24/go-plane-1/" rel="next" title="【Go 之旅】III 项目实战：一起看飞机 - 项目介绍">
+                <i class="fa fa-chevron-left"></i> 【Go 之旅】III 项目实战：一起看飞机 - 项目介绍
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/24/go-plane-2/"
+           data-title="【Go 之旅】IV 项目实战：一起看飞机 - 后台" data-url="http://wdxtub.com/2016/08/24/go-plane-2/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">598</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">835</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.lofter.com/" title="我的 Lofter" target="_blank">我的 Lofter</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5F00_u59CB_u4E4B_u524D"><span class="nav-number">1.</span> <span class="nav-text">开始之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API__u89C4_u5212"><span class="nav-number">2.</span> <span class="nav-text">API 规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RESTful"><span class="nav-number">2.1.</span> <span class="nav-text">RESTful</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
