@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Agony is my triumph]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://wdxtub.com/"/>
-  <updated>2016-08-24T15:17:09.000Z</updated>
+  <updated>2016-08-25T14:28:14.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -15,11 +15,47 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[【Go 之旅】V 项目实战：一起看飞机 - 客户端]]></title>
+    <link href="http://wdxtub.com/2016/08/25/go-plane-3/"/>
+    <id>http://wdxtub.com/2016/08/25/go-plane-3/</id>
+    <published>2016-08-25T13:40:20.000Z</published>
+    <updated>2016-08-25T14:28:14.000Z</updated>
+    <content type="html"><![CDATA[<p>前面我们搭建好了后台（虽然实际开发中我是客户端后台一起写的），这次来看看如何做一个配套的客户端（虽然从各种角度看都非常『简约』），小归小，还是有一点意思的。</p>
+<a id="more"></a>
+<hr>
+<p>本文更新中….</p>
+<p>还记得系列第一篇中的设计稿吗？我把它捣鼓出来了：</p>
+<p><img src="/images/14721336651764.jpg" alt=""><br>（感谢上镜的各位名人名言）</p>
+<p>具体开发过程中的坑有很多，比如</p>
+<ul>
+<li>时隔太久我忘了 Objective-C 要咋写，花了十分钟才摆脱了 C++ 写法</li>
+<li>iOS9 新增的强制 Https 需要改一下描述文件才能走 Http（毕竟只是一个测试）</li>
+<li>为了调试方便所有的网络都走的是同步请求（理论上都得用异步来着）</li>
+<li>为了测试方便，所有的信息会统一输出到中间的文本框中，我干脆直接叫它 <code>consoleTextView</code></li>
+</ul>
+<h2 id="u5BA2_u6237_u7AEF_u67B6_u6784"><a href="#u5BA2_u6237_u7AEF_u67B6_u6784" class="headerlink" title="客户端架构"></a>客户端架构</h2><p>待续，今天因为意外没来得上传代码。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>前面我们搭建好了后台（虽然实际开发中我是客户端后台一起写的），这次来看看如何做一个配套的客户端（虽然从各种角度看都非常『简约』），小归小，还是有一点意思的。</p>]]>
+    
+    </summary>
+    
+      <category term="Go" scheme="http://wdxtub.com/tags/Go/"/>
+    
+      <category term="项目" scheme="http://wdxtub.com/tags/%E9%A1%B9%E7%9B%AE/"/>
+    
+      <category term="飞机" scheme="http://wdxtub.com/tags/%E9%A3%9E%E6%9C%BA/"/>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[【Go 之旅】IV 项目实战：一起看飞机 - 后台]]></title>
     <link href="http://wdxtub.com/2016/08/24/go-plane-2/"/>
     <id>http://wdxtub.com/2016/08/24/go-plane-2/</id>
     <published>2016-08-24T14:57:38.000Z</published>
-    <updated>2016-08-24T15:17:09.000Z</updated>
+    <updated>2016-08-25T13:08:21.000Z</updated>
     <content type="html"><![CDATA[<p>前面已经了解了『一起看飞机』的基本需求，这次我们来搭建一个完整的基于 beego 框架的后台。同时也会涉及调试测试部署等一系列配套工作，我觉得这些反而是工作中很重要的能力，但不知道为啥大部分书都略过了。</p>
 <a id="more"></a>
 <hr>
@@ -56,6 +92,89 @@
 <li>易于扩展，没有机器间关联</li>
 </ul>
 <p><img src="/images/14720514271343.jpg" alt=""></p>
+<h3 id="API__u603B_u89C8"><a href="#API__u603B_u89C8" class="headerlink" title="API 总览"></a>API 总览</h3><p>根据 RESTful 的风格，接口中不应该出现动词，而利用 GET/PUT/POST/DELETE 来进行具体的动作，对应到『一起看飞机』这个项目，API 总览：</p>
+<ul>
+<li><code>/api/position</code> 客户端每隔一段调用一次该接口<ul>
+<li><code>POST</code> 上传当前位置到服务器（状态变为上线）</li>
+<li><code>DELETE</code> 结束上传位置（状态变为下线，或通过超时判断）</li>
+</ul>
+</li>
+<li><code>/api/weather</code><ul>
+<li><code>GET</code> 获取用户附近的天气状况</li>
+</ul>
+</li>
+<li><code>/api/flight</code><ul>
+<li><code>GET</code> 获取用户附近的航班情况</li>
+</ul>
+</li>
+<li><code>/api/near</code><ul>
+<li><code>GET</code> 获取用户附近的人</li>
+</ul>
+</li>
+</ul>
+<p>调试用接口</p>
+<ul>
+<li><code>/debug/position</code><ul>
+<li><code>GET</code> 获取指定用户的当前位置</li>
+</ul>
+</li>
+<li><code>/debug/weather</code><ul>
+<li><code>GET</code> 获取指定位置附近的天气状况</li>
+</ul>
+</li>
+<li><code>/debug/flight</code><ul>
+<li><code>GET</code> 获取指定位置附近的航班</li>
+</ul>
+</li>
+<li><code>/debug/near</code><ul>
+<li><code>GET</code> 获取用户或指定位置附近的人</li>
+</ul>
+</li>
+</ul>
+<h3 id="API__u8BE6_u60C5"><a href="#API__u8BE6_u60C5" class="headerlink" title="API 详情"></a>API 详情</h3><p>坐标采用 WGS84 标准，不同的标准有很多，<a href="http://blog.csdn.net/ma969070578/article/details/41013547" target="_blank" rel="external">参考来源</a>：</p>
+<ul>
+<li>WGS84 坐标系：即地球坐标系，国际上通用的坐标系。设备一般包含GPS芯片或者北斗芯片获取的经纬度为 WGS84 地理坐标系, 谷歌地图采用的是 WGS84 地理坐标系（中国范围除外）</li>
+<li>GCJ02 坐标系：即火星坐标系，是由中国国家测绘局制订的地理信息系统的坐标系统。由 WGS84 坐标系经加密后的坐标系。谷歌中国地图和搜搜中国地图采用的是 GCJ02 地理坐标系</li>
+<li>BD09坐标系：即百度坐标系，GCJ02 坐标系经加密后的坐标系; 搜狗坐标系、图吧坐标系等，估计也是在 GCJ02 基础上加密而成的</li>
+</ul>
+<p>另一个坐标转换的<a href="https://github.com/wandergis/coordtransform" target="_blank" rel="external">项目</a></p>
+<h4 id="Position__28POST_29"><a href="#Position__28POST_29" class="headerlink" title="Position (POST)"></a>Position (POST)</h4><p><code>/api/position</code> (POST) <strong>上传当前位置到服务器（状态变为上线）</strong></p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    param:&#123;</span><br><span class="line">        id: 12345, // 用户编号</span><br><span class="line">        latitude: '23.1291', // 纬度</span><br><span class="line">        longitude: '113.2644' // 经度</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回结果</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// 正常</span><br><span class="line">&#123;</span><br><span class="line">    code: 10000,</span><br><span class="line">    message: 'success'</span><br><span class="line">&#125;</span><br><span class="line">// 异常（具体请参考代号）</span><br><span class="line">&#123;</span><br><span class="line">    code: 10001,</span><br><span class="line">    message: 'err detail'</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Position__28DELETE_29"><a href="#Position__28DELETE_29" class="headerlink" title="Position (DELETE)"></a>Position (DELETE)</h4><p><code>/api/position</code> (DELETE) <strong>结束上传位置（状态变为下线，或通过超时判断）</strong></p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    param:&#123;</span><br><span class="line">        id: 12345, // 用户编号</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回结果</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// 正常</span><br><span class="line">&#123;</span><br><span class="line">    code: 10000,</span><br><span class="line">    message: 'success'</span><br><span class="line">&#125;</span><br><span class="line">// 异常（具体请参考代号）</span><br><span class="line">&#123;</span><br><span class="line">    code: 10001,</span><br><span class="line">    message: 'err detail'</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Weather__28GET_29"><a href="#Weather__28GET_29" class="headerlink" title="Weather (GET)"></a>Weather (GET)</h4><p><code>/api/weather</code> (GET) <strong>获取指定位置附近的天气状况，需要保证用户已经有位置数据正确上传</strong></p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    param:&#123;</span><br><span class="line">        id: 12345 // 用户编号</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回结果</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// 正常</span><br><span class="line">&#123;</span><br><span class="line">    code: 10000,</span><br><span class="line">    message: 'success'</span><br><span class="line">    data: &#123; 具体天气信息 &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 异常（具体请参考代号）</span><br><span class="line">&#123;</span><br><span class="line">    code: 10001,</span><br><span class="line">    message: 'err detail'</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Flight__28GET_29"><a href="#Flight__28GET_29" class="headerlink" title="Flight (GET)"></a>Flight (GET)</h4><p><code>/api/flight</code> (GET) <strong>获取用户附近的航班情况，需要保证用户已经有位置数据正确上传</strong></p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    param:&#123;</span><br><span class="line">        id: 12345 // 用户编号</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回结果</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// 正常</span><br><span class="line">&#123;</span><br><span class="line">    code: 10000,</span><br><span class="line">    message: 'success'</span><br><span class="line">    data: &#123; 具体航班信息 &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 异常（具体请参考代号）</span><br><span class="line">&#123;</span><br><span class="line">    code: 10001,</span><br><span class="line">    message: 'err detail'</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Near__28GET_29"><a href="#Near__28GET_29" class="headerlink" title="Near (GET)"></a>Near (GET)</h4><p><code>/api/near</code> (GET) <strong>获取用户附近的人，需要保证用户已经有位置数据正确上传</strong></p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    param:&#123;</span><br><span class="line">        id: 12345 // 用户编号</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>返回结果</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// 正常</span><br><span class="line">&#123;</span><br><span class="line">    code: 10000,</span><br><span class="line">    message: 'success'</span><br><span class="line">    data: &#123; 具体天气信息 &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 异常（具体请参考代号）</span><br><span class="line">&#123;</span><br><span class="line">    code: 10001,</span><br><span class="line">    message: 'err detail'</span><br><span class="line">    data: &#123; 具体附近的人的信息 &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Debug__u63A5_u53E3"><a href="#Debug__u63A5_u53E3" class="headerlink" title="Debug 接口"></a>Debug 接口</h4><p>Debug 接口主要用于内部测试，对于参数的传递要求比较灵活，主要是基于地理位置进行测试，输入除 position 外都是经纬度坐标</p>
+<ul>
+<li><code>/debug</code> (GET) 连接测试函数</li>
+<li><code>/debug/position</code> (GET) 获取指定用户的当前位置</li>
+<li><code>/debug/weather</code> (GET) 获取指定位置附近的天气状况</li>
+<li><code>/debug/flight</code> (GET) 获取指定位置附近的航班</li>
+<li><code>/debug/near</code> (GET) 获取指定位置附近的航班</li>
+</ul>
+<h3 id="u8FD4_u56DE_u72B6_u6001_u7801"><a href="#u8FD4_u56DE_u72B6_u6001_u7801" class="headerlink" title="返回状态码"></a>返回状态码</h3><p>利用移位来表示不同的状态</p>
+<ul>
+<li><code>1 &lt;&lt; 0</code> </li>
+<li><code>1 &lt;&lt; 1</code></li>
+<li><code>1 &lt;&lt; 2</code></li>
+</ul>
+<h2 id="u6846_u67B6_u642D_u5EFA"><a href="#u6846_u67B6_u642D_u5EFA" class="headerlink" title="框架搭建"></a>框架搭建</h2><h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://astaxie.gitbooks.io/build-web-application-with-golang/content/zh/08.3.html" target="_blank" rel="external">8.3 REST</a></li>
+</ul>
 ]]></content>
     <summary type="html">
     <![CDATA[<p>前面已经了解了『一起看飞机』的基本需求，这次我们来搭建一个完整的基于 beego 框架的后台。同时也会涉及调试测试部署等一系列配套工作，我觉得这些反而是工作中很重要的能力，但不知道为啥大部分书都略过了。</p>]]>
@@ -1648,706 +1767,6 @@
       <category term="非主流" scheme="http://wdxtub.com/tags/%E9%9D%9E%E4%B8%BB%E6%B5%81/"/>
     
       <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[【重构 改善既有代码的设计】读书笔记]]></title>
-    <link href="http://wdxtub.com/2016/08/09/refactoring-clip/"/>
-    <id>http://wdxtub.com/2016/08/09/refactoring-clip/</id>
-    <published>2016-08-08T22:10:41.000Z</published>
-    <updated>2016-08-11T13:05:36.000Z</updated>
-    <content type="html"><![CDATA[<p>重构：在代码写好之后改进它的设计。</p>
-<a id="more"></a>
-<hr>
-<p>尽管关注对象是代码，但重构对于系统设计也有巨大影响。资深设计师和架构师也很有必要了解重构原理，并在自己的项目中运用重构技术。最好是由老资格、经验丰富的开发人员来引入重构技术，因为这样的人最能够透彻理解重构背后的原理，并根据情况加以调整，使之适用于特定工作领域。</p>
-<p>如果你发现自己需要为程序添加一个特性，而代码结构使你无法很方便地达成目的，那就先重构那个程序，使特性的添加比较容易进行，然后再添加特性。</p>
-<p>重构之前，首先检查自己是否有一套可靠的测试机制，这些测试必须有自我检验能力。</p>
-<p>重构技术就是以微小的步伐修改程序。如果你犯下错误，很容易便可发现它。</p>
-<p>任何一个傻瓜都能写出计算机可以理解的代码。唯有写出人类容易理解的代码，才是优秀的程序员。</p>
-<p>重构（名词）：对软件内部结构的一种调整，目的是在不改变软件可观察行为的前提下，提高其可理解性，降低其修改成本。</p>
-<p>重构（动词）：使用一系列重构手法，在不改变软件可观察行为的前提下，调整其结构。</p>
-<h2 id="u91CD_u6784_u539F_u5219"><a href="#u91CD_u6784_u539F_u5219" class="headerlink" title="重构原则"></a>重构原则</h2><p>为何重构：</p>
-<ul>
-<li>重构改进设计</li>
-<li>重构使软件更容易理解</li>
-<li>帮助找到 bug</li>
-<li>重构提高编程速度</li>
-</ul>
-<hr>
-<p>何时重构：</p>
-<ul>
-<li>三次法则：事不过三，三则重构</li>
-<li>添加功能时重构</li>
-<li>修补错误时重构</li>
-<li>复审代码时重构</li>
-</ul>
-<hr>
-<p>重构的难题</p>
-<ul>
-<li>数据库</li>
-<li>修改接口：不要过早发布接口</li>
-<li>难以通过重构手法完成的设计改动</li>
-</ul>
-<hr>
-<h2 id="u4EE3_u7801_u7684_u574F_u5473_u9053"><a href="#u4EE3_u7801_u7684_u574F_u5473_u9053" class="headerlink" title="代码的坏味道"></a>代码的坏味道</h2><ul>
-<li>重复代码</li>
-<li>过长函数</li>
-<li>过大的类</li>
-<li>过长参数列</li>
-<li>发散式变化：类经常因为不同的原因在不同的方向上发生变化</li>
-<li>霰弹式修改：每遇到某种变化，你都必须在许多不同的类内做出许多小修改</li>
-<li>依恋情结：一个类的动作过分依赖其他类</li>
-<li>数据泥团：不同地方的相同数据字段</li>
-<li>基本类型偏执</li>
-<li>Switch 惊悚现身：考虑用多态代替 switch</li>
-<li>平行继承体系：为某个类增加一个子类的时候，也必须为另一个类相应增加一个子类</li>
-<li>冗赘类</li>
-<li>夸夸其谈未来性：某个抽象类其实没啥太大作用</li>
-<li>令人迷惑的暂时字段</li>
-<li>过度耦合的消息链</li>
-<li>中间人：某个类接口有一半的函数都委托给其他类</li>
-<li>狎昵关系：两个类过于亲密</li>
-<li>异曲同工的类：两个函数做同一件事，却有着不同的签名</li>
-<li>不完美的库类</li>
-<li>纯稚的数据类：单纯的数据容器</li>
-<li>被拒绝的遗赠：子类复用超类的行为，却又不愿意支持超类的接口</li>
-<li>过多的注释：当你感觉需要撰写注释时，请先尝试重构，试着让所有注释都变得多余</li>
-</ul>
-<h2 id="u6784_u7B51_u6D4B_u8BD5_u4F53_u7CFB"><a href="#u6784_u7B51_u6D4B_u8BD5_u4F53_u7CFB" class="headerlink" title="构筑测试体系"></a>构筑测试体系</h2><ul>
-<li>确保所有测试都完全自动化，让它们检查自己的测试结果</li>
-<li>一套测试就是一个强大的 bug 侦测器，能够大大缩减查找 bug 所需要的时间</li>
-<li>频繁地运行测试。每次编译请把测试也考虑进去——每天至少执行每个测试一次</li>
-<li>每当你收到 bug 报告，请先写一个单元测试来暴露 bug</li>
-<li>编写未臻完善的测试并实际运行，好过对完美测试的无尽等待</li>
-<li>考虑可能出错的边界条件，把测试火力集中在那儿</li>
-<li>当事情被认为应该会出错时，别忘了检查是否抛出了预期的异常</li>
-<li>不要因为测试无法捕捉所有 bug 就不写测试，因为测试的确可以捕捉到大多数 bug</li>
-</ul>
-<h2 id="u91CD_u65B0_u7EC4_u7EC7_u51FD_u6570"><a href="#u91CD_u65B0_u7EC4_u7EC7_u51FD_u6570" class="headerlink" title="重新组织函数"></a>重新组织函数</h2><h3 id="u63D0_u70BC_u51FD_u6570_Extract_Method"><a href="#u63D0_u70BC_u51FD_u6570_Extract_Method" class="headerlink" title="提炼函数 Extract Method"></a>提炼函数 Extract Method</h3><p>有一段代码可以被组织在一起并独立出来 -&gt; 将折断代码放进一个独立函数中，并让函数名称解释该函数的用途。</p>
-<ul>
-<li>创造一个新函数，根据这个函数的意图来对它命名（以它『做什么』来命名，而不是以它『怎样做』命名）</li>
-<li>将提炼出的代码从源函数复制到新建的目标函数中</li>
-<li>仔细检查提炼出的代码，看看是否引用了『作用域限于源函数』的变量（包括局部变量和源函数参数）</li>
-<li>检查是否有『仅用于被提炼代码段』的临时变量。如果有，在目标函数中将它们声明为临时变量</li>
-<li>检查被提炼代码段，看看是否有任何局部变量的值被它改变。如果一个临时变量值被修改了，看看是否可以将被提炼代码段处理为一个查询，并将结果赋值给相关变量。如果被修改的变量不止一个，你就不能仅仅将这段代码原封不动地提炼出来</li>
-<li>将被提炼代码段中需要读取的局部变量，当做参数传给目标函数</li>
-<li>处理完所有局部变量之后，进行编译</li>
-<li>在源函数中，将被提炼代码段替换为对目标函数的调用（如果你将任何临时变量移到目标函数中，请检查它们原本的声明式是否在被提炼代码段的外围。如果是，现在你可以删除这些声明式了）</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u5185_u8054_u51FD_u6570_Inline_Method"><a href="#u5185_u8054_u51FD_u6570_Inline_Method" class="headerlink" title="内联函数 Inline Method"></a>内联函数 Inline Method</h3><p>一个函数的本体与名称同样清楚易懂 -&gt; 在函数调用点插入函数本体，然后移除该函数</p>
-<ul>
-<li>检查函数，确定它不具多态性（如果子类继承了这个函数，就不要将此函数内联，因为子类无法覆写一个根本不存在的函数）</li>
-<li>找出这个函数的所有被调用点</li>
-<li>将这个函数的所有被调用点都替换为函数本体</li>
-<li>编译，测试</li>
-<li>删除该函数的定义</li>
-</ul>
-<h3 id="u5185_u8054_u4E34_u65F6_u53D8_u91CF_Inline_Temp"><a href="#u5185_u8054_u4E34_u65F6_u53D8_u91CF_Inline_Temp" class="headerlink" title="内联临时变量 Inline Temp"></a>内联临时变量 Inline Temp</h3><p>你有一个临时变量，只被一个简单表示式赋值一次，而它妨碍了其他重构手法 -&gt; 将所有对该变量的引用动作，替换为对它赋值的那个表达式自身。</p>
-<ul>
-<li>检查给临时变量赋值的语句，确保等号右边的表达式没有副作用</li>
-<li>如果这个临时变量并未被声明为 <code>final</code>，那么就将它声明为 <code>final</code>，然后编译（这可以检查该临时变量是否真的只被赋值一次）</li>
-<li>找到该临时变量的所有引用点，将它们替换为『为临时变量赋值』的表达式</li>
-<li>每次修改后，编译并测试</li>
-<li>修改完所有引用点之后，删除该临时变量的声明和赋值语句</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u4EE5_u67E5_u8BE2_u53D6_u4EE3_u4E34_u65F6_u53D8_u91CF_Replace_Temp_with_Query"><a href="#u4EE5_u67E5_u8BE2_u53D6_u4EE3_u4E34_u65F6_u53D8_u91CF_Replace_Temp_with_Query" class="headerlink" title="以查询取代临时变量 Replace Temp with Query"></a>以查询取代临时变量 Replace Temp with Query</h3><p>你的程序以一个临时变量保存某一表达式的运算结果 -&gt; 将这个表达式提炼到一个独立函数中。将这个临时变量的所有引用点替换为对新函数的调用。此后，新函数就可被其他函数使用。</p>
-<ul>
-<li>找出只被赋值一次的临时变量（如果某个临时变量被赋值超过一次，考虑使用 Split Temporary Variable 将它分割成多个变量）</li>
-<li>将该临时变量声明为 <code>final</code></li>
-<li>编译（这可确保该临时变量的确只被赋值一次）</li>
-<li>将『对该临时变量赋值』的语句的等号右侧部分提炼到一个独立函数中（首先将函数声明为 private；确保提炼出来的函数无任何副作用，如果它有副作用，就对它进行 Separate Query from Modifier）</li>
-<li>编译，测试</li>
-<li>在该变量身上实施 Inline Temp</li>
-</ul>
-<h3 id="u5F15_u5165_u89E3_u91CA_u6027_u53D8_u91CF_Introduce_Explaining_Variable"><a href="#u5F15_u5165_u89E3_u91CA_u6027_u53D8_u91CF_Introduce_Explaining_Variable" class="headerlink" title="引入解释性变量 Introduce Explaining Variable"></a>引入解释性变量 Introduce Explaining Variable</h3><p>你有一个复杂的表达式 -&gt; 将该复杂表达式（或其中一部分）的结果放进一个临时变量，以此变量名称来解释表达式用途</p>
-<ul>
-<li>声明一个 <code>final</code> 临时变量，将待分解之复杂表达式中的一部分动作的运算结果赋值给它</li>
-<li>将表达式中的『运算结果』这一部分，替换为上述临时变量（如果被替换的这一部分在代码中重复出现，你可以每次一个，逐一替换）</li>
-<li>编译测试</li>
-<li>重复上述过程，处理表达式的其他部分</li>
-</ul>
-<h3 id="u5206_u89E3_u4E34_u65F6_u53D8_u91CF_Split_Temporary_Variable"><a href="#u5206_u89E3_u4E34_u65F6_u53D8_u91CF_Split_Temporary_Variable" class="headerlink" title="分解临时变量 Split Temporary Variable"></a>分解临时变量 Split Temporary Variable</h3><p>你的程序有某个临时变量被赋值超过一次，它既不是循环变量，也不被用于收集计算结果 -&gt; 针对每次赋值，创造一个独立、对应的临时变量</p>
-<ul>
-<li>在待分解临时变量的声明及其第一次被赋值处，修改其名称（如果稍后的赋值语句是 <code>i=i+expression</code> 形式，就意味着这是个结果搜收集变量，就不要分解。结果收集变量的做用通常是累加、字符串接合、写入流或者向集合添加元素）</li>
-<li>将新的临时变量声明为 <code>final</code></li>
-<li>以该临时变量的第二次赋值动作为界，修改此前对该临时变量的所有引用点，让它们引用新的临时变量</li>
-<li>在第二次赋值处，重新声明原先那个临时变量</li>
-<li>编译，测试</li>
-<li>逐次重复上述过程。每次都在声明出对临时变量改名，并修改下次赋值之前的引用点</li>
-</ul>
-<h3 id="u79FB_u9664_u5BF9_u53C2_u6570_u7684_u8D4B_u503C_Remove_Assignments_to_Parameters"><a href="#u79FB_u9664_u5BF9_u53C2_u6570_u7684_u8D4B_u503C_Remove_Assignments_to_Parameters" class="headerlink" title="移除对参数的赋值 Remove Assignments to Parameters"></a>移除对参数的赋值 Remove Assignments to Parameters</h3><p>代码对一个参数进行赋值 -&gt; 以一个临时变量取代该参数的位置</p>
-<ul>
-<li>建立一个临时变量，把待处理的参数值赋予它</li>
-<li>以『对参数的赋值』为界，将其后所有对此参数的引用点，全部替换为『对此临时变量的引用』</li>
-<li>修改赋值语句，使其改为对新建临时变量赋值</li>
-<li>编译，测试（如果代码的语义是按引用传递的，请在调用端检查调用后是否还使用了这个参数。也要检查有多少个按引用传递的参数被赋值后又被使用。请尽量只以 return 方式返回一个值。如果需要返回的值不止一个，看看可否把需返回的大堆数据变成单一对象，或干脆为每个返回值设计对应的一个独立函数）</li>
-</ul>
-<h3 id="u4EE5_u51FD_u6570_u5BF9_u8C61_u53D6_u4EE3_u51FD_u6570_Replace_Method_with_Method_Object"><a href="#u4EE5_u51FD_u6570_u5BF9_u8C61_u53D6_u4EE3_u51FD_u6570_Replace_Method_with_Method_Object" class="headerlink" title="以函数对象取代函数 Replace Method with Method Object"></a>以函数对象取代函数 Replace Method with Method Object</h3><p>你有一个大型函数，其中对局部变量的使用使你无法采用 Extract Method -&gt; 将这个函数放进一个单独对象中，如此依赖局部变量就成了对象内的字段。然后你可以在同一个对象中将这个大型函数分解为多个小型函数</p>
-<ul>
-<li>建立一个新类，根据待处理函数的用途，为这个类命名</li>
-<li>在新类中建立一个 <code>final</code> 字段，用以保存原先大型函数所在的对象。我们将这个字段称为『源对象』。同时，针对原函数的每个临时变量和每个参数，在新类中建立一个对应的字段保存</li>
-<li>在新类中建立一个构造函数，接收源对象及原函数的所有参数作为参数</li>
-<li>在新类中建立一个 <code>compute()</code> 函数</li>
-<li>将原函数的代码复制到 <code>compute()</code> 函数中。如果需要调用源对象的任何函数，请通过源对象字段调用</li>
-<li>编译</li>
-<li>将旧函数的函数本体替换为这样一条语句：『创建上述新类的一个新对象，然后调用其中的 <code>compute()</code> 函数』</li>
-</ul>
-<h3 id="u66FF_u6362_u7B97_u6CD5_Substitute_Algorithm"><a href="#u66FF_u6362_u7B97_u6CD5_Substitute_Algorithm" class="headerlink" title="替换算法  Substitute Algorithm"></a>替换算法  Substitute Algorithm</h3><p>你想要把某个算法替换成一个更清晰的算法 -&gt; 将函数本体替换为另一个算法</p>
-<ul>
-<li>准备好另一个（替换用）算法，让它通过编译</li>
-<li>针对现有测试，执行上述新算法。如果结果与原本相同，重构结束</li>
-<li>如果测试结果不同于原先，在测试和调试过程中，以旧算法为比较参照标准（对于每个测试用例，分别以新旧两种算法执行，并观察两者结果是否相同）</li>
-</ul>
-<h2 id="u5728_u5BF9_u8C61_u4E4B_u95F4_u642C_u79FB_u7279_u6027"><a href="#u5728_u5BF9_u8C61_u4E4B_u95F4_u642C_u79FB_u7279_u6027" class="headerlink" title="在对象之间搬移特性"></a>在对象之间搬移特性</h2><p>在对象的设计过程中，『决定把责任放在哪儿』即使不是最重要的事，也是最重要的事之一。</p>
-<h3 id="u642C_u79FB_u51FD_u6570_Move_Method"><a href="#u642C_u79FB_u51FD_u6570_Move_Method" class="headerlink" title="搬移函数 Move Method"></a>搬移函数 Move Method</h3><p>你的程序中，有个函数与其所在类之外的另一个类进行更多交流：调用后者，或被后者调用 -&gt; 在该函数最常引用的类中建立一个有类似行为的新函数。将旧函数变成一个单纯的委托函数，或是将旧函数完全移除</p>
-<ul>
-<li>检查源类中被源函数所使用的一切特性（包括字段和函数），考虑它们是否也该被搬迁（如果某个特性只被你打算搬移的那个函数用到，就应该将它一并搬迁。如果另有其他函数使用了这个特性，你可以考虑将使用该特性的所有函数全都一并搬迁。有时候，搬移一组函数比逐一搬移简单些）</li>
-<li>检查源类的子类和超类，看看是否有该函数的其他声明（如果出现其他声明，你或许无法进行搬移，除非目标类也同样表现出多态性）</li>
-<li>在目标类中声明这个函数（你可以选择一个更有意义的名称）</li>
-<li>将源函数的代码复制到目标函数中。调整后者，使其能在新类中正常运行（如果源函数包含异常处理，你得判断逻辑上应该由哪个类来处理这一异常。如果应该由源类来负责，就把异常处理留在原地）</li>
-<li>编译目标类</li>
-<li>决定如何从源函数正确引用目标对象</li>
-<li>修改源函数，使之成为一个纯委托函数</li>
-<li>编译，测试</li>
-<li>决定是否删除源函数，或将它当作一个委托函数保留下来（如果你经常要在源对象中引用目标函数，那么将源函数作为委托函数保留下来会比较简单）</li>
-<li>如果要移除源函数，请将源类中对源函数的所有调用，替换为对目标函数的调用</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u642C_u79FB_u5B57_u6BB5_Move_Field"><a href="#u642C_u79FB_u5B57_u6BB5_Move_Field" class="headerlink" title="搬移字段 Move Field"></a>搬移字段 Move Field</h3><p>你的程序中，某个字段被其所在类之外的另一个类更多的用到 -&gt; 在目标类新建一个字段，修改源字段的所有用户，令它们改用新字段</p>
-<ul>
-<li>如果字段的访问级是 public，使用 Encapsulate Field 将它封装起来（如果你有可能移动那些频繁访问该字段的函数，或如果有许多函数访问某个字段，先使用 Self Encapsulate Field 也许会有帮助）</li>
-<li>编译，测试</li>
-<li>在目标类中建立与源字段相同的字段，并同时建立相应的设值/取值函数</li>
-<li>编译目标类</li>
-<li>决定如何在源对象中引用目标对象（首先看是否有一个现成的字段或函数可以帮助你得到目标对象，如果没有，就看能否轻易建立这样一个函数。如果还不行，就得在源类中新建一个字段来存放目标对象。这可能是个永久性修改，但你也可以让它是暂时的，因为后续重构可能会把这个新建字段除掉）</li>
-<li>删除源字段</li>
-<li>将所有对源字段的引用替换为对某个目标函数的调用</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u63D0_u70BC_u7C7B_Extract_Class"><a href="#u63D0_u70BC_u7C7B_Extract_Class" class="headerlink" title="提炼类 Extract Class"></a>提炼类 Extract Class</h3><p>某个类做了应该由两个类做的事 -&gt; 建立一个新类，将相关的字段和函数从旧类搬移到新类</p>
-<ul>
-<li>决定如何分解类所负的责任</li>
-<li>建立一个新类，用以表现从旧类中分离出来的责任（如果旧类剩下的责任与旧类名称不符，为旧类更名）</li>
-<li>建立『从旧类访问新类』的连接关系（有可能需要一个双向链接。但是在真正需要它之前，不要建立『从新类通往旧类』的链接）</li>
-<li>对于你想搬移的每一个字段，运用 Move Field 搬移之</li>
-<li>每次搬移后，编译、测试</li>
-<li>使用 Move Method 将必要函数搬移到新类，先搬移低层函数（也就是『被其他函数调用』多于『调用其他函数』的函数），再搬移较高层函数</li>
-<li>每次搬移之后，编译、测试</li>
-<li>检查，精简每个类的接口（如果你建立其双向链接，检查是否可以将它改为单向连接）</li>
-<li>决定是否公开新类。如果你的确需要公开它，就要决定让它成为引用对象还是不可变的值对象</li>
-</ul>
-<p>这里也存在危险性。如果需要确保两个对象同时被锁定，你就面临事务问题，需要使用其他类型的共享锁。</p>
-<h3 id="u5C06_u7C7B_u5185_u8054_u5316_Inline_Class"><a href="#u5C06_u7C7B_u5185_u8054_u5316_Inline_Class" class="headerlink" title="将类内联化 Inline Class"></a>将类内联化 Inline Class</h3><p>某个类没有做太多事情 -&gt; 将这个类的所有特性搬移到另一个类中，然后移除原类</p>
-<ul>
-<li>在目标类身上声明源类的 public 协议，并将其中所有函数委托至源类（如果『以一个独立接口表示源类函数』更合适的话，就应该在内联之前先使用 Extract Interface）</li>
-<li>修改所有源类引用点，改而引用目标类（将源类声明为 private，以斩断包之外的所有引用可能。同时修改源类的名称，这便可使编译器帮助你捕捉到所有对于源类的隐藏引用点）</li>
-<li>编译，测试</li>
-<li>运用 Move Method 和 Move Field，将源类的特性全部搬移到目标类</li>
-<li>为源类举行一个简单的『丧礼』</li>
-</ul>
-<h3 id="u9690_u85CF_u59D4_u6258_u5173_u7CFB_Hide_Delegate"><a href="#u9690_u85CF_u59D4_u6258_u5173_u7CFB_Hide_Delegate" class="headerlink" title="隐藏委托关系 Hide Delegate"></a>隐藏委托关系 Hide Delegate</h3><p>客户通过一个委托类来调用另一个对象 -&gt; 在服务类上建立客户所需的所有函数，用以隐藏委托关系</p>
-<ul>
-<li>对于每一个委托关系中的函数，在服务对象端建立一个简单的委托函数</li>
-<li>调整客户，令它只调用服务对象提供的函数（如果使用者和服务提供者不在同一个包）</li>
-<li>每次调整后，编译并测试</li>
-<li>如果将来不再有任何客户需要用到 Delegate，便课移除服务对象中的相关访问函数</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u79FB_u9664_u4E2D_u95F4_u4EBA_Remove_Middle_Man"><a href="#u79FB_u9664_u4E2D_u95F4_u4EBA_Remove_Middle_Man" class="headerlink" title="移除中间人 Remove Middle Man"></a>移除中间人 Remove Middle Man</h3><p>某个类做了过多的简单委托动作 -&gt; 让客户直接调用受托类</p>
-<ul>
-<li>建立一个函数，用以获得受托对象</li>
-<li>对于每个委托函数，在服务类中删除该函数，并让需要调用该函数的客户转为调用受托对象</li>
-<li>处理每个委托函数后，编译、测试</li>
-</ul>
-<h3 id="u5F15_u5165_u5916_u52A0_u51FD_u6570_Introduce_Foreign_Method"><a href="#u5F15_u5165_u5916_u52A0_u51FD_u6570_Introduce_Foreign_Method" class="headerlink" title="引入外加函数 Introduce Foreign Method"></a>引入外加函数 Introduce Foreign Method</h3><p>你需要为提供服务的类增加一个函数，但你无法修改这个类 -&gt; 在客户类中建立一个函数，并以第一参数形式传入一个服务类实例</p>
-<p>外加函数终究是权宜之计。如果有可能，你仍然应该将这些函数搬移到它们的理想家园。如果由于代码所有权的原因使你无法这么做，就把外加函数交给服务类的拥有者，请他帮你在服务类中实现这个函数。</p>
-<ul>
-<li>在客户类中建立一个函数，用来提供你需要的功能（这个函数不应该调用客户类的任何特性。如果它需要一个值，把该值当做参数传给它）</li>
-<li>以服务类实例作为该函数的第一个参数</li>
-<li>将该函数注释为『外加函数(foreign method)，应该在服务类实现』（这么一来，如果将来有机会将外加函数搬移到服务类中时，你便可以轻松找出这些外加函数）</li>
-</ul>
-<h3 id="u5F15_u5165_u672C_u5730_u6269_u5C55_Introduce_Local_Extension"><a href="#u5F15_u5165_u672C_u5730_u6269_u5C55_Introduce_Local_Extension" class="headerlink" title="引入本地扩展 Introduce Local Extension"></a>引入本地扩展 Introduce Local Extension</h3><p>你需要为服务类提供一些额外函数，但你无法修改这个类 -&gt; 建立一个新类，使它包含这些额外函数。让这个扩展品陈伟源类的子类或包装类</p>
-<ul>
-<li>建立一个扩展类，将它作为原始类的子类或包装类</li>
-<li>在扩展类中加入转型构造函数（所谓『转型构造函数』是指『接受原对象作为参数』的构造函数。如果采用子类化方案，那么转型构造函数应该调用适当的超类构造函数；如果采用包装类方案，那么转型构造函数应该将它得到的传入参数以实例变量的形式保存起来，用作接受委托的原对象）</li>
-<li>在扩展类中加入新特性</li>
-<li>根据需要，将原对象替换为扩展对象</li>
-<li>将针对原始类定义的所有外加函数搬移到扩展类中</li>
-</ul>
-<h2 id="u91CD_u65B0_u7EC4_u7EC7_u6570_u636E"><a href="#u91CD_u65B0_u7EC4_u7EC7_u6570_u636E" class="headerlink" title="重新组织数据"></a>重新组织数据</h2><h3 id="u81EA_u5C01_u88C5_u5B57_u6BB5_Self_Encapsulate_Field"><a href="#u81EA_u5C01_u88C5_u5B57_u6BB5_Self_Encapsulate_Field" class="headerlink" title="自封装字段 Self Encapsulate Field"></a>自封装字段 Self Encapsulate Field</h3><p>你直接访问一个字段，但与字段之间的耦合关系逐渐变得笨拙 -&gt; 为这个字段建立取值/设值函数，并且只以这些函数来访问字段</p>
-<ul>
-<li>为待封装字段建立取值/设值函数</li>
-<li>找出该字段的所有引用点，将它们全部改为调用取值/设值函数</li>
-<li>将该字段声明为 private</li>
-<li>复查，确保找出所有引用点</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u4EE5_u5BF9_u8C61_u53D6_u4EE3_u6570_u636E_u503C_Replace_Data_Value_with_Object"><a href="#u4EE5_u5BF9_u8C61_u53D6_u4EE3_u6570_u636E_u503C_Replace_Data_Value_with_Object" class="headerlink" title="以对象取代数据值 Replace Data Value with Object"></a>以对象取代数据值 Replace Data Value with Object</h3><p>你有一个数据项 -&gt; 需要与其他数据和行为一起使用才有意义 -&gt; 将数据项变成对象</p>
-<ul>
-<li>为待替换数值新建一个类，在其中声明一个 final 字段，其类型和源类中的待替换数值类型一样。让后在新类中加入这个字段的取值函数，再加上一个接受此字段为参数的构造函数</li>
-<li>编译</li>
-<li>将源类中的待替换数值字段的类型改为前面新建的类</li>
-<li>修改源类中该字段的取值函数，令它调用新类的取值函数</li>
-<li>如果源类构造函数中用到这个待替换字段（多半是赋值动作），我们就修改构造函数，令它改用新类的构造函数来对字段进行赋值动作</li>
-<li>修改源类中待替换字段的设值函数，令它为新类创建一个实例</li>
-<li>编译，测试</li>
-<li>现在，你有可能需要对新类使用 Change Value to Reference</li>
-</ul>
-<h3 id="u5C06_u503C_u5BF9_u8C61_u6539_u4E3A_u5F15_u7528_u5BF9_u8C61_Change_Value_to_Reference"><a href="#u5C06_u503C_u5BF9_u8C61_u6539_u4E3A_u5F15_u7528_u5BF9_u8C61_Change_Value_to_Reference" class="headerlink" title="将值对象改为引用对象 Change Value to Reference"></a>将值对象改为引用对象 Change Value to Reference</h3><p>你从一个类衍生出许多彼此相等的实例，希望将它们替换为同一个对象 -&gt; 将这个值对象编程引用对象</p>
-<ul>
-<li>使用 Replace Constructor with Factory Method</li>
-<li>编译，测试</li>
-<li>决定由什么对象负责提供访问新对象的途径（可能是一个静态字典或一个注册表对象；也可以使用多个对象作为新对象的访问点）</li>
-<li>决定这些引用对象应该预先创建号，或是应该动态创建（如果这些引用对象是预先创建号的，而你必须从内存中将它们读取出来，那么就得去报它们在被需要的时候能够被及时加载）</li>
-<li>修改工厂函数，令它返回引用对象（如果对象是预先创建号的，你就需要考虑：万一有人请求一个并不存在的对象，要如何处理错误；可能希望对工厂函数使用 Rename Method，使其传达这样的信息：它返回的是一个已存在的对象）</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u5C06_u5F15_u7528_u5BF9_u8C61_u6539_u4E3A_u503C_u5BF9_u8C61_Change_Reference_to_Value"><a href="#u5C06_u5F15_u7528_u5BF9_u8C61_u6539_u4E3A_u503C_u5BF9_u8C61_Change_Reference_to_Value" class="headerlink" title="将引用对象改为值对象 Change Reference to Value"></a>将引用对象改为值对象 Change Reference to Value</h3><p>你有一个引用对象，很小且不可变，而且不易管理 -&gt; 将它变成一个值对象</p>
-<ul>
-<li>检查重构目标是否为不可变对象，或是否可修改为不可变对象（如果该对象目前还不是不可变的，就使用 Removing Setting Method，直到它成为不可变的为止；如果无法将该对象修改为不可变的，就放弃使用本项重构）</li>
-<li>建立 <code>equals()</code> 和 <code>hashCode()</code></li>
-<li>编译，测试</li>
-<li>考虑是否可以删除工厂函数，并将构造函数声明为 public</li>
-</ul>
-<h3 id="u4EE5_u5BF9_u8C61_u53D6_u4EE3_u6570_u7EC4_Replace_Array_with_Object"><a href="#u4EE5_u5BF9_u8C61_u53D6_u4EE3_u6570_u7EC4_Replace_Array_with_Object" class="headerlink" title="以对象取代数组 Replace Array with Object"></a>以对象取代数组 Replace Array with Object</h3><p>你有一个数组，其中的元素各自代表不同的东西 -&gt; 以对象替换数组。对于数组中的每个元素，以一个字段来表示</p>
-<ul>
-<li>新建一个类表示数组所拥有的信息，并在其中以一个 public 字段保存原先的数组</li>
-<li>修改数组的所有用户，让它们改用新类的实例</li>
-<li>编译，测试</li>
-<li>逐一为数组元素添加取值/设值函数。根据元素的用途，为这些访问函数命名。修改客户代码，让它们动过访问函数取用数组内的元素。每次修改后，编译并测试</li>
-<li>当所有对数组的直接访问都转而调用访问函数后，将新类中保存该数组的字段声明为 private</li>
-<li>编译</li>
-<li>对于数组内的每一个元素，在新类中创建一个类型相当的字段。修改该元素的访问函数，令它改用上述的新建字段</li>
-<li>每修改一个元素，编译并测试</li>
-<li>数组的所有元素都有了相应字段之后，删除该数组</li>
-</ul>
-<h3 id="u590D_u5236_u300E_u88AB_u76D1_u89C6_u7684_u6570_u636E_u300F_Duplicate_Observed_Data"><a href="#u590D_u5236_u300E_u88AB_u76D1_u89C6_u7684_u6570_u636E_u300F_Duplicate_Observed_Data" class="headerlink" title="复制『被监视的数据』 Duplicate Observed Data"></a>复制『被监视的数据』 Duplicate Observed Data</h3><p>你有一些领域数据置身于 GUI 控件中，而领域函数需要访问这些数据 -&gt; 将该数据复制到一个领域对象中。建立一个 Observer 模式，用以同步领域对象和 GUI 对象内的重复数据</p>
-<ul>
-<li>修改展现类，使其成为领域类的 Observer[GOF]（如果尚未有领域类，就建立一个；如果没有『从展现类到领域类』的关联，就将领域类保存与展现类的一个字段中）</li>
-<li>针对 GUI 类中的领域数据，使用 Self Encapsulate Field</li>
-<li>编译，测试</li>
-<li>在事件处理函数中调用设值函数，直接更新 GUI 组件</li>
-<li>编译，测试</li>
-<li>在领域类中定义数据及其相关访问函数（确保领域类中的设值函数能够触发 Observer 模式的通报机制；对于被观察的数据，在领域类中使用与展现类所用的相同类型来保存。后续重构中你可以自由改变这个数据类型）</li>
-<li>修改展现类中的访问函数，将它们的操作对象改为领域对象（而非 GUI 组件）</li>
-<li>修改 Observer 的 <code>update()</code>，使其从相应的领域对象中将所需数据复制给 GUI 组件</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u5C06_u5355_u5411_u5173_u8054_u6539_u4E3A_u53CC_u5411_u5173_u8054_Change_Unidirectional_Association_to_Bidirectional"><a href="#u5C06_u5355_u5411_u5173_u8054_u6539_u4E3A_u53CC_u5411_u5173_u8054_Change_Unidirectional_Association_to_Bidirectional" class="headerlink" title="将单向关联改为双向关联 Change Unidirectional Association to Bidirectional"></a>将单向关联改为双向关联 Change Unidirectional Association to Bidirectional</h3><p>两个类都需要使用对方特性，但期间只有一条单向连接 -&gt; 添加一个反向指针，并使修改函数能够同时更新两条连接</p>
-<ul>
-<li>在被引用类中增加一个字段，用以保存反向指针</li>
-<li>决定由哪个类——引用端还是被引用端——控制关联关系</li>
-<li>在被控端建立一个辅助函数，其命名应该清楚指出它的有限用途</li>
-<li>如果既有的修改函数在控制端，让它负责更新方向指针</li>
-<li>如果既有的修改函数在被控端，就在控制端建立一个控制函数，并让既有的修改函数调用这个新建的控制函数</li>
-</ul>
-<h3 id="u5C06_u53CC_u5411_u5173_u8054_u6539_u4E3A_u5355_u5411_u5173_u8054_Change_Bidirectional_Association_to_Unidirectional"><a href="#u5C06_u53CC_u5411_u5173_u8054_u6539_u4E3A_u5355_u5411_u5173_u8054_Change_Bidirectional_Association_to_Unidirectional" class="headerlink" title="将双向关联改为单向关联 Change Bidirectional Association to Unidirectional"></a>将双向关联改为单向关联 Change Bidirectional Association to Unidirectional</h3><p>两个类之间有双向关联，但其中一个类如今不再需要另一个类的特性 -&gt; 去除不必要的关联</p>
-<p>双向关联很有用，但是也必须为它付出代价，那就是维护双向连接、确保对象被正确创建和删除增加的复杂度。而且，由于很多程序员并不习惯使用双向关联，它往往成为错误之源。大量的双向连接也很容易造成『僵尸对象』：某个对象本来已经该死亡了，却仍然保留在系统中，因为对它的引用还没有完全清除。</p>
-<ul>
-<li>找出保存『你想去除的指针』的字段，检查它的每一个用户，判断是否可以去除该指针（不但要检查直接访问点，也要检查调用这些直接访问点的函数）</li>
-<li>如果客户使用了取值函数，先运用 Self Encapsulate Field 将待删除字段自我封装起来，然后使用 Substitute Algorithm 对付取值函数，令它不再使用该字段。然后编译、测试</li>
-<li>如果客户并未使用取值函数，那就直接修改待删除字段的所有被引用点：改以其他途径获得该字段所保存的对象。每次修改后，编译并测试</li>
-<li>如果已经没有任何函数使用待删除字段，移除所有对该字段的更新逻辑，然后移除该字段</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u4EE5_u5B57_u9762_u5E38_u91CF_u53D6_u4EE3_u9B54_u6CD5_u6570_Replace_Magic_Number_with_Symbolic_Constant"><a href="#u4EE5_u5B57_u9762_u5E38_u91CF_u53D6_u4EE3_u9B54_u6CD5_u6570_Replace_Magic_Number_with_Symbolic_Constant" class="headerlink" title="以字面常量取代魔法数 Replace Magic Number with Symbolic Constant"></a>以字面常量取代魔法数 Replace Magic Number with Symbolic Constant</h3><p>你有一个字面数值，带有特别含义 -&gt; 创造一个常量，根据其意义为它命名，并将上述的字面数值替换为这个常量</p>
-<ul>
-<li>声明一个常量，令其值为原本的魔法数值</li>
-<li>找出这个魔法数的所有引用点</li>
-<li>检查是否可以使用这个新声明的常量来替换该魔法数。如果可以，便以此常量替换之</li>
-<li>编译</li>
-<li>所有魔法数都被替换完毕后，编译并测试。此时整个程序应该运转如常</li>
-</ul>
-<h3 id="u5C01_u88C5_u5B57_u6BB5_Encapsulate_Field"><a href="#u5C01_u88C5_u5B57_u6BB5_Encapsulate_Field" class="headerlink" title="封装字段 Encapsulate Field"></a>封装字段 Encapsulate Field</h3><p>你的类中存在一个 public 字段 -&gt; 将它声明为 private，并提供相应的访问函数</p>
-<ul>
-<li>为 Public 字段提供取值/设值函数</li>
-<li>找到这个类以外使用该字段的所有地点。用取值/设置函数进行替代</li>
-<li>每次修改之后，编译并测试</li>
-<li>将字段的所有用户修改完毕后，把字段声明为 private</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u5C01_u88C5_u96C6_u5408_Encapsulate_Collection"><a href="#u5C01_u88C5_u96C6_u5408_Encapsulate_Collection" class="headerlink" title="封装集合 Encapsulate Collection"></a>封装集合 Encapsulate Collection</h3><p>有个函数返回一个集合 -&gt; 让这个函数返回该集合的一个只读副本，并在这个类中提供添加/移除集合元素的函数（类似 MVC 的 M）</p>
-<ul>
-<li>加入为集合添加/移除元素的函数</li>
-<li>将保存集合的字段初始化为一个空集合</li>
-<li>编译</li>
-<li>找出集合设值函数的所有调用者。你可以修改那个设值函数，让它使用上述新建立的『添加/移除元素』函数；也可以直接修改调用端，改让它们调用上述新建立的『添加/移除元素』函数</li>
-<li>编译，测试</li>
-<li>找出所有『通过取值函数获得集合并修改其内容』的函数。逐一修改这些函数，让它们改用添加/移除函数。每次修改后，编译并测试</li>
-<li>修改完上述所有『通过取值函数获得集合并修改集合内容』的函数后，修改取值函数自身，使它返回该集合的一个只读副本</li>
-<li>编译，测试</li>
-<li>找出取值函数的所有用户，从中找出应该存在于集合所属对象内的代码。运用 Extract Method 和 Move Method 将这些代码移到宿主对象去</li>
-<li>修改现有取值函数的名字，然后添加一个新取值函数，使其返回一个枚举。找出旧取值函数的所有被实用点，将它们都改为使用新取值函数</li>
-<li>如果这一步跨度太大，可以先使用 Rename Method 修改原取值函数的名称；再建立一个新取值函数用以返回枚举；最后再修改所有调用者，使其调用新取值函数</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u4EE5_u6570_u636E_u7C7B_u53D6_u4EE3_u8BB0_u5F55_Replace_Record_with_Data_Class"><a href="#u4EE5_u6570_u636E_u7C7B_u53D6_u4EE3_u8BB0_u5F55_Replace_Record_with_Data_Class" class="headerlink" title="以数据类取代记录 Replace Record with Data Class"></a>以数据类取代记录 Replace Record with Data Class</h3><p>你需要面对传统编程环境中的记录结构 -&gt; 为该记录创建一个『哑』数据对象</p>
-<ul>
-<li>新建一个类，表示这个记录</li>
-<li>对于记录中的每一项数据，在新建的类中建立对应的一个 private 字段，并提供相应的取值/设值函数</li>
-</ul>
-<h3 id="u4EE5_u7C7B_u53D6_u4EE3_u7C7B_u578B_u7801_Replace_Type_Code_with_Class"><a href="#u4EE5_u7C7B_u53D6_u4EE3_u7C7B_u578B_u7801_Replace_Type_Code_with_Class" class="headerlink" title="以类取代类型码 Replace Type Code with Class"></a>以类取代类型码 Replace Type Code with Class</h3><ul>
-<li>为类型码建立一个类</li>
-<li>修改源类的实现，让它使用上述新建的类</li>
-<li>编译，测试</li>
-<li>对于源类中每一个使用类型码的函数，相应建立一个函数，让新函数使用新建的类</li>
-<li>逐一修改源类用户，让它们使用新接口</li>
-<li>每修改一个用户，编译并测试</li>
-<li>删除使用类型码的旧接口，并删除保存旧类型码的静态变量</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u4EE5_u5B50_u7C7B_u53D6_u4EE3_u7C7B_u578B_u7801_Replace_Type_Code_with_Subclasses"><a href="#u4EE5_u5B50_u7C7B_u53D6_u4EE3_u7C7B_u578B_u7801_Replace_Type_Code_with_Subclasses" class="headerlink" title="以子类取代类型码 Replace Type Code with Subclasses"></a>以子类取代类型码 Replace Type Code with Subclasses</h3><p>你有一个不可变的类型码，它会影响类的行为 -&gt; 以子类取代这个类型码</p>
-<ul>
-<li>使用 Self Encapsulate Field 将类型码自我封装起来（如果类型码被传递给构造函数，就需要将构造函数换成工厂函数）</li>
-<li>为类型码的每一个数值建立一个相应的子类。在每个子类中覆写类型码的取值函数，使其返回相应的类型码值</li>
-<li>每建立一个新的子类，编译并测试</li>
-<li>从超类中删掉保存类型码的字段。将类型码访问函数声明为抽象函数</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u4EE5_State/Strategy__u53D6_u4EE3_u7C7B_u578B_u7801_Replace_Type_Code_with_State/Strategy"><a href="#u4EE5_State/Strategy__u53D6_u4EE3_u7C7B_u578B_u7801_Replace_Type_Code_with_State/Strategy" class="headerlink" title="以 State/Strategy 取代类型码 Replace Type Code with State/Strategy"></a>以 State/Strategy 取代类型码 Replace Type Code with State/Strategy</h3><p>你有一个类型码，它会影响类的行为，但你无法通过继承手法消除它</p>
-<ul>
-<li>使用 Self Encapsulate Field 将类型码自我封装起来</li>
-<li>新建一个类，根据类型码的用途为它命名。这就是一个状态对象</li>
-<li>为这个新类添加子类，每个子类对应一种类型码</li>
-<li>在超类中建立一个抽象的查询函数，用以返回类型码。在每个子类中覆写该函数，返回确切的类型码</li>
-<li>编译</li>
-<li>在源类中建立一个字段，用以保存新建的状态对象</li>
-<li>调整源类中负责查询类型码的函数，将查询动作转发给状态对象</li>
-<li>调整源类中为类型码设值的函数，将一个恰当的状态对象子类赋值给『保存状态对象』的那个字段</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u4EE5_u5B57_u6BB5_u53D6_u4EE3_u5B50_u7C7B_Replace_Subclass_with_Fields"><a href="#u4EE5_u5B57_u6BB5_u53D6_u4EE3_u5B50_u7C7B_Replace_Subclass_with_Fields" class="headerlink" title="以字段取代子类 Replace Subclass with Fields"></a>以字段取代子类 Replace Subclass with Fields</h3><p>你的各个子类的唯一差别只在『返回常量数据』的函数身上 -&gt; 修改这些函数，使它们返回超类中的某个（新增）字段，然后销毁子类</p>
-<ul>
-<li>对所有子类使用 Replace Constructor with Factory Method</li>
-<li>如果有任何代码直接引用子类，令它改而引用超类</li>
-<li>针对每个常量函数，在超类中声明一个 final 字段</li>
-<li>为超类声明一个 protected 构造函数，用以初始化这些新增字段</li>
-<li>新建或修改子类构造函数，使他调用超类的新增构造函数</li>
-<li>编译，测试</li>
-<li>在超类中实现所有的常量函数，令它们返回相应字段值，然后将该函数从子类中删掉</li>
-<li>每删除一个常量函数，编译并测试</li>
-<li>子类中所有的常量函数都被删除后，使用 Inline Method 将子类构造函数内联到超类的工厂函数中</li>
-<li>编译，测试</li>
-<li>将子类删掉</li>
-<li>编译，测试</li>
-<li>重复『内联构造函数、删除子类』过程，直到所有子类都被删除</li>
-</ul>
-<h2 id="u7B80_u5316_u6761_u4EF6_u8868_u8FBE_u5F0F"><a href="#u7B80_u5316_u6761_u4EF6_u8868_u8FBE_u5F0F" class="headerlink" title="简化条件表达式"></a>简化条件表达式</h2><p>相比于面向过程程序，免息那个对象程序的条件表达式通常比较少，这是因为很多条件行为都被多态机制处理掉了。多态还有一种十分有用但鲜为人知的用途：通过  Introduce Null Object 去除对于 null 值的检验。</p>
-<h3 id="u5206_u89E3_u6761_u4EF6_u8868_u8FBE_u5F0F_Decompose_Conditional"><a href="#u5206_u89E3_u6761_u4EF6_u8868_u8FBE_u5F0F_Decompose_Conditional" class="headerlink" title="分解条件表达式 Decompose Conditional"></a>分解条件表达式 Decompose Conditional</h3><p>你有一个复杂的条件(if-then-else)语句 -&gt; 从 if, then, else 三个段落中分别提炼出独立函数</p>
-<ul>
-<li>将 if 段落提炼出来，构成一个独立函数</li>
-<li>将 then 段落和 else 段落都提炼出来，各自构成一个独立函数</li>
-</ul>
-<h3 id="u5408_u5E76_u6761_u4EF6_u8868_u8FBE_u5F0F_Consolidate_Conditional_Expression"><a href="#u5408_u5E76_u6761_u4EF6_u8868_u8FBE_u5F0F_Consolidate_Conditional_Expression" class="headerlink" title="合并条件表达式 Consolidate Conditional Expression"></a>合并条件表达式 Consolidate Conditional Expression</h3><p>你有一系列条件测试，都得到相同结果 -&gt; 将这些测试合并为一个条件表达式，并将这个条件表达式提炼成为一个独立函数</p>
-<ul>
-<li>确定这些条件语句都没有副作用（如果条件表达式有副作用，你就不能使用本项重构）</li>
-<li>使用适当的逻辑操作符，将一系列相关条件表达式合并为一个</li>
-<li>编译，测试</li>
-<li>对合并后的表达式实施 Extract Method</li>
-</ul>
-<h3 id="u5408_u5E76_u91CD_u590D_u7684_u6761_u4EF6_u7247_u6BB5_Consolidate_Duplicate_Conditional_Fragments"><a href="#u5408_u5E76_u91CD_u590D_u7684_u6761_u4EF6_u7247_u6BB5_Consolidate_Duplicate_Conditional_Fragments" class="headerlink" title="合并重复的条件片段 Consolidate Duplicate Conditional Fragments"></a>合并重复的条件片段 Consolidate Duplicate Conditional Fragments</h3><p>在条件表达式的每个分支上有着相同的一段代码 -&gt; 将折断代码搬移到条件表达式之外</p>
-<ul>
-<li>鉴别出『执行方式不随条件变化而变化』的代码</li>
-<li>如果这些共通代码位于条件表达式起始处，就将它移到条件表达式之前</li>
-<li>如果这些共通代码位于条件表达式尾端，就将它移到条件表达式之后</li>
-<li>如果这些共同代码位于条件表达式中段，就需要观察来向前或向后移动</li>
-<li>如果共通代码不止一条语句，应该先使用 Extract Method 将共通代码提炼到一个独立函数中，再以前面所说的办法来处理</li>
-</ul>
-<h3 id="u79FB_u9664_u63A7_u5236_u6807_u8BB0_Remove_Control_Flag"><a href="#u79FB_u9664_u63A7_u5236_u6807_u8BB0_Remove_Control_Flag" class="headerlink" title="移除控制标记 Remove Control Flag"></a>移除控制标记 Remove Control Flag</h3><p>在一系列布尔表达式中，某个变量带有『控制标记(control flag)』的作用 -&gt; 以 break 语句或 return 语句取代控制标记</p>
-<ul>
-<li>找出让你跳出这段逻辑的控制标记值</li>
-<li>找出对标记变量赋值的语句，代以恰当的 break 语句或 continue 语句</li>
-<li>每次替换后，编译并测试</li>
-</ul>
-<p>在未能提供 break 和 continue 语句的编程语言中，可以使用下述办法</p>
-<ul>
-<li>运用 Extract Method，将整段逻辑提炼到一个独立函数中</li>
-<li>找出让你跳出这段逻辑的控制标记值</li>
-<li>找出对标记变量赋值的语句，代以恰当的 return 语句</li>
-<li>每次替换后，编译并测试</li>
-</ul>
-<h3 id="u4EE5_Guard__u8BED_u53E5_u53D6_u4EE3_u5D4C_u5957_u6761_u4EF6_u8868_u8FBE_u5F0F_Replace_Nested_Conditional_with_Guard_Clauses"><a href="#u4EE5_Guard__u8BED_u53E5_u53D6_u4EE3_u5D4C_u5957_u6761_u4EF6_u8868_u8FBE_u5F0F_Replace_Nested_Conditional_with_Guard_Clauses" class="headerlink" title="以 Guard 语句取代嵌套条件表达式 Replace Nested Conditional with Guard Clauses"></a>以 Guard 语句取代嵌套条件表达式 Replace Nested Conditional with Guard Clauses</h3><p>函数中的条件逻辑使人难以看清正常的执行路径 -&gt; 使用 Guard 语句表现所有特殊情况</p>
-<ul>
-<li>对于每个检查，放进一个 Guard 语句（要么从函数中返回，要么抛出一个异常）</li>
-<li>每次将条件检查替换成 Guard 语句后，编译并测试（如果所有 Guard 语句都导致相同结果，请使用 Consolidate Conditional Expressions）</li>
-</ul>
-<h3 id="u4EE5_u591A_u6001_u53D6_u4EE3_u6761_u4EF6_u8868_u8FBE_u5F0F_Replace_Conditional_with_Polymorphism"><a href="#u4EE5_u591A_u6001_u53D6_u4EE3_u6761_u4EF6_u8868_u8FBE_u5F0F_Replace_Conditional_with_Polymorphism" class="headerlink" title="以多态取代条件表达式 Replace Conditional with Polymorphism"></a>以多态取代条件表达式 Replace Conditional with Polymorphism</h3><p>你手上有个条件表达式，它根据对象类型的不同而选择不同的行为 -&gt; 将这个条件表达式的每个分支放进一个子类内的覆写函数中，然后将原始函数声明为抽象函数</p>
-<ul>
-<li>如果要处理的表达式是一个更大函数中的一部分，首先对条件表达式进行分析，然后使用 Extract Method 将它提炼到一个独立函数去</li>
-<li>如果有必要，使用 Move Method 将条件表达式放置到继承结构的顶端</li>
-<li>任选一个子类，在其中建立一个函数，使之覆写超类中容纳条件表达式的那个函数。将与该子类相关的条件表达式分支复制到新建函数中，并对它进行适当调整</li>
-<li>编译，测试</li>
-<li>在超类中删掉条件表达式内被复制了的分支</li>
-<li>编译，测试</li>
-<li>针对条件表达式的每个分支，重复上述过程，直到所有分支都被移到子类内的函数为止</li>
-<li>将超类之中容纳条件表达式的函数声明为抽象函数</li>
-</ul>
-<h3 id="u5F15_u5165_Null__u5BF9_u8C61"><a href="#u5F15_u5165_Null__u5BF9_u8C61" class="headerlink" title="引入 Null 对象"></a>引入 Null 对象</h3><p>你需要再三检查某对象是否为 null -&gt; 将 null 值替换为 null 对象</p>
-<ul>
-<li>为源类建立一个子类，使其行为就像是源类的 null 版本。在源类和 null 子类中都加上 <code>isNull()</code> 函数，前者的 <code>isNull()</code> 应该返回 false，后者的返回 true</li>
-<li>编译</li>
-<li>找出所有『请求源对象却获得一个 null』 的地方，修改这些地方，使它们改而获得一个空对象</li>
-<li>找出所有『将源对象与 null 做比较的地方』，修改这些地方，使它们调用 <code>isNull()</code> 函数</li>
-<li>编译，测试</li>
-<li>找出这样的程序点：如果对象不是 null，做 A 动作，否则做 B 动作</li>
-<li>对于每一个上述抵挡，在 null 类中覆写 A 动作，使其行为和 B 动作相同</li>
-<li>使用上述被覆写的动作，然后删除『对象是否等于 null』 的条件测试。编译并测试</li>
-</ul>
-<h3 id="u5F15_u5165_u65AD_u8A00_Introduce_Assertion"><a href="#u5F15_u5165_u65AD_u8A00_Introduce_Assertion" class="headerlink" title="引入断言 Introduce Assertion"></a>引入断言 Introduce Assertion</h3><p>某一段代码需要对程序状态做出某种假设 -&gt; 以断言明确表现出这种假设</p>
-<ul>
-<li>如果你发现代码假设某个条件始终为真，就加入一个断言明确说明这种情况</li>
-</ul>
-<h2 id="u7B80_u5316_u51FD_u6570_u8C03_u7528"><a href="#u7B80_u5316_u51FD_u6570_u8C03_u7528" class="headerlink" title="简化函数调用"></a>简化函数调用</h2><p>容易被理解和被使用的接口，是开发良好面向对象软件的关键。良好的接口只像用户展现必须展现的东西。如果一个接口暴露了过多细节，你可以将不必要暴露的东西隐藏起来，从而改进接口的质量。</p>
-<h3 id="u51FD_u6570_u6539_u540D_Rename_Method"><a href="#u51FD_u6570_u6539_u540D_Rename_Method" class="headerlink" title="函数改名 Rename Method"></a>函数改名 Rename Method</h3><p>函数名称未能揭示函数的用途 -&gt; 修改函数名称</p>
-<ul>
-<li>检查函数签名是否被超类或子类实现过。如果是，则需要针对每份实现分别进行下列步骤</li>
-<li>声明一个新函数，将它命名为你想要的新名称。将旧函数的代码复制到新函数中，并进行适当调整</li>
-<li>编译</li>
-<li>修改旧函数，令它将调用转发给新函数</li>
-<li>编译，测试</li>
-<li>找出旧函数的所有被引用点，修改它们，令它们改而引用心函数。每次修改后，编译并测试</li>
-<li>删除旧函数</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u6DFB_u52A0_u53C2_u6570_Add_Parameter"><a href="#u6DFB_u52A0_u53C2_u6570_Add_Parameter" class="headerlink" title="添加参数 Add Parameter"></a>添加参数 Add Parameter</h3><p>某个函数需要从调用端得到更多信息 -&gt; 为此函数添加一个对象函数，让该对象带进函数所需信息</p>
-<ul>
-<li>检查函数签名是否被超类或子类实现过。如果是，则需要针对每份实现分别进行下列步骤</li>
-<li>声明一个新函数，名称与原函数同，只是加上新添参数，将旧代码复制到新函数中</li>
-<li>编译</li>
-<li>修改旧函数，令它调用新函数</li>
-<li>编译，测试</li>
-<li>找出旧函数的所有被引用点，修改它们，令它们改而引用心函数。每次修改后，编译并测试</li>
-<li>删除旧函数</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u79FB_u9664_u53C2_u6570_Remove_Parameter"><a href="#u79FB_u9664_u53C2_u6570_Remove_Parameter" class="headerlink" title="移除参数 Remove Parameter"></a>移除参数 Remove Parameter</h3><p>函数本体不再需要某个参数 -&gt; 将该参数去除</p>
-<ul>
-<li>检查函数签名是否被超类或子类实现过。如果是，则需要针对每份实现分别进行下列步骤</li>
-<li>声明一个新函数，名称与原函数同，只是去除新添参数，将旧代码复制到新函数中</li>
-<li>编译</li>
-<li>修改旧函数，令它调用新函数</li>
-<li>编译，测试</li>
-<li>找出旧函数的所有被引用点，修改它们，令它们改而引用心函数。每次修改后，编译并测试</li>
-<li>删除旧函数</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u5C06_u67E5_u8BE2_u51FD_u6570_u548C_u4FEE_u6539_u51FD_u6570_u5206_u88C2_Separate_Query_from_Modifier"><a href="#u5C06_u67E5_u8BE2_u51FD_u6570_u548C_u4FEE_u6539_u51FD_u6570_u5206_u88C2_Separate_Query_from_Modifier" class="headerlink" title="将查询函数和修改函数分裂 Separate Query from Modifier"></a>将查询函数和修改函数分裂 Separate Query from Modifier</h3><p>某个函数既返回对象状态值，又修改对象状态 -&gt; 建立两个不同的函数，其中一个负责查询，另一个负责修改</p>
-<ul>
-<li>新建一个查询函数，令它返回的值与原函数相同</li>
-<li>修改原函数，令它调用查询函数，并返回获得的结果</li>
-<li>编译，测试</li>
-<li>将调用原函数的代码改为调用查询函数。然后在调用查询函数的那一行之前，加上对原函数的调用。每次修改后，编译并测试</li>
-<li>将原函数的返回值改为 void，并且删掉其中所有的 return 语句</li>
-</ul>
-<h3 id="u4EE4_u51FD_u6570_u643A_u5E26_u53C2_u6570_Parameterized_Method"><a href="#u4EE4_u51FD_u6570_u643A_u5E26_u53C2_u6570_Parameterized_Method" class="headerlink" title="令函数携带参数 Parameterized Method"></a>令函数携带参数 Parameterized Method</h3><p>若干函数做了类似的工作，但在函数本体中却包含了不同的值 -&gt; 建立单一函数，以参数表达那些不同的值</p>
-<ul>
-<li>新建一个带有参数的函数，使他可以先替换先前所有的重复性函数</li>
-<li>编译</li>
-<li>将调用旧函数的代码改为调用新函数</li>
-<li>编译，测试</li>
-<li>对所有旧函数重复上述步骤，每次替换后，修改并测试</li>
-</ul>
-<h3 id="u4EE5_u660E_u786E_u51FD_u6570_u53D6_u4EE3_u53C2_u6570_Replace_Parameter_with_Explicit_Methods"><a href="#u4EE5_u660E_u786E_u51FD_u6570_u53D6_u4EE3_u53C2_u6570_Replace_Parameter_with_Explicit_Methods" class="headerlink" title="以明确函数取代参数 Replace Parameter with Explicit Methods"></a>以明确函数取代参数 Replace Parameter with Explicit Methods</h3><p>你有一个函数，其中完全取决于参数值而采取不同行为 -&gt; 应该针对该参数的每一个可能值，建立一个独立函数</p>
-<ul>
-<li>针对参数的每一种可能值，新建一个明确函数</li>
-<li>修改条件表达式的每个分支，使其调用合适的新函数</li>
-<li>修改每个分支后，编译并测试</li>
-<li>修改原函数的每一个被调用点，改而调用上述的某个合适的新函数</li>
-<li>编译，测试</li>
-<li>所有调用端都修改完毕后，删除原函数</li>
-</ul>
-<h3 id="u4FDD_u6301_u5BF9_u8C61_u5B8C_u6574_Preserve_Whole_Object"><a href="#u4FDD_u6301_u5BF9_u8C61_u5B8C_u6574_Preserve_Whole_Object" class="headerlink" title="保持对象完整 Preserve Whole Object"></a>保持对象完整 Preserve Whole Object</h3><p>你从某个对象中取出若干值，将它们作为某一次函数调用时的参数 -&gt; 改为传递整个对象</p>
-<ul>
-<li>对你的目标函数新添一个参数项，用以代表原数据所在的完整对象</li>
-<li>编译，测试</li>
-<li>判断哪些参数可被包含在新添的完整对象中</li>
-<li>选择上述参数之一，将被调用函数中原来引用该参数的地方，改为调用新添参数对象的相应取值函数</li>
-<li>删除该项参数</li>
-<li>编译，测试</li>
-<li>针对所有可从完整对象中获得的参数，重复上述过程</li>
-<li>删除调用端中那些带有被删除参数的代码</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u4EE5_u51FD_u6570_u53D6_u4EE3_u53C2_u6570_Replace_Parameter_with_Method"><a href="#u4EE5_u51FD_u6570_u53D6_u4EE3_u53C2_u6570_Replace_Parameter_with_Method" class="headerlink" title="以函数取代参数 Replace Parameter with Method"></a>以函数取代参数 Replace Parameter with Method</h3><p>对象调用某个函数，并将所得结果作为参数，传递给另一个函数。而接受该参数的函数本身也能够调用前一个函数 -&gt; 让参数接受者去除该项参数，并直接调用前一个函数</p>
-<ul>
-<li>如果有必要，将参数的计算过程提炼到一个独立函数中。将函数本体内引用该参数的地方改为调用新建的函数</li>
-<li>每次替换后，修改并测试</li>
-<li>全部替换完成后，使用 Remove Parameter 将该参数去掉</li>
-</ul>
-<h3 id="u5F15_u5165_u53C2_u6570_u5BF9_u8C61_Introduce_Parameter_Object"><a href="#u5F15_u5165_u53C2_u6570_u5BF9_u8C61_Introduce_Parameter_Object" class="headerlink" title="引入参数对象 Introduce Parameter Object"></a>引入参数对象 Introduce Parameter Object</h3><p>某些参数总是很自然地同时出现 -&gt; 以一个对象取代这些参数</p>
-<ul>
-<li>新建一个类，用以表现你想替换的一组参数。将这个类设为不可变的</li>
-<li>编译</li>
-<li>针对使用该组参数的所有函数，实施 Add Parameter，传入上述新建类的实例对象，并将次参数设为 null</li>
-<li>对于 Data Clumps 中的每一项（在此均为参数），从函数签名中移除，并修改调用端和函数本体，令它们都改而通过新的参数对象取得该值</li>
-<li>每去除一个参数，编译并测试</li>
-<li>将原先的参数全部去除之后，观察有无适当函数可以运行 Move Method 搬移到参数对象之中</li>
-</ul>
-<h3 id="u79FB_u9664_u8BBE_u503C_u51FD_u6570_Remove_Setting_Method"><a href="#u79FB_u9664_u8BBE_u503C_u51FD_u6570_Remove_Setting_Method" class="headerlink" title="移除设值函数 Remove Setting Method"></a>移除设值函数 Remove Setting Method</h3><p>类中的某个字段应该在对象创建时被设值，然后就不再改变 -&gt; 去掉该字段的所有设值函数</p>
-<ul>
-<li>检查设值函数被使用的情况，看它是否只被构造函数调用，或者被构造函数所调用的另一个函数调用</li>
-<li>修改构造函数，使其直接访问设值函数所针对的那个变量</li>
-<li>编译，测试</li>
-<li>移除这个设值函数，将它所针对的字段设为 final</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u9690_u85CF_u51FD_u6570_Hide_Method"><a href="#u9690_u85CF_u51FD_u6570_Hide_Method" class="headerlink" title="隐藏函数 Hide Method"></a>隐藏函数 Hide Method</h3><p>有一个函数，从来没有被其他任何类用到 -&gt; 将这个函数修改为 private</p>
-<ul>
-<li>经常检查有没有可能降低某个函数的可见度</li>
-<li>尽可能降低所有函数的可见度</li>
-<li>每完成一组函数的隐藏之后，编译并测试</li>
-</ul>
-<h3 id="u4EE5_u5DE5_u5382_u51FD_u6570_u53D6_u4EE3_u6784_u9020_u51FD_u6570_Replace_Constructor_with_Factory_Method"><a href="#u4EE5_u5DE5_u5382_u51FD_u6570_u53D6_u4EE3_u6784_u9020_u51FD_u6570_Replace_Constructor_with_Factory_Method" class="headerlink" title="以工厂函数取代构造函数 Replace Constructor with Factory Method"></a>以工厂函数取代构造函数 Replace Constructor with Factory Method</h3><p>你希望在创建对象时不仅仅是做简单的构建动作 -&gt; 将构造函数替换为工厂函数</p>
-<ul>
-<li>新建一个工厂函数，让它调用现有的构造函数</li>
-<li>将调用构造函数的代码改为调用工厂函数</li>
-<li>每次替换后，编译并测试</li>
-<li>将构造函数声明为 private</li>
-<li>编译</li>
-</ul>
-<h3 id="u5C01_u88C5_u5411_u4E0B_u8F6C_u578B_Encapsulate_Downcast"><a href="#u5C01_u88C5_u5411_u4E0B_u8F6C_u578B_Encapsulate_Downcast" class="headerlink" title="封装向下转型 Encapsulate Downcast"></a>封装向下转型 Encapsulate Downcast</h3><p>某个函数返回的对象，需要由函数调用者执行向下转型(downcast)</p>
-<ul>
-<li>找出必须对函数调用结果进行向下转型的地方（这种情况通常出现在返回一个集合或迭代器的函数中）</li>
-<li>将向下转型动作搬移到该函数中（针对返回集合的函数，使用 Encapsulate Collection）</li>
-</ul>
-<h3 id="u4EE5_u5F02_u5E38_u53D6_u4EE3_u9519_u8BEF_u7801_Replace_Error_Code_with_Exception"><a href="#u4EE5_u5F02_u5E38_u53D6_u4EE3_u9519_u8BEF_u7801_Replace_Error_Code_with_Exception" class="headerlink" title="以异常取代错误码 Replace Error Code with Exception"></a>以异常取代错误码 Replace Error Code with Exception</h3><p>某个函数返回一个特定的代码，用以表示各种错误情况 -&gt; 改用异常</p>
-<ul>
-<li>决定应该抛出受控(checked)异常还是非受控(unchecked)异常</li>
-<li>找到该函数的所有者，对它们进行相应调整，让他们使用异常</li>
-<li>修改该函数的签名，令它反映出新用法</li>
-</ul>
-<h3 id="u4EE5_u6D4B_u8BD5_u53D6_u4EE3_u5F02_u5E38_Replace_Exception_with_Test"><a href="#u4EE5_u6D4B_u8BD5_u53D6_u4EE3_u5F02_u5E38_Replace_Exception_with_Test" class="headerlink" title="以测试取代异常 Replace Exception with Test"></a>以测试取代异常 Replace Exception with Test</h3><p>面对一个调用者可以预先检查的条件，你抛出了一个异常 -&gt; 修改调用者，使它在调用函数之前先做检查</p>
-<ul>
-<li>在函数调用点之前，放置一个测试语句，将函数内 catch 区段中的代码复制到测试句的适当 if 分支中</li>
-<li>在 catch 区段起始处加入一个断言，确保 catch 区段绝对不会被执行</li>
-<li>编译，测试</li>
-<li>移除所有 catch 区段，让后将 try 区段内的代码复制到 try 之外，然后移除 try 区段</li>
-<li>编译，测试</li>
-</ul>
-<h2 id="u5904_u7406_u6982_u62EC_u5173_u7CFB"><a href="#u5904_u7406_u6982_u62EC_u5173_u7CFB" class="headerlink" title="处理概括关系"></a>处理概括关系</h2><h3 id="u5B57_u6BB5_u4E0A_u79FB_Pull_Up_Field"><a href="#u5B57_u6BB5_u4E0A_u79FB_Pull_Up_Field" class="headerlink" title="字段上移 Pull Up Field"></a>字段上移 Pull Up Field</h3><p>两个子类拥有相同的字段 -&gt; 将该字段移至超类</p>
-<ul>
-<li>针对提升字段，检查它们所有被使用点，确认它们以同样的方式被使用</li>
-<li>如果这些字段的名称不同，先将它们改名，使每一个名称都和你想为超类字段取的名称相同</li>
-<li>编译，测试</li>
-<li>在超类中新建一个字段（声明为 protected）</li>
-<li>移除子类中的字段</li>
-<li>编译，测试</li>
-<li>考虑对超类的新建字段使用 Self Encapsulate Field</li>
-</ul>
-<h3 id="u51FD_u6570_u4E0A_u79FB_Pull_Up_Method"><a href="#u51FD_u6570_u4E0A_u79FB_Pull_Up_Method" class="headerlink" title="函数上移 Pull Up Method"></a>函数上移 Pull Up Method</h3><p>有些函数，在各个子类中产生完全相同的结果 -&gt; 将函数移至超类</p>
-<ul>
-<li>检查待提升函数，确定它们是完全一致的</li>
-<li>如果待提升函数的签名不同，将那些签名都修改为你想要在超类中使用的签名</li>
-<li>在超类中新建一个函数，将某个待提升函数的代码复制到其中，做适当调整，然后编译</li>
-<li>移除一个待提升的子类函数</li>
-<li>编译，测试</li>
-<li>逐一移除待提升的子类函数，直到只剩下超类中的函数为止。每次移除之后都需要测试</li>
-<li>观察该函数的 调用者，看看是否可以改为使用超类类型的对象</li>
-</ul>
-<h3 id="u6784_u9020_u51FD_u6570_u672C_u4F53_u4E0A_u79FB_Pull_Up_Constructor_Body"><a href="#u6784_u9020_u51FD_u6570_u672C_u4F53_u4E0A_u79FB_Pull_Up_Constructor_Body" class="headerlink" title="构造函数本体上移 Pull Up Constructor Body"></a>构造函数本体上移 Pull Up Constructor Body</h3><p>你在各子类中拥有一些构造函数，它们的本体几乎完全一致 -&gt; 在超类中新建一个构造函数，并在子类构造函数中调用它</p>
-<ul>
-<li>在超类中定义一个构造函数</li>
-<li>将子类构造函数中的共同代码搬移到超类构造函数中</li>
-<li>将子类构造函数中的共同代码删掉，改为调用新建的超类构造函数</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u51FD_u6570_u4E0B_u79FB_Push_Down_Method"><a href="#u51FD_u6570_u4E0B_u79FB_Push_Down_Method" class="headerlink" title="函数下移 Push Down Method"></a>函数下移 Push Down Method</h3><p>超类中的某个函数只与部分（而非全部）子类有关 -&gt; 将这个函数移到相关的那些子类去</p>
-<ul>
-<li>在所有子类声明该函数，将超类中的函数本体复制到每一个子类函数中</li>
-<li>删除超类中的函数</li>
-<li>编译，测试</li>
-<li>将该函数从所有不需要它的那些子类中删掉</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u5B57_u6BB5_u4E0B_u79FB_Push_Down_Field"><a href="#u5B57_u6BB5_u4E0B_u79FB_Push_Down_Field" class="headerlink" title="字段下移 Push Down Field"></a>字段下移 Push Down Field</h3><p>超类中的某个字段只部分（而非全部）子类用到 -&gt; 将这个字段移到需要它的那些子类去</p>
-<ul>
-<li>在所有子类中声明该字段</li>
-<li>将该字段从超类中移除</li>
-<li>编译，测试</li>
-<li>将该字段从所有不需要它的那些子类中删掉</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u63D0_u70BC_u5B50_u7C7B_Extract_Subclass"><a href="#u63D0_u70BC_u5B50_u7C7B_Extract_Subclass" class="headerlink" title="提炼子类 Extract Subclass"></a>提炼子类 Extract Subclass</h3><p>类中的某些特性只被某些（而非全部）实例用到 -&gt; 新建一个子类，将上面所说的那一部分特性移到子类中</p>
-<ul>
-<li>为源类定义一个新的子类</li>
-<li>为这个新的子类提供构造函数</li>
-<li>找出调用超类构造函数的所有地点。如果它们需要的是新建的子类，令它们改而调用新构造函数</li>
-<li>逐一使用 Push Down Method 和 Push Down Field 将源类的特性移到子类去</li>
-<li>找到所有这样的字段：它们所传达的信息如今可由继承体系自身传达。以 Self Encapsulate Field 避免直接使用这些字段，然后将它们的取值函数替换为多态常量函数。所有使用这些字段的地方都应该以 Replace Conditional with Polymorphism 重头</li>
-<li>每次下移之后，编译并测试</li>
-</ul>
-<h3 id="u63D0_u70BC_u8D85_u7C7B_Extract_Superclass"><a href="#u63D0_u70BC_u8D85_u7C7B_Extract_Superclass" class="headerlink" title="提炼超类 Extract Superclass"></a>提炼超类 Extract Superclass</h3><p>两个类具有相似特性 -&gt; 为这两个类建立一个超类，将相同特性移至超类</p>
-<ul>
-<li>为原本的类新建一个空白的抽象超类</li>
-<li>运用 Pull Up Field, Pull Up Method 和 Pull Up Constructor Body 逐一将子类的共同元素上移到超类</li>
-<li>每次上移后，编译并测试</li>
-<li>检查留在子类中的函数，看它们是否还有共通成分</li>
-<li>将所有共同元素都上移到超类之后，检查子类的所有用户。如果它们只使用共同接口，你就可以把它们请求的对象类型改为超类</li>
-</ul>
-<h3 id="u63D0_u70BC_u63A5_u53E3_Extract_Interface"><a href="#u63D0_u70BC_u63A5_u53E3_Extract_Interface" class="headerlink" title="提炼接口 Extract Interface"></a>提炼接口 Extract Interface</h3><ul>
-<li>新建一个空接口</li>
-<li>在接口中声明待提炼类的共同操作</li>
-<li>让相关的类实现上述接口</li>
-<li>调整客户端的类型声明，令其使用该接口</li>
-</ul>
-<h3 id="u6298_u53E0_u7EE7_u627F_u4F53_u7CFB_Collapse_Hierarchy"><a href="#u6298_u53E0_u7EE7_u627F_u4F53_u7CFB_Collapse_Hierarchy" class="headerlink" title="折叠继承体系 Collapse Hierarchy"></a>折叠继承体系 Collapse Hierarchy</h3><p>超类和子类之间无太大区别 -&gt; 将它们合为一题</p>
-<ul>
-<li>选择你想移除的类：是超类还是子类？</li>
-<li>把想要移除的类的所有行为和数据搬移到另一个类</li>
-<li>每次移动后，编译并测试</li>
-<li>调整即将被移除的那个类的所有引用点，令它们改而引用合并后留下的类。这个动作将会影响变量的声明、参数的类型以及构造函数</li>
-<li>移除我们的目标</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u5851_u9020_u6A21_u677F_u51FD_u6570_Form_Template_Method"><a href="#u5851_u9020_u6A21_u677F_u51FD_u6570_Form_Template_Method" class="headerlink" title="塑造模板函数 Form Template Method"></a>塑造模板函数 Form Template Method</h3><p>你有一些子类，其中响应的某些函数以相同顺序执行类似的操作，但各个操作在细节上有所不同 -&gt; 将这些操作分别放进独立函数中，并保持它们都有相同的签名，于是原函数也就变得相同。然后将原函数上移至超类</p>
-<ul>
-<li>在各个子类中分解目标函数，使分解后的各个函数要不完全相同，要不完全不同</li>
-<li>运用 Pull Up Method 将各子类内完全相同的函数上移至超类</li>
-<li>对于那些完全不同的函数，实施 Rename Method，使所有这些函数的签名完全相同</li>
-<li>修改上述所有签名后，编译并测试</li>
-<li>运用 Pull Up Method 将所有原函数逐一上移至超类。在超类中将那些代表各种不同操作的函数定义为抽象函数</li>
-<li>编译，测试</li>
-<li>移除其他子类中的原函数，每删除一个，编译并测试</li>
-</ul>
-<h3 id="u4EE5_u59D4_u6258_u53D6_u4EE3_u7EE7_u627F_Replace_Inheritance_with_Delegation"><a href="#u4EE5_u59D4_u6258_u53D6_u4EE3_u7EE7_u627F_Replace_Inheritance_with_Delegation" class="headerlink" title="以委托取代继承 Replace Inheritance with Delegation"></a>以委托取代继承 Replace Inheritance with Delegation</h3><p>某个子类只使用超类接口中的一部分，或是根本不需要继承而来的数据 -&gt; 在子类中新建一个字段用以保存超类；调整子类函数，令它改而委托超类；然后去掉两者之间的继承关系</p>
-<ul>
-<li>在子类中新建一个字段，使其引用超类的一个实例，并将它初始化为 this</li>
-<li>修改子类内的所有函数，让它们不再使用超类，转而使用上述俺哥委托字段。每次修改后，编译并测试</li>
-<li>去除两个类之间的继承关系，新建一个受托类的对象赋给受托字段</li>
-<li>针对客户端所用的每一个超类函数，为它添加一个简单的委托函数</li>
-<li>编译，测试</li>
-</ul>
-<h3 id="u4EE5_u7EE7_u627F_u53D6_u4EE3_u59D4_u6258_Replace_Delegation_with_Inheritance"><a href="#u4EE5_u7EE7_u627F_u53D6_u4EE3_u59D4_u6258_Replace_Delegation_with_Inheritance" class="headerlink" title="以继承取代委托 Replace Delegation with Inheritance"></a>以继承取代委托 Replace Delegation with Inheritance</h3><p>你在两个类之间使用委托关系，并经常为整个接口编写许多极简单的委托函数 -&gt; 让委托类继承受托类</p>
-<ul>
-<li>让委托端成为受托端的一个子类</li>
-<li>编译</li>
-<li>将受托字段设为该字段所处对象本身</li>
-<li>去掉简单的委托函数</li>
-<li>编译并测试</li>
-<li>将所有其他涉及委托关系的代码，改为调用对象自身</li>
-<li>移除受托字段</li>
-</ul>
-<h2 id="u5927_u578B_u91CD_u6784"><a href="#u5927_u578B_u91CD_u6784" class="headerlink" title="大型重构"></a>大型重构</h2><p>耗费相当长时间，只在需要添加新功能或修补错误时才进行重构。这一章不写具体做法，很多时候需要灵活变通</p>
-<h3 id="u68B3_u7406_u5E76_u5206_u89E3_u7EE7_u627F_u4F53_u7CFB_Tease_Apart_Inheritance"><a href="#u68B3_u7406_u5E76_u5206_u89E3_u7EE7_u627F_u4F53_u7CFB_Tease_Apart_Inheritance" class="headerlink" title="梳理并分解继承体系 Tease Apart Inheritance"></a>梳理并分解继承体系 Tease Apart Inheritance</h3><p>某个继承体系同时承担两项责任 -&gt; 建立两个继承体系，并通过委托关系让其中一个可以调用另一个</p>
-<h3 id="u5C06_u8FC7_u7A0B_u5316_u8BBE_u8BA1_u8F6C_u5316_u4E3A_u5BF9_u8C61_u8BBE_u8BA1_Convert_Procedural_Design_to_Objects"><a href="#u5C06_u8FC7_u7A0B_u5316_u8BBE_u8BA1_u8F6C_u5316_u4E3A_u5BF9_u8C61_u8BBE_u8BA1_Convert_Procedural_Design_to_Objects" class="headerlink" title="将过程化设计转化为对象设计 Convert Procedural Design to Objects"></a>将过程化设计转化为对象设计 Convert Procedural Design to Objects</h3><p>你手上有一些传统过程化风格的代码 -&gt; 将数据记录变成对象，将大块的行为分成小块，并将行为移入相关对象之中</p>
-<h3 id="u5C06_u9886_u57DF_u548C_u5C55_u793A_u5206_u79BB_Separate_Domain_from_Presentation"><a href="#u5C06_u9886_u57DF_u548C_u5C55_u793A_u5206_u79BB_Separate_Domain_from_Presentation" class="headerlink" title="将领域和展示分离 Separate Domain from Presentation"></a>将领域和展示分离 Separate Domain from Presentation</h3><p>某些 GUI 类之中包含了领域逻辑 -&gt; 将领域逻辑分离出来，为它们建立独立的领域类</p>
-<h3 id="u63D0_u70BC_u7EE7_u627F_u4F53_u7CFB_Extract_Hierarchy"><a href="#u63D0_u70BC_u7EE7_u627F_u4F53_u7CFB_Extract_Hierarchy" class="headerlink" title="提炼继承体系 Extract Hierarchy"></a>提炼继承体系 Extract Hierarchy</h3><p>你有某个类做了太多工作，其中一部分工作是以大量条件表达式完成的 -&gt; 建立继承体系，以一个子类表示一种特殊情况</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>重构：在代码写好之后改进它的设计。</p>]]>
-    
-    </summary>
-    
-      <category term="代码" scheme="http://wdxtub.com/tags/%E4%BB%A3%E7%A0%81/"/>
-    
-      <category term="读书笔记" scheme="http://wdxtub.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-      <category term="重构" scheme="http://wdxtub.com/tags/%E9%87%8D%E6%9E%84/"/>
-    
-      <category term="Reading" scheme="http://wdxtub.com/categories/Reading/"/>
     
   </entry>
   
