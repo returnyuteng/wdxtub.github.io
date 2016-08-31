@@ -93,7 +93,7 @@
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="前面我们搭建好了后台（虽然实际开发中我是客户端后台一起写的），这次来看看如何做一个配套的客户端（虽然从各种角度看都非常『简约』），小归小，还是有一点意思的。">
 <meta property="og:image" content="http://wdxtub.com/images/14721336651764.jpg">
-<meta property="og:updated_time" content="2016-08-25T14:28:14.000Z">
+<meta property="og:updated_time" content="2016-08-31T14:02:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【Go 之旅】V 项目实战：一起看飞机 - 客户端">
 <meta name="twitter:description" content="前面我们搭建好了后台（虽然实际开发中我是客户端后台一起写的），这次来看看如何做一个配套的客户端（虽然从各种角度看都非常『简约』），小归小，还是有一点意思的。">
@@ -338,17 +338,29 @@
         <p>前面我们搭建好了后台（虽然实际开发中我是客户端后台一起写的），这次来看看如何做一个配套的客户端（虽然从各种角度看都非常『简约』），小归小，还是有一点意思的。</p>
 <a id="more"></a>
 <hr>
-<p>本文更新中….</p>
 <p>还记得系列第一篇中的设计稿吗？我把它捣鼓出来了：</p>
 <p><img src="/images/14721336651764.jpg" alt=""><br>（感谢上镜的各位名人名言）</p>
-<p>具体开发过程中的坑有很多，比如</p>
+<h2 id="u5177_u4F53_u5B9E_u73B0"><a href="#u5177_u4F53_u5B9E_u73B0" class="headerlink" title="具体实现"></a>具体实现</h2><p>因为早早确定了接口，其实 iOS 部分的实现比后端还要简单粗暴，即使如此，具体开发过程中的坑有很多，比如（大家看一下源代码应该就知道了）</p>
 <ul>
 <li>时隔太久我忘了 Objective-C 要咋写，花了十分钟才摆脱了 C++ 写法</li>
 <li>iOS9 新增的强制 Https 需要改一下描述文件才能走 Http（毕竟只是一个测试）</li>
 <li>为了调试方便所有的网络都走的是同步请求（理论上都得用异步来着）</li>
 <li>为了测试方便，所有的信息会统一输出到中间的文本框中，我干脆直接叫它 <code>consoleTextView</code></li>
+<li>为了测试方便，采用类似终端输出，快速对接接口</li>
+<li>为了每次生成不一样的数据，随机生成用户 id，并利用手机本身的定位来获取位置</li>
+<li>没有做缓存（服务器端也没有），所以速度还是比较慢。上线不到 1ms，但是涉及数据库操作的『位置』和『附近』功能，基本就需要 200ms 了，这部分还有很大的优化空间</li>
+<li>天气部分使用 Yahoo 的 API，弄清楚格式即可</li>
+<li>航线部分没找到免费的，暂时先不考虑（也没时间自己写爬虫嘛）</li>
 </ul>
-<h2 id="u5BA2_u6237_u7AEF_u67B6_u6784"><a href="#u5BA2_u6237_u7AEF_u67B6_u6784" class="headerlink" title="客户端架构"></a>客户端架构</h2><p>待续，今天因为意外没来得上传代码。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>本来想着把这个项目撸完整一点的，不过因为工作压力和个人事务缠身，不得不仓促结尾。在可以预见的将来应该也不会继续填坑了，只有开源的代码可能能给大家一点帮助（至少服务端是可以的，客户端用了很多过分省事儿的方法，不太好）。</p>
+<p>但是，但是。</p>
+<p>这里预告一下，之后会用 Go 把我之前的毕业设计用 Go 重新开发一次，并以开源服务的形式共享给大家。相信对于喜欢做笔记的同学来说，是一个非常好用的工具。<a href="https://github.com/wdxtub/wkk/wiki" target="_blank" rel="external">这里</a>是项目简介。</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://github.com/wdxtub/watch-plane-together-ios" target="_blank" rel="external">项目代码</a></li>
+<li><a href="https://github.com/wdxtub/wkk/wiki" target="_blank" rel="external">下一个要开发的项目 Wdxtub’s Knowledge Kit</a></li>
+<li><a href="http://blog.csdn.net/mylizh/article/details/44838065" target="_blank" rel="external">iOS定位服务系列之一：获取当前位置信息</a></li>
+<li><a href="http://www.sollyu.com/objective-c-synchronization-requests-requests-for-asynchronous-requests-get-and-post-requests/" target="_blank" rel="external">Objective-C 之同步请求、异步请求、GET请求、POST请求</a></li>
+</ul>
 
       
     </div>
@@ -625,7 +637,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5BA2_u6237_u7AEF_u67B6_u6784"><span class="nav-number">1.</span> <span class="nav-text">客户端架构</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5177_u4F53_u5B9E_u73B0"><span class="nav-number">1.</span> <span class="nav-text">具体实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
