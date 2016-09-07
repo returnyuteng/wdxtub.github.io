@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/08/15/kafka-guide/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="提到消息系统，目前最火热的非 Kafka 莫属，公司也打算利用 Kafka 进行各业务日志统一收集，这里结合自己的实践来分享一下具体的配置及使用。Kafka 版本 0.10.0.1">
-<meta property="og:updated_time" content="2016-08-17T13:03:52.000Z">
+<meta property="og:updated_time" content="2016-09-07T09:54:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kafka 指南">
 <meta name="twitter:description" content="提到消息系统，目前最火热的非 Kafka 莫属，公司也打算利用 Kafka 进行各业务日志统一收集，这里结合自己的实践来分享一下具体的配置及使用。Kafka 版本 0.10.0.1">
@@ -176,8 +176,8 @@
         </li>
       
         
-        <li class="menu-item menu-item-about">
-          <a href="/about" rel="section">
+        <li class="menu-item menu-item-tech">
+          <a href="/2009/09/11/tech-page" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
             
@@ -187,7 +187,7 @@
       
         
         <li class="menu-item menu-item-life">
-          <a href="/life" rel="section">
+          <a href="/1990/09/11/life-page" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
             
@@ -197,7 +197,7 @@
       
         
         <li class="menu-item menu-item-booklist">
-          <a href="/booklist" rel="section">
+          <a href="/1997/09/11/booklist-page" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
             
@@ -398,6 +398,10 @@
 <p>最后我们可以按照同样的方法来生产和消费消息，例如</p>
 <figure class="highlight brainfuck"><table><tr><td class="code"><pre><span class="line"><span class="comment">#</span> <span class="comment">生产</span></span><br><span class="line"><span class="comment">bin/kafka</span><span class="literal">-</span><span class="comment">console</span><span class="literal">-</span><span class="comment">producer</span><span class="string">.</span><span class="comment">sh</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">broker</span><span class="literal">-</span><span class="comment">list</span> <span class="comment">localhost:9092</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">topic</span> <span class="comment">oh3topic</span></span><br><span class="line"><span class="comment">#</span> <span class="comment">消费</span></span><br><span class="line"><span class="comment">bin/kafka</span><span class="literal">-</span><span class="comment">console</span><span class="literal">-</span><span class="comment">consumer</span><span class="string">.</span><span class="comment">sh</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">zookeeper</span> <span class="comment">localhost:2181</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">from</span><span class="literal">-</span><span class="comment">beginning</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">topic</span> <span class="comment">oh3topic</span></span><br></pre></td></tr></table></figure>
 <p>开俩终端就可以一边生产消息，一边消费消息了。</p>
+<h3 id="u6CE8_u610F_u4E8B_u9879"><a href="#u6CE8_u610F_u4E8B_u9879" class="headerlink" title="注意事项"></a>注意事项</h3><p>如果要配置自定义端口，<code>server.properties</code> 中 listeners 一定要配置成为 IP 地址；如果配置为 localhost 或服务器的 hostname，在使用 java 发送数据时就会抛出异</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建 topic</span></span><br><span class="line">bin/kafka-topics.sh --create --zookeeper bi03:<span class="number">2181</span> --replication-factor <span class="number">1</span> --partitions <span class="number">1</span> --topic logs</span><br><span class="line"><span class="comment"># 生产消息</span></span><br><span class="line">bin/kafka-console-producer.sh --broker-list localhost:<span class="number">13647</span> --topic logs</span><br><span class="line"><span class="comment"># 消费消息</span></span><br><span class="line"><span class="comment"># bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic logs</span></span><br></pre></td></tr></table></figure>
+<p>如果 Zookeeper 出现 <code>fsync-ing the write ahead log in SyncThread:1 took 2243ms which will adversely effect operation latency. See the
+ZooKeeper troubleshooting guide</code>，是因为 FOLLOWER 在跟 LEADER 同步时，fsync 操作时间过长，导致超时。增加 <code>tickTime</code> 或者 <code>initLimit</code> 和 <code>syncLimit</code> 的值即可 </p>
 <h2 id="u96C6_u7FA4_u914D_u7F6E"><a href="#u96C6_u7FA4_u914D_u7F6E" class="headerlink" title="集群配置"></a>集群配置</h2><p>kafka 使用 ZooKeeper 用于管理、协调代理。每个 Kafka 代理通过 Zookeeper 协调其他 Kafka 代理。当 Kafka 系统中新增了代理或某个代理失效时，Zookeeper 服务将通知生产者和消费者。生产者与消费者据此开始与其他代理协调工作。</p>
 <h3 id="u5B89_u88C5_Java"><a href="#u5B89_u88C5_Java" class="headerlink" title="安装 Java"></a>安装 Java</h3><p>先给两台机子安装 Java</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo add-apt-repository -y ppa:webupd8team/java</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get -y install oracle-java8-installer</span><br></pre></td></tr></table></figure>
@@ -525,6 +529,7 @@
 <p>很多时候，性能的瓶颈并非CPU或者硬盘而是网络带宽，对于需要在数据中心之间传送大量数据的应用更是如此。当然用户可以在没有 Kafka 支持的情况下各自压缩自己的消息，但是这将导致较低的压缩率，因为相比于将消息单独压缩，将大量文件压缩在一起才能起到最好的压缩效果。</p>
 <p>Kafka 采用了端到端的压缩：因为有『消息集』的概念，客户端的消息可以一起被压缩后送到服务端，并以压缩后的格式写入日志文件，以压缩的格式发送到 consumer，消息从 producer 发出到 consumer 拿到都被是压缩的，只有在 consumer 使用的时候才被解压缩，所以叫做『端到端的压缩』。Kafka支持GZIP和Snappy压缩协议。</p>
 <h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://blog.csdn.net/LOUISLIAOXH/article/details/51567515" target="_blank" rel="external">Kafka学习整理六(server.properties配置实践)</a></li>
 <li><a href="http://kafka.apache.org/" target="_blank" rel="external">Apache Kafka</a></li>
 <li><a href="http://kafka.apache.org/documentation.html#quickstart" target="_blank" rel="external">Quick Start</a></li>
 <li><a href="http://www.aboutyun.com/thread-12882-1-1.html" target="_blank" rel="external">Kafka入门经典教程</a></li>
@@ -692,7 +697,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">605</span>
+              <span class="site-state-item-count">609</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -709,7 +714,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">841</span>
+                <span class="site-state-item-count">844</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -813,7 +818,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4ECB_u7ECD"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5355_u673A_u914D_u7F6E"><span class="nav-number">2.</span> <span class="nav-text">单机配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u96C6_u7FA4_u914D_u7F6E"><span class="nav-number">3.</span> <span class="nav-text">集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5B89_u88C5_Java"><span class="nav-number">3.1.</span> <span class="nav-text">安装 Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u66F4_u65B0_Hosts"><span class="nav-number">3.2.</span> <span class="nav-text">更新 Hosts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4FEE_u6539_Zookeeper__u914D_u7F6E_u6587_u4EF6"><span class="nav-number">3.3.</span> <span class="nav-text">修改 Zookeeper 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7ED9_u670D_u52A1_u5668_u7F16_u53F7"><span class="nav-number">3.4.</span> <span class="nav-text">给服务器编号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u542F_u52A8_Zookeeper"><span class="nav-number">3.5.</span> <span class="nav-text">启动 Zookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4FEE_u6539_Kafka__u914D_u7F6E_u6587_u4EF6"><span class="nav-number">3.6.</span> <span class="nav-text">修改 Kafka 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u542F_u52A8_Kafka"><span class="nav-number">3.7.</span> <span class="nav-text">启动 Kafka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u9A8C_u8BC1_u5B89_u88C5"><span class="nav-number">3.8.</span> <span class="nav-text">验证安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5176_u4ED6_u914D_u7F6E"><span class="nav-number">3.9.</span> <span class="nav-text">其他配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u672C_u64CD_u4F5C"><span class="nav-number">4.</span> <span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u521B_u5EFA_u548C_u79FB_u9664_topic"><span class="nav-number">4.1.</span> <span class="nav-text">创建和移除 topic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4F18_u96C5_u5173_u95ED"><span class="nav-number">4.2.</span> <span class="nav-text">优雅关闭</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6DF1_u5165_u7406_u89E3"><span class="nav-number">5.</span> <span class="nav-text">深入理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u6587_u4EF6_u7CFB_u7EDF"><span class="nav-number">5.1.</span> <span class="nav-text">文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4E8B_u52A1_u5B9A_u4E49"><span class="nav-number">5.2.</span> <span class="nav-text">事务定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6027_u80FD_u4F18_u5316"><span class="nav-number">5.3.</span> <span class="nav-text">性能优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4ECB_u7ECD"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5355_u673A_u914D_u7F6E"><span class="nav-number">2.</span> <span class="nav-text">单机配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u6CE8_u610F_u4E8B_u9879"><span class="nav-number">2.1.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u96C6_u7FA4_u914D_u7F6E"><span class="nav-number">3.</span> <span class="nav-text">集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5B89_u88C5_Java"><span class="nav-number">3.1.</span> <span class="nav-text">安装 Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u66F4_u65B0_Hosts"><span class="nav-number">3.2.</span> <span class="nav-text">更新 Hosts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4FEE_u6539_Zookeeper__u914D_u7F6E_u6587_u4EF6"><span class="nav-number">3.3.</span> <span class="nav-text">修改 Zookeeper 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7ED9_u670D_u52A1_u5668_u7F16_u53F7"><span class="nav-number">3.4.</span> <span class="nav-text">给服务器编号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u542F_u52A8_Zookeeper"><span class="nav-number">3.5.</span> <span class="nav-text">启动 Zookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4FEE_u6539_Kafka__u914D_u7F6E_u6587_u4EF6"><span class="nav-number">3.6.</span> <span class="nav-text">修改 Kafka 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u542F_u52A8_Kafka"><span class="nav-number">3.7.</span> <span class="nav-text">启动 Kafka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u9A8C_u8BC1_u5B89_u88C5"><span class="nav-number">3.8.</span> <span class="nav-text">验证安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5176_u4ED6_u914D_u7F6E"><span class="nav-number">3.9.</span> <span class="nav-text">其他配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u672C_u64CD_u4F5C"><span class="nav-number">4.</span> <span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u521B_u5EFA_u548C_u79FB_u9664_topic"><span class="nav-number">4.1.</span> <span class="nav-text">创建和移除 topic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4F18_u96C5_u5173_u95ED"><span class="nav-number">4.2.</span> <span class="nav-text">优雅关闭</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6DF1_u5165_u7406_u89E3"><span class="nav-number">5.</span> <span class="nav-text">深入理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u6587_u4EF6_u7CFB_u7EDF"><span class="nav-number">5.1.</span> <span class="nav-text">文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4E8B_u52A1_u5B9A_u4E49"><span class="nav-number">5.2.</span> <span class="nav-text">事务定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6027_u80FD_u4F18_u5316"><span class="nav-number">5.3.</span> <span class="nav-text">性能优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>

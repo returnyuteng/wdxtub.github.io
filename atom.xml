@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Agony is my triumph]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://wdxtub.com/"/>
-  <updated>2016-09-06T23:11:13.000Z</updated>
+  <updated>2016-09-07T12:19:14.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -13,6 +13,323 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[GeoHash 指南]]></title>
+    <link href="http://wdxtub.com/2016/09/07/geohash-guide/"/>
+    <id>http://wdxtub.com/2016/09/07/geohash-guide/</id>
+    <published>2016-09-07T12:17:34.000Z</published>
+    <updated>2016-09-07T12:19:14.000Z</updated>
+    <content type="html"><![CDATA[<p>做任何跟地理位置相关的服务，位置如何表示及存储是绝对绕不开的问题之一。位置的表示倒是可以用经纬度，但是索引和检索的时候，经纬度这种二维表示法就比较麻烦了，这时我们就可以利用 GeoHash 进行『降维攻击』来解决这个问题了。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u573A_u666F"><a href="#u573A_u666F" class="headerlink" title="场景"></a>场景</h2><p>前几年 LBS 的特性像一股龙卷风一样席卷了整个 App 圈，任何应用都迫不及待地加入了基于地理位置的相关特性。这之中一个非常火的功能就是——查看附近的人/地点/事情，比方说查看附近的餐馆、景点、朋友等等。那么问题就来了，怎么判断是不是附近呢？怎么样定义这个『附近』呢？</p>
+<p>就用『附近的人』这个功能来举例，假如我要找自己身边的人，最简单粗暴的办法就是把我跟所有人的距离算一次，然后选一个阈值，在这个阈值范围内的，认为是『附近』。但是问题来了，如果我们的数据库中有一亿人，那不是每次都要计算一亿次？我们得想个办法减少计算量。</p>
+<p>因为知道自己的经纬度，所以可以知道自己在哪里，比方说深圳市南山区，那么我只需要计算同在南山区的人即可，考虑到我可能在边界上，那么多加周边的几个区进行计算即可。这样一来就可以过滤掉大部分的无用计算了。</p>
+<p>这种方式有一个问题，就是需要很多额外的信息，比方说我得知道南山区，不同国家不同地区各种区域划分，而且有时候区域还会变化（比方说萝岗和南沙并入广州），这样就引入了许多不必要的复杂度。不过即使如此，这种利用特定区域划分来减少计算范围的方法，非常有借鉴意义，类似于搜素剪枝，也就是索引。</p>
+<h2 id="u539F_u7406"><a href="#u539F_u7406" class="headerlink" title="原理"></a>原理</h2><p>因为要使用索引的思想，那么就需要确定拿来建立索引的字段，可是经纬度这种二维的数据很难通过一维索引来高效检索，于是我们可以利用 GeoHash 来进行转换。</p>
+<p>不过在此之前，我们先来看看另一个概念 —— <a href="https://zh.wikipedia.org/wiki/Trie" target="_blank" rel="external">字典树 Trie</a>。</p>
+<blockquote>
+<p>在计算机科学中，trie，又称前缀树或字典树，是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和部分内部节点所对应的键才有相关的值。</p>
+</blockquote>
+<p>这里我们需要在意的就是一点，相同父节点数目越多的子节点，从词的角度上相似度越高。接下来的 GeoHash 算法就部分满足这种特性。</p>
+<p>在介绍具体的算法之前，我们先从较高层级来理解 GeoHash:</p>
+<ul>
+<li>GeoHash 可以把经纬度转换成一个字符串，把二维变成一维</li>
+<li>每个 GeoHash 出来的字符串表示的是一个矩形区域，虽然不够精确，但是一定程度上反而能够保护隐私。Hash 值越长，表示的区域越小</li>
+<li>越往左的编码表示的范围越大，可以利用这个特性来缩小或扩大检索范围</li>
+</ul>
+<p>比方说，北京城区的 GeoHash 大概是这样的（本文部分图片来源<a href="http://www.cnblogs.com/LBSer" target="_blank" rel="external">这里</a>，感谢作者制图）：</p>
+<p><img src="/images/14732507518837.jpg" alt=""></p>
+<p>可以看到，每个格子都有一个编号，具体编号的顺序也有具体的算法，比较常用的是 Peano 曲线、Hilbert 曲线和 Z-order 曲线。</p>
+<p><img src="/images/14732507430572.jpg" alt=""></p>
+<p>至于选择哪种算法，在地理位置相关的应用中，主要考虑的是实现的难度和区域的突变特性。这里以 Peano 填充曲线来做例子，具体的编码方式是从左下角开始的，然后逐步进行递归细化。</p>
+<p><img src="/images/14732507303613.jpg" alt=""></p>
+<p>Peano 曲线的主要问题是突变性，比方说从 0111 到 1000，虽然数值只变了 1，但是具体的区域就是一上一下两个极端（观察上面图片 Hilbert 曲线的变化幅度就小很多）。</p>
+<h2 id="u7B97_u6CD5"><a href="#u7B97_u6CD5" class="headerlink" title="算法"></a>算法</h2><p>了解了基本概念，现在我们可以来看看到底怎么把经纬度转换成 GeoHash 字符串了。主要分三个步骤：</p>
+<ol>
+<li>分别计算经纬度，转换成二进制字符串</li>
+<li>合并字符串并分组</li>
+<li>根据编码表转换为 Base32 字符串</li>
+</ol>
+<p>这里就以广州的坐标为例（北纬 23.1291，东经 113.2644），看看如何转换为 GeoHash 字符串。这里多说一句，纬度的范围是 [-90, 90]，经度的范围是 [-180, 180]，其中负数代表南纬和西经。</p>
+<p>先来处理纬度 23.1291，下面的表格中左值和右值分别代表区间的范围，中值用作二分法，这里如果落在左值和中值之间，则对应位为 0，反之为 1：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">左值</th>
+<th style="text-align:center">中值</th>
+<th style="text-align:center">右值</th>
+<th style="text-align:center">位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">-90</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">90</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">45</td>
+<td style="text-align:center">90</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">22.5</td>
+<td style="text-align:center">45</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">22.5</td>
+<td style="text-align:center">33.75</td>
+<td style="text-align:center">45</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">22.5</td>
+<td style="text-align:center">28.125</td>
+<td style="text-align:center">33.75</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">22.5</td>
+<td style="text-align:center">25.3125</td>
+<td style="text-align:center">28.125</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">22.5</td>
+<td style="text-align:center">23.90625</td>
+<td style="text-align:center">25.3125</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">22.5</td>
+<td style="text-align:center">23.203125</td>
+<td style="text-align:center">23.90625</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">22.5</td>
+<td style="text-align:center">22.8515625</td>
+<td style="text-align:center">23.203125</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">22.8515625</td>
+<td style="text-align:center">23.02734375</td>
+<td style="text-align:center">23.203125</td>
+<td style="text-align:center">1</td>
+</tr>
+</tbody>
+</table>
+<p>然后再来算经度 113.2644，同样的道理：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">左值</th>
+<th style="text-align:center">中值</th>
+<th style="text-align:center">右值</th>
+<th style="text-align:center">位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">-180</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">180</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">90</td>
+<td style="text-align:center">180</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">90</td>
+<td style="text-align:center">135</td>
+<td style="text-align:center">180</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">90</td>
+<td style="text-align:center">112.5</td>
+<td style="text-align:center">135</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">112.5</td>
+<td style="text-align:center">123.75</td>
+<td style="text-align:center">135</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">112.5</td>
+<td style="text-align:center">118.125</td>
+<td style="text-align:center">123.75</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">112.5</td>
+<td style="text-align:center">115.3125</td>
+<td style="text-align:center">118.125</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">112.5</td>
+<td style="text-align:center">113.90625</td>
+<td style="text-align:center">115.3125</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">112.5</td>
+<td style="text-align:center">113.203125</td>
+<td style="text-align:center">113.90625</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">113.203125</td>
+<td style="text-align:center">113.5546875</td>
+<td style="text-align:center">113.90625</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<p>组合一下，纬度的编码是 <code>10100 00011</code>，经度的编码是 <code>11010 00010</code>。我们需要把这两个字符串组合起来，<strong>奇数位放经度，偶数位放纬度</strong>（这里要注意，网上很多文章这里没有写对），组合起来就是 <code>11100 11000 00000 01101</code>，也就是 <code>28 24 0 13</code>，对照 Base32 编码</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Decimal</th>
+<th style="text-align:center">Base 32</th>
+<th style="text-align:center">Decimal</th>
+<th style="text-align:center">Base 32</th>
+<th style="text-align:center">Decimal</th>
+<th style="text-align:center">Base 32</th>
+<th style="text-align:center">Decimal</th>
+<th style="text-align:center">Base 32</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">3</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">7</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">b</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">c</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">d</td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">e</td>
+<td style="text-align:center">14</td>
+<td style="text-align:center">f</td>
+<td style="text-align:center">15</td>
+<td style="text-align:center">g</td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">h</td>
+<td style="text-align:center">17</td>
+<td style="text-align:center">j</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">k</td>
+<td style="text-align:center">19</td>
+<td style="text-align:center">m</td>
+</tr>
+<tr>
+<td style="text-align:center">20</td>
+<td style="text-align:center">n</td>
+<td style="text-align:center">21</td>
+<td style="text-align:center">p</td>
+<td style="text-align:center">22</td>
+<td style="text-align:center">q</td>
+<td style="text-align:center">23</td>
+<td style="text-align:center">r</td>
+</tr>
+<tr>
+<td style="text-align:center">24</td>
+<td style="text-align:center">s</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">t</td>
+<td style="text-align:center">26</td>
+<td style="text-align:center">u</td>
+<td style="text-align:center">27</td>
+<td style="text-align:center">v</td>
+</tr>
+<tr>
+<td style="text-align:center">28</td>
+<td style="text-align:center">w</td>
+<td style="text-align:center">29</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">y</td>
+<td style="text-align:center">31</td>
+<td style="text-align:center">z</td>
+</tr>
+</tbody>
+</table>
+<p>可以得到广州的坐标（北纬 23.1291，东经 113.2644）经过 GeoHash 之后的前四位是 <code>ws0e</code>，我们在 GeoHash 的<a href="http://geohash.org/ws0e96s8g" target="_blank" rel="external">官方网站</a> 检验一下：</p>
+<p><img src="/images/14732507181227.jpg" alt=""></p>
+<p>可以看到前四位确实是 <code>ws0e</code>，我们手算的结果是正确的！不过因为计算精度的问题，这里只算了前四位，实际上是可以根据我们的需要来进行更多位数的计算的，网页中的编码长度是 9 位，精度基本达到 2 米的数量级（8 位的话则是 19 米，7 位是 76 米，6 位是 610 米）。如果是要做『附近』功能的话，至少要到 6 位的精度。</p>
+<h2 id="u5E94_u7528"><a href="#u5E94_u7528" class="headerlink" title="应用"></a>应用</h2><p>了解了具体的 GeoHash 算法之后，我们可以来看看具体在实际应用中可能遇到的各种问题：</p>
+<ul>
+<li>GeoHash 编码对应的是矩形区域，在边界处需要处理临近区域，但是具体区域的编码并不完全跟 hash 之后的字符串一致（参考前面 0111 和 1000的例子）。为此，我们需要使用周围八个区域的 GeoHash 编码，通过有限扩大搜索范围的方法来解决这个问题</li>
+<li>如果是用传统关系型数据库，可以直接利用 GeoHash 的前缀进行检索，比方说 <code>select * from locations where geohash like &#39;ws03%&#39;</code></li>
+<li>如果需要兼顾速度与精确度，那么同时保存经纬度和 GeoHash 即可，利用 GeoHash 来缩小范围，再利用经纬度进行精确计算</li>
+<li>计算周围 8 个矩形区域，利用原始的 GeoHash 字符串显然是不行的（考虑分别处于赤道两边且很相近的两个点）对于经度一个维度来说，无论切分几次，它的左邻和右邻都只会和它相差1。画一下就知道它是一棵有序的01满二叉树。根据当前矩形的经度串，很容易就获得了它的两个东西邻接经度串。同理，可以根据其纬度串获取南北邻接纬度串。连同当前矩形的经度串和纬度串，就能组合得到周边的8个矩形的二进制串了。Base32 编码后的到 geohash 值，即是所需要的8个索引了（此段<a href="http://evthoriz.com/2015/07/02/Geohash%20%E7%AE%97%E6%B3%95%E7%9A%84%E8%BE%B9%E7%95%8C%E9%97%AE%E9%A2%98/" target="_blank" rel="external">来源</a>）</li>
+<li>Base32 是一种简单的加密算法，详情请参考后文链接</li>
+</ul>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>本文我们见到了解了 GeoHash 的相关概念和应用，具体的使用过程中还需要根据具体需求来进行调整（比方说不同的曲线填充算法），但是要保证具体实现的一致性。</p>
+<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki/Geohash" target="_blank" rel="external">Geohash - From Wikipedia, the free encyclopedia</a></li>
+<li><a href="http://geohash.org/ws0e96s8g" target="_blank" rel="external">geohash.org</a></li>
+<li><a href="http://charlee.li/geohash-intro.html" target="_blank" rel="external">geohash：用字符串实现附近地点搜索</a></li>
+<li><a href="http://www.cnblogs.com/LBSer/p/3310455.html" target="_blank" rel="external">GeoHash核心原理解析</a></li>
+<li><a href="https://github.com/mmcloughlin/geohash" target="_blank" rel="external">mmcloughlin/geohash(包含其他几个实现，可以对比下速度)</a></li>
+<li><a href="https://github.com/wdxtub/geohash" target="_blank" rel="external">wdxtub/geohash(我自己在项目中使用的)</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Base32" target="_blank" rel="external">Base32 - From Wikipedia, the free encyclopedia</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>做任何跟地理位置相关的服务，位置如何表示及存储是绝对绕不开的问题之一。位置的表示倒是可以用经纬度，但是索引和检索的时候，经纬度这种二维表示法就比较麻烦了，这时我们就可以利用 GeoHash 进行『降维攻击』来解决这个问题了。</p>]]>
+    
+    </summary>
+    
+      <category term="位置" scheme="http://wdxtub.com/tags/%E4%BD%8D%E7%BD%AE/"/>
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Destiny 游戏分析]]></title>
@@ -1357,7 +1674,7 @@
     <link href="http://wdxtub.com/2016/08/15/kafka-guide/"/>
     <id>http://wdxtub.com/2016/08/15/kafka-guide/</id>
     <published>2016-08-15T11:38:04.000Z</published>
-    <updated>2016-08-17T13:03:52.000Z</updated>
+    <updated>2016-09-07T09:54:07.000Z</updated>
     <content type="html"><![CDATA[<p>提到消息系统，目前最火热的非 Kafka 莫属，公司也打算利用 Kafka 进行各业务日志统一收集，这里结合自己的实践来分享一下具体的配置及使用。Kafka 版本 0.10.0.1</p>
 <a id="more"></a>
 <hr>
@@ -1422,6 +1739,10 @@
 <p>最后我们可以按照同样的方法来生产和消费消息，例如</p>
 <figure class="highlight brainfuck"><table><tr><td class="code"><pre><span class="line"><span class="comment">#</span> <span class="comment">生产</span></span><br><span class="line"><span class="comment">bin/kafka</span><span class="literal">-</span><span class="comment">console</span><span class="literal">-</span><span class="comment">producer</span><span class="string">.</span><span class="comment">sh</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">broker</span><span class="literal">-</span><span class="comment">list</span> <span class="comment">localhost:9092</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">topic</span> <span class="comment">oh3topic</span></span><br><span class="line"><span class="comment">#</span> <span class="comment">消费</span></span><br><span class="line"><span class="comment">bin/kafka</span><span class="literal">-</span><span class="comment">console</span><span class="literal">-</span><span class="comment">consumer</span><span class="string">.</span><span class="comment">sh</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">zookeeper</span> <span class="comment">localhost:2181</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">from</span><span class="literal">-</span><span class="comment">beginning</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">topic</span> <span class="comment">oh3topic</span></span><br></pre></td></tr></table></figure>
 <p>开俩终端就可以一边生产消息，一边消费消息了。</p>
+<h3 id="u6CE8_u610F_u4E8B_u9879"><a href="#u6CE8_u610F_u4E8B_u9879" class="headerlink" title="注意事项"></a>注意事项</h3><p>如果要配置自定义端口，<code>server.properties</code> 中 listeners 一定要配置成为 IP 地址；如果配置为 localhost 或服务器的 hostname，在使用 java 发送数据时就会抛出异</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建 topic</span></span><br><span class="line">bin/kafka-topics.sh --create --zookeeper bi03:<span class="number">2181</span> --replication-factor <span class="number">1</span> --partitions <span class="number">1</span> --topic logs</span><br><span class="line"><span class="comment"># 生产消息</span></span><br><span class="line">bin/kafka-console-producer.sh --broker-list localhost:<span class="number">13647</span> --topic logs</span><br><span class="line"><span class="comment"># 消费消息</span></span><br><span class="line"><span class="comment"># bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic logs</span></span><br></pre></td></tr></table></figure>
+<p>如果 Zookeeper 出现 <code>fsync-ing the write ahead log in SyncThread:1 took 2243ms which will adversely effect operation latency. See the
+ZooKeeper troubleshooting guide</code>，是因为 FOLLOWER 在跟 LEADER 同步时，fsync 操作时间过长，导致超时。增加 <code>tickTime</code> 或者 <code>initLimit</code> 和 <code>syncLimit</code> 的值即可 </p>
 <h2 id="u96C6_u7FA4_u914D_u7F6E"><a href="#u96C6_u7FA4_u914D_u7F6E" class="headerlink" title="集群配置"></a>集群配置</h2><p>kafka 使用 ZooKeeper 用于管理、协调代理。每个 Kafka 代理通过 Zookeeper 协调其他 Kafka 代理。当 Kafka 系统中新增了代理或某个代理失效时，Zookeeper 服务将通知生产者和消费者。生产者与消费者据此开始与其他代理协调工作。</p>
 <h3 id="u5B89_u88C5_Java"><a href="#u5B89_u88C5_Java" class="headerlink" title="安装 Java"></a>安装 Java</h3><p>先给两台机子安装 Java</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo add-apt-repository -y ppa:webupd8team/java</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get -y install oracle-java8-installer</span><br></pre></td></tr></table></figure>
@@ -1549,6 +1870,7 @@
 <p>很多时候，性能的瓶颈并非CPU或者硬盘而是网络带宽，对于需要在数据中心之间传送大量数据的应用更是如此。当然用户可以在没有 Kafka 支持的情况下各自压缩自己的消息，但是这将导致较低的压缩率，因为相比于将消息单独压缩，将大量文件压缩在一起才能起到最好的压缩效果。</p>
 <p>Kafka 采用了端到端的压缩：因为有『消息集』的概念，客户端的消息可以一起被压缩后送到服务端，并以压缩后的格式写入日志文件，以压缩的格式发送到 consumer，消息从 producer 发出到 consumer 拿到都被是压缩的，只有在 consumer 使用的时候才被解压缩，所以叫做『端到端的压缩』。Kafka支持GZIP和Snappy压缩协议。</p>
 <h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://blog.csdn.net/LOUISLIAOXH/article/details/51567515" target="_blank" rel="external">Kafka学习整理六(server.properties配置实践)</a></li>
 <li><a href="http://kafka.apache.org/" target="_blank" rel="external">Apache Kafka</a></li>
 <li><a href="http://kafka.apache.org/documentation.html#quickstart" target="_blank" rel="external">Quick Start</a></li>
 <li><a href="http://www.aboutyun.com/thread-12882-1-1.html" target="_blank" rel="external">Kafka入门经典教程</a></li>
@@ -1574,115 +1896,6 @@
       <category term="消息队列" scheme="http://wdxtub.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
     
       <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[好问题收集]]></title>
-    <link href="http://wdxtub.com/2016/08/14/good-question/"/>
-    <id>http://wdxtub.com/2016/08/14/good-question/</id>
-    <published>2016-08-13T23:54:53.000Z</published>
-    <updated>2016-08-14T00:24:21.000Z</updated>
-    <content type="html"><![CDATA[<p>好的问题往往能引发人的思考，而思考的过程其实比答案更加重要。这里收集了各类我在网上看到的有趣问题。在这里跟大家分享一下，有空会更新。</p>
-<a id="more"></a>
-<hr>
-<h2 id="Insightful_Questions__u667A_u6027_u95EE_u9898"><a href="#Insightful_Questions__u667A_u6027_u95EE_u9898" class="headerlink" title="Insightful Questions 智性问题"></a>Insightful Questions 智性问题</h2><p>来自即刻的对应栏目，截至 16/08/15</p>
-<ul>
-<li>Is it more common for a country to have more parties on the left or the right? 在一个国家中是不是通常左倾或者右倾党派会有一个占多数？</li>
-<li>Would you give up your right to privacy to live in a Utopia? 为了生活在一个理想的乌托邦里，你会放弃隐私吗？</li>
-<li>Do we need a visual image in order to be in love? 我们可以在不见到对方形象的情况下坠入爱河吗</li>
-<li>Entropy is constantly increasing in the universe. Does this directly affect human lifestyle gradually? Is our world meant to be more chaotic with age? 雨中中熵总是增加的，这会直接性地渐渐改变人类的生活方式吗，我们的人类社会随着时间发展会变得更混乱无序吗？</li>
-<li>Can an non sapient animal distinguish dreams from reality? 对没有智力的动物而言，它们能分清梦境与现实吗？</li>
-<li>When does a human become a separative living being with their own rights? 一个人从何时起可以界定为具有自身权利的独立个体？</li>
-<li>How would people react if the Simulation theory was proven correct? 如果我们真的发现自己生活在虚拟世界中，人类群体会作何反应？</li>
-<li>Should people have the right to choose exactly where to funnel their tax dollars, and stop the spending of the tax dollars should they disagree with the service government is spending it on? 人民有权选择缴纳具体的税收项目吗？当人民不同意政府某些财政支出的时候，可以停止交税吗？</li>
-<li>Does ironic racism still count as racism? 玩笑式的种族歧视话语仍然被当作真正的种族歧视吗？</li>
-<li>Is reality just our perception of reality? 所谓『现实』是否仅仅是现实在我们的知觉中的反映？</li>
-<li>How many generations could a dictatorship last if the first dictator was benevolent and intelligent? 如果第一代独裁者仁慈且智慧，他的独裁政权能持续多少代？</li>
-<li>How do you rescue a group of people which may contain a murderer? 如果想救的一群人中混有杀人凶手，该怎么办？</li>
-<li>Should people have the right to discriminate? 人们有歧视的权力吗？</li>
-<li>Are ethics universal and unchanging, or culturally relative and man made? 伦理学是普世不变的还是随文化与人为而改变？</li>
-<li>Is prejudice, when based upon one’s own life experiences, such a bad thing? 基于生活经验而来的偏见是不是一定不对呢？</li>
-<li>Is pirating books online that you could also “rent” digitally from a library hurting anyone? 如果可以在图书馆接到免费电子版，那在网上下载同一本书的盗版会对任何人造成损害吗？</li>
-<li>Would an artificial intelligence strive for survival? 人工智慧会有求生欲望</li>
-<li>How would our society, emotions and law be affected if we learned death was an unquestionable good for people? 如果得知死亡毫无疑问是件好事，我们的社会在情感与法律上会受到什么影响</li>
-<li>Why do humans need to control each other, and want to feel in control of situations? 人类为什么喜欢控制他人，有想要一切尽在掌控中的欲望？</li>
-<li>Will medical advances kill morality after there are no consequences for taboo behavior? 如果医学上的进步使本来的一些禁忌行为不再造成后果，会消除它们在道德上的限制吗？</li>
-<li>What gives an item or thing value? 是什么赋予了一件事情或东西以价值？</li>
-<li>Should ALL victimless crimes be legalized? 没有受害者的犯罪是不是都该合法化？</li>
-<li>Should humanity strive for immortality? 人类应该追求永生吗？</li>
-<li>Can we accurately judge our own attractiveness? 我们可以准确评估自己的吸引力么？</li>
-<li>Could a person who understands a complex idea (be it scientific, philosophical, etc.) have come up with the idea themselves? 在某人有能力理解一个复杂概念（哲学或科学上）的情况下，他是否一定可以在还没有这个概念的时候自己将它发现出来呢？</li>
-<li>Why do we feel awe? 人为什么会有敬畏之情？</li>
-<li>Do the benefits or freedom outweigh the problems freedom enables? 自由带来的正面与负面效应孰轻孰重？</li>
-<li>What rights do we have? 我们有什么权利？</li>
-<li>In the far future - how will territorial boundaries be handled after significant movement of earth’s plates? 在遥远的未来，因为大陆版快漂移造成的剧变会怎样影响既有的国家领土划分</li>
-<li>If you could sacrifice your most joyous memory in order to take away your worse. Would you? 如果牺牲你最快乐的那段记忆来消除最痛苦的那段，你愿意吗？</li>
-<li>How can one recognize one’s true personality? 一个人怎样发现自己真正的本性？</li>
-<li>Are people rather egoistic or altruistic? 人性是利己的还是利他的</li>
-<li>What heartfelt principles did you once hold, but have since changed? And what changed them? 哪些原则是你曾坚持，而后改变乐的，是什么改变了它</li>
-<li>Could fresh water be the cause for the next major war? 对清洁饮用水的争夺是否会成为下次大战的起因？</li>
-<li>What are the true intentions of charity? 做慈善的真正目的是什么</li>
-<li>Should we be always painfully honest? 我们应该绝对诚实吗？</li>
-<li>How different would our world be if the average lifespan was only 25? 如果人的平均寿命只有 25 岁，这个世界会有什么不同？</li>
-<li>If you could take a pill that would remove the need for sleep, but it means you will never dream again, would you take it? 如果有一颗药能让人不需要睡眠，也不再做梦，你会不会吃？</li>
-<li>What are we so confident in our beliefs about things that we can’t possibly know? 为什么我们会对 不可知的事抱有坚定的信念？</li>
-<li>How has modern life incapacitated our ability to grow and adapt to stress? 现代生活如何让我们失去了成长和适应压力的能力？</li>
-<li>Is democracy really the best form of government? 民主真的是最好的政府形式吗？</li>
-<li>What is the best way to combat religious extremism occurring throughout the world? 宗教极端分子在全世界制造灾难，打击他们最好的办法是什么</li>
-<li>When is war justifiable? 什么情况下，战争可能被认为是合理的选择？</li>
-<li>What has been some of the most valuable lessons you’ve learned in life? 你在生活中学到最有价值的东西是什么？</li>
-</ul>
-<h2 id="u52A0_u6DF1_u5F7C_u6B64_u8BA4_u8BC6_u7684_36__u4E2A_u95EE_u9898"><a href="#u52A0_u6DF1_u5F7C_u6B64_u8BA4_u8BC6_u7684_36__u4E2A_u95EE_u9898" class="headerlink" title="加深彼此认识的 36 个问题"></a>加深彼此认识的 36 个问题</h2><p>在生活大爆炸里 Sheldon 和 Penny 做过的一套题目</p>
-<ol>
-<li>如果可以跟世上任何人共进晚餐, 你会选择谁?</li>
-<li>你会想出名吗? 以什么样方式出名呢?</li>
-<li>在打一通电话之前, 你会先排演要在电话中说什么吗? 为什么?</li>
-<li>你心中最完美的一天是做哪些事呢?</li>
-<li>你上一次唱歌给自己听是什么时候? 上一次唱给别人听又是何时?</li>
-<li>如果你可以活到90岁, 并能在30岁过后让体态或大脑一直保持30岁的状态到死, 你会选保持体态还是大脑呢?</li>
-<li>你有曾经预感过自己会怎么死亡吗?</li>
-<li>举出3个你与你对面这位的共同点.</li>
-<li>你人生中你最感激什么?</li>
-<li>如果你能改变你是怎么被抚育成人的, 你会想改变什么?</li>
-<li>用四分钟跟你对面这位分享你的一生, 越详细越好.</li>
-<li>如果你明早一觉醒来发现自己获得了某种能力, 你希望是什么能力?</li>
-<li>如果一颗魔法水晶球能告诉你有关你自己, 你的人生, 你的未来, 或任何事情, 你会想知道什么?</li>
-<li>你有已经梦想了很久, 想做的事情吗? 你为什么还没去做?</li>
-<li>你人生中最大的成就是什么?</li>
-<li>一段友情中你最珍视的是什么?</li>
-<li>你最珍贵的一段回忆是什么?</li>
-<li>你最糟糕的一段回忆是什么?</li>
-<li>如果你知道你会在一年后突然死去, 你会想改变任何你现在的生活方式吗? 为什么?</li>
-<li>友情对你来说代表什么?</li>
-<li>爱与喜欢在你的人生中有着什么样的地位?</li>
-<li>轮流分享你觉得你的恋人应该具有的五项好品质?</li>
-<li>你的家庭亲密温暖吗? 你觉得你的童年有比别人幸福点吗?</li>
-<li>你觉得你跟你的母亲的关系怎么样呢?</li>
-<li>用”我们”做主语造三个肯定句, 比如”我们都在这个房间里”.</li>
-<li>完成以下句子”我希望我有一个人能与ta分享…”</li>
-<li>如果你会跟你对面的人变成亲密好友, 分享一下你觉得对方必需得知道的事情.</li>
-<li>告诉你对面的人你喜欢ta什么: 老实回答, 说一些你通常不会告诉刚认识的人的答案.</li>
-<li>与你对面的人分享人生中很尴尬的一刻.</li>
-<li>你上一次在别人面前哭是什么时候? 上一次自己哭是什么时候?</li>
-<li>告诉你对面的人你已经喜欢上ta的什么?</li>
-<li>有什么人事物是太严重, 不能随便开玩笑的?</li>
-<li>如果你将在今晚死去, 没有任何再与他人交流的机会, 你最后悔没有把什么事情跟别人说?</li>
-<li>你的家着火了, 里面有你所拥有的一切事物. 在救出你爱的人, 你的宠物后, 你还有时间最后再冲回去一趟拯救最后一样任何东西, 你会救出什么? 为什么?</li>
-<li>你家庭中的所有人里, 谁的死会让你最难受? 为什么?</li>
-<li>分享一个你私人的问题, 并想你对面的人询问ta会怎么处理. 之后再请ta回答, 对于你选这个问题, ta有什么看法?</li>
-</ol>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>好的问题往往能引发人的思考，而思考的过程其实比答案更加重要。这里收集了各类我在网上看到的有趣问题。在这里跟大家分享一下，有空会更新。</p>]]>
-    
-    </summary>
-    
-      <category term="思考" scheme="http://wdxtub.com/tags/%E6%80%9D%E8%80%83/"/>
-    
-      <category term="问题" scheme="http://wdxtub.com/tags/%E9%97%AE%E9%A2%98/"/>
-    
-      <category term="Life" scheme="http://wdxtub.com/categories/Life/"/>
     
   </entry>
   
