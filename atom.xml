@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Agony is my triumph]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://wdxtub.com/"/>
-  <updated>2016-09-07T12:19:14.000Z</updated>
+  <updated>2016-09-08T12:56:26.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -13,6 +13,54 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Nginx 指南]]></title>
+    <link href="http://wdxtub.com/2016/09/08/nginx-guide/"/>
+    <id>http://wdxtub.com/2016/09/08/nginx-guide/</id>
+    <published>2016-09-08T12:54:54.000Z</published>
+    <updated>2016-09-08T12:56:26.000Z</updated>
+    <content type="html"><![CDATA[<p>最近需要把负责的项目部署到云端，采用了现在业界流行的 Nginx 反向代理方案，这样后端的 Go 程序只需要专注于业务逻辑和功能。本文记录具体的部署方案。</p>
+<a id="more"></a>
+<hr>
+<h2 id="u624B_u52A8_u5B89_u88C5"><a href="#u624B_u52A8_u5B89_u88C5" class="headerlink" title="手动安装"></a>手动安装</h2><p>虽然云端环境是 Ubuntu 14.04，不过为了后面维护的方便，决定不采用 <code>apt-get</code> 而是手动进行安装。整个过程我已经配置成为了一个脚本，接下来通过讲解脚本来介绍具体安装的过程</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 运行之前需要切换到 root 用户</span></span><br><span class="line">serviceDir=/data/home/username</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装配置依赖，这里直接用 apt-get</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing make g++"</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></span><br><span class="line">apt-get install make</span><br><span class="line">apt-get install g++</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(1/7)"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 openssl，其中 openssl-1.0.2 是长期支持版本，所以我采用这个版本</span></span><br><span class="line"><span class="comment"># 更多信息请访问 https://www.openssl.org/source/</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing openssl"</span> </span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></span><br><span class="line">wget https://www.openssl.org/<span class="built_in">source</span>/openssl-<span class="number">1.0</span>.<span class="number">2</span>h.tar.gz</span><br><span class="line">tar -xzvf openssl-<span class="number">1.0</span>.<span class="number">2</span>h.tar.gz</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/openssl-<span class="number">1.0</span>.<span class="number">2</span>h</span><br><span class="line">./config</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">ldconfig</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(2/7)"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 Pcre，为了保证兼容我们这里使用较老的版本</span></span><br><span class="line"><span class="comment"># 源用的是 stanford 的（因为 pcre.org 我这里打不开）</span></span><br><span class="line"><span class="comment"># 源：http://ftp.cs.stanford.edu/pub/exim/pcre/</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing pcre"</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></span><br><span class="line">wget http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-<span class="number">8.37</span>.tar.gz</span><br><span class="line">tar -xzvf pcre-<span class="number">8.37</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/pcre-<span class="number">8.37</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">ldconfig</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(3/7)"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 zlib，用的就是最新的 1.2.8</span></span><br><span class="line"><span class="comment"># 源 http://zlib.net/zlib-1.2.8.tar.gz</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing zlib"</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></span><br><span class="line">wget http://zlib.net/zlib-<span class="number">1.2</span>.<span class="number">8</span>.tar.gz</span><br><span class="line">tar -xzvf zlib-<span class="number">1.2</span>.<span class="number">8</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/zlib-<span class="number">1.2</span>.<span class="number">8</span></span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line">ldconfig</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(4/7)"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 Nginx</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing Nginx"</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></span><br><span class="line">wget https://nginx.org/download/nginx-<span class="number">1.10</span>.<span class="number">1</span>.tar.gz</span><br><span class="line">tar -xzvf nginx-<span class="number">1.10</span>.<span class="number">1</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/nginx-<span class="number">1.10</span>.<span class="number">1</span></span><br><span class="line">./configure --prefix=<span class="variable">$serviceDir</span>/nginx-server --with-openssl=<span class="variable">$serviceDir</span>/openssl-<span class="number">1.0</span>.<span class="number">2</span>h --with-http_ssl_module --with-http_stub_status_module --with-stream</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/nginx-server/conf</span><br><span class="line">rm -rf nginx.conf</span><br><span class="line"><span class="comment"># 这里用的是已经配置好的配置文件</span></span><br><span class="line">wget http://xssz.oss-cn-shenzhen.aliyuncs.com/server_software/nginx.conf</span><br><span class="line">ln <span class="operator">-s</span> <span class="variable">$serviceDir</span>/nginx-server/sbin/nginx /usr/<span class="built_in">local</span>/bin/nginx</span><br><span class="line">mkdir <span class="variable">$serviceDir</span>/nginx-server/run</span><br><span class="line">mkdir <span class="variable">$serviceDir</span>/nginx-config</span><br><span class="line">ln <span class="operator">-s</span> <span class="variable">$serviceDir</span>/nginx-server/sbin/nginx /usr/<span class="built_in">local</span>/bin/nginx</span><br><span class="line">nginx -c <span class="variable">$serviceDir</span>/nginx-server/conf/nginx.conf</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(5/7)"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装守护</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Config daemon"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$serviceDir</span><span class="string">'/nginx-server/sbin/nginx -c '</span><span class="variable">$serviceDir</span><span class="string">'/nginx-server/conf/nginx.conf'</span> &gt; /etc/rc.local</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'exit 0'</span> &gt;&gt; /etc/rc.local</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(6/7)"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理工作，把所有的安装包保存到 software 文件夹中</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Clean up all the mess"</span></span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></span><br><span class="line">mkdir <span class="variable">$serviceDir</span>/software</span><br><span class="line">mv *.gz <span class="variable">$serviceDir</span>/software</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(7/7)"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"All Done. You can now continue your work."</span></span><br></pre></td></tr></table></figure>
+<p>注释应该已经写得比较清楚了，这里就不再赘述</p>
+<h2 id="u914D_u7F6E"><a href="#u914D_u7F6E" class="headerlink" title="配置"></a>配置</h2><p>配置的部分，基本上根据默认的指引就可以完成基本的配置。这里介绍一下我从老司机那里学来的方法，把公共部分和自定义部分分离，看起来更加清晰。</p>
+<p>首先，因为是手动安装的 nginx 的，默认的 nginx 配置在 <code>~/nginx-server/conf/nginx.conf</code> 中，我们来看看里面的条目：</p>
+<figure class="highlight dns"><table><tr><td class="code"><pre><span class="line">user www-data<span class="comment">;</span></span><br><span class="line">worker_processes 1<span class="comment">;</span></span><br><span class="line">worker_rlimit_nofile 262140<span class="comment">;</span></span><br><span class="line">worker_cpu_affinity 1<span class="comment">;</span></span><br><span class="line">error_log logs/error.log<span class="comment">;</span></span><br><span class="line">pid run/nginx.pid<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">events</span><br><span class="line">&#123;</span><br><span class="line">    use epoll<span class="comment">;</span></span><br><span class="line">    worker_connections 65535<span class="comment">;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http</span><br><span class="line">&#123;</span><br><span class="line">    include mime.types<span class="comment">;</span></span><br><span class="line">    default_type application/octet-stream<span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    sendfile on<span class="comment">;</span></span><br><span class="line">    #aio on<span class="comment">;</span></span><br><span class="line">    directio 512<span class="comment">;</span></span><br><span class="line">    output_buffers 1 128k<span class="comment">;</span></span><br><span class="line">    log_not_found off<span class="comment">;</span></span><br><span class="line">    keepalive_timeout 65<span class="comment">;</span></span><br><span class="line">    server_tokens off<span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    gzip on<span class="comment">;</span></span><br><span class="line">    gzip_comp_level 6<span class="comment">;</span></span><br><span class="line">    gzip_min_length 1k<span class="comment">;</span></span><br><span class="line">    gzip_buffers 4 8k<span class="comment">;</span></span><br><span class="line">    gzip_disable "MSIE [1-6]\.(?!.*SV1)"<span class="comment">;</span></span><br><span class="line">    gzip_types text/plain application/x-javascript text/css application/xml text/javascript application/javascript application/json<span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    log_format main '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$request_time" "$upstream_response_time"'<span class="comment">;</span></span><br><span class="line">    access_log logs/$&#123;server_name&#125;.access.log main<span class="comment">;</span></span><br><span class="line">    fastcgi_intercept_errors on<span class="comment">;</span></span><br><span class="line">    error_page <span class="number">500 502</span> <span class="number">503 504</span> /50x.html<span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    server_names_hash_max_size 4096<span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    server</span><br><span class="line">    &#123;</span><br><span class="line">        listen 80 default<span class="comment">;</span></span><br><span class="line">        server_name _<span class="comment">;</span></span><br><span class="line">        access_log off<span class="comment">;</span></span><br><span class="line">        </span><br><span class="line">        location /</span><br><span class="line">        &#123;</span><br><span class="line">            return 403<span class="comment">;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    include /data/home/user/nginx-config/*.http<span class="comment">;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">stream&#123;</span><br><span class="line">    include /data/home/user/nginx-config/*.tcp<span class="comment">;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>前面的都不重要，重要的是最后两句 <code>include</code> 语句，这里我们就把需要自己配置的部分抽取了出来，放到了文件夹 <code>nginx-config</code> 中。</p>
+<p>接着，只要我们在 <code>nginx-config</code> 文件夹中，针对不同的域名和应用进行配置即可，比方说我的 Go 应用跑在本机的 12345 端口上，那么可以这么配置：</p>
+<figure class="highlight dns"><table><tr><td class="code"><pre><span class="line">upstream http_pool&#123;</span><br><span class="line">    server <span class="number">127.0.0.1</span>:12345 weight=1 max_fails=3 fail_timeout=30s<span class="comment">;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server&#123;</span><br><span class="line">    server_name test.xxx.com<span class="comment">;</span></span><br><span class="line">    listen 80<span class="comment">;</span></span><br><span class="line">    ssl off<span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    gzip on<span class="comment">;</span></span><br><span class="line">    gzip_min_length 1k<span class="comment">;</span></span><br><span class="line">    gzip_buffers 16 64k<span class="comment">;</span></span><br><span class="line">    gzip_comp_level 9<span class="comment">;</span></span><br><span class="line">    gzip_types text/plain text/css application/json application/x-javascript application/xml application/xml+rss text/javascript application/atom+xml<span class="comment">;</span></span><br><span class="line">    gzip_vary on<span class="comment">;</span></span><br><span class="line">    </span><br><span class="line">    location /</span><br><span class="line">    &#123;</span><br><span class="line">        proxy_next_upstream http_404 http_502 http_504 http_500 error timeout invalid_header<span class="comment">;</span></span><br><span class="line">        proxy_pass http://http_pool<span class="comment">;</span></span><br><span class="line">        proxy_set_header X-Forwarded-For $remote_addr<span class="comment">;</span></span><br><span class="line">        proxy_set_header Host $http_host<span class="comment">;</span></span><br><span class="line">        client_max_body_size 5000k<span class="comment">;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样我们就完成了从 test.xxx.com 到 127.0.0.1:12345 的代理了。注意，上面的配置文件有很多地方需要优化，这里只是一个简单的示例。关于具体怎么优化还有很多需要做的，会在之后慢慢更新。</p>
+<p>关于 Nginx 的进阶配置，参考链接中的三篇系列文章写得非常好，这里我就简单带过，需要的同学可以前往继续研究。</p>
+<h2 id="u4F7F_u7528"><a href="#u4F7F_u7528" class="headerlink" title="使用"></a>使用</h2><p>Nginx 的使用我比较常用的其实在 <code>nginx -h</code> 中已经有介绍，一般来说我就用一个命令 <code>nginx -s [stop|quit|reopen|reload]</code>，其实也就是 <code>sudo nginx -s reload</code></p>
+<p>另外有一个需要注意的地方就是，在 nginx 中配置的 80(http) 和 8080(tcp) 端口不能被占用，不然会一直冲突。另外需要注意配置路径的时候不要弄错了。</p>
+<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>Nginx 是我一直以来不太熟悉的，借着这次机会能从安装到部署实战一下，还有老司机指导，感觉还是很不错的。相比于 Apache 这种重量级选手，Nginx 的灵活轻便让我非常钟意，就像 Go 一样。</p>
+<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://www.openssl.org/" target="_blank" rel="external">OpenSSL</a></li>
+<li><a href="http://ftp.cs.stanford.edu/pub/exim/pcre/" target="_blank" rel="external">PCRE 源</a></li>
+<li><a href="http://www.zlib.net/" target="_blank" rel="external">Zlib</a></li>
+<li><a href="https://nginx.org/en/download.html" target="_blank" rel="external">Nginx</a></li>
+<li><a href="https://www.zybuluo.com/phper/note/89391" target="_blank" rel="external">nginx的配置、虚拟主机、负载均衡和反向代理（1）</a></li>
+<li><a href="https://www.zybuluo.com/phper/note/90310" target="_blank" rel="external">nginx的配置、虚拟主机、负载均衡和反向代理（2）</a></li>
+<li><a href="https://www.zybuluo.com/phper/note/133244" target="_blank" rel="external">nginx的配置、虚拟主机、负载均衡和反向代理（3）</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>最近需要把负责的项目部署到云端，采用了现在业界流行的 Nginx 反向代理方案，这样后端的 Go 程序只需要专注于业务逻辑和功能。本文记录具体的部署方案。</p>]]>
+    
+    </summary>
+    
+      <category term="Nginx" scheme="http://wdxtub.com/tags/Nginx/"/>
+    
+      <category term="反向代理" scheme="http://wdxtub.com/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/"/>
+    
+      <category term="服务器" scheme="http://wdxtub.com/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[GeoHash 指南]]></title>
@@ -1664,236 +1712,6 @@
       <category term="Go" scheme="http://wdxtub.com/tags/Go/"/>
     
       <category term="笨鸟" scheme="http://wdxtub.com/tags/%E7%AC%A8%E9%B8%9F/"/>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Kafka 指南]]></title>
-    <link href="http://wdxtub.com/2016/08/15/kafka-guide/"/>
-    <id>http://wdxtub.com/2016/08/15/kafka-guide/</id>
-    <published>2016-08-15T11:38:04.000Z</published>
-    <updated>2016-09-07T09:54:07.000Z</updated>
-    <content type="html"><![CDATA[<p>提到消息系统，目前最火热的非 Kafka 莫属，公司也打算利用 Kafka 进行各业务日志统一收集，这里结合自己的实践来分享一下具体的配置及使用。Kafka 版本 0.10.0.1</p>
-<a id="more"></a>
-<hr>
-<h2 id="u4ECB_u7ECD"><a href="#u4ECB_u7ECD" class="headerlink" title="介绍"></a>介绍</h2><p>作为云计算大数据的套件，Kafka 是一个分布式的、可分区的、可复制的消息系统。该有的功能基本都有，而且有自己的特色：</p>
-<ul>
-<li>以 topic 为单位进行消息归纳</li>
-<li>向 topic 发布消息的是 producer</li>
-<li>从 topic 获取消息的是 consumer</li>
-<li>集群方式运行，每个服务叫 broker</li>
-<li>客户端和服务器通过 TCP 进行通信</li>
-</ul>
-<p>在Kafka集群中，没有“中心主节点”的概念，集群中所有的服务器都是对等的，因此，可以在不做任何配置的更改的情况下实现服务器的的添加与删除，同样的消息的生产者和消费者也能够做到随意重启和机器的上下线。</p>
-<p>对每个 topic 来说，Kafka 会对其进行分区，每个分区都由一系列有序的、不可变的消息组成，这些消息被连续的追加到分区中。分区中的每个消息都有一个连续的序列号叫做 offset,用来在分区中唯一的标识这个消息。</p>
-<p>发布消息通常有两种模式：队列模式(queuing)和发布-订阅模式(publish-subscribe)。队列模式中，consumers 可以同时从服务端读取消息，每个消息只被其中一个 consumer 读到；发布-订阅模式中消息被广播到所有的 consumer 中。更常见的是，每个 topic 都有若干数量的 consumer 组，每个组都是一个逻辑上的『订阅者』，为了容错和更好的稳定性，每个组由若干 consumer 组成。这其实就是一个发布-订阅模式，只不过订阅者是个组而不是单个 consumer。</p>
-<p>通过分区的概念，Kafka可以在多个consumer组并发的情况下提供较好的有序性和负载均衡。将每个分区分只分发给一个consumer组，这样一个分区就只被这个组的一个consumer消费，就可以顺序的消费这个分区的消息。因为有多个分区，依然可以在多个consumer组之间进行负载均衡。注意consumer组的数量不能多于分区的数量，也就是有多少分区就允许多少并发消费。</p>
-<p>Kafka 只能保证一个分区之内消息的有序性，在不同的分区之间是不可以的，这已经可以满足大部分应用的需求。如果需要 topic 中所有消息的有序性，那就只能让这个 topic 只有一个分区，当然也就只有一个 consumer 组消费它。</p>
-<h2 id="u5355_u673A_u914D_u7F6E"><a href="#u5355_u673A_u914D_u7F6E" class="headerlink" title="单机配置"></a>单机配置</h2><p>按照下列步骤即可（来自官网教程）</p>
-<p><strong>1. 下载 Kafka</strong></p>
-<ul>
-<li>下载 <code>wget http://apache.01link.hk/kafka/0.10.0.0/kafka_2.11-0.10.0.0.tgz</code> 或者 <code>wget http://ftp.cuhk.edu.hk/pub/packages/apache.org/kafka/0.10.0.0/kafka_2.11-0.10.0.0.tgz</code>（看哪个源比较快）</li>
-<li>解压 <code>tar -xzf kafka_2.11-0.10.0.0.tgz</code> </li>
-<li>进入文件夹 <code>cd kafka_2.11-0.10.0.0/</code></li>
-</ul>
-<p><strong>2. 启动服务</strong></p>
-<ul>
-<li>启动 ZooKeeper <code>bin/zookeeper-server-start.sh config/zookeeper.properties &amp;</code>（利用 <code>&amp;</code>放到后台方便继续操作）</li>
-<li>启动 Kafka <code>bin/kafka-server-start.sh config/server.properties &amp;</code></li>
-</ul>
-<p><strong>3. 创建一个叫做 dawang 的 topic，它只有一个分区，一个副本</strong></p>
-<ul>
-<li>创建 <code>bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic dawang</code></li>
-<li>查看 <code>bin/kafka-topics.sh --list --zookeeper localhost:2181</code></li>
-<li>还可以配置 broker 让它自动创建 topic</li>
-</ul>
-<p><strong>4. 发送消息。Kafka 使用一个简单的命令行producer，从文件中或者从标准输入中读取消息并发送到服务端。默认的每条命令将发送一条消息。</strong></p>
-<ul>
-<li>发送消息 <code>bin/kafka-console-producer.sh --broker-list localhost:9092 --topic dawang</code>（然后可以随意输入内容，回车可以发送，ctrl+c 退出）</li>
-</ul>
-<p><strong>5. 启动 consumer。可以读取消息并输出到标准输出：</strong></p>
-<ul>
-<li>接收消息 <code>bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic dawang --from-beginning</code></li>
-<li>在一个终端中运行 consumer 命令行，另一个终端中运行 producer 命令行，就可以在一个终端输入消息，另一个终端读取消息。这两个命令都有自己的可选参数，可以在运行的时候不加任何参数可以看到帮助信息。</li>
-</ul>
-<p><strong>6. 搭建一个多个 broker 的集群，启动有 3 个 broker 组成的集群，这些 broker 节点也都在本机</strong></p>
-<p>首先复制一下配置文件：<code>cp config/server.properties config/server-1.properties</code> 和 <code>cp config/server.properties config/server-2.properties</code></p>
-<p>两个文件需要改动的内容为：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">config/server-<span class="number">1.</span>properties:</span><br><span class="line">    broker.id=<span class="number">1</span></span><br><span class="line">    listeners=PLAINTEXT:<span class="comment">//:9093</span></span><br><span class="line">    <span class="built_in">log</span>.dir=/tmp/kafka-logs-<span class="number">1</span></span><br><span class="line"></span><br><span class="line">config/server-<span class="number">2.</span>properties:</span><br><span class="line">    broker.id=<span class="number">2</span></span><br><span class="line">    listeners=PLAINTEXT:<span class="comment">//:9094</span></span><br><span class="line">    <span class="built_in">log</span>.dir=/tmp/kafka-logs-<span class="number">2</span></span><br></pre></td></tr></table></figure>
-<p>这里我们把 broker id, 端口号和日志地址配置成和之前不一样，然后我们启动这两个 broker：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bin/kafka-server-start.sh config/server-<span class="number">1</span>.properties &amp;</span><br><span class="line">bin/kafka-server-start.sh config/server-<span class="number">2</span>.properties &amp;</span><br></pre></td></tr></table></figure>
-<p>然后创建一个复制因子为 3 的 topic</p>
-<p><code>bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 3 --partitions 1 --topic oh3topic</code></p>
-<p>可以使用 <code>describe</code> 命令来显示 topic 详情</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">&gt; bin/kafka-topics.sh --describe --zookeeper localhost:<span class="number">2181</span> --topic oh3topic</span><br><span class="line">Topic:oh3topic	PartitionCount:<span class="number">1</span>	ReplicationFactor:<span class="number">3</span>	Configs:</span><br><span class="line">	Topic: oh3topic	Partition: <span class="number">0</span>	Leader: <span class="number">0</span>	Replicas: <span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>	Isr: <span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span></span><br></pre></td></tr></table></figure>
-<p>这里简单解释一下</p>
-<ul>
-<li>Leader 是给定分区的节点编号，每个分区的部分数据会随机指定不同的节点</li>
-<li>Replicas 是该日志会保存的复制</li>
-<li>Isr 表示正在同步的复制</li>
-</ul>
-<p>我们也可以来看看之前的另一个 topic 的情况</p>
-<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">&gt; bin/kafka-topics.sh --describe --zookeeper <span class="string">localhost:</span><span class="number">2181</span> --topic dawang</span><br><span class="line"><span class="string">Topic:</span>dawang	<span class="string">PartitionCount:</span><span class="number">1</span>	<span class="string">ReplicationFactor:</span><span class="number">1</span>	<span class="string">Configs:</span></span><br><span class="line"><span class="label">	Topic:</span> dawang	<span class="string">Partition:</span> <span class="number">0</span>	<span class="string">Leader:</span> <span class="number">0</span>	<span class="string">Replicas:</span> <span class="number">0</span>	<span class="string">Isr:</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
-<p>最后我们可以按照同样的方法来生产和消费消息，例如</p>
-<figure class="highlight brainfuck"><table><tr><td class="code"><pre><span class="line"><span class="comment">#</span> <span class="comment">生产</span></span><br><span class="line"><span class="comment">bin/kafka</span><span class="literal">-</span><span class="comment">console</span><span class="literal">-</span><span class="comment">producer</span><span class="string">.</span><span class="comment">sh</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">broker</span><span class="literal">-</span><span class="comment">list</span> <span class="comment">localhost:9092</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">topic</span> <span class="comment">oh3topic</span></span><br><span class="line"><span class="comment">#</span> <span class="comment">消费</span></span><br><span class="line"><span class="comment">bin/kafka</span><span class="literal">-</span><span class="comment">console</span><span class="literal">-</span><span class="comment">consumer</span><span class="string">.</span><span class="comment">sh</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">zookeeper</span> <span class="comment">localhost:2181</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">from</span><span class="literal">-</span><span class="comment">beginning</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">topic</span> <span class="comment">oh3topic</span></span><br></pre></td></tr></table></figure>
-<p>开俩终端就可以一边生产消息，一边消费消息了。</p>
-<h3 id="u6CE8_u610F_u4E8B_u9879"><a href="#u6CE8_u610F_u4E8B_u9879" class="headerlink" title="注意事项"></a>注意事项</h3><p>如果要配置自定义端口，<code>server.properties</code> 中 listeners 一定要配置成为 IP 地址；如果配置为 localhost 或服务器的 hostname，在使用 java 发送数据时就会抛出异</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建 topic</span></span><br><span class="line">bin/kafka-topics.sh --create --zookeeper bi03:<span class="number">2181</span> --replication-factor <span class="number">1</span> --partitions <span class="number">1</span> --topic logs</span><br><span class="line"><span class="comment"># 生产消息</span></span><br><span class="line">bin/kafka-console-producer.sh --broker-list localhost:<span class="number">13647</span> --topic logs</span><br><span class="line"><span class="comment"># 消费消息</span></span><br><span class="line"><span class="comment"># bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic logs</span></span><br></pre></td></tr></table></figure>
-<p>如果 Zookeeper 出现 <code>fsync-ing the write ahead log in SyncThread:1 took 2243ms which will adversely effect operation latency. See the
-ZooKeeper troubleshooting guide</code>，是因为 FOLLOWER 在跟 LEADER 同步时，fsync 操作时间过长，导致超时。增加 <code>tickTime</code> 或者 <code>initLimit</code> 和 <code>syncLimit</code> 的值即可 </p>
-<h2 id="u96C6_u7FA4_u914D_u7F6E"><a href="#u96C6_u7FA4_u914D_u7F6E" class="headerlink" title="集群配置"></a>集群配置</h2><p>kafka 使用 ZooKeeper 用于管理、协调代理。每个 Kafka 代理通过 Zookeeper 协调其他 Kafka 代理。当 Kafka 系统中新增了代理或某个代理失效时，Zookeeper 服务将通知生产者和消费者。生产者与消费者据此开始与其他代理协调工作。</p>
-<h3 id="u5B89_u88C5_Java"><a href="#u5B89_u88C5_Java" class="headerlink" title="安装 Java"></a>安装 Java</h3><p>先给两台机子安装 Java</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo add-apt-repository -y ppa:webupd8team/java</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get -y install oracle-java8-installer</span><br></pre></td></tr></table></figure>
-<h3 id="u66F4_u65B0_Hosts"><a href="#u66F4_u65B0_Hosts" class="headerlink" title="更新 Hosts"></a>更新 Hosts</h3><p>这里用两台机器做例子（理论上最好是 3 台起步，偶数个不是不可以的，但是zookeeper集群是以宕机个数过半才会让整个集群宕机的，所以奇数个集群更佳），分别配置 <code>/etc/hosts</code> 文件为</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span> localhost</span><br><span class="line"><span class="number">10.1</span><span class="number">.1</span><span class="number">.164</span> bi03</span><br><span class="line"><span class="number">10.1</span><span class="number">.1</span><span class="number">.44</span> bi02</span><br></pre></td></tr></table></figure>
-<h3 id="u4FEE_u6539_Zookeeper__u914D_u7F6E_u6587_u4EF6"><a href="#u4FEE_u6539_Zookeeper__u914D_u7F6E_u6587_u4EF6" class="headerlink" title="修改 Zookeeper 配置文件"></a>修改 Zookeeper 配置文件</h3><p>修改 <code>config/zookeeper.properties</code> 为</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">dataDir=/data/home/logger/kafka_2<span class="number">.11</span>-<span class="number">0.10</span><span class="number">.0</span><span class="number">.0</span>/zookeeper-logs/</span><br><span class="line">clientPort=<span class="number">2181</span></span><br><span class="line"><span class="preprocessor"># maxClientCnxns=<span class="number">0</span></span></span><br><span class="line">tickTime=<span class="number">2000</span></span><br><span class="line">initLimit=<span class="number">5</span></span><br><span class="line">syncLimit=<span class="number">2</span></span><br><span class="line"></span><br><span class="line">server<span class="number">.1</span>=bi03:<span class="number">13645</span>:<span class="number">13646</span></span><br><span class="line">server<span class="number">.2</span>=bi02:<span class="number">13645</span>:<span class="number">13646</span></span><br></pre></td></tr></table></figure>
-<p>参数的意义为：</p>
-<ul>
-<li>initLimit: zookeeper集群中的包含多台 server，其中一台为 leader，集群中其余的 server 为 follower。initLimit 参数配置初始化连接时，follower 和 leader 之间的最长心跳时间。此时该参数设置为 5，说明时间限制为 5 倍 tickTime，即 <code>5*2000=10000ms=10s</code></li>
-<li>syncLimit: 该参数配置 leader 和 follower 之间发送消息，请求和应答的最大时间长度。此时该参数设置为 2，说明时间限制为 2 倍 tickTime，即 4000ms</li>
-<li>server.X=A:B:C 其中 X 是一个数字, 表示这是第几号 server。A 是该 server 所在的 IP 地址。B 配置该 server 和集群中的 leader 交换消息所使用的端口。C 配置选举 leader 时所使用的端口。</li>
-</ul>
-<h3 id="u7ED9_u670D_u52A1_u5668_u7F16_u53F7"><a href="#u7ED9_u670D_u52A1_u5668_u7F16_u53F7" class="headerlink" title="给服务器编号"></a>给服务器编号</h3><p>在 dataDir 目录下建立一个 myid 文件，分别为</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor"># server<span class="number">.1</span></span></span><br><span class="line">echo <span class="number">1</span> &gt; myid</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># server<span class="number">.2</span></span></span><br><span class="line">echo <span class="number">2</span> &gt; myid</span><br></pre></td></tr></table></figure>
-<h3 id="u542F_u52A8_Zookeeper"><a href="#u542F_u52A8_Zookeeper" class="headerlink" title="启动 Zookeeper"></a>启动 Zookeeper</h3><p>然后在每台机子上启动 zookeeper 服务 </p>
-<p><code>bin/zookeeper-server-start.sh config/zookeeper.properties &amp;</code></p>
-<p>所有机子的 zookeeper 都启动之前会报错，这都是正常的</p>
-<p>如果不想要任何输出</p>
-<p><code>nohup bin/zookeeper-server-start.sh config/zookeeper.properties &amp;</code></p>
-<h3 id="u4FEE_u6539_Kafka__u914D_u7F6E_u6587_u4EF6"><a href="#u4FEE_u6539_Kafka__u914D_u7F6E_u6587_u4EF6" class="headerlink" title="修改 Kafka 配置文件"></a>修改 Kafka 配置文件</h3><p>修改 <code>config/server.properties</code>，几个要改的部分是 </p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor"># 允许删除 topic</span></span><br><span class="line"><span class="keyword">delete</span>.topic.enable=<span class="literal">true</span></span><br><span class="line">broker.id=<span class="number">0</span> <span class="preprocessor"># 这里不能重复</span></span><br><span class="line">listeners=PLAINTEXT:<span class="comment">//bi03:13647 # 这里要配置成本机的 host name</span></span><br><span class="line"><span class="preprocessor"># 这里需要配置成外网能够访问的地址及端口</span></span><br><span class="line">advertised.listeners=PLAINTEXT:<span class="comment">//external.ip:8080</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">log</span>.dirs=/data/home/logger/kafka_2<span class="number">.11</span>-<span class="number">0.10</span><span class="number">.0</span><span class="number">.0</span>/kafka-logs</span><br><span class="line">num.partitions=<span class="number">2</span></span><br><span class="line"></span><br><span class="line">zookeeper.connect=bi03:<span class="number">2181</span>,bi02:<span class="number">2181</span></span><br></pre></td></tr></table></figure>
-<h3 id="u542F_u52A8_Kafka"><a href="#u542F_u52A8_Kafka" class="headerlink" title="启动 Kafka"></a>启动 Kafka</h3><p>在每个节点上执行</p>
-<p><code>bin/kafka-server-start.sh config/server.properties &amp;</code></p>
-<p>如果不想要任何输出</p>
-<p><code>nohup bin/kafka-server-start.sh config/server.properties &amp;</code></p>
-<h3 id="u9A8C_u8BC1_u5B89_u88C5"><a href="#u9A8C_u8BC1_u5B89_u88C5" class="headerlink" title="验证安装"></a>验证安装</h3><p>创建一个 topic</p>
-<p><code>bin/kafka-topics.sh --create --zookeeper bi03:2181,bi02:2181 --replication-factor 2 --partitions 1 --topic test</code></p>
-<p>查看集群状态</p>
-<p><code>bin/kafka-topics.sh --describe --zookeeper bi03:2181,bi02:2181 --topic test</code></p>
-<p>生产消息，这里注意要生产到前面设置的监听端口，而不是 zookeeper 的端口</p>
-<p><code>bin/kafka-console-producer.sh --broker-list bi03:13647,bi02:13647 --topic test</code></p>
-<p>消费消息，这里注意是 zookeeper 的端口，而不是 kafka 的端口</p>
-<p><code>bin/kafka-console-consumer.sh --zookeeper bi03:2181,bi02:2181 --from-beginning --topic test</code></p>
-<p>显示 topic 列表</p>
-<p><code>bin/kafka-topics.sh --zookeeper bi03:2181,bi02:2181 --list</code></p>
-<p>删除 topic</p>
-<p><code>bin/kafka-topics.sh --zookeeper bi03:2181,bi02:2181 --delete --topic hello</code></p>
-<h3 id="u5176_u4ED6_u914D_u7F6E"><a href="#u5176_u4ED6_u914D_u7F6E" class="headerlink" title="其他配置"></a>其他配置</h3><p>Kafka 使用键值对的属性文件格式来进行配置，比如 <code>config/server.properties</code>，具体的值可以从文件中读取，或者在代码中进行指定。最重要的三个属性是：</p>
-<ul>
-<li><code>broker.id</code>: broker 的编号，不能相同</li>
-<li><code>log.dirs</code>: 日志保存的文件夹，默认为 <code>/tmp/kafka-logs</code></li>
-<li><code>zookeeper.connect</code>: zookeeper 的 host</li>
-</ul>
-<p>其他一些我觉得比较有用的属性为</p>
-<ul>
-<li><code>auto.create.topics.enable</code> 是否允许自动创建 topic，boolean 值，默认为 <code>true</code></li>
-<li><code>auto.leader.rebalance.enable</code> 是否允许 leader 进行自动平衡，boolean 值，默认为 <code>true</code></li>
-<li><code>background.threads</code> 后台进程数目，int 值，默认为 10 个</li>
-<li><code>compression.type</code> 指定 topic 的压缩方式，string 值，可选有<ul>
-<li><code>gzip</code>, <code>snappy</code>, <code>lz4</code> 压缩方法</li>
-<li><code>uncompressed</code> 不压缩</li>
-<li><code>producer</code> 跟随 producer 的压缩方式</li>
-</ul>
-</li>
-<li><code>delete.topic.enable</code> 是否允许删除 topic，boolean 值，默认为 false（主要用于控制 admin 界面中的控制）</li>
-<li><code>leader.imbalance.check.interval.seconds</code> 检查是否平衡的时间间隔，long 值，默认为 300</li>
-<li><code>leader.imbalance.per.broker.percentage</code> 允许的不平衡的百分比，超出则会进行重平衡，int 值，默认为 10</li>
-<li><code>log.flush.interval.messages</code> 攒了多少条消息之后会把数据刷入磁盘，long 值，默认是 9223372036854775807</li>
-<li><code>log.flush.interval.ms</code> 每条消息在保存到磁盘中前会在内存中待多久，单位毫秒，long 值，如果不设定，默认使用 <code>log.flush.scheduler.interval.ms</code>，也就是 9223372036854775807</li>
-</ul>
-<p>更多的配置可以参考<a href="http://kafka.apache.org/documentation.html#brokerconfigs" target="_blank" rel="external">这里</a>，以上的配置均针对 broker，因为目前我只用 broker 的部分</p>
-<h2 id="u57FA_u672C_u64CD_u4F5C"><a href="#u57FA_u672C_u64CD_u4F5C" class="headerlink" title="基本操作"></a>基本操作</h2><p>所有的工具都可以在 <code>bin/</code> 文件夹下查看，如果不带任何参数，就会给出所有命令的列表说明，这里只简要说明一些常用的命令</p>
-<h3 id="u521B_u5EFA_u548C_u79FB_u9664_topic"><a href="#u521B_u5EFA_u548C_u79FB_u9664_topic" class="headerlink" title="创建和移除 topic"></a>创建和移除 topic</h3><p>可以手动创建 topic，或在数据进来时自动创建不存在的 topic，如果是自动创建的话，可能需要根据<a href="http://kafka.apache.org/documentation.html#topic-config" target="_blank" rel="external">这里</a>来进行对应调整。</p>
-<p><strong>创建 topic</strong></p>
-<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --create --topic my_topic_name --partitions 20 --replication-factor 3 --config x=y</code></p>
-<p>replication-factor 控制复制的份数，建议 2-3 份来兼顾容错和效率。partitions 控制该 topic 将被分区的数目，partitions 的数目最好不要超过服务器的个数（因为分区的意义是增加并行效率，而服务器数量决定了并行的数量，假设只有 2 台服务器，分 4 个区和 2 个区其实差别不大）。另外，topic 的名称不能超过 249 个字符</p>
-<p><strong>修改 topic</strong></p>
-<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --alter --topic my_topic_name --partitions 40</code></p>
-<p>这里需要注意，即使修改了分区的个数，已有的数据也不会进行变动，Kafka 不会做任何自动重分布</p>
-<p><strong>增加配置</strong></p>
-<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --alter --topic my_topic_name --config x=y</code></p>
-<p><strong>移除配置</strong></p>
-<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --alter --topic my_topic_name --delete-config x</code></p>
-<p><strong>删除 topic</strong></p>
-<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --delete --topic my_topic_name</code></p>
-<p>这个需要 <code>delete.topic.enable=true</code>，目前 Kafka 不支持减少 topic 的分区数目</p>
-<h3 id="u4F18_u96C5_u5173_u95ED"><a href="#u4F18_u96C5_u5173_u95ED" class="headerlink" title="优雅关闭"></a>优雅关闭</h3><p>Kafka 会自动检测 broker 的状态并根据机器状态选举出新的 leader。但是如果需要进行配置更改停机的时候，我们就需要使用优雅关闭了，好处在于：</p>
-<ol>
-<li>会把所有的日志同步到磁盘上，避免重启之后的日志恢复，减少重启时间</li>
-<li>会在关闭前把以这台机为 leader 的分区数据迁移到其他节点，会减少不可用的时间</li>
-</ol>
-<p>但是这个需要开启 <code>controlled.shutdown.enable=true</code>。</p>
-<p>刚重启之后的节点不是任何分区的 leader，所以这时候需要进行重新分配：</p>
-<p><code>bin/kafka-preferred-replica-election.sh --zookeeper zk_host:port/chroot</code></p>
-<p>这里需要开启 <code>auto.leader.rebalance.enable=true</code></p>
-<p>然后可以使用脚本 <code>bin/kafka-server-stop.sh</code></p>
-<p>注意，如果配置文件中没有 <code>auto.leader.rebalance.enable=true</code>，就还需要重新平衡</p>
-<h2 id="u6DF1_u5165_u7406_u89E3"><a href="#u6DF1_u5165_u7406_u89E3" class="headerlink" title="深入理解"></a>深入理解</h2><p>这里只是一部分摘录，更多内容可查阅参考链接（尤其是美团技术博客的那篇）</p>
-<h3 id="u6587_u4EF6_u7CFB_u7EDF"><a href="#u6587_u4EF6_u7CFB_u7EDF" class="headerlink" title="文件系统"></a>文件系统</h3><p>Kafka 大量依赖文件系统去存储和缓存消息。而文件系统最终会放在硬盘上，不过不用担心，很多时候硬盘的快慢完全取决于使用它的方式。设计良好的硬盘架构可以和内存一样快。</p>
-<p>所以与传统的将数据缓存在内存中然后刷到硬盘的设计不同，Kafka直接将数据写到了文件系统的日志中，因此也避开了 JVM 的劣势——Java 对象占用空间巨大，数据量增大后垃圾回收有困难。使用文件系统，即使系统重启了，也不需要刷新数据，也简化了维护数据一致性的逻辑。</p>
-<p>对于主要用于日志处理的消息系统，数据的持久化可以简单的通过将数据追加到文件中实现，读的时候从文件中读就好了。这样做的好处是读和写都是 O(1) 的，并且读操作不会阻塞写操作和其他操作。这样带来的性能优势是很明显的，因为性能和数据的大小没有关系了。</p>
-<p>既然可以使用几乎没有容量限制（相对于内存来说）的硬盘空间建立消息系统，就可以在没有性能损失的情况下提供一些一般消息系统不具备的特性。比如，一般的消息系统都是在消息被消费后立即删除，Kafka却可以将消息保存一段时间（比如一星期），这给consumer提供了很好的机动性和灵活性。</p>
-<h3 id="u4E8B_u52A1_u5B9A_u4E49"><a href="#u4E8B_u52A1_u5B9A_u4E49" class="headerlink" title="事务定义"></a>事务定义</h3><p>数据传输的事务定义通常有以下三种级别：</p>
-<ul>
-<li>最多一次: 消息不会被重复发送，最多被传输一次，但也有可能一次不传输。</li>
-<li>最少一次: 消息不会被漏发送，最少被传输一次，但也有可能被重复传输.</li>
-<li>精确的一次（Exactly once）: 不会漏传输也不会重复传输,每个消息都传输被一次而且仅仅被传输一次，这是大家所期望的。</li>
-</ul>
-<p>Kafka 的机制和 git 有点类似，有一个 commit 的概念，一旦提交且 broker 在工作，那么数据就不会丢失。如果 producer 发布消息时发生了网络错误，但又不确定实在提交之前发生的还是提交之后发生的，这种情况虽然不常见，但是必须考虑进去，现在Kafka版本还没有解决这个问题，将来的版本正在努力尝试解决。</p>
-<p>并不是所有的情况都需要“精确的一次”这样高的级别，Kafka 允许 producer 灵活的指定级别。比如 producer 可以指定必须等待消息被提交的通知，或者完全的异步发送消息而不等待任何通知，或者仅仅等待 leader 声明它拿到了消息（followers没有必要）。</p>
-<p>现在从 consumer 的方面考虑这个问题，所有的副本都有相同的日志文件和相同的offset，consumer 维护自己消费的消息的 offset。如果 consumer 崩溃了，会有另外一个 consumer 接着消费消息，它需要从一个合适的 offset 继续处理。这种情况下可以有以下选择：</p>
-<ul>
-<li>consumer 可以先读取消息，然后将 offset 写入日志文件中，然后再处理消息。这存在一种可能就是在存储 offset 后还没处理消息就 crash 了，新的 consumer 继续从这个 offset 处理，那么就会有些消息永远不会被处理，这就是上面说的『最多一次』</li>
-<li>consumer 可以先读取消息，处理消息，最后记录o ffset，当然如果在记录 offset 之前就 crash 了，新的 consumer 会重复的消费一些消息，这就是上面说的『最少一次』</li>
-<li>『精确一次』可以通过将提交分为两个阶段来解决：保存了 offset 后提交一次，消息处理成功之后再提交一次。但是还有个更简单的做法：将消息的 offset 和消息被处理后的结果保存在一起。比如用 Hadoop ETL 处理消息时，将处理后的结果和 offset 同时保存在 HDFS 中，这样就能保证消息和 offser 同时被处理了</li>
-</ul>
-<h3 id="u6027_u80FD_u4F18_u5316"><a href="#u6027_u80FD_u4F18_u5316" class="headerlink" title="性能优化"></a>性能优化</h3><p>Kafka 在提高效率方面做了很大努力。Kafka 的一个主要使用场景是处理网站活动日志，吞吐量是非常大的，每个页面都会产生好多次写操作。读方面，假设每个消息只被消费一次，读的量的也是很大的，Kafka 也尽量使读的操作更轻量化。</p>
-<p>线性读写的情况下影响磁盘性能问题大约有两个方面：太多的琐碎的 I/O 操作和太多的字节拷贝。I/O 问题发生在客户端和服务端之间，也发生在服务端内部的持久化的操作中。</p>
-<p><strong>消息集(message set)</strong></p>
-<p>为了避免这些问题，Kafka 建立了<strong>消息集(message set)</strong>的概念，将消息组织到一起，作为处理的单位。以消息集为单位处理消息，比以单个的消息为单位处理，会提升不少性能。Producer 把消息集一块发送给服务端，而不是一条条的发送；服务端把消息集一次性的追加到日志文件中，这样减少了琐碎的 I/O 操作。consumer 也可以一次性的请求一个消息集。</p>
-<p>另外一个性能优化是在字节拷贝方面。在低负载的情况下这不是问题，但是在高负载的情况下它的影响还是很大的。为了避免这个问题，Kafka 使用了标准的二进制消息格式，这个格式可以在 producer, broker 和 producer 之间共享而无需做任何改动。</p>
-<p><strong>zero copy</strong></p>
-<p>Broker 维护的消息日志仅仅是一些目录文件，消息集以固定队的格式写入到日志文件中，这个格式 producer 和 consumer 是共享的，这使得 Kafka 可以一个很重要的点进行优化：消息在网络上的传递。现代的 unix 操作系统提供了高性能的将数据从页面缓存发送到 socket 的系统函数，在 linux 中，这个函数是 <code>sendfile</code></p>
-<p>为了更好的理解 <code>sendfile</code> 的好处，我们先来看下一般将数据从文件发送到 socket 的数据流向：</p>
-<ul>
-<li>操作系统把数据从文件拷贝内核中的页缓存中</li>
-<li>应用程序从页缓存从把数据拷贝自己的内存缓存中</li>
-<li>应用程序将数据写入到内核中 socket 缓存中</li>
-<li>操作系统把数据从 socket 缓存中拷贝到网卡接口缓存，从这里发送到网络上。</li>
-</ul>
-<p>这显然是低效率的，有 4 次拷贝和 2 次系统调用。<code>sendfile</code> 通过直接将数据从页面缓存发送网卡接口缓存，避免了重复拷贝，大大的优化了性能。</p>
-<p>在一个多consumers的场景里，数据仅仅被拷贝到页面缓存一次而不是每次消费消息的时候都重复的进行拷贝。这使得消息以近乎网络带宽的速率发送出去。这样在磁盘层面你几乎看不到任何的读操作，因为数据都是从页面缓存中直接发送到网络上去了。</p>
-<p><strong>数据压缩</strong></p>
-<p>很多时候，性能的瓶颈并非CPU或者硬盘而是网络带宽，对于需要在数据中心之间传送大量数据的应用更是如此。当然用户可以在没有 Kafka 支持的情况下各自压缩自己的消息，但是这将导致较低的压缩率，因为相比于将消息单独压缩，将大量文件压缩在一起才能起到最好的压缩效果。</p>
-<p>Kafka 采用了端到端的压缩：因为有『消息集』的概念，客户端的消息可以一起被压缩后送到服务端，并以压缩后的格式写入日志文件，以压缩的格式发送到 consumer，消息从 producer 发出到 consumer 拿到都被是压缩的，只有在 consumer 使用的时候才被解压缩，所以叫做『端到端的压缩』。Kafka支持GZIP和Snappy压缩协议。</p>
-<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="http://blog.csdn.net/LOUISLIAOXH/article/details/51567515" target="_blank" rel="external">Kafka学习整理六(server.properties配置实践)</a></li>
-<li><a href="http://kafka.apache.org/" target="_blank" rel="external">Apache Kafka</a></li>
-<li><a href="http://kafka.apache.org/documentation.html#quickstart" target="_blank" rel="external">Quick Start</a></li>
-<li><a href="http://www.aboutyun.com/thread-12882-1-1.html" target="_blank" rel="external">Kafka入门经典教程</a></li>
-<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-kafka/" target="_blank" rel="external">Apache kafka 工作原理介绍</a></li>
-<li><a href="http://www.coderli.com/setup-kafka-cluster-step-by-step/" target="_blank" rel="external">事无巨细 Apache Kafka 0.9.0.1 集群环境搭建</a></li>
-<li><a href="http://blog.csdn.net/dhtx_wzgl/article/details/46892231" target="_blank" rel="external">kafka集群搭建</a></li>
-<li><a href="http://tech.meituan.com/kafka-fs-design-theory.html" target="_blank" rel="external">Kafka文件存储机制那些事</a></li>
-<li><a href="http://kaimingwan.com/post/kafka/kafkayuan-li-yi-ji-she-ji-shi-xian-si-xiang" target="_blank" rel="external">kafka原理以及设计实现思想</a></li>
-<li><a href="http://www.dexcoder.com/dexcoder/article/2194" target="_blank" rel="external">kafka设计原理介绍</a></li>
-<li><a href="http://blog.jobbole.com/99195/" target="_blank" rel="external">Kafka集群操作指南</a></li>
-<li><a href="https://www.quora.com/What-is-the-actual-role-of-ZooKeeper-in-Kafka" target="_blank" rel="external">What is the actual role of ZooKeeper in Kafka?</a></li>
-</ul>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>提到消息系统，目前最火热的非 Kafka 莫属，公司也打算利用 Kafka 进行各业务日志统一收集，这里结合自己的实践来分享一下具体的配置及使用。Kafka 版本 0.10.0.1</p>]]>
-    
-    </summary>
-    
-      <category term="分布式" scheme="http://wdxtub.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
-    
-      <category term="日志" scheme="http://wdxtub.com/tags/%E6%97%A5%E5%BF%97/"/>
-    
-      <category term="消息队列" scheme="http://wdxtub.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
     
       <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
