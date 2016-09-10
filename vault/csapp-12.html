@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="这一课我们要接触一个新概念：Linking，简单来说就是计算机如何让不同的代码协同工作的方式。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 第 12 课 Linking">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-12.html">
@@ -127,6 +128,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 第 12 课 Linking">
 <meta name="twitter:description" content="这一课我们要接触一个新概念：Linking，简单来说就是计算机如何让不同的代码协同工作的方式。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14572758203003.jpg">
 
 
 
@@ -150,7 +152,7 @@
   
     深入理解计算机系统 第 12 课 Linking | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -171,7 +173,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -288,7 +290,7 @@
 <p>我们先来看一个例子，假设有这么两个代码文件</p>
 <p><img src="/images/14572758203003.jpg" alt=""></p>
 <p>我们用下面的命令来编译执行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">linux&gt; gcc -Og -o prog main.c sum.c</span><br><span class="line">linux&gt; ./prog</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">linux&gt; gcc -Og -o prog main.c sum.c</div><div class="line">linux&gt; ./prog</div></pre></td></tr></table></figure>
 <p>编译器实际上会分别编译不同的源代码，生成 <code>.o</code> 文件，具体把这些文件链接在一起的是 Linker 链接器，整个过程如下图所示：</p>
 <p><img src="/images/14572760766987.jpg" alt=""></p>
 <blockquote>
@@ -309,7 +311,7 @@
 <p><strong>第二步：Relocation</strong></p>
 <p>这一步所做的工作是把原先分开的代码和数据片段汇总成一个文件，会把原先在 <code>.o</code> 文件中的相对位置转换成在可执行程序的绝对位置，并且据此更新对应的引用符号（才能找到新的位置）</p>
 <p>在具体来看这两步做了啥之前，先要理解下面几个概念。</p>
-<h2 id="u4E09_u79CD_Object_Files"><a href="#u4E09_u79CD_Object_Files" class="headerlink" title="三种 Object Files"></a>三种 Object Files</h2><p>所谓的 Object File 实际上是一个统称，具体来说有以下三种形式：</p>
+<h2 id="三种-Object-Files"><a href="#三种-Object-Files" class="headerlink" title="三种 Object Files"></a>三种 Object Files</h2><p>所谓的 Object File 实际上是一个统称，具体来说有以下三种形式：</p>
 <ul>
 <li>Relocatable object file (<code>.o</code> file)<ul>
 <li>每个 <code>.o</code> 文件都是由对应的 <code>.c</code> 文件生成，包含代码和数据，可以用来组合成 executable object file</li>
@@ -324,7 +326,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="Executable_and_Linkable_Format_28ELF_29"><a href="#Executable_and_Linkable_Format_28ELF_29" class="headerlink" title="Executable and Linkable Format(ELF)"></a>Executable and Linkable Format(ELF)</h2><p>上面提到的三种 obejct file 有统一的格式，即 Executable and Linkable Format(ELF)，因为，我们把它们统称为 ELF binaries，具体的文件格式如下</p>
+<h2 id="Executable-and-Linkable-Format-ELF"><a href="#Executable-and-Linkable-Format-ELF" class="headerlink" title="Executable and Linkable Format(ELF)"></a>Executable and Linkable Format(ELF)</h2><p>上面提到的三种 obejct file 有统一的格式，即 Executable and Linkable Format(ELF)，因为，我们把它们统称为 ELF binaries，具体的文件格式如下</p>
 <p><img src="/images/14572780724226.jpg" alt="ELF 文件格式"></p>
 <p>下面分别介绍一下各个部分：</p>
 <ul>
@@ -379,7 +381,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="Linker_Symbols"><a href="#Linker_Symbols" class="headerlink" title="Linker Symbols"></a>Linker Symbols</h2><p>而链接器实际上会处理三种不同的符号，对应于代码中不同写法的部分：</p>
+<h2 id="Linker-Symbols"><a href="#Linker-Symbols" class="headerlink" title="Linker Symbols"></a>Linker Symbols</h2><p>而链接器实际上会处理三种不同的符号，对应于代码中不同写法的部分：</p>
 <ul>
 <li>Global symbols<ul>
 <li>在当前模块中定义，且可以被其他代码引用的符号，例如非静态 C 函数和非静态全局变量</li>
@@ -396,7 +398,7 @@
 </li>
 </ul>
 <p>现在我们可以回过头来看看链接器具体做的工作了：</p>
-<h2 id="u7B2C_u4E00_u6B65_uFF1ASymbol_resolution"><a href="#u7B2C_u4E00_u6B65_uFF1ASymbol_resolution" class="headerlink" title="第一步：Symbol resolution"></a>第一步：Symbol resolution</h2><p><img src="/images/14572791281425.jpg" alt="Symbol resolution"></p>
+<h2 id="第一步：Symbol-resolution"><a href="#第一步：Symbol-resolution" class="headerlink" title="第一步：Symbol resolution"></a>第一步：Symbol resolution</h2><p><img src="/images/14572791281425.jpg" alt="Symbol resolution"></p>
 <p>我们可以看到，链接器只知道非静态的全局变量/函数，而对于局部变量一无所知。</p>
 <p>然后我们来看看局部非静态变量和局部静态变量的区别</p>
 <ul>
@@ -427,7 +429,7 @@
 <li>定义全局变量的时候初始化</li>
 <li>注意使用 <code>extern</code> 关键字</li>
 </ul>
-<h2 id="u7B2C_u4E8C_u6B65_uFF1ARelocation"><a href="#u7B2C_u4E8C_u6B65_uFF1ARelocation" class="headerlink" title="第二步：Relocation"></a>第二步：Relocation</h2><p>大概的过程，通过下图就可以看得比较清楚，就是把不同的 relocatable object files 拼成 executable object file 的过程</p>
+<h2 id="第二步：Relocation"><a href="#第二步：Relocation" class="headerlink" title="第二步：Relocation"></a>第二步：Relocation</h2><p>大概的过程，通过下图就可以看得比较清楚，就是把不同的 relocatable object files 拼成 executable object file 的过程</p>
 <p><img src="/images/14572863145911.jpg" alt=""></p>
 <p>但具体是怎么做到的呢，还是刚才那个例子：</p>
 <p><img src="/images/14572863618645.jpg" alt=""></p>
@@ -440,12 +442,12 @@
 <p>具体载入内存的时候，大概是这样的：</p>
 <p><img src="/images/14572866787544.jpg" alt=""></p>
 <p>这里需要注意左边的部分地址从上往下，右边则是从下往上，这里所有的程序都会从 0x400000 开始。</p>
-<h2 id="u6253_u5305_u5E38_u7528_u7A0B_u5E8F"><a href="#u6253_u5305_u5E38_u7528_u7A0B_u5E8F" class="headerlink" title="打包常用程序"></a>打包常用程序</h2><p>基本上每个程序都会用到某些特定的函数，比如：数学计算, 输入输出, 内存管理, 字符串操作等等，我们能用什么方法把它们结合到程序中呢，有以下两个思路：</p>
+<h2 id="打包常用程序"><a href="#打包常用程序" class="headerlink" title="打包常用程序"></a>打包常用程序</h2><p>基本上每个程序都会用到某些特定的函数，比如：数学计算, 输入输出, 内存管理, 字符串操作等等，我们能用什么方法把它们结合到程序中呢，有以下两个思路：</p>
 <ul>
 <li>思路 1：把所有的函数放到一个源文件中，程序员每次把这一整个大块头链接到自己的程序中，这种做法从时间和空间上来说都比较低效</li>
 <li>思路 2：不同的函数放到不同的源文件中，由程序员显式链接所需要的函数，这种做法效率更高，但是相当于是给程序员增加负担了</li>
 </ul>
-<h3 id="Static_Libraries"><a href="#Static_Libraries" class="headerlink" title="Static Libraries"></a>Static Libraries</h3><p>比较老式的做法就是所谓的静态库(Static Libraries, <code>.a</code> archive files)</p>
+<h3 id="Static-Libraries"><a href="#Static-Libraries" class="headerlink" title="Static Libraries"></a>Static Libraries</h3><p>比较老式的做法就是所谓的静态库(Static Libraries, <code>.a</code> archive files)</p>
 <ul>
 <li>Concatenate related relocatable object files into a single file with an index (called an archive)</li>
 <li>Enhance linker so that it tries to resolve unresolved external references by looking for the symbols in one or more archives</li>
@@ -465,7 +467,7 @@
 <p>但是这样会带来一个问题：写编译命令的时候，顺序是很重要的！我们看下面这个例子</p>
 <p><img src="/images/14572882337934.jpg" alt=""></p>
 <p>第一条命令中，在编译链接的时候，如果在 libtest.o 中发现了外部引用，就会在 -lmine 中查找，但是如果反过来，在第二条语句中 libtest.o 后面没有东西，就会出现找不到引用的错误。所以建议就是要把静态库都放到后面去。</p>
-<h3 id="Shared_Libraries"><a href="#Shared_Libraries" class="headerlink" title="Shared Libraries"></a>Shared Libraries</h3><p>现代的方法则是使用共享库，避免了在文件中静态库的大量重复。</p>
+<h3 id="Shared-Libraries"><a href="#Shared-Libraries" class="headerlink" title="Shared Libraries"></a>Shared Libraries</h3><p>现代的方法则是使用共享库，避免了在文件中静态库的大量重复。</p>
 <p>动态链接可以在首次载入的时候执行(load-time linking)，这是 Linux 的标准做法，会由动态链接器 <code>ld-linux.so</code> 完成，Standard C library(libc.so) 通常是动态链接的。</p>
 <p><img src="/images/14572885863404.jpg" alt="Dynamic Linking at Load-time"></p>
 <p>动态链接也可以在程序开始执行的时候完成(run-time linking)，在 Linux 中使用 <code>dlopen()</code> 接口来完成（会使用函数指针，如下面的例子所示），通常用于分布式软件，高性能服务器上。而且共享库也可以在多个进程间共享，这在后面学习到虚拟内存的时候会介绍。</p>
@@ -482,7 +484,7 @@
 </li>
 <li>理解链接可以帮助我们避免遇到奇怪的错误</li>
 </ul>
-<h2 id="Case_Study_3A_Library_Interpositioning"><a href="#Case_Study_3A_Library_Interpositioning" class="headerlink" title="Case Study: Library Interpositioning"></a>Case Study: Library Interpositioning</h2><p>这是一个非常有意思的技术，我们可以通过这个技术让程序运行任意我们想要的代码，比方说我们的程序中使用了 <code>malloc</code>，我们可以通过 library interpositioning 让程序执行我们自定义的 <code>malloc</code> 而不是标准库中的 <code>malloc</code>。</p>
+<h2 id="Case-Study-Library-Interpositioning"><a href="#Case-Study-Library-Interpositioning" class="headerlink" title="Case Study: Library Interpositioning"></a>Case Study: Library Interpositioning</h2><p>这是一个非常有意思的技术，我们可以通过这个技术让程序运行任意我们想要的代码，比方说我们的程序中使用了 <code>malloc</code>，我们可以通过 library interpositioning 让程序执行我们自定义的 <code>malloc</code> 而不是标准库中的 <code>malloc</code>。</p>
 <p>因为这相当于是某种链接技术，所以同样可以在不同的时候发生，如：</p>
 <ul>
 <li>编译时：When the source code is compiled</li>
@@ -511,13 +513,13 @@
 <p><img src="/images/14572895007610.jpg" alt=""></p>
 <p>我们要做的事情也很简单，先申请一片内存空间，然后再释放掉。但是我们的目标是在不修改源代码的前提下，追踪分配地址的位置，要怎么办呢？</p>
 <p>有三种方式，分别在编译、链接和运行时对 <code>malloc</code> 和 <code>free</code> 函数进行 interpositioning。</p>
-<h3 id="Compile-time_Interpositioning"><a href="#Compile-time_Interpositioning" class="headerlink" title="Compile-time Interpositioning"></a>Compile-time Interpositioning</h3><p>我们写出另外两个函数，它们唯一做的事情就是输出地址，相当于把原来的函数做了个『包装』：</p>
+<h3 id="Compile-time-Interpositioning"><a href="#Compile-time-Interpositioning" class="headerlink" title="Compile-time Interpositioning"></a>Compile-time Interpositioning</h3><p>我们写出另外两个函数，它们唯一做的事情就是输出地址，相当于把原来的函数做了个『包装』：</p>
 <p><img src="/images/14572896784067.jpg" alt=""></p>
 <p>然后在 <code>malloc.h</code> 利用宏进行改变：</p>
 <p><img src="/images/14572897247442.jpg" alt=""></p>
 <p>最后我们可以通过 <code>-I.</code> 这个选项来使得程序会调用我们自己写的函数，可以看到执行的时候会打印出地址</p>
 <p><img src="/images/14572897797778.jpg" alt=""></p>
-<h3 id="Link-time_Interpositioning"><a href="#Link-time_Interpositioning" class="headerlink" title="Link-time Interpositioning"></a>Link-time Interpositioning</h3><p>我们同样需要把两个函数包装一下：</p>
+<h3 id="Link-time-Interpositioning"><a href="#Link-time-Interpositioning" class="headerlink" title="Link-time Interpositioning"></a>Link-time Interpositioning</h3><p>我们同样需要把两个函数包装一下：</p>
 <p><img src="/images/14572898402918.jpg" alt=""></p>
 <p>然后注意所用的命令：</p>
 <p><img src="/images/14572898614846.jpg" alt=""></p>
@@ -527,7 +529,7 @@
 <li>对 <code>malloc</code> 的引用会被解析为 <code>__wrap_malloc</code></li>
 <li>对 <code>__real_malloc</code> 的引用会被解析为 <code>malloc</code></li>
 </ul>
-<h3 id="Load/Run-time_Interpositioning"><a href="#Load/Run-time_Interpositioning" class="headerlink" title="Load/Run-time Interpositioning"></a>Load/Run-time Interpositioning</h3><p>我们同样是对两个函数进行包装：</p>
+<h3 id="Load-Run-time-Interpositioning"><a href="#Load-Run-time-Interpositioning" class="headerlink" title="Load/Run-time Interpositioning"></a>Load/Run-time Interpositioning</h3><p>我们同样是对两个函数进行包装：</p>
 <p><img src="/images/14572900345456.jpg" alt=""></p>
 <p><img src="/images/14572900442044.jpg" alt=""></p>
 <p>然后使用以下命令：</p>
@@ -868,42 +870,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="CSAPP,Proxy,实验,读厚," />
+  <meta name="keywords" content="CSAPP,读厚,实验,Proxy," />
 
 
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> 【读厚 CSAPP】VII Proxy Lab | 小土刀 </title>
+  <title> 【读厚 CSAPP】VII Proxy Lab | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -134,7 +134,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -337,7 +337,7 @@
         <p>很多人用过 tomcat，但很少人会想写一个自己的 tomcat，毕竟听起来就觉得浩大。不过不要紧张，这次我们用几百行代码写一个代理服务器，多线程还带缓存，甚至可以自己在浏览器里用！</p>
 <a id="more"></a>
 <hr>
-<h2 id="u4EFB_u52A1_u76EE_u6807"><a href="#u4EFB_u52A1_u76EE_u6807" class="headerlink" title="任务目标"></a>任务目标</h2><p>实现一个多线程带缓存的代理服务器！</p>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><p>实现一个多线程带缓存的代理服务器！</p>
 <p>这次的作业主要分三个部分：</p>
 <ol>
 <li>Sequential Proxy: 接收客户端发送的 HTTP 请求，解析之后向目标服务器转发，获得响应之后再转发回客户端</li>
@@ -345,7 +345,7 @@
 <li>Cache Web Objects: 使用 LRU 缓存单独的对象，而不是整个页面</li>
 </ol>
 <p>样例测试命令：<code>curl --proxy 128.2.220.15:45962 http://www.cs.cmu.edu</code></p>
-<h2 id="Sequential_Web_Proxy"><a href="#Sequential_Web_Proxy" class="headerlink" title="Sequential Web Proxy"></a>Sequential Web Proxy</h2><p>第一步是实现一个简单的代理服务器，只处理 <code>HTTP/1.0 GET</code> 请求。具体步骤为</p>
+<h2 id="Sequential-Web-Proxy"><a href="#Sequential-Web-Proxy" class="headerlink" title="Sequential Web Proxy"></a>Sequential Web Proxy</h2><p>第一步是实现一个简单的代理服务器，只处理 <code>HTTP/1.0 GET</code> 请求。具体步骤为</p>
 <ul>
 <li>端口号在命令行指令中指定<ul>
 <li>申请自己的端口 <code>$ ./port-for-user.pl dawang</code>，这里申请的总是偶数，所以如果需要一个额外的端口，直接在端口号 +1 即可</li>
@@ -371,17 +371,17 @@
 <li><code>Connection</code>: 必须发送 <code>Connection: close</code></li>
 <li><code>Proxy-Connection</code>: 必须发送 <code>Proxy-Connection: close</code></li>
 </ul>
-<h2 id="Multiple_Concurrent_Requests"><a href="#Multiple_Concurrent_Requests" class="headerlink" title="Multiple Concurrent Requests"></a>Multiple Concurrent Requests</h2><p>使用 POSIX 线程，最好在线程一开始执行 <code>pthread_detach(pthread_self());</code> 这样就不用自己负责清理线程了。</p>
+<h2 id="Multiple-Concurrent-Requests"><a href="#Multiple-Concurrent-Requests" class="headerlink" title="Multiple Concurrent Requests"></a>Multiple Concurrent Requests</h2><p>使用 POSIX 线程，最好在线程一开始执行 <code>pthread_detach(pthread_self());</code> 这样就不用自己负责清理线程了。</p>
 <p>注意竞争条件，尽量减少共享资源，访问共享资源的时候需要同步。</p>
 <p><code>open_clientfd</code> 和 <code>open_listenfd</code> 函数是线程安全的</p>
-<h2 id="Caching_Web_Objects"><a href="#Caching_Web_Objects" class="headerlink" title="Caching Web Objects"></a>Caching Web Objects</h2><p>具体缓存的机制是 LRU，一些具体的参数是：</p>
+<h2 id="Caching-Web-Objects"><a href="#Caching-Web-Objects" class="headerlink" title="Caching Web Objects"></a>Caching Web Objects</h2><p>具体缓存的机制是 LRU，一些具体的参数是：</p>
 <ul>
 <li>缓存大小限制 <code>MAX_CACHE_SIZE = 1 MiB</code>，注意只缓存 web 对象，其他诸如 metadata 应该忽略</li>
 <li>单个文件大小限制 <code>MAX_OBJECT_SIZE = 100 KiB</code></li>
 <li>如果有 T 个连接，那么最大的空间为 <code>MAX_CACHE_SIZE + T * MAX_OBJECT_SIZE</code></li>
 </ul>
 <p>同步问题可以参考『读者-写者问题』</p>
-<h2 id="u8C03_u8BD5_u5DE5_u5177"><a href="#u8C03_u8BD5_u5DE5_u5177" class="headerlink" title="调试工具"></a>调试工具</h2><ul>
+<h2 id="调试工具"><a href="#调试工具" class="headerlink" title="调试工具"></a>调试工具</h2><ul>
 <li>Telnet: 不安全的 ssh，需要手动构造 HTTP 请求，如果想要测试非法的 header，这个功能就很有用<ul>
 <li><code>man telnet</code></li>
 <li><code>telnet www.wdxtub.com</code></li>
@@ -399,7 +399,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="u89E3_u9898_u601D_u8DEF"><a href="#u89E3_u9898_u601D_u8DEF" class="headerlink" title="解题思路"></a>解题思路</h2><p>代理服务器作为客户端和服务器的中间人，既需要我们了解客户端的知识，也需要懂得服务器的知识。整个过程如下：</p>
+<h2 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h2><p>代理服务器作为客户端和服务器的中间人，既需要我们了解客户端的知识，也需要懂得服务器的知识。整个过程如下：</p>
 <ul>
 <li>客户端发送请求给代理服务器</li>
 <li>代理服务器转发请求给实际访问的服务器</li>
@@ -407,7 +407,7 @@
 <li>代理服务器转发响应给客户端</li>
 </ul>
 <p>这个实验思路不难，难在具体的实现，和对 HTTP 的基本认识。</p>
-<h2 id="u6CE8_u610F_u4E8B_u9879"><a href="#u6CE8_u610F_u4E8B_u9879" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
 <li>大端小端</li>
 <li>能够处理各种 URL（合法或非法）</li>
 <li>不是所有的内容都是 ASCII 码，注意选择对应的函数来处理二进制文件（图像和视频）</li>
@@ -428,7 +428,7 @@
 <p>创建线程以后记得要detach掉，否则这个线程结束后不会释放资源直到有别的线程join了这个线程。</p>
 <p>如果 header 里没有 <code>Content-Length</code> 这一项，怎么确定 body 的长度？这个问题一直没想过直到现在遇到了这个问题。这个长度写到了 body 里，这种方式叫做 Transfer Encoding。因为服务器在处理静态对象时，事先知道对象的大小；而在处理动态对象时，无法事先知道 body 的长度。实现的时候分两种情况来从 socket 中读数据。</p>
 <p>需要正确关闭所有的文件描述符。系统给一个程序能打开的描述符数量做了一个限制。如果是 ubuntu 下，可以通过 <code>cat /proc/sys/fs/file-max</code> 来查看最大文件描述符数。在 proxy 运行一段时间，确保描述符不会持续增加。在 ubuntu 下查看程序打开的描述符方法：找到程序的pid，然后 <code>cat /proc/$pid/fd</code>。</p>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>至此，读厚/读薄 CSAPP 系列终于告一段落，这应该是我完成的第一个技术系列。想说的话很多，从中学到的东西更多。看到自己的文章对大家有那么一点帮助，深感哪怕是一点微小的工作，也应该做下去，更幸运的是因此认识了许许多多朋友，只有自己做出有价值的东西，别人才会真正认同吧。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>至此，读厚/读薄 CSAPP 系列终于告一段落，这应该是我完成的第一个技术系列。想说的话很多，从中学到的东西更多。看到自己的文章对大家有那么一点帮助，深感哪怕是一点微小的工作，也应该做下去，更幸运的是因此认识了许许多多朋友，只有自己做出有价值的东西，别人才会真正认同吧。</p>
 <p>人生在世，白驹过隙，能做的事情并不算多。如果不想碌碌无为一辈子，那么就要找到自己的方向，然后坚定地走下去。歌女的歌，舞者的舞，剑客的剑，文人的笔，英雄的斗志，都是这样子的，只要是不死，就不能放弃。</p>
 <p>与诸君共勉。</p>
 
@@ -470,11 +470,11 @@
           
             <a href="/tags/CSAPP/" rel="tag">#CSAPP</a>
           
-            <a href="/tags/Proxy/" rel="tag">#Proxy</a>
+            <a href="/tags/读厚/" rel="tag">#读厚</a>
           
             <a href="/tags/实验/" rel="tag">#实验</a>
           
-            <a href="/tags/读厚/" rel="tag">#读厚</a>
+            <a href="/tags/Proxy/" rel="tag">#Proxy</a>
           
         </div>
       
@@ -709,7 +709,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4EFB_u52A1_u76EE_u6807"><span class="nav-number">1.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sequential_Web_Proxy"><span class="nav-number">2.</span> <span class="nav-text">Sequential Web Proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multiple_Concurrent_Requests"><span class="nav-number">3.</span> <span class="nav-text">Multiple Concurrent Requests</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Caching_Web_Objects"><span class="nav-number">4.</span> <span class="nav-text">Caching Web Objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8C03_u8BD5_u5DE5_u5177"><span class="nav-number">5.</span> <span class="nav-text">调试工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u89E3_u9898_u601D_u8DEF"><span class="nav-number">6.</span> <span class="nav-text">解题思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6CE8_u610F_u4E8B_u9879"><span class="nav-number">7.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">1.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sequential-Web-Proxy"><span class="nav-number">2.</span> <span class="nav-text">Sequential Web Proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multiple-Concurrent-Requests"><span class="nav-number">3.</span> <span class="nav-text">Multiple Concurrent Requests</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Caching-Web-Objects"><span class="nav-number">4.</span> <span class="nav-text">Caching Web Objects</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试工具"><span class="nav-number">5.</span> <span class="nav-text">调试工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解题思路"><span class="nav-number">6.</span> <span class="nav-text">解题思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">7.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>
@@ -889,42 +889,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

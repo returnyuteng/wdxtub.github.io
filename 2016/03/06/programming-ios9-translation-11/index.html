@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Webview,iOS9,学习,笔记,翻译," />
+  <meta name="keywords" content="学习,笔记,iOS9,翻译,Webview," />
 
 
 
@@ -112,6 +112,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Programming iOS9 学习笔记 11 - Web Views">
 <meta name="twitter:description" content="Web view 实际是一个浏览器，知道如何从网络上获取资源，比如说渲染 HTML/CSS/JavaScript。不仅可以用于展示网络内容，而且还有一个强大的，可以用来布局、显示动画和多媒体的引擎。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14572631505893.jpg">
 
 
 
@@ -129,7 +130,7 @@
   };
 </script>
 
-  <title> Programming iOS9 学习笔记 11 - Web Views | 小土刀 </title>
+  <title> Programming iOS9 学习笔记 11 - Web Views | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -150,7 +151,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -362,9 +363,9 @@
 <p>这里主要讨论 <code>WKWebView</code> 和 <code>SFSafariViewController</code>。</p>
 <p><img src="/images/14572633254117.jpg" alt=""></p>
 <h2 id="WKWebView"><a href="#WKWebView" class="headerlink" title="WKWebView"></a>WKWebView</h2><p><code>WKWebView</code> 是 WebKit 框架的一部分，使用之前需要 <code>import WebKit</code> 并且在代码中创建 web view，比如：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> config = <span class="type">WKWebViewConfiguration</span>()</span><br><span class="line"><span class="comment">// .... 各种配置</span></span><br><span class="line"><span class="keyword">let</span> wv = <span class="type">WKWebView</span>(frame: <span class="type">CGRectZero</span>, configuration:config)</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> config = <span class="type">WKWebViewConfiguration</span>()</div><div class="line"><span class="comment">// .... 各种配置</span></div><div class="line"><span class="keyword">let</span> wv = <span class="type">WKWebView</span>(frame: <span class="type">CGRectZero</span>, configuration:config)</div></pre></td></tr></table></figure>
 <p>当然也可以直接使用默认配置初始化，之后再进行修改，如</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> wv = <span class="type">WKWebView</span>(frame: <span class="type">CGRectZero</span>)</span><br><span class="line"><span class="comment">// ... 各种配置</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> wv = <span class="type">WKWebView</span>(frame: <span class="type">CGRectZero</span>)</div><div class="line"><span class="comment">// ... 各种配置</span></div></pre></td></tr></table></figure>
 <p>无论用哪种方法，最好在开始载入之前就完成配置，因为不同的配置可能会导致渲染得到的页面不一样，比较常见的配置有：</p>
 <p><img src="/images/14572640710901.jpg" alt=""></p>
 <p><img src="/images/14572640995408.jpg" alt=""></p>
@@ -404,9 +405,9 @@
 <p>当然也可以反向来进行操作，比方说把页面的某些元素与按钮绑定，这里不深入。</p>
 <p>最后需要注意的是，<code>WKWebView</code> 是不能在 nib 中初始化的（控件里的是 <code>UIWebView</code>）。并且在 iOS8 中，指向本地文件的链接无法在 <code>WKWebView</code> 中使用（iOS9 中已修复，但是考虑兼容性，只能使用 UIWebView）</p>
 <p>另外一个问题是 <code>WKWebView</code> 不会自动参与到任何视图控制器的状态中（也就是无法保存和恢复），如果是显示本地内容的话可以人为进行保存恢复，这里不赘述</p>
-<h2 id="Safari_View_Controller"><a href="#Safari_View_Controller" class="headerlink" title="Safari View Controller"></a>Safari View Controller</h2><p>简单来说，就是在你的应用中开一个单独的 safari 线程（提供比较完整的功能）。根据苹果的建议，如果是要显示内部的 HTML 内容，用 <code>WKWebView</code>，如果是访问网络，用 Safari view controller，这样可以省去很多麻烦。</p>
+<h2 id="Safari-View-Controller"><a href="#Safari-View-Controller" class="headerlink" title="Safari View Controller"></a>Safari View Controller</h2><p>简单来说，就是在你的应用中开一个单独的 safari 线程（提供比较完整的功能）。根据苹果的建议，如果是要显示内部的 HTML 内容，用 <code>WKWebView</code>，如果是访问网络，用 Safari view controller，这样可以省去很多麻烦。</p>
 <p>使用需要 <code>import SafariServices</code>，如</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> svc = <span class="type">SFSafariViewController</span>(<span class="type">URL</span>: url)</span><br><span class="line"><span class="keyword">self</span>.presentViewController(svc, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> svc = <span class="type">SFSafariViewController</span>(<span class="type">URL</span>: url)</div><div class="line"><span class="keyword">self</span>.presentViewController(svc, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</div></pre></td></tr></table></figure>
 <p><img src="/images/14572679027545.jpg" alt=""></p>
 
       
@@ -445,15 +446,15 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Webview/" rel="tag">#Webview</a>
-          
-            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
-          
             <a href="/tags/学习/" rel="tag">#学习</a>
           
             <a href="/tags/笔记/" rel="tag">#笔记</a>
           
+            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
+          
             <a href="/tags/翻译/" rel="tag">#翻译</a>
+          
+            <a href="/tags/Webview/" rel="tag">#Webview</a>
           
         </div>
       
@@ -688,7 +689,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#WKWebView"><span class="nav-number">1.</span> <span class="nav-text">WKWebView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Safari_View_Controller"><span class="nav-number">2.</span> <span class="nav-text">Safari View Controller</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#WKWebView"><span class="nav-number">1.</span> <span class="nav-text">WKWebView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Safari-View-Controller"><span class="nav-number">2.</span> <span class="nav-text">Safari View Controller</span></a></li></ol></div>
             
           </div>
         </section>
@@ -868,42 +869,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

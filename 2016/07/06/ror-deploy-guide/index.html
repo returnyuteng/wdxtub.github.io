@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Mina,Nginx,Puma,部署," />
+  <meta name="keywords" content="Nginx,部署,Mina,Puma," />
 
 
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> Ruby On Rails 部署指南 | 小土刀 </title>
+  <title> Ruby On Rails 部署指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -134,7 +134,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -340,9 +340,9 @@
 <h2 id="Mina"><a href="#Mina" class="headerlink" title="Mina"></a>Mina</h2><p>Mina 是一个非常快的部署器，也是一个服务端自动化工具。至于为什么效率这么高，因为直接生成的是 bash 脚本，然后在远端服务器执行。和 Vlad 与 Capistrano 不同的是，Mina 不会每条指令都开一个新的 SSH 连接，而是每次部署只创建一个 SSH 连接，尽可能减少了 SSH 连接的开销。</p>
 <p>安装非常简单 <code>gem install mina</code> 即可。其实使用也很简单，这里简单介绍一下：</p>
 <p>首先，在项目中用命令 <code>mina init</code> 进行初始化，然后我们会得到 <code>config/deploy.rb</code> 文件。这是一个自带 task 的 Rake 文件，具体怎么写 task 可以参考<a href="https://github.com/mina-deploy/mina/blob/master/docs/writing_your_own_tasks.md" target="_blank" rel="external">这里</a>，一个简单的配置可以像这样：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">set <span class="symbol">:user</span>, <span class="string">'wdxtub'</span></span><br><span class="line">set <span class="symbol">:domain</span>, <span class="string">'wdxtub.com'</span></span><br><span class="line">set <span class="symbol">:deploy_to</span>, <span class="string">'/var/www/wdxtub.com'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line">set <span class="symbol">:user</span>, <span class="string">'wdxtub'</span></div><div class="line">set <span class="symbol">:domain</span>, <span class="string">'wdxtub.com'</span></div><div class="line">set <span class="symbol">:deploy_to</span>, <span class="string">'/var/www/wdxtub.com'</span></div></pre></td></tr></table></figure>
 <p>然后，执行 <code>mina setup</code>，这里会根据 <code>deploy_to</code> 中的路径来配置好目录结构，有一点需要注意，该路径需要是可读可写的。大概的目录结构为</p>
-<figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">/var/www/wdxtub.com/     <span class="comment"># The deploy_to path</span></span><br><span class="line"> |<span class="string">-  releases/              # Holds releases, one subdir per release</span><br><span class="line"> </span>|<span class="string">   </span>|<span class="string">- 1/</span><br><span class="line"> </span>|<span class="string">   </span>|<span class="string">- 2/</span><br><span class="line"> </span>|<span class="string">   </span>|<span class="string">- 3/</span><br><span class="line"> </span>|<span class="string">   '- ...</span><br><span class="line"> </span>|<span class="string">-  shared/                # Holds files shared between releases</span><br><span class="line"> </span>|<span class="string">   </span>|<span class="string">- logs/               # Log files are usually stored here</span><br><span class="line"> </span>|<span class="string">   `- ...</span><br><span class="line"> '-  current/               # A symlink to the current release in releases/</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">/var/www/wdxtub.com/     # The deploy_to path</div><div class="line"> |-  releases/              # Holds releases, one subdir per release</div><div class="line"> |   |- 1/</div><div class="line"> |   |- 2/</div><div class="line"> |   |- 3/</div><div class="line"> |   &apos;- ...</div><div class="line"> |-  shared/                # Holds files shared between releases</div><div class="line"> |   |- logs/               # Log files are usually stored here</div><div class="line"> |   `- ...</div><div class="line"> &apos;-  current/               # A symlink to the current release in releases/</div></pre></td></tr></table></figure>
 <p>最后就可以部署了，命令为 <code>mina deploy</code></p>
 <p>根据不同开发环境不同，有一些插件还是值得使用的，这里给出一个简单的列表：</p>
 <ul>
@@ -356,7 +356,7 @@
 </ul>
 <h2 id="Puma"><a href="#Puma" class="headerlink" title="Puma"></a>Puma</h2><p>Puma 是一个运行 Ruby/Rack 应用的简单快速多线程高并发的 HTTP 服务器程序，为了达到最好的性能，推荐使用实现了真线程的 Rubinius 或 JRuby。</p>
 <p>使用起来也非常简单，先在 <code>Gemfile</code> 中添加 <code>gem puma</code>，然后手动在 config 文件夹下创建一个 <code>puma.rb</code>(或者 <code>puma.rb.erb</code> 也行)，然后可以指定一些常见的参数，比如</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">workers <span class="constant">Integer</span>(<span class="constant">ENV</span>[<span class="string">"WEB_CONCURRENCY"</span>] || <span class="number">20</span>)</span><br><span class="line">threads_count = <span class="constant">Integer</span>(<span class="constant">ENV</span>[<span class="string">"MAX_THREADS"</span>] || <span class="number">20</span>)</span><br><span class="line">threads threads_count, threads_count</span><br><span class="line"></span><br><span class="line">bind <span class="string">"unix://&lt;%= settings.puma_socket %&gt;"</span></span><br><span class="line"></span><br><span class="line">daemonize</span><br><span class="line">pidfile <span class="string">"&lt;%= settings.puma_pid %&gt;"</span></span><br><span class="line">state_path <span class="string">"&lt;%= settings.puma_state %&gt;"</span></span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line">workers Integer(ENV[<span class="string">"WEB_CONCURRENCY"</span>] <span class="params">||</span> <span class="number">20</span>)</div><div class="line">threads_count = Integer(ENV[<span class="string">"MAX_THREADS"</span>] <span class="params">||</span> <span class="number">20</span>)</div><div class="line">threads threads_count, threads_count</div><div class="line"></div><div class="line">bind <span class="string">"unix://&lt;%= settings.puma_socket %&gt;"</span></div><div class="line"></div><div class="line">daemonize</div><div class="line">pidfile <span class="string">"&lt;%= settings.puma_pid %&gt;"</span></div><div class="line">state_path <span class="string">"&lt;%= settings.puma_state %&gt;"</span></div><div class="line">...</div><div class="line">...</div></pre></td></tr></table></figure>
 <h2 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h2><p>Nginx 的配置不算特别难，但是有很多细节需要一定的 Nginx 基础。Nginx 部分之后会另外写一篇（等我慢慢熟悉一些后），这里简单提两点：</p>
 <ul>
 <li>upstream 中 server 要配置 puma 中 bind 的 socket</li>
@@ -364,7 +364,7 @@
 </ul>
 <p>最后需要重启服务器 <code>nginx -s reload</code></p>
 <p>这里因为各种不可抗力，不能贴出完整的配置代码，不过参考链接中的文章附有很全的代码，配置服务器这个事儿就是要劳神费力的，所以需要一个好运维！</p>
-<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="https://github.com/mina-deploy/mina" target="_blank" rel="external">Mina Github</a></li>
 <li><a href="https://github.com/puma/puma" target="_blank" rel="external">Puma Github</a></li>
 <li><a href="https://segmentfault.com/a/1190000002918225" target="_blank" rel="external">Ruby on Rails 终极部署方案 nginx+mina+puma</a></li>
@@ -409,13 +409,13 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Mina/" rel="tag">#Mina</a>
-          
             <a href="/tags/Nginx/" rel="tag">#Nginx</a>
           
-            <a href="/tags/Puma/" rel="tag">#Puma</a>
-          
             <a href="/tags/部署/" rel="tag">#部署</a>
+          
+            <a href="/tags/Mina/" rel="tag">#Mina</a>
+          
+            <a href="/tags/Puma/" rel="tag">#Puma</a>
           
         </div>
       
@@ -650,7 +650,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mina"><span class="nav-number">1.</span> <span class="nav-text">Mina</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Puma"><span class="nav-number">2.</span> <span class="nav-text">Puma</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx"><span class="nav-number">3.</span> <span class="nav-text">Nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mina"><span class="nav-number">1.</span> <span class="nav-text">Mina</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Puma"><span class="nav-number">2.</span> <span class="nav-text">Puma</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx"><span class="nav-number">3.</span> <span class="nav-text">Nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
@@ -830,42 +830,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

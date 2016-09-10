@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Shell,命令行,技巧," />
+  <meta name="keywords" content="技巧,Shell,命令行," />
 
 
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> Shell 入门指南 | 小土刀 </title>
+  <title> Shell 入门指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -134,7 +134,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -338,10 +338,10 @@
 <a id="more"></a>
 <hr>
 <p>本指南需要读者有一定 Linux 基础，会尽可能把各个概念都说明白，但是说到底编程是一门手艺，手艺就需要去探索和练习，所以遇到问题先自己想想怎么办，不行再寻求帮助。</p>
-<h2 id="Hello_World"><a href="#Hello_World" class="headerlink" title="Hello World"></a>Hello World</h2><p>我们先来看一个最简单的 Shell 程序：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="shebang">#!/bin/bash</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Hello World! This is wdxtub."</span></span><br><span class="line"><span class="comment"># 显示时间</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Today is: "</span> $(date)</span><br></pre></td></tr></table></figure>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><p>我们先来看一个最简单的 Shell 程序：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"Hello World! This is wdxtub."</span></div><div class="line"><span class="comment"># 显示时间</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"Today is: "</span> $(date)</div></pre></td></tr></table></figure>
 <p>把上面的代码保存到 <code>hw.sh</code> 中，然后在终端中进入包含 <code>hw.sh</code> 的文件夹中，用 <code>chmod 777 hw.sh 给其权限</code>，最后用 <code>./hw.sh</code> 执行。应该能看到如下输出：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ./hw.sh <span class="comment"># &lt; 这句表示执行该 Shell 脚本</span></span><br><span class="line">Hello World! This is wdxtub. <span class="comment"># &lt; 之后是执行的结果</span></span><br><span class="line">Today is: Tue Aug  <span class="number">2</span> <span class="number">11</span>:<span class="number">57</span>:<span class="number">24</span> CST <span class="number">2016</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ ./hw.sh <span class="comment"># &lt; 这句表示执行该 Shell 脚本</span></div><div class="line">Hello World! This is wdxtub. <span class="comment"># &lt; 之后是执行的结果</span></div><div class="line">Today is: Tue Aug  2 11:57:24 CST 2016</div></pre></td></tr></table></figure>
 <p>可能第一行的 <code>#!/bin/bash</code> 就让人迷糊了，没事，我现在就来解释。第一行叫 shebang，用来告知系统如何执行该脚本，这句话的意思就是说要用 <code>/bin/bash</code> 这个程序来跑这段代码。有意思的是，这一句也可以带参数，如果我们想开启调试功能，可以把第一句改为 <code>#!/bin/bash -xv</code> 即可</p>
 <p>我们还能学到的东西是：</p>
 <ul>
@@ -353,7 +353,7 @@
 </ul>
 <p>很简单对不对，没错，实际上 Shell 程序就是把脚本放到一起来执行而已，如果对 Linux 命令有比较清晰的了解的话，简直易如反掌。不过，这只是基础而已，还有很多 shell 的『魔法』需要我们去掌握。</p>
 <p>如果是纯新手怎么办呢？没事，我也有准备，可以在命令行中输入 <code>man bash</code> 或者访问<a href="https://wiki.archlinux.org/index.php/Bash_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87" target="_blank" rel="external">这里</a>)查看英文/中文版的使用说明。至于为什么这里只介绍 bash 呢？因为大部分 Linux 环境默认是用 bash 的，比方说各类云服务提供商开出来的虚拟机，如果不想每台机都重新去配置的话，直接学好 bash 是完全够用的。同理，了解 vim 和 tmux 的默认配置也很重要，毕竟不可能用一台机就先去配一堆自定义环境和快捷键吧（别人也需要用呢）</p>
-<h2 id="Bash__u57FA_u672C_u64CD_u4F5C"><a href="#Bash__u57FA_u672C_u64CD_u4F5C" class="headerlink" title="Bash 基本操作"></a>Bash 基本操作</h2><p>作为执行 shell 脚本的程序，bash 的交互式版本有的时候甚至比 shell 本身还更常用，毕竟登录到远程服务器，面对的就是一个闪动的光标，也就是 bash 了。我们就先来了解一下 bash 基本的操作，这样在测试命令的时候就会方便许多。</p>
+<h2 id="Bash-基本操作"><a href="#Bash-基本操作" class="headerlink" title="Bash 基本操作"></a>Bash 基本操作</h2><p>作为执行 shell 脚本的程序，bash 的交互式版本有的时候甚至比 shell 本身还更常用，毕竟登录到远程服务器，面对的就是一个闪动的光标，也就是 bash 了。我们就先来了解一下 bash 基本的操作，这样在测试命令的时候就会方便许多。</p>
 <p>所谓操作，其实就是各类快捷键，这里挑些常用的介绍一下，一句话：熟能生巧（这里为了显示的时候好看，字母都用大写，实际上操作的时候，用小写即可）</p>
 <ul>
 <li><code>Tab</code> 能够自动补全，从命令名称到文件夹到路径，多按两下还能出个列表方便我们输入，是居家旅行必备操作，如果只能记住一个快捷键，那么记住 <code>Tab</code> 即可</li>
@@ -371,8 +371,8 @@
 <li>如果想要设定 bash 的提示文本，需要修改 <code>~/.bashrc</code> 中的 <code>PS1</code> 环境变量</li>
 </ul>
 <p>好！了解了这些我们就可以继续旅程了，我们就从前面出现的 <code>echo</code> 命令说起吧！</p>
-<h2 id="u70ED_u8EAB_uFF1A_u6253_u5370_u6587_u672C"><a href="#u70ED_u8EAB_uFF1A_u6253_u5370_u6587_u672C" class="headerlink" title="热身：打印文本"></a>热身：打印文本</h2><h3 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h3><p>前面我们输出字符串时，用的命令是 <code>echo &quot;Hello World! This is wdxtub.&quot;</code>，其中字符串是用双引号包住的，但其实不带双引号，或者用单引号也可以完成这样的效果，比如：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> Hello World</span><br><span class="line">Hello World</span><br><span class="line"></span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">'Hello World'</span></span><br><span class="line">Hello World</span><br></pre></td></tr></table></figure>
+<h2 id="热身：打印文本"><a href="#热身：打印文本" class="headerlink" title="热身：打印文本"></a>热身：打印文本</h2><h3 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h3><p>前面我们输出字符串时，用的命令是 <code>echo &quot;Hello World! This is wdxtub.&quot;</code>，其中字符串是用双引号包住的，但其实不带双引号，或者用单引号也可以完成这样的效果，比如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ <span class="built_in">echo</span> Hello World</div><div class="line">Hello World</div><div class="line"></div><div class="line">$ <span class="built_in">echo</span> <span class="string">'Hello World'</span></div><div class="line">Hello World</div></pre></td></tr></table></figure>
 <p>那么问题来了，这三种用什么区别呢？</p>
 <ul>
 <li>不带引号的 <code>echo</code> 没办法显示 <code>;</code>，因为分号是用来分隔命令的</li>
@@ -380,9 +380,9 @@
 <li>使用双引号 <code>echo</code> 有些值需要进行转义（使用 <code>\</code>），比方说感叹号</li>
 </ul>
 <h3 id="printf"><a href="#printf" class="headerlink" title="printf"></a>printf</h3><p>除了 <code>echo</code> 命令，我们其实还可以用 <code>printf</code> 命令来进行格式化输出，不过需要注意的是这里我们需要自己添加换行符，我们在前面的脚本文件中添加如下三行:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">printf</span> <span class="string">"%-5s %-10s %4s\n"</span> No. Name Score</span><br><span class="line"><span class="built_in">printf</span> <span class="string">"%-5s %-10s %4.2f\n"</span> <span class="number">1</span> wdxtub <span class="number">99.9999</span></span><br><span class="line"><span class="built_in">printf</span> <span class="string">"%-5s %-10s %4.2f\n"</span> <span class="number">43</span> dawang <span class="number">66.6566</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="built_in">printf</span> <span class="string">"%-5s %-10s %4s\n"</span> No. Name Score</div><div class="line"><span class="built_in">printf</span> <span class="string">"%-5s %-10s %4.2f\n"</span> 1 wdxtub 99.9999</div><div class="line"><span class="built_in">printf</span> <span class="string">"%-5s %-10s %4.2f\n"</span> 43 dawang 66.6566</div></pre></td></tr></table></figure>
 <p>然后我们再执行一下，结果是：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ./hw.sh</span><br><span class="line">Hello World! This is wdxtub.</span><br><span class="line">Today is:  Tue Aug <span class="number">2</span> <span class="number">16</span>:<span class="number">58</span>:<span class="number">16</span> CST <span class="number">2016</span></span><br><span class="line">No.   Name       Score</span><br><span class="line"><span class="number">1</span>     wdxtub     <span class="number">100.00</span></span><br><span class="line"><span class="number">43</span>    dawang     <span class="number">66.66</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ ./hw.sh</div><div class="line">Hello World! This is wdxtub.</div><div class="line">Today is:  Tue Aug 2 16:58:16 CST 2016</div><div class="line">No.   Name       Score</div><div class="line">1     wdxtub     100.00</div><div class="line">43    dawang     66.66</div></pre></td></tr></table></figure>
 <p>这里能学到的套路是什么呢？</p>
 <ul>
 <li><code>%s</code>, <code>%c</code>, <code>%d</code>, <code>%f</code> 是格式替代符，就是和 C 语言一样的方式</li>
@@ -390,8 +390,8 @@
 <li><code>%4.2f</code> 表示保留两位小数可以看到是默认四舍五入的</li>
 <li>最后要加上 <code>\n</code> 才能正确换行</li>
 </ul>
-<h3 id="cat_2C_head_2C_tail_2C_uniq_2C_cut"><a href="#cat_2C_head_2C_tail_2C_uniq_2C_cut" class="headerlink" title="cat, head, tail, uniq, cut"></a>cat, head, tail, uniq, cut</h3><p>打印文本常用的命令还有 <code>cat</code>, <code>head</code>, <code>tail</code>, <code>uniq</code>, <code>cut</code>，这里主要针对文件的输出，我们先创建一个文本文件 <code>sample.txt</code>，其内容为</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span> hohoho <span class="class">.yo</span></span><br><span class="line"><span class="number">1</span> hohoho <span class="class">.max</span></span><br><span class="line"><span class="number">2</span> ohohoh <span class="class">.I</span></span><br><span class="line"><span class="number">2</span> ohohoh <span class="class">.I</span></span><br><span class="line"><span class="number">3</span> hahaha <span class="class">.want</span></span><br><span class="line"><span class="number">4</span> ahahah <span class="class">.to</span></span><br><span class="line"><span class="number">5</span> wowwow <span class="class">.see</span></span><br><span class="line"><span class="number">6</span> mummum .you</span><br></pre></td></tr></table></figure>
+<h3 id="cat-head-tail-uniq-cut"><a href="#cat-head-tail-uniq-cut" class="headerlink" title="cat, head, tail, uniq, cut"></a>cat, head, tail, uniq, cut</h3><p>打印文本常用的命令还有 <code>cat</code>, <code>head</code>, <code>tail</code>, <code>uniq</code>, <code>cut</code>，这里主要针对文件的输出，我们先创建一个文本文件 <code>sample.txt</code>，其内容为</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">1 hohoho .yo</div><div class="line">1 hohoho .max</div><div class="line">2 ohohoh .I</div><div class="line">2 ohohoh .I</div><div class="line">3 hahaha .want</div><div class="line">4 ahahah .to</div><div class="line">5 wowwow .see</div><div class="line">6 mummum .you</div></pre></td></tr></table></figure>
 <p>接下来给出几个简单的实例，具体命令的用法，可以使用 <code>man command</code> 来进行查询，或者用 <a href="https://github.com/tldr-pages/tldr" target="_blank" rel="external">TLDR</a> 命令来查询（我更推荐后者）</p>
 <ul>
 <li>打印文件内容 <code>cat sample.txt</code></li>
@@ -401,11 +401,11 @@
 <li>显示重复的行 <code>uniq -d sample.txt</code></li>
 <li>打印每行 <code>.</code> 之前的内容 <code>cut -d &#39;.&#39; -f 1 sample.txt</code></li>
 </ul>
-<h2 id="u57FA_u7840_uFF1A_u8868_u8FBE_u5F0F"><a href="#u57FA_u7840_uFF1A_u8868_u8FBE_u5F0F" class="headerlink" title="基础：表达式"></a>基础：表达式</h2><p>如果只是执行单行命令，其实很难完全发挥『脚本』的威力，毕竟直接在命令行里输入也是可以的嘛，接下来我们就看看如何像编程一样写脚本。</p>
-<h3 id="u53D8_u91CF"><a href="#u53D8_u91CF" class="headerlink" title="变量"></a>变量</h3><p>首先要了解的是环境变量，我们可以通过 <code>env</code> 命令查看系统当前的环境变量，也就是那些不需要在脚本中显式声明就可以直接使用的变量。和之前一样，我们先来看一个例子，在之前的脚本中加入下面几行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#export 设置环境变量，在该 shell 脚本执行阶段有效</span></span><br><span class="line"><span class="built_in">export</span> MY_WEB=http://www.wdxtub.com</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"My home is <span class="variable">$HOME</span>"</span></span><br><span class="line">web=<span class="string">"wdxtub.com"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"My website is <span class="variable">$&#123;web&#125;</span>"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'This is not $MY_WEB'</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;web/com/cn&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"上一个程序的返回值: $?"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"脚本的 PID: $$"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"参数个数: <span class="variable">$#</span>"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"脚本参数: <span class="variable">$@</span>"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"分隔好的脚本参数 第一个:<span class="variable">$1</span> 第二个:<span class="variable">$2</span>"</span></span><br></pre></td></tr></table></figure>
+<h2 id="基础：表达式"><a href="#基础：表达式" class="headerlink" title="基础：表达式"></a>基础：表达式</h2><p>如果只是执行单行命令，其实很难完全发挥『脚本』的威力，毕竟直接在命令行里输入也是可以的嘛，接下来我们就看看如何像编程一样写脚本。</p>
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>首先要了解的是环境变量，我们可以通过 <code>env</code> 命令查看系统当前的环境变量，也就是那些不需要在脚本中显式声明就可以直接使用的变量。和之前一样，我们先来看一个例子，在之前的脚本中加入下面几行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment">#export 设置环境变量，在该 shell 脚本执行阶段有效</span></div><div class="line"><span class="built_in">export</span> MY_WEB=http://www.wdxtub.com</div><div class="line"><span class="built_in">echo</span> <span class="string">"My home is <span class="variable">$HOME</span>"</span></div><div class="line">web=<span class="string">"wdxtub.com"</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"My website is <span class="variable">$&#123;web&#125;</span>"</span></div><div class="line"><span class="built_in">echo</span> <span class="string">'This is not $MY_WEB'</span></div><div class="line"><span class="built_in">echo</span> <span class="variable">$&#123;web/com/cn&#125;</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"上一个程序的返回值: $?"</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"脚本的 PID: $$"</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"参数个数: <span class="variable">$#</span>"</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"脚本参数: <span class="variable">$@</span>"</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"分隔好的脚本参数 第一个:<span class="variable">$1</span> 第二个:<span class="variable">$2</span>"</span></div></pre></td></tr></table></figure>
 <p>我们执行的时候带两个参数试试看 <code>./hw.sh hello world</code>，结果为</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ./hw.sh hello world</span><br><span class="line"><span class="comment">#前面部分省略</span></span><br><span class="line"><span class="comment">#..........</span></span><br><span class="line">My home is /Users/dawang</span><br><span class="line">My website is wdxtub.com</span><br><span class="line">This is not <span class="variable">$MY_WEB</span></span><br><span class="line">wdxtub.cn</span><br><span class="line">上一个程序的返回值: <span class="number">0</span></span><br><span class="line">脚本的 PID: <span class="number">9782</span></span><br><span class="line">参数个数: <span class="number">2</span></span><br><span class="line">脚本参数: hello world</span><br><span class="line">分隔好的脚本参数 第一个:hello 第二个:world</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ ./hw.sh hello world</div><div class="line"><span class="comment">#前面部分省略</span></div><div class="line"><span class="comment">#..........</span></div><div class="line">My home is /Users/dawang</div><div class="line">My website is wdxtub.com</div><div class="line">This is not <span class="variable">$MY_WEB</span></div><div class="line">wdxtub.cn</div><div class="line">上一个程序的返回值: 0</div><div class="line">脚本的 PID: 9782</div><div class="line">参数个数: 2</div><div class="line">脚本参数: hello world</div><div class="line">分隔好的脚本参数 第一个:hello 第二个:world</div></pre></td></tr></table></figure>
 <ul>
 <li>变量声明 <code>web=&quot;wdxtub.com&quot;</code> 即可</li>
 <li>使用变量的时候需要加上 <code>$</code> 或者 <code>${}</code>，我更推荐后者，看起来更清晰</li>
@@ -420,13 +420,13 @@
 <li>识别当前 shell 可以用 <code>echo $SHELL</code> 或 <code>echo $0</code></li>
 <li>检测是否是超级用户可以通过 <code>$UID</code> 的值判断，如果是超级用户，UID 应为 0</li>
 </ul>
-<h3 id="u6570_u7EC4"><a href="#u6570_u7EC4" class="headerlink" title="数组"></a>数组</h3><p>Bash 支持普通数组（下标是整数）和关联数组（下标是字符串，类似 Map），我们直接上脚本代码</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义数组</span></span><br><span class="line">iarray=(<span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span>)</span><br><span class="line">iiarray=(<span class="string">"one"</span> <span class="string">"two"</span> <span class="string">"three"</span>)</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;iarray[0]&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;iiarray[2]&#125;</span></span><br><span class="line"><span class="comment"># 打印所有值</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;iiarray[*]&#125;</span></span><br><span class="line"><span class="comment"># 还是打印所有值</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;iiarray[@]&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>Bash 支持普通数组（下标是整数）和关联数组（下标是字符串，类似 Map），我们直接上脚本代码</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 定义数组</span></div><div class="line">iarray=(1 2 3 4 5 6 7)</div><div class="line">iiarray=(<span class="string">"one"</span> <span class="string">"two"</span> <span class="string">"three"</span>)</div><div class="line"><span class="built_in">echo</span> <span class="variable">$&#123;iarray[0]&#125;</span></div><div class="line"><span class="built_in">echo</span> <span class="variable">$&#123;iiarray[2]&#125;</span></div><div class="line"><span class="comment"># 打印所有值</span></div><div class="line"><span class="built_in">echo</span> <span class="variable">$&#123;iiarray[*]&#125;</span></div><div class="line"><span class="comment"># 还是打印所有值</span></div><div class="line"><span class="built_in">echo</span> <span class="variable">$&#123;iiarray[@]&#125;</span></div></pre></td></tr></table></figure>
 <p>打印数组长度只需要在数组变量前加 <code>#</code> 符号。关联数组因为需要 Bash 4.0 以上，这里暂时略过。</p>
-<h3 id="u6570_u5B66_u8FD0_u7B97"><a href="#u6570_u5B66_u8FD0_u7B97" class="headerlink" title="数学运算"></a>数学运算</h3><p>通常我们使用 <code>let</code>, <code>(( ))</code> 和 <code>[ ]</code> 来执行基本的算术操作，使用 <code>expr</code> 和 <code>br</code> 来进行高级操作。老规矩，先看脚本代码，在 <code>hw.sh</code> 中添加下面几行</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">class1=<span class="number">33</span></span><br><span class="line">class2=<span class="number">44</span></span><br><span class="line"><span class="built_in">let</span> total=class1+class2</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$total</span></span><br><span class="line"><span class="built_in">let</span> class1++</span><br><span class="line"><span class="built_in">let</span> class2--</span><br><span class="line">total=$[ <span class="variable">$class1</span> + class2 ]</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$total</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"4 * 3.45"</span> | bc</span><br></pre></td></tr></table></figure>
+<h3 id="数学运算"><a href="#数学运算" class="headerlink" title="数学运算"></a>数学运算</h3><p>通常我们使用 <code>let</code>, <code>(( ))</code> 和 <code>[ ]</code> 来执行基本的算术操作，使用 <code>expr</code> 和 <code>br</code> 来进行高级操作。老规矩，先看脚本代码，在 <code>hw.sh</code> 中添加下面几行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">class1=33</div><div class="line">class2=44</div><div class="line"><span class="built_in">let</span> total=class1+class2</div><div class="line"><span class="built_in">echo</span> <span class="variable">$total</span></div><div class="line"><span class="built_in">let</span> class1++</div><div class="line"><span class="built_in">let</span> class2--</div><div class="line">total=$[ <span class="variable">$class1</span> + class2 ]</div><div class="line"><span class="built_in">echo</span> <span class="variable">$total</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"4 * 3.45"</span> | bc</div></pre></td></tr></table></figure>
 <p>执行结果为</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ./hw.sh hello world</span><br><span class="line"><span class="comment"># 前面部分省略</span></span><br><span class="line"><span class="comment"># ..........</span></span><br><span class="line"><span class="number">77</span></span><br><span class="line"><span class="number">77</span></span><br><span class="line"><span class="number">13.80</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ ./hw.sh hello world</div><div class="line"><span class="comment"># 前面部分省略</span></div><div class="line"><span class="comment"># ..........</span></div><div class="line">77</div><div class="line">77</div><div class="line">13.80</div></pre></td></tr></table></figure>
 <p>这里我们可以简单了解</p>
 <ul>
 <li><code>let</code> 之后变量名不需要加 <code>$</code></li>
@@ -434,7 +434,7 @@
 <li><code>let</code> 及 <code>expr</code> 仅支持整数</li>
 <li><code>bc</code> 支持浮点数，可以通过 <code>stdin</code> 来传给 <code>bc</code>（就是 <code>|</code> 符号）</li>
 </ul>
-<h3 id="u91CD_u5B9A_u5411"><a href="#u91CD_u5B9A_u5411" class="headerlink" title="重定向"></a>重定向</h3><p>这部分我们需要记住三个数字</p>
+<h3 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h3><p>这部分我们需要记住三个数字</p>
 <ul>
 <li>0 - stdin 标准输入</li>
 <li>1 - stdout 标准输出</li>
@@ -443,10 +443,10 @@
 <p>重定向输出所用符号是 <code>&gt;</code> 和 <code>&gt;&gt;</code>，其中 <code>&gt;</code> 会清空文件，而 <code>&gt;&gt;</code> 则是追加。那前面的三个数字在哪里呢？其实 <code>&gt;</code> 相当于 <code>1&gt;</code>，<code>&gt;&gt;</code> 相当于 <code>1&gt;&gt;</code></p>
 <p>然后我们来看看标准错误输出，一般来说有两种处理方式，一种是和标准输出重定向到一起，那么通过 <code>command &gt; output.txt 2&gt;&amp;1</code> 或 <code>cmd &amp;&gt; output.txt</code> 即可；另一种则是分开两个文件，那么使用 <code>command 2&gt;stderr.txt 1&gt;stdout.txt</code> 即可；如果不想保存任何标准错误输出（甚至都不想在终端中见到），可以 <code>command 2&gt;/dev/null</code>，这里的 <code>/dev/null</code> 是一个特殊的设备文件，接收到的任何数据都会被丢弃。</p>
 <p>标准输入的用法和输出类似，这里不再赘述。另外如果需要把标准输出通过管道运到两个不同的地方时（<code>|</code> 只能重定向到一个地方），可以使用 <code>tee</code> 命令，不过这里暂时略过，留到之后的中级教程中介绍。</p>
-<h3 id="u6761_u4EF6_u6D41_u7A0B"><a href="#u6761_u4EF6_u6D41_u7A0B" class="headerlink" title="条件流程"></a>条件流程</h3><p>比较常用的就是 if 的套路，格式为</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> condition;</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    commands;</span><br><span class="line"><span class="keyword">elif</span> condition;</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    commands;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    commands</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<h3 id="条件流程"><a href="#条件流程" class="headerlink" title="条件流程"></a>条件流程</h3><p>比较常用的就是 if 的套路，格式为</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> condition;</div><div class="line"><span class="keyword">then</span></div><div class="line">    commands;</div><div class="line"><span class="keyword">elif</span> condition;</div><div class="line"><span class="keyword">then</span></div><div class="line">    commands;</div><div class="line"><span class="keyword">else</span></div><div class="line">    commands</div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
 <p>如果觉得这样写太长，可以利用逻辑操作与短路原理来进行编写</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line"># &#22914;&#26524; condition &#20026;&#30495;&#65292;&#21017;&#25191;&#34892; action&#10;[ condition ] &#38;&#38; action;  &#10;&#10;# &#22914;&#26524; condition &#20026;&#20551;&#65292;&#21017;&#25191;&#34892; action&#10;[ condition ] || action;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 如果 condition 为真，则执行 action</div><div class="line">[ condition ] &amp;&amp; action;  </div><div class="line"></div><div class="line"># 如果 condition 为假，则执行 action</div><div class="line">[ condition ] || action;</div></pre></td></tr></table></figure>
 <p><strong>算术比较</strong></p>
 <p>条件通常被放置在封闭的中括号内，一定要注意 <code>[</code> 和 <code>]</code> 脸变有空格！如果我们需要进行算术比较，就需要使用如下的比较符号</p>
 <ul>
@@ -460,7 +460,7 @@
 <li><code>-o</code> 逻辑或，例如 <code>[ $var -ne 0 -o $var2 -gt 2 ]</code></li>
 </ul>
 <p>一个实际的例子：检测是否是超级用户</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> [ <span class="variable">$UID</span> <span class="operator">-ne</span> <span class="number">0</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"你不是超级用户(root)，请以 root 身份运行"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"当前是超级用户"</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> [ <span class="variable">$UID</span> <span class="_">-ne</span> 0 ]; <span class="keyword">then</span></div><div class="line">    <span class="built_in">echo</span> <span class="string">"你不是超级用户(root)，请以 root 身份运行"</span></div><div class="line"><span class="keyword">else</span></div><div class="line">    <span class="built_in">echo</span> <span class="string">"当前是超级用户"</span></div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
 <p><strong>文件系统测试</strong></p>
 <p>有的时候我们可能需要对不同的文件进行一定的判断，下面是可以使用的比较方法：</p>
 <ul>
@@ -486,29 +486,29 @@
 <li><code>[[ -n $str1 ]]</code> 如果 str1 是非空字符串，则返回真</li>
 </ul>
 <p>可以通过 <code>&amp;&amp;</code> 和 <code>||</code> 来组合多个条件。如果不想写太多的方括号，那么可以用 <code>test</code> 命令，比如 <code>[ $var -eq 0]</code> 等价于 <code>test $var -eq 0</code></p>
-<h3 id="u5FAA_u73AF"><a href="#u5FAA_u73AF" class="headerlink" title="循环"></a>循环</h3><p>设定 <code>IFS</code> 变量即告诉 shell 脚本要以什么为分隔符，这里的 IFS 表示 Internal Field Separator。我们来看看下面一段脚本</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">data=<span class="string">"class1,class2,class3,class4"</span></span><br><span class="line">IFS=,</span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> <span class="variable">$data</span>;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> Item: <span class="variable">$item</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><p>设定 <code>IFS</code> 变量即告诉 shell 脚本要以什么为分隔符，这里的 IFS 表示 Internal Field Separator。我们来看看下面一段脚本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">data=<span class="string">"class1,class2,class3,class4"</span></div><div class="line">IFS=,</div><div class="line"><span class="keyword">for</span> item <span class="keyword">in</span> <span class="variable">$data</span>;</div><div class="line"><span class="keyword">do</span></div><div class="line">    <span class="built_in">echo</span> Item: <span class="variable">$item</span></div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
 <p>输出为</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Item: class1</span><br><span class="line">Item: class2</span><br><span class="line">Item: class3</span><br><span class="line">Item: class4</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">Item: class1</div><div class="line">Item: class2</div><div class="line">Item: class3</div><div class="line">Item: class4</div></pre></td></tr></table></figure>
 <p>这里因为指定了分隔符，所以会把字符串用 <code>,</code>，分隔，然后就可以利用循环来输出了。前面的例子中我们看到了 for 循环，这里我们再来看一段 for 循环的用法：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> &#123;a..z&#125;</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> &#123;a..z&#125;</div><div class="line"><span class="keyword">do</span></div><div class="line">    <span class="built_in">echo</span> <span class="variable">$i</span></div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
 <p>这样就可以输出 a-z 了，当然也可以换成其他的，比如 <code>{1..43}</code>, <code>{a..h}</code>, <code>{A..K}</code> 等等</p>
 <p>还可以使用类似 C 语言的 for 循环，比如</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> ((i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$i</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span> ((i=0; i&lt;10; i++))</div><div class="line">&#123;</div><div class="line">    <span class="built_in">echo</span> <span class="variable">$i</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>另外的循环有 <code>while</code> 和 <code>until</code>，其实是类似的，这里只给出格式</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># while 循环</span></span><br><span class="line"><span class="keyword">while</span> condition <span class="comment"># 如果 condition 为 true 则是无限循环</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    commands</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># until 循环</span></span><br><span class="line">until condition</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    action</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
-<h3 id="u51FD_u6570"><a href="#u51FD_u6570" class="headerlink" title="函数"></a>函数</h3><p>函数的定义和非常简单，比如</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">foo</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">   <span class="built_in">echo</span> <span class="string">"Arguments work just like script arguments: <span class="variable">$@</span>"</span></span><br><span class="line">   <span class="built_in">echo</span> <span class="string">"And: <span class="variable">$1</span> <span class="variable">$2</span>..."</span></span><br><span class="line">   <span class="built_in">echo</span> <span class="string">"This is a function"</span></span><br><span class="line">   <span class="built_in">return</span> <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># while 循环</span></div><div class="line"><span class="keyword">while</span> condition <span class="comment"># 如果 condition 为 true 则是无限循环</span></div><div class="line"><span class="keyword">do</span></div><div class="line">    commands</div><div class="line"><span class="keyword">done</span></div><div class="line"></div><div class="line"><span class="comment"># until 循环</span></div><div class="line">until condition</div><div class="line"><span class="keyword">do</span></div><div class="line">    action</div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>函数的定义和非常简单，比如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">foo</span></span>()</div><div class="line">&#123;</div><div class="line">   <span class="built_in">echo</span> <span class="string">"Arguments work just like script arguments: <span class="variable">$@</span>"</span></div><div class="line">   <span class="built_in">echo</span> <span class="string">"And: <span class="variable">$1</span> <span class="variable">$2</span>..."</span></div><div class="line">   <span class="built_in">echo</span> <span class="string">"This is a function"</span></div><div class="line">   <span class="built_in">return</span> 0</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>也可以省略 <code>function</code> 关键词，比如</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">bar</span></span> ()</span><br><span class="line">&#123;</span><br><span class="line">   <span class="built_in">echo</span> <span class="string">"Another way to declare functions!"</span></span><br><span class="line">   <span class="built_in">return</span> <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="title">bar</span></span> ()</div><div class="line">&#123;</div><div class="line">   <span class="built_in">echo</span> <span class="string">"Another way to declare functions!"</span></div><div class="line">   <span class="built_in">return</span> 0</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>执行的话，直接输入函数名即可，比如</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">foo</span><br><span class="line">bar</span><br><span class="line">foo hello world</span><br></pre></td></tr></table></figure>
-<h2 id="u8FDB_u9636_uFF1A_u5FEB_u6377_u64CD_u4F5C"><a href="#u8FDB_u9636_uFF1A_u5FEB_u6377_u64CD_u4F5C" class="headerlink" title="进阶：快捷操作"></a>进阶：快捷操作</h2><h3 id="u522B_u540D"><a href="#u522B_u540D" class="headerlink" title="别名"></a>别名</h3><p>简单来说，别名类似于网上很流行的短链接，只不过我们可以具体设定，比方说我每次写博客都需要进入到某个文件夹，那么我可以这么写 <code>alias blog=&quot;cd ~/Documents/Blog&quot;</code>，我想要快速发布博客时，可以这么写 <code>alias post=&quot;hexo g -d&quot;</code>。这之后我就可以直接用 <code>blog</code> 和 <code>post</code> 命令了，非常方便。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">foo</div><div class="line">bar</div><div class="line">foo hello world</div></pre></td></tr></table></figure>
+<h2 id="进阶：快捷操作"><a href="#进阶：快捷操作" class="headerlink" title="进阶：快捷操作"></a>进阶：快捷操作</h2><h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><p>简单来说，别名类似于网上很流行的短链接，只不过我们可以具体设定，比方说我每次写博客都需要进入到某个文件夹，那么我可以这么写 <code>alias blog=&quot;cd ~/Documents/Blog&quot;</code>，我想要快速发布博客时，可以这么写 <code>alias post=&quot;hexo g -d&quot;</code>。这之后我就可以直接用 <code>blog</code> 和 <code>post</code> 命令了，非常方便。</p>
 <p>如果想要在每次打开新的 shell 进程时都能够使用这两个『新』命令，那么可以把前面两句写在 <code>~/.bashrc</code> 或 <code>~/.bash_profile</code> 中。</p>
-<h3 id="u7BA1_u9053"><a href="#u7BA1_u9053" class="headerlink" title="管道"></a>管道</h3><p>Shell 脚本最强大的地方就是能够通过管道把不同的应用程序串起来，这样每个都完成一小部分工作，最终完成一个看起来很复杂的任务。大概的样子是这样的 <code>$ command1 | command2 | command3</code></p>
+<h3 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h3><p>Shell 脚本最强大的地方就是能够通过管道把不同的应用程序串起来，这样每个都完成一小部分工作，最终完成一个看起来很复杂的任务。大概的样子是这样的 <code>$ command1 | command2 | command3</code></p>
 <p>大家可以尝试一下这条命令 <code>ls | cat -n</code></p>
-<h2 id="u5C0F_u7ED3"><a href="#u5C0F_u7ED3" class="headerlink" title="小结"></a>小结</h2><p>本文我们从打印文本开始，见到了解了最基本的 Shell 脚本语法和 Bash 的基本操作。之后的系列文章会继续深入下去，用更多例子来进行讲解。</p>
-<h2 id="u53C2_u8003_u94FE_u63A5_u4E0E_u8D44_u6E90"><a href="#u53C2_u8003_u94FE_u63A5_u4E0E_u8D44_u6E90" class="headerlink" title="参考链接与资源"></a>参考链接与资源</h2><ul>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文我们从打印文本开始，见到了解了最基本的 Shell 脚本语法和 Bash 的基本操作。之后的系列文章会继续深入下去，用更多例子来进行讲解。</p>
+<h2 id="参考链接与资源"><a href="#参考链接与资源" class="headerlink" title="参考链接与资源"></a>参考链接与资源</h2><ul>
 <li><a href="https://github.com/alebcay/awesome-shell" target="_blank" rel="external">awesome-shell</a></li>
 <li><a href="https://github.com/herrbischoff/awesome-osx-command-line" target="_blank" rel="external">awesome-osx-command-line</a></li>
 <li><a href="https://github.com/koalaman/shellcheck" target="_blank" rel="external">shellcheck - 脚本检查工具</a></li>
@@ -550,11 +550,11 @@
       
         <div class="post-tags">
           
+            <a href="/tags/技巧/" rel="tag">#技巧</a>
+          
             <a href="/tags/Shell/" rel="tag">#Shell</a>
           
             <a href="/tags/命令行/" rel="tag">#命令行</a>
-          
-            <a href="/tags/技巧/" rel="tag">#技巧</a>
           
         </div>
       
@@ -789,7 +789,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello_World"><span class="nav-number">1.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bash__u57FA_u672C_u64CD_u4F5C"><span class="nav-number">2.</span> <span class="nav-text">Bash 基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u70ED_u8EAB_uFF1A_u6253_u5370_u6587_u672C"><span class="nav-number">3.</span> <span class="nav-text">热身：打印文本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#echo"><span class="nav-number">3.1.</span> <span class="nav-text">echo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#printf"><span class="nav-number">3.2.</span> <span class="nav-text">printf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cat_2C_head_2C_tail_2C_uniq_2C_cut"><span class="nav-number">3.3.</span> <span class="nav-text">cat, head, tail, uniq, cut</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u7840_uFF1A_u8868_u8FBE_u5F0F"><span class="nav-number">4.</span> <span class="nav-text">基础：表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u53D8_u91CF"><span class="nav-number">4.1.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6570_u7EC4"><span class="nav-number">4.2.</span> <span class="nav-text">数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6570_u5B66_u8FD0_u7B97"><span class="nav-number">4.3.</span> <span class="nav-text">数学运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u91CD_u5B9A_u5411"><span class="nav-number">4.4.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6761_u4EF6_u6D41_u7A0B"><span class="nav-number">4.5.</span> <span class="nav-text">条件流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5FAA_u73AF"><span class="nav-number">4.6.</span> <span class="nav-text">循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u51FD_u6570"><span class="nav-number">4.7.</span> <span class="nav-text">函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FDB_u9636_uFF1A_u5FEB_u6377_u64CD_u4F5C"><span class="nav-number">5.</span> <span class="nav-text">进阶：快捷操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u522B_u540D"><span class="nav-number">5.1.</span> <span class="nav-text">别名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7BA1_u9053"><span class="nav-number">5.2.</span> <span class="nav-text">管道</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5_u4E0E_u8D44_u6E90"><span class="nav-number">7.</span> <span class="nav-text">参考链接与资源</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-World"><span class="nav-number">1.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bash-基本操作"><span class="nav-number">2.</span> <span class="nav-text">Bash 基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#热身：打印文本"><span class="nav-number">3.</span> <span class="nav-text">热身：打印文本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#echo"><span class="nav-number">3.1.</span> <span class="nav-text">echo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#printf"><span class="nav-number">3.2.</span> <span class="nav-text">printf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cat-head-tail-uniq-cut"><span class="nav-number">3.3.</span> <span class="nav-text">cat, head, tail, uniq, cut</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础：表达式"><span class="nav-number">4.</span> <span class="nav-text">基础：表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#变量"><span class="nav-number">4.1.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组"><span class="nav-number">4.2.</span> <span class="nav-text">数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数学运算"><span class="nav-number">4.3.</span> <span class="nav-text">数学运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重定向"><span class="nav-number">4.4.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件流程"><span class="nav-number">4.5.</span> <span class="nav-text">条件流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环"><span class="nav-number">4.6.</span> <span class="nav-text">循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数"><span class="nav-number">4.7.</span> <span class="nav-text">函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进阶：快捷操作"><span class="nav-number">5.</span> <span class="nav-text">进阶：快捷操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#别名"><span class="nav-number">5.1.</span> <span class="nav-text">别名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管道"><span class="nav-number">5.2.</span> <span class="nav-text">管道</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接与资源"><span class="nav-number">7.</span> <span class="nav-text">参考链接与资源</span></a></li></ol></div>
             
           </div>
         </section>
@@ -969,42 +969,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="从这一讲开始我们会介绍有关存储的知识（估计前面的汇编已经看得够呛了吧），个人的感觉来说会稍微轻松一些，但是概念比较多，一定要弄清楚再继续。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 第 10 课 Memory Hierarchy">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-10.html">
@@ -109,6 +110,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 第 10 课 Memory Hierarchy">
 <meta name="twitter:description" content="从这一讲开始我们会介绍有关存储的知识（估计前面的汇编已经看得够呛了吧），个人的感觉来说会稍微轻松一些，但是概念比较多，一定要弄清楚再继续。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14555548218373.jpg">
 
 
 
@@ -132,7 +134,7 @@
   
     深入理解计算机系统 第 10 课 Memory Hierarchy | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -153,7 +155,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -270,7 +272,7 @@
 <h2 id="RAM"><a href="#RAM" class="headerlink" title="RAM"></a>RAM</h2><p>按照 Sheldon 的做法，我们当然要从历史说起，了解存储设备所用的技术以及发展趋势，对我们理解内存层级背后的原因很有帮助。</p>
 <p>RAM(Random-Access Memory) 有两种类型：SRAM(Static RAM) 和 DRAM(Dynamic RAM)，SRAM 非常快，也不需要定期刷新，通常用在处理器做缓存，但是比较贵；DRAM 稍慢一点（大概是 SRAM 速度的十分之一），需要刷新，通常用作主内存，相比来说很便宜（是 SRAM 价格的百分之一）。</p>
 <p>无论是 DRAM 还是 SRAM，一旦不通电，所有的信息都会丢失。如果想要让数据持久化，可以考虑 ROM, PROM, EPROM, EEPROM 等介质。固件程序会存储在 ROM 中（比如 BIOS，磁盘控制器，网卡，图形加速器，安全子系统等等）。另外一个趋势就是 SSD 固态硬盘，取消了机械结构，更稳定速度更快更省电。</p>
-<h2 id="u786C_u76D8"><a href="#u786C_u76D8" class="headerlink" title="硬盘"></a>硬盘</h2><p>传统的机械硬盘有许多不同的部件：</p>
+<h2 id="硬盘"><a href="#硬盘" class="headerlink" title="硬盘"></a>硬盘</h2><p>传统的机械硬盘有许多不同的部件：</p>
 <p><img src="/images/14555548218373.jpg" alt=""></p>
 <p>虽然现在越来越多电脑已经改为使用固态硬盘，但是还是有必要了解一下硬盘的组成的。首先需要知道是，机械硬盘有许多片 platter 组成，每一片 platter 有两面；每一面由一圈圈的 track 组成，而每个 track 由 gap 分隔成不同的 sector。这里概念层层递进，可以结合下图仔细辨析清楚。</p>
 <p><img src="/images/14555549124076.jpg" alt=""></p>
@@ -318,7 +320,7 @@
 <p><img src="/images/14555634433688.jpg" alt="Intell SSD 730 产品规格"></p>
 <p>与传统的机械硬盘相比，固态硬盘在读写速度上有很大的优势。但是因为设计本身的约束，连续访问会比随机访问快，而且如果需要写入 Page，那么需要移动其他 Page，擦除整个 Block，然后才能写入。现在固态硬盘的读写速度差距已经没有以前那么大了，但是仍然有一些差距。</p>
 <p>不过与机械硬盘相比，固态硬盘存在一个具体的寿命限制，价格也比较贵，但是因为速度上的优势，越来越多设备开始使用固态硬盘。</p>
-<h2 id="u603B_u7EBF"><a href="#u603B_u7EBF" class="headerlink" title="总线"></a>总线</h2><p>总线是用来传输地址、数据和控制信号的一组平行的电线，通常来说由多个设备共享，类似于不同城市之间的高速公路，可以传输各类数据。CPU 通过总线和对应的接口来从不同的设备中获得所需要的数据，放入寄存器中等待运算，像下面这样：</p>
+<h2 id="总线"><a href="#总线" class="headerlink" title="总线"></a>总线</h2><p>总线是用来传输地址、数据和控制信号的一组平行的电线，通常来说由多个设备共享，类似于不同城市之间的高速公路，可以传输各类数据。CPU 通过总线和对应的接口来从不同的设备中获得所需要的数据，放入寄存器中等待运算，像下面这样：</p>
 <p><img src="/images/14555626366163.jpg" alt=""></p>
 <p>假设 CPU 需要从硬盘中读取一些数据，会给定指令，逻辑块编号和目标地址，并发送给磁盘控制器。然后磁盘控制器会读取对应的数据，并通过 DMA(direct memory access)把数据传输到内存中；传输完成后，磁盘控制器通过 interrupt 的方式通知 CPU，然后 CPU 完成之后的工作。</p>
 <p>总线上连接的各个设备，其访问速度有天壤之别，不同的技术发展速度不同，更加剧了这个情况：</p>
@@ -331,10 +333,10 @@
 <li>Spatial locality: Items with nearby addresses tend to be referenced close together in time</li>
 </ul>
 <p>举个例子：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">    sum += a[i];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> sum;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line">sum = <span class="number">0</span>;</div><div class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; n; i++)&#123;</div><div class="line">    sum += a[i];</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> sum;</div></pre></td></tr></table></figure>
 <p>这里每次循环都会访问 <code>sum</code>，是 temporal locality；而访问数组是连续访问的，是 spatial locality。</p>
 <p>根据这个特性，在写遍历数组的时候（尤其是高维），尤其要注意按照内存排列顺序来访问，不然性能会惨不忍睹。</p>
-<h2 id="Memory_Hierarchy"><a href="#Memory_Hierarchy" class="headerlink" title="Memory Hierarchy"></a>Memory Hierarchy</h2><p>一种介质的速度越快，就会越贵，同时也消耗更多的电量，所以一般容量比较小。而 CPU 和内存之间的速度差距越来越大，所以好的程序都会尽可能利用 locality。根据这些特性，也就引申出了一个安排存储的方式，称为 memory hierarchy。</p>
+<h2 id="Memory-Hierarchy"><a href="#Memory-Hierarchy" class="headerlink" title="Memory Hierarchy"></a>Memory Hierarchy</h2><p>一种介质的速度越快，就会越贵，同时也消耗更多的电量，所以一般容量比较小。而 CPU 和内存之间的速度差距越来越大，所以好的程序都会尽可能利用 locality。根据这些特性，也就引申出了一个安排存储的方式，称为 memory hierarchy。</p>
 <p><img src="/images/14555647586566.jpg" alt=""></p>
 <p>这里就涉及到一个技术：缓存。缓存可以看作是把大且缓慢的设备中的数据的一部分拿出来存储到其中的更快的存储设备。在 memory hierarchy 金字塔中，每一层都可以看作是下一层的缓存。利用 locality，程序会更倾向于访问第 k 层的数据，而非第 k+1 层，这样就减少了访问时间。</p>
 <p><img src="/images/14555654345569.jpg" alt=""></p>
@@ -343,7 +345,7 @@
 </blockquote>
 <p><img src="/images/14555650316337.jpg" alt=""></p>
 <p>在上图中，假如程序请求的是 10，那么 10 正好在缓存中，即 cache hit，就可以节约时间。但是如果程序请求的是 12，因为 12 不在缓存中，即 cache miss，就必须从内存中获取，并替换缓存中的某个数据（具体替换哪一个，由 placement policy 和 replacement policy 决定）</p>
-<h3 id="Cache_Miss"><a href="#Cache_Miss" class="headerlink" title="Cache Miss"></a>Cache Miss</h3><p>Cache miss 有三种：</p>
+<h3 id="Cache-Miss"><a href="#Cache-Miss" class="headerlink" title="Cache Miss"></a>Cache Miss</h3><p>Cache miss 有三种：</p>
 <ul>
 <li>Cold(compulsory) Miss: CPU 第一次访问相应 cache 块，cache 中肯定没有该 cache 块，这是不可避免的</li>
 <li>Confilict Miss: 在直接相联或组相联的 cache 中，不同的 cache 块由于 index 相同相互替换，引起的失效叫做冲突失效<ul>
@@ -692,42 +694,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

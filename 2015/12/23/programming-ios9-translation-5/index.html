@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS9,学习,笔记,翻译,触摸," />
+  <meta name="keywords" content="学习,笔记,iOS9,翻译,触摸," />
 
 
 
@@ -103,6 +103,7 @@
 <meta name="twitter:title" content="Programming iOS9 学习笔记 5 - Touches">
 <meta name="twitter:description" content="Touch 会用一个 UITouch 实例对象来表示，这个对象会被封装在 UIEvent 中。不过通常来说我们并不需要直接去操心这些，很多东西系统都已经封装好了，我们只需要重写对应的方法即可。
 但是了解 touch 本身还是很有用的，尤其是需要自定义一个 view 的时候。">
+<meta name="twitter:image" content="http://wdxtub.com/images/pios58.jpg">
 
 
 
@@ -120,7 +121,7 @@
   };
 </script>
 
-  <title> Programming iOS9 学习笔记 5 - Touches | 小土刀 </title>
+  <title> Programming iOS9 学习笔记 5 - Touches | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -141,7 +142,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -345,7 +346,7 @@
 <p>但是了解 touch 本身还是很有用的，尤其是需要自定义一个 view 的时候。</p>
 <a id="more"></a>
 <hr>
-<h2 id="Touch_Events_and_Views"><a href="#Touch_Events_and_Views" class="headerlink" title="Touch Events and Views"></a>Touch Events and Views</h2><p>从没有手指触碰开始，到手指离开，这之间的所有触摸和手指的移动组成了一个单独的 multitouch sequence。</p>
+<h2 id="Touch-Events-and-Views"><a href="#Touch-Events-and-Views" class="headerlink" title="Touch Events and Views"></a>Touch Events and Views</h2><p>从没有手指触碰开始，到手指离开，这之间的所有触摸和手指的移动组成了一个单独的 multitouch sequence。</p>
 <p>在这个过程中，系统会告知你的 app 不同的状态，也就是 <code>UIEvent</code>。事实上，每个给你的 app 的 report 一定都是同一个 multitouch sequence 的同一个 <code>UIEvent</code> 实例。</p>
 <p>每个 <code>UIEvent</code> 包含一个或多个 <code>UITouch</code> 对象。每个 <code>UITouch</code> 对象对应一个手指。一旦一个 <code>UITouch</code> 实例被创建后，在整个 multitouch sequence 中都用得是同一个实例。</p>
 <p>系统只在如下四种情况发送 <code>UIEvent</code>:</p>
@@ -359,7 +360,7 @@
 <p>当一个 <code>UITouch</code> 发生时(<code>.Began</code>)，会把当前有效的 <code>UIView</code> 绑定到这个 touch 的 <code>view</code> 属性上，并且在整个 multitouch sequence 都不会改变</p>
 <p>同一个 <code>UIEvent</code> 可以发送给多个 view，会把消息发送给其所有的 <code>UITouch</code> 所关联的 view。</p>
 <p><img src="/images/pios58.jpg" alt="pios58"></p>
-<h2 id="Receiving_Touches"><a href="#Receiving_Touches" class="headerlink" title="Receiving Touches"></a>Receiving Touches</h2><p>一个 <code>UIResponder</code>，也就是一个 <code>UIView</code> 有四个方法，对应触摸的四个阶段：</p>
+<h2 id="Receiving-Touches"><a href="#Receiving-Touches" class="headerlink" title="Receiving Touches"></a>Receiving Touches</h2><p>一个 <code>UIResponder</code>，也就是一个 <code>UIView</code> 有四个方法，对应触摸的四个阶段：</p>
 <ul>
 <li><code>touchesBegan:withEvent:</code></li>
 <li><code>touchesMoved:withEvent:</code></li>
@@ -383,7 +384,7 @@
 <li><code>timestamp</code>: 当事件发生时</li>
 </ul>
 <p>所以我们说一个 view 接收了一个 touch，实际上指的是它不停收到包含 <code>UITouch</code> 的 <code>UIEvent</code></p>
-<h2 id="Restricting_Touches"><a href="#Restricting_Touches" class="headerlink" title="Restricting Touches"></a>Restricting Touches</h2><p>可以在 <code>UIApplication</code> 的 <code>beginIgnoringInteractionEvents</code> 中完全关闭触摸事件。通常来说我们在动画中就会这么做，当然要恢复需要 <code>endIgnoringInteractionEvents</code>。</p>
+<h2 id="Restricting-Touches"><a href="#Restricting-Touches" class="headerlink" title="Restricting Touches"></a>Restricting Touches</h2><p>可以在 <code>UIApplication</code> 的 <code>beginIgnoringInteractionEvents</code> 中完全关闭触摸事件。通常来说我们在动画中就会这么做，当然要恢复需要 <code>endIgnoringInteractionEvents</code>。</p>
 <p>一些 <code>UIView</code> 的属性对传输 touch 也有影响，比如</p>
 <ul>
 <li><code>userInteractionEnabled</code> 为 false 则不会接收 touch 事件，会直接落到下面的 view</li>
@@ -392,14 +393,14 @@
 <li><code>multipleTouchEnabled</code> 为 false 的时候则不会接收多于一个 touch，如果收到多个那么在处理完第一个之前都不会管其他的</li>
 <li><code>exclusiveTouch</code> 这个不能在 nib 编辑器中设置，指的是这个 view 只有在同一个 window 中的其他 view 都没有 touch 才能接收 touch，并且接收了之后其他 view 不能接收 touch</li>
 </ul>
-<h2 id="Interpreting_Touches"><a href="#Interpreting_Touches" class="headerlink" title="Interpreting Touches"></a>Interpreting Touches</h2><p>通常来说不用自己折腾 touch，用 gesture recognizer 可以完成大部分工作。为了处理 touch 基本上要用状态机的模式来编程，这会让整个架构变得非常 tricky</p>
+<h2 id="Interpreting-Touches"><a href="#Interpreting-Touches" class="headerlink" title="Interpreting Touches"></a>Interpreting Touches</h2><p>通常来说不用自己折腾 touch，用 gesture recognizer 可以完成大部分工作。为了处理 touch 基本上要用状态机的模式来编程，这会让整个架构变得非常 tricky</p>
 <p>通过如下代码可以使得一个 view 跟着手指的移动来移动</p>
 <p><img src="/images/pios59.jpg" alt="pios59"></p>
 <p>通过如下代码可以加上一些限制，使得 view 只能水平或者竖直移动</p>
 <p><img src="/images/pios60.jpg" alt="pios60"></p>
 <p>就需要在不同的方法中维护不同的属性了，即使只是加了这么一个限制代码已经很长，可读性也很差了，如果还想要区分长按和短按，单击和双击甚至是三击，肯定是一团乱</p>
 <p><img src="/images/pios61.jpg" alt="pios61"></p>
-<h2 id="Gesture_Recognizer"><a href="#Gesture_Recognizer" class="headerlink" title="Gesture Recognizer"></a>Gesture Recognizer</h2><p><code>UIGestureRecognizer</code> 可以检查一个 multitouch sequence 是否为某个手势，但是并不是 <code>UIResponder</code>。每个 gesture recognizer 维护本身的状态，和其他的无关。当一个 gesture<br>recognizer 检测到了一个 gesture 时，就会发送一个(例如点击, discrete)或多个(例如移动, continuous)消息。</p>
+<h2 id="Gesture-Recognizer"><a href="#Gesture-Recognizer" class="headerlink" title="Gesture Recognizer"></a>Gesture Recognizer</h2><p><code>UIGestureRecognizer</code> 可以检查一个 multitouch sequence 是否为某个手势，但是并不是 <code>UIResponder</code>。每个 gesture recognizer 维护本身的状态，和其他的无关。当一个 gesture<br>recognizer 检测到了一个 gesture 时，就会发送一个(例如点击, discrete)或多个(例如移动, continuous)消息。</p>
 <p><code>UIGestureRecognizer</code> 本身是 abstract 的，但是内置了一些实现好的子类：</p>
 <ul>
 <li><code>UITapGestureRecognizer</code> discrete<ul>
@@ -425,7 +426,7 @@
 </li>
 </ul>
 <p>通常来说直接在界面编辑器中拖进去，然后连接到代码是比较方便的做法</p>
-<h2 id="Touch_Delivery"><a href="#Touch_Delivery" class="headerlink" title="Touch Delivery"></a>Touch Delivery</h2><p>下面是一个 touch 如何被转递给 view 和 gesture recognizer 的标准流程：</p>
+<h2 id="Touch-Delivery"><a href="#Touch-Delivery" class="headerlink" title="Touch Delivery"></a>Touch Delivery</h2><p>下面是一个 touch 如何被转递给 view 和 gesture recognizer 的标准流程：</p>
 <ul>
 <li>进行 hit-test 判断那个 view 被触摸。然后这个 view 就会一直被关联到这个 touch 上，在这一层实现了触摸的定制，比方说 <code>userInteractionEnabled</code>, <code>hidden</code>, <code>alpha</code> 等等</li>
 <li>当 touch 的状况改变时，应用调用自己的 <code>sendEvent:</code>，进而调用 window 的 <code>sendEvent:</code>，window 通过调用下面的方法来调用合适的 touch 方法：<ul>
@@ -482,11 +483,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
-          
             <a href="/tags/学习/" rel="tag">#学习</a>
           
             <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
+            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
           
             <a href="/tags/翻译/" rel="tag">#翻译</a>
           
@@ -725,7 +726,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Touch_Events_and_Views"><span class="nav-number">1.</span> <span class="nav-text">Touch Events and Views</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Receiving_Touches"><span class="nav-number">2.</span> <span class="nav-text">Receiving Touches</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Restricting_Touches"><span class="nav-number">3.</span> <span class="nav-text">Restricting Touches</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Interpreting_Touches"><span class="nav-number">4.</span> <span class="nav-text">Interpreting Touches</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gesture_Recognizer"><span class="nav-number">5.</span> <span class="nav-text">Gesture Recognizer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Touch_Delivery"><span class="nav-number">6.</span> <span class="nav-text">Touch Delivery</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Touch-Events-and-Views"><span class="nav-number">1.</span> <span class="nav-text">Touch Events and Views</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Receiving-Touches"><span class="nav-number">2.</span> <span class="nav-text">Receiving Touches</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Restricting-Touches"><span class="nav-number">3.</span> <span class="nav-text">Restricting Touches</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Interpreting-Touches"><span class="nav-number">4.</span> <span class="nav-text">Interpreting Touches</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gesture-Recognizer"><span class="nav-number">5.</span> <span class="nav-text">Gesture Recognizer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Touch-Delivery"><span class="nav-number">6.</span> <span class="nav-text">Touch Delivery</span></a></li></ol></div>
             
           </div>
         </section>
@@ -905,42 +906,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

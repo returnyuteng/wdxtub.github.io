@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="了解完了异常与进程，异常处理中另外两个很重要的部分是信号和非局部跳转，也就是我们这节课要介绍的内容。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 第 14 课 Signals and Nonlocal Jumps">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-14.html">
@@ -129,6 +130,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 第 14 课 Signals and Nonlocal Jumps">
 <meta name="twitter:description" content="了解完了异常与进程，异常处理中另外两个很重要的部分是信号和非局部跳转，也就是我们这节课要介绍的内容。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14573806185809.jpg">
 
 
 
@@ -152,7 +154,7 @@
   
     深入理解计算机系统 第 14 课 Signals and Nonlocal Jumps | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -173,7 +175,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -354,7 +356,7 @@
 <p><img src="/images/14573823408948.jpg" alt="Example of ctrl-c and ctrl-z"></p>
 <p>我们可以可以通过 <code>kill</code> 函数来发送信号：</p>
 <p><img src="/images/14573824038965.jpg" alt="Sending Signals with kill Function"></p>
-<h2 id="u63A5_u6536_u4FE1_u53F7"><a href="#u63A5_u6536_u4FE1_u53F7" class="headerlink" title="接收信号"></a>接收信号</h2><p>所有的上下文切换都是通过调用某个 exception handler 完成的，内核会计算对易于某个进程 p 的 pnb 值：<code>pnb = pending &amp; ~blocked</code></p>
+<h2 id="接收信号"><a href="#接收信号" class="headerlink" title="接收信号"></a>接收信号</h2><p>所有的上下文切换都是通过调用某个 exception handler 完成的，内核会计算对易于某个进程 p 的 pnb 值：<code>pnb = pending &amp; ~blocked</code></p>
 <ul>
 <li>如果 <code>pnb == 0</code><ul>
 <li>那么就把控制交给进程 p 的逻辑流中的下一条指令</li>
@@ -389,7 +391,7 @@
 <p><img src="/images/14573847143072.jpg" alt="Another View of Signal Handlers as Concurrent Flows"></p>
 <p>还有一个需要注意的是，handler 也可以被其他的 handler 中断，控制流如下图所示：</p>
 <p><img src="/images/14573848399013.jpg" alt="Nested Signal Handlers"></p>
-<h2 id="u963B_u585E/_u4E0D_u963B_u585E_u4FE1_u53F7"><a href="#u963B_u585E/_u4E0D_u963B_u585E_u4FE1_u53F7" class="headerlink" title="阻塞/不阻塞信号"></a>阻塞/不阻塞信号</h2><p>隐式的机制是，内核会阻塞与当前在处理的信号同类型的其他 pending signal，也就是说，一个 SIGINT handler 是不能被另一个 SIGINT 信号中断的。</p>
+<h2 id="阻塞-不阻塞信号"><a href="#阻塞-不阻塞信号" class="headerlink" title="阻塞/不阻塞信号"></a>阻塞/不阻塞信号</h2><p>隐式的机制是，内核会阻塞与当前在处理的信号同类型的其他 pending signal，也就是说，一个 SIGINT handler 是不能被另一个 SIGINT 信号中断的。</p>
 <p>如果想要显式阻塞，就需要使用 <code>sigprocmask</code> 函数了，以及其他一些辅助函数：</p>
 <ul>
 <li><code>sigemptyset</code> - Create empty set</li>
@@ -399,7 +401,7 @@
 </ul>
 <p>我们可以用下面这段代码来临时阻塞特定的信号：</p>
 <p><img src="/images/14573850645959.jpg" alt="Temporarily Blocking Signals"></p>
-<h2 id="u5B89_u5168_u5730_u5904_u7406_u4FE1_u53F7"><a href="#u5B89_u5168_u5730_u5904_u7406_u4FE1_u53F7" class="headerlink" title="安全地处理信号"></a>安全地处理信号</h2><blockquote>
+<h2 id="安全地处理信号"><a href="#安全地处理信号" class="headerlink" title="安全地处理信号"></a>安全地处理信号</h2><blockquote>
 <p>Handlers are tricky because they are concurrent with main program and share the same global data structures</p>
 </blockquote>
 <p>尤其要注意因为并行访问可能导致的数据损坏的问题，这里提供一些基本的指南（后面的课程会详细介绍）</p>
@@ -425,12 +427,12 @@
 <p><img src="/images/14573856728934.jpg" alt="Put `wait` in a loop to reap all terminated children"></p>
 <p>还有一个问题，不同 Unix 版本有不同的 signal handling semantics，我们给出的解决方案是使用 <code>sigaction</code>，如下：</p>
 <p><img src="/images/14573860066787.jpg" alt="Portable Signal Handling"></p>
-<h2 id="u907F_u514D_u8FDB_u7A0B_u7ADE_u4E89"><a href="#u907F_u514D_u8FDB_u7A0B_u7ADE_u4E89" class="headerlink" title="避免进程竞争"></a>避免进程竞争</h2><p>我们之前的 shell 代码会出现微妙的同步错误，因为我们假设父进程会在子进程之前执行，代码如下：</p>
+<h2 id="避免进程竞争"><a href="#避免进程竞争" class="headerlink" title="避免进程竞争"></a>避免进程竞争</h2><p>我们之前的 shell 代码会出现微妙的同步错误，因为我们假设父进程会在子进程之前执行，代码如下：</p>
 <p><img src="/images/14573866195444.jpg" alt=""></p>
 <p><img src="/images/14573866343912.jpg" alt=""></p>
 <p>我们需要在循环中添加同步条件，确保父进程和子进程的顺序（注意比较）</p>
 <p><img src="/images/14573867961969.jpg" alt="Corrected Shell Program without Race"></p>
-<h2 id="u663E_u5F0F_u7B49_u5F85_u4FE1_u53F7"><a href="#u663E_u5F0F_u7B49_u5F85_u4FE1_u53F7" class="headerlink" title="显式等待信号"></a>显式等待信号</h2><p>我们也可以用类似与等待前台任务执行的方式来等待子进程，方法如下：</p>
+<h2 id="显式等待信号"><a href="#显式等待信号" class="headerlink" title="显式等待信号"></a>显式等待信号</h2><p>我们也可以用类似与等待前台任务执行的方式来等待子进程，方法如下：</p>
 <p><img src="/images/14573869619954.jpg" alt="Handlers for program explicitly waiting for SIGCHLD to arrive"></p>
 <p><img src="/images/14573869910604.jpg" alt="Handlers for program explicitly waiting for SIGCHLD to arrive"></p>
 <p>这里的代码是正确的，但是我们注意 <code>while(!pid)</code> 这一句，通过忙等待的方式实现同步，非常浪费资源，而其他方式看起来也不行：</p>
@@ -441,7 +443,7 @@
 <p><img src="/images/14573871178306.jpg" alt=""></p>
 <p>所以代码如下：</p>
 <p><img src="/images/14573871346551.jpg" alt="Wating for Signals with sigsuspend"></p>
-<h2 id="Nonlocal_Jump"><a href="#Nonlocal_Jump" class="headerlink" title="Nonlocal Jump"></a>Nonlocal Jump</h2><p>这一部分比较简单，主要是使用 <code>setjmp</code> 与 <code>longjmp</code></p>
+<h2 id="Nonlocal-Jump"><a href="#Nonlocal-Jump" class="headerlink" title="Nonlocal Jump"></a>Nonlocal Jump</h2><p>这一部分比较简单，主要是使用 <code>setjmp</code> 与 <code>longjmp</code></p>
 <p><img src="/images/14573872756594.jpg" alt="NoNonlocal Jumps: setjmp/longjmp"></p>
 <p><img src="/images/14573873026532.jpg" alt="NoNonlocal Jumps: setjmp/longjmp"></p>
 <p>我们可以利用这种方式，来跳转到其他的栈帧中，比方说在嵌套函数中，我们可以利用这个快速返回栈底的函数：</p>
@@ -450,7 +452,7 @@
 <p><img src="/images/14573875130970.jpg" alt=""></p>
 <p>最后是一个非常清晰的例子：</p>
 <p><img src="/images/14573875598038.jpg" alt="A Program that restarts itself when ctrl-c"></p>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>这两个基本说完了 exceptional control flow 的全部内容，可能会稍微有点难以理解，我会在后面的习题课中尽可能详细说明。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这两个基本说完了 exceptional control flow 的全部内容，可能会稍微有点难以理解，我会在后面的习题课中尽可能详细说明。</p>
 
     
   </div>
@@ -786,42 +788,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="从这节课开始，就进入了第二阶段，熟悉了基本的架构和操作之后，需要处理更加接近现实的稍微复杂一些的请求（不能像之前那么简单粗暴）。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 Twitter 语料分析 8 处理复杂读请求">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-p8.html">
@@ -119,7 +120,7 @@
   
     云计算 Twitter 语料分析 8 处理复杂读请求 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -140,7 +141,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -254,7 +255,7 @@
       <p>从这节课开始，就进入了第二阶段，熟悉了基本的架构和操作之后，需要处理更加接近现实的稍微复杂一些的请求（不能像之前那么简单粗暴）。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
 <li>设计、开发、部署一个全功能高可用的 web 服务</li>
 <li>实现 ETL（约 1TB 数据），并导入到数据库中</li>
 <li>评估存储架构堆性能的影响</li>
@@ -263,7 +264,7 @@
 <li>拓展服务器使其可以处理不同的请求</li>
 <li>开发后端服务器处理范围请求</li>
 </ol>
-<h2 id="u4EFB_u52A1_u76EE_u6807"><a href="#u4EFB_u52A1_u76EE_u6807" class="headerlink" title="任务目标"></a>任务目标</h2><p>前面我们创建了基本的 web 服务用于处理 HTTP GET 请求。</p>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><p>前面我们创建了基本的 web 服务用于处理 HTTP GET 请求。</p>
 <p>Q1 中我们学会了如何处理简单的并发请求。Q2 中我们结合后端（MySQL 和 HBase） 完成了简单的键值对存储和查询工作。</p>
 <p>Q3 中请求不会这么简单，需要对 MySQL 和 HBase 有深入了解，并利用它们的特性来提高性能。</p>
 <ul>
@@ -272,7 +273,7 @@
 <li>预算是 <code>$0.85/h</code>，按照标注计费</li>
 <li>队伍的预算是 <code>$60</code></li>
 </ul>
-<h2 id="Query_3__28Word_Count_and_Range_Query_29"><a href="#Query_3__28Word_Count_and_Range_Query_29" class="headerlink" title="Query 3 (Word Count and Range Query)"></a>Query 3 (Word Count and Range Query)</h2><p>目标 6000 rps</p>
+<h2 id="Query-3-Word-Count-and-Range-Query"><a href="#Query-3-Word-Count-and-Range-Query" class="headerlink" title="Query 3 (Word Count and Range Query)"></a>Query 3 (Word Count and Range Query)</h2><p>目标 6000 rps</p>
 <p>给定一个范围的 UserID，一个范围的日期和 3 个单词，需要返回给定用户在给定的日期范围内的 tweet 中每个单词出现的次数。具体的方法是：</p>
 <ul>
 <li>只保存 <code>lang</code> 部分为 <code>en</code> 的 tweet，如果没有这个域，可以直接扔掉，在 <code>text</code> 部分的内容才会被计算在内。</li>
@@ -293,12 +294,12 @@
 <li>tweet date.</li>
 <li>valid_word:word_count 小写，按照升序排列</li>
 </ol>
-<h3 id="u5177_u4F53_u8BF7_u6C42"><a href="#u5177_u4F53_u8BF7_u6C42" class="headerlink" title="具体请求"></a>具体请求</h3><p>范围是包括当天的，例如给出的范围是从 2013-10-10 到 2013-11-11，那么这两天的 tweet 也需要计算在内</p>
+<h3 id="具体请求"><a href="#具体请求" class="headerlink" title="具体请求"></a>具体请求</h3><p>范围是包括当天的，例如给出的范围是从 2013-10-10 到 2013-11-11，那么这两天的 tweet 也需要计算在内</p>
 <blockquote>
 <p>记录下 userid 和 dates 的范围，有用！</p>
 </blockquote>
 <p>假设原始数据是：</p>
-<figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="attribute">tweet1</span>: <span class="string">&#123;‘time’ = ‘2012-12-25’, ‘userid’ = 1, ‘text’ = “RT @MyBaeBeLike: When your bae says we're just friends... http://t.co/iZbYagMN6e”</span></span><br><span class="line"></span><br><span class="line"><span class="cpp">tweet2: &#123;‘time’ = ‘<span class="number">2012</span>-<span class="number">12</span>-<span class="number">26</span>’, ‘userid’ = <span class="number">2</span>, ‘text’ = “Hello, my <span class="keyword">friend</span>!!”&#125;</span><br><span class="line"></span><br><span class="line">tweet3: &#123;‘time’ = ‘<span class="number">2012</span>-<span class="number">12</span>-<span class="number">27</span>’, ‘userid’ = <span class="number">3</span>, ‘text’ = “This is awesome!”&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">tweet1: &#123;‘time’ = ‘2012-12-25’, ‘userid’ = 1, ‘text’ = “RT @MyBaeBeLike: When your bae says we&apos;re just friends... http://t.co/iZbYagMN6e”</div><div class="line"></div><div class="line">tweet2: &#123;‘time’ = ‘2012-12-26’, ‘userid’ = 2, ‘text’ = “Hello, my friend!!”&#125;</div><div class="line"></div><div class="line">tweet3: &#123;‘time’ = ‘2012-12-27’, ‘userid’ = 3, ‘text’ = “This is awesome!”&#125;</div></pre></td></tr></table></figure>
 <blockquote>
 <p>请求</p>
 </blockquote>
@@ -308,23 +309,23 @@
 <blockquote>
 <p>响应</p>
 </blockquote>
-<figure class="highlight livescript"><table><tr><td class="code"><pre><span class="line">TEAMID,TEAM_AWS_ACCOUNT_ID<span class="string">\n</span></span><br><span class="line"><span class="attribute">w1</span>:count1<span class="string">\n</span></span><br><span class="line"><span class="attribute">w2</span>:count2<span class="string">\n</span></span><br><span class="line"><span class="attribute">w3</span>:count3<span class="string">\n</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">TEAMID,TEAM_AWS_ACCOUNT_ID\n</div><div class="line">w1:count1\n</div><div class="line">w2:count2\n</div><div class="line">w3:count3\n</div></pre></td></tr></table></figure>
 <p>具体例子</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">Team,<span class="number">1234</span>-<span class="number">5678</span>-<span class="number">1234</span></span><br><span class="line">u:<span class="number">7</span>\n</span><br><span class="line">petition:<span class="number">2</span>\n</span><br><span class="line">loving:<span class="number">5</span>\n</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Team,1234-5678-1234</div><div class="line">u:7\n</div><div class="line">petition:2\n</div><div class="line">loving:5\n</div></pre></td></tr></table></figure>
 <blockquote>
 <p>Reference Server</p>
 </blockquote>
 <p>可以利用提供的 <a href="https://Q1-1848733628.us-east-1.elb.amazonaws.com" target="_blank" rel="external">Reference Server</a> 来检测结果的正确性（以及编码问题）</p>
-<h2 id="u5DE5_u4F5C_u65E5_u5FD7"><a href="#u5DE5_u4F5C_u65E5_u5FD7" class="headerlink" title="工作日志"></a>工作日志</h2><ul>
+<h2 id="工作日志"><a href="#工作日志" class="headerlink" title="工作日志"></a>工作日志</h2><ul>
 <li>Get 比 Scan 要快</li>
 <li>用 Cloudera 自己部署 HBase</li>
 <li>注意集群中的负载均衡</li>
 <li>Live test 中考虑使用 ELB</li>
 </ul>
 <p>undertow 的路径处理</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">HttpHandler q1 = <span class="keyword">new</span> Q1();</span><br><span class="line">HttpHandler q2 = <span class="keyword">new</span> Q2();</span><br><span class="line">HttpHandler q3 = <span class="keyword">new</span> Q3();</span><br><span class="line"></span><br><span class="line">PathHandler ph = Handlers.path(Handlers.redirect(ROOTPATH))</span><br><span class="line">                        .addPrefixPath(<span class="string">"/q1"</span>, q1)</span><br><span class="line">                        .addPrefixPath(<span class="string">"/q2"</span>, q2)</span><br><span class="line">                        .addPrefixPath(<span class="string">"/q3"</span>, q3);</span><br><span class="line">server = Undertow.builder().setIoThreads(<span class="number">64</span>)</span><br><span class="line">                .addHttpListener(<span class="number">80</span>, <span class="string">"0.0.0.0"</span>).setHandler(ph).build();</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">HttpHandler q1 = <span class="keyword">new</span> Q1();</div><div class="line">HttpHandler q2 = <span class="keyword">new</span> Q2();</div><div class="line">HttpHandler q3 = <span class="keyword">new</span> Q3();</div><div class="line"></div><div class="line">PathHandler ph = Handlers.path(Handlers.redirect(ROOTPATH))</div><div class="line">                        .addPrefixPath(<span class="string">"/q1"</span>, q1)</div><div class="line">                        .addPrefixPath(<span class="string">"/q2"</span>, q2)</div><div class="line">                        .addPrefixPath(<span class="string">"/q3"</span>, q3);</div><div class="line">server = Undertow.builder().setIoThreads(<span class="number">64</span>)</div><div class="line">                .addHttpListener(<span class="number">80</span>, <span class="string">"0.0.0.0"</span>).setHandler(ph).build();</div></pre></td></tr></table></figure>
 <p>HBase 创建表格及导入数据</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hadoop fs -mkdir /housailei</span><br><span class="line">hadoop fs -mkdir /housailei/csv</span><br><span class="line">hbase(main):<span class="number">001</span>:<span class="number">0</span>&gt; create <span class="string">'q3db'</span>, &#123;NAME =&gt; <span class="string">'data'</span>, DATA_BLOCK_ENCODING =&gt; <span class="string">'FAST_DIFF'</span>, COMPRESSION =&gt; <span class="string">'SNAPPY'</span>, BLOCKSIZE =&gt; <span class="string">'131072'</span>, IN_MEMORY =&gt; <span class="string">'true'</span>, BLOCKCACHE =&gt; <span class="string">'true'</span>, BLOOMFILTER =&gt; <span class="string">'ROWCOL'</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /mnt</span><br><span class="line">wget http://s3.amazonaws.com/housailei15619/Query3-Result-All-Postprocessed/q3-result-data</span><br><span class="line">scp -i ../group.pem ./washq3.py hadoop@ec2-<span class="number">54</span>-<span class="number">172</span>-<span class="number">101</span>-<span class="number">254</span>.compute-<span class="number">1</span>.amazonaws.com:/mnt/</span><br><span class="line"></span><br><span class="line">aws s3 cp ./q3-hbase-data s3://housailei15619/Query3-Result-All-Postprocessed/</span><br><span class="line"></span><br><span class="line">hadoop fs -put ./q3-hbase-data /housailei/csv/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里是处理完全部数据导入的时候的命令</span></span><br><span class="line"><span class="comment"># rowkey 直接是 userid+hashtag：</span></span><br><span class="line"><span class="comment"># 以 \t 为分隔符的话就不需要设定，这是默认的</span></span><br><span class="line">hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.bulk.output=/hfile_groupt3 -Dimporttsv.columns=HBASE_ROW_KEY,data:t,data:w q3db /housailei/csv/q3-hbase-data</span><br><span class="line"></span><br><span class="line">hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /hfile_groupt3 q3db</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">hadoop fs -mkdir /housailei</div><div class="line">hadoop fs -mkdir /housailei/csv</div><div class="line">hbase(main):001:0&gt; create <span class="string">'q3db'</span>, &#123;NAME =&gt; <span class="string">'data'</span>, DATA_BLOCK_ENCODING =&gt; <span class="string">'FAST_DIFF'</span>, COMPRESSION =&gt; <span class="string">'SNAPPY'</span>, BLOCKSIZE =&gt; <span class="string">'131072'</span>, IN_MEMORY =&gt; <span class="string">'true'</span>, BLOCKCACHE =&gt; <span class="string">'true'</span>, BLOOMFILTER =&gt; <span class="string">'ROWCOL'</span>&#125;</div><div class="line"></div><div class="line"><span class="built_in">cd</span> /mnt</div><div class="line">wget http://s3.amazonaws.com/housailei15619/Query3-Result-All-Postprocessed/q3-result-data</div><div class="line">scp -i ../group.pem ./washq3.py hadoop@ec2-54-172-101-254.compute-1.amazonaws.com:/mnt/</div><div class="line"></div><div class="line">aws s3 cp ./q3-hbase-data s3://housailei15619/Query3-Result-All-Postprocessed/</div><div class="line"></div><div class="line">hadoop fs -put ./q3-hbase-data /housailei/csv/</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># 这里是处理完全部数据导入的时候的命令</span></div><div class="line"><span class="comment"># rowkey 直接是 userid+hashtag：</span></div><div class="line"><span class="comment"># 以 \t 为分隔符的话就不需要设定，这是默认的</span></div><div class="line">hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.bulk.output=/hfile_groupt3 -Dimporttsv.columns=HBASE_ROW_KEY,data:t,data:w q3db /housailei/csv/q3-hbase-data</div><div class="line"></div><div class="line">hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /hfile_groupt3 q3db</div></pre></td></tr></table></figure>
 <p>测试网址</p>
 <p><code>http://q1-1848733628.us-east-1.elb.amazonaws.com/q3?start_date=2014-04-01&amp;end_date=2014-05-28&amp;start_userid=51538630&amp;end_userid=51539182&amp;words=u,petition,loving</code></p>
 <p>其他一些思路</p>
@@ -340,11 +341,11 @@
 <li>HBase：会发现数据都集中在一个 region，需要进行拆分（或者把每块的最大容量缩小）</li>
 <li>HBase：疯狂 split 然后让 region 平均分配效果会比较好</li>
 </ul>
-<h3 id="u5E38_u7528_u547D_u4EE4"><a href="#u5E38_u7528_u547D_u4EE4" class="headerlink" title="常用命令"></a>常用命令</h3><p>开启 HBase 并进行配置，注意 SubnetId 要和前端一致，KeyName 需要是 pem 的名字</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">aws emr create-cluster --name <span class="string">"HBase_p21"</span> --ami-version <span class="number">3.11</span>.<span class="number">0</span> \</span><br><span class="line">--applications Name=HBase \</span><br><span class="line">--tags <span class="string">"15619project=phase2"</span> \</span><br><span class="line">--use-default-roles --ec2-attributes KeyName=group,SubnetId=subnet-<span class="number">28</span>a0345e \</span><br><span class="line">--instance-groups InstanceGroupType=MASTER,InstanceType=m4.large,InstanceCount=<span class="number">1</span>,BidPrice=<span class="number">0.05</span> \</span><br><span class="line">InstanceGroupType=CORE,BidPrice=<span class="number">0.05</span>,InstanceType=m4.large,InstanceCount=<span class="number">3</span> \</span><br><span class="line">--bootstrap-action Path=s3://us-west-<span class="number">1</span>.elasticmapreduce/bootstrap-actions/configure-hadoop,Args=[<span class="string">"-m,mapred.tasktracker.map.tasks.maximum=2,-m,mapred.tasktracker.reduce.tasks.maximum=1,-h,dfs.namenode.handler.count=200,-h,dfs.datanode.handler.count=200,-h,dfs.replication.interval=999999"</span>] \</span><br><span class="line">--bootstrap-action Path=s3://elasticmapreduce/bootstrap-actions/configure-daemons,Args[<span class="string">"--namenode-heap-size=4096,--namenode-opts=-XX:GCTimeRatio=19,--datanode-heap-size=4096,--jobtracker-heap-size=2048,--tasktracker-heap-size=256"</span>]\</span><br><span class="line">--bootstrap-action Path=s3://us-west-<span class="number">1</span>.elasticmapreduce/bootstrap-actions/configure-hbase,Args[<span class="string">"zookeeper.session.timeout=60000,-s,hbase.regionserver.handler.count=200,-s,hbase.hregion.max.filesize=16252928,-s,hbase.hregion.memstore.flush.size=16252928,-s,hbase.hfile.block.cache.size=0.5"</span>] \</span><br><span class="line">--bootstrap-action Path=s3://us-west-<span class="number">1</span>.elasticmapreduce/bootstrap-actions/configure-hbase-daemons,Args=[<span class="string">"--hbase-zookeeper-opts=-Xmx1024m -XX:GCTimeRatio=19,--hbase-master-opts=-Xmx4096m,--hbase-regionserver-opts=-Xmx4096m"</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><p>开启 HBase 并进行配置，注意 SubnetId 要和前端一致，KeyName 需要是 pem 的名字</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">aws emr create-cluster --name <span class="string">"HBase_p21"</span> --ami-version 3.11.0 \</div><div class="line">--applications Name=HBase \</div><div class="line">--tags <span class="string">"15619project=phase2"</span> \</div><div class="line">--use-default-roles --ec2-attributes KeyName=group,SubnetId=subnet-28a0345e \</div><div class="line">--instance-groups InstanceGroupType=MASTER,InstanceType=m4.large,InstanceCount=1,BidPrice=0.05 \</div><div class="line">InstanceGroupType=CORE,BidPrice=0.05,InstanceType=m4.large,InstanceCount=3 \</div><div class="line">--bootstrap-action Path=s3://us-west-1.elasticmapreduce/bootstrap-actions/configure-hadoop,Args=[<span class="string">"-m,mapred.tasktracker.map.tasks.maximum=2,-m,mapred.tasktracker.reduce.tasks.maximum=1,-h,dfs.namenode.handler.count=200,-h,dfs.datanode.handler.count=200,-h,dfs.replication.interval=999999"</span>] \</div><div class="line">--bootstrap-action Path=s3://elasticmapreduce/bootstrap-actions/configure-daemons,Args[<span class="string">"--namenode-heap-size=4096,--namenode-opts=-XX:GCTimeRatio=19,--datanode-heap-size=4096,--jobtracker-heap-size=2048,--tasktracker-heap-size=256"</span>]\</div><div class="line">--bootstrap-action Path=s3://us-west-1.elasticmapreduce/bootstrap-actions/configure-hbase,Args[<span class="string">"zookeeper.session.timeout=60000,-s,hbase.regionserver.handler.count=200,-s,hbase.hregion.max.filesize=16252928,-s,hbase.hregion.memstore.flush.size=16252928,-s,hbase.hfile.block.cache.size=0.5"</span>] \</div><div class="line">--bootstrap-action Path=s3://us-west-1.elasticmapreduce/bootstrap-actions/configure-hbase-daemons,Args=[<span class="string">"--hbase-zookeeper-opts=-Xmx1024m -XX:GCTimeRatio=19,--hbase-master-opts=-Xmx4096m,--hbase-regionserver-opts=-Xmx4096m"</span>]</div></pre></td></tr></table></figure>
 <p>HBase 创建表格时候的命令</p>
-<figure class="highlight oxygene"><table><tr><td class="code"><pre><span class="line">Configurable <span class="keyword">block</span> size</span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span>&gt; <span class="keyword">create</span> <span class="string">'mytable'</span>,<span class="comment">&#123;NAME =&gt; 'colfam1', BLOCKSIZE =&gt; '65536'&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Block</span> cache</span><br><span class="line">workloads don’t benefit <span class="keyword">from</span> putting data <span class="keyword">into</span> a <span class="keyword">read</span> cache--<span class="keyword">for</span> instance, <span class="keyword">if</span> a certain table <span class="keyword">or</span> column family <span class="keyword">in</span> a table <span class="keyword">is</span> only accessed <span class="keyword">for</span> sequential scans <span class="keyword">or</span> isn’t</span><br><span class="line">accessed a lot <span class="keyword">and</span> you don’t care <span class="keyword">if</span> Gets <span class="keyword">or</span> Scans <span class="keyword">take</span> a little longer.<span class="keyword">By</span> <span class="keyword">default</span>, the <span class="keyword">block</span> cache <span class="keyword">is</span> enabled. You can disable it at the time <span class="keyword">of</span> table creation</span><br><span class="line"><span class="keyword">or</span> <span class="keyword">by</span> altering the table:</span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span>&gt; <span class="keyword">create</span> <span class="string">'mytable'</span>,<span class="comment">&#123;NAME =&gt; 'colfam1', BLOCKCACHE =&gt; 'false’&#125;</span></span><br><span class="line"></span><br><span class="line">Aggressive caching</span><br><span class="line">You can choose some column families <span class="keyword">to</span> have a higher priority <span class="keyword">in</span> the <span class="keyword">block</span> cache (LRU cache). This comes <span class="keyword">in</span> handy <span class="keyword">if</span> you expect more random reads <span class="keyword">on</span> one column family compared <span class="keyword">to</span> another. This configuration <span class="keyword">is</span> also done at table-instantiation time:</span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span>&gt; <span class="keyword">create</span> <span class="string">'mytable'</span>,</span><br><span class="line"><span class="comment">&#123;NAME =&gt; 'colfam1', IN_MEMORY =&gt; 'true'&#125;</span></span><br><span class="line">The <span class="keyword">default</span> value <span class="keyword">for</span> the IN_MEMORY parameter <span class="keyword">is</span> <span class="keyword">false</span>.</span><br><span class="line"></span><br><span class="line">Bloom filters</span><br><span class="line">hbase(main):<span class="number">007</span>:<span class="number">0</span>&gt; <span class="keyword">create</span> <span class="string">'mytable'</span>,<span class="comment">&#123;NAME =&gt; 'colfam1', BLOOMFILTER =&gt; 'ROWCOL'&#125;</span></span><br><span class="line">The <span class="keyword">default</span> value <span class="keyword">for</span> the BLOOMFILTER parameter <span class="keyword">is</span> NONE. A row-level bloom filter <span class="keyword">is</span> enabled <span class="keyword">with</span> ROW, <span class="keyword">and</span> a qualifier-level bloom filter <span class="keyword">is</span> enabled <span class="keyword">with</span> ROWCOL. The rowlevel bloom filter checks <span class="keyword">for</span> the non-existence <span class="keyword">of</span> the particular rowkey <span class="keyword">in</span> the <span class="keyword">block</span>,<span class="keyword">and</span> the qualifier-level bloom filter checks <span class="keyword">for</span> the non-existence <span class="keyword">of</span> the row <span class="keyword">and</span> column qualifier combination. The overhead <span class="keyword">of</span> the ROWCOL bloom filter <span class="keyword">is</span> higher than that <span class="keyword">of</span> the ROW bloom filter.</span><br><span class="line"></span><br><span class="line">TTL (Time <span class="keyword">To</span> Live)</span><br><span class="line">can <span class="keyword">set</span> the TTL <span class="keyword">while</span> creating the table like this:</span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span>&gt; <span class="keyword">create</span> <span class="string">'mytable'</span>, <span class="comment">&#123;NAME =&gt; 'colfam1', TTL =&gt; '18000'&#125;</span></span><br><span class="line">This command sets the TTL <span class="keyword">on</span> the column family colfam1 <span class="keyword">as</span> <span class="number">18</span>,<span class="number">000</span> seconds = <span class="number">5</span> hours. Data <span class="keyword">in</span> colfam1 that <span class="keyword">is</span> older than <span class="number">5</span> hours <span class="keyword">is</span> deleted during the next major compaction.</span><br><span class="line"></span><br><span class="line">Compression</span><br><span class="line">can enable compression <span class="keyword">on</span> a column family when creating tables like this:</span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span>&gt; <span class="keyword">create</span> <span class="string">'mytable'</span>,</span><br><span class="line"><span class="comment">&#123;NAME =&gt; 'colfam1', COMPRESSION =&gt; 'SNAPPY'&#125;</span></span><br><span class="line">Note that data <span class="keyword">is</span> compressed only <span class="keyword">on</span> disk. It’s kept uncompressed <span class="keyword">in</span> memory (Mem-Store <span class="keyword">or</span> <span class="keyword">block</span> cache) <span class="keyword">or</span> <span class="keyword">while</span> transferring over the network.</span><br><span class="line"></span><br><span class="line">Cell versioning</span><br><span class="line">Versions are also configurable at a column family level <span class="keyword">and</span> can be specified at</span><br><span class="line">the time <span class="keyword">of</span> table instantiation:</span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span>&gt; <span class="keyword">create</span> <span class="string">'mytable'</span>, <span class="comment">&#123;NAME =&gt; 'colfam1', VERSIONS =&gt; 1&#125;</span></span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span>&gt; <span class="keyword">create</span> <span class="string">'mytable'</span>,</span><br><span class="line"><span class="comment">&#123;NAME =&gt; 'colfam1', VERSIONS =&gt; 1, TTL =&gt; '18000'&#125;</span></span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span>&gt; <span class="keyword">create</span> <span class="string">'mytable'</span>, <span class="comment">&#123;NAME =&gt; 'colfam1', VERSIONS =&gt; 5,</span><br><span class="line">MIN_VERSIONS =&gt; '1'&#125;</span></span><br><span class="line"></span><br><span class="line">Description <span class="keyword">of</span> a table</span><br><span class="line">hbase(main):<span class="number">004</span>:<span class="number">0</span>&gt; describe <span class="string">'follows'</span></span><br><span class="line">DESCRIPTION ENABLED</span><br><span class="line"><span class="comment">&#123;NAME =&gt; 'follows', coprocessor$1 =&gt; 'file:///U true users/ndimiduk/repos/hbaseia twitbase/target/twitbase-1.0.0.jar|HBaseIA.TwitBase.coprocessors.FollowsObserver|1001|', FAMILIES =&gt; [&#123;NAME =&gt; 'f', BLOOMFILTER =&gt; 'NONE', REPLICATION_SCOPE =&gt;'0', VERSIONS =&gt; '1', COMPRESSION =&gt; 'NONE', MIN_VERSIONS =&gt; '0', TTL =&gt; '2147483647', BLOCKSIZE =&gt; '65536', IN_MEMORY =&gt; 'false', BLOCKCACHE =&gt; 'true'&#125;</span>]&#125;</span><br><span class="line"><span class="number">1</span> row(s) <span class="keyword">in</span> <span class="number">0.0330</span> seconds</span><br></pre></td></tr></table></figure>
-<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Configurable block size</div><div class="line">hbase(main):002:0&gt; create &apos;mytable&apos;,&#123;NAME =&gt; &apos;colfam1&apos;, BLOCKSIZE =&gt; &apos;65536&apos;&#125;</div><div class="line"></div><div class="line">Block cache</div><div class="line">workloads don’t benefit from putting data into a read cache--for instance, if a certain table or column family in a table is only accessed for sequential scans or isn’t</div><div class="line">accessed a lot and you don’t care if Gets or Scans take a little longer.By default, the block cache is enabled. You can disable it at the time of table creation</div><div class="line">or by altering the table:</div><div class="line">hbase(main):002:0&gt; create &apos;mytable&apos;,&#123;NAME =&gt; &apos;colfam1&apos;, BLOCKCACHE =&gt; &apos;false’&#125;</div><div class="line"></div><div class="line">Aggressive caching</div><div class="line">You can choose some column families to have a higher priority in the block cache (LRU cache). This comes in handy if you expect more random reads on one column family compared to another. This configuration is also done at table-instantiation time:</div><div class="line">hbase(main):002:0&gt; create &apos;mytable&apos;,</div><div class="line">&#123;NAME =&gt; &apos;colfam1&apos;, IN_MEMORY =&gt; &apos;true&apos;&#125;</div><div class="line">The default value for the IN_MEMORY parameter is false.</div><div class="line"></div><div class="line">Bloom filters</div><div class="line">hbase(main):007:0&gt; create &apos;mytable&apos;,&#123;NAME =&gt; &apos;colfam1&apos;, BLOOMFILTER =&gt; &apos;ROWCOL&apos;&#125;</div><div class="line">The default value for the BLOOMFILTER parameter is NONE. A row-level bloom filter is enabled with ROW, and a qualifier-level bloom filter is enabled with ROWCOL. The rowlevel bloom filter checks for the non-existence of the particular rowkey in the block,and the qualifier-level bloom filter checks for the non-existence of the row and column qualifier combination. The overhead of the ROWCOL bloom filter is higher than that of the ROW bloom filter.</div><div class="line"></div><div class="line">TTL (Time To Live)</div><div class="line">can set the TTL while creating the table like this:</div><div class="line">hbase(main):002:0&gt; create &apos;mytable&apos;, &#123;NAME =&gt; &apos;colfam1&apos;, TTL =&gt; &apos;18000&apos;&#125;</div><div class="line">This command sets the TTL on the column family colfam1 as 18,000 seconds = 5 hours. Data in colfam1 that is older than 5 hours is deleted during the next major compaction.</div><div class="line"></div><div class="line">Compression</div><div class="line">can enable compression on a column family when creating tables like this:</div><div class="line">hbase(main):002:0&gt; create &apos;mytable&apos;,</div><div class="line">&#123;NAME =&gt; &apos;colfam1&apos;, COMPRESSION =&gt; &apos;SNAPPY&apos;&#125;</div><div class="line">Note that data is compressed only on disk. It’s kept uncompressed in memory (Mem-Store or block cache) or while transferring over the network.</div><div class="line"></div><div class="line">Cell versioning</div><div class="line">Versions are also configurable at a column family level and can be specified at</div><div class="line">the time of table instantiation:</div><div class="line">hbase(main):002:0&gt; create &apos;mytable&apos;, &#123;NAME =&gt; &apos;colfam1&apos;, VERSIONS =&gt; 1&#125;</div><div class="line">hbase(main):002:0&gt; create &apos;mytable&apos;,</div><div class="line">&#123;NAME =&gt; &apos;colfam1&apos;, VERSIONS =&gt; 1, TTL =&gt; &apos;18000&apos;&#125;</div><div class="line">hbase(main):002:0&gt; create &apos;mytable&apos;, &#123;NAME =&gt; &apos;colfam1&apos;, VERSIONS =&gt; 5,</div><div class="line">MIN_VERSIONS =&gt; &apos;1&apos;&#125;</div><div class="line"></div><div class="line">Description of a table</div><div class="line">hbase(main):004:0&gt; describe &apos;follows&apos;</div><div class="line">DESCRIPTION ENABLED</div><div class="line">&#123;NAME =&gt; &apos;follows&apos;, coprocessor$1 =&gt; &apos;file:///U true users/ndimiduk/repos/hbaseia twitbase/target/twitbase-1.0.0.jar|HBaseIA.TwitBase.coprocessors.FollowsObserver|1001|&apos;, FAMILIES =&gt; [&#123;NAME =&gt; &apos;f&apos;, BLOOMFILTER =&gt; &apos;NONE&apos;, REPLICATION_SCOPE =&gt;&apos;0&apos;, VERSIONS =&gt; &apos;1&apos;, COMPRESSION =&gt; &apos;NONE&apos;, MIN_VERSIONS =&gt; &apos;0&apos;, TTL =&gt; &apos;2147483647&apos;, BLOCKSIZE =&gt; &apos;65536&apos;, IN_MEMORY =&gt; &apos;false&apos;, BLOCKCACHE =&gt; &apos;true&apos;&#125;]&#125;</div><div class="line">1 row(s) in 0.0330 seconds</div></pre></td></tr></table></figure>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="http://www.cnblogs.com/skyl/p/4814347.html" target="_blank" rel="external">HBase优化相关</a></li>
 <li><a href="http://hadoopbigdatas.blogspot.com/2013/03/hbase-shell-and-commands.html" target="_blank" rel="external">Hbase shell and Commands</a></li>
 <li><a href="http://docs.amazonaws.cn/ElasticMapReduce/latest/DeveloperGuide/emr-hbase-configure.html" target="_blank" rel="external">配置 HBase</a></li>
@@ -684,42 +685,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

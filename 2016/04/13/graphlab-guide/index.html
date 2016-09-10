@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="GraphLab,云计算,分布式," />
+  <meta name="keywords" content="云计算,GraphLab,分布式," />
 
 
 
@@ -99,6 +99,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GraphLab 入门实例指南">
 <meta name="twitter:description" content="因为课程的机会接触了一下 GraphLab，许多概念以及对应的思维方式需要改变。这里主要介绍一下基本概念，以及如何启动 GraphLab 集群并进行简单的计算。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14604025416778.jpg">
 
 
 
@@ -116,7 +117,7 @@
   };
 </script>
 
-  <title> GraphLab 入门实例指南 | 小土刀 </title>
+  <title> GraphLab 入门实例指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -137,7 +138,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -349,7 +350,7 @@
 </ol>
 <p><img src="/images/14604025416778.jpg" alt="步骤过程"></p>
 <p>另外有一个需要注意的地方是在最新的版本中，采用 Vertex-Cut 来进行数据分隔。这样的好处是，一条边连接的两个节点肯定在一台机器上，对于每个节点来说，可能会有几个不同的复制，其中一个将成为 master，其他的则是 mirror。</p>
-<h2 id="u5B89_u88C5_u90E8_u7F72"><a href="#u5B89_u88C5_u90E8_u7F72" class="headerlink" title="安装部署"></a>安装部署</h2><p>手动配置的步骤还是比较繁琐的，不过 GraphLab 提供了启动 Amazon EC2 的脚本，可以自动进行机器的申请和部署。这里也主要以这种方式来进行之后的步骤。</p>
+<h2 id="安装部署"><a href="#安装部署" class="headerlink" title="安装部署"></a>安装部署</h2><p>手动配置的步骤还是比较繁琐的，不过 GraphLab 提供了启动 Amazon EC2 的脚本，可以自动进行机器的申请和部署。这里也主要以这种方式来进行之后的步骤。</p>
 <p>从<a href="https://github.com/dato-code/PowerGraph" target="_blank" rel="external">官方 Github</a> 下载好源代码之后，解压之后进入 <code>scripts</code> 文件夹。然后需要在环境变量中进行如下配置（这个只对当前的终端有效）：</p>
 <ul>
 <li><code>export AWS_ACCESS_KEY_ID=[your AWS access key]</code></li>
@@ -374,17 +375,17 @@
 <p>PageRank 的具体介绍可以查看<a href="https://en.wikipedia.org/wiki/PageRank" target="_blank" rel="external">维基</a>，这里做一个简要介绍。我们先来看看具体的公式</p>
 <p><img src="/images/14606382712570.png" alt=""></p>
 <p>这个公式是什么意思呢？这里我们取 <code>N = 1, d = 0.85</code>，也就是说，一个页面的 PageRank 值，等于一个常数加上其他指向它的页面所贡献的 PageRank 值。每个指向该页面的页面具体贡献的数值，是指向该页面的页面自己的 PageRank 值除以外链的个数，即简单的平均数，一个页面把自己的 PageRank 分散出去。一个简单的例子</p>
-<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">page1, <span class="string">rank:</span> <span class="number">1.0</span>, point <span class="string">to:</span> page2, page3</span><br><span class="line">page2, <span class="string">rank:</span> <span class="number">1.0</span>, point <span class="string">to:</span> page3, page1</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">page1, rank: 1.0, point to: page2, page3</div><div class="line">page2, rank: 1.0, point to: page3, page1</div></pre></td></tr></table></figure>
 <p>经过第一次迭代之后，会得到如下的分布，这里稍微解释一下，为什么 page1 得到的是 0.5 呢？因为我们可以看到只有 page2 指向 page1，而 page2 一共有 2 个外链，所以其权重被平均分成两份，于是就是 0.5；page2 得到 0.5 也是同理。而 page1 和 page2 都指向 page3，page3 从他们身上拿到了 0.5，所以是 1.</p>
-<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line"><span class="string">key:</span> page1 contributions <span class="string">received:</span> <span class="number">0.5</span> point <span class="string">to:</span> page2 page3 </span><br><span class="line"><span class="string">key:</span> page2 contributions <span class="string">received:</span> <span class="number">0.5</span> point <span class="string">to:</span> page3 page1 </span><br><span class="line"><span class="string">key:</span> page3 contributions <span class="string">received:</span> <span class="number">1.0</span> point <span class="string">to:</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">key: page1 contributions received: 0.5 point to: page2 page3 </div><div class="line">key: page2 contributions received: 0.5 point to: page3 page1 </div><div class="line">key: page3 contributions received: 1.0 point to:</div></pre></td></tr></table></figure>
 <p>这里 page3 没有外链，就成了『异类』，所以必须把这类节点的权重平均分给所有的节点，这里 user3 的初始权重是 1，因为一共有 3 个用户，可得：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">page1 = <span class="number">0.15</span> + <span class="number">0.85</span> * (<span class="number">0.5</span> + <span class="number">1.0</span>/<span class="number">3</span>) = <span class="number">0.8583</span></span><br><span class="line">page2 = <span class="number">0.15</span> + <span class="number">0.85</span> * (<span class="number">0.5</span> + <span class="number">1.0</span>/<span class="number">3</span>) = <span class="number">0.8583</span></span><br><span class="line">page3 = <span class="number">0.15</span> + <span class="number">0.85</span> * (<span class="number">1.0</span> + <span class="number">1.0</span>/<span class="number">3</span>) = <span class="number">1.2834</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">page1 = 0.15 + 0.85 * (0.5 + 1.0/3) = 0.8583</div><div class="line">page2 = 0.15 + 0.85 * (0.5 + 1.0/3) = 0.8583</div><div class="line">page3 = 0.15 + 0.85 * (1.0 + 1.0/3) = 1.2834</div></pre></td></tr></table></figure>
 <p>之后就继续按照这样的模式计算下去，直到指定次数或者收敛（排名不再变动）。</p>
-<h2 id="u5177_u4F53_u5B9E_u73B0"><a href="#u5177_u4F53_u5B9E_u73B0" class="headerlink" title="具体实现"></a>具体实现</h2><p>我们从官方给出的<a href="/(https://github.com/dato-code/PowerGraph/blob/master/demoapps/pagerank/simple_pagerank.cpp">例子</a>)中可以大概了解具体要如何编写。还是用之前提到的几个步骤：<code>gather</code>, <code>apply</code>, <code>scatter</code> （以下代码来自官方例子）</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">gather</span><span class="params">(icontext_type&amp; context, <span class="keyword">const</span> vertex_type&amp; vertex, </span><br><span class="line">    edge_type&amp; edge)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> ((<span class="number">1.0</span> - RESET_PROB) / edge.source().num_out_edges()) * edge.source().data();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Use the total rank of adjacent pages to update this page */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">apply</span><span class="params">(icontext_type&amp; context, vertex_type&amp; vertex,</span><br><span class="line">        <span class="keyword">const</span> gather_type&amp; total)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> newval = total + RESET_PROB;</span><br><span class="line">    last_change = <span class="built_in">std</span>::<span class="built_in">fabs</span>(newval - vertex.data());</span><br><span class="line">    vertex.data() = newval;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* The scatter edges depend on whether the pagerank has converged */</span></span><br><span class="line"><span class="function">edge_dir_type <span class="title">scatter_edges</span><span class="params">(icontext_type&amp; context,</span><br><span class="line">        <span class="keyword">const</span> vertex_type&amp; vertex)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> (last_change &gt; TOLERANCE) <span class="keyword">return</span> graphlab::OUT_EDGES;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> graphlab::NO_EDGES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* The scatter function just signal adjacent pages */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">scatter</span><span class="params">(icontext_type&amp; context, <span class="keyword">const</span> vertex_type&amp; vertex,</span><br><span class="line">          edge_type&amp; edge)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    context.signal(edge.target());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><p>我们从官方给出的<a href="(https://github.com/dato-code/PowerGraph/blob/master/demoapps/pagerank/simple_pagerank.cpp">例子</a>)中可以大概了解具体要如何编写。还是用之前提到的几个步骤：<code>gather</code>, <code>apply</code>, <code>scatter</code> （以下代码来自官方例子）</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">float</span> <span class="title">gather</span><span class="params">(icontext_type&amp; context, <span class="keyword">const</span> vertex_type&amp; vertex, </span></span></div><div class="line">    edge_type&amp; edge) <span class="keyword">const</span> &#123;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> ((<span class="number">1.0</span> - RESET_PROB) / edge.source().num_out_edges()) * edge.source().data();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* Use the total rank of adjacent pages to update this page */</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">apply</span><span class="params">(icontext_type&amp; context, vertex_type&amp; vertex,</span></span></div><div class="line">        <span class="keyword">const</span> gather_type&amp; total) &#123;</div><div class="line"></div><div class="line">    <span class="keyword">const</span> <span class="keyword">double</span> newval = total + RESET_PROB;</div><div class="line">    last_change = <span class="built_in">std</span>::<span class="built_in">fabs</span>(newval - vertex.data());</div><div class="line">    vertex.data() = newval;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/* The scatter edges depend on whether the pagerank has converged */</span></div><div class="line"><span class="function">edge_dir_type <span class="title">scatter_edges</span><span class="params">(icontext_type&amp; context,</span></span></div><div class="line">        <span class="keyword">const</span> vertex_type&amp; vertex) <span class="keyword">const</span> &#123;</div><div class="line">        </div><div class="line">    <span class="keyword">if</span> (last_change &gt; TOLERANCE) <span class="keyword">return</span> graphlab::OUT_EDGES;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">return</span> graphlab::NO_EDGES;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* The scatter function just signal adjacent pages */</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">scatter</span><span class="params">(icontext_type&amp; context, <span class="keyword">const</span> vertex_type&amp; vertex,</span></span></div><div class="line">          edge_type&amp; edge) <span class="keyword">const</span> &#123;</div><div class="line"></div><div class="line">    context.signal(edge.target());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>因为我们现在是针对于某个节点在运算，所以不需要考虑全局的状况，甚至也不需要在意怎么获取邻接节点，都可以认为框架会帮我们处理好，我们直接专注于需要在节点上进行的计算即可！所以可以看到整个 PageRank 在 GraphLab 上的实现非常简单明了！</p>
 <p>不过需要注意的是，这个例子中并没有处理没有外链的页面，也就是 dangling page 的情况，如果想要得到更准确的 pagerank，需要进行处理。</p>
-<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="https://github.com/dato-code/PowerGraph" target="_blank" rel="external">官方 Github</a></li>
 <li><a href="https://github.com/dato-code/PowerGraph/blob/master/demoapps/pagerank/simple_pagerank.cpp" target="_blank" rel="external">PageRank Code</a></li>
 </ul>
@@ -425,9 +426,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/GraphLab/" rel="tag">#GraphLab</a>
-          
             <a href="/tags/云计算/" rel="tag">#云计算</a>
+          
+            <a href="/tags/GraphLab/" rel="tag">#GraphLab</a>
           
             <a href="/tags/分布式/" rel="tag">#分布式</a>
           
@@ -664,7 +665,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B89_u88C5_u90E8_u7F72"><span class="nav-number">1.</span> <span class="nav-text">安装部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PageRank"><span class="nav-number">2.</span> <span class="nav-text">PageRank</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5177_u4F53_u5B9E_u73B0"><span class="nav-number">3.</span> <span class="nav-text">具体实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装部署"><span class="nav-number">1.</span> <span class="nav-text">安装部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PageRank"><span class="nav-number">2.</span> <span class="nav-text">PageRank</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体实现"><span class="nav-number">3.</span> <span class="nav-text">具体实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
@@ -844,42 +845,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

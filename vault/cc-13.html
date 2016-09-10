@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="前面我们已经了解了如何进行 autoscaling 和自定义负载均衡器，这一课我们来接触另一个在 web 服务中非常重要的概念——缓存。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 13 课 缓存">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-13.html">
@@ -97,6 +98,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 13 课 缓存">
 <meta name="twitter:description" content="前面我们已经了解了如何进行 autoscaling 和自定义负载均衡器，这一课我们来接触另一个在 web 服务中非常重要的概念——缓存。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14555365484111.jpg">
 
 
 
@@ -120,7 +122,7 @@
   
     云计算 第 13 课 缓存 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -141,7 +143,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -255,16 +257,16 @@
       <p>前面我们已经了解了如何进行 autoscaling 和自定义负载均衡器，这一课我们来接触另一个在 web 服务中非常重要的概念——缓存。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
 <li>了解在 web 服务中缓存所扮演的角色</li>
 <li>比较影响缓存的两个方面：temporal locality 和 spatial locality</li>
 <li>部署一个使用缓存的 web 服务</li>
 <li>比较不同的缓存策略对性能的影响</li>
 </ol>
 <p>先来看看数据格式，保存在 data center 中的数据格式是：</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">targetID</span><span class="params">(数字)</span></span>, first_name, last_name, encrypted <span class="function"><span class="title">data</span><span class="params">(文本)</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">targetID(数字), first_name, last_name, encrypted data(文本)</div></pre></td></tr></table></figure>
 <p>而客户端（在这里就是 load generator）发给 data center 的数据格式是：</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">Target <span class="tag">&lt;<span class="title">targetID</span>&gt;</span> first_name last_name’s encrypted conversations are: <span class="tag">&lt;<span class="title">conversations</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Target &lt;targetID&gt; first_name last_name’s encrypted conversations are: &lt;conversations&gt;</div></pre></td></tr></table></figure>
 <p>每个 data center 在同一时间大概能够缓存 10000 条记录，但是面对 load generator 仍然有些力不从心，我们的任务就是利用缓存来提高性能。</p>
 <p>不少互联网应用都需要大量的资源，提高性能的方法很多，其中一个就是我们之前尝试过的 horizontal 和 vertical scaling。这种方式虽然比较方便，但是贵呀，能不能在已有资源限制的情况下，尽可能提高性能呢？两个比较常见的办法是『缓存(caching)』和『复制(replication)』。</p>
 <p>复制、缓存和负载均衡可以在不对数据进行分割的情况下提高性能。很多工具（比如 Varnish, Squid, memcached）可以完成缓存这项任务，把最常用的资源保存下来。这样有两个好处：</p>
@@ -304,12 +306,12 @@
 <li>Load Generator, <code>m3.medium</code>, <code>ami-c00134aa</code></li>
 <li>前端, <code>m3.medium</code>, <code>ami-6f2a1f05</code></li>
 </ul>
-<h2 id="u7F13_u5B58_u6D4B_u8BD5"><a href="#u7F13_u5B58_u6D4B_u8BD5" class="headerlink" title="缓存测试"></a>缓存测试</h2><p>研究 trace file 来确定缓存的策略。Data Center 各可以缓存 10000 条记录，并提供以下接口：</p>
+<h2 id="缓存测试"><a href="#缓存测试" class="headerlink" title="缓存测试"></a>缓存测试</h2><p>研究 trace file 来确定缓存的策略。Data Center 各可以缓存 10000 条记录，并提供以下接口：</p>
 <ul>
 <li><code>/target?targetID=X</code> 返回结果并缓存</li>
 <li><code>/range?start_range=X&amp;end_range=Y</code> 缓存一个范围内的结果（以 <code>;</code> 分隔）并缓存</li>
 </ul>
-<h3 id="u4EFB_u52A1_u5217_u8868"><a href="#u4EFB_u52A1_u5217_u8868" class="headerlink" title="任务列表"></a>任务列表</h3><ol>
+<h3 id="任务列表"><a href="#任务列表" class="headerlink" title="任务列表"></a>任务列表</h3><ol>
 <li>启动一个 <code>Standard_A0</code> 虚拟机作为前端</li>
 <li>SSH 到前端，账户 <code>ubuntu</code> 密码 <code>Cloud@123</code></li>
 <li>文件夹 <code>vertx</code> 中有 <code>MSB.java</code> 和 <code>run_vertx.sh</code></li>
@@ -326,7 +328,7 @@
 <li>填写前端 DNS 地址以开始 MSB Trace 测试，目标是 145 RPS </li>
 <li>测试的时候可以在浏览器里查看日志</li>
 </ol>
-<h3 id="u63D0_u793A"><a href="#u63D0_u793A" class="headerlink" title="提示"></a>提示</h3><ul>
+<h3 id="提示"><a href="#提示" class="headerlink" title="提示"></a>提示</h3><ul>
 <li>研究清楚 web 服务的代码再开启 load generator 和 data center</li>
 <li>可以随意修改 <code>MSB.java</code>，唯一需要注意的是不能缓存超过 1000 条记录</li>
 <li>统计系统中的不同组件的延迟来找出哪里更加需要优化</li>
@@ -348,15 +350,15 @@
 <li><a href="http://www.akamai.com/dl/technical_publications/ConsistenHashingandRandomTreesDistributedCachingprotocolsforrelievingHotSpotsontheworldwideweb.pdf" target="_blank" rel="external">Karger, David, et al. “Consistent hashing and random trees: Distributed caching protocols for relieving hot spots on the World Wide Web.” Proceedings of the twenty-ninth annual ACM symposium on Theory of computing. ACM, 1997</a></li>
 <li><a href="http://www.cs.cmu.edu/~hl/papers/loadbal-socc2011.pdf" target="_blank" rel="external">Fan, Bin, et al. “Small cache, big effect: Provable load balancing for randomly partitioned cluster services.” Proceedings of the 2nd ACM Symposium on Cloud Computing. ACM, 2011</a></li>
 </ul>
-<h3 id="AWS__u90E8_u5206"><a href="#AWS__u90E8_u5206" class="headerlink" title="AWS 部分"></a>AWS 部分</h3><p>这一部分是选做的，基本要求一样，有以下需要注意的的：</p>
+<h3 id="AWS-部分"><a href="#AWS-部分" class="headerlink" title="AWS 部分"></a>AWS 部分</h3><p>这一部分是选做的，基本要求一样，有以下需要注意的的：</p>
 <ul>
 <li>安全组中要打开 80 端口</li>
 <li>AWS 的地址格式和 Azure 的稍有不同</li>
 <li>性能的要求是 142 RPS</li>
 </ul>
-<h2 id="u9879_u76EE_u65E5_u5FD7"><a href="#u9879_u76EE_u65E5_u5FD7" class="headerlink" title="项目日志"></a>项目日志</h2><p>首先可以直接利用上个项目的代码，用指定的镜像开好四个机器，检查一下是否开机成功，都没问题之后，就可以 ssh 到我们的 Front End 机器：<code>ssh ubuntu@yourdns.eastus.cloudapp.azure.com</code>，然后把所有文件都复制下来方便本地修改：<code>scp -r ubuntu@yourdns.eastus.cloudapp.azure.com:~/vertx/* ./</code>，里面还是有不少文件的，不过我们这次只需要修改一个 <code>MSB.java</code>。</p>
+<h2 id="项目日志"><a href="#项目日志" class="headerlink" title="项目日志"></a>项目日志</h2><p>首先可以直接利用上个项目的代码，用指定的镜像开好四个机器，检查一下是否开机成功，都没问题之后，就可以 ssh 到我们的 Front End 机器：<code>ssh ubuntu@yourdns.eastus.cloudapp.azure.com</code>，然后把所有文件都复制下来方便本地修改：<code>scp -r ubuntu@yourdns.eastus.cloudapp.azure.com:~/vertx/* ./</code>，里面还是有不少文件的，不过我们这次只需要修改一个 <code>MSB.java</code>。</p>
 <p>先来看看具体我们要做什么，观察 <code>MSB.java</code>，会发现这次处理请求的实现方式和之前都不一样，留意以下这一段代码</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">vertx.createHttpServer().requestHandler(<span class="keyword">new</span> Handler&lt;HttpServerRequest&gt;() &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handle</span><span class="params">(HttpServerRequest req)</span> </span>&#123;</span><br><span class="line">        String query_type = req.path();</span><br><span class="line">        req.response().headers().set(<span class="string">"Content-Type"</span>, <span class="string">"text/plain"</span>);</span><br><span class="line">        <span class="keyword">if</span>(query_type.equals(<span class="string">"/target"</span>)) &#123;</span><br><span class="line">            String key = req.params().get(<span class="string">"targetID"</span>);</span><br><span class="line">            processRequest(key,req);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (query_type.equals(<span class="string">"/range"</span>)) &#123;</span><br><span class="line">            String start = req.params().get(<span class="string">"start_range"</span>);</span><br><span class="line">            String end = req.params().get(<span class="string">"end_range"</span>);</span><br><span class="line">            processRequest(start, end, req);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).listen(<span class="number">80</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">vertx.createHttpServer().requestHandler(<span class="keyword">new</span> Handler&lt;HttpServerRequest&gt;() &#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handle</span><span class="params">(HttpServerRequest req)</span> </span>&#123;</div><div class="line">        String query_type = req.path();</div><div class="line">        req.response().headers().set(<span class="string">"Content-Type"</span>, <span class="string">"text/plain"</span>);</div><div class="line">        <span class="keyword">if</span>(query_type.equals(<span class="string">"/target"</span>)) &#123;</div><div class="line">            String key = req.params().get(<span class="string">"targetID"</span>);</div><div class="line">            processRequest(key,req);</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (query_type.equals(<span class="string">"/range"</span>)) &#123;</div><div class="line">            String start = req.params().get(<span class="string">"start_range"</span>);</div><div class="line">            String end = req.params().get(<span class="string">"end_range"</span>);</div><div class="line">            processRequest(start, end, req);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;).listen(<span class="number">80</span>);</div></pre></td></tr></table></figure>
 <p>可以看到这里在 80 端口打开了一个监听器，每次遇到请求，就会调用其中的 <code>handle(HttpServerRequest req)</code> 函数，那么这个函数里做了什么事情呢？</p>
 <ol>
 <li>根据不同的请求类型，执行不同的请求</li>
@@ -707,42 +709,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

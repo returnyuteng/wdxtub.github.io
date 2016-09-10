@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="ELK,Elasticsearch,检索," />
+  <meta name="keywords" content="Elasticsearch,检索,ELK," />
 
 
 
@@ -99,6 +99,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elasticsearch 入门指南">
 <meta name="twitter:description" content="日志作为运维中非常重要的一环，往往只有在出了问题的时候才被重视起来，不同部门，不同项目的不同日志如果能够统一规范管理，对日常的开发和业务的运营都是有很大帮助的，这里我们来了解一下实时日志处理领域开源第一选择 - ELK 套餐中的 E - Elasticsearch">
+<meta name="twitter:image" content="http://wdxtub.com/images/14693242236055.jpg">
 
 
 
@@ -116,7 +117,7 @@
   };
 </script>
 
-  <title> Elasticsearch 入门指南 | 小土刀 </title>
+  <title> Elasticsearch 入门指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -137,7 +138,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -340,7 +341,7 @@
         <p>日志作为运维中非常重要的一环，往往只有在出了问题的时候才被重视起来，不同部门，不同项目的不同日志如果能够统一规范管理，对日常的开发和业务的运营都是有很大帮助的，这里我们来了解一下实时日志处理领域开源第一选择 - ELK 套餐中的 E - Elasticsearch</p>
 <a id="more"></a>
 <hr>
-<h2 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h2><p>如果前些年涉及过搜索相关技术，一定对 Lucene 不陌生，作为最知名的用于全文检索的开源库，在其上出现了很多非常方便的应用，本文所说的 Elasticsearch 就是其中之一。Elasticsearch 是一个实时分布式搜索和分析引擎，可以用来全文搜索、结构化搜索内容并对其进行分析。Elasticsearch 基于 RESTful API 原则设计，稳定可靠的同时，做到了安装部署方便，不仅可以在笔记本上跑，也可以在服务器集群上运行。</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>如果前些年涉及过搜索相关技术，一定对 Lucene 不陌生，作为最知名的用于全文检索的开源库，在其上出现了很多非常方便的应用，本文所说的 Elasticsearch 就是其中之一。Elasticsearch 是一个实时分布式搜索和分析引擎，可以用来全文搜索、结构化搜索内容并对其进行分析。Elasticsearch 基于 RESTful API 原则设计，稳定可靠的同时，做到了安装部署方便，不仅可以在笔记本上跑，也可以在服务器集群上运行。</p>
 <p>具体的特性我就直接搬运官网的介绍吧，具体为：</p>
 <ul>
 <li>分布式高可用的搜索引擎<ul>
@@ -366,15 +367,15 @@
 </li>
 <li>单文档级别的操作满足操作系统的事务性</li>
 </ul>
-<h2 id="u5B89_u88C5_u914D_u7F6E"><a href="#u5B89_u88C5_u914D_u7F6E" class="headerlink" title="安装配置"></a>安装配置</h2><p>在 Mac 下安装非常简单，直接 <code>brew install elasticsearch</code> 即可</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ brew install elasticsearch</span><br><span class="line">==&gt; Downloading https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearc</span><br><span class="line"><span class="comment">######################################################################## 100.0%</span></span><br><span class="line">==&gt; Caveats</span><br><span class="line">Data:    /usr/<span class="built_in">local</span>/var/elasticsearch/elasticsearch_dawang/</span><br><span class="line">Logs:    /usr/<span class="built_in">local</span>/var/<span class="built_in">log</span>/elasticsearch/elasticsearch_dawang.log</span><br><span class="line">Plugins: /usr/<span class="built_in">local</span>/Cellar/elasticsearch/<span class="number">2.3</span>.<span class="number">3</span>/libexec/plugins/</span><br><span class="line">Config:  /usr/<span class="built_in">local</span>/etc/elasticsearch/</span><br><span class="line">plugin script: /usr/<span class="built_in">local</span>/Cellar/elasticsearch/<span class="number">2.3</span>.<span class="number">3</span>/libexec/bin/plugin</span><br><span class="line"></span><br><span class="line">To have launchd start elasticsearch now and restart at login:</span><br><span class="line">  brew services start elasticsearch</span><br><span class="line">Or, <span class="keyword">if</span> you don<span class="string">'t want/need a background service you can just run:</span><br><span class="line">  elasticsearch</span><br><span class="line">==&gt; Summary</span><br><span class="line">🍺  /usr/local/Cellar/elasticsearch/2.3.3: 59 files, 29.4M, built in 1 minute 40 seconds</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><p>在 Mac 下安装非常简单，直接 <code>brew install elasticsearch</code> 即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ brew install elasticsearch</div><div class="line">==&gt; Downloading https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearc</div><div class="line"><span class="comment">######################################################################## 100.0%</span></div><div class="line">==&gt; Caveats</div><div class="line">Data:    /usr/<span class="built_in">local</span>/var/elasticsearch/elasticsearch_dawang/</div><div class="line">Logs:    /usr/<span class="built_in">local</span>/var/<span class="built_in">log</span>/elasticsearch/elasticsearch_dawang.log</div><div class="line">Plugins: /usr/<span class="built_in">local</span>/Cellar/elasticsearch/2.3.3/libexec/plugins/</div><div class="line">Config:  /usr/<span class="built_in">local</span>/etc/elasticsearch/</div><div class="line">plugin script: /usr/<span class="built_in">local</span>/Cellar/elasticsearch/2.3.3/libexec/bin/plugin</div><div class="line"></div><div class="line">To have launchd start elasticsearch now and restart at login:</div><div class="line">  brew services start elasticsearch</div><div class="line">Or, <span class="keyword">if</span> you don<span class="string">'t want/need a background service you can just run:</span></div><div class="line">  elasticsearch</div><div class="line">==&gt; Summary</div><div class="line">🍺  /usr/local/Cellar/elasticsearch/2.3.3: 59 files, 29.4M, built in 1 minute 40 seconds</div></pre></td></tr></table></figure>
 <p>具体什么文件夹放什么还是非常清晰的，这里就不赘述了。因为我是在自己的电脑上测试，就不弄成开机启动了，需要的时候，在命令行中执行 <code>elasticsearch</code> 即可。</p>
 <p>运行起来后，在浏览器中访问 <code>localhost:9200</code> 就可以看到如下界面：</p>
 <p><img src="/images/14693242236055.jpg" alt=""></p>
 <p>其他常用插件，比如 Marvel 等，会在后面的文章中介绍，这里主要介绍基本入门。</p>
-<h2 id="u57FA_u672C_u6982_u5FF5"><a href="#u57FA_u672C_u6982_u5FF5" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="u9762_u5411_u6587_u6863"><a href="#u9762_u5411_u6587_u6863" class="headerlink" title="面向文档"></a>面向文档</h3><p>和 Mongodb 的思路类似，Elasticsearch 中保存的是整个文档(document)，并且还会根据文档的内容进行索引，于是我们得以进行搜索、排序和过滤等操作。在 Elasticsearch 中，利用 JSON 来表示文档。举个例子，下面的 JSON 文档就表示一个用户对象：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "<span class="attribute">email</span>": <span class="value"><span class="string">"dawang@wdxtub.com"</span></span>,</span><br><span class="line">    "<span class="attribute">name</span>": <span class="value"><span class="string">"Da Wang"</span></span>,</span><br><span class="line">    "<span class="attribute">info</span>": <span class="value">&#123;</span><br><span class="line">        "<span class="attribute">bio</span>": <span class="value"><span class="string">"Sharp Blade, Shape Mind"</span></span>,</span><br><span class="line">        "<span class="attribute">age</span>": <span class="value"><span class="string">"25"</span></span>,</span><br><span class="line">        "<span class="attribute">interests</span>": <span class="value">[<span class="string">"games"</span>, <span class="string">"music"</span>]</span><br><span class="line">    </span>&#125;</span>,</span><br><span class="line">    "<span class="attribute">birthday</span>": <span class="value"><span class="string">"1990/09/11"</span></span><br><span class="line"></span>&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="u4E0D_u540C_u7684_u300E_u7D22_u5F15_u300F"><a href="#u4E0D_u540C_u7684_u300E_u7D22_u5F15_u300F" class="headerlink" title="不同的『索引』"></a>不同的『索引』</h3><p>在 Elasticsearch 中存储数据的行为就叫做索引(indexing)，而前面提到的文档，属于一种类型(type)，这里类型会存在索引(index)中，如果列一个表来和传统数据库比较，大概是这样的：</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="面向文档"><a href="#面向文档" class="headerlink" title="面向文档"></a>面向文档</h3><p>和 Mongodb 的思路类似，Elasticsearch 中保存的是整个文档(document)，并且还会根据文档的内容进行索引，于是我们得以进行搜索、排序和过滤等操作。在 Elasticsearch 中，利用 JSON 来表示文档。举个例子，下面的 JSON 文档就表示一个用户对象：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"email"</span>: <span class="string">"dawang@wdxtub.com"</span>,</div><div class="line">    <span class="attr">"name"</span>: <span class="string">"Da Wang"</span>,</div><div class="line">    <span class="attr">"info"</span>: &#123;</div><div class="line">        <span class="attr">"bio"</span>: <span class="string">"Sharp Blade, Shape Mind"</span>,</div><div class="line">        <span class="attr">"age"</span>: <span class="string">"25"</span>,</div><div class="line">        <span class="attr">"interests"</span>: [<span class="string">"games"</span>, <span class="string">"music"</span>]</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"birthday"</span>: <span class="string">"1990/09/11"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="不同的『索引』"><a href="#不同的『索引』" class="headerlink" title="不同的『索引』"></a>不同的『索引』</h3><p>在 Elasticsearch 中存储数据的行为就叫做索引(indexing)，而前面提到的文档，属于一种类型(type)，这里类型会存在索引(index)中，如果列一个表来和传统数据库比较，大概是这样的：</p>
 <table>
 <thead>
 <tr>
@@ -403,20 +404,20 @@
 </table>
 <p>一个 Elasticsearch 集群可以包含多个索引(indices，对应于『数据库』)，每个索引可以包含多个类型(types，对应于『表』)，每个类型可以包含多个文档(document，对应于『行』)，每个文档可以包含多个字段(fields，对应于『列』)</p>
 <p>这里有一点需要强调一下，前面出现了两种『索引』，第一种，索引(indexing，动词，对应于关系型数据库的插入 insert)指的是把一个文档存储到索引(index，名词) 中；第二种的索引(index，名词）对应于关系型数据库的数据库，这里一定要根据上下文来进行理解。一般来说，我们会对数据库增加索引（这里是第三种意思，就是传统的索引的定义）来提高检索效率，Elasticsearch 和 Lucene 使用『倒排索引』的数据结构来完成这个工作（传统数据库一般用红黑树或者 B 树来完成）。默认情况下，文档中的每个字段都会拥有其对应的倒排索引，Elasticsearch 也是通过这个来进行检索的。</p>
-<h2 id="Hello_World"><a href="#Hello_World" class="headerlink" title="Hello World"></a>Hello World</h2><p>我们用一个简单的例子来感受一下 Elasticsearch 的威力吧。设定一个场景，有一天我开了一家名为 “ohmywdx” 的公司，我需要为每个公司里的员工创建记录，我需要做的是：</p>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><p>我们用一个简单的例子来感受一下 Elasticsearch 的威力吧。设定一个场景，有一天我开了一家名为 “ohmywdx” 的公司，我需要为每个公司里的员工创建记录，我需要做的是：</p>
 <ul>
 <li>为每个员工的文档(document)建立索引，每个文档包含一个员工的各类信息，类型为 <code>wdxtuber</code></li>
 <li><code>wdxtuber</code> 类型属于索引 <code>ohmywdx</code>（这里的索引对应于数据库）</li>
 <li><code>ohmywdx</code> 索引存储在 Elasticsearch 集群中</li>
 </ul>
-<h3 id="u5B58_u50A8_uFF08_u7D22_u5F15_uFF0C_u52A8_u8BCD_uFF09"><a href="#u5B58_u50A8_uFF08_u7D22_u5F15_uFF0C_u52A8_u8BCD_uFF09" class="headerlink" title="存储（索引，动词）"></a>存储（索引，动词）</h3><p>我们来插入几条员工记录</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">PUT /ohmywdx/wdxtuber/<span class="number">1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"name"</span>: <span class="string">"Da Wang"</span>,</span><br><span class="line">    <span class="string">"age"</span>: <span class="number">25</span>,</span><br><span class="line">    <span class="string">"about"</span>: <span class="string">"First one who is stupid enough to join this company"</span>,</span><br><span class="line">    <span class="string">"interests"</span>: [<span class="string">"game"</span>, <span class="string">"music"</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /ohmywdx/wdxtuber/<span class="number">2</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"name"</span>: <span class="string">"Tracy Bryant"</span>,</span><br><span class="line">    <span class="string">"age"</span>: <span class="number">20</span>,</span><br><span class="line">    <span class="string">"about"</span>: <span class="string">"First basketball robot for our company"</span>,</span><br><span class="line">    <span class="string">"interests"</span>: [<span class="string">"guard"</span>, <span class="string">"forward"</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PUT /ohmywdx/wdxtuber/<span class="number">3</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"name"</span>: <span class="string">"Shadow Mouse"</span>,</span><br><span class="line">    <span class="string">"age"</span>: <span class="number">50</span>,</span><br><span class="line">    <span class="string">"about"</span>: <span class="string">"Secret agent for our company"</span>,</span><br><span class="line">    <span class="string">"interests"</span>: [<span class="string">"guitar"</span>, <span class="string">"sugar"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="存储（索引，动词）"><a href="#存储（索引，动词）" class="headerlink" title="存储（索引，动词）"></a>存储（索引，动词）</h3><p>我们来插入几条员工记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">PUT /ohmywdx/wdxtuber/1</div><div class="line">&#123;</div><div class="line">    <span class="string">"name"</span>: <span class="string">"Da Wang"</span>,</div><div class="line">    <span class="string">"age"</span>: 25,</div><div class="line">    <span class="string">"about"</span>: <span class="string">"First one who is stupid enough to join this company"</span>,</div><div class="line">    <span class="string">"interests"</span>: [<span class="string">"game"</span>, <span class="string">"music"</span>]</div><div class="line">&#125;</div><div class="line"></div><div class="line">PUT /ohmywdx/wdxtuber/2</div><div class="line">&#123;</div><div class="line">    <span class="string">"name"</span>: <span class="string">"Tracy Bryant"</span>,</div><div class="line">    <span class="string">"age"</span>: 20,</div><div class="line">    <span class="string">"about"</span>: <span class="string">"First basketball robot for our company"</span>,</div><div class="line">    <span class="string">"interests"</span>: [<span class="string">"guard"</span>, <span class="string">"forward"</span>]</div><div class="line">&#125;</div><div class="line"></div><div class="line">PUT /ohmywdx/wdxtuber/3</div><div class="line">&#123;</div><div class="line">    <span class="string">"name"</span>: <span class="string">"Shadow Mouse"</span>,</div><div class="line">    <span class="string">"age"</span>: 50,</div><div class="line">    <span class="string">"about"</span>: <span class="string">"Secret agent for our company"</span>,</div><div class="line">    <span class="string">"interests"</span>: [<span class="string">"guitar"</span>, <span class="string">"sugar"</span>]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>具体怎么插入呢，我们可以用一个名叫 Postman 的 Chrome 插件来完成，如下图所示</p>
 <p><img src="/images/14693332072810.jpg" alt=""></p>
 <p>点击发送，就可以看到如下的响应：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  "<span class="attribute">_index</span>": <span class="value"><span class="string">"ohmywdx"</span></span>,</span><br><span class="line">  "<span class="attribute">_type</span>": <span class="value"><span class="string">"wdxtuber"</span></span>,</span><br><span class="line">  "<span class="attribute">_id</span>": <span class="value"><span class="string">"1"</span></span>,</span><br><span class="line">  "<span class="attribute">_version</span>": <span class="value"><span class="number">1</span></span>,</span><br><span class="line">  "<span class="attribute">_shards</span>": <span class="value">&#123;</span><br><span class="line">    "<span class="attribute">total</span>": <span class="value"><span class="number">2</span></span>,</span><br><span class="line">    "<span class="attribute">successful</span>": <span class="value"><span class="number">1</span></span>,</span><br><span class="line">    "<span class="attribute">failed</span>": <span class="value"><span class="number">0</span></span><br><span class="line">  </span>&#125;</span>,</span><br><span class="line">  "<span class="attribute">created</span>": <span class="value"><span class="literal">true</span></span><br><span class="line"></span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"_index"</span>: <span class="string">"ohmywdx"</span>,</div><div class="line">  <span class="attr">"_type"</span>: <span class="string">"wdxtuber"</span>,</div><div class="line">  <span class="attr">"_id"</span>: <span class="string">"1"</span>,</div><div class="line">  <span class="attr">"_version"</span>: <span class="number">1</span>,</div><div class="line">  <span class="attr">"_shards"</span>: &#123;</div><div class="line">    <span class="attr">"total"</span>: <span class="number">2</span>,</div><div class="line">    <span class="attr">"successful"</span>: <span class="number">1</span>,</div><div class="line">    <span class="attr">"failed"</span>: <span class="number">0</span></div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"created"</span>: <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>按照这个套路，继续把其他两个人的资料发送给 Elasticsearch。</p>
-<h3 id="u641C_u7D22"><a href="#u641C_u7D22" class="headerlink" title="搜索"></a>搜索</h3><p>我们来看看如何搜索，简单来说，按照存储的方式来检索即可，不过这里我们使用 GET 方法，如下图所示：</p>
+<h3 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h3><p>我们来看看如何搜索，简单来说，按照存储的方式来检索即可，不过这里我们使用 GET 方法，如下图所示：</p>
 <p><img src="/images/14693334825608.jpg" alt=""></p>
 <p>我们可以看到，原始文档内容包含在 <code>_source</code> 字段中。如果说这个搜索太明确了，啥都指定了没意思，我们可以来试试看下面几条搜索</p>
 <ul>
@@ -424,11 +425,11 @@
 <li><code>GET /ohmywdx/wdxtuber/_search?q=name:Da</code></li>
 </ul>
 <p>这里我们来看看第二个搜索的结果</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  "<span class="attribute">took</span>": <span class="value"><span class="number">76</span></span>,</span><br><span class="line">  "<span class="attribute">timed_out</span>": <span class="value"><span class="literal">false</span></span>,</span><br><span class="line">  "<span class="attribute">_shards</span>": <span class="value">&#123;</span><br><span class="line">    "<span class="attribute">total</span>": <span class="value"><span class="number">5</span></span>,</span><br><span class="line">    "<span class="attribute">successful</span>": <span class="value"><span class="number">5</span></span>,</span><br><span class="line">    "<span class="attribute">failed</span>": <span class="value"><span class="number">0</span></span><br><span class="line">  </span>&#125;</span>,</span><br><span class="line">  "<span class="attribute">hits</span>": <span class="value">&#123;</span><br><span class="line">    "<span class="attribute">total</span>": <span class="value"><span class="number">1</span></span>,</span><br><span class="line">    "<span class="attribute">max_score</span>": <span class="value"><span class="number">0.19178301</span></span>,</span><br><span class="line">    "<span class="attribute">hits</span>": <span class="value">[</span><br><span class="line">      &#123;</span><br><span class="line">        "<span class="attribute">_index</span>": <span class="value"><span class="string">"ohmywdx"</span></span>,</span><br><span class="line">        "<span class="attribute">_type</span>": <span class="value"><span class="string">"wdxtuber"</span></span>,</span><br><span class="line">        "<span class="attribute">_id</span>": <span class="value"><span class="string">"1"</span></span>,</span><br><span class="line">        "<span class="attribute">_score</span>": <span class="value"><span class="number">0.19178301</span></span>,</span><br><span class="line">        "<span class="attribute">_source</span>": <span class="value">&#123;</span><br><span class="line">          "<span class="attribute">name</span>": <span class="value"><span class="string">"Da Wang"</span></span>,</span><br><span class="line">          "<span class="attribute">age</span>": <span class="value"><span class="number">25</span></span>,</span><br><span class="line">          "<span class="attribute">about</span>": <span class="value"><span class="string">"First one who is stupid enough to join this company"</span></span>,</span><br><span class="line">          "<span class="attribute">interests</span>": <span class="value">[</span><br><span class="line">            <span class="string">"game"</span>,</span><br><span class="line">            <span class="string">"music"</span></span><br><span class="line">          ]</span><br><span class="line">        </span>&#125;</span><br><span class="line">      </span>&#125;</span><br><span class="line">    ]</span><br><span class="line">  </span>&#125;</span><br><span class="line"></span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"took"</span>: <span class="number">76</span>,</div><div class="line">  <span class="attr">"timed_out"</span>: <span class="literal">false</span>,</div><div class="line">  <span class="attr">"_shards"</span>: &#123;</div><div class="line">    <span class="attr">"total"</span>: <span class="number">5</span>,</div><div class="line">    <span class="attr">"successful"</span>: <span class="number">5</span>,</div><div class="line">    <span class="attr">"failed"</span>: <span class="number">0</span></div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"hits"</span>: &#123;</div><div class="line">    <span class="attr">"total"</span>: <span class="number">1</span>,</div><div class="line">    <span class="attr">"max_score"</span>: <span class="number">0.19178301</span>,</div><div class="line">    <span class="attr">"hits"</span>: [</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"_index"</span>: <span class="string">"ohmywdx"</span>,</div><div class="line">        <span class="attr">"_type"</span>: <span class="string">"wdxtuber"</span>,</div><div class="line">        <span class="attr">"_id"</span>: <span class="string">"1"</span>,</div><div class="line">        <span class="attr">"_score"</span>: <span class="number">0.19178301</span>,</div><div class="line">        <span class="attr">"_source"</span>: &#123;</div><div class="line">          <span class="attr">"name"</span>: <span class="string">"Da Wang"</span>,</div><div class="line">          <span class="attr">"age"</span>: <span class="number">25</span>,</div><div class="line">          <span class="attr">"about"</span>: <span class="string">"First one who is stupid enough to join this company"</span>,</div><div class="line">          <span class="attr">"interests"</span>: [</div><div class="line">            <span class="string">"game"</span>,</div><div class="line">            <span class="string">"music"</span></div><div class="line">          ]</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    ]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>除了 <code>_source</code> 的信息之外，我们可以看到有一个 <code>_score</code>，敏感的同学大概会意识到，Elasticsearch 是根据相关性来对结果进行排序的，这个得分就是相关性分数。</p>
 <p>除了前面说明的搜索，我们还可以使用 DSL 语句来组合更加复杂的搜索，什么过滤、组合条件、全文、短语搜索，都不在话下，我们甚至可以高亮搜索结果，这些都可以在 <a href="http://es.xiaoleilu.com/" target="_blank" rel="external">Elasticsearch 权威指南</a> 找到，这里我就不赘述了。</p>
 <p>另外我们还可以利用『聚合』来实现关系型数据库中『Group By』类似的操作。其他诸如推荐、定位、渗透、模糊及部分匹配同样也支持，不过这些以后会结合实际开发的过程慢慢写。</p>
-<h2 id="u5206_u5E03_u5F0F"><a href="#u5206_u5E03_u5F0F" class="headerlink" title="分布式"></a>分布式</h2><p>这里简单说一下 Elasticsearch 的分布式吧。开发人员花了很多心思，尽量让一台机上运行和集群上运行的体验一致，具体说，Elasticsearch 在底层主要做的工作有：</p>
+<h2 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h2><p>这里简单说一下 Elasticsearch 的分布式吧。开发人员花了很多心思，尽量让一台机上运行和集群上运行的体验一致，具体说，Elasticsearch 在底层主要做的工作有：</p>
 <ul>
 <li>根据配置进行数据分片(sharding)，并且保存在一个或者多个节点中</li>
 <li>将分片均匀分配到各个节点，对索引和搜索做负载均衡</li>
@@ -436,8 +437,8 @@
 <li>将集群中任意一个节点上的请求路由到相应数据所在的节点</li>
 <li>增加或者移除节点时无缝迁移数据</li>
 </ul>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>本文中我们简单了解了 Elasticsearch 的基本用法，接下来会在工作的同时继续写一系列深入理解 ELK Stack 的文章，希望大家喜欢。</p>
-<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文中我们简单了解了 Elasticsearch 的基本用法，接下来会在工作的同时继续写一系列深入理解 ELK Stack 的文章，希望大家喜欢。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="https://github.com/elastic/elasticsearch" target="_blank" rel="external">官方 Github</a></li>
 <li><a href="https://www.elastic.co/products/marvel" target="_blank" rel="external">Marvel</a></li>
 <li><a href="http://es.xiaoleilu.com/" target="_blank" rel="external">Elasticsearch 权威指南</a></li>
@@ -480,11 +481,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/ELK/" rel="tag">#ELK</a>
-          
             <a href="/tags/Elasticsearch/" rel="tag">#Elasticsearch</a>
           
             <a href="/tags/检索/" rel="tag">#检索</a>
+          
+            <a href="/tags/ELK/" rel="tag">#ELK</a>
           
         </div>
       
@@ -719,7 +720,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u4ECB"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B89_u88C5_u914D_u7F6E"><span class="nav-number">2.</span> <span class="nav-text">安装配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u672C_u6982_u5FF5"><span class="nav-number">3.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u9762_u5411_u6587_u6863"><span class="nav-number">3.1.</span> <span class="nav-text">面向文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4E0D_u540C_u7684_u300E_u7D22_u5F15_u300F"><span class="nav-number">3.2.</span> <span class="nav-text">不同的『索引』</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello_World"><span class="nav-number">4.</span> <span class="nav-text">Hello World</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5B58_u50A8_uFF08_u7D22_u5F15_uFF0C_u52A8_u8BCD_uFF09"><span class="nav-number">4.1.</span> <span class="nav-text">存储（索引，动词）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u641C_u7D22"><span class="nav-number">4.2.</span> <span class="nav-text">搜索</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5206_u5E03_u5F0F"><span class="nav-number">5.</span> <span class="nav-text">分布式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装配置"><span class="nav-number">2.</span> <span class="nav-text">安装配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">3.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#面向文档"><span class="nav-number">3.1.</span> <span class="nav-text">面向文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不同的『索引』"><span class="nav-number">3.2.</span> <span class="nav-text">不同的『索引』</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-World"><span class="nav-number">4.</span> <span class="nav-text">Hello World</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#存储（索引，动词）"><span class="nav-number">4.1.</span> <span class="nav-text">存储（索引，动词）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搜索"><span class="nav-number">4.2.</span> <span class="nav-text">搜索</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式"><span class="nav-number">5.</span> <span class="nav-text">分布式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
@@ -899,42 +900,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

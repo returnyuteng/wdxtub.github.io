@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="终于来到最后一课，这次我们来接触一下 Spark 中的流处理。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 21 课 Kafka / Samza 动手玩">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-21.html">
@@ -100,6 +101,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 21 课 Kafka / Samza 动手玩">
 <meta name="twitter:description" content="终于来到最后一课，这次我们来接触一下 Spark 中的流处理。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14610018542737.jpg">
 
 
 
@@ -123,7 +125,7 @@
   
     云计算 第 21 课 Kafka / Samza 动手玩 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -144,7 +146,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -258,14 +260,14 @@
       <p>终于来到最后一课，这次我们来接触一下 Spark 中的流处理。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
 <li>了解大数据处理中的流处理模型</li>
 <li>理解 Kafka 和 Samza 如何做到高分布式，容错的流处理</li>
 <li>用 Samza API 设计和实现一个处理 GPS 数据流处理方案，用于提供类似 Uber 的服务</li>
 <li>了解 Samza 中带状态的流处理，并一次生成乘客-司机匹配列表</li>
 </ol>
 <p>现在生成数据的速度越来越快，很多应用需要实时处理，所以类似 Hadoop 和 Spark 这种数据获取和数据处理分离的方式就不太适用。因此流处理技术应运而生，有别于传统的数据处理方式，能够实时（或近实时）处理大量数据。</p>
-<h2 id="Apache_Kafka"><a href="#Apache_Kafka" class="headerlink" title="Apache Kafka"></a>Apache Kafka</h2><p>Kafka 是一个分布式的发布-订阅消息系统，使用 commit 日志来持久化数据。commit 日志是一个有序、不可变、只能添加的数据结构。我们可以认为 Kafka 是一个流数据源，下面是一些完成这次作业所需要理解的术语：</p>
+<h2 id="Apache-Kafka"><a href="#Apache-Kafka" class="headerlink" title="Apache Kafka"></a>Apache Kafka</h2><p>Kafka 是一个分布式的发布-订阅消息系统，使用 commit 日志来持久化数据。commit 日志是一个有序、不可变、只能添加的数据结构。我们可以认为 Kafka 是一个流数据源，下面是一些完成这次作业所需要理解的术语：</p>
 <ul>
 <li><strong>Topics</strong>: 表示一个用户定义的类型，消息会在这个类型下发布。主要以 partitioned log 来 维护。</li>
 <li><strong>Partitions</strong>: Topics 被分成不同的 partition。一个 partition 是 Kafka 中并行的单位。一般来说，partition 越多，吞吐量就越多。每个 partition 中每条消息都有特定的偏移量，这样数据消费者能借此定位。简单来说，我们可以认为 Kafka 会根据 key 来给数据排序并提供给，类似于 MapReduce 中的 Map 和 Shuffle 阶段</li>
@@ -275,7 +277,7 @@
 </ul>
 <p><img src="/images/14610018542737.jpg" alt="Figure 1: Kafka architecture. Source: http://www.infoq.com/articles/apache-kafka"></p>
 <p>这个项目中 Kafka 用作流数据源，由 Kafka 生成的数据将由 Samza 流处理框架进行处理。需要注意，Kafka 自身不会对数据进行任何处理，只是一种存储和数据分配方式。我们要做的是用 Samza 来处理 Kafka 提供的数据流。</p>
-<h2 id="Apache_Samza"><a href="#Apache_Samza" class="headerlink" title="Apache Samza"></a>Apache Samza</h2><p>Samza 是由 LinkedIn 开发的分布式流处理框架，也是如下所示的三层流处理架构中的关键组件</p>
+<h2 id="Apache-Samza"><a href="#Apache-Samza" class="headerlink" title="Apache Samza"></a>Apache Samza</h2><p>Samza 是由 LinkedIn 开发的分布式流处理框架，也是如下所示的三层流处理架构中的关键组件</p>
 <ul>
 <li><strong>Streaming 层</strong>以 partitioned stream 的方式提供输入，这里也就是 Kafka</li>
 <li><strong>Execution 层</strong>在不同机器间调度协调任务，这里使用 YARN</li>
@@ -292,13 +294,13 @@
 <p>整体架构如下</p>
 <p><img src="/images/14610046504274.jpg" alt="Figure 3: Kafka and Samza."></p>
 <h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><p>Samza API 设计简单，已经把大部分流处理的复杂度抽象走了。一次处理一条消息，更多样例代码在<a href="https://github.com/ept/newsfeed" target="_blank" rel="external">这里</a></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FanOutTask</span> <span class="keyword">implements</span> <span class="title">StreamTask</span>, <span class="title">InitableTask</span>, <span class="title">WindowableTask</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> KeyValueStore&lt;String, String&gt; socialGraph;</span><br><span class="line">  <span class="keyword">private</span> KeyValueStore&lt;String, Map&lt;String, Object&gt;&gt; userTimeline;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">long</span> numMessages = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="annotation">@Override</span></span><br><span class="line">  <span class="annotation">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Config config, TaskContext context)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    socialGraph = (KeyValueStore&lt;String, String&gt;) context.getStore(<span class="string">"social-graph"</span>);</span><br><span class="line">    userTimeline = (KeyValueStore&lt;String, Map&lt;String, Object&gt;&gt;) context.getStore(<span class="string">"user-timeline"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="annotation">@Override</span></span><br><span class="line">  <span class="annotation">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator)</span> </span>&#123;</span><br><span class="line">    String incomingStream = envelope.getSystemStreamPartition().getStream();</span><br><span class="line">    <span class="keyword">if</span> (incomingStream.equals(NewsfeedConfig.FOLLOWS_STREAM.getStream())) &#123;</span><br><span class="line">      processFollowsEvent((Map&lt;String, Object&gt;) envelope.getMessage());</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (incomingStream.equals(NewsfeedConfig.MESSAGES_STREAM.getStream())) &#123;</span><br><span class="line">      processMessageEvent((Map&lt;String, Object&gt;) envelope.getMessage(), collector);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unexpected input stream: "</span> + envelope.getSystemStreamPartition());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FanOutTask</span> <span class="keyword">implements</span> <span class="title">StreamTask</span>, <span class="title">InitableTask</span>, <span class="title">WindowableTask</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="keyword">private</span> KeyValueStore&lt;String, String&gt; socialGraph;</div><div class="line">  <span class="keyword">private</span> KeyValueStore&lt;String, Map&lt;String, Object&gt;&gt; userTimeline;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">long</span> numMessages = <span class="number">0</span>;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Config config, TaskContext context)</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">    socialGraph = (KeyValueStore&lt;String, String&gt;) context.getStore(<span class="string">"social-graph"</span>);</div><div class="line">    userTimeline = (KeyValueStore&lt;String, Map&lt;String, Object&gt;&gt;) context.getStore(<span class="string">"user-timeline"</span>);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator)</span> </span>&#123;</div><div class="line">    String incomingStream = envelope.getSystemStreamPartition().getStream();</div><div class="line">    <span class="keyword">if</span> (incomingStream.equals(NewsfeedConfig.FOLLOWS_STREAM.getStream())) &#123;</div><div class="line">      processFollowsEvent((Map&lt;String, Object&gt;) envelope.getMessage());</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (incomingStream.equals(NewsfeedConfig.MESSAGES_STREAM.getStream())) &#123;</div><div class="line">      processMessageEvent((Map&lt;String, Object&gt;) envelope.getMessage(), collector);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unexpected input stream: "</span> + envelope.getSystemStreamPartition());</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>所有的 Samza job 必须实现 <code>StreamTask</code> 接口，以及另外两个可选接口 (<code>InitableTask</code>, <code>WindowableTask</code>)。<code>InitableTask</code> 接口用来处理初始化工作，<code>init</code> 函数会首先被调用，这里它初始化 RocksDB 来存储本地状态。</p>
 <p><code>WindowableTask</code> 接口用来执行那些定期需要执行的函数。这个项目中用不着。 </p>
 <p>我们主要写的 Samza 代码是 <code>process</code> 函数。每个 stream 的每个 message 都会调用这个函数。<code>IncomingMessageEnvelope</code> 参数封装了消息，<code>theMessageCollector</code> 参数可以用来发送其他消息，这个例子把两个实时流(<code>FOLLOWS_STREAM</code> 和 <code>MESSAGES_STREAM</code>)连接到一起，从两个流的消息都会到达 <code>process</code> 函数中。</p>
 <p>流相关的处理可以通过调用 <code>getStream()</code> 函数来创造一个条件分支，这个项目中我们会连接两个 Kafka 流。</p>
 <p>接下来我们来看看 <code>newsfeed-fan-out.properties</code> 文件（在 <code>src/main/config</code> 中）</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line"># Job</span><br><span class="line">job.factory.class=org.apache.samza.job.yarn.YarnJobFactory</span><br><span class="line">job.name=newsfeed-fan-out</span><br><span class="line">yarn.package.path=file://$&#123;basedir&#125;/target/$&#123;project.artifactId&#125;-$&#123;pom.version&#125;-dist.tar.gz</span><br><span class="line"></span><br><span class="line"># Task</span><br><span class="line">task.class=com.martinkl.samza.newsfeed.FanOutTask</span><br><span class="line">task.inputs=kafka.newsfeed-follows,kafka.newsfeed-messages</span><br><span class="line">task.checkpoint.factory=org.apache.samza.checkpoint.kafka.KafkaCheckpointManagerFactory</span><br><span class="line">task.checkpoint.system=kafka</span><br><span class="line"># Normally this would be 3, but in development we have only one broker.</span><br><span class="line">task.checkpoint.replication.factor=1</span><br><span class="line"></span><br><span class="line"># Interval at which user timelines are truncated</span><br><span class="line">task.window.ms=300000</span><br><span class="line"></span><br><span class="line"># Serializers</span><br><span class="line">serializers.registry.json.class=org.apache.samza.serializers.JsonSerdeFactory</span><br><span class="line">serializers.registry.string.class=org.apache.samza.serializers.StringSerdeFactory</span><br><span class="line"></span><br><span class="line"># Kafka</span><br><span class="line">systems.kafka.samza.factory=org.apache.samza.system.kafka.KafkaSystemFactory</span><br><span class="line">systems.kafka.samza.msg.serde=json</span><br><span class="line">systems.kafka.consumer.zookeeper.connect=localhost:2181/</span><br><span class="line">systems.kafka.producer.metadata.broker.list=localhost:9092</span><br><span class="line"></span><br><span class="line"># Social graph store tracks who is following who</span><br><span class="line">stores.social-graph.factory=org.apache.samza.storage.kv.LevelDbKeyValueStorageEngineFactory</span><br><span class="line">stores.social-graph.changelog=kafka.newsfeed-social-graph-changelog</span><br><span class="line">stores.social-graph.key.serde=string</span><br><span class="line">stores.social-graph.msg.serde=string</span><br><span class="line"></span><br><span class="line"># User timeline is a list of recent messages sent by a particular user</span><br><span class="line">stores.user-timeline.factory=org.apache.samza.storage.kv.LevelDbKeyValueStorageEngineFactory</span><br><span class="line">stores.user-timeline.changelog=kafka.newsfeed-user-timeline-changelog</span><br><span class="line">stores.user-timeline.key.serde=string</span><br><span class="line">stores.user-timeline.msg.serde=json</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line"># Job</div><div class="line">job.factory.class=org.apache.samza.job.yarn.YarnJobFactory</div><div class="line">job.name=newsfeed-fan-out</div><div class="line">yarn.package.path=file://$&#123;basedir&#125;/target/$&#123;project.artifactId&#125;-$&#123;pom.version&#125;-dist.tar.gz</div><div class="line"></div><div class="line"># Task</div><div class="line">task.class=com.martinkl.samza.newsfeed.FanOutTask</div><div class="line">task.inputs=kafka.newsfeed-follows,kafka.newsfeed-messages</div><div class="line">task.checkpoint.factory=org.apache.samza.checkpoint.kafka.KafkaCheckpointManagerFactory</div><div class="line">task.checkpoint.system=kafka</div><div class="line"># Normally this would be 3, but in development we have only one broker.</div><div class="line">task.checkpoint.replication.factor=1</div><div class="line"></div><div class="line"># Interval at which user timelines are truncated</div><div class="line">task.window.ms=300000</div><div class="line"></div><div class="line"># Serializers</div><div class="line">serializers.registry.json.class=org.apache.samza.serializers.JsonSerdeFactory</div><div class="line">serializers.registry.string.class=org.apache.samza.serializers.StringSerdeFactory</div><div class="line"></div><div class="line"># Kafka</div><div class="line">systems.kafka.samza.factory=org.apache.samza.system.kafka.KafkaSystemFactory</div><div class="line">systems.kafka.samza.msg.serde=json</div><div class="line">systems.kafka.consumer.zookeeper.connect=localhost:2181/</div><div class="line">systems.kafka.producer.metadata.broker.list=localhost:9092</div><div class="line"></div><div class="line"># Social graph store tracks who is following who</div><div class="line">stores.social-graph.factory=org.apache.samza.storage.kv.LevelDbKeyValueStorageEngineFactory</div><div class="line">stores.social-graph.changelog=kafka.newsfeed-social-graph-changelog</div><div class="line">stores.social-graph.key.serde=string</div><div class="line">stores.social-graph.msg.serde=string</div><div class="line"></div><div class="line"># User timeline is a list of recent messages sent by a particular user</div><div class="line">stores.user-timeline.factory=org.apache.samza.storage.kv.LevelDbKeyValueStorageEngineFactory</div><div class="line">stores.user-timeline.changelog=kafka.newsfeed-user-timeline-changelog</div><div class="line">stores.user-timeline.key.serde=string</div><div class="line">stores.user-timeline.msg.serde=json</div></pre></td></tr></table></figure>
 <p>这个文件中主要关注以下几个部分：</p>
 <ol>
 <li><code>task.class</code>: 在这个类中实现 <code>process</code> 函数和 <code>StreamTask</code> 接口</li>
@@ -306,12 +308,12 @@
 <li><code>stores.social-graph.*</code>: All the configuration for the social-graph KV store that we refer to from the code. The changelog field controls the name of the stream to which changes to the KV store are persisted (for fault tolerance).</li>
 <li><code>stores.user-timeline.*</code>: Same as above but for the user-timeline KV store.</li>
 </ol>
-<h2 id="u4EFB_u52A1_u76EE_u6807"><a href="#u4EFB_u52A1_u76EE_u6807" class="headerlink" title="任务目标"></a>任务目标</h2><ul>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><ul>
 <li>打标签:<code>Project:4.3</code></li>
 <li>Load Generator: <code>ami-cfa3b1a5</code>, <code>t2.large</code></li>
 </ul>
 <p>处理两个流并输出客户-司机配对流（需要返回得分最高的），完成 <code>DriverMatchTask.java</code></p>
-<h3 id="u542F_u52A8_Samza__u96C6_u7FA4"><a href="#u542F_u52A8_Samza__u96C6_u7FA4" class="headerlink" title="启动 Samza 集群"></a>启动 Samza 集群</h3><p>具体配置</p>
+<h3 id="启动-Samza-集群"><a href="#启动-Samza-集群" class="headerlink" title="启动 Samza 集群"></a>启动 Samza 集群</h3><p>具体配置</p>
 <ul>
 <li>EMR (emr-4.1.0)</li>
 <li>3 个 m1.large(1+2)</li>
@@ -329,7 +331,7 @@
 <li>等一下再执行 <code>deploy/kafka/bin/kafka-console-consumer.sh  --zookeeper localhost:2181 --topic wikipedia-raw</code></li>
 <li>如果显示对 Wiki 的实时修改，那么启动成功</li>
 </ul>
-<h3 id="u6D41_u4FE1_u606F"><a href="#u6D41_u4FE1_u606F" class="headerlink" title="流信息"></a>流信息</h3><ul>
+<h3 id="流信息"><a href="#流信息" class="headerlink" title="流信息"></a>流信息</h3><ul>
 <li><code>driver-locations</code> 空闲司机地址，在 Kafka 的 <code>driver-locations</code> topic 下。提交时会自动删除已有的名为 <code>driver-locations</code> 的 topic 并让负载生成器生成对应数据流。在 <code>process</code> 函数中调用 <code>getMessage()</code> 函数时会得到一个包含如下内容的 JSON 字符串<ul>
 <li><code>blockId</code>: 司机所在的 block. The stream is partitioned on this field. 意味着我们只要考虑同一个 block 的司机（也只有同一个 block 的司机）</li>
 <li><code>driverId</code>: 司机唯一的 id</li>
@@ -383,7 +385,7 @@
 </li>
 </ul>
 <p><img src="/images/14610111043203.jpg" alt="Cab matching service. There are 2 candidate drivers in block 1 but driver 1234 is closest to client 4444. Some fields in the JSON have been elided."></p>
-<h3 id="u5206_u503C_u8BA1_u7B97"><a href="#u5206_u503C_u8BA1_u7B97" class="headerlink" title="分值计算"></a>分值计算</h3><ul>
+<h3 id="分值计算"><a href="#分值计算" class="headerlink" title="分值计算"></a>分值计算</h3><ul>
 <li>distance 40% 欧拉距离<ul>
 <li><code>distance_score = 1 - (client_driver_distance)/MAX_DIST</code></li>
 <li><code>MAX_DIST</code> 这里取 500</li>
@@ -403,7 +405,7 @@
 </li>
 </ul>
 <p>最终公式 <code>match_score = distance_score * 0.4 + gender_score * 0.2 + rating_score * 0.2 + salary_score * 0.2</code></p>
-<h3 id="u989D_u5916_u4EFB_u52A1"><a href="#u989D_u5916_u4EFB_u52A1" class="headerlink" title="额外任务"></a>额外任务</h3><p>根据需求关系动态调整价格，计算对应的 SPF 值（Surge Price Factor）</p>
+<h3 id="额外任务"><a href="#额外任务" class="headerlink" title="额外任务"></a>额外任务</h3><p>根据需求关系动态调整价格，计算对应的 SPF 值（Surge Price Factor）</p>
 <ol>
 <li>对于每个 <code>RIDE_REQUEST</code> 事件，当前 block 可用的司机数量称为 Driver Ratio, R</li>
 <li>计算 R 的平均数 A = AVG(R)，需要平均的数值是当前的 R 与之前 4 个请求的 R 值。对于前四个请求，SPF 直接可以输出 1.0</li>
@@ -412,7 +414,7 @@
 </ol>
 <p>一个例子</p>
 <p>过去 5 个 <code>RIDE_REQUESTS</code> 对应的司机数量为 4, 2, 2, 2, 6。平均数 AVG(R) 为 3.2。小于 3.6，所以要 Surge，计算 <code>SF = (4 * (3.6 - A)/(1.8 - 1)) = (4 * (3.6 - 3.2) /(1.8 - 1) = (4 * 0.4/0.8) = 2.0</code>，继而 <code>SPF = 1 + SF = 1 + 2.0 = 3.0</code></p>
-<h3 id="u5DE5_u4F5C_u6B65_u9AA4"><a href="#u5DE5_u4F5C_u6B65_u9AA4" class="headerlink" title="工作步骤"></a>工作步骤</h3><ul>
+<h3 id="工作步骤"><a href="#工作步骤" class="headerlink" title="工作步骤"></a>工作步骤</h3><ul>
 <li>下载样例代码 <code>wget https://s3.amazonaws.com/15-319-s16/driver-match.tgz</code></li>
 <li>解压 <code>tar xvf driver-match.tgz</code></li>
 <li>完成 <code>DriverMatchTask.java</code></li>
@@ -443,7 +445,7 @@
 <li>登录到 master，进入代码文件夹</li>
 <li>运行 <code>src/</code> 文件夹中的 <code>submitter_bonus</code> </li>
 </ol>
-<h3 id="u5E38_u7528_u547D_u4EE4"><a href="#u5E38_u7528_u547D_u4EE4" class="headerlink" title="常用命令"></a>常用命令</h3><p>Kafka 命令<br>所有的命令都是在 master 上运行，并且需要在 <code>/home/hadoop/hello-samza/deploy/kafka/bin</code> 中</p>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><p>Kafka 命令<br>所有的命令都是在 master 上运行，并且需要在 <code>/home/hadoop/hello-samza/deploy/kafka/bin</code> 中</p>
 <ol>
 <li>在 Kafka 集群中创建一个 topic <code>kafka-topics.sh --zookeeper localhost:2181 --create --topic my-topic --partitions [number-of-partitions] --replication-factor 1</code></li>
 <li>描述一个 topic <code>kafka-topics.sh --zookeeper localhost:2181 --describe --topic my-topic</code></li>
@@ -459,7 +461,7 @@
 <li>可以写入到 Kafka 输出流之后就用 <code>kafka-console-consumer.sh</code> 来 debug</li>
 </ol>
 <p>其他命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp -i ../demo.pem ../demo.pem hadoop@ec2-<span class="number">52</span>-<span class="number">201</span>-<span class="number">245</span>-<span class="number">130</span>.compute-<span class="number">1</span>.amazonaws.com:~/</span><br><span class="line"></span><br><span class="line">scp -i ../demo.pem -r ./driver-match/* hadoop@ec2-<span class="number">52</span>-<span class="number">201</span>-<span class="number">245</span>-<span class="number">130</span>.compute-<span class="number">1</span>.amazonaws.com:~/driver-match/</span><br><span class="line"></span><br><span class="line">./kafka-console-consumer.sh --zookeeper localhost:<span class="number">2181</span> --topic match-stream</span><br><span class="line"></span><br><span class="line">mvn clean package; rm -rf deploy/samza/*; tar -xvf ./target/pitt_cabs-<span class="number">0.0</span>.<span class="number">1</span>-dist.tar.gz -C deploy/samza; hadoop fs -copyFromLocal <span class="operator">-f</span> target/pitt_cabs-<span class="number">0.0</span>.<span class="number">1</span>-dist.tar.gz /</span><br><span class="line"></span><br><span class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://<span class="variable">$PWD</span>/deploy/samza/config/driver-match.properties</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">scp -i ../demo.pem ../demo.pem hadoop@ec2-52-201-245-130.compute-1.amazonaws.com:~/</div><div class="line"></div><div class="line">scp -i ../demo.pem -r ./driver-match/* hadoop@ec2-52-201-245-130.compute-1.amazonaws.com:~/driver-match/</div><div class="line"></div><div class="line">./kafka-console-consumer.sh --zookeeper localhost:2181 --topic match-stream</div><div class="line"></div><div class="line">mvn clean package; rm -rf deploy/samza/*; tar -xvf ./target/pitt_cabs-0.0.1-dist.tar.gz -C deploy/samza; hadoop fs -copyFromLocal <span class="_">-f</span> target/pitt_cabs-0.0.1-dist.tar.gz /</div><div class="line"></div><div class="line">deploy/samza/bin/run-job.sh --config-factory=org.apache.samza.config.factories.PropertiesConfigFactory --config-path=file://<span class="variable">$PWD</span>/deploy/samza/config/driver-match.properties</div></pre></td></tr></table></figure>
 
     
   </div>
@@ -795,42 +797,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

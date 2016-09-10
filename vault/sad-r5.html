@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="这次的作业就是对设计模式的练习和熟悉，直接来看情境吧。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="软件架构与设计 习题课 5 设计模式练习">
 <meta property="og:url" content="http://wdxtub.com/vault/sad-r5.html">
@@ -98,6 +99,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="软件架构与设计 习题课 5 设计模式练习">
 <meta name="twitter:description" content="这次的作业就是对设计模式的练习和熟悉，直接来看情境吧。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14585221758261.jpg">
 
 
 
@@ -121,7 +123,7 @@
   
     软件架构与设计 习题课 5 设计模式练习 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -142,7 +144,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -259,12 +261,12 @@
 <blockquote>
 <p>Does the following code fragment implement the Factory Method design pattern? Explain why.</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">XMLReaderFactory</span> </span>&#123;</span><br><span class="line">    <span class="comment">// This method returns an instance of a class</span></span><br><span class="line">    <span class="comment">// that implements the XMLReader interface.</span></span><br><span class="line">    <span class="comment">// The specific class it creates and returns is</span></span><br><span class="line">    <span class="comment">// based on a system property.</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> XMLReader <span class="title">createXMLReader</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">XMLReader</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContentHandler</span><span class="params">(ContentHandler handler)</span>:</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">parse</span><span class="params">(InputStream is)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">XMLReaderFactory</span> </span>&#123;</div><div class="line">    <span class="comment">// This method returns an instance of a class</span></div><div class="line">    <span class="comment">// that implements the XMLReader interface.</span></div><div class="line">    <span class="comment">// The specific class it creates and returns is</span></div><div class="line">    <span class="comment">// based on a system property.</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> XMLReader <span class="title">createXMLReader</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">XMLReader</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContentHandler</span><span class="params">(ContentHandler handler)</span>:</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">parse</span><span class="params">(InputStream is)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这部分代码片段实现了工厂模式，注释中说明是根据系统属性来进行创建，所以无须传入参数，需要被生成的对象都需要实现 XMLReader 接口。</p>
 <blockquote>
 <p>Typically, there is a significant performance penalty for declaring a method synchronized. In general adding the keyword synchronized to a method slows the invocation of the method by a factor of 6. A common programming idiom used to avoid synchronization in the common case is double check locking. Can the double-check locking idiom be used with the singleton pattern to avoid synchronizing every time the static instance method is called? For example, is the following valid? Explain why.</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">private</span> Singleton instance = <span class="keyword">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">public</span> Singleton <span class="title">instance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Double check locking idiom</span></span><br><span class="line">        <span class="comment">// The synchronization is done internally </span></span><br><span class="line">        <span class="comment">// rather than on the method. This avoids</span></span><br><span class="line">        <span class="comment">// the expense of synchronizing for the</span></span><br><span class="line">        <span class="comment">// common case.</span></span><br><span class="line"><span class="comment">/*12*/</span>  <span class="keyword">if</span>( instance == <span class="keyword">null</span> ) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span>( Singleton.class ) &#123;</span><br><span class="line">                <span class="comment">// Second check</span></span><br><span class="line">                <span class="keyword">if</span>( instance == <span class="keyword">null</span> ) &#123;</span><br><span class="line"><span class="comment">/*16*/</span>               instance = <span class="keyword">new</span> Singleton( );</span><br><span class="line">                 &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">/*20*/</span>  <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123; &#125;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">private</span> Singleton instance = <span class="keyword">null</span>;</div><div class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">public</span> Singleton <span class="title">instance</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">// Double check locking idiom</span></div><div class="line">        <span class="comment">// The synchronization is done internally </span></div><div class="line">        <span class="comment">// rather than on the method. This avoids</span></div><div class="line">        <span class="comment">// the expense of synchronizing for the</span></div><div class="line">        <span class="comment">// common case.</span></div><div class="line"><span class="comment">/*12*/</span>  <span class="keyword">if</span>( instance == <span class="keyword">null</span> ) &#123;</div><div class="line">            <span class="keyword">synchronized</span>( Singleton.class ) &#123;</div><div class="line">                <span class="comment">// Second check</span></div><div class="line">                <span class="keyword">if</span>( instance == <span class="keyword">null</span> ) &#123;</div><div class="line"><span class="comment">/*16*/</span>               instance = <span class="keyword">new</span> Singleton( );</div><div class="line">                 &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"><span class="comment">/*20*/</span>  <span class="keyword">return</span> instance;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>在大部分情况下代码没有问题，不过为了保险起见，还是要加上 <code>volatile</code> 关键字，不然在下面的情况中就会出问题：</p>
 <ol>
 <li>线程A发现变量没有被初始化, 然后它获取锁并开始变量的初始化。</li>
@@ -635,42 +637,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

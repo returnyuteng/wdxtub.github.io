@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> CUDA 简明指南 | 小土刀 </title>
+  <title> CUDA 简明指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -134,7 +134,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -337,23 +337,23 @@
         <p>简单的 CUDA 快速入门指南。</p>
 <a id="more"></a>
 <hr>
-<h2 id="CUDA_u67B6_u6784"><a href="#CUDA_u67B6_u6784" class="headerlink" title="CUDA架构"></a>CUDA架构</h2><p>在 CUDA 的架构下,一个程序分为两个部份:host 端和 device 端。Host 端是指在 CPU 上执行 的部份,而 device 端则是在显示芯片上执行的部份。Device 端的程序又称为 “kernel(核心)”。 通常 host 端程序会将数据准备好后,复制到显卡的内存中,再由显示芯片执行 device 端程序,完 成后再由 host 端程序将结果从显卡的内存中取回。</p>
+<h2 id="CUDA架构"><a href="#CUDA架构" class="headerlink" title="CUDA架构"></a>CUDA架构</h2><p>在 CUDA 的架构下,一个程序分为两个部份:host 端和 device 端。Host 端是指在 CPU 上执行 的部份,而 device 端则是在显示芯片上执行的部份。Device 端的程序又称为 “kernel(核心)”。 通常 host 端程序会将数据准备好后,复制到显卡的内存中,再由显示芯片执行 device 端程序,完 成后再由 host 端程序将结果从显卡的内存中取回。</p>
 <p>在 CUDA 架构下,显示芯片执行时的最小单位是 thread(线程)。数个 thread 可以组成一个 block(块)。一个 block 中的 thread 能存取同一块共享的内存,而且可以快速进行同步的动作。</p>
 <p>每一个 block 所能包含的 thread 数目是有限的。不过,执行相同程序的 block,可以组成 grid(格子)。不同 block 中的 thread 无法存取同一个共享的内存,因此无法直接互通或进行同步。因此, 不同 block 中的 thread 能合作的程度是比较低的。不过,利用这个模式,可以让程序不用担心显示芯片实际上能同时执行的 thread 数目限制。例如,一个具有很少量执行单元的显示芯片,可能会 把各个 block 中的 thread 顺序执行,而非同时执行。不同的 grid 则可以执行不同的程序(即 kernel)。</p>
 <p>每个 thread 都有自己的一份 register 和 local memory 的空间。同一个 block 中的每个 thread 则有共享的一份 share memory。此外,所有的 thread(包括不同 block 的 thread)都共享一份 global memory、constant memory、和 texture memory。不同的 grid 则有各自的 global memory、 constant memory 和 texture memory。</p>
-<h2 id="u6267_u884C_u6A21_u5F0F"><a href="#u6267_u884C_u6A21_u5F0F" class="headerlink" title="执行模式"></a>执行模式</h2><p>由于显示芯片大量并行计算的特性,它处理一些问题的方式,和一般 CPU 是不同的。主要的特点包括:</p>
+<h2 id="执行模式"><a href="#执行模式" class="headerlink" title="执行模式"></a>执行模式</h2><p>由于显示芯片大量并行计算的特性,它处理一些问题的方式,和一般 CPU 是不同的。主要的特点包括:</p>
 <ol>
 <li>内存存取 latency 的问题:CPU 通常使用 cache 来减少存取主内存的次数,以避免内存 latency 影响到执行效率。显示芯片则多半没有 cache(或很小),而利用并行化执行的方式来隐藏内存的 latency(即,当第一个 thread 需要等待内存读取结果时,则开始执行第二 个 thread,依此类推)。</li>
 <li>分支指令的问题:CPU 通常利用分支预测等方式来减少分支指令造成的 pipeline bubble。显示芯片则多半使用类似处理内存 latency 的方式。不过,通常显示芯片处理分支的效率会比较差</li>
 </ol>
 <p>最适合利用 CUDA 处理的问题,是可以大量并行化的问题,才能有效隐藏内存的 latency, 并有效利用显示芯片上的大量执行单元。使用 CUDA 时,同时有上千个 thread 在执行是很正常的。 因此,如果不能大量并行化的问题,使用 CUDA 就没办法达到最好的效率了。</p>
-<h2 id="u57FA_u672C_u6982_u5FF5"><a href="#u57FA_u672C_u6982_u5FF5" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul>
 <li>streaming processor, sp: 最基本的处理单元，最后具体的指令和任务都是在 sp 上处理的。GPU 进行并行计算，也就是很多个 sp 同时做处理</li>
 <li>streaming multiprocessor, sm: 多个 sp 加上存储资源组成一个 sm</li>
 <li>warp: GPU 执行程序时的调度单位，目前 CUDA 的 warp 大小为32，同在一个 warp 的线程，以不同数据资源执行相同的指令。</li>
 <li>thread, block, grid: 利用 CUDA 进行编程时，一个 grid 分为多个 block，一个 block 分为多个 thread (From a programmer’s perspective)</li>
 </ul>
-<h3 id="Some_Restrictions_First"><a href="#Some_Restrictions_First" class="headerlink" title="Some Restrictions First"></a>Some Restrictions First</h3><ul>
+<h3 id="Some-Restrictions-First"><a href="#Some-Restrictions-First" class="headerlink" title="Some Restrictions First"></a>Some Restrictions First</h3><ul>
 <li>All threads in a grid execute the same kernel function</li>
 <li>A grid is organized as a 2D array of blocks(gridDim.X and gridDim.y)</li>
 <li>Each block is organized as 3D array of threads(blockDim.x, blockDim.y, and blockDim.z)</li>
@@ -367,7 +367,7 @@
 <li>CUDA runtime automatically reduces number of blocks assigned to each SM</li>
 <li>until resource usage is under limit.</li>
 </ul>
-<h3 id="SM_-Streaming_multi-processors_with_multiple_processing_cores"><a href="#SM_-Streaming_multi-processors_with_multiple_processing_cores" class="headerlink" title="SM -Streaming multi-processors with multiple processing cores"></a>SM -Streaming multi-processors with multiple processing cores</h3><ul>
+<h3 id="SM-Streaming-multi-processors-with-multiple-processing-cores"><a href="#SM-Streaming-multi-processors-with-multiple-processing-cores" class="headerlink" title="SM -Streaming multi-processors with multiple processing cores"></a>SM -Streaming multi-processors with multiple processing cores</h3><ul>
 <li>Each SM contains 32 processing cores</li>
 <li>Execute in a Single Instruction Multiple Thread (SIMT) fashion</li>
 <li>Up to 16 SMs on a card cor a maximum of 512 compute cores</li>
@@ -382,7 +382,7 @@
 <li>Each warp is executed in a SIMD fashion (all threads within a warp must execute the same instruction at any given time)</li>
 <li>Problem: branch divergence</li>
 </ul>
-<h3 id="Latency_Tolerance"><a href="#Latency_Tolerance" class="headerlink" title="Latency Tolerance"></a>Latency Tolerance</h3><ul>
+<h3 id="Latency-Tolerance"><a href="#Latency-Tolerance" class="headerlink" title="Latency Tolerance"></a>Latency Tolerance</h3><ul>
 <li>When an instruction executed by the threads in a warp must wait for the result of a previously initiated long-latency operation, the warp is not selected for execution -&gt; lantency hiding</li>
 <li>Priority mechanism used to schedule ready warps</li>
 <li>Scheduling does not introduce idle time -&gt; zero-overhead thread scheduling</li>
@@ -391,7 +391,7 @@
 <li>branch instructions</li>
 </ul>
 <p>The only safe way to synchronize threads in different blocks is to terminate the kernel and start a new kernel for the acitivities after the synchronization point.</p>
-<h2 id="u4EE3_u7801_u76F8_u5173"><a href="#u4EE3_u7801_u76F8_u5173" class="headerlink" title="代码相关"></a>代码相关</h2><ul>
+<h2 id="代码相关"><a href="#代码相关" class="headerlink" title="代码相关"></a>代码相关</h2><ul>
 <li>通过 cudaGetDeviceProperties 函数可以取得许多数据，除了装置支持的 CUDA 版本之外, 还有装置的名称、内存的大小、最大的 thread 数目、执行单元的频率等等</li>
 <li>需要包含头文件<code>&lt;cuda_runtime.h&gt;</code></li>
 <li>编译直接可以<code>nvcc xxx.cu</code></li>
@@ -410,7 +410,7 @@
 <li>利用 <code>__shared__</code> 声明的变量表示这是 shared memory,是一个 block 中每个 thread 都共享的 内存。它会使用在 GPU 上的内存,所以存取的速度相当快,不需要担心 latency 的问题。</li>
 <li>`__syncthreads()`` 是一个 CUDA 的内部函数,表示 block 中所有的 thread 都要同步到这个点,才能继续执行。</li>
 </ul>
-<h2 id="u7ECF_u9A8C_u6280_u5DE7"><a href="#u7ECF_u9A8C_u6280_u5DE7" class="headerlink" title="经验技巧"></a>经验技巧</h2><ul>
+<h2 id="经验技巧"><a href="#经验技巧" class="headerlink" title="经验技巧"></a>经验技巧</h2><ul>
 <li>利用 <code>threadIdx.x</code> 来分 thread 执行，考虑好邻接性。</li>
 </ul>
 
@@ -687,7 +687,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CUDA_u67B6_u6784"><span class="nav-number">1.</span> <span class="nav-text">CUDA架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6267_u884C_u6A21_u5F0F"><span class="nav-number">2.</span> <span class="nav-text">执行模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u672C_u6982_u5FF5"><span class="nav-number">3.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Some_Restrictions_First"><span class="nav-number">3.1.</span> <span class="nav-text">Some Restrictions First</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SM_-Streaming_multi-processors_with_multiple_processing_cores"><span class="nav-number">3.2.</span> <span class="nav-text">SM -Streaming multi-processors with multiple processing cores</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Warps"><span class="nav-number">3.3.</span> <span class="nav-text">Warps</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Latency_Tolerance"><span class="nav-number">3.4.</span> <span class="nav-text">Latency Tolerance</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4EE3_u7801_u76F8_u5173"><span class="nav-number">4.</span> <span class="nav-text">代码相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7ECF_u9A8C_u6280_u5DE7"><span class="nav-number">5.</span> <span class="nav-text">经验技巧</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CUDA架构"><span class="nav-number">1.</span> <span class="nav-text">CUDA架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行模式"><span class="nav-number">2.</span> <span class="nav-text">执行模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">3.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Some-Restrictions-First"><span class="nav-number">3.1.</span> <span class="nav-text">Some Restrictions First</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SM-Streaming-multi-processors-with-multiple-processing-cores"><span class="nav-number">3.2.</span> <span class="nav-text">SM -Streaming multi-processors with multiple processing cores</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Warps"><span class="nav-number">3.3.</span> <span class="nav-text">Warps</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Latency-Tolerance"><span class="nav-number">3.4.</span> <span class="nav-text">Latency Tolerance</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码相关"><span class="nav-number">4.</span> <span class="nav-text">代码相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#经验技巧"><span class="nav-number">5.</span> <span class="nav-text">经验技巧</span></a></li></ol></div>
             
           </div>
         </section>
@@ -867,42 +867,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

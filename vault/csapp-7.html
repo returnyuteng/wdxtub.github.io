@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="上一讲我们了解了过程调用是如何用机器代码实现的，这一讲我们来看看基本的数据是如何存储在计算机中的。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 第 7 课 Machine Data">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-7.html">
@@ -119,6 +120,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 第 7 课 Machine Data">
 <meta name="twitter:description" content="上一讲我们了解了过程调用是如何用机器代码实现的，这一讲我们来看看基本的数据是如何存储在计算机中的。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14534188845612.jpg">
 
 
 
@@ -142,7 +144,7 @@
   
     深入理解计算机系统 第 7 课 Machine Data | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -163,7 +165,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -284,15 +286,15 @@
 <p>那么对应的一些访问方式为：</p>
 <p><img src="/images/14534189637879.jpg" alt=""></p>
 <p>再举个例子：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> ZLEN <span class="number">5</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> zip_dig[ZLEN];</span><br><span class="line"></span><br><span class="line">zip_dig cmu = &#123; <span class="number">1</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> ZLEN 5</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> zip_dig[ZLEN];</div><div class="line"></div><div class="line">zip_dig cmu = &#123; <span class="number">1</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>&#125;;</div></pre></td></tr></table></figure>
 <p><img src="/images/14534198336930.jpg" alt=""></p>
 <p>假设我们要取数组中的某一位：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_digit</span><span class="params">(zip_dig z, <span class="keyword">int</span> digit)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> z[digit];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_digit</span><span class="params">(zip_dig z, <span class="keyword">int</span> digit)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> z[digit];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>对应的汇编代码是：</p>
 <p><img src="/images/14534198966151.jpg" alt=""></p>
 <p>这里寄存器 %rdi 中存着数组的起始地址，寄存器 %rsi 存着序号，我们要访问的地址等价于 <code>%rdi + 4*%rsi</code>，用内存引用的方式就是 <code>(%rdi, %rsi, 4)</code>。</p>
 <p>再看一个数组循环的例子：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zincr</span><span class="params">(zip_dig z)</span></span>&#123;</span><br><span class="line">	<span class="keyword">size_t</span> i;</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; ZLEN; i++)</span><br><span class="line">		z[i]++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">zincr</span><span class="params">(zip_dig z)</span></span>&#123;</div><div class="line">	<span class="keyword">size_t</span> i;</div><div class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; ZLEN; i++)</div><div class="line">		z[i]++;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>对应的汇编是，注意红字的部分，相当于等价实现了 <code>++</code> 操作</p>
 <p><img src="/images/14534201884816.jpg" alt=""></p>
 <p>对于多维的数组，基本形式是 <code>T A[R][C]</code>，R 是行，C 是列，如果类型 T 占 K 个字节的话，那么数组所需要的内存是 <code>R*C*K</code> 字节。具体在内存里的排列方式如下：</p>
@@ -306,7 +308,7 @@
 <p><img src="/images/14534208481488.jpg" alt=""></p>
 <p><img src="/images/14534208616228.jpg" alt=""></p>
 <p>获取具体某个元素的地址其实就是计算时的起始地址有变换，对应的代码为：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_univ_digit</span><span class="params">(size_t index, size_t digit)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> univ[index][digit];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">get_univ_digit</span><span class="params">(<span class="keyword">size_t</span> index, <span class="keyword">size_t</span> digit)</span></span>&#123;</div><div class="line">	<span class="keyword">return</span> univ[index][digit];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>汇编为：</p>
 <p><img src="/images/14534209862505.jpg" alt=""></p>
 <p>这里等同于进行两次内存访问 <code>Mem[Mem[univ+8*index]+4*digit]</code>，</p>
@@ -344,19 +346,19 @@
 </li>
 </ul>
 <p>对于一个结构体来说，所占据的内存空间必须是最大的类型所需字节的倍数，比如：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> S2 &#123;</span><br><span class="line">	<span class="keyword">double</span> v;</span><br><span class="line">	<span class="keyword">int</span> i[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">&#125; *p;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">struct</span> S2 &#123;</div><div class="line">	<span class="keyword">double</span> v;</div><div class="line">	<span class="keyword">int</span> i[<span class="number">2</span>];</div><div class="line">	<span class="keyword">char</span> c;</div><div class="line">&#125; *p;</div></pre></td></tr></table></figure>
 <p><img src="/images/14534232756482.jpg" alt=""></p>
 <p>如果是结构体数组的话，那就是像这样：</p>
 <p><img src="/images/14534233087461.jpg" alt=""></p>
 <p>具体到访问结构体中的例子，如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> S3 &#123;</span><br><span class="line">	<span class="keyword">short</span> i;</span><br><span class="line">	<span class="keyword">float</span> v;</span><br><span class="line">	<span class="keyword">short</span> j;</span><br><span class="line">&#125; a[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">struct</span> S3 &#123;</div><div class="line">	<span class="keyword">short</span> i;</div><div class="line">	<span class="keyword">float</span> v;</div><div class="line">	<span class="keyword">short</span> j;</div><div class="line">&#125; a[<span class="number">10</span>];</div></pre></td></tr></table></figure>
 <p><img src="/images/14534233625482.jpg" alt=""></p>
 <p>那么根据这种特点，就有一些技巧了。例如，要把大的数据类型放到前面，看这个例子：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> S4 &#123;</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> d;</span><br><span class="line">&#125; *p;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> S5 &#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">	<span class="keyword">char</span> d;</span><br><span class="line">&#125; *p;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">struct</span> S4 &#123;</div><div class="line">	<span class="keyword">char</span> c;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line">	<span class="keyword">char</span> d;</div><div class="line">&#125; *p;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> S5 &#123;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line">	<span class="keyword">char</span> c;</div><div class="line">	<span class="keyword">char</span> d;</div><div class="line">&#125; *p;</div></pre></td></tr></table></figure>
 <p>那么这两种的对应排列就是：</p>
 <p><img src="/images/14534240460958.jpg" alt=""></p>
 <p>可以看到，下面那种省了 4 个字节。</p>
-<h2 id="Floating_Point"><a href="#Floating_Point" class="headerlink" title="Floating Point"></a>Floating Point</h2><p>浮点数的部分在课上介绍的不是很多，这里简要介绍一下。</p>
+<h2 id="Floating-Point"><a href="#Floating-Point" class="headerlink" title="Floating Point"></a>Floating Point</h2><p>浮点数的部分在课上介绍的不是很多，这里简要介绍一下。</p>
 <p>最开始是 x87 FP（比较丑陋），之后是 SSE FP（利用了向量指令），然后是 AVX FP（类似与 SSE）。</p>
 <p>SSE3 对于 XMM 寄存器一共有 16 个，每个 16 字节：</p>
 <p><img src="/images/14534252071793.jpg" alt=""></p>
@@ -700,42 +702,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

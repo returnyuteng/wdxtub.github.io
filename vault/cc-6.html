@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="上一讲介绍了通过代码，而不是界面或者命令行，来控制 Azure，整个过程还是比较繁琐的，这一讲我们来看看，如何通过代码来控制 AWS。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 6 课 AWS API">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-6.html">
@@ -119,7 +120,7 @@
   
     云计算 第 6 课 AWS API | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -140,7 +141,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -255,7 +256,7 @@
 <a id="more"></a>
 <hr>
 <p>AWS 可以通过命令行工具或者 SDK 来访问几乎所有的功能，这一讲主要介绍一些最常用的工具和功能。下面的视频是 AWS SDK 的一个简要介绍，与此同时给出了一个 Java SDK 的例子。</p>
-<h3 id="Java_AWS_SDK"><a href="#Java_AWS_SDK" class="headerlink" title="Java AWS SDK"></a>Java AWS SDK</h3><p><a href="http://aws.amazon.com/cn/sdk-for-java/" target="_blank" rel="external">Java AWS SDK</a> 包括：</p>
+<h3 id="Java-AWS-SDK"><a href="#Java-AWS-SDK" class="headerlink" title="Java AWS SDK"></a>Java AWS SDK</h3><p><a href="http://aws.amazon.com/cn/sdk-for-java/" target="_blank" rel="external">Java AWS SDK</a> 包括：</p>
 <ul>
 <li>AWS Java Library：总而言之就是所需的各种包，网络请求，验证，错误处理等等</li>
 <li>样例代码</li>
@@ -270,7 +271,7 @@
 <li>关闭 AWS 连接</li>
 </ol>
 <p>先下载好 SDK 和 Eclipse 插件（在 eclipse 里安装，Amazon 有给出教程）</p>
-<h3 id="Amazon_EC2_API"><a href="#Amazon_EC2_API" class="headerlink" title="Amazon EC2 API"></a>Amazon EC2 API</h3><p>可以通过 API 做这些事情：</p>
+<h3 id="Amazon-EC2-API"><a href="#Amazon-EC2-API" class="headerlink" title="Amazon EC2 API"></a>Amazon EC2 API</h3><p>可以通过 API 做这些事情：</p>
 <ul>
 <li>创建 EC2 密钥对</li>
 <li>位实例创建安全组并且打开端口</li>
@@ -278,9 +279,9 @@
 </ul>
 <p>下面是 Java 和 Python 的代码</p>
 <p>Java:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Load the Properties File with AWS Credentials</span></span><br><span class="line">Properties properties = <span class="keyword">new</span> Properties();</span><br><span class="line">properties.load(RunInstance.class.getResourceAsStream(<span class="string">"/AwsCredentials.properties"</span>));</span><br><span class="line">BasicAWSCredentials bawsc = <span class="keyword">new</span> BasicAWSCredentials(properties.getProperty(<span class="string">"accessKey"</span>), properties.getProperty(<span class="string">"secretKey"</span>));</span><br><span class="line"><span class="comment">//Create an Amazon EC2 Client</span></span><br><span class="line">AmazonEC2Client ec2 = <span class="keyword">new</span> AmazonEC2Client(bawsc);</span><br><span class="line"><span class="comment">//Create Instance Request</span></span><br><span class="line">RunInstancesRequest runInstancesRequest = <span class="keyword">new</span> RunInstancesRequest();</span><br><span class="line"><span class="comment">//Configure Instance Request</span></span><br><span class="line">runInstancesRequest.withImageId(<span class="string">"ami-3b44d352"</span>)</span><br><span class="line">.withInstanceType(<span class="string">"t1.micro"</span>)</span><br><span class="line">.withMinCount(<span class="number">1</span>)</span><br><span class="line">.withMaxCount(<span class="number">1</span>)</span><br><span class="line">.withKeyName(<span class="string">"project1_test"</span>)</span><br><span class="line">.withSecurityGroups(<span class="string">"MySecurityGroup"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Launch Instance</span></span><br><span class="line">RunInstancesResult runInstancesResult = ec2.runInstances(runInstancesRequest);   </span><br><span class="line"><span class="comment">//Return the Object Reference of the Instance just Launched</span></span><br><span class="line">Instance instance=runInstancesResult.getReservation().getInstances().get(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">//Load the Properties File with AWS Credentials</span></div><div class="line">Properties properties = <span class="keyword">new</span> Properties();</div><div class="line">properties.load(RunInstance.class.getResourceAsStream(<span class="string">"/AwsCredentials.properties"</span>));</div><div class="line">BasicAWSCredentials bawsc = <span class="keyword">new</span> BasicAWSCredentials(properties.getProperty(<span class="string">"accessKey"</span>), properties.getProperty(<span class="string">"secretKey"</span>));</div><div class="line"><span class="comment">//Create an Amazon EC2 Client</span></div><div class="line">AmazonEC2Client ec2 = <span class="keyword">new</span> AmazonEC2Client(bawsc);</div><div class="line"><span class="comment">//Create Instance Request</span></div><div class="line">RunInstancesRequest runInstancesRequest = <span class="keyword">new</span> RunInstancesRequest();</div><div class="line"><span class="comment">//Configure Instance Request</span></div><div class="line">runInstancesRequest.withImageId(<span class="string">"ami-3b44d352"</span>)</div><div class="line">.withInstanceType(<span class="string">"t1.micro"</span>)</div><div class="line">.withMinCount(<span class="number">1</span>)</div><div class="line">.withMaxCount(<span class="number">1</span>)</div><div class="line">.withKeyName(<span class="string">"project1_test"</span>)</div><div class="line">.withSecurityGroups(<span class="string">"MySecurityGroup"</span>);</div><div class="line"></div><div class="line"><span class="comment">//Launch Instance</span></div><div class="line">RunInstancesResult runInstancesResult = ec2.runInstances(runInstancesRequest);   </div><div class="line"><span class="comment">//Return the Object Reference of the Instance just Launched</span></div><div class="line">Instance instance=runInstancesResult.getReservation().getInstances().get(<span class="number">0</span>);</div></pre></td></tr></table></figure>
 <p>Python:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> boto.ec2.connection <span class="keyword">import</span> EC2Connection</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create a connection</span></span><br><span class="line">conn = boto.ec2.connect_to_region(<span class="string">"us-east-1"</span>)</span><br><span class="line"><span class="comment"># Launching instance</span></span><br><span class="line">reservation = conn.run_instances(<span class="string">"ami-3b44d352"</span>,instance_type = <span class="string">"t1.micro"</span>, </span><br><span class="line">        key_name = <span class="string">"project1_test"</span>, security_groups = <span class="string">"MySecurityGroup"</span>)</span><br><span class="line">instance = reservation.instances[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="keyword">from</span> boto.ec2.connection <span class="keyword">import</span> EC2Connection</div><div class="line"></div><div class="line"><span class="comment"># Create a connection</span></div><div class="line">conn = boto.ec2.connect_to_region(<span class="string">"us-east-1"</span>)</div><div class="line"><span class="comment"># Launching instance</span></div><div class="line">reservation = conn.run_instances(<span class="string">"ami-3b44d352"</span>,instance_type = <span class="string">"t1.micro"</span>, </div><div class="line">        key_name = <span class="string">"project1_test"</span>, security_groups = <span class="string">"MySecurityGroup"</span>)</div><div class="line">instance = reservation.instances[<span class="number">0</span>]</div></pre></td></tr></table></figure>
 <p>我们同样可以通过 EC2 的 API 来查看实例的状态，例如类 <code>DescribeInstanceStatusRequest</code> 的状态：</p>
 <ul>
 <li>Running</li>
@@ -289,7 +290,7 @@
 </ul>
 <p>更多的文档参考 <a href="http://aws.amazon.com/documentation/sdk-for-java/" target="_blank" rel="external">AWS SDK for Java Documentation</a> <a href="http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/index.html" target="_blank" rel="external">AWS Java API Reference</a> 和 <a href="http://docs.pythonboto.org/en/latest/" target="_blank" rel="external">boto</a></p>
 <p>Python 的部分这里不做详细介绍，具体可以参考 <a href="https://youtu.be/7IOsOHJKxvY" target="_blank" rel="external">Python SDK 视频（墙外）</a></p>
-<h3 id="Amazon__u547D_u4EE4_u884C_API__u5DE5_u5177"><a href="#Amazon__u547D_u4EE4_u884C_API__u5DE5_u5177" class="headerlink" title="Amazon 命令行 API 工具"></a>Amazon 命令行 API 工具</h3><p>我们同样也可以利用命令行来操作 AWS，主页在<a href="http://aws.amazon.com/cn/cli/" target="_blank" rel="external">这里</a>。如果打算使用命令行，那么需要：</p>
+<h3 id="Amazon-命令行-API-工具"><a href="#Amazon-命令行-API-工具" class="headerlink" title="Amazon 命令行 API 工具"></a>Amazon 命令行 API 工具</h3><p>我们同样也可以利用命令行来操作 AWS，主页在<a href="http://aws.amazon.com/cn/cli/" target="_blank" rel="external">这里</a>。如果打算使用命令行，那么需要：</p>
 <ol>
 <li>在实例中下载和安装命令行工具</li>
 <li>通过 <code>aws configure</code> 来设置密钥（注意这里地区要选择 us-east-1，<a href="http://docs.aws.amazon.com/general/latest/gr/rande.html" target="_blank" rel="external">参考链接</a>）</li>
@@ -297,11 +298,11 @@
 <p>下面是简单的使用 AWS 命令行工具的视频介绍</p>
 <p><a href="https://youtu.be/OSGjoMeHc2A" target="_blank" rel="external">AWS 命令行工具（墙外）</a></p>
 <p>启动实例之前先要配置，如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ aws configure</span><br><span class="line">AWS Access Key ID [None]: YOUR AWS ACCESS KEY</span><br><span class="line">AWS Secret Access Key [None]: YOUR AWS SECRET ACCESS KEY</span><br><span class="line">Default region name [None]: us-east-<span class="number">1</span></span><br><span class="line">Default output format [None]: json</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ aws configure</div><div class="line">AWS Access Key ID [None]: YOUR AWS ACCESS KEY</div><div class="line">AWS Secret Access Key [None]: YOUR AWS SECRET ACCESS KEY</div><div class="line">Default region name [None]: us-east-1</div><div class="line">Default output format [None]: json</div></pre></td></tr></table></figure>
 <p>然后可以用下面的命令来创建安全组，密钥对和角色</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ aws ec2 create-security-group --group-name devenv-sg --description <span class="string">"security group for development environment in EC2"</span></span><br><span class="line">$ aws ec2 authorize-security-group-ingress --group-name devenv-sg --protocol tcp --port <span class="number">22</span> --cidr <span class="number">0.0</span>.<span class="number">0.0</span>/<span class="number">0</span></span><br><span class="line">$ aws ec2 create-key-pair --key-name devenv-key --query <span class="string">'KeyMaterial'</span> --output text &gt; devenv-key.pem</span><br><span class="line">$ chmod <span class="number">400</span> devenv-key.pem</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ aws ec2 create-security-group --group-name devenv-sg --description <span class="string">"security group for development environment in EC2"</span></div><div class="line">$ aws ec2 authorize-security-group-ingress --group-name devenv-sg --protocol tcp --port 22 --cidr 0.0.0.0/0</div><div class="line">$ aws ec2 create-key-pair --key-name devenv-key --query <span class="string">'KeyMaterial'</span> --output text &gt; devenv-key.pem</div><div class="line">$ chmod 400 devenv-key.pem</div></pre></td></tr></table></figure>
 <p>然后就可以启动并连接实例了，这里需要提供 <code>AMI_ID(ami-xxxxx)</code> 和 安全组(sg-xxxxx)</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ aws ec2 run-instances --image-id YOUR_AMI_ID --security-group-ids SECURITY_GROUP_ID --count <span class="number">1</span> --instance-type t2.micro --key-name devenv-key --query <span class="string">'Instances[0].InstanceId'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ aws ec2 run-instances --image-id YOUR_AMI_ID --security-group-ids SECURITY_GROUP_ID --count 1 --instance-type t2.micro --key-name devenv-key --query <span class="string">'Instances[0].InstanceId'</span></div></pre></td></tr></table></figure>
 <p>Amazon CloudWatch 部分之前有介绍过，详细介绍可以查看<a href="http://aws.amazon.com/documentation/cloudwatch/" target="_blank" rel="external">文档</a></p>
 
     
@@ -638,42 +639,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

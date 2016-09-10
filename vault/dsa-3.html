@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="链表、栈和队列是非常基本的数据结构，万丈高楼平地起，即使简单，也要认真对待。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="数据结构与算法 第 3 课 链表、栈和队列">
 <meta property="og:url" content="http://wdxtub.com/vault/dsa-3.html">
@@ -97,6 +98,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据结构与算法 第 3 课 链表、栈和队列">
 <meta name="twitter:description" content="链表、栈和队列是非常基本的数据结构，万丈高楼平地起，即使简单，也要认真对待。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14563356077459.jpg">
 
 
 
@@ -120,7 +122,7 @@
   
     数据结构与算法 第 3 课 链表、栈和队列 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -141,7 +143,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -255,7 +257,7 @@
       <p>链表、栈和队列是非常基本的数据结构，万丈高楼平地起，即使简单，也要认真对待。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u94FE_u8868"><a href="#u94FE_u8868" class="headerlink" title="链表"></a>链表</h2><p>链表是非常基础和常用的一个数据结构，尤其是在解析器(parser)、游戏和搜索算法中。而且很多时候会用来实现下面的 ADT(Abstract Data Type)：</p>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>链表是非常基础和常用的一个数据结构，尤其是在解析器(parser)、游戏和搜索算法中。而且很多时候会用来实现下面的 ADT(Abstract Data Type)：</p>
 <ul>
 <li>堆栈 Stack</li>
 <li>集合 Set</li>
@@ -270,7 +272,7 @@
 <li>Analyze the Implementation</li>
 </ol>
 <p>接下来我们以链表为例子，具体来过一遍前三个步骤，后面两个步骤属于实现的细节和实现之后的分析，这里暂时不涉及。</p>
-<h3 id="1-Understand_it_Abstractly"><a href="#1-Understand_it_Abstractly" class="headerlink" title="1.Understand it Abstractly"></a>1.Understand it Abstractly</h3><p>因为链表比较简单，所以一幅图就可以解释清楚：</p>
+<h3 id="1-Understand-it-Abstractly"><a href="#1-Understand-it-Abstractly" class="headerlink" title="1.Understand it Abstractly"></a>1.Understand it Abstractly</h3><p>因为链表比较简单，所以一幅图就可以解释清楚：</p>
 <p><img src="/images/14563356077459.jpg" alt="黄色部分是数据，绿色部分是指针"></p>
 <h3 id="2-Specification"><a href="#2-Specification" class="headerlink" title="2.Specification"></a>2.Specification</h3><p>明确的规格说明包括：</p>
 <ul>
@@ -279,9 +281,9 @@
 <li>说明应该与实现无关</li>
 </ul>
 <p>这里用一个 <code>IntNode</code> 为例子</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IntNode</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> data;     <span class="comment">// data</span></span><br><span class="line">    <span class="keyword">private</span> IntNode link; <span class="comment">// pointer</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IntNode</span><span class="params">(<span class="keyword">int</span> initialData, IntNode initialLink)</span></span>&#123;</span><br><span class="line">        data = initialData;</span><br><span class="line">        link = initialLink;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// getter</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getData</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> IntNode <span class="title">getLink</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> link;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// setter</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(<span class="keyword">int</span> newdata)</span></span>&#123;</span><br><span class="line">        data = newdata;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLink</span><span class="params">(IntNode newlink)</span></span>&#123;</span><br><span class="line">        link = newlink;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IntNode</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> data;     <span class="comment">// data</span></div><div class="line">    <span class="keyword">private</span> IntNode link; <span class="comment">// pointer</span></div><div class="line">    </div><div class="line">    <span class="comment">// 构造器</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IntNode</span><span class="params">(<span class="keyword">int</span> initialData, IntNode initialLink)</span></span>&#123;</div><div class="line">        data = initialData;</div><div class="line">        link = initialLink;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// getter</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getData</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> data;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> IntNode <span class="title">getLink</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> link;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// setter</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(<span class="keyword">int</span> newdata)</span></span>&#123;</div><div class="line">        data = newdata;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLink</span><span class="params">(IntNode newlink)</span></span>&#123;</div><div class="line">        link = newlink;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h3 id="3-Application"><a href="#3-Application" class="headerlink" title="3.Application"></a>3.Application</h3><p>根据前面的规格说明，具体来使用我们创建的数据结构。这里我们不直接把变量声明为公有，而是通过 getter 和 setter 来进行访问，等于是把变量名称和这个变量本身进行了解耦，即使改变了变量名，只要函数接口不变，对外的行为仍旧是不变的</p>
-<h3 id="u94FE_u8868_u5C0F_u7ED3"><a href="#u94FE_u8868_u5C0F_u7ED3" class="headerlink" title="链表小结"></a>链表小结</h3><p>需要掌握的链表操作：</p>
+<h3 id="链表小结"><a href="#链表小结" class="headerlink" title="链表小结"></a>链表小结</h3><p>需要掌握的链表操作：</p>
 <ul>
 <li>插入</li>
 <li>删除</li>
@@ -295,9 +297,9 @@
 <li>截取链表的一部分</li>
 <li>寻找链表的 1/N</li>
 </ul>
-<h2 id="u6808_u4E0E_u961F_u5217"><a href="#u6808_u4E0E_u961F_u5217" class="headerlink" title="栈与队列"></a>栈与队列</h2><p>栈和队列是比较典型的 ADT，所谓 ADT，就是实际上内存中没有类似的数据结构对应，具体的操作是人为增加的设定，是为 Abstract，但是同时它们也被当做数据类型来用，是为 Data Type，于是就成为 ADT。</p>
+<h2 id="栈与队列"><a href="#栈与队列" class="headerlink" title="栈与队列"></a>栈与队列</h2><p>栈和队列是比较典型的 ADT，所谓 ADT，就是实际上内存中没有类似的数据结构对应，具体的操作是人为增加的设定，是为 Abstract，但是同时它们也被当做数据类型来用，是为 Data Type，于是就成为 ADT。</p>
 <p>因为比较简单的缘故，这里大概说一下要点：</p>
-<h3 id="u6808"><a href="#u6808" class="headerlink" title="栈"></a>栈</h3><p>性质</p>
+<h3 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h3><p>性质</p>
 <ul>
 <li>后入先出</li>
 <li>Last-In / First-Out</li>
@@ -329,7 +331,7 @@
 <li>翻转字符串</li>
 <li>模拟递归（N 皇后问题）</li>
 </ul>
-<h3 id="u961F_u5217"><a href="#u961F_u5217" class="headerlink" title="队列"></a>队列</h3><p>性质</p>
+<h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>性质</p>
 <ul>
 <li>先入先出</li>
 <li>First-In / First-Out</li>
@@ -699,42 +701,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

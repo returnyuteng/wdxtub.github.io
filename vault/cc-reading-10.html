@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="The next resource we will examine, with respect to virtualization, is memory. Memory virtualization should ring a bell; specifically, it is very closely related to the operating systems concept of vir">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 阅读材料 10 Resource Virtualization - Memory">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-reading-10.html">
@@ -100,6 +101,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 阅读材料 10 Resource Virtualization - Memory">
 <meta name="twitter:description" content="The next resource we will examine, with respect to virtualization, is memory. Memory virtualization should ring a bell; specifically, it is very closely related to the operating systems concept of vir">
+<meta name="twitter:image" content="http://wdxtub.com/images/14556001462899.jpg">
 
 
 
@@ -123,7 +125,7 @@
   
     云计算 阅读材料 10 Resource Virtualization - Memory | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -144,7 +146,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -258,24 +260,24 @@
       <p>The next resource we will examine, with respect to virtualization, is memory. Memory virtualization should ring a bell; specifically, it is very closely related to the operating systems concept of virtual memory! As such, we will begin our discussion by recalling virtual memory concepts and then discuss memory virtualization as an extension of these techniques. VMWare has pioneered some interesting and clever techniques in the realm of memory reclamation from Guest OSes, which will also be covered in this module.</p>
 <a id="more"></a>
 <hr>
-<h2 id="One-Level_Page_Mapping"><a href="#One-Level_Page_Mapping" class="headerlink" title="One-Level Page Mapping"></a>One-Level Page Mapping</h2><p><strong>Virtual Memory and One-Level Page Mapping</strong></p>
+<h2 id="One-Level-Page-Mapping"><a href="#One-Level-Page-Mapping" class="headerlink" title="One-Level Page Mapping"></a>One-Level Page Mapping</h2><p><strong>Virtual Memory and One-Level Page Mapping</strong></p>
 <p>Virtual memory is a well-known virtualization technique supported in most general-purpose OSs. The basic idea of virtual memory is that each process is provided with its own virtual address space, broken up into chunks called virtual pages. A page is a contiguous range of addresses. As shown in Figure 3.24, virtual memory maps virtual pages to physical pages in what is called a page table. We call this one-level page mapping between two types of addresses: the virtual and the physical. Each process in the OS has its own page table. A main observation pertaining to page tables is that not all virtual pages of a process need to be mapped to respective physical pages in order for the process to execute. When a process references a page that exists in the physical memory (i.e., there is a mapping between the requested virtual page and the corresponding physical page), a page hit is attained. On a page hit, the hardware obtains the required virtual to physical mapping with no further actions. In contrary, when a process references a page that does not exist in the physical memory, a page miss is incurred. On a page miss, the OS is alerted to handle the miss. Subsequently, the OS fetches the missed page from disk storage and updates the relevant entry in the page table.</p>
 <p><img src="/images/14556001462899.jpg" alt="Figure 3.24: Mapping a process&#39; virtual address space to physical address space. This is captured in what is called a page table. Each process has its own page table."></p>
-<h2 id="Two-Level_Page_Mapping"><a href="#Two-Level_Page_Mapping" class="headerlink" title="Two-Level Page Mapping"></a>Two-Level Page Mapping</h2><p>Contrary to OSs in traditional systems, with system virtualization, the hypervisor allocates a contiguous addressable memory space for each created VM (not process). This memory space per a VM is called real memory. In return, each guest OS running in a VM allocates a contiguous, addressable memory space for each process in its real memory. This memory space per a process is called virtual memory (same name as in traditional systems). Each guest OS maps the virtual memories of its processes to the real memory of the underlying VM, while the hypervisor maps the real memories of its VMs to the system physical memory. Clearly, in contrast to traditional OSs, this entails two levels of mappings between three types of addresses: virtual, real, and physical. In fact, these virtual-to-real and real-to-physical mappings define system memory virtualization. This basic idea of memory virtualization via two-level page mapping is summarized in Video 3.10:</p>
+<h2 id="Two-Level-Page-Mapping"><a href="#Two-Level-Page-Mapping" class="headerlink" title="Two-Level Page Mapping"></a>Two-Level Page Mapping</h2><p>Contrary to OSs in traditional systems, with system virtualization, the hypervisor allocates a contiguous addressable memory space for each created VM (not process). This memory space per a VM is called real memory. In return, each guest OS running in a VM allocates a contiguous, addressable memory space for each process in its real memory. This memory space per a process is called virtual memory (same name as in traditional systems). Each guest OS maps the virtual memories of its processes to the real memory of the underlying VM, while the hypervisor maps the real memories of its VMs to the system physical memory. Clearly, in contrast to traditional OSs, this entails two levels of mappings between three types of addresses: virtual, real, and physical. In fact, these virtual-to-real and real-to-physical mappings define system memory virtualization. This basic idea of memory virtualization via two-level page mapping is summarized in Video 3.10:</p>
 <p><a href="http://youtu.be/Gl0Dw7G9V5U" target="_blank" rel="external">Video 3.10: Memory Virtualization.</a></p>
 <p><img src="/images/14556002072284.jpg" alt="Figure 3.25: Memory virtualization in a native system VM."></p>
 <p>Similar to any general-purpose OS, a guest OS would still own its set of page tables. In addition, the hypervisor would own another set of page tables for mapping real-to-physical addresses. The page tables in the hypervisor are called real map tables. Figure 3.25 demonstrates system memory virtualization in a native system VM. It shows page tables maintained by guest VMs and real map tables maintained by the hypervisor. Each entry in a page table maps a virtual page of a program to a real page in the respective VM. Likewise, each entry in a real map table maps a real page in a VM to a physical page in the physical memory. When a guest OS attempts to establish a valid mapping entry in its page table, it traps to the hypervisor. Subsequently, the hypervisor establishes a corresponding mapping in the relevant VM’s real map table.</p>
-<h2 id="Memory_Overcommitment"><a href="#Memory_Overcommitment" class="headerlink" title="Memory Overcommitment"></a>Memory Overcommitment</h2><p>In memory virtualization, the combined total size of real memories can grow beyond the actual size of physical memory. This concept is typically called memory overcommitment. Memory overcommitment ensures that physical memory is highly utilized by active, real memories (assuming multiple VMs running simultaneously). Indeed, without memory overcommitment, the hypervisor can only run VMs with a total size of real memories less than that of the physical memory. For instance, Figure 3.26 shows a hypervisor with 4GB of physical memory and three VMs, each with 2GB of real memory. Without memory overcommitment, the hypervisor can only run one VM because of not having enough physical memory to assign to two VMs at once. Although each VM would require only 2GB of memory, wherein the hypervisor has 4GB of physical memory, this memory cannot be afforded because hypervisors generally require overhead memories (e.g., to maintain various virtualization data structures).</p>
+<h2 id="Memory-Overcommitment"><a href="#Memory-Overcommitment" class="headerlink" title="Memory Overcommitment"></a>Memory Overcommitment</h2><p>In memory virtualization, the combined total size of real memories can grow beyond the actual size of physical memory. This concept is typically called memory overcommitment. Memory overcommitment ensures that physical memory is highly utilized by active, real memories (assuming multiple VMs running simultaneously). Indeed, without memory overcommitment, the hypervisor can only run VMs with a total size of real memories less than that of the physical memory. For instance, Figure 3.26 shows a hypervisor with 4GB of physical memory and three VMs, each with 2GB of real memory. Without memory overcommitment, the hypervisor can only run one VM because of not having enough physical memory to assign to two VMs at once. Although each VM would require only 2GB of memory, wherein the hypervisor has 4GB of physical memory, this memory cannot be afforded because hypervisors generally require overhead memories (e.g., to maintain various virtualization data structures).</p>
 <p><img src="/images/14556002486593.jpg" alt="Figure 3.26: A hypervisor with 4GB of physical memory, enabling three VMs at once with a total of 6GB of real memory."></p>
 <p>To this end, in practical situations, some VMs might be lightly loaded, while others might be heavily loaded. Lightly loaded VMs can cause some pages to sit idle, while heavily loaded VMs can result in memory page thrashing. To deal with such a situation, the hypervisor can take (or steal) the inactive physical memory pages away from idle VMs and provide them to heavily loaded VMs. As a side effect, hypervisors usually write zeros to the stolen/reclaimed, inactive physical memory pages in order to avert information leaking among VMs.</p>
-<h2 id="Reclamation_Techniques_and_VMware_Memory_Ballooning"><a href="#Reclamation_Techniques_and_VMware_Memory_Ballooning" class="headerlink" title="Reclamation Techniques and VMware Memory Ballooning"></a>Reclamation Techniques and VMware Memory Ballooning</h2><p><strong>Memory Reclamation</strong></p>
+<h2 id="Reclamation-Techniques-and-VMware-Memory-Ballooning"><a href="#Reclamation-Techniques-and-VMware-Memory-Ballooning" class="headerlink" title="Reclamation Techniques and VMware Memory Ballooning"></a>Reclamation Techniques and VMware Memory Ballooning</h2><p><strong>Memory Reclamation</strong></p>
 <p>To maintain full isolation, guest OSs are kept unaware that they are running inside VMs. VMs are also kept unaware of the states of other VMs running on the same physical host. Furthermore, with multiple levels of page mapping, VMs remain oblivious of any physical memory shortage. Therefore, when the hypervisor runs multiple VMs at a physical host, and the physical memory turns stressed, none of the VMs can automatically help in freeing up memory.</p>
 <p>The hypervisor deals with the situation by applying a reclamation technique. As its name suggests, a reclamation technique attempts to reclaim inactive real memory pages at VMs and make them available for the hypervisor when experiencing a memory shortage. Video 3.11 describes a couple of techniques which can be used to reclaim memory from guest operating systems:</p>
 <p><a href="http://youtu.be/fAb6DeSNUv8" target="_blank" rel="external">Video 3.11: Advanced Memory Management.</a></p>
 <p>One of the popular reclamation techniques is the ballooning process introduced in VMware ESX, which has been the basis for similar techniques in other hypervisors.</p>
 <p><img src="/images/14556003375691.jpg" alt="Figure 3.27: The ballooning process in VMware ESX."></p>
 <p>In VMware ESX, a balloon driver must be installed and enabled in each guest OS as a pseudo-device driver. The balloon driver regularly polls the hypervisor through a private channel to obtain a target balloon size. As illustrated in Figure 3.27, when the hypervisor experiences memory shortage, it inflates the balloon by setting a proper target balloon size. Figure 3.27(a) shows four real memory pages mapped to four physical pages, of which only two pages are actually active (the red and the yellow ones). Without involving the ballooning process, the hypervisor is unaware of the other two inactive pages (the green and the dark-blue ones) because they are still mapped to physical pages. Consequently, the hypervisor will not be able to reclaim inactive pages unless getting informed. With memory ballooning, however, the hypervisor can set the balloon target size to an integer number (say 2 or 3). When recognized by the balloon driver at the guest OS, the driver checks out the pages, locates the two inactive pages, and pins them (see Figure 3.27(b)). The pinning process is carried out by the guest OS via ensuring that the pinned pages cannot be read/written by any process during memory reclamation. After pinning the inactive pages, the balloon driver transmits to the hypervisor the addresses of the pinned pages. Subsequently, the hypervisor proceeds safely with reclaiming the respective physical pages and allocating them to needy VMs. Last, to unpin pinned pages, the hypervisor deflates the balloon by setting a smaller target balloon size and communicates that to the balloon driver. When received by the balloon driver, it unpins the pinned pages so the guest OS can utilize them. More information about the ballooning process can be found in VMware ESX’s documentation.</p>
-<h2 id="Resource_Virtualization_3A_Memory_Summary"><a href="#Resource_Virtualization_3A_Memory_Summary" class="headerlink" title="Resource Virtualization: Memory Summary"></a>Resource Virtualization: Memory Summary</h2><ul>
+<h2 id="Resource-Virtualization-Memory-Summary"><a href="#Resource-Virtualization-Memory-Summary" class="headerlink" title="Resource Virtualization: Memory Summary"></a>Resource Virtualization: Memory Summary</h2><ul>
 <li>In the earliest days, either a process fit a memory or it could not be run.</li>
 <li>Virtual memory changed the status quo by allowing a process that cannot fit a physical memory to run as if it essentially fits the memory.</li>
 <li>An indirect inference of virtual memory is that multiple processes that cannot collectively fit a certain physical memory can now run altogether on this same physical memory.</li>
@@ -626,42 +628,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

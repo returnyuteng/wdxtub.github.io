@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="这次的作业，我们需要自己完成一个简单的 shell 程序，通过具体的实现，我们可以更加深入地计算机运行的机制（尤其是 Exceptional Control Flow 和进程）。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 习题课 5 Shelllab">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-lab5.html">
@@ -113,6 +114,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 习题课 5 Shelllab">
 <meta name="twitter:description" content="这次的作业，我们需要自己完成一个简单的 shell 程序，通过具体的实现，我们可以更加深入地计算机运行的机制（尤其是 Exceptional Control Flow 和进程）。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14575490108688.jpg">
 
 
 
@@ -136,7 +138,7 @@
   
     深入理解计算机系统 习题课 5 Shelllab | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -157,7 +159,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -283,7 +285,7 @@
 <li><code>setpgid()</code></li>
 <li><code>kill()</code></li>
 </ul>
-<h2 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h2><p>先把文件上传到学校的机器中 <code>scp tshlab-handout.tar dawang@shark.ics.cs.cmu.edu:~/513</code>，然后登录上去 <code>ssh -X dawang@shark.ics.cs.cmu.edu</code>，登录成功后解压 <code>tar xvf tshlab-handout.tar</code></p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>先把文件上传到学校的机器中 <code>scp tshlab-handout.tar dawang@shark.ics.cs.cmu.edu:~/513</code>，然后登录上去 <code>ssh -X dawang@shark.ics.cs.cmu.edu</code>，登录成功后解压 <code>tar xvf tshlab-handout.tar</code></p>
 <p>因为我比较习惯在本地写代码，所以把文件复制回来：</p>
 <ul>
 <li>服务器至本地<ul>
@@ -303,7 +305,7 @@
 <li><code>void sigint_handler(int sig)</code>：捕获 SIGINT(ctrl-c) 信号</li>
 </ul>
 <p>测试的时候先 <code>make</code> 然后 <code>./tsh</code> 即可，不过一开始好像没办法退出</p>
-<h2 id="Shell__u7B80_u4ECB"><a href="#Shell__u7B80_u4ECB" class="headerlink" title="Shell 简介"></a>Shell 简介</h2><p>简单来说，shell 有两种执行模式：</p>
+<h2 id="Shell-简介"><a href="#Shell-简介" class="headerlink" title="Shell 简介"></a>Shell 简介</h2><p>简单来说，shell 有两种执行模式：</p>
 <ol>
 <li>如果用户输入的命令是内置命令，那么 shell 会直接在当前进程执行（例如 <code>jobs</code>）</li>
 <li>如果用户输入的是一个可执行程序的路径，那么 shell 会 fork 出一个新进程，并且在这个子进程中执行该程序（例如 <code>/bin/ls -l -d</code>）</li>
@@ -311,7 +313,7 @@
 <p>第二种情况中，每个子进程称为一个 job（当然也可以不止一个，通过管道机制，不过我们这里的实现不需要考虑管道）</p>
 <p>如果命令以 <code>&amp;</code> 结束，那么这个 job 会在后台执行（比如 <code>/bin/ls -l -d &amp;</code>），也就是说 shell 本身不会等待 job 执行完成，直接可以继续输入其他命令；而在其他情况下，则是在前台运行，shell 会等待 job 完成，用户才可以继续输入命令。也就是说同一个时间只可能有一个前台任务，但是后台任务可以有任意多个。</p>
 <p>程序的入口是 <code>int main(int argc, char *argv[])</code>，对于 <code>/bin/ls -l -d</code> 来说，我们有：</p>
-<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line"><span class="built_in">argc</span> == <span class="number">3</span></span><br><span class="line"><span class="built_in">argv</span>[<span class="number">0</span>] == <span class="string">''</span>/bin/<span class="keyword">ls</span><span class="string">''</span></span><br><span class="line"><span class="built_in">argv</span>[<span class="number">1</span>] == <span class="string">''</span>-<span class="keyword">l</span><span class="string">''</span></span><br><span class="line"><span class="built_in">argv</span>[<span class="number">2</span>] == <span class="string">''</span>-<span class="keyword">d</span><span class="string">''</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">argc == 3</div><div class="line">argv[0] == &apos;&apos;/bin/ls&apos;&apos;</div><div class="line">argv[1] == &apos;&apos;-l&apos;&apos;</div><div class="line">argv[2] == &apos;&apos;-d&apos;&apos;</div></pre></td></tr></table></figure>
 <p>另外两个需要支持功能是：</p>
 <ul>
 <li>job control：允许用户更改进程的前台/后台状态以及京城的状态(running, stopped, or terminated)<ul>
@@ -328,7 +330,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="u4EFB_u52A1_u76EE_u6807"><a href="#u4EFB_u52A1_u76EE_u6807" class="headerlink" title="任务目标"></a>任务目标</h2><p>我们正在使用的 shell 其实包含很多复杂的功能，不过我们自己写的 shell 就简单很多，这里总结一下具体的实现规格：</p>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><p>我们正在使用的 shell 其实包含很多复杂的功能，不过我们自己写的 shell 就简单很多，这里总结一下具体的实现规格：</p>
 <ul>
 <li>每一行会输出一个 <code>tsh&gt;</code>，然后等待用户输入</li>
 <li>用户的输入包括 <code>name</code> 加上零个或多个参数，这些参数之间用一个或多个空格分隔。如果 <code>name</code> 是内置命令，那么直接执行，否则需要新建一个子进程，并在子进程中完成具体的工作</li>
@@ -348,14 +350,14 @@
 </li>
 <li>tsh 应该回收所有的僵尸进程，如果任何 job 因为接收了没有 catch 的信号而终止，tsh 应该识别出这个时间并且打印出 JID 和相关信号的信息</li>
 </ul>
-<h2 id="u6D4B_u8BD5_u65B9_u6CD5"><a href="#u6D4B_u8BD5_u65B9_u6CD5" class="headerlink" title="测试方法"></a>测试方法</h2><p>最简单（也是首先应该做的）是直接运行 tsh，然后输入命令试试看。如果需要参考，可以试试 <code>tshref</code> 这个程序。确定无误之后可以进行完整测试。</p>
+<h2 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h2><p>最简单（也是首先应该做的）是直接运行 tsh，然后输入命令试试看。如果需要参考，可以试试 <code>tshref</code> 这个程序。确定无误之后可以进行完整测试。</p>
 <p>这里我们用 trace 文件来测试，具体使用命令 <code>./runtrace</code> 来测试，具体用法如下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看帮助</span></span><br><span class="line">./runtrace -h</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试某个特性</span></span><br><span class="line">./runtrace <span class="operator">-f</span> trace05.txt <span class="operator">-s</span> ./tsh</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 查看帮助</span></div><div class="line">./runtrace -h</div><div class="line"></div><div class="line"><span class="comment"># 测试某个特性</span></div><div class="line">./runtrace <span class="_">-f</span> trace05.txt <span class="_">-s</span> ./tsh</div></pre></td></tr></table></figure>
 <p>如果想要进行完整的测试，可以使用 <code>./sdriver</code>，具体用法如下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看帮助</span></span><br><span class="line">./sdriver -h</span><br><span class="line"></span><br><span class="line"><span class="comment"># 一般来说可以直接使用默认设置测试</span></span><br><span class="line">./sdriver</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 查看帮助</span></div><div class="line">./sdriver -h</div><div class="line"></div><div class="line"><span class="comment"># 一般来说可以直接使用默认设置测试</span></div><div class="line">./sdriver</div></pre></td></tr></table></figure>
 <p>只需要提交 <code>tsh.c</code> 即可，系统会自动评分，具体每个文件在测试的内容是：</p>
 <p><img src="/images/14575490108688.jpg" alt="trace 文件内容"></p>
-<h2 id="u63D0_u793A"><a href="#u63D0_u793A" class="headerlink" title="提示"></a>提示</h2><ul>
+<h2 id="提示"><a href="#提示" class="headerlink" title="提示"></a>提示</h2><ul>
 <li>不要使用 <code>sleep()</code> 来同步</li>
 <li>不要使用忙等待 <code>while(1);</code></li>
 <li>使用 <code>sigsuspend</code> 来同步</li>
@@ -376,7 +378,7 @@
 <li>因为毕竟不是真正的 shell，所以在 fork 之后，execve 之前，子进程需要调用 <code>setpgid(0, 0)</code>，这样就把子进程放到一个新的进程组里。这样就保证我们的 shell 前台进程组中唯一的进程，当按下 ctrl-c 时，应该捕获 SIGINT 信号并发送给对应的前台进程组中。</li>
 </ul>
 <p>同样提供一个 <code>tshref</code> 参考程序来作为比对输出（除了进程 id 之外其他需要一模一样），具体是通过 <code>runtrace</code> 文件来测试，每个 trace 文件会测试一个特性</p>
-<h2 id="u89E3_u9898_u653B_u7565"><a href="#u89E3_u9898_u653B_u7565" class="headerlink" title="解题攻略"></a>解题攻略</h2><p>最开始当时是要先读懂代码，尤其是整个程序到底在干什么，如果有仔细看我前面的介绍和课本的话，应该比较轻松能找到对应（毕竟这是一个简化的版本），所以这里废话不多说，直接开始完成基础工作。我们先来看看如何改动 <code>eval</code> 这个函数。</p>
+<h2 id="解题攻略"><a href="#解题攻略" class="headerlink" title="解题攻略"></a>解题攻略</h2><p>最开始当时是要先读懂代码，尤其是整个程序到底在干什么，如果有仔细看我前面的介绍和课本的话，应该比较轻松能找到对应（毕竟这是一个简化的版本），所以这里废话不多说，直接开始完成基础工作。我们先来看看如何改动 <code>eval</code> 这个函数。</p>
 <p>在这个函数中，我们会先解析命令（具体的解析已经有工具函数），然后得到一系列 token，结构如下</p>
 <p><img src="/images/14575497659305.jpg" alt="token 的结构"></p>
 <p>目前来说，对我们最有用的是这里面的枚举类型，我们可以先用这个来判断是否是内置函数，据此来决定走哪条分支。我们先把最基本的退出功能做了，这样就不会出现一旦开始就没办法结束的情况，具体方法也很简单，直接 <code>exit(0);</code> 即可，我们测试一下，发现已经可以正确退出了：</p>
@@ -385,7 +387,7 @@
 <p>接着我们来实现 FG 和 BG 这两个命令，我们需要注意的地方有两个，一个是先根据判断传入的是 JID 还是 PID，然后发送信号之后需要等待进程完成（这里注意使用 <code>sigsuspend</code>）。</p>
 <p>这里需要注意 <code>.</code> 和 <code>-&gt;</code> 这两个操作符的不同，简单来说，就是如果左边是一个指向结构体的指针，那么就要用 <code>-&gt;</code>；如果是一个结构体，那么就要用 <code>.</code>。</p>
 <p>这些做完之后我们可以先来简单测试一下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./runtrace <span class="operator">-f</span> trace00.txt <span class="operator">-s</span> ./tsh</span><br><span class="line">./runtrace <span class="operator">-f</span> trace00.txt <span class="operator">-s</span> ./tshref</span><br><span class="line">./runtrace <span class="operator">-f</span> trace01.txt <span class="operator">-s</span> ./tsh</span><br><span class="line">./runtrace <span class="operator">-f</span> trace01.txt <span class="operator">-s</span> ./tshref</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">./runtrace -f trace00.txt -s ./tsh</div><div class="line">./runtrace -f trace00.txt -s ./tshref</div><div class="line">./runtrace -f trace01.txt -s ./tsh</div><div class="line">./runtrace -f trace01.txt -s ./tshref</div></pre></td></tr></table></figure>
 <p><img src="/images/14575550290784.jpg" alt="测试结果"></p>
 <p>看到和参考程序输出至少是一致的，我们就可以继续了。</p>
 <p>接着我们需要来处理非内置命令的情况，参考课件中的代码，先把需要用到的 mask 之类的弄好，并且我们暂时不考虑重定向的问题。然后需要把对应的 signal handler 补充完整。</p>
@@ -399,22 +401,22 @@
 <p>好，我们继续来做输入输出重定向，同样分为内置函数与其他两个类型，内置函数唯一需要输出的是 <code>jobs</code> 这个函数，不过我们之前已经处理过，这里暂且不管（出问题再说）。所以把主要精力集中在非内置的函数上。具体应该在 <code>setpgid(0,0)</code> 这句之后，且应该在 <code>execve</code> 之前。具体的操作也比较简单，就是打开文件（只读），然后利用 <code>dups</code> 重定向到 STDIN 中即可。对于输出的情况也是类似的，这里不赘述。唯一需要注意的一点是打开文件时候的 flag，设置错误会导致没办法正确重定向。</p>
 <p>改完错误之后发现 trace15.txt 又出错了，而且经过测试发现死锁的问题还在，而且是内置函数的问题（果然一开始有小问题），后来发现是搞错了一个变量（但是仍旧有小概率会出现死锁，不过提交的时候似乎一切正常）</p>
 <p>最后需要注意的是有些测试会直接修改源代码，所以每次都需要重新解压（还是蛮讨厌的）。总体来说只要理解了整个过程就不算太难，使用 <code>csapp.h</code> 的时候可能需要把代码复制到 <code>tsh.c</code> 中。</p>
-<h2 id="u9644_u5F551_3A__u4E2D_u6587_man__u6587_u6863"><a href="#u9644_u5F551_3A__u4E2D_u6587_man__u6587_u6863" class="headerlink" title="附录1: 中文 man 文档"></a>附录1: 中文 man 文档</h2><p>如果觉得看英文太累（虽然建议看英文），可以使用中文的 man 文档，具体的使用步骤如下：</p>
+<h2 id="附录1-中文-man-文档"><a href="#附录1-中文-man-文档" class="headerlink" title="附录1: 中文 man 文档"></a>附录1: 中文 man 文档</h2><p>如果觉得看英文太累（虽然建议看英文），可以使用中文的 man 文档，具体的使用步骤如下：</p>
 <p>在<a href="http://manpages-zh.googlecode.com/files/manpages-zh-1.5.1.tar.gz" target="_blank" rel="external">这里</a>下载安装包，然后通过如下命令进行安装：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tar zxvf manpages-zh-<span class="number">1.5</span>.<span class="number">1</span>.tar.gz</span><br><span class="line"><span class="built_in">cd</span> manpages-zh-<span class="number">1.5</span>.<span class="number">1</span></span><br><span class="line">./configure --prefix=/usr/<span class="built_in">local</span>/zhman --disable-zhtw</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">tar zxvf manpages-zh-1.5.1.tar.gz</div><div class="line"><span class="built_in">cd</span> manpages-zh-1.5.1</div><div class="line">./configure --prefix=/usr/<span class="built_in">local</span>/zhman --disable-zhtw</div><div class="line">make &amp;&amp; make install</div></pre></td></tr></table></figure>
 <p>在 Mac 上会乱码，所以需要安装 groff，具体命令为：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">brew install homebrew/dupes/groff</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">brew install homebrew/dupes/groff</div></pre></td></tr></table></figure>
 <p>然后打开 <code>/etc/man.conf</code>，把 <code>NROFF</code> 的那一行改为：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">NROFF preconv <span class="operator">-e</span> UTF8 | /usr/<span class="built_in">local</span>/bin/nroff -Tutf8 -mandoc -c</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">NROFF preconv -e UTF8 | /usr/local/bin/nroff -Tutf8 -mandoc -c</div></pre></td></tr></table></figure>
 <p>最后我么加一个别名，方便使用（根据自己使用的 shell 来针对改，bash 的话是 ~/.bashrc，zsh 的话是 ~/.zshrc），在文件中加入这么一句：</p>
-<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">alias cman='<span class="keyword">man</span> -<span class="keyword">M</span> /usr/<span class="keyword">local</span>/zhman/share/<span class="keyword">man</span>/zh_CN'</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">alias cman=&apos;man -M /usr/local/zhman/share/man/zh_CN&apos;</div></pre></td></tr></table></figure>
 <p>然后 <code>source .zshrc</code> 启用，我们就可以通过 <code>cman</code> 命令来查看了，比如说输入 <code>cman kill</code>，就可以看到</p>
 <p><img src="/images/14575529137049.jpg" alt="效果"></p>
 <p>大功告成。</p>
-<h2 id="u9644_u5F552_3A__u57FA_u7840_u77E5_u8BC6"><a href="#u9644_u5F552_3A__u57FA_u7840_u77E5_u8BC6" class="headerlink" title="附录2: 基础知识"></a>附录2: 基础知识</h2><p>开始之前需要理解的内容</p>
-<h3 id="u5F02_u6B65_u5F02_u5E38_28_u4E2D_u65AD_29"><a href="#u5F02_u6B65_u5F02_u5E38_28_u4E2D_u65AD_29" class="headerlink" title="异步异常(中断)"></a>异步异常(中断)</h3><p><img src="/images/14574791971112.jpg" alt="Asynchronous Exceptions(Interrupts)"></p>
-<h3 id="u540C_u6B65_u5F02_u5E38"><a href="#u540C_u6B65_u5F02_u5E38" class="headerlink" title="同步异常"></a>同步异常</h3><p><img src="/images/14574792452633.jpg" alt="Synchronous Exceptions"></p>
-<h3 id="u8FDB_u7A0B"><a href="#u8FDB_u7A0B" class="headerlink" title="进程"></a>进程</h3><p><img src="/images/14574793369863.jpg" alt="Definition"></p>
+<h2 id="附录2-基础知识"><a href="#附录2-基础知识" class="headerlink" title="附录2: 基础知识"></a>附录2: 基础知识</h2><p>开始之前需要理解的内容</p>
+<h3 id="异步异常-中断"><a href="#异步异常-中断" class="headerlink" title="异步异常(中断)"></a>异步异常(中断)</h3><p><img src="/images/14574791971112.jpg" alt="Asynchronous Exceptions(Interrupts)"></p>
+<h3 id="同步异常"><a href="#同步异常" class="headerlink" title="同步异常"></a>同步异常</h3><p><img src="/images/14574792452633.jpg" alt="Synchronous Exceptions"></p>
+<h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><p><img src="/images/14574793369863.jpg" alt="Definition"></p>
 <p><img src="/images/14574793444040.jpg" alt="Four basic States"></p>
 <p><img src="/images/14574793738605.jpg" alt="Control States"></p>
 <p>fork 函数详细介绍：</p>
@@ -426,12 +428,12 @@
 <p><img src="/images/14574795006407.jpg" alt=""></p>
 <p>wait 函数详细介绍</p>
 <p><img src="/images/14574795185122.jpg" alt=""></p>
-<h3 id="u7B80_u5355_u7684_u8FDB_u7A0B_u4F8B_u5B50"><a href="#u7B80_u5355_u7684_u8FDB_u7A0B_u4F8B_u5B50" class="headerlink" title="简单的进程例子"></a>简单的进程例子</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> status;</span><br><span class="line"><span class="keyword">pid_t</span> child_pid = fork();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (child_pid == <span class="number">0</span>)&#123;</span><br><span class="line">    <span class="comment">// 这部分只有子进程执行</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Child!\n"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 父进程通过下面这句等待子进程完成，才继续执行</span></span><br><span class="line">    waitpid(child_pid, &amp;status, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Parent!\n"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="简单的进程例子"><a href="#简单的进程例子" class="headerlink" title="简单的进程例子"></a>简单的进程例子</h3><figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> status;</div><div class="line"><span class="keyword">pid_t</span> child_pid = fork();</div><div class="line"></div><div class="line"><span class="keyword">if</span> (child_pid == <span class="number">0</span>)&#123;</div><div class="line">    <span class="comment">// 这部分只有子进程执行</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Child!\n"</span>);</div><div class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// 父进程通过下面这句等待子进程完成，才继续执行</span></div><div class="line">    waitpid(child_pid, &amp;status, <span class="number">0</span>);</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Parent!\n"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>另一个使用 execvc 的例子：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> status;</span><br><span class="line"><span class="keyword">pid_t</span> child_pid = fork();</span><br><span class="line"><span class="keyword">char</span>* argv[] = &#123;<span class="string">"/bin/ls"</span>, <span class="string">"-l"</span>, <span class="literal">NULL</span>&#125;;</span><br><span class="line"><span class="keyword">char</span>* env[] = &#123;..., <span class="literal">NULL</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (child_pid == <span class="number">0</span>)&#123;</span><br><span class="line">    <span class="comment">// 这部分只有子进程执行</span></span><br><span class="line">    execve(<span class="string">"/bin/ls"</span>, argv, env);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 因为已经被取代，所以 execve 之后的语句将不会被执行</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 父进程通过下面这句等待子进程完成，才继续执行</span></span><br><span class="line">    waitpid(child_pid, &amp;status, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 等待子进程结束之后继续执行父线程</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Parent!\n"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="u4FE1_u53F7"><a href="#u4FE1_u53F7" class="headerlink" title="信号"></a>信号</h3><p><img src="/images/14574798651564.jpg" alt="Three possible ways to react"></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> status;</div><div class="line"><span class="keyword">pid_t</span> child_pid = fork();</div><div class="line"><span class="keyword">char</span>* argv[] = &#123;<span class="string">"/bin/ls"</span>, <span class="string">"-l"</span>, <span class="literal">NULL</span>&#125;;</div><div class="line"><span class="keyword">char</span>* env[] = &#123;..., <span class="literal">NULL</span>&#125;;</div><div class="line"></div><div class="line"><span class="keyword">if</span> (child_pid == <span class="number">0</span>)&#123;</div><div class="line">    <span class="comment">// 这部分只有子进程执行</span></div><div class="line">    execve(<span class="string">"/bin/ls"</span>, argv, env);</div><div class="line">    </div><div class="line">    <span class="comment">// 因为已经被取代，所以 execve 之后的语句将不会被执行</span></div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// 父进程通过下面这句等待子进程完成，才继续执行</span></div><div class="line">    waitpid(child_pid, &amp;status, <span class="number">0</span>);</div><div class="line">    <span class="comment">// 等待子进程结束之后继续执行父线程</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"Parent!\n"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h3><p><img src="/images/14574798651564.jpg" alt="Three possible ways to react"></p>
 <p><img src="/images/14574798879407.jpg" alt="Ohter Reaction Options"></p>
-<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
 <li><a href="https://www.yurendu.com/read/install-man-command-chinese-help-documentation-on-mac-and-linux.html" target="_blank" rel="external">Mac/Linux 安装man命令的中文帮助文档</a></li>
 </ul>
 
@@ -769,42 +771,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

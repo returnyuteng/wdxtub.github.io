@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="We now move on to discuss another distributed analytics engine that is growing in popularity and adoption.">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 阅读材料 20 Distributed Analytics Engines for the Cloud - Spark">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-reading-20.html">
@@ -114,6 +115,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 阅读材料 20 Distributed Analytics Engines for the Cloud - Spark">
 <meta name="twitter:description" content="We now move on to discuss another distributed analytics engine that is growing in popularity and adoption.">
+<meta name="twitter:image" content="http://wdxtub.com/images/14601360087683.jpg">
 
 
 
@@ -137,7 +139,7 @@
   
     云计算 阅读材料 20 Distributed Analytics Engines for the Cloud - Spark | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -158,7 +160,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -320,7 +322,7 @@
 <li>Hindman, Benjamin and Konwinski, Andy and Zaharia, Matei and Ghodsi, Ali and Joseph, Anthony D and Katz, Randy H and Shenker, Scott and Stoica, Ion (2012). “Mesos: A Platform for Fine-Grained Resource Sharing in the Data Center.” NSDI.</li>
 <li>Vavilapalli, Vinod Kumar and Murthy, Arun C and Douglas, Chris and Agarwal, Sharad and Konar, Mahadev and Evans, Robert and Graves, Thomas and Lowe, Jason and Shah, Hitesh and Seth, Siddharth and others (2013). “Apache hadoop yarn: Yet another resource negotiator.” Proceedings of the 4th annual Symposium on Cloud Computing.</li>
 </ol>
-<h2 id="Resilient_Distributed_Datasets"><a href="#Resilient_Distributed_Datasets" class="headerlink" title="Resilient Distributed Datasets"></a>Resilient Distributed Datasets</h2><p><strong>Spark Resilient Distributed Datasets</strong></p>
+<h2 id="Resilient-Distributed-Datasets"><a href="#Resilient-Distributed-Datasets" class="headerlink" title="Resilient Distributed Datasets"></a>Resilient Distributed Datasets</h2><p><strong>Spark Resilient Distributed Datasets</strong></p>
 <p>Spark relies on a special abstraction called resilient distributed datasets (RDDs) [1] . RDDs are in-memory read-only objects partitioned across the cluster. They let users control persistence and partitioning settings to optimize data placement and manipulate this data using a rich set of operators. An RDD is partitioned across machines either based on a range (partitioning of consecutive records) or the hash of a key in each record. Each partitioning method is optimal for a particular use case (hash partitioning speeds up joins by providing locality to records from different datasets that share keys; range partitions speed up access to a small filtered subset of the data).</p>
 <p>Despite not needing to exist on physical storage, RDDs can be fault-tolerant. However, they do not need to be replicated; rather they have a notion of lineage by which they “remember” the set of operations that were executed to construct them, allowing them to be rebuilt if they lose data. A handle to an RDD contains enough information to recompute it from a version of the data stored on-disk.</p>
 <p>All work in Spark is expressed either as creating new RDDs, transforming existing RDDs or running operations on RDDs. One important thing to realize about RDDs is that they are lazily computed and ephemeral. Lazy computation is an optimization whereby many transformations are pipelined, and the RDD is computed only when it is first used with an “action”. Ephemeral means that RDDs may be materialized (computed and loaded in memory) when used in a parallel application but that they are subsequently discarded from memory.</p>
@@ -372,7 +374,7 @@
 <li>Holden Karau, Andy Konwinski, Patrick Wendell, Matei Zaharia (2015). Learning Spark: Lightning-Fast Big Data Analytics. O’Reilly Media.</li>
 <li>Li, Haoyuan and Ghodsi, Ali and Zaharia, Matei and Shenker, Scott and Stoica, Ion (2014). “Tachyon: Reliable, memory speed storage for cluster computing frameworks.” Proceedings of the ACM Symposium on Cloud Computing.</li>
 </ol>
-<h2 id="Lineage_2C_Fault_Tolerance_and_Recovery"><a href="#Lineage_2C_Fault_Tolerance_and_Recovery" class="headerlink" title="Lineage, Fault Tolerance and Recovery"></a>Lineage, Fault Tolerance and Recovery</h2><p><strong>Fault Tolerance</strong></p>
+<h2 id="Lineage-Fault-Tolerance-and-Recovery"><a href="#Lineage-Fault-Tolerance-and-Recovery" class="headerlink" title="Lineage, Fault Tolerance and Recovery"></a>Lineage, Fault Tolerance and Recovery</h2><p><strong>Fault Tolerance</strong></p>
 <p>On large, distributed clusters running long jobs on commodity hardware, it is very important to have a fault-tolerant framework in case of any errors. Unlike Hadoop which emphasises quick fault-recovery by replicating data stored on HDFS and straggler jobs, Spark relies on the abstract concept of a lineage to recover from errors. A lineage is a directed acyclic graph that defines the operations required to create an RDD [1] .</p>
 <p>Let us return to the program that we saw on the previous page (describing RDD transformation):</p>
 <p><img src="/images/14601364867393.jpg" alt=""></p>
@@ -398,7 +400,7 @@
 <ol>
 <li>Zaharia, Matei and Chowdhury, Mosharaf and Das, Tathagata and Dave, Ankur and Ma, Justin and McCauley, Murphy and Franklin, Michael J and Shenker, Scott and Stoica, Ion (2012). “Resilient distributed datasets: A fault-tolerant abstraction for in-memory cluster computing.” Proceedings of the 9th USENIX conference on Networked Systems Design and Implementation.</li>
 </ol>
-<h2 id="Programming_in_Spark"><a href="#Programming_in_Spark" class="headerlink" title="Programming in Spark"></a>Programming in Spark</h2><p>Now that we have seen the architecture and the computation flow of Spark, it makes sense to look at a simple Spark program. Before doing that, still need to understand some of the common primitive RDD operations.</p>
+<h2 id="Programming-in-Spark"><a href="#Programming-in-Spark" class="headerlink" title="Programming in Spark"></a>Programming in Spark</h2><p>Now that we have seen the architecture and the computation flow of Spark, it makes sense to look at a simple Spark program. Before doing that, still need to understand some of the common primitive RDD operations.</p>
 <p>We start with some basic single-RDD transformations (RDD1 = {1,2,3,3}):</p>
 <p><img src="/images/14601366212814.jpg" alt=""></p>
 <p>Transformations may also have more than one RDD as the input. Here we look at transformations having two RDDs as the input (RDD1 = {1,2,3}; RDD2 = {3,4,5}):</p>
@@ -420,7 +422,7 @@
 <li>Zaharia, Matei and Chowdhury, Mosharaf and Das, Tathagata and Dave, Ankur and Ma, Justin and McCauley, Murphy and Franklin, Michael J and Shenker, Scott and Stoica, Ion (2012). “Resilient distributed datasets: A fault-tolerant abstraction for in-memory cluster computing.” Proceedings of the 9th USENIX conference on Networked Systems Design and Implementation.</li>
 <li>Holden Karau, Andy Konwinski, Patrick Wendell, Matei Zaharia (2015). Learning Spark: Lightning-Fast Big Data Analytics. O’Reilly Media.</li>
 </ol>
-<h2 id="The_Spark_Ecosystem"><a href="#The_Spark_Ecosystem" class="headerlink" title="The Spark Ecosystem"></a>The Spark Ecosystem</h2><p>Spark has built-in libraries or modules that include <a href="https://spark.apache.org/sql/" target="_blank" rel="external">Spark SQL</a> for SQL and structured data processing, <a href="https://spark.apache.org/streaming/" target="_blank" rel="external">Spark Streaming</a>, <a href="https://spark.apache.org/mllib/" target="_blank" rel="external">MLlib</a> for machine learning and <a href="https://spark.apache.org/graphx/" target="_blank" rel="external">GraphX</a> for graph processing. This basically presents an unified platform to perform ETL, MapReduce, and complex analytics.</p>
+<h2 id="The-Spark-Ecosystem"><a href="#The-Spark-Ecosystem" class="headerlink" title="The Spark Ecosystem"></a>The Spark Ecosystem</h2><p>Spark has built-in libraries or modules that include <a href="https://spark.apache.org/sql/" target="_blank" rel="external">Spark SQL</a> for SQL and structured data processing, <a href="https://spark.apache.org/streaming/" target="_blank" rel="external">Spark Streaming</a>, <a href="https://spark.apache.org/mllib/" target="_blank" rel="external">MLlib</a> for machine learning and <a href="https://spark.apache.org/graphx/" target="_blank" rel="external">GraphX</a> for graph processing. This basically presents an unified platform to perform ETL, MapReduce, and complex analytics.</p>
 <p><strong>Spark SQL</strong></p>
 <p>Apache Spark provides a module for structured data processing - Spark SQL. With Spark SQL, users have the ability to run SQL-style queries against Spark RDDs. There are two main advantages to using Spark SQL: 1) A wide user base of SQL programmers and developers can use Spark to run analytics jobs, and 2) This allows application developers to use Spark RDDs as a database backend, similar to MySQL or Hive.</p>
 <p>Spark SQL provides a programming abstraction for its users in the form of DataFrames– which is a distributed collection of data organized into columns. DataFrames also allows the integration of SQL commands into applications that use the MLlib library. This is explained a bit more in the MLlib section. The <a href="https://spark.apache.org/docs/latest/sql-programming-guide.html" target="_blank" rel="external">API</a> for DataFrames is available in Java, Scala and Python. DataFrames may be constructed from tables in Hive, external databases, structured data files or RDDs.</p>
@@ -804,42 +806,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

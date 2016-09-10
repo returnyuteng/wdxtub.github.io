@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="前面我们使用过两种分布式存储的方式：sharding 和 replication，其中一个很重要的问题就是如何在分布式键值对存储中保证数据一致性，这一次我们来学习和理解关键的机制和概念。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 16 课 分布式键值对存储中的一致性问题">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-16.html">
@@ -103,6 +104,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 16 课 分布式键值对存储中的一致性问题">
 <meta name="twitter:description" content="前面我们使用过两种分布式存储的方式：sharding 和 replication，其中一个很重要的问题就是如何在分布式键值对存储中保证数据一致性，这一次我们来学习和理解关键的机制和概念。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14579595778708.jpg">
 
 
 
@@ -126,7 +128,7 @@
   
     云计算 第 16 课 分布式键值对存储中的一致性问题 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -147,7 +149,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -261,7 +263,7 @@
       <p>前面我们使用过两种分布式存储的方式：sharding 和 replication，其中一个很重要的问题就是如何在分布式键值对存储中保证数据一致性，这一次我们来学习和理解关键的机制和概念。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
 <li>理解在分布式数据存储中一致性的不同层级</li>
 <li>实现并评估强一致性模型和最终一致性模型</li>
 <li>比较不同一致性层级的权衡</li>
@@ -290,7 +292,7 @@
 <p>记某条特定的记录为 X，当前的值是 2，接着发生了下面的操作：</p>
 <p><img src="/images/14579596706641.jpg" alt=""></p>
 <p>客户端 1 更新了 X 的值，完成之后另外两个客户端读取 X 的值，这时候，根据不同的一致性设定，另外两个客户端读取到的值可能是 1 也可能是 2。这就是一个『不一致』的例子</p>
-<h2 id="u4E00_u81F4_u6027_u6A21_u578B"><a href="#u4E00_u81F4_u6027_u6A21_u578B" class="headerlink" title="一致性模型"></a>一致性模型</h2><p>这里我们主要讨论以下五种一致性模型，从强到弱：</p>
+<h2 id="一致性模型"><a href="#一致性模型" class="headerlink" title="一致性模型"></a>一致性模型</h2><p>这里我们主要讨论以下五种一致性模型，从强到弱：</p>
 <ol>
 <li>Strict 严格一致性</li>
 <li>Strong 强一致性/线性一致性</li>
@@ -299,29 +301,29 @@
 <li>Eventual 最终一致性</li>
 </ol>
 <p><img src="/images/14579630202800.jpg" alt=""></p>
-<h3 id="u4E25_u683C_u4E00_u81F4_u6027"><a href="#u4E25_u683C_u4E00_u81F4_u6027" class="headerlink" title="严格一致性"></a>严格一致性</h3><p>严格一致性中，每个操作都有一个绝对的全局的时间戳，所有的操作都必须按照时间戳来执行。所有的读都需要获取到最新写入的值。但是在分布式系统中，时钟本身就很难同步，并且两条指令间所间隔的时间可能比让其他节点知道这个操作所需要的时间还要短。因此严格一致性基本上是不可能的。</p>
+<h3 id="严格一致性"><a href="#严格一致性" class="headerlink" title="严格一致性"></a>严格一致性</h3><p>严格一致性中，每个操作都有一个绝对的全局的时间戳，所有的操作都必须按照时间戳来执行。所有的读都需要获取到最新写入的值。但是在分布式系统中，时钟本身就很难同步，并且两条指令间所间隔的时间可能比让其他节点知道这个操作所需要的时间还要短。因此严格一致性基本上是不可能的。</p>
 <p>严格一致性其实从物理定律上来说就是不能实现的（它要求写操作能够瞬间传播出去），所有的共享访问事件都有绝对时间顺序</p>
-<h3 id="u987A_u5E8F_u4E00_u81F4_u6027"><a href="#u987A_u5E8F_u4E00_u81F4_u6027" class="headerlink" title="顺序一致性"></a>顺序一致性</h3><p>任何执行结果都是相同的，就好像所有进程对数据存储的读、写操作是按某种序列顺序执行的，并且每个进程的操作按照程序所制定的顺序出现在这个序列中。也就是说，任何读、写操作的交叉都是可接受的，但是所有进程都看到相同的操作交叉。</p>
+<h3 id="顺序一致性"><a href="#顺序一致性" class="headerlink" title="顺序一致性"></a>顺序一致性</h3><p>任何执行结果都是相同的，就好像所有进程对数据存储的读、写操作是按某种序列顺序执行的，并且每个进程的操作按照程序所制定的顺序出现在这个序列中。也就是说，任何读、写操作的交叉都是可接受的，但是所有进程都看到相同的操作交叉。</p>
 <p>如下图所示的例子，当 X 的值在数据中心 1 中更新时，对于数据中心 2 和 3 中的 值 X 的访问实际上是锁住的（不能读也不能写），只有当数据中心 2 和 3 也更新了 X 的值时，才可以继续访问：</p>
 <p><img src="/images/14579611432458.jpg" alt=""></p>
-<h3 id="u5F3A_u4E00_u81F4_u6027/_u7EBF_u6027_u4E00_u81F4_u6027"><a href="#u5F3A_u4E00_u81F4_u6027/_u7EBF_u6027_u4E00_u81F4_u6027" class="headerlink" title="强一致性/线性一致性"></a>强一致性/线性一致性</h3><p>线性一致性需要一个全局时钟(<a href="https://en.wikipedia.org/wiki/Vector_clock" target="_blank" rel="external">vector clock</a>)，因为它要求两个不重合的调用前一个必须在后一个之前对系统起作用，即所有线程的执行结果的线性化序列必须满足 program order，这种全局意义上的 program order又称作 real time order。这里起作用的意思就是能被系统内所有及系统外部的观察者看见。</p>
+<h3 id="强一致性-线性一致性"><a href="#强一致性-线性一致性" class="headerlink" title="强一致性/线性一致性"></a>强一致性/线性一致性</h3><p>线性一致性需要一个全局时钟(<a href="https://en.wikipedia.org/wiki/Vector_clock" target="_blank" rel="external">vector clock</a>)，因为它要求两个不重合的调用前一个必须在后一个之前对系统起作用，即所有线程的执行结果的线性化序列必须满足 program order，这种全局意义上的 program order又称作 real time order。这里起作用的意思就是能被系统内所有及系统外部的观察者看见。</p>
 <p>顺序一致性则将这个条件放弱，即不重合的前一个调用不一定在后一个之前起作用，但是在同一个线程内部这个要求则是必须的（即常说的在每个线程上的投影必须满足Program order），这样就免去了全局时钟同步的需要。静态一致性是线性一致性的另一种弱化，它要求被一个静态时间点（段）隔开的两个执行部分必须满足real time order。所谓的静态时间点（段）就是指在这个时间点（段）上（内）没有悬停的方法调用（要么没有任何方法，要么这些调用都有相应的应答）。要注意的是，无论是线性一致性，串行一致性也好，静态一致性也好，要求执行的结果是可以顺序化的（串行化），即所有的进程都能看到同一个统一的串行执行顺序。</p>
 <p>在这次的项目中我们需要实现强一致性（很难！），我们会提供显式的时间戳用来给不同操作排序。我们需要保证在任何时候，每个客户端从不同的数据中心都能读取到同样的值。</p>
 <p>举个例子</p>
 <p><img src="/images/14579617419938.jpg" alt=""></p>
 <p>如上图所示，因为有全局的时间戳，所以两次取钱的操作肯定有先后顺序（假设左边的更早发生），我们需要保证同时只能有一个写入操作，下一个写入操作只有在全部数据中心都完成同步之后才能进行。</p>
-<h3 id="u56E0_u679C_u4E00_u81F4_u6027"><a href="#u56E0_u679C_u4E00_u81F4_u6027" class="headerlink" title="因果一致性"></a>因果一致性</h3><p>所有进程必须以相同的顺序看到具有潜在因果关系的写操作。不同机器上的进程可以以不同的顺序看到并发的写操作（Hutto和Ahamad 1990）。</p>
+<h3 id="因果一致性"><a href="#因果一致性" class="headerlink" title="因果一致性"></a>因果一致性</h3><p>所有进程必须以相同的顺序看到具有潜在因果关系的写操作。不同机器上的进程可以以不同的顺序看到并发的写操作（Hutto和Ahamad 1990）。</p>
 <p>假设P1和P2是有因果关系的两个进程，例如P2的写操作信赖于P1的写操作，那么P1和P2对x的修改顺序，在P3和P4看来一定是一样的。但如果P1和P2没有关系，那么P1和P2对x的修改顺序，在P3和P4看来可以是不一样的。</p>
 <p>具体来说，操作 1 是 PUT(A, 2)，操作 2 是 GET(A)，那么这两个操作就是有因果关系的。不同的数据中心可以定期同步或者通过指定的触发器同步。因果一致性提供了比强一致性好得多的性能。</p>
 <p><img src="/images/14579621003577.jpg" alt=""></p>
 <p>如上图所示，如果用户 1 在 US-West 服务器上更新了某张照片，用户 2 不一定能在 Ireland 的服务器上获取到这次更新。但是所有的用户看到的对这张照片的评论的顺序是一样的（因为评论被认为是因果相关的）</p>
-<h3 id="u6700_u7EC8_u4E00_u81F4_u6027"><a href="#u6700_u7EC8_u4E00_u81F4_u6027" class="headerlink" title="最终一致性"></a>最终一致性</h3><p>这是以客户为中心的一致性模型，指的是在一段时间内没有数据更新操作的话，那么所有的副本将逐渐成为一致的。例如OpenStack Swift就是采用这种模型。以一次写多次读的情况下，这种模型可以工作得比较好。</p>
+<h3 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h3><p>这是以客户为中心的一致性模型，指的是在一段时间内没有数据更新操作的话，那么所有的副本将逐渐成为一致的。例如OpenStack Swift就是采用这种模型。以一次写多次读的情况下，这种模型可以工作得比较好。</p>
 <p>唯一需要注意的是，如果多个数据中心相同记录的值都是更新过的，那么就需要保证最后是以最新的那次更新为准进行同步（新的写入要覆盖旧的写入）</p>
 <blockquote>
 <p>具体选择哪种一致性需要根据应用场景和需求来综合考虑，不同的层级会有不同的性能表现，具体需要自行权衡</p>
 </blockquote>
 <p>最后是一个介绍的<a href="https://youtu.be/tNUARdbuUtQ" target="_blank" rel="external">视频</a>，这个视频前半部分说得不错（有具体例子），后半部分不如直接看我的日志。</p>
-<h2 id="u4EFB_u52A1_u4ECB_u7ECD"><a href="#u4EFB_u52A1_u4ECB_u7ECD" class="headerlink" title="任务介绍"></a>任务介绍</h2><p>需要针对不同的场景，对后端进行优化。这次我们需要实现分布式的前端(Coordinators) 和分布式的后端(datastores)，注意，这里因为不同 datastore 的位置也不一样，相互之间的延迟也是不一样的。</p>
+<h2 id="任务介绍"><a href="#任务介绍" class="headerlink" title="任务介绍"></a>任务介绍</h2><p>需要针对不同的场景，对后端进行优化。这次我们需要实现分布式的前端(Coordinators) 和分布式的后端(datastores)，注意，这里因为不同 datastore 的位置也不一样，相互之间的延迟也是不一样的。</p>
 <p><strong>场景一</strong></p>
 <p>可以通过社交网络进行转账，需要记录所有的交易操作，这里需要使用『强一致性』模型</p>
 <p><strong>场景二</strong></p>
@@ -344,7 +346,7 @@
 </li>
 </ul>
 <p>时间戳是 <code>long</code> 类型，值大表示后发生。注意这里不提供地区的参数，需要自行从通区域的 datastore 中获取。</p>
-<h3 id="u8F85_u52A9_u51FD_u6570"><a href="#u8F85_u52A9_u51FD_u6570" class="headerlink" title="辅助函数"></a>辅助函数</h3><p>以下的 API 调用都是不同步的，也就是说任意线程可以同时调用这些 API</p>
+<h3 id="辅助函数"><a href="#辅助函数" class="headerlink" title="辅助函数"></a>辅助函数</h3><p>以下的 API 调用都是不同步的，也就是说任意线程可以同时调用这些 API</p>
 <ul>
 <li><code>KeyValueLib.PUT(String datastoreDNS, String key, String value, String timestamp, String consistency) throws IOException</code><ul>
 <li>有延迟（具体见下表），当 datastore 接收到请求时，可以从 <code>KeyValueStore</code> 获取到的信息是<ul>
@@ -397,7 +399,7 @@
 <blockquote>
 <p>只能使用上面提到 API 完成 Coordinator 和 Datastores 的交互</p>
 </blockquote>
-<h3 id="u6CE8_u610F_u4E8B_u9879"><a href="#u6CE8_u610F_u4E8B_u9879" class="headerlink" title="注意事项"></a>注意事项</h3><p>注意上面有些方法是有延迟的，主要是因为地区的不同，具体三个地区为：</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p>注意上面有些方法是有延迟的，主要是因为地区的不同，具体三个地区为：</p>
 <ul>
 <li>us-east, 数值 1.</li>
 <li>us-west, 数值 2.</li>
@@ -415,7 +417,7 @@
 <li>没有时间戳一样的请求</li>
 <li>在强一致模型中，可以认为收到的时间戳是递增的，但是在最终一致性模型中则不一定</li>
 </ol>
-<h3 id="u7CFB_u7EDF_u9700_u6C42"><a href="#u7CFB_u7EDF_u9700_u6C42" class="headerlink" title="系统需求"></a>系统需求</h3><p><strong>并行执行</strong></p>
+<h3 id="系统需求"><a href="#系统需求" class="headerlink" title="系统需求"></a>系统需求</h3><p><strong>并行执行</strong></p>
 <p>并行处理请求，在 datastore 和 coordinator 上都需要</p>
 <p><strong>确定的行为</strong></p>
 <p>没有竞争条件，注意，现在要同时处理前端和后端，会难很多</p>
@@ -434,7 +436,7 @@
 <blockquote>
 <p>注意使用参数中的时间戳来进行排序</p>
 </blockquote>
-<h3 id="u5F3A_u4E00_u81F4_u6027_u9700_u6C42"><a href="#u5F3A_u4E00_u81F4_u6027_u9700_u6C42" class="headerlink" title="强一致性需求"></a>强一致性需求</h3><p>多个区域多个 coordinator 条件下实现强一致性并不简单，下面是具体的需求</p>
+<h3 id="强一致性需求"><a href="#强一致性需求" class="headerlink" title="强一致性需求"></a>强一致性需求</h3><p>多个区域多个 coordinator 条件下实现强一致性并不简单，下面是具体的需求</p>
 <p><strong>强一致性</strong></p>
 <p>任何时候任何复制节点中相同的 key 对应相同的 value</p>
 <p><strong>严格排序</strong></p>
@@ -451,7 +453,7 @@
 <li>PUT 请求总是被主 coordinator 处理，但是 GET 请求则可以直接在同区域的数据库中完成，注意在 datacenter 中也需要实现锁机制</li>
 <li><code>KeyValueLib.AHEAD</code> 和 <code>KeyValueLib.COMPLETE</code> 方法很有用，她们可以在无延迟的情况下通知所有的 datacenter</li>
 </ol>
-<h3 id="u6700_u7EC8_u4E00_u81F4_u6027_u9700_u6C42"><a href="#u6700_u7EC8_u4E00_u81F4_u6027_u9700_u6C42" class="headerlink" title="最终一致性需求"></a>最终一致性需求</h3><p>最终一致性更强调性能，不保证请求的顺序，也不保证请求的一致性。唯一的要求是新的写入操作不能被旧的写入操作覆盖。下面是具体的需求：</p>
+<h3 id="最终一致性需求"><a href="#最终一致性需求" class="headerlink" title="最终一致性需求"></a>最终一致性需求</h3><p>最终一致性更强调性能，不保证请求的顺序，也不保证请求的一致性。唯一的要求是新的写入操作不能被旧的写入操作覆盖。下面是具体的需求：</p>
 <p><strong>非阻塞读和写</strong></p>
 <p>读和写操作都没有任何阻塞</p>
 <p><strong>隐式操作顺序</strong></p>
@@ -460,7 +462,7 @@
 <p>提示和建议</p>
 </blockquote>
 <p>最终一致性的实现比较简单，因为不需要保证操作的顺序，所以也不需要任何的锁机制，只需要保证新的值不要被旧的覆盖即可，唯一能保证的是最终会一致，中间过程中就随便搞即可。</p>
-<h2 id="u9879_u76EE_u65E5_u5FD7"><a href="#u9879_u76EE_u65E5_u5FD7" class="headerlink" title="项目日志"></a>项目日志</h2><p>开始之前要仔细阅读需求。开始之前要仔细阅读需求。开始之前要仔细阅读需求。（我都翻译得如此简练了，还是要弄懂才好）</p>
+<h2 id="项目日志"><a href="#项目日志" class="headerlink" title="项目日志"></a>项目日志</h2><p>开始之前要仔细阅读需求。开始之前要仔细阅读需求。开始之前要仔细阅读需求。（我都翻译得如此简练了，还是要弄懂才好）</p>
 <p>简单来说，情况是这样，有三个地区，每个地区都有一台 Coordinator 和 KeyValueStore，也就是一共要六台机器。除此之外，还有另一台客户端机器，用来测试和提交。</p>
 <ul>
 <li>打上标签: <code>Project:3.3</code></li>
@@ -478,7 +480,7 @@
 <li>只需要修改 <code>/home/ubuntu/Project3_3/vertx/bin/Coordinator.java</code> 文件使其工作, 在该文件夹下执行 <code>./vertx run Coordinator.java</code> 即可运行。注意在开始测试之前要在所有的 Coordinator 都做一次</li>
 <li>实现强一致性和最终一致性，除了系统需求之外，这两个部分还有各自的要求</li>
 </ol>
-<h3 id="u89E3_u9898_u8BB0_u5F55"><a href="#u89E3_u9898_u8BB0_u5F55" class="headerlink" title="解题记录"></a>解题记录</h3><p>分别开启 datacenter 和 coordinator 的实例，先把代码搞下来：</p>
+<h3 id="解题记录"><a href="#解题记录" class="headerlink" title="解题记录"></a>解题记录</h3><p>分别开启 datacenter 和 coordinator 的实例，先把代码搞下来：</p>
 <ul>
 <li>Database: <code>scp -i demo.pem ubuntu@ec2-52-91-191-111.compute-1.amazonaws.com:~/Project3_3/vertx/bin/KeyValueStore.java ./</code></li>
 <li>Coordinator: <code>scp -i demo.pem ubuntu@ec2-54-164-37-130.compute-1.amazonaws.com:~/Project3_3/vertx/bin/Coordinator.java ./</code></li>
@@ -505,7 +507,7 @@
 </ol>
 <p>对于 GET 操作，直接从数据库中读取当前数值即可，没有其他限制</p>
 <p><strong>强一致性模型</strong></p>
-<p>我们首先需要决定的是，具体负责同步的是 Coordinator 还是 DataCenter。如果是 Coordinator，那么和之前 <a href="/./2016/02/29/cc-15/">云计算 第 15 课 分区和复制</a> 是一致的，可以考虑采用优先队列的方式进行处理，但是这样就出现了一个问题：如何保证 DataCenter 的访问次序呢，尤其是在有延迟的情况下。</p>
+<p>我们首先需要决定的是，具体负责同步的是 Coordinator 还是 DataCenter。如果是 Coordinator，那么和之前 <a href="./2016/02/29/cc-15/">云计算 第 15 课 分区和复制</a> 是一致的，可以考虑采用优先队列的方式进行处理，但是这样就出现了一个问题：如何保证 DataCenter 的访问次序呢，尤其是在有延迟的情况下。</p>
 <p>答案是：几乎无解。有的话一定会很复杂。</p>
 <p>所以需要改变策略，把大部分的操作放到 DataCenter 中来处理。既然决定要在 DataCenter 中实现强一致性，肯定少不了优先队列。回过头来看之前的解决方案，实际上没有用到『锁』，而是采用了等待的机制，当轮到该线程执行的时候，这个线程才开始执行。</p>
 <p>实话说，现在我就有点看不明白之前的代码了，之前依赖于多个线程互相同步，很容易出问题（尤其是在在有了延迟的情况下），所以这次我们考虑换一个机制。</p>
@@ -540,7 +542,7 @@
 <li>Database: <code>scp -i demo.pem ./KeyValueStore.java ubuntu@ec2-54-84-235-244.compute-1.amazonaws.com:~/Project3_3/vertx/bin/</code></li>
 <li>Coordinator: <code>scp -i demo.pem ./Coordinator.java ubuntu@ec2-54-88-115-252.compute-1.amazonaws.com:~/Project3_3/vertx/bin/</code></li>
 </ul>
-<h3 id="u63D0_u4EA4_u65B9_u6CD5"><a href="#u63D0_u4EA4_u65B9_u6CD5" class="headerlink" title="提交方法"></a>提交方法</h3><ol>
+<h3 id="提交方法"><a href="#提交方法" class="headerlink" title="提交方法"></a>提交方法</h3><ol>
 <li>启动一个 m1.small(ami-d72a2cbd) 客户端实例</li>
 <li>进入文件夹 <code>/home/ubuntu/Project3_3/</code></li>
 <li>其中包含文件 <code>consistency_checker.sh</code>, <code>config.prop</code>, <code>submitter.sh</code> 和 <code>references</code>.</li>
@@ -548,14 +550,14 @@
 <li>把 <code>Coordinator.java</code> 和 <code>KeyValueStore.java</code> 文件复制到 <code>/home/ubuntu/Project3_3</code> 文件夹中（如果创建了其他文件，也需要一并包含），并注意填写 <code>references</code>，然后执行 <code>submitter</code> 进行提交</li>
 <li>网络状况也会对结果产生影响，试着避开高峰期进行测试和提交</li>
 </ol>
-<h2 id="u989D_u5916_u4EFB_u52A1"><a href="#u989D_u5916_u4EFB_u52A1" class="headerlink" title="额外任务"></a>额外任务</h2><p>前面的测试只是保证结果的正确性，所以额外任务就是——性能！</p>
+<h2 id="额外任务"><a href="#额外任务" class="headerlink" title="额外任务"></a>额外任务</h2><p>前面的测试只是保证结果的正确性，所以额外任务就是——性能！</p>
 <p>测试本身非常简单粗暴，就是在强一致性模式下发送大量请求，然后系统会根据表现给出评分（注意需要保证强一致性本身没有问题再进行测试）</p>
 <p>除了多加机器，添加缓存或者负载均衡技术，还有什么方法呢？</p>
 <p>这时候就需要考虑流量的模式了，不同地区的流量模式不一定一样。</p>
 <p>我们的系统会收到的请求其实是简单的『发送者-接收者』键值对，一般来说每个人不会频繁改变自己的所在位置，所以对于同一个人来说，多数的请求都会在同一个位置产生，仔细想想这里面的门道</p>
 <p>当然这只是一个其中的思路，除了不能缓存之外，其他都可以尝试！</p>
-<h3 id="u63D0_u4EA4_u65B9_u6CD5-1"><a href="#u63D0_u4EA4_u65B9_u6CD5-1" class="headerlink" title="提交方法"></a>提交方法</h3><p>填写好 <code>config.prop</code> 并执行 <code>./bonus_checker.sh</code>。测试时间会比较长（至少要十分钟），完成之后使用 <code>./submitter.sh bonus</code> 来提交。一定要记得把代码放进去，不然会扣掉全部分数</p>
-<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<h3 id="提交方法-1"><a href="#提交方法-1" class="headerlink" title="提交方法"></a>提交方法</h3><p>填写好 <code>config.prop</code> 并执行 <code>./bonus_checker.sh</code>。测试时间会比较长（至少要十分钟），完成之后使用 <code>./submitter.sh bonus</code> 来提交。一定要记得把代码放进去，不然会扣掉全部分数</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
 <li><a href="http://www.sigma.me/2011/05/6/memory-consistency-summary.html" target="_blank" rel="external">存储一致性总结</a></li>
 <li><a href="http://blog.sina.com.cn/s/blog_3fe961ae0101g24g.html" target="_blank" rel="external">分布式中的一致性模型</a></li>
 </ul>
@@ -894,42 +896,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

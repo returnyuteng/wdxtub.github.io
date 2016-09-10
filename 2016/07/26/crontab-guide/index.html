@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> Crontab 指南 | 小土刀 </title>
+  <title> Crontab 指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -134,7 +134,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -337,13 +337,13 @@
         <p>Crontab 是 Unix/Linux 中用于设置周期执行指令的命令。如果我们需要定期执行某些任务，除了让任务常驻外，更方便的方法是让 crontab 来帮助我们调度执行。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h2><p>cron 是 Unix/Linux 中提供定期执行 shell 命令的服务，包括 <code>crond</code> 和 <code>crontab</code> 两部分：</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>cron 是 Unix/Linux 中提供定期执行 shell 命令的服务，包括 <code>crond</code> 和 <code>crontab</code> 两部分：</p>
 <ul>
 <li><code>crond</code>: cron 服务的守护进程，常驻内存负责定期调度</li>
 <li><code>crontab</code>: cron 的管理工具，负责编辑调度计划</li>
 </ul>
 <p>下面的演示在 Ubuntu 16.04 下进行。基本的使用方法可以用命令 <code>man crontab</code> 查看</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">NAME       crontab - maintain crontab files <span class="keyword">for</span> individual users (Vixie Cron)SYNOPSIS       crontab [ -u user ] file       crontab [ -u user ] [ -i ] &#123; <span class="operator">-e</span> | <span class="operator">-l</span> | -r &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">NAME       crontab - maintain crontab files <span class="keyword">for</span> individual users (Vixie Cron)SYNOPSIS       crontab [ -u user ] file       crontab [ -u user ] [ -i ] &#123; <span class="_">-e</span> | <span class="_">-l</span> | -r &#125;</div></pre></td></tr></table></figure>
 <p>简单解释一下</p>
 <ul>
 <li><code>-e</code> 编辑，类似 vim，保存退出时会检查语法</li>
@@ -351,7 +351,7 @@
 <li><code>-r</code> 删除所有任务</li>
 </ul>
 <p>如果 crontab 运行出错，可以查看日志文件/var/log/syslog</p>
-<h2 id="u57FA_u672C_u8BED_u6CD5"><a href="#u57FA_u672C_u8BED_u6CD5" class="headerlink" title="基本语法"></a>基本语法</h2><p>cron 的语法非常简单，一共分六大块，其中前五块用于指定时间周期，最后一块是具体执行的命令，看起来大概是这么个格式：</p>
+<h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><p>cron 的语法非常简单，一共分六大块，其中前五块用于指定时间周期，最后一块是具体执行的命令，看起来大概是这么个格式：</p>
 <p><code>min hour day month week command</code></p>
 <p>其中</p>
 <ul>
@@ -397,10 +397,10 @@
 </ul>
 </li>
 </ul>
-<h2 id="u7CFB_u7EDF_u7EA7_Crontab"><a href="#u7CFB_u7EDF_u7EA7_Crontab" class="headerlink" title="系统级 Crontab"></a>系统级 Crontab</h2><p>如果我们需要执行一些权限较高的指令，就需要利用 root 权限来执行，这时的机制和前面介绍的基本语法也是有区别的，我们需要编辑的文件是 <code>/etc/crontab</code>。先来看看其内容 </p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dawang@dawang-Parallels-Virtual-Platform:~$ cat /etc/crontab<span class="comment"># /etc/crontab: system-wide crontab</span><span class="comment"># Unlike any other crontab you don't have to run the `crontab'</span><span class="comment"># command to install the new version when you edit this file</span><span class="comment"># and files in /etc/cron.d. These files also have username fields,</span><span class="comment"># that none of the other crontabs do.</span>SHELL=/bin/shPATH=/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/sbin:/bin:/usr/sbin:/usr/bin<span class="comment"># m h dom mon dow user	command</span><span class="number">17</span> *	* * *	root    <span class="built_in">cd</span> / &amp;&amp; run-parts --report /etc/cron.hourly<span class="number">25</span> <span class="number">6</span>	* * *	root	<span class="built_in">test</span> -x /usr/sbin/anacron || ( <span class="built_in">cd</span> / &amp;&amp; run-parts --report /etc/cron.daily )<span class="number">47</span> <span class="number">6</span>	* * <span class="number">7</span>	root	<span class="built_in">test</span> -x /usr/sbin/anacron || ( <span class="built_in">cd</span> / &amp;&amp; run-parts --report /etc/cron.weekly )<span class="number">52</span> <span class="number">6</span>	<span class="number">1</span> * *	root	<span class="built_in">test</span> -x /usr/sbin/anacron || ( <span class="built_in">cd</span> / &amp;&amp; run-parts --report /etc/cron.monthly )<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<h2 id="系统级-Crontab"><a href="#系统级-Crontab" class="headerlink" title="系统级 Crontab"></a>系统级 Crontab</h2><p>如果我们需要执行一些权限较高的指令，就需要利用 root 权限来执行，这时的机制和前面介绍的基本语法也是有区别的，我们需要编辑的文件是 <code>/etc/crontab</code>。先来看看其内容 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">dawang@dawang-Parallels-Virtual-Platform:~$ cat /etc/crontab<span class="comment"># /etc/crontab: system-wide crontab</span><span class="comment"># Unlike any other crontab you don't have to run the `crontab'</span><span class="comment"># command to install the new version when you edit this file</span><span class="comment"># and files in /etc/cron.d. These files also have username fields,</span><span class="comment"># that none of the other crontabs do.</span>SHELL=/bin/shPATH=/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/sbin:/bin:/usr/sbin:/usr/bin<span class="comment"># m h dom mon dow user	command</span>17 *	* * *	root    <span class="built_in">cd</span> / &amp;&amp; run-parts --report /etc/cron.hourly25 6	* * *	root	<span class="built_in">test</span> -x /usr/sbin/anacron || ( <span class="built_in">cd</span> / &amp;&amp; run-parts --report /etc/cron.daily )47 6	* * 7	root	<span class="built_in">test</span> -x /usr/sbin/anacron || ( <span class="built_in">cd</span> / &amp;&amp; run-parts --report /etc/cron.weekly )52 6	1 * *	root	<span class="built_in">test</span> -x /usr/sbin/anacron || ( <span class="built_in">cd</span> / &amp;&amp; run-parts --report /etc/cron.monthly )<span class="comment">#</span></div></pre></td></tr></table></figure>
 <p>我们需要在命令和时间间隔之间添加命令执行者，并且也可以添加环境变量在调度中使用。我们看到配置文件中有几个 <code>cron.*</code> 文件，先来看看还有什么类似的文件</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dawang@dawang-Parallels-Virtual-Platform:~$ ll /etc | grep cron-rw-r--r--   <span class="number">1</span> root root     <span class="number">401</span> <span class="number">12</span>月 <span class="number">29</span>  <span class="number">2014</span> anacrontabdrwxr-xr-x   <span class="number">2</span> root root    <span class="number">4096</span> <span class="number">4</span>月  <span class="number">21</span> <span class="number">06</span>:<span class="number">14</span> cron.d/drwxr-xr-x   <span class="number">2</span> root root    <span class="number">4096</span> <span class="number">4</span>月  <span class="number">21</span> <span class="number">06</span>:<span class="number">14</span> cron.daily/drwxr-xr-x   <span class="number">2</span> root root    <span class="number">4096</span> <span class="number">4</span>月  <span class="number">21</span> <span class="number">06</span>:<span class="number">08</span> cron.hourly/drwxr-xr-x   <span class="number">2</span> root root    <span class="number">4096</span> <span class="number">4</span>月  <span class="number">21</span> <span class="number">06</span>:<span class="number">14</span> cron.monthly/-rw-r--r--   <span class="number">1</span> root root     <span class="number">722</span> <span class="number">4</span>月   <span class="number">6</span> <span class="number">05</span>:<span class="number">59</span> crontabdrwxr-xr-x   <span class="number">2</span> root root    <span class="number">4096</span> <span class="number">4</span>月  <span class="number">21</span> <span class="number">06</span>:<span class="number">14</span> cron.weekly/</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">dawang@dawang-Parallels-Virtual-Platform:~$ ll /etc | grep cron-rw-r--r--   1 root root     401 12月 29  2014 anacrontabdrwxr-xr-x   2 root root    4096 4月  21 06:14 cron.d/drwxr-xr-x   2 root root    4096 4月  21 06:14 cron.daily/drwxr-xr-x   2 root root    4096 4月  21 06:08 cron.hourly/drwxr-xr-x   2 root root    4096 4月  21 06:14 cron.monthly/-rw-r--r--   1 root root     722 4月   6 05:59 crontabdrwxr-xr-x   2 root root    4096 4月  21 06:14 cron.weekly/</div></pre></td></tr></table></figure>
 <p>其中</p>
 <ul>
 <li><code>cron.d</code> 目录：该目录下及子目录中所有符合调度语法的文件都会被执行</li>
@@ -409,19 +409,19 @@
 <li><code>cron.daily/hourly/monthly/weekly</code> 目录：里面都是脚本，分别在指定的时间里执行</li>
 </ul>
 <p>更多详细介绍，可以输入 <code>man 5 crontab</code> 或 <code>man 8 cron</code> 查阅</p>
-<h2 id="u539F_u7406"><a href="#u539F_u7406" class="headerlink" title="原理"></a>原理</h2><p>为什么我们用 <code>crontab -e</code> 编辑一下就可以添加一个定时任务呢？每次我们添加一行，这个工作就会被记录到 <code>/var/spool/cron/crontab</code> 中，如果我的用户名是 <code>dawang</code>，那么对应的文件就是 <code>/var/spool/cron/crontab/dawang</code>（需要 root 权限才能查看）。不过不建议直接修改，因为直接修改是不会进行语法检查的。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>为什么我们用 <code>crontab -e</code> 编辑一下就可以添加一个定时任务呢？每次我们添加一行，这个工作就会被记录到 <code>/var/spool/cron/crontab</code> 中，如果我的用户名是 <code>dawang</code>，那么对应的文件就是 <code>/var/spool/cron/crontab/dawang</code>（需要 root 权限才能查看）。不过不建议直接修改，因为直接修改是不会进行语法检查的。</p>
 <p>在某些系统中，不一定会每次都读取源配置文件（而是利用载入到内存的版本），这个时候我们就需要重启 crond 服务，命令为 <code>/sbin/service crond restart</code></p>
-<h2 id="Crond__u670D_u52A1_u7BA1_u7406"><a href="#Crond__u670D_u52A1_u7BA1_u7406" class="headerlink" title="Crond 服务管理"></a>Crond 服务管理</h2><p>默认情况系统并没有为我们启动 <code>crond</code> 服务，如果想开机启动，需要在 <code>/etc/rc.d/rc.local</code> 中添加 <code>service crond start</code> 这一行，其他的管理命令为 </p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 启动服务</span></span><br><span class="line">/sbin/service crond start </span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭服务</span></span><br><span class="line">/sbin/service crond stop </span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启服务</span></span><br><span class="line">/sbin/service crond restart </span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新载入配置</span></span><br><span class="line">/sbin/service crond reload</span><br></pre></td></tr></table></figure>
-<h2 id="u5B9E_u4F8B_u6D4B_u8BD5"><a href="#u5B9E_u4F8B_u6D4B_u8BD5" class="headerlink" title="实例测试"></a>实例测试</h2><p>接着我们来实战一下，第一次使用 <code>crontab -e</code> 需要我们选择编辑器，默认是 nano，但是我选择了 vim</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dawang@dawang-Parallels-Virtual-Platform:~$ crontab <span class="operator">-e</span>no crontab <span class="keyword">for</span> dawang - using an empty oneSelect an editor.  To change later, run <span class="string">'select-editor'</span>.  <span class="number">1</span>. /bin/ed  <span class="number">2</span>. /bin/nano        &lt;---- easiest  <span class="number">3</span>. /usr/bin/vim.tinyChoose <span class="number">1</span>-<span class="number">3</span> [<span class="number">2</span>]:</span><br></pre></td></tr></table></figure>
+<h2 id="Crond-服务管理"><a href="#Crond-服务管理" class="headerlink" title="Crond 服务管理"></a>Crond 服务管理</h2><p>默认情况系统并没有为我们启动 <code>crond</code> 服务，如果想开机启动，需要在 <code>/etc/rc.d/rc.local</code> 中添加 <code>service crond start</code> 这一行，其他的管理命令为 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 启动服务</span></div><div class="line">/sbin/service crond start </div><div class="line"></div><div class="line"><span class="comment"># 关闭服务</span></div><div class="line">/sbin/service crond stop </div><div class="line"></div><div class="line"><span class="comment"># 重启服务</span></div><div class="line">/sbin/service crond restart </div><div class="line"></div><div class="line"><span class="comment"># 重新载入配置</span></div><div class="line">/sbin/service crond reload</div></pre></td></tr></table></figure>
+<h2 id="实例测试"><a href="#实例测试" class="headerlink" title="实例测试"></a>实例测试</h2><p>接着我们来实战一下，第一次使用 <code>crontab -e</code> 需要我们选择编辑器，默认是 nano，但是我选择了 vim</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">dawang@dawang-Parallels-Virtual-Platform:~$ crontab <span class="_">-e</span>no crontab <span class="keyword">for</span> dawang - using an empty oneSelect an editor.  To change later, run <span class="string">'select-editor'</span>.  1. /bin/ed  2. /bin/nano        &lt;---- easiest  3. /usr/bin/vim.tinyChoose 1-3 [2]:</div></pre></td></tr></table></figure>
 <p>为了验证真的在执行，我们建立两个每分钟都执行的操作，具体如下（主要关注最后两行）：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Edit this file to introduce tasks to be run by cron.</span><span class="comment">#</span><span class="comment"># Each task to run has to be defined through a single line</span><span class="comment"># indicating with different fields when the task will be run</span><span class="comment"># and what command to run for the task</span><span class="comment">#</span><span class="comment"># To define the time you can provide concrete values for</span><span class="comment"># minute (m), hour (h), day of month (dom), month (mon),</span><span class="comment"># and day of week (dow) or use '*' in these fields (for 'any').#</span><span class="comment"># Notice that tasks will be started based on the cron's system</span><span class="comment"># daemon's notion of time and timezones.</span><span class="comment">#</span><span class="comment"># Output of the crontab jobs (including errors) is sent through</span><span class="comment"># email to the user the crontab file belongs to (unless redirected).</span><span class="comment">#</span><span class="comment"># For example, you can run a backup of all your user accounts</span><span class="comment"># at 5 a.m every week with:</span><span class="comment"># 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/</span><span class="comment">#</span><span class="comment"># For more information see the manual pages of crontab(5) and cron(8)</span><span class="comment">#</span><span class="comment"># m h  dom mon dow   command</span>* * * * * date &gt;&gt; /home/dawang/date.txt* * * * * <span class="built_in">echo</span> <span class="string">"time to go!"</span> &gt;&gt; /home/dawang/time.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># Edit this file to introduce tasks to be run by cron.</span><span class="comment">#</span><span class="comment"># Each task to run has to be defined through a single line</span><span class="comment"># indicating with different fields when the task will be run</span><span class="comment"># and what command to run for the task</span><span class="comment">#</span><span class="comment"># To define the time you can provide concrete values for</span><span class="comment"># minute (m), hour (h), day of month (dom), month (mon),</span><span class="comment"># and day of week (dow) or use '*' in these fields (for 'any').#</span><span class="comment"># Notice that tasks will be started based on the cron's system</span><span class="comment"># daemon's notion of time and timezones.</span><span class="comment">#</span><span class="comment"># Output of the crontab jobs (including errors) is sent through</span><span class="comment"># email to the user the crontab file belongs to (unless redirected).</span><span class="comment">#</span><span class="comment"># For example, you can run a backup of all your user accounts</span><span class="comment"># at 5 a.m every week with:</span><span class="comment"># 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/</span><span class="comment">#</span><span class="comment"># For more information see the manual pages of crontab(5) and cron(8)</span><span class="comment">#</span><span class="comment"># m h  dom mon dow   command</span>* * * * * date &gt;&gt; /home/dawang/date.txt* * * * * <span class="built_in">echo</span> <span class="string">"time to go!"</span> &gt;&gt; /home/dawang/time.txt</div></pre></td></tr></table></figure>
 <p>这里做了两件事，一个是每分钟报时，另一个就是每分钟输出一段话，这里使用 <code>&gt;&gt;</code> 表示追加输出，更多输入输出方式在下一节有介绍。如果刚才没有启动服务，现在用 <code>service crond start</code> 启动，然后等待一段时间，就可以看到输出啦，具体参考下面的命令，这里就不赘述了：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dawang@dawang-Parallels-Virtual-Platform:~$ ll | grep txt-rw-rw-r--   <span class="number">1</span> dawang dawang   <span class="number">1849</span> <span class="number">7</span>月  <span class="number">26</span> <span class="number">16</span>:<span class="number">08</span> date.txt-rw-rw-r--   <span class="number">1</span> dawang dawang    <span class="number">516</span> <span class="number">7</span>月  <span class="number">26</span> <span class="number">16</span>:<span class="number">08</span> time.txtdawang@dawang-Parallels-Virtual-Platform:~$ tail -n <span class="number">10</span> date.txt<span class="number">2016</span>年 <span class="number">07</span>月 <span class="number">26</span>日 星期二 <span class="number">16</span>:<span class="number">01</span>:<span class="number">01</span> CST<span class="number">2016</span>年 <span class="number">07</span>月 <span class="number">26</span>日 星期二 <span class="number">16</span>:<span class="number">02</span>:<span class="number">01</span> CST<span class="number">2016</span>年 <span class="number">07</span>月 <span class="number">26</span>日 星期二 <span class="number">16</span>:<span class="number">03</span>:<span class="number">01</span> CST<span class="number">2016</span>年 <span class="number">07</span>月 <span class="number">26</span>日 星期二 <span class="number">16</span>:<span class="number">04</span>:<span class="number">01</span> CST<span class="number">2016</span>年 <span class="number">07</span>月 <span class="number">26</span>日 星期二 <span class="number">16</span>:<span class="number">05</span>:<span class="number">01</span> CST<span class="number">2016</span>年 <span class="number">07</span>月 <span class="number">26</span>日 星期二 <span class="number">16</span>:<span class="number">06</span>:<span class="number">01</span> CST<span class="number">2016</span>年 <span class="number">07</span>月 <span class="number">26</span>日 星期二 <span class="number">16</span>:<span class="number">07</span>:<span class="number">01</span> CST<span class="number">2016</span>年 <span class="number">07</span>月 <span class="number">26</span>日 星期二 <span class="number">16</span>:<span class="number">08</span>:<span class="number">01</span> CST<span class="number">2016</span>年 <span class="number">07</span>月 <span class="number">26</span>日 星期二 <span class="number">16</span>:<span class="number">09</span>:<span class="number">01</span> CST<span class="number">2016</span>年 <span class="number">07</span>月 <span class="number">26</span>日 星期二 <span class="number">16</span>:<span class="number">10</span>:<span class="number">01</span> CSTdawang@dawang-Parallels-Virtual-Platform:~$ tail -n <span class="number">10</span> time.txt time to go!time to go!time to go!time to go!time to go!time to go!time to go!time to go!time to go!time to go!</span><br></pre></td></tr></table></figure>
-<h2 id="u91CD_u5B9A_u5411_u547D_u4EE4"><a href="#u91CD_u5B9A_u5411_u547D_u4EE4" class="headerlink" title="重定向命令"></a>重定向命令</h2><p>这里直接给出例子</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">command</span> &gt; file 把标准输出重定向到文件</span><br><span class="line"><span class="built_in">command</span> &gt;&gt; file 把标准输出追加到文件</span><br><span class="line"></span><br><span class="line"><span class="built_in">command</span> <span class="number">1</span> &gt; file 把标准输出重定向到文件</span><br><span class="line"><span class="built_in">command</span> <span class="number">2</span> &gt; file 把标准错误重定向到文件</span><br><span class="line"><span class="built_in">command</span> <span class="number">2</span> &gt;&gt; file 把标准输出追加到文件</span><br><span class="line"><span class="built_in">command</span> <span class="number">2</span>&gt;&amp;<span class="number">1</span> 把<span class="built_in">command</span>命令标准错误重定向到标准输出</span><br><span class="line"><span class="built_in">command</span> &gt; file <span class="number">2</span>&gt;&amp;<span class="number">1</span> 把标准输出和标准错误一起重定向到文件</span><br><span class="line"><span class="built_in">command</span> &gt;&gt; file <span class="number">2</span>&gt;&amp;<span class="number">1</span> 把标准输出和标准错误一起追加到文件</span><br><span class="line"></span><br><span class="line"><span class="built_in">command</span> &lt; file 把<span class="built_in">command</span>命令以file文件作为标准输入</span><br><span class="line"><span class="built_in">command</span> &lt; file &gt;file2 把<span class="built_in">command</span>命令以file文件作为标准输入，以file2文件作为标准输出</span><br><span class="line"><span class="built_in">command</span> &lt;&amp;- 关闭标准输入</span><br></pre></td></tr></table></figure>
-<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">dawang@dawang-Parallels-Virtual-Platform:~$ ll | grep txt-rw-rw-r--   1 dawang dawang   1849 7月  26 16:08 date.txt-rw-rw-r--   1 dawang dawang    516 7月  26 16:08 time.txtdawang@dawang-Parallels-Virtual-Platform:~$ tail -n 10 date.txt2016年 07月 26日 星期二 16:01:01 CST2016年 07月 26日 星期二 16:02:01 CST2016年 07月 26日 星期二 16:03:01 CST2016年 07月 26日 星期二 16:04:01 CST2016年 07月 26日 星期二 16:05:01 CST2016年 07月 26日 星期二 16:06:01 CST2016年 07月 26日 星期二 16:07:01 CST2016年 07月 26日 星期二 16:08:01 CST2016年 07月 26日 星期二 16:09:01 CST2016年 07月 26日 星期二 16:10:01 CSTdawang@dawang-Parallels-Virtual-Platform:~$ tail -n 10 time.txt time to go!time to go!time to go!time to go!time to go!time to go!time to go!time to go!time to go!time to go!</div></pre></td></tr></table></figure>
+<h2 id="重定向命令"><a href="#重定向命令" class="headerlink" title="重定向命令"></a>重定向命令</h2><p>这里直接给出例子</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="built_in">command</span> &gt; file 把标准输出重定向到文件</div><div class="line"><span class="built_in">command</span> &gt;&gt; file 把标准输出追加到文件</div><div class="line"></div><div class="line"><span class="built_in">command</span> 1 &gt; file 把标准输出重定向到文件</div><div class="line"><span class="built_in">command</span> 2 &gt; file 把标准错误重定向到文件</div><div class="line"><span class="built_in">command</span> 2 &gt;&gt; file 把标准输出追加到文件</div><div class="line"><span class="built_in">command</span> 2&gt;&amp;1 把<span class="built_in">command</span>命令标准错误重定向到标准输出</div><div class="line"><span class="built_in">command</span> &gt; file 2&gt;&amp;1 把标准输出和标准错误一起重定向到文件</div><div class="line"><span class="built_in">command</span> &gt;&gt; file 2&gt;&amp;1 把标准输出和标准错误一起追加到文件</div><div class="line"></div><div class="line"><span class="built_in">command</span> &lt; file 把<span class="built_in">command</span>命令以file文件作为标准输入</div><div class="line"><span class="built_in">command</span> &lt; file &gt;file2 把<span class="built_in">command</span>命令以file文件作为标准输入，以file2文件作为标准输出</div><div class="line"><span class="built_in">command</span> &lt;&amp;- 关闭标准输入</div></pre></td></tr></table></figure>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="http://www.cnblogs.com/bourneli/archive/2012/04/14/2446944.html" target="_blank" rel="external">crontab使用入门</a></li>
 <li><a href="http://backreference.org/2010/04/05/last-day-of-month-cron-job/" target="_blank" rel="external">判断一个月最后一天</a></li>
 <li><a href="http://www.cnblogs.com/ggjucheng/archive/2012/08/19/2646763.html" target="_blank" rel="external">crontab实用手册</a></li>
@@ -703,7 +703,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u4ECB"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u672C_u8BED_u6CD5"><span class="nav-number">2.</span> <span class="nav-text">基本语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7CFB_u7EDF_u7EA7_Crontab"><span class="nav-number">3.</span> <span class="nav-text">系统级 Crontab</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u539F_u7406"><span class="nav-number">4.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Crond__u670D_u52A1_u7BA1_u7406"><span class="nav-number">5.</span> <span class="nav-text">Crond 服务管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B9E_u4F8B_u6D4B_u8BD5"><span class="nav-number">6.</span> <span class="nav-text">实例测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u91CD_u5B9A_u5411_u547D_u4EE4"><span class="nav-number">7.</span> <span class="nav-text">重定向命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本语法"><span class="nav-number">2.</span> <span class="nav-text">基本语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统级-Crontab"><span class="nav-number">3.</span> <span class="nav-text">系统级 Crontab</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">4.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Crond-服务管理"><span class="nav-number">5.</span> <span class="nav-text">Crond 服务管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例测试"><span class="nav-number">6.</span> <span class="nav-text">实例测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重定向命令"><span class="nav-number">7.</span> <span class="nav-text">重定向命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
@@ -883,42 +883,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

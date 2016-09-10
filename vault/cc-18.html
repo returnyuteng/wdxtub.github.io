@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="之前的任务我们主要做的是 OLTP 的工作，这节课我们来接触一些 OLAP 数据仓库相关的内容，主要是 Hive, Impala 和 Redshift。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 18 课 基于云数据仓库的 OLAP">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-18.html">
@@ -113,6 +114,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 18 课 基于云数据仓库的 OLAP">
 <meta name="twitter:description" content="之前的任务我们主要做的是 OLTP 的工作，这节课我们来接触一些 OLAP 数据仓库相关的内容，主要是 Hive, Impala 和 Redshift。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14591623554566.jpg">
 
 
 
@@ -136,7 +138,7 @@
   
     云计算 第 18 课 基于云数据仓库的 OLAP | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -157,7 +159,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -271,13 +273,13 @@
       <p>之前的任务我们主要做的是 OLTP 的工作，这节课我们来接触一些 OLAP 数据仓库相关的内容，主要是 Hive, Impala 和 Redshift。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
 <li>比较 Online Transaction Processing(OLTP) 与 Online Analytic Processing(OLAP) 系统的异同，并讨论 OLAP 在商业智能系统中扮演的角色</li>
 <li>通过在 Hive 上运行典型的商业智能请求来分析在数据仓库中使用 MapReduce 编程模型的优劣</li>
 <li>通过在 Impala 上运行典型的商业智能请求来分析在数据仓库中使用 Massive Parallel Programming engine 的优劣，并对 schema 和 query 进行优化</li>
 <li>通过设计和优化表结构（sort key 与 distribution key）来利用诸如 Redshift 这样的大型并行系统的并行处理</li>
 </ol>
-<h2 id="u80CC_u666F_u77E5_u8BC6"><a href="#u80CC_u666F_u77E5_u8BC6" class="headerlink" title="背景知识"></a>背景知识</h2><h3 id="OLTP_vs_OLAP"><a href="#OLTP_vs_OLAP" class="headerlink" title="OLTP vs OLAP"></a>OLTP vs OLAP</h3><p>我们先来比较以下 OLTP 与 OLAP，这个<a href="https://www.youtube.com/watch?v=BNgouADOemg" target="_blank" rel="external">视频</a>介绍了相关内容。</p>
+<h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><h3 id="OLTP-vs-OLAP"><a href="#OLTP-vs-OLAP" class="headerlink" title="OLTP vs OLAP"></a>OLTP vs OLAP</h3><p>我们先来比较以下 OLTP 与 OLAP，这个<a href="https://www.youtube.com/watch?v=BNgouADOemg" target="_blank" rel="external">视频</a>介绍了相关内容。</p>
 <p>具体的定义介绍可以参阅 <a href="https://en.wikipedia.org/wiki/Online_transaction_processing" target="_blank" rel="external">OLTP</a> 与 <a href="https://en.wikipedia.org/wiki/Online_analytical_processing" target="_blank" rel="external">OLAP</a> </p>
 <p>下面是一个简单粗暴的对比图：</p>
 <p><img src="/images/14591623554566.jpg" alt="OLTP vs OLAP"></p>
@@ -348,7 +350,7 @@
 <li>建议使用 SQL WorkbenchJ 来进行测试连接（需要填写各种相关信息）</li>
 <li>使用完成之后注意关闭</li>
 </ol>
-<h3 id="Hadoop__u6587_u4EF6_u683C_u5F0F"><a href="#Hadoop__u6587_u4EF6_u683C_u5F0F" class="headerlink" title="Hadoop 文件格式"></a>Hadoop 文件格式</h3><blockquote>
+<h3 id="Hadoop-文件格式"><a href="#Hadoop-文件格式" class="headerlink" title="Hadoop 文件格式"></a>Hadoop 文件格式</h3><blockquote>
 <p>SequenceFile</p>
 </blockquote>
 <p>SequenceFile是Hadoop API 提供的一种二进制文件，它将数据以 <code>&lt;key,value&gt;</code> 的形式序列化到文件中。这种二进制文件内部使用Hadoop 的标准的Writable 接口实现序列化和反序列化。它与Hadoop API中的MapFile 是互相兼容的。Hive 中的SequenceFile 继承自Hadoop API 的SequenceFile，不过它的key为空，使用value 存放实际的值， 这样是为了避免MR 在运行map 阶段的排序过程。如果你用Java API 编写SequenceFile，并让Hive 读取的话，请确保使用value字段存放数据，否则你需要自定义读取这种SequenceFile 的InputFormat class 和OutputFormat class。</p>
@@ -382,7 +384,7 @@
 <p>Parquet列式存储带来的性能上的提高在业内已经得到了充分的认可，特别是当你们的表非常宽（column非常多）的时候，Parquet无论在资源利用率还是性能上都优势明显。具体的性能指标详见参考文档。</p>
 <p>Spark已经将Parquet设为默认的文件存储格式，Cloudera投入了很多工程师到Impala+Parquet相关开发中，Hive/Pig都原生支持Parquet。Parquet现在为Twitter至少节省了1/3的存储空间，同时节省了大量的表扫描和反序列化的时间。这两方面直接反应就是节约成本和提高性能。</p>
 <p>如果说HDFS是大数据时代文件系统的事实标准的话，Parquet就是大数据时代存储格式的事实标准。</p>
-<h2 id="u4EFB_u52A1_u4ECB_u7ECD"><a href="#u4EFB_u52A1_u4ECB_u7ECD" class="headerlink" title="任务介绍"></a>任务介绍</h2><ul>
+<h2 id="任务介绍"><a href="#任务介绍" class="headerlink" title="任务介绍"></a>任务介绍</h2><ul>
 <li>标签：<code>Project:3.5</code></li>
 <li>镜像<ul>
 <li>测试实例: <code>m1.small</code>, <code>ami-a13831cb</code></li>
@@ -399,18 +401,18 @@
 <p>Query 1: restriction on only one dimension. quantify the amount of revenue increase that would have resulted from eliminating certain company-wide discounts in a given percentage range for products shipped in a given year</p>
 </blockquote>
 <p>例如：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">select</span> <span class="keyword">sum</span>(lo_extendedprice*lo_discount) <span class="keyword">as</span> revenue </span><br><span class="line"><span class="keyword">from</span> lineorder, dwdate </span><br><span class="line"><span class="keyword">where</span> lo_orderdate=d_datekey</span><br><span class="line"><span class="keyword">and</span> d_year=<span class="number">1997</span> </span><br><span class="line"><span class="keyword">and</span> lo_discount <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">3</span> </span><br><span class="line"><span class="keyword">and</span> lo_quantity &lt; <span class="number">24</span>;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="keyword">sum</span>(lo_extendedprice*lo_discount) <span class="keyword">as</span> revenue </div><div class="line"><span class="keyword">from</span> lineorder, dwdate </div><div class="line"><span class="keyword">where</span> lo_orderdate=d_datekey</div><div class="line"><span class="keyword">and</span> d_year=<span class="number">1997</span> </div><div class="line"><span class="keyword">and</span> lo_discount <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">3</span> </div><div class="line"><span class="keyword">and</span> lo_quantity &lt; <span class="number">24</span>;</div></pre></td></tr></table></figure>
 <blockquote>
 <p>Query 2: restrictions on two dimensions. compare revenue for some product classes, for suppliers in a certain region, grouped by more restrictive product classes and all years of order.</p>
 </blockquote>
 <p>例如：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">select</span> <span class="keyword">sum</span>(lo_revenue), d_year, p_brand1 </span><br><span class="line"><span class="keyword">from</span> lineorder, dwdate, part, supplier </span><br><span class="line"><span class="keyword">where</span> lo_orderdate = d_datekey </span><br><span class="line"><span class="keyword">and</span> lo_partkey = p_partkey </span><br><span class="line"><span class="keyword">and</span> lo_suppkey = s_suppkey </span><br><span class="line"><span class="keyword">and</span> p_category = <span class="string">'MFGR#12'</span> </span><br><span class="line"><span class="keyword">and</span> s_region = <span class="string">'AMERICA'</span> </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> d_year, p_brand1 </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> d_year, p_brand1 </span><br><span class="line"><span class="keyword">limit</span> <span class="number">500</span>;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="keyword">sum</span>(lo_revenue), d_year, p_brand1 </div><div class="line"><span class="keyword">from</span> lineorder, dwdate, part, supplier </div><div class="line"><span class="keyword">where</span> lo_orderdate = d_datekey </div><div class="line"><span class="keyword">and</span> lo_partkey = p_partkey </div><div class="line"><span class="keyword">and</span> lo_suppkey = s_suppkey </div><div class="line"><span class="keyword">and</span> p_category = <span class="string">'MFGR#12'</span> </div><div class="line"><span class="keyword">and</span> s_region = <span class="string">'AMERICA'</span> </div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> d_year, p_brand1 </div><div class="line"><span class="keyword">order</span> <span class="keyword">by</span> d_year, p_brand1 </div><div class="line"><span class="keyword">limit</span> <span class="number">500</span>;</div></pre></td></tr></table></figure>
 <blockquote>
 <p>Query 3: restrictions on three dimensions, including the remaining dimension, customer. The query is intended to provide revenue volume for lineorder transactions by customer nation and supplier nation and year within a given region, in a certain time period.</p>
 </blockquote>
 <p>例如：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">select</span> c_city, s_city, d_year, <span class="keyword">sum</span>(lo_revenue) <span class="keyword">as</span> revenue </span><br><span class="line"><span class="keyword">from</span> customer, lineorder, supplier, dwdate </span><br><span class="line"><span class="keyword">where</span> lo_custkey = c_custkey </span><br><span class="line"><span class="keyword">and</span> lo_suppkey = s_suppkey </span><br><span class="line"><span class="keyword">and</span> lo_orderdate = d_datekey </span><br><span class="line"><span class="keyword">and</span> (c_city=<span class="string">'UNITED KI1'</span> <span class="keyword">or</span> c_city=<span class="string">'UNITED KI5'</span>) </span><br><span class="line"><span class="keyword">and</span> (s_city=<span class="string">'UNITED KI1'</span> <span class="keyword">or</span> s_city=<span class="string">'UNITED KI5'</span>) </span><br><span class="line"><span class="keyword">and</span> d_yearmonth = <span class="string">'Dec1997'</span> </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> c_city, s_city, d_year </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> d_year <span class="keyword">asc</span>, revenue <span class="keyword">desc</span> </span><br><span class="line"><span class="keyword">limit</span> <span class="number">5</span>;</span></span><br></pre></td></tr></table></figure>
-<h3 id="Star_Schema"><a href="#Star_Schema" class="headerlink" title="Star Schema"></a>Star Schema</h3><p>数据仓库一般会选择 star schema，说白了就是不同的信息分开组织，然后有一个中心表格把所有信息集成到一起，如下图所示：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><div class="line"><span class="keyword">select</span> c_city, s_city, d_year, <span class="keyword">sum</span>(lo_revenue) <span class="keyword">as</span> revenue </div><div class="line"><span class="keyword">from</span> customer, lineorder, supplier, dwdate </div><div class="line"><span class="keyword">where</span> lo_custkey = c_custkey </div><div class="line"><span class="keyword">and</span> lo_suppkey = s_suppkey </div><div class="line"><span class="keyword">and</span> lo_orderdate = d_datekey </div><div class="line"><span class="keyword">and</span> (c_city=<span class="string">'UNITED KI1'</span> <span class="keyword">or</span> c_city=<span class="string">'UNITED KI5'</span>) </div><div class="line"><span class="keyword">and</span> (s_city=<span class="string">'UNITED KI1'</span> <span class="keyword">or</span> s_city=<span class="string">'UNITED KI5'</span>) </div><div class="line"><span class="keyword">and</span> d_yearmonth = <span class="string">'Dec1997'</span> </div><div class="line"><span class="keyword">group</span> <span class="keyword">by</span> c_city, s_city, d_year </div><div class="line"><span class="keyword">order</span> <span class="keyword">by</span> d_year <span class="keyword">asc</span>, revenue <span class="keyword">desc</span> </div><div class="line"><span class="keyword">limit</span> <span class="number">5</span>;</div></pre></td></tr></table></figure>
+<h3 id="Star-Schema"><a href="#Star-Schema" class="headerlink" title="Star Schema"></a>Star Schema</h3><p>数据仓库一般会选择 star schema，说白了就是不同的信息分开组织，然后有一个中心表格把所有信息集成到一起，如下图所示：</p>
 <p><img src="/images/14591657300221.jpg" alt="Figure 7: The SSB data model"></p>
 <p>其中不同的小信息成为 lookup 表，而大的称为 fact 表。不同的 lookup 表不会相互连接，而 fact 表通过主键或外键来进行连接。</p>
 <p>具体的定义如下：</p>
@@ -419,14 +421,14 @@
 <li>A foreign key is a field (or collection of fields) in one table that uniquely identifies a row of another table. The foreign key in one table (referencing table) matches a particular candidate key (not necessarily the primary key) column of another table (referenced table). The foreign key can be used to cross-reference tables.</li>
 <li>A star join is a primary-key to foreign-key join of the dimension tables to a fact table. All of the dimension tables have a primary key. The central fact table has a foreign key mapping to the dimension tables’ primary key. A star join selects rows from the central fact table for aggregation based on a restriction (filtering condition) on the dimension tables.</li>
 </ul>
-<h3 id="Hive__u4EFB_u52A1"><a href="#Hive__u4EFB_u52A1" class="headerlink" title="Hive 任务"></a>Hive 任务</h3><ul>
+<h3 id="Hive-任务"><a href="#Hive-任务" class="headerlink" title="Hive 任务"></a>Hive 任务</h3><ul>
 <li>启动一个 <code>ami-a13831cb</code> 的 <code>m1.small</code> 实例</li>
 <li>修改 <code>config.properties</code>，填上对应的地址</li>
 <li>修改 <code>project3_5.sql</code> 中的内容，用 <code>Runner.jar</code> 来运行</li>
 <li>运行时间比较长，考虑使用 <code>byobu</code> 或者 <code>nohup</code> 来保持 SSH 连接</li>
 </ul>
 <p>具体的用法</p>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="tag">Usage</span>: <span class="tag">java</span> <span class="tag">-jar</span> <span class="tag">Runner</span><span class="class">.jar</span> <span class="attr_selector">[backend]</span> <span class="attr_selector">[section_name]</span></span><br><span class="line"><span class="attr_selector">[backend]</span> : <span class="tag">hive</span></span><br><span class="line"><span class="attr_selector">[section_name]</span> : <span class="tag">section</span> <span class="tag">name</span> <span class="tag">to</span> <span class="tag">run</span> <span class="tag">from</span> <span class="tag">the</span> <span class="tag">project3_5</span><span class="class">.sql</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Usage: java -jar Runner.jar [backend] [section_name]</div><div class="line">[backend] : hive</div><div class="line">[section_name] : section name to run from the project3_5.sql</div></pre></td></tr></table></figure>
 <p>创建 Hive 时可以一并创建好 Impala（因为之后也要用，就不用重新开一个 EMR 了），具体的参数为：</p>
 <ul>
 <li>Cluster Name: &lt; Your choice of EMR Cluster Name &gt;</li>
@@ -465,7 +467,7 @@
 </ul>
 </li>
 </ul>
-<h3 id="Impala__u4EFB_u52A1"><a href="#Impala__u4EFB_u52A1" class="headerlink" title="Impala 任务"></a>Impala 任务</h3><p>开 EMR 和 Hive 一样（前面开了现在就不用操心了），具体的任务为：</p>
+<h3 id="Impala-任务"><a href="#Impala-任务" class="headerlink" title="Impala 任务"></a>Impala 任务</h3><p>开 EMR 和 Hive 一样（前面开了现在就不用操心了），具体的任务为：</p>
 <ol>
 <li>创建测试数据</li>
 <li>测试基本性能</li>
@@ -563,7 +565,7 @@
 <p>基本上需要根据范围来进行分隔，比以此确定 partition key，通过观察应该能够找到合适的 key。其他的部分根据原来的代码复制粘贴即可。</p>
 <p>如果使用了 EXTERNAL 关键字，删除的时候还需要对应删除 hdfs 中的文件。然而 EMR 很可能没权限删，所以，插入的时候使用 <code>INSERT OVERWRITE</code> 关键词（感谢 @vera @shuangling）</p>
 <p>这部分不算太难。需要仔细。另外注意 <code>project3_5.sql</code> 中不要写注释，会出错。</p>
-<h3 id="Redshift__u4EFB_u52A1"><a href="#Redshift__u4EFB_u52A1" class="headerlink" title="Redshift 任务"></a>Redshift 任务</h3><p>Redshift 很贵，确定弄清楚了要做的事情，才开启，启动的配置如下：</p>
+<h3 id="Redshift-任务"><a href="#Redshift-任务" class="headerlink" title="Redshift 任务"></a>Redshift 任务</h3><p>Redshift 很贵，确定弄清楚了要做的事情，才开启，启动的配置如下：</p>
 <ul>
 <li>Node Type: <code>ds2.xlarge</code></li>
 <li>Cluster Type: <code>Multi Node</code></li>
@@ -618,7 +620,7 @@
 </ul>
 <p>使用 <code>submitter_redshift</code> 来提交，记得移除 AWS 的密码。可能需要多跑几次来拿到分数，完成之后记得关掉。</p>
 <p>总结经验就是一条，观察法 + 碰运气，反正每个表需要加一个 <code>sortkey</code> 和 <code>distkey</code>，大概试验一下就知道了。</p>
-<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="http://datawarehouse4u.info/OLTP-vs-OLAP.html" target="_blank" rel="external">OLTP vs. OLAP</a></li>
 <li><a href="http://www.infoq.com/cn/articles/hadoop-file-format" target="_blank" rel="external">浅析Hadoop文件格式</a></li>
 <li><a href="http://www.infoq.com/cn/articles/in-depth-analysis-of-parquet-column-storage-format" target="_blank" rel="external">深入分析Parquet列式存储格式</a></li>
@@ -960,42 +962,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

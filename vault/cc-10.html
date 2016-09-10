@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="这节课我们来看看，如何利用 AWS 来进行并行处理，完成与上节课类似的文本处理任务。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 10 课 Parallel Programming using EMR">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-10.html">
@@ -102,6 +103,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 10 课 Parallel Programming using EMR">
 <meta name="twitter:description" content="这节课我们来看看，如何利用 AWS 来进行并行处理，完成与上节课类似的文本处理任务。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14537775895092.jpg">
 
 
 
@@ -125,7 +127,7 @@
   
     云计算 第 10 课 Parallel Programming using EMR | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -146,7 +148,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -288,7 +290,7 @@
 <blockquote>
 <p>别忘了打上 Project: 1.2 的标签</p>
 </blockquote>
-<h2 id="Introduction_to_MapReduce"><a href="#Introduction_to_MapReduce" class="headerlink" title="Introduction to MapReduce"></a>Introduction to MapReduce</h2><p>MapReduce 是用许多机器来进行大数据处理的编程模型。Hadoop 是开源版本的 MapReduce 实现。Hadoop 把 MapReduce 当做一个分析引擎，并使用 Hadoop Distributed File System(HDFS) 来进行存储。HDFS 把数据集分成固定大小的块，分布式存放在不同的节点上。具体要执行的任务可以在不同的机器上并行处理。MapReduce 会把整个大任务分成不同的小的 map 和 reduce 任务。所有的 map 任务都在 map 阶段进行，所有的 reduce 任务都在 reduce 阶段进行。map 阶段可能有 1 个或多个任务，reduce 阶段可以有 0 个或多个 reduce 任务。</p>
+<h2 id="Introduction-to-MapReduce"><a href="#Introduction-to-MapReduce" class="headerlink" title="Introduction to MapReduce"></a>Introduction to MapReduce</h2><p>MapReduce 是用许多机器来进行大数据处理的编程模型。Hadoop 是开源版本的 MapReduce 实现。Hadoop 把 MapReduce 当做一个分析引擎，并使用 Hadoop Distributed File System(HDFS) 来进行存储。HDFS 把数据集分成固定大小的块，分布式存放在不同的节点上。具体要执行的任务可以在不同的机器上并行处理。MapReduce 会把整个大任务分成不同的小的 map 和 reduce 任务。所有的 map 任务都在 map 阶段进行，所有的 reduce 任务都在 reduce 阶段进行。map 阶段可能有 1 个或多个任务，reduce 阶段可以有 0 个或多个 reduce 任务。</p>
 <p><img src="/images/14537775895092.jpg" alt="MapReduce 概览"></p>
 <p>上图描述了一个简化的，但是完整的 MapReduce 分析引擎。Map 任务在分布式 HDFS 块上执行，reduce 任务在 map 任务的输出上执行（标记为 intermediate output 或 partitions）。每个 map 任务处理一个或多个不同的 HDFS 块，每个 reduce 任务处理一个或多个 partitions。在一个典型的 MapReduce 程序中，在所有 HDFS 块上执行的 map 任务都是一样的，在所有的 partitions 上执行的 reduce 任务也是一样的。</p>
 <p><a href="https://youtu.be/1gBLqlMUQQk" target="_blank" rel="external">MapReduce 视频介绍</a></p>
@@ -344,15 +346,15 @@
 <li>高层抽象：Pig, Hive 等</li>
 </ul>
 <p>Amazon 的 Elastic MapReduce 是一个 Hadoop 的 PaaS 实现，为的是快速申请 Hadoop 集群并利用 S3 来导入/导出数据。接下来通过一个简单的例子来感受一下 Elastic MapReduce 是怎么回事。</p>
-<h2 id="Example_EMR_Job_Flow_3A_Wordcount"><a href="#Example_EMR_Job_Flow_3A_Wordcount" class="headerlink" title="Example EMR Job Flow: Wordcount"></a>Example EMR Job Flow: Wordcount</h2><p>这里我们用 Java 来进行实现（Python 的就只提供视频地址）：<a href="https://youtu.be/fQAZoZCRqX0" target="_blank" rel="external">Java 版本视频教程</a> / <a href="https://youtu.be/htr6JH7UWNg" target="_blank" rel="external">Python 版本视频教程</a></p>
+<h2 id="Example-EMR-Job-Flow-Wordcount"><a href="#Example-EMR-Job-Flow-Wordcount" class="headerlink" title="Example EMR Job Flow: Wordcount"></a>Example EMR Job Flow: Wordcount</h2><p>这里我们用 Java 来进行实现（Python 的就只提供视频地址）：<a href="https://youtu.be/fQAZoZCRqX0" target="_blank" rel="external">Java 版本视频教程</a> / <a href="https://youtu.be/htr6JH7UWNg" target="_blank" rel="external">Python 版本视频教程</a></p>
 <p>整个过程可以用如下的命令来大致描述：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat input | mapper_program | sort | reducer_program &gt; output</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">cat input | mapper_program | sort | reducer_program &gt; output</div></pre></td></tr></table></figure>
 <p>我们的输入是一个文本文件，里面是一篇英文的文章，我们的 mapper 程序如下：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"><span class="keyword">import</span> java.util.StringTokenizer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">wordcountMapper</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">            String input;</span><br><span class="line">            <span class="comment">// While we have input on stdin</span></span><br><span class="line">            <span class="keyword">while</span>((input = br.readline()) != <span class="keyword">null</span>)&#123;</span><br><span class="line">                StringTokenizer tokenizer = <span class="keyword">new</span> StringTokenizer(input);</span><br><span class="line">                <span class="keyword">while</span> (tokenizer.hasMoreTokens())&#123;</span><br><span class="line">                    String word = tokenizer.nextToken();</span><br><span class="line">                    System.out.println(word + <span class="string">"\t"</span> + <span class="string">"1"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span>(IOException io)&#123;</span><br><span class="line">                io.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> java.io.BufferedReader;</div><div class="line"><span class="keyword">import</span> java.io.IOException;</div><div class="line"><span class="keyword">import</span> java.io.InputStreamReader;</div><div class="line"><span class="keyword">import</span> java.util.StringTokenizer;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">wordcountMapper</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</div><div class="line">            String input;</div><div class="line">            <span class="comment">// While we have input on stdin</span></div><div class="line">            <span class="keyword">while</span>((input = br.readline()) != <span class="keyword">null</span>)&#123;</div><div class="line">                StringTokenizer tokenizer = <span class="keyword">new</span> StringTokenizer(input);</div><div class="line">                <span class="keyword">while</span> (tokenizer.hasMoreTokens())&#123;</div><div class="line">                    String word = tokenizer.nextToken();</div><div class="line">                    System.out.println(word + <span class="string">"\t"</span> + <span class="string">"1"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125; <span class="keyword">catch</span>(IOException io)&#123;</div><div class="line">                io.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>然后我们来看看 reducer 程序，这个比 mapper 稍微复杂一点：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"><span class="keyword">import</span> java.util.StringTokenizer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">wordcountReducer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">            String input;</span><br><span class="line">            String word = <span class="keyword">null</span>;</span><br><span class="line">            String currentWord = <span class="keyword">null</span></span><br><span class="line">            <span class="keyword">int</span> currentCount = <span class="number">0</span>;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">while</span> ((input = br.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    String[] parts = input.split(<span class="string">"\t"</span>);</span><br><span class="line">                    word = parts[<span class="number">0</span>];</span><br><span class="line">                    <span class="keyword">int</span> count = Integer.parseInt(parts[<span class="number">1</span>]);</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">// We have sorted input, so check if we have the same word</span></span><br><span class="line">                    <span class="keyword">if</span> (currentWord != <span class="keyword">null</span> &amp;&amp; currentWord.equals(word))&#123;</span><br><span class="line">                        currentCount++;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123; <span class="comment">// the word has changed</span></span><br><span class="line">                        <span class="keyword">if</span> (currentWord != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            System.out.println(currentWord + <span class="string">"\t"</span> + currentCount);</span><br><span class="line">                        &#125;</span><br><span class="line">                        currentWord = word;</span><br><span class="line">                        currentCount = count;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (NumberFormatException e) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (currentWord != <span class="keyword">null</span> &amp;&amp; currentWord.equals(word)) &#123;</span><br><span class="line">                System.out.println(currentWord + <span class="string">"\t"</span> + currentCount);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span>(IOException io) &#123;</span><br><span class="line">            io.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> java.io.BufferedReader;</div><div class="line"><span class="keyword">import</span> java.io.IOException;</div><div class="line"><span class="keyword">import</span> java.io.InputStreamReader;</div><div class="line"><span class="keyword">import</span> java.util.StringTokenizer;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">wordcountReducer</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</div><div class="line">            String input;</div><div class="line">            String word = <span class="keyword">null</span>;</div><div class="line">            String currentWord = <span class="keyword">null</span></div><div class="line">            <span class="keyword">int</span> currentCount = <span class="number">0</span>;</div><div class="line">            </div><div class="line">            <span class="keyword">while</span> ((input = br.readLine()) != <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    String[] parts = input.split(<span class="string">"\t"</span>);</div><div class="line">                    word = parts[<span class="number">0</span>];</div><div class="line">                    <span class="keyword">int</span> count = Integer.parseInt(parts[<span class="number">1</span>]);</div><div class="line">                    </div><div class="line">                    <span class="comment">// We have sorted input, so check if we have the same word</span></div><div class="line">                    <span class="keyword">if</span> (currentWord != <span class="keyword">null</span> &amp;&amp; currentWord.equals(word))&#123;</div><div class="line">                        currentCount++;</div><div class="line">                    &#125; <span class="keyword">else</span> &#123; <span class="comment">// the word has changed</span></div><div class="line">                        <span class="keyword">if</span> (currentWord != <span class="keyword">null</span>) &#123;</div><div class="line">                            System.out.println(currentWord + <span class="string">"\t"</span> + currentCount);</div><div class="line">                        &#125;</div><div class="line">                        currentWord = word;</div><div class="line">                        currentCount = count;</div><div class="line">                    &#125;</div><div class="line">                &#125; <span class="keyword">catch</span> (NumberFormatException e) &#123;</div><div class="line">                    <span class="keyword">continue</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> (currentWord != <span class="keyword">null</span> &amp;&amp; currentWord.equals(word)) &#123;</div><div class="line">                System.out.println(currentWord + <span class="string">"\t"</span> + currentCount);</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span>(IOException io) &#123;</div><div class="line">            io.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>查看结果的话命令为（注意需要先编译，上面给出的代码不包含头文件）：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat input.txt | java wordcoutnMapper | sort | java wordcountReducer &gt; output</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">cat input.txt | java wordcoutnMapper | sort | java wordcountReducer &gt; output</div></pre></td></tr></table></figure>
 <p>如果代码都准备好了，可以参考下面的视频，<a href="https://youtu.be/qbHs1HXuE1M" target="_blank" rel="external">在 EMR 上运行 Java Streaming Program</a></p>
 <p>从 S3 的 Bucket 获取数据，把 mapper 和 reducer 打包生成 jar 包并上传到 S3。然后到 Analytic 类别下的 EMR 选项。注意，运行 EMR 之前一定要在本地先测试！</p>
 <p>命令行生成 jar 包的过程（假设我们有 <code>wordcountMapper.java</code> 和 <code>wordcountReducer.java</code> 两个文件）：</p>
@@ -380,7 +382,7 @@
 <li>不要选择完成后自动终止，这样我们可以登录到机器上来查看任务详情，但是用完之后务必要手动关闭。</li>
 <li>检查无误后，点击创建实例之后就可以开始等待了。完成之后可以在 S3 里看到对应的输出，多个 reduce 会有多个结果，可能需要下载下来进行合并。</li>
 </ol>
-<h2 id="Writing_your_own_Mappers_and_Reducers"><a href="#Writing_your_own_Mappers_and_Reducers" class="headerlink" title="Writing your own Mappers and Reducers"></a>Writing your own Mappers and Reducers</h2><p>现在我们就来处理维基百科的数据集了，这里需要写自己的 mapper 和 reducer，在整整一个月的输入数据中，完成下面的任务：</p>
+<h2 id="Writing-your-own-Mappers-and-Reducers"><a href="#Writing-your-own-Mappers-and-Reducers" class="headerlink" title="Writing your own Mappers and Reducers"></a>Writing your own Mappers and Reducers</h2><p>现在我们就来处理维基百科的数据集了，这里需要写自己的 mapper 和 reducer，在整整一个月的输入数据中，完成下面的任务：</p>
 <ol>
 <li>设计一个 MapReduce 的工作流，需要完成<ul>
 <li>根据上一个 project 的规则来过滤元素</li>
@@ -417,7 +419,7 @@
 </li>
 </ul>
 <p>一个简单的例子，每一行都必须有 31 天，即使那一天的访问量是 0：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">10</span>   Dopamine    <span class="number">20151201</span>:<span class="number">1</span>    <span class="number">20151202</span>:<span class="number">2</span>    <span class="number">20151203</span>:<span class="number">0</span>    <span class="number">20151204</span>:<span class="number">0</span>    <span class="number">20151205</span>:<span class="number">1</span>    <span class="number">20151206</span>:<span class="number">0</span>    <span class="number">20151207</span>:<span class="number">0</span>    <span class="number">20151208</span>:<span class="number">0</span>    <span class="number">20151209</span>:<span class="number">0</span>    <span class="number">20151210</span>:<span class="number">6</span>    <span class="number">20151211</span>:<span class="number">0</span>    <span class="number">20151212</span>:<span class="number">0</span>    <span class="number">20151213</span>:<span class="number">0</span>    <span class="number">20151214</span>:<span class="number">0</span>	<span class="number">20151215</span>:<span class="number">0</span>    <span class="number">20151216</span>:<span class="number">0</span>    <span class="number">20151217</span>:<span class="number">0</span>    <span class="number">20151218</span>:<span class="number">0</span>    <span class="number">20151219</span>:<span class="number">0</span>    <span class="number">20151220</span>:<span class="number">0</span>    <span class="number">20151221</span>:<span class="number">0</span>    <span class="number">20151222</span>:<span class="number">0</span>    <span class="number">20151223</span>:<span class="number">0</span>    <span class="number">20151224</span>:<span class="number">0</span>    <span class="number">20151225</span>:<span class="number">0</span>    <span class="number">20151226</span>:<span class="number">0</span>    <span class="number">20151227</span>:<span class="number">0</span>    <span class="number">20151228</span>:<span class="number">0</span>    <span class="number">20151229</span>:<span class="number">0</span>    <span class="number">20151230</span>:<span class="number">0</span>    <span class="number">20151231</span>:<span class="number">0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">10   Dopamine    20151201:1    20151202:2    20151203:0    20151204:0    20151205:1    20151206:0    20151207:0    20151208:0    20151209:0    20151210:6    20151211:0    20151212:0    20151213:0    20151214:0	20151215:0    20151216:0    20151217:0    20151218:0    20151219:0    20151220:0    20151221:0    20151222:0    20151223:0    20151224:0    20151225:0    20151226:0    20151227:0    20151228:0    20151229:0    20151230:0    20151231:0</div></pre></td></tr></table></figure>
 <p>最后是 <a href="https://youtu.be/H0q5V4ApuU4" target="_blank" rel="external">EMR Troubleshooting</a></p>
 <ul>
 <li>访问 master public DNS:9100 可以访问日志</li>
@@ -433,7 +435,7 @@
 <li>得到结果后聚合成一个文件，名字是 output，然后需要完成 <code>runner.sh</code> 中的题目</li>
 <li>其他的要求和之前一样</li>
 </ol>
-<h2 id="u9879_u76EE_u65E5_u5FD7"><a href="#u9879_u76EE_u65E5_u5FD7" class="headerlink" title="项目日志"></a>项目日志</h2><h3 id="Mapper"><a href="#Mapper" class="headerlink" title="Mapper"></a>Mapper</h3><p>首先我们要理解清楚这次的任务是什么，说起来很简单，就是用 MapReduce 把上个项目的工作大概再做一次，借此理解 MapReduce 的编程模型。</p>
+<h2 id="项目日志"><a href="#项目日志" class="headerlink" title="项目日志"></a>项目日志</h2><h3 id="Mapper"><a href="#Mapper" class="headerlink" title="Mapper"></a>Mapper</h3><p>首先我们要理解清楚这次的任务是什么，说起来很简单，就是用 MapReduce 把上个项目的工作大概再做一次，借此理解 MapReduce 的编程模型。</p>
 <p>实话说，MapReduce 的模型是比较容易理解的，尤其是我们这个项目所用的流程序，唯一需要弄清楚的就是三个步骤：怎么输入，中间怎么处理，怎么输出。</p>
 <p>输入输出部分之前的 wordcount 的例子都有讲解，看一下代码应该就能弄明白，这里主要说说中间要怎么处理。</p>
 <p>在 MapReduce 中，一切的内容都要转换为键值对，那么我们就需要考虑，键值对的格式是什么，怎么样设计会方便我们处理。</p>
@@ -445,18 +447,18 @@
 </ul>
 <p>文章的标题和访问量就在传入的每一行数据中，这个方便处理，但是日期这里，因为是跟输入文件的文件名有关，所以我们得想个办法获取到。对，就是利用环境变量（前面有提到）：<code>String env = System.getenv(&quot;mapreduce_map_input_file&quot;);</code></p>
 <p>可以通过以下命令查看所有文件（如果配置了 aws cli tool ）</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">aws s3 ls s3://cmucc-datasets/wikipediatraf/<span class="number">201512</span>/</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">aws s3 ls s3://cmucc-datasets/wikipediatraf/201512/</div></pre></td></tr></table></figure>
 <p>然后获取到的路径大概是这样的格式：<code>s3://cmucc-datasets/wikipediatraf/201512/pagecounts-20151231-230000.gz</code>，所以需要做一些解析，取出我们需要的 <code>20151231</code> 这样的日期。然后结合之前的项目，过滤后输出即可。我得到的结果大概是这样的（我只用了很小很小的测试集），可以通过下面的命令在裁剪数据集：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">head -<span class="number">1000000</span> testdata &gt; smalltestdata</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">head -1000000 testdata &gt; smalltestdata</div></pre></td></tr></table></figure>
 <h3 id="Reducer"><a href="#Reducer" class="headerlink" title="Reducer"></a>Reducer</h3><p>Reducer 要做的工作稍微多一点，比方说要按照规定的格式进行输出，但是本质上和 example 中的逻辑是差不多多少的，毕竟 mapper 中已经把数据过滤得差不多了。这里要注意的就是数值累加即可。得到的数据差不多是这样（这里我修改了阈值来查看输出，如果你也是这样做的，请记得测试完改回去）</p>
 <p><img src="/images/14538337031959.jpg" alt=""></p>
-<h3 id="u4EE3_u7801_u6D4B_u8BD5"><a href="#u4EE3_u7801_u6D4B_u8BD5" class="headerlink" title="代码测试"></a>代码测试</h3><p>然后我们可以提交自己的 Mapper.java 和 Reducer.java，测试一下功能正确与否。（注意要把为了本地跑的部分测试代码注释掉，不然就过不了测试，感谢 @jiexing）</p>
+<h3 id="代码测试"><a href="#代码测试" class="headerlink" title="代码测试"></a>代码测试</h3><p>然后我们可以提交自己的 Mapper.java 和 Reducer.java，测试一下功能正确与否。（注意要把为了本地跑的部分测试代码注释掉，不然就过不了测试，感谢 @jiexing）</p>
 <p>启动一个 <code>t1.micro</code> 实例 <code>ami-bcd8f8d6</code>。记得打标签。</p>
 <p>先登录：<code>ssh -i demo.pem ubuntu@ec2-54-152-44-36.compute-1.amazonaws.com</code></p>
 <p>用下面的命令把文件复制到机器里：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp -i demo.pem ./Mapper.java ubuntu@ec2-<span class="number">54</span>-<span class="number">152</span>-<span class="number">44</span>-<span class="number">36</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line">scp -i demo.pem ./Reducer.java ubuntu@ec2-<span class="number">54</span>-<span class="number">152</span>-<span class="number">44</span>-<span class="number">36</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">scp -i demo.pem ./Mapper.java ubuntu@ec2-54-152-44-36.compute-1.amazonaws.com:~/Project1_2/</div><div class="line"></div><div class="line">scp -i demo.pem ./Reducer.java ubuntu@ec2-54-152-44-36.compute-1.amazonaws.com:~/Project1_2/</div></pre></td></tr></table></figure>
 <p>然后可以用下面的代码提交：<code>./submitter -a dawang -l java</code>。如果成功的话，应该可以看到第一栏得到 20 分，那么就可以进行下一步了。</p>
-<h3 id="EMR__u6D4B_u8BD5"><a href="#EMR__u6D4B_u8BD5" class="headerlink" title="EMR 测试"></a>EMR 测试</h3><p>首先是把对应的内容上传到 S3 中。当然这之前需要打包一下：<code>jar -cvf dawang.jar Mapper.java Reducer.java *.class</code>，然后准备创建 EMR 集群。如下</p>
+<h3 id="EMR-测试"><a href="#EMR-测试" class="headerlink" title="EMR 测试"></a>EMR 测试</h3><p>首先是把对应的内容上传到 S3 中。当然这之前需要打包一下：<code>jar -cvf dawang.jar Mapper.java Reducer.java *.class</code>，然后准备创建 EMR 集群。如下</p>
 <p><img src="/images/14538412976569.jpg" alt=""></p>
 <p>然后我们多选择一点机器，然后设置一个竞价，如下图：</p>
 <p><img src="/images/14538416282891.jpg" alt=""></p>
@@ -467,16 +469,16 @@
 <p><img src="/images/14538425422610.jpg" alt=""></p>
 <p>然后果断失败了，因为我的 Java 版本是 1.8，需要切换到 1.7，具体参考<a href="http://chessman-126-com.iteye.com/blog/2162466" target="_blank" rel="external">这里</a></p>
 <p>简单来说就是：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vi ~/.bash_profile <span class="comment"># 输入以下内容  </span></span><br><span class="line"><span class="built_in">source</span> .bash_profile <span class="comment"># 生效新配置</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">vi ~/.bash_profile <span class="comment"># 输入以下内容  </span></div><div class="line"><span class="built_in">source</span> .bash_profile <span class="comment"># 生效新配置</span></div></pre></td></tr></table></figure>
 <p>内容是</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Mac默认 JDK 6（Mac默认自带了一个jdk6版本）</span></span><br><span class="line"><span class="built_in">export</span> JAVA_6_HOME=`/usr/libexec/java_home -v <span class="number">1.6</span>`</span><br><span class="line"><span class="comment"># 设置 JDK 7</span></span><br><span class="line"><span class="built_in">export</span> JAVA_7_HOME=`/usr/libexec/java_home -v <span class="number">1.7</span>`</span><br><span class="line"><span class="comment"># 设置 JDK 8</span></span><br><span class="line"><span class="built_in">export</span> JAVA_8_HOME=`/usr/libexec/java_home -v <span class="number">1.8</span>`</span><br><span class="line"></span><br><span class="line"><span class="comment">#默认JDK 6</span></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=<span class="variable">$JAVA_6_HOME</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#alias命令动态切换JDK版本</span></span><br><span class="line"><span class="built_in">alias</span> jdk6=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_6_HOME</span>"</span></span><br><span class="line"><span class="built_in">alias</span> jdk7=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_7_HOME</span>"</span></span><br><span class="line"><span class="built_in">alias</span> jdk8=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_8_HOME</span>"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># Mac默认 JDK 6（Mac默认自带了一个jdk6版本）</div><div class="line">export JAVA_6_HOME=`/usr/libexec/java_home -v 1.6`</div><div class="line"># 设置 JDK 7</div><div class="line">export JAVA_7_HOME=`/usr/libexec/java_home -v 1.7`</div><div class="line"># 设置 JDK 8</div><div class="line">export JAVA_8_HOME=`/usr/libexec/java_home -v 1.8`</div><div class="line"></div><div class="line">#默认JDK 6</div><div class="line">export JAVA_HOME=$JAVA_6_HOME</div><div class="line"></div><div class="line">#alias命令动态切换JDK版本</div><div class="line">alias jdk6=&quot;export JAVA_HOME=$JAVA_6_HOME&quot;</div><div class="line">alias jdk7=&quot;export JAVA_HOME=$JAVA_7_HOME&quot;</div><div class="line">alias jdk8=&quot;export JAVA_HOME=$JAVA_8_HOME&quot;</div></pre></td></tr></table></figure>
 <p>直接直接可以用 <code>jdk6</code>, <code>jdk7</code>, <code>jdk8</code> 来切换。</p>
 <p>经过漫长的等待（约 73 分钟），就可以在 S3 中拿到结果，可以用 <code>aws s3 cp s3://project1dawang/output/ ./output/ --recursive</code>，然后用 <code>cat part-* &gt; output</code> 来进行合并。然后就可以来做最后的计算和分析了。</p>
 <p>这里把 instance 上的文件都拷贝到本地来进行测试：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp -i demo.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">84</span>-<span class="number">88</span>-<span class="number">191</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/* ./server/</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">scp -i demo.pem ubuntu@ec2-54-84-88-191.compute-1.amazonaws.com:~/Project1_2/* ./server/</div></pre></td></tr></table></figure>
 <p>然后在下一个阶段完成所有的工作</p>
 <h3 id="Runner"><a href="#Runner" class="headerlink" title="Runner"></a>Runner</h3><p>先把 runner 复制到本地，用以下命令：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp -i demo.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">164</span>-<span class="number">94</span>-<span class="number">23</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/runner.sh ./</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">scp -i demo.pem ubuntu@ec2-54-164-94-23.compute-1.amazonaws.com:~/Project1_2/runner.sh ./</div></pre></td></tr></table></figure>
 <p>需要回答的问题是：</p>
 <ol>
 <li>output 文件中有多少行，可以用这个命令 <code>wc -l output | awk {&#39;print $1&#39;}</code></li>
@@ -493,7 +495,7 @@
 <p>因为之前终止了实例，所以需要把之前的工作重新上传：</p>
 <p>先登录：<code>ssh -i demo.pem ubuntu@ec2-54-84-88-191.compute-1.amazonaws.com</code></p>
 <p>用下面的命令把文件复制到机器里：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">scp -i demo.pem ./Mapper.java ubuntu@ec2-<span class="number">54</span>-<span class="number">175</span>-<span class="number">116</span>-<span class="number">84</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line">scp -i demo.pem ./Reducer.java ubuntu@ec2-<span class="number">54</span>-<span class="number">175</span>-<span class="number">116</span>-<span class="number">84</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line">scp -i demo.pem ./runner.sh ubuntu@ec2-<span class="number">54</span>-<span class="number">84</span>-<span class="number">88</span>-<span class="number">191</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line">scp -i demo.pem ./Q4.java ubuntu@ec2-<span class="number">54</span>-<span class="number">84</span>-<span class="number">88</span>-<span class="number">191</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line">scp -i demo.pem ./Q7.java ubuntu@ec2-<span class="number">54</span>-<span class="number">164</span>-<span class="number">94</span>-<span class="number">23</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 恢复上次的工作</span></span><br><span class="line">scp -i demo.pem ./server/* ubuntu@ec2-<span class="number">54</span>-<span class="number">84</span>-<span class="number">88</span>-<span class="number">191</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_2/</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">scp -i demo.pem ./Mapper.java ubuntu@ec2-54-175-116-84.compute-1.amazonaws.com:~/Project1_2/</div><div class="line"></div><div class="line">scp -i demo.pem ./Reducer.java ubuntu@ec2-54-175-116-84.compute-1.amazonaws.com:~/Project1_2/</div><div class="line"></div><div class="line">scp -i demo.pem ./runner.sh ubuntu@ec2-54-84-88-191.compute-1.amazonaws.com:~/Project1_2/</div><div class="line"></div><div class="line">scp -i demo.pem ./Q4.java ubuntu@ec2-54-84-88-191.compute-1.amazonaws.com:~/Project1_2/</div><div class="line"></div><div class="line">scp -i demo.pem ./Q7.java ubuntu@ec2-54-164-94-23.compute-1.amazonaws.com:~/Project1_2/</div><div class="line"></div><div class="line"><span class="comment"># 恢复上次的工作</span></div><div class="line">scp -i demo.pem ./server/* ubuntu@ec2-54-84-88-191.compute-1.amazonaws.com:~/Project1_2/</div></pre></td></tr></table></figure>
 <p>然后可以用下面的代码提交：<code>./submitter -a dawang -l java</code>。</p>
 <p>大部分的时间都在为奇奇怪怪又不说清楚的测试集耽误时间，真心觉得这样浪费大家时间没多少意义。差评。</p>
 
@@ -831,42 +833,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

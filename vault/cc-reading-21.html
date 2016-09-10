@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="Machine-learning and data-mining (MLDM) problems are growing exponentially in scale today. Interest in analytics engines that can execute MLDM algorithms efficiently on distributed systems, such as cl">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 阅读材料 21 Distributed Analytics Engines for the Cloud - GraphLab">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-reading-21.html">
@@ -113,6 +114,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 阅读材料 21 Distributed Analytics Engines for the Cloud - GraphLab">
 <meta name="twitter:description" content="Machine-learning and data-mining (MLDM) problems are growing exponentially in scale today. Interest in analytics engines that can execute MLDM algorithms efficiently on distributed systems, such as cl">
+<meta name="twitter:image" content="http://wdxtub.com/images/14601373783766.jpg">
 
 
 
@@ -136,7 +138,7 @@
   
     云计算 阅读材料 21 Distributed Analytics Engines for the Cloud - GraphLab | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -157,7 +159,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -294,7 +296,7 @@
 <ol>
 <li>J. Gonzalez, Y. Low, H. Gu, D. Bickson, and C. Guestrin (October, 2012). “PowerGraph: Distributed Graph-Parallel Computation on Natural Graphs.” In Proc. of the 10th USENIX Conference on Operating Systems Design and Implementation.</li>
 </ol>
-<h2 id="Data_Structure_and_Graph_Flow"><a href="#Data_Structure_and_Graph_Flow" class="headerlink" title="Data Structure and Graph Flow"></a>Data Structure and Graph Flow</h2><p><strong>Data Structure and Graph Flow in Graphlab</strong></p>
+<h2 id="Data-Structure-and-Graph-Flow"><a href="#Data-Structure-and-Graph-Flow" class="headerlink" title="Data Structure and Graph Flow"></a>Data Structure and Graph Flow</h2><p><strong>Data Structure and Graph Flow in Graphlab</strong></p>
 <p>Developed by Carnegie Mellon University, GraphLab provides an example of graph-parallel distributed analytics engines for the cloud. As with any graph-parallel engine, GraphLab assumes input problems modeled as graphs, in which vertices represent computations and edges encode data dependencies or communication.</p>
 <p><img src="/images/14601375440387.jpg" alt=""></p>
 <p>In GraphLab, graphs are initially stored as files in an underlying distributed storage layer, such as HDFS, as shown in Figure 5.46. GraphLab is composed of two phases:initialization and execution. During initialization, the GraphLab engine reads input graph files from the underlying storage and divides them into multiple partitions that can be distributed among multiple machines in the cluster. During the execution phase, each machine runs the user-defined computation on the graph vertices, transmitting updates and iterating until some convergence condition is met.</p>
@@ -329,10 +331,10 @@
 <li>Y. Low, J. Gonzalez, A. Kyrola, D. Bickson, C. Guestrin, and J. M. Hellerstein (2012). “Distributed GraphLab: A Framework for Machine Learning and Data Mining in the Cloud.” PVLDB.</li>
 <li>J. Gonzalez, Y. Low, H. Gu, D. Bickson, and C. Guestrin (October, 2012). “PowerGraph: Distributed Graph-Parallel Computation on Natural Graphs.” In Proc. of the 10th USENIX Conference on Operating Systems Design and Implementation.</li>
 </ol>
-<h2 id="The_Architectural_Model"><a href="#The_Architectural_Model" class="headerlink" title="The Architectural Model"></a>The Architectural Model</h2><p><strong>The Architectural Model of GraphLab</strong></p>
+<h2 id="The-Architectural-Model"><a href="#The-Architectural-Model" class="headerlink" title="The Architectural Model"></a>The Architectural Model</h2><p><strong>The Architectural Model of GraphLab</strong></p>
 <p>When GraphLab is launched on a cluster, one instance of its engine is started on each machine, as shown previously in Figure 5.46. All engine instances are symmetric; that is, they have the same capability. Moreover, they all communicate directly with each other using a customized, asynchronous Remote Procedure Call (RPC) protocol over TCP/IP. The first triggered engine instance, however, will have the additional responsibility of serving as monitor/master engine, although instances on other machines will still work and communicate directly without coordination from the master. This arrangement makes GraphLab a peer-to-peer system.1 The master engine computes the atom mapping based on the atom index file and instructs corresponding engine instances to load their assigned atoms. Subsequently, all instances load their atoms in parallel. Each engine then executes the journal in each of its assigned atoms, generating a partition of the input graph (see the section The Data Structure and Graph Flow in this module) and runs the user-defined program specified in Algorithm 1. As each engine loads its atoms, generates its partitions, executes code, and schedules vertices without polling the master engine, GraphLab employs a push-based, thread-scheduling strategy (see the section Models for Distributed Programming). As a consequence of employing a symmetric design, GraphLab exposes high scalability and precludes centralized bottlenecks and single points of failure (SPOFs), unlike both Hadoop MapReduce 1.0 and Pregel.</p>
 <p>Recall that in peer-to-peer systems, a master may be adopted, but only for purposes like monitoring the system and/or injecting commands. Processes in such systems work and communicate directly without having to contact master machines.</p>
-<h2 id="The_Programming_Model"><a href="#The_Programming_Model" class="headerlink" title="The Programming Model"></a>The Programming Model</h2><p><strong>The GraphLab Programming Model</strong></p>
+<h2 id="The-Programming-Model"><a href="#The-Programming-Model" class="headerlink" title="The Programming Model"></a>The Programming Model</h2><p><strong>The GraphLab Programming Model</strong></p>
 <p>Recall from the data model of GraphLab, graphs are partitioned between multiple machines. During the execution of the GAS functions on each vertex, there exists potential for read-write and write-write conflicts among vertices that share scope. The GraphLab engine synchronizes shared data accesses and ensures consistent parallel execution. In particular, GraphLab supports different graph execution engines, each with different levels of consistency, allowing users to choose an engine appropriate for correctness and performance in their applications. The different notions of consistency offered by GraphLab through its various engines are: full consistency, edge consistency, and vertex consistency. As shown in Figure 5.49, under full consistency, the update function at each vertex (vertex 3) has an exclusive read-write access to its own vertex, adjacent edges, and adjacent vertices (its entire scope). While this arrangement guarantees strong consistency and full correctness, it limits parallelism and, consequently, performance. Vertices in many MLDM algorithms, however, really do not require exclusive read-write access to their entire scope. For instance, the PageRank algorithm requires only read access to neighboring edges and vertices.</p>
 <p>Thus, to increase parallelism and support a broader range of consistency settings that suit various MLDM applications, GraphLab includes notions of edge consistency and vertex consistency. Under edge consistency, the update function at a vertex has an exclusive read-write access to its vertex and adjacent edges, yet a read-only access to adjacent vertices. Clearly, this protocol relaxes consistency and enables a superior leverage of parallelism. Under vertex consistency, the update function at a vertex has exclusive write access only to its own vertex, thus allowing all update functions to run simultaneously. This capability provides the maximum possible parallelism but, in return, the most relaxed consistency. GraphLab users can choose an engine that balances performance with the required consistency model they find convenient for their applications.</p>
 <p><img src="/images/14601379103135.jpg" alt="Figure 5.49: The full consistency, the edge consistency, and the vertex consistency models guaranteed by GraphLab. The full consistency model is the strongest, and the vertex consistency is the most relaxed one. As consistency is relaxed, parallelism is increased and vice versa."></p>
@@ -343,7 +345,7 @@
 <li>Low, Y., Gonzalez, J., Kyrola, A., Bickson, D., Guestrin, C., and Hellerstein, J. M. (2012). “Distributed GraphLab: A Framework for Machine Learning and Data Mining in the Cloud.” PVLDB.</li>
 <li>J. Gonzalez, Y. Low, H. Gu, D. Bickson, and C. Guestrin (October, 2012). “PowerGraph: Distributed Graph-Parallel Computation on Natural Graphs.” In Proc. of the 10th USENIX Conference on Operating Systems Design and Implementation.</li>
 </ol>
-<h2 id="The_Computation_Model"><a href="#The_Computation_Model" class="headerlink" title="The Computation Model"></a>The Computation Model</h2><p>As discussed on the previous page, GraphLab supports multiple engines which can execute the vertex functions either synchronously or asynchronously. The three engines currently supported by GraphLab are the following:</p>
+<h2 id="The-Computation-Model"><a href="#The-Computation-Model" class="headerlink" title="The Computation Model"></a>The Computation Model</h2><p>As discussed on the previous page, GraphLab supports multiple engines which can execute the vertex functions either synchronously or asynchronously. The three engines currently supported by GraphLab are the following:</p>
 <ul>
 <li>Synchronous Engine</li>
 <li>Asynchronous Engine</li>
@@ -369,7 +371,7 @@
 <li>J. Gonzalez, Y. Low, A. Gretton, and C. Guestrin (2011). “Parallel Gibbs Sampling: From Colored Felds to Thin Junction Trees.” In AISTATS, vol. 15, pp. 324-332.</li>
 <li>Chandy, K. M. and Misra, J. (1984). “The Drinking Philosophers Problem.” ACM Trans. Program. Lang. Syst. 632–646 Pages.</li>
 </ol>
-<h2 id="Fault_Tolerance"><a href="#Fault_Tolerance" class="headerlink" title="Fault Tolerance"></a>Fault Tolerance</h2><p><strong>Fault Tolerance in GraphLab</strong></p>
+<h2 id="Fault-Tolerance"><a href="#Fault-Tolerance" class="headerlink" title="Fault Tolerance"></a>Fault Tolerance</h2><p><strong>Fault Tolerance in GraphLab</strong></p>
 <p>To tolerate faults in the event of failures, GraphLab suggests using distributed checkpointing (see the section Main Challenges in Building Cloud Programs) and promotes two distributed checkpointing mechanisms: synchronous and asynchronous. To capture a distributed checkpoint, the synchronous mechanism suspends the entire execution of the update functions across cluster machines. By doing so, the mechanism flushes out all in-transit communication messages (induced internally by the engines) and takes a local checkpoint (snapshot) of all altered data at each machine since the last captured checkpoint. The captured local checkpoints collectively form a distributed checkpoint, which is then stored in files6 in the engine’s underlying storage layer (e.g., HDFS). In case of a machine/engine failure, the distributed checkpoint can be exploited to restart execution.</p>
 <p>Although synchronous checkpointing is simple, it introduces a major inefficiency by suspending the entire GraphLab execution to capture a distributed checkpoint. To address this weakness, the asynchronous mechanism specifies at each cluster machine a checkpointing update function that executes on each vertex, collecting snapshots covering the period since the last saved snapshot. At each machine, checkpointing update functions proceed as shown in algorithm 2. They are prioritized over regular update functions (used by GraphLab user programs) and follow the edge consistency model. Hence, when the scope of a vertex v is locked, as required by the edge consistency model, it remains so until algorithm 2 completes at v before proceeding to another vertex. This asynchronous mechanism is based on the Chandy-Lamport checkpointing strategy [1] and guarantees consistent distributed checkpoints. Finally, both synchronous and asynchronous checkpointing mechanisms are triggered by GraphLab at fixed intervals, computed as in Young’s “A First Order Approximation to the Optimum Checkpoint Interval.” [2]</p>
 <p>With fault tolerance, we close our discussion on GraphLab. This engine employs graph-parallel, shared-memory, asynchronous, and peer-to-peer models. It supports three levels of consistency that trade off parallelism against consistency, allowing users to select—from full consistency, edge consistency, and vertex consistency—a level that suits their application needs. It further ensures serializability (requisite for many machine-learning and data-mining [MLDM] algorithms) with respect to the appropriate consistency model. GraphLab also suggests two types of asynchronous engines, Chromatic and Locking. The Chromatic engine executes vertices partially asynchronously, while the Locking engine executes vertices fully asynchronously. The Chromatic engine uses graph coloring and promotes the color-step concept, which is analogous to the super-step concept in the bulk synchronous parallel model. In essence, GraphLab with the Chromatic engine and the edge consistency model can mimic Pregel. Finally, to achieve fault tolerance, GraphLab suggests using synchronous and asynchronous distributed checkpointing.</p>
@@ -380,7 +382,7 @@
 <li>K. M. Chandy and L. Lamport (1985). “Distributed Snapshots: Determining Global States of Distributed Systems.” ACM Trans. Comput. Syst., 3(1):63–75.</li>
 <li>J. W. Young (1974). “A First Order Approximation to the Optimum Checkpoint Interval.” Commun. ACM, 17:530–531.</li>
 </ol>
-<h2 id="An_Example_Application_in_GraphLab"><a href="#An_Example_Application_in_GraphLab" class="headerlink" title="An Example Application in GraphLab"></a>An Example Application in GraphLab</h2><p>In this section, we explore the abstraction of GraphLab by walking through the PageRank example. The PageRank algorithm is a well-known technique proposed by Google. It is used by Google to rank the importance of website pages returned by their search engine. Using the assumption that more important websites are likely to receive more links from other important websites, it determines the importance of a page by counting the number and quality of links pointed to that page.</p>
+<h2 id="An-Example-Application-in-GraphLab"><a href="#An-Example-Application-in-GraphLab" class="headerlink" title="An Example Application in GraphLab"></a>An Example Application in GraphLab</h2><p>In this section, we explore the abstraction of GraphLab by walking through the PageRank example. The PageRank algorithm is a well-known technique proposed by Google. It is used by Google to rank the importance of website pages returned by their search engine. Using the assumption that more important websites are likely to receive more links from other important websites, it determines the importance of a page by counting the number and quality of links pointed to that page.</p>
 <p>PageRank has various implementations, but its idea can be demonstrated with the following equation:</p>
 <p><img src="/images/14601381614335.jpg" alt=""></p>
 <p>where R[i] represents the PageRank value of page i, Nbr(i) is the set of pages pointing to page i and wji is a weight associated with this link, which is normally defined as the inverse of page j’s outdegree.</p>
@@ -747,42 +749,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

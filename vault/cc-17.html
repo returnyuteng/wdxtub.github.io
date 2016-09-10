@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="这一次的任务需要前端后端一起做了！后端包括 MySQL, HBase 和 MongoDB，通过这次的作业，我们应该能够慢慢开始实现自己的 web 应用了。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 17 课 实现社交网络的时间线功能">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-17.html">
@@ -109,6 +110,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 17 课 实现社交网络的时间线功能">
 <meta name="twitter:description" content="这一次的任务需要前端后端一起做了！后端包括 MySQL, HBase 和 MongoDB，通过这次的作业，我们应该能够慢慢开始实现自己的 web 应用了。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14585559117393.jpg">
 
 
 
@@ -132,7 +134,7 @@
   
     云计算 第 17 课 实现社交网络的时间线功能 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -153,7 +155,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -267,7 +269,7 @@
       <p>这一次的任务需要前端后端一起做了！后端包括 MySQL, HBase 和 MongoDB，通过这次的作业，我们应该能够慢慢开始实现自己的 web 应用了。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
+<h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
 <li>了解 AWS 提供的 Database-as-a-Service(DBaaS) 服务（申请、配置和管理）</li>
 <li>比较 MySQL，HBase 和 MongoDB 在使用 Java API 载入数据时的异同</li>
 <li>使用多个后端给一个复杂度的 web 应用提供数据</li>
@@ -283,7 +285,7 @@
 <li>MySQL：这里我们直接使用 AWS 提供的服务，只需要简单配置就可以使用</li>
 <li>MongoDB：是一个 Document Oriented 数据库，可以看做是键值对存储的一个子类型，能对 document 中的域进行索引（这个和 HBase 不同）。另外，它也是 <a href="https://en.wikipedia.org/wiki/MEAN_%28software_bundle%29" target="_blank" rel="external">MEAN stack</a> 中最重要的后端组成</li>
 </ul>
-<h2 id="u80CC_u666F_u77E5_u8BC6"><a href="#u80CC_u666F_u77E5_u8BC6" class="headerlink" title="背景知识"></a>背景知识</h2><p>社交网络的基本架构，是由其需要存储的数据所决定的，包括：用户资料、用户活动以及大数据分析系统，具体如下：</p>
+<h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><p>社交网络的基本架构，是由其需要存储的数据所决定的，包括：用户资料、用户活动以及大数据分析系统，具体如下：</p>
 <ol>
 <li>用户资料：身份验证、用户信息、活动日志、社交关系（用图表示）</li>
 <li>用户互动：各种用户产生的多媒体数据</li>
@@ -305,13 +307,13 @@
 </ul>
 <h3 id="DBaaS"><a href="#DBaaS" class="headerlink" title="DBaaS"></a>DBaaS</h3><p>简单来说就是不需要怎么配置，直接用就好。Amazon 的对应服务叫做 <a href="http://aws.amazon.com/rds/" target="_blank" rel="external">RDS</a>，具体的细节可以看<a href="https://www.youtube.com/watch?v=Kz1zmyHw9G0" target="_blank" rel="external">这个视频</a>，这里我就不废话了。</p>
 <p>对于这个项目，我们需要做的就是把各种用户信息导入到 RDS 中，然后前端发送登录请求的时候检查对应的 userid 和 password，根据检查结果来做下一步的操作（具体的操作在『任务介绍』）</p>
-<h3 id="u56FE_u7684_u6570_u636E_u7ED3_u6784"><a href="#u56FE_u7684_u6570_u636E_u7ED3_u6784" class="headerlink" title="图的数据结构"></a>图的数据结构</h3><p>这里简单介绍一下基本的表示图的方式，假设我们有这样一个图：</p>
+<h3 id="图的数据结构"><a href="#图的数据结构" class="headerlink" title="图的数据结构"></a>图的数据结构</h3><p>这里简单介绍一下基本的表示图的方式，假设我们有这样一个图：</p>
 <p><img src="/images/14585610589470.jpg" alt=""></p>
 <p>先来看看邻接矩阵，这种方式的存储可以使用 vectorized library，但是需要的空间为 $O(n^2)$</p>
 <p><img src="/images/14585611226853.jpg" alt="Adjacency Matrix"></p>
 <p>第二种是邻接表，比较简单粗暴，用的空间也比较少</p>
 <p><img src="/images/14585611522388.jpg" alt="Adjacent List"></p>
-<h3 id="MongoDB__u4ECB_u7ECD"><a href="#MongoDB__u4ECB_u7ECD" class="headerlink" title="MongoDB 介绍"></a>MongoDB 介绍</h3><p>MongoDB 可以看做是一个有诸多关系型数据库的 document-oriented 数据库，其中的数据以 Bson 格式存储（实际上是二进制的 json）。另外前面也提到的，支持索引（和 HBase 不一样）。</p>
+<h3 id="MongoDB-介绍"><a href="#MongoDB-介绍" class="headerlink" title="MongoDB 介绍"></a>MongoDB 介绍</h3><p>MongoDB 可以看做是一个有诸多关系型数据库的 document-oriented 数据库，其中的数据以 Bson 格式存储（实际上是二进制的 json）。另外前面也提到的，支持索引（和 HBase 不一样）。</p>
 <p>选择 BSON 格式的原因是：</p>
 <ol>
 <li>Space efficiency – BSON occupies much less space than does plain JSON, even in the worse case.</li>
@@ -328,12 +330,12 @@
 </ul>
 <p>我们同样可以使用 Mongo Shell 来操作数据库（使用 javascript），具体可以参考<a href="https://docs.mongodb.org/getting-started/shell/query/" target="_blank" rel="external">Mongo Shell Guide</a>，这里只介绍一些基本操作</p>
 <p>可以通过 <code>use db_name</code> 来创建或切换到一个数据库。插入 document 可以使用：</p>
-<figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">db.db_name.<span class="keyword">insert</span> (&#123;</span><br><span class="line">    <span class="string">"name"</span>:<span class="string">"sample document"</span></span><br><span class="line">&#125;)</span><br><span class="line">db.db_name.<span class="keyword">insert</span>(&#123;</span><br><span class="line">    <span class="string">"name"</span>:<span class="string">"sample document"</span>, <span class="string">"user"</span>: &#123;<span class="string">"uid"</span>: <span class="number">123</span>&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">db.db_name.insert (&#123;</div><div class="line">    &quot;name&quot;:&quot;sample document&quot;</div><div class="line">&#125;)</div><div class="line">db.db_name.insert(&#123;</div><div class="line">    &quot;name&quot;:&quot;sample document&quot;, &quot;user&quot;: &#123;&quot;uid&quot;: 123&#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
 <p>使用 <code>find()</code> 函数进行查找，也可以通过一些其他参数来给结果加一些限制：</p>
-<figure class="highlight sqf"><table><tr><td class="code"><pre><span class="line">db.db_name.<span class="built_in">find</span>(&#123;“<span class="built_in">name</span>”:”sample document”&#125;)</span><br><span class="line">db.db_name.<span class="built_in">find</span>().limit(<span class="number">30</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">db.db_name.find(&#123;“name”:”sample document”&#125;)</div><div class="line">db.db_name.find().limit(30)</div></pre></td></tr></table></figure>
 <p>MongoDB 的 Java API 和上面介绍的很类似，具体参考 <a href="https://docs.mongodb.org/getting-started/java/" target="_blank" rel="external">Mongo Java Guide</a></p>
 <p>可以通过添加索引加快查询，具体可以参考这个<a href="https://docs.mongodb.org/manual/reference/method/db.collection.createIndex/" target="_blank" rel="external">文档</a></p>
-<h3 id="Graph_Distance"><a href="#Graph_Distance" class="headerlink" title="Graph Distance"></a>Graph Distance</h3><p>这里我们使用<a href="https://en.wikipedia.org/wiki/Distance_%28graph_theory%29" target="_blank" rel="external">有向图的距离度量</a>来作为推荐的依据（就是判断谁更值得推荐）</p>
+<h3 id="Graph-Distance"><a href="#Graph-Distance" class="headerlink" title="Graph Distance"></a>Graph Distance</h3><p>这里我们使用<a href="https://en.wikipedia.org/wiki/Distance_%28graph_theory%29" target="_blank" rel="external">有向图的距离度量</a>来作为推荐的依据（就是判断谁更值得推荐）</p>
 <ul>
 <li>令 <code>d(A, v)</code> 表示从节点 <code>A</code> 到节点 <code>v</code> 的最小距离</li>
 <li>令 <code>S</code> 为 <code>A</code> 关注的人的集合，那么对于 <code>S</code> 中的每个 <code>s</code>，有 <code>d(A, s) = 1</code></li>
@@ -343,11 +345,11 @@
 <li>返回至多 10 个推荐结果</li>
 </ul>
 <p>举个例子，假如有这样一些关系：</p>
-<figure class="highlight puppet"><table><tr><td class="code"><pre><span class="line">A <span class="name">follows</span> &#123;B, C, D&#125;</span><br><span class="line"><span class="name">Followee</span> <span class="name">B</span> <span class="name">follows</span> &#123;C, E, A&#125;</span><br><span class="line"><span class="name">followee</span> <span class="name">C</span> <span class="name">follows</span> &#123;F, G&#125;</span><br><span class="line"><span class="name">followee</span> <span class="name">D</span> <span class="name">follows</span> &#123;G, H&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">A follows &#123;B, C, D&#125;</div><div class="line">Followee B follows &#123;C, E, A&#125;</div><div class="line">followee C follows &#123;F, G&#125;</div><div class="line">followee D follows &#123;G, H&#125;</div></pre></td></tr></table></figure>
 <p><img src="/images/14585665805827.jpg" alt="关系"></p>
 <p>那么对应的分数为 <code>{A:1, C:1, E:1, F:1, G:2, H:1}</code>，这里 <code>C</code> 已经在 <code>A</code> 的关注列表里，要去掉；<code>A</code> 本身就是自己，也要去掉，所以剩下的是 <code>{G: 2, E: 1, F: 1, H: 1}</code>。</p>
 <p>然后需要按照分数的降序排列（大的在前面），如果有分数一样的，按照 userid 的数字升序排列（小的在前面）</p>
-<h2 id="u4EFB_u52A1_u4ECB_u7ECD"><a href="#u4EFB_u52A1_u4ECB_u7ECD" class="headerlink" title="任务介绍"></a>任务介绍</h2><ul>
+<h2 id="任务介绍"><a href="#任务介绍" class="headerlink" title="任务介绍"></a>任务介绍</h2><ul>
 <li>标签：<code>Project:3.4</code></li>
 <li>镜像<ul>
 <li>前端(FI): <code>m3.medium</code>，<code>ami-30f2c95a</code>，全部流量</li>
@@ -365,7 +367,7 @@
 </li>
 <li>注意价格：<a href="https://aws.amazon.com/ec2/pricing/" target="_blank" rel="external">EC2</a>, <a href="https://aws.amazon.com/elasticmapreduce/pricing/" target="_blank" rel="external">EMR</a>, <a href="https://aws.amazon.com/rds/pricing/#aws-element-4804a1c1-04cc-4d1e-8f33-ab55b388a4da2" target="_blank" rel="external">RDS</a></li>
 </ul>
-<h3 id="u524D_u7AEF"><a href="#u524D_u7AEF" class="headerlink" title="前端"></a>前端</h3><ol>
+<h3 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h3><ol>
 <li>启动一个前端实例(FI)，在 <code>/home/ubuntu/SN2/routes/backend.js</code> 更新后端的地址</li>
 <li>进入 <code>/home/ubuntu/SN2</code> 文件夹，并用 <code>npm start</code> 命令启动服务器</li>
 <li>在浏览器中访问 <code>http://&lt;frontend-public-dns&gt;:3000</code>，应该能够看到前端界面</li>
@@ -377,7 +379,7 @@
 <li>服务器到本地 <code>scp -i ../demo.pem ubuntu@ec2-52-201-238-55.compute-1.amazonaws.com:~/SN2/routes/backend.js ./</code></li>
 <li>本地到服务器 <code>scp -i ../demo.pem ./backend.js ubuntu@ec2-52-201-238-55.compute-1.amazonaws.com:~/SN2/routes/</code></li>
 </ul>
-<h3 id="u540E_u7AEF"><a href="#u540E_u7AEF" class="headerlink" title="后端"></a>后端</h3><ol>
+<h3 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h3><ol>
 <li>启动一个后端实例(BI)，所有的实现都在后端完成</li>
 <li>因为依赖关系比较多的缘故，这次使用 maven3 来完成各类工作。具体的依赖在 <a href="https://maven.apache.org/guides/introduction/introduction-to-the-pom.html" target="_blank" rel="external"><code>pom.xml</code></a> 文件中，如果没有添加额外的包，应该不需要改动</li>
 <li>Java 文件在 <code>/home/ubuntu/Project3_4/src/main/java/cc/cmu/edu/minisite/</code> 中，我们需要完成 5 个 servlet，但注意不要改动 <code>MiniSite.java</code><ul>
@@ -409,7 +411,7 @@
 <li>本地到服务器1 <code>scp -i ../demo.pem -r ./*.java ubuntu@ec2-54-164-149-7.compute-1.amazonaws.com:~/Project3_4/src/main/java/cc/cmu/edu/minisite/</code></li>
 <li>本地到服务器2 <code>scp -i ../demo.pem -r ./*.py ubuntu@ec2-54-164-149-7.compute-1.amazonaws.com:~/</code></li>
 </ul>
-<h3 id="u914D_u7F6E_RDS"><a href="#u914D_u7F6E_RDS" class="headerlink" title="配置 RDS"></a>配置 RDS</h3><ol>
+<h3 id="配置-RDS"><a href="#配置-RDS" class="headerlink" title="配置 RDS"></a>配置 RDS</h3><ol>
 <li>登录 AWS，并进入 RDS 页面</li>
 <li>启动一个 MySQL 数据库，设置如下<ul>
 <li>Production 选择 MySQL</li>
@@ -439,8 +441,8 @@
 <li><code>LOAD DATA LOCAL INFILE &#39;/home/ubuntu/users.csv&#39; INTO TABLE users CHARACTER SET utf8mb4 FIELDS TERMINATED BY &#39;,&#39; LINES TERMINATED BY &#39;\n&#39;;</code></li>
 <li><code>load data local infile &#39;/home/ubuntu/userinfo.csv&#39; into table userinfos character set utf8mb4 fields terminated by &#39;,&#39; lines terminated by &#39;\n&#39;;</code></li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">users</span>(</span><br><span class="line">userid <span class="built_in">int</span> primary <span class="keyword">key</span>,</span><br><span class="line"><span class="keyword">password</span> <span class="built_in">varchar</span>(<span class="number">255</span>)</span><br><span class="line">);</span></span><br><span class="line"></span><br><span class="line"><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> userinfos(</span><br><span class="line">userid <span class="built_in">int</span> primary <span class="keyword">key</span>,</span><br><span class="line"><span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">255</span>),</span><br><span class="line"><span class="keyword">url</span> <span class="built_in">varchar</span>(<span class="number">255</span>)</span><br><span class="line">);</span></span><br><span class="line"></span><br><span class="line"><span class="operator"><span class="keyword">show</span> <span class="keyword">tables</span>;</span></span><br><span class="line">+<span class="comment">-----------------+</span></span><br><span class="line">| Tables_in_users |</span><br><span class="line">+<span class="comment">-----------------+</span></span><br><span class="line">| userinfos       |</span><br><span class="line">| users           |</span><br><span class="line">+<span class="comment">-----------------+</span></span><br><span class="line">2 rows in <span class="operator"><span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"><span class="keyword">desc</span> <span class="keyword">users</span>;</span></span><br><span class="line">+<span class="comment">----------+--------------+------+-----+---------+-------+</span></span><br><span class="line">| Field    | Type         | Null | Key | Default | Extra |</span><br><span class="line">+<span class="comment">----------+--------------+------+-----+---------+-------+</span></span><br><span class="line">| userid   | int(11)      | NO   | PRI | NULL    |       |</span><br><span class="line">| password | varchar(255) | YES  |     | NULL    |       |</span><br><span class="line">+<span class="comment">----------+--------------+------+-----+---------+-------+</span></span><br><span class="line">2 rows in <span class="operator"><span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"><span class="keyword">desc</span> userinfos;</span></span><br><span class="line">+<span class="comment">--------+--------------+------+-----+---------+-------+</span></span><br><span class="line">| Field  | Type         | Null | Key | Default | Extra |</span><br><span class="line">+<span class="comment">--------+--------------+------+-----+---------+-------+</span></span><br><span class="line">| userid | int(11)      | NO   | PRI | NULL    |       |</span><br><span class="line">| name   | varchar(255) | YES  |     | NULL    |       |</span><br><span class="line">| url    | varchar(255) | YES  |     | NULL    |       |</span><br><span class="line">+<span class="comment">--------+--------------+------+-----+---------+-------+</span></span><br><span class="line">3 rows in <span class="operator"><span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">users</span> <span class="keyword">where</span> userid=<span class="number">1</span>;</span></span><br><span class="line">+<span class="comment">--------+----------+</span></span><br><span class="line">| userid | password |</span><br><span class="line">+<span class="comment">--------+----------+</span></span><br><span class="line">|      1 | yaihala  |</span><br><span class="line">+<span class="comment">--------+----------+</span></span><br><span class="line">1 row in <span class="operator"><span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> userinfos <span class="keyword">where</span> userid=<span class="number">1</span>;</span></span><br><span class="line">+<span class="comment">--------+---------+-------------------------------------------------------------------------------------+</span></span><br><span class="line">| userid | name    | url                                                                                 |</span><br><span class="line">+<span class="comment">--------+---------+-------------------------------------------------------------------------------------+</span></span><br><span class="line">|      1 | Aaliyah | https://cmucloudsocial.s3.amazonaws.com/profiles/9cc1886c5af388976e959787fa810c.png |</span><br><span class="line">+<span class="comment">--------+---------+-------------------------------------------------------------------------------------+</span></span><br><span class="line">1 row in <span class="operator"><span class="keyword">set</span> (<span class="number">0.00</span> sec)</span></span><br></pre></td></tr></table></figure>
-<h3 id="u4EFB_u52A1_1_uFF1A_u767B_u5F55"><a href="#u4EFB_u52A1_1_uFF1A_u767B_u5F55" class="headerlink" title="任务 1：登录"></a>任务 1：登录</h3><p>相关信息：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><div class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">users</span>(</div><div class="line">userid <span class="built_in">int</span> primary <span class="keyword">key</span>,</div><div class="line"><span class="keyword">password</span> <span class="built_in">varchar</span>(<span class="number">255</span>)</div><div class="line">);</div><div class="line"></div><div class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> userinfos(</div><div class="line">userid <span class="built_in">int</span> primary <span class="keyword">key</span>,</div><div class="line"><span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">255</span>),</div><div class="line"><span class="keyword">url</span> <span class="built_in">varchar</span>(<span class="number">255</span>)</div><div class="line">);</div><div class="line"></div><div class="line"><span class="keyword">show</span> <span class="keyword">tables</span>;</div><div class="line">+<span class="comment">-----------------+</span></div><div class="line">| Tables_in_users |</div><div class="line">+<span class="comment">-----------------+</span></div><div class="line">| userinfos       |</div><div class="line">| users           |</div><div class="line">+<span class="comment">-----------------+</span></div><div class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</div><div class="line"></div><div class="line"><span class="keyword">desc</span> <span class="keyword">users</span>;</div><div class="line">+<span class="comment">----------+--------------+------+-----+---------+-------+</span></div><div class="line">| Field    | Type         | Null | Key | Default | Extra |</div><div class="line">+<span class="comment">----------+--------------+------+-----+---------+-------+</span></div><div class="line">| userid   | int(11)      | NO   | PRI | NULL    |       |</div><div class="line">| password | varchar(255) | YES  |     | NULL    |       |</div><div class="line">+<span class="comment">----------+--------------+------+-----+---------+-------+</span></div><div class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</div><div class="line"></div><div class="line"><span class="keyword">desc</span> userinfos;</div><div class="line">+<span class="comment">--------+--------------+------+-----+---------+-------+</span></div><div class="line">| Field  | Type         | Null | Key | Default | Extra |</div><div class="line">+<span class="comment">--------+--------------+------+-----+---------+-------+</span></div><div class="line">| userid | int(11)      | NO   | PRI | NULL    |       |</div><div class="line">| name   | varchar(255) | YES  |     | NULL    |       |</div><div class="line">| url    | varchar(255) | YES  |     | NULL    |       |</div><div class="line">+<span class="comment">--------+--------------+------+-----+---------+-------+</span></div><div class="line">3 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</div><div class="line"></div><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">users</span> <span class="keyword">where</span> userid=<span class="number">1</span>;</div><div class="line">+<span class="comment">--------+----------+</span></div><div class="line">| userid | password |</div><div class="line">+<span class="comment">--------+----------+</span></div><div class="line">|      1 | yaihala  |</div><div class="line">+<span class="comment">--------+----------+</span></div><div class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</div><div class="line"></div><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> userinfos <span class="keyword">where</span> userid=<span class="number">1</span>;</div><div class="line">+<span class="comment">--------+---------+-------------------------------------------------------------------------------------+</span></div><div class="line">| userid | name    | url                                                                                 |</div><div class="line">+<span class="comment">--------+---------+-------------------------------------------------------------------------------------+</span></div><div class="line">|      1 | Aaliyah | https://cmucloudsocial.s3.amazonaws.com/profiles/9cc1886c5af388976e959787fa810c.png |</div><div class="line">+<span class="comment">--------+---------+-------------------------------------------------------------------------------------+</span></div><div class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</div></pre></td></tr></table></figure>
+<h3 id="任务-1：登录"><a href="#任务-1：登录" class="headerlink" title="任务 1：登录"></a>任务 1：登录</h3><p>相关信息：</p>
 <ul>
 <li>RDS 实例：1 台 <code>db.t2.micro</code> / <code>db.t2.small</code></li>
 <li>登录信息：MySQL，<code>[UserID, Password]</code>，<code>/home/ubuntu/users.csv</code></li>
@@ -462,7 +464,7 @@
 <li><code>returnRes</code> 函数是给前端用的回调函数，主要关注 JSON 字符串就好</li>
 </ul>
 <p>创建 JSON 响应的样例代码：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">JSONObject result = <span class="keyword">new</span> JSONObject();</span><br><span class="line">result.put(<span class="string">"name"</span>, <span class="string">"my_name"</span>);</span><br><span class="line">result.put(<span class="string">"profile"</span>, <span class="string">"profile_image_url"</span>);</span><br><span class="line">PrintWriter writer = response.getWriter();</span><br><span class="line">writer.write(String.format(<span class="string">"returnRes(%s)"</span>, result.toString()));</span><br><span class="line">writer.close();</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">JSONObject result = <span class="keyword">new</span> JSONObject();</div><div class="line">result.put(<span class="string">"name"</span>, <span class="string">"my_name"</span>);</div><div class="line">result.put(<span class="string">"profile"</span>, <span class="string">"profile_image_url"</span>);</div><div class="line">PrintWriter writer = response.getWriter();</div><div class="line">writer.write(String.format(<span class="string">"returnRes(%s)"</span>, result.toString()));</div><div class="line">writer.close();</div></pre></td></tr></table></figure>
 <p>可以通过下面步骤进行测试：</p>
 <ol>
 <li>启动前端、后端服务器，然后访问 <code>http://&lt;your_front_end_dns&gt;:3000</code></li>
@@ -479,7 +481,7 @@
 <li>校验密码等信息，按照前面给出的要求进行返回即可</li>
 </ul>
 <p>这一部分还是比较简单的，仔细一点即可</p>
-<h3 id="u4EFB_u52A1_2_uFF1A_u5B58_u50A8_u793E_u4EA4_u56FE_u8C31"><a href="#u4EFB_u52A1_2_uFF1A_u5B58_u50A8_u793E_u4EA4_u56FE_u8C31" class="headerlink" title="任务 2：存储社交图谱"></a>任务 2：存储社交图谱</h3><p>简单来说，就是用 HBase 保存用户间的关系（具体可以看前面的背景知识）。我们需要从『邻接矩阵』和『邻接表』这两种方式选择一种，来保存具体的数据（原始数据是简单的 <code>&lt;Followee, Follower&gt;</code>）</p>
+<h3 id="任务-2：存储社交图谱"><a href="#任务-2：存储社交图谱" class="headerlink" title="任务 2：存储社交图谱"></a>任务 2：存储社交图谱</h3><p>简单来说，就是用 HBase 保存用户间的关系（具体可以看前面的背景知识）。我们需要从『邻接矩阵』和『邻接表』这两种方式选择一种，来保存具体的数据（原始数据是简单的 <code>&lt;Followee, Follower&gt;</code>）</p>
 <p>相关信息：</p>
 <ul>
 <li>EMR Hadoop Version: Amazon 3.9.0</li>
@@ -498,7 +500,7 @@
 <li>一些 HBase API 的<a href="https://hbase.apache.org/apidocs/org/apache/hadoop/hbase/client/package-summary.html" target="_blank" rel="external">例子</a></li>
 </ul>
 <p>可能会需要 import 的头文件：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Get;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Result;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.ResultScanner;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Scan;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.util.Bytes;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.HTablePool;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.HTableInterface;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.KeyValue;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.HConnection;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.HConnectionManager;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.HBaseConfiguration;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Get;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Result;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.ResultScanner;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.Scan;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.util.Bytes;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.HTablePool;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.HTableInterface;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.KeyValue;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.HConnection;</div><div class="line"><span class="keyword">import</span> org.apache.hadoop.hbase.client.HConnectionManager;</div></pre></td></tr></table></figure>
 <ul>
 <li>请求格式：<code>GET /task2?id=[UserID]</code><ul>
 <li>例如：<code>http://backend-public-dns:8080/MiniSite/task2?id=2</code></li>
@@ -510,7 +512,7 @@
 </li>
 </ul>
 <p>创建 JSON 响应的样例代码：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">JSONArray followers = <span class="keyword">new</span> JSONArray();</span><br><span class="line">JSONObject follower = <span class="keyword">new</span> JSONObject();</span><br><span class="line"></span><br><span class="line">follower.put(<span class="string">"name"</span>, <span class="string">"follower_name_1"</span>);</span><br><span class="line">follower.put(<span class="string">"profile"</span>, <span class="string">"profile_image_url"</span>);</span><br><span class="line">followers.put(follower);</span><br><span class="line"><span class="comment">// 把所有的 follower 都添加进去再执行下面的</span></span><br><span class="line">PrintWriter writer = response.getWriter();</span><br><span class="line">writer.write(String.format(<span class="string">"returnRes(%s)"</span>, followers.toString()));</span><br><span class="line">writer.close();</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">JSONArray followers = <span class="keyword">new</span> JSONArray();</div><div class="line">JSONObject follower = <span class="keyword">new</span> JSONObject();</div><div class="line"></div><div class="line">follower.put(<span class="string">"name"</span>, <span class="string">"follower_name_1"</span>);</div><div class="line">follower.put(<span class="string">"profile"</span>, <span class="string">"profile_image_url"</span>);</div><div class="line">followers.put(follower);</div><div class="line"><span class="comment">// 把所有的 follower 都添加进去再执行下面的</span></div><div class="line">PrintWriter writer = response.getWriter();</div><div class="line">writer.write(String.format(<span class="string">"returnRes(%s)"</span>, followers.toString()));</div><div class="line">writer.close();</div></pre></td></tr></table></figure>
 <p>可以通过下面步骤进行测试：</p>
 <ol>
 <li>启动前端、后端服务器，然后访问 <code>http://&lt;your_front_end_dns&gt;:3000</code></li>
@@ -560,7 +562,7 @@
 <li>导入数据 <code>hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.separator=&quot;,&quot; -Dimporttsv.bulk.output=/hfile_group -Dimporttsv.columns=HBASE_ROW_KEY,data:v linkdata2 /q4/q4.csv</code></li>
 <li>应用改动 <code>hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /hfile_group linkdata2</code></li>
 </ul>
-<h3 id="u4EFB_u52A1_3_uFF1A_u642D_u5EFA_u4E3B_u9875"><a href="#u4EFB_u52A1_3_uFF1A_u642D_u5EFA_u4E3B_u9875" class="headerlink" title="任务 3：搭建主页"></a>任务 3：搭建主页</h3><p>使用 MongoDB 来存储帖子，这里主要会查询某些特定的 field，所以需要对应建立索引来加速查询。</p>
+<h3 id="任务-3：搭建主页"><a href="#任务-3：搭建主页" class="headerlink" title="任务 3：搭建主页"></a>任务 3：搭建主页</h3><p>使用 MongoDB 来存储帖子，这里主要会查询某些特定的 field，所以需要对应建立索引来加速查询。</p>
 <p>相关信息：</p>
 <ul>
 <li><code>ami-8f330ee5</code>, <code>m3.medium</code></li>
@@ -571,7 +573,7 @@
 <li>注意！不要在代码中保存 AWS 密码</li>
 </ul>
 <p><code>post.json</code> 中的每一行都是一个 JSON 对象，具体如下：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "pid":xxx,                                      // PostID</span><br><span class="line">    "uid":xxx,                                      // UserID of poster</span><br><span class="line">    "name":"xxx",                                   // User name of poster</span><br><span class="line">    "profile":"xxx",                                // Poster profile image URL</span><br><span class="line">    "timestamp":"YYYY-MM-DD HH:MM:SS",              // When post is posted</span><br><span class="line">    "image":"xxx",                                  // Post image</span><br><span class="line">    "content":"xxx",                                // Post text content</span><br><span class="line">    "comments":[                                    // comments json array</span><br><span class="line">        &#123;</span><br><span class="line">            "uid":xxx,                              // UserID of commenter</span><br><span class="line">            "name":"xxx",                           // User name of commenter</span><br><span class="line">            "profile":"xxx",                        // Commenter profile image URL</span><br><span class="line">            "timestamp":"YYYY-MM-DD HH:MM:SS",      // When comment is made</span><br><span class="line">            "content":"xxx"                         // Comment text content</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            "uid":xxx,</span><br><span class="line">            .......</span><br><span class="line">        &#125;,</span><br><span class="line">        ......</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    "pid":xxx,                                      // PostID</div><div class="line">    "uid":xxx,                                      // UserID of poster</div><div class="line">    "name":"xxx",                                   // User name of poster</div><div class="line">    "profile":"xxx",                                // Poster profile image URL</div><div class="line">    "timestamp":"YYYY-MM-DD HH:MM:SS",              // When post is posted</div><div class="line">    "image":"xxx",                                  // Post image</div><div class="line">    "content":"xxx",                                // Post text content</div><div class="line">    "comments":[                                    // comments json array</div><div class="line">        &#123;</div><div class="line">            "uid":xxx,                              // UserID of commenter</div><div class="line">            "name":"xxx",                           // User name of commenter</div><div class="line">            "profile":"xxx",                        // Commenter profile image URL</div><div class="line">            "timestamp":"YYYY-MM-DD HH:MM:SS",      // When comment is made</div><div class="line">            "content":"xxx"                         // Comment text content</div><div class="line">        &#125;,</div><div class="line">        &#123;</div><div class="line">            "uid":xxx,</div><div class="line">            .......</div><div class="line">        &#125;,</div><div class="line">        ......</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>注意，我们不需要改变 json 文件中的任何内容，评论已经按照时间顺序排好了。每次会请求一个 userid 的所有帖子，我们需要做的是利用时间戳来排个序（旧的在前面，新的在后面）。</p>
 <p>可以通过添加索引加快查询，具体可以参考这个<a href="https://docs.mongodb.org/manual/reference/method/db.collection.createIndex/" target="_blank" rel="external">文档</a></p>
 <ul>
@@ -598,7 +600,7 @@
 <li>需要给检索结果排序：<code>db.post.find({&quot;uid&quot;:33152}).sort({&quot;timestamp&quot;:1})</code></li>
 <li>调用 Java API 进行检索并返回即可</li>
 </ul>
-<h3 id="u4EFB_u52A1_4_uFF1A_u4E2D_u8DEF_u4E00_u6CE2"><a href="#u4EFB_u52A1_4_uFF1A_u4E2D_u8DEF_u4E00_u6CE2" class="headerlink" title="任务 4：中路一波"></a>任务 4：中路一波</h3><p>简单来说，就是把之前的东西全凑到一起。也就是说，给出一个 userid，需要返回 <code>Name</code>, <code>Profile Image URL</code>, 粉丝列表（要排序）以及用户关注的人的 30 条最新的帖子。</p>
+<h3 id="任务-4：中路一波"><a href="#任务-4：中路一波" class="headerlink" title="任务 4：中路一波"></a>任务 4：中路一波</h3><p>简单来说，就是把之前的东西全凑到一起。也就是说，给出一个 userid，需要返回 <code>Name</code>, <code>Profile Image URL</code>, 粉丝列表（要排序）以及用户关注的人的 30 条最新的帖子。</p>
 <p>粉丝需要按照名字的字典序升序排列（就是 A 在 B 前面），如果名字一样，就按照 URL 的升序排列（用同一个 Comparator 即可）</p>
 <p>关注的人的帖子需要按照时间戳来排序（旧的在前面），如果时间戳相同，那么就按照 <code>PID</code>(PostID) 来排序（升序，小的在前面）</p>
 <ul>
@@ -624,7 +626,7 @@
 <li>在 MongoDB 中找到对应的 post，用优先队列存起来</li>
 <li>全部完成后输出前 30 个（如果超过 30 个的话）</li>
 </ul>
-<h3 id="u652F_u7EBF_u4EFB_u52A1_uFF1A_u7B80_u5355_u63A8_u8350"><a href="#u652F_u7EBF_u4EFB_u52A1_uFF1A_u7B80_u5355_u63A8_u8350" class="headerlink" title="支线任务：简单推荐"></a>支线任务：简单推荐</h3><p>简单来说就是做个推荐系统，具体推荐系统的介绍会专门写一篇来介绍（推荐系统我还是有比较多经验的）。这里我们只需要做一个协同过滤(Collaborative filtering)的推荐系统，利用『朋友的朋友』策略来推荐新朋友。</p>
+<h3 id="支线任务：简单推荐"><a href="#支线任务：简单推荐" class="headerlink" title="支线任务：简单推荐"></a>支线任务：简单推荐</h3><p>简单来说就是做个推荐系统，具体推荐系统的介绍会专门写一篇来介绍（推荐系统我还是有比较多经验的）。这里我们只需要做一个协同过滤(Collaborative filtering)的推荐系统，利用『朋友的朋友』策略来推荐新朋友。</p>
 <p>相关信息：</p>
 <ul>
 <li>数据集：<code>User</code>, <code>UserInfo</code> 和之前 HBase 中的关系数据</li>
@@ -650,7 +652,7 @@
 <li>选取队列的前十个返回</li>
 <li>最后从 MySQL 中取出这 10 个 userid 对应的 name 和 url，并返回</li>
 </ul>
-<h3 id="u63D0_u4EA4"><a href="#u63D0_u4EA4" class="headerlink" title="提交"></a>提交</h3><ul>
+<h3 id="提交"><a href="#提交" class="headerlink" title="提交"></a>提交</h3><ul>
 <li>复制 ETL 的命令、代码到 <code>/home/ubuntu/Project3_4/src/main/java/cc/cmu/edu/minisite/</code></li>
 <li>确保在 <code>/home/ubuntu/Project3_4/src/main/java/cc/cmu/edu/minisite/</code> 中有以下文件：<code>ProfileServlet.java</code>, <code>FollowerServlet.java</code>, <code>HomepageServlet.java</code>, <code>TimelineServlet.java</code>, <code>RecommendationServlet.java</code>, <code>MiniSite.java</code>, <code>references</code> 和其他自己创建的 Java 文件</li>
 <li>保持后端运行，执行 <code>./submitter -a &lt;andrewid&gt;</code>，如果服务器太慢，可能会被认为是『无响应』</li>
@@ -990,42 +992,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="这节课开始，我们会接触到计算机系统中另外一个非常重要的概念：虚拟内存。这个机制提供给了上层应用一个统一的地址空间，而无须操心物理内存的位置。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 第 16 课 Virtual Memory - Concepts">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-16.html">
@@ -114,6 +115,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 第 16 课 Virtual Memory - Concepts">
 <meta name="twitter:description" content="这节课开始，我们会接触到计算机系统中另外一个非常重要的概念：虚拟内存。这个机制提供给了上层应用一个统一的地址空间，而无须操心物理内存的位置。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14583091815694.jpg">
 
 
 
@@ -137,7 +139,7 @@
   
     深入理解计算机系统 第 16 课 Virtual Memory - Concepts | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -158,7 +160,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -283,7 +285,7 @@
 <li>简化内存管理：每个进程都有统一的线性地址空间</li>
 <li>隔离地址控件：进程之间不会相互影响；用户程序不能访问内核信息和代码</li>
 </ol>
-<h2 id="u4F5C_u4E3A_u7F13_u5B58_u5DE5_u5177"><a href="#u4F5C_u4E3A_u7F13_u5B58_u5DE5_u5177" class="headerlink" title="作为缓存工具"></a>作为缓存工具</h2><p>概念上来说，虚拟内存就是存储在磁盘上的 N 个连续字节的数组。这个数组的部分内容，会缓存在 DRAM 中，在 DRAM 中的每个 cache block 就称为 page（页），具体的大小为 $P=2^p$（这里 p 表示具体的位数），如下图所示：</p>
+<h2 id="作为缓存工具"><a href="#作为缓存工具" class="headerlink" title="作为缓存工具"></a>作为缓存工具</h2><p>概念上来说，虚拟内存就是存储在磁盘上的 N 个连续字节的数组。这个数组的部分内容，会缓存在 DRAM 中，在 DRAM 中的每个 cache block 就称为 page（页），具体的大小为 $P=2^p$（这里 p 表示具体的位数），如下图所示：</p>
 <p><img src="/images/14583098368523.jpg" alt=""></p>
 <p>大致的思路和之前的 cache memory 是类似的，就是利用 DRAM 比较快的特性，把最常用的数据换缓存起来。如果要访问磁盘的话，大约会比访问 DRAM 慢一万倍，所以我们的目标就是尽可能从 DRAM 中拿数据。为此，我们需要：</p>
 <ul>
@@ -316,14 +318,14 @@
 <p>仔细留意上面的 page table，会发现有一个条目是 null，也就是没有分配。具体的分配过程（比方说声明了一个大数组），就是让该条目指向虚拟内存（在磁盘上）的某个 page（但并不复制到 DRAM，只有当出现 page fault 的时候才需要赋值）</p>
 <p>看起来『多此一举』，但是由于局部性原理，虚拟内存其实是非常高效的机制，这一部分最后提到了 working set 的概念，比较简单，这里不再赘述：</p>
 <p><img src="/images/14583113431902.jpg" alt="working set"></p>
-<h2 id="u4F5C_u4E3A_u5185_u5B58_u7BA1_u7406_u5DE5_u5177"><a href="#u4F5C_u4E3A_u5185_u5B58_u7BA1_u7406_u5DE5_u5177" class="headerlink" title="作为内存管理工具"></a>作为内存管理工具</h2><p>前面提到，每个进程都有自己的虚拟地址空间，这样一来，对于进程来说，它们看到的就是简单的线性空间（但实际上在物理内存中可能是间隔、支离破碎的），具体的映射过程可以用下图表示：</p>
+<h2 id="作为内存管理工具"><a href="#作为内存管理工具" class="headerlink" title="作为内存管理工具"></a>作为内存管理工具</h2><p>前面提到，每个进程都有自己的虚拟地址空间，这样一来，对于进程来说，它们看到的就是简单的线性空间（但实际上在物理内存中可能是间隔、支离破碎的），具体的映射过程可以用下图表示：</p>
 <p><img src="/images/14583114512897.jpg" alt="maping"></p>
 <p>在内存分配中没有太多限制，每个 virtual page 都可以被映射到任何的 physical page 上。这样也带来一个好处，如果两个进程间有共享的数据，那么直接指向同一个 physical page 即可（也就是上图 PP 6 的状况，只读数据）</p>
 <p>虚拟内存带来的另一个好处就是可以简化链接和载入的结构（因为有了统一的抽象，不需要纠结细节），如下图所示：</p>
 <p><img src="/images/14583116383432.jpg" alt="Simplifying Linking and Loading"></p>
-<h2 id="u4F5C_u4E3A_u5185_u5B58_u4FDD_u62A4_u5DE5_u5177"><a href="#u4F5C_u4E3A_u5185_u5B58_u4FDD_u62A4_u5DE5_u5177" class="headerlink" title="作为内存保护工具"></a>作为内存保护工具</h2><p>Page table 中的每个条目的高位部分是表示权限的位，MMU 可以通过检查这些位来进行权限控制（读、写、执行）</p>
+<h2 id="作为内存保护工具"><a href="#作为内存保护工具" class="headerlink" title="作为内存保护工具"></a>作为内存保护工具</h2><p>Page table 中的每个条目的高位部分是表示权限的位，MMU 可以通过检查这些位来进行权限控制（读、写、执行）</p>
 <p><img src="/images/14583120873244.jpg" alt="Permission bits"></p>
-<h2 id="u5730_u5740_u7FFB_u8BD1"><a href="#u5730_u5740_u7FFB_u8BD1" class="headerlink" title="地址翻译"></a>地址翻译</h2><p>开始之前先来了解以下概念：</p>
+<h2 id="地址翻译"><a href="#地址翻译" class="headerlink" title="地址翻译"></a>地址翻译</h2><p>开始之前先来了解以下概念：</p>
 <p><img src="/images/14583133332593.jpg" alt="Summary of Address Translation Symbols"></p>
 <p>然后我们通过一个具体的例子来说明如何进行地址翻译</p>
 <p><img src="/images/14583134329438.jpg" alt="Address Translation With a Page Table"></p>
@@ -376,7 +378,7 @@
 <p>A TLB miss incurs an additional memory access(the PTE)</p>
 </blockquote>
 <p><img src="/images/14583157195012.jpg" alt="TLB Miss"></p>
-<h3 id="Multi-Level_Page_Tables"><a href="#Multi-Level_Page_Tables" class="headerlink" title="Multi-Level Page Tables"></a>Multi-Level Page Tables</h3><p>Page table 的另一个问题就是，因为往往虚拟地址的位数比物理内存的位数要大得多，所以保存 page table entry(PTE) 也是一个问题。举个例子：</p>
+<h3 id="Multi-Level-Page-Tables"><a href="#Multi-Level-Page-Tables" class="headerlink" title="Multi-Level Page Tables"></a>Multi-Level Page Tables</h3><p>Page table 的另一个问题就是，因为往往虚拟地址的位数比物理内存的位数要大得多，所以保存 page table entry(PTE) 也是一个问题。举个例子：</p>
 <p>假设一个 page 的大小是 4KB($2^12$)，每个地址有 48 位，一条 PTE 记录有 8 个字节，那么要全部保存下来，需要的大小是：</p>
 <p>$$2^{48} \times 2^{-12} \times 2^3 = 2^{39} bytes$$</p>
 <p>整整 512 GB!</p>
@@ -384,7 +386,7 @@
 <p><img src="/images/14583164443493.jpg" alt="A Two-Level Page Table Hierarchy"></p>
 <p>具体的翻译过程如下：</p>
 <p><img src="/images/14583165384715.jpg" alt="Translating with a k-level Page Table"></p>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
 <li>Programmer’s view of virtual memory<ul>
 <li>Each process has its own private linear address space</li>
 <li>Cannot be corrupted by other processes</li>
@@ -735,42 +737,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

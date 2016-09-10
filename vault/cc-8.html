@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="上手 AWS 后，这一讲我们继续来看看另一个云服务提供商 Azure 要如何上手。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 8 课 Azure 动手玩">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-8.html">
@@ -107,6 +108,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 8 课 Azure 动手玩">
 <meta name="twitter:description" content="上手 AWS 后，这一讲我们继续来看看另一个云服务提供商 Azure 要如何上手。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14529892365625.jpg">
 
 
 
@@ -130,7 +132,7 @@
   
     云计算 第 8 课 Azure 动手玩 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -151,7 +153,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -275,8 +277,8 @@
 <p>这些问题都不简单，但是这一讲会给你一点点启发。</p>
 <p>我们首先会启动三种不同的 Azure 虚拟机，利用内置的性能测评来比较它们的相对性能表现，最后用公共访问的 web 服务器来测试性能。</p>
 <p>项目的最后会探索一下名为 vertical scaling 的常见规模化技术。这个过程中需要把 Azure 虚拟机的镜像拷贝到自己的存储账户中（很耗时），所以最好尽快开始。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Data Center: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-<span class="number">782</span>c-<span class="number">43</span>b5<span class="operator">-a</span>7df-<span class="number">1896844377</span>aa.vhd</span><br><span class="line">Load Generator: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.<span class="number">838</span>bf28c-ed03-<span class="number">41</span>f9-<span class="number">9810</span>-<span class="number">4</span>cbfa668d22e.vhd</span><br></pre></td></tr></table></figure>
-<h2 id="u542F_u52A8_u865A_u62DF_u673A"><a href="#u542F_u52A8_u865A_u62DF_u673A" class="headerlink" title="启动虚拟机"></a>启动虚拟机</h2><p>我们先来创建几个通用的虚拟机，并在上面做一些试验</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">Data Center: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-782c-43b5<span class="_">-a</span>7df-1896844377aa.vhd</div><div class="line">Load Generator: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.838bf28c-ed03-41f9-9810-4cbfa668d22e.vhd</div></pre></td></tr></table></figure>
+<h2 id="启动虚拟机"><a href="#启动虚拟机" class="headerlink" title="启动虚拟机"></a>启动虚拟机</h2><p>我们先来创建几个通用的虚拟机，并在上面做一些试验</p>
 <p><strong>第一步</strong></p>
 <p>访问 <a href="https://portal.azure.com/" target="_blank" rel="external">Azure portal</a>并创建一个新的虚拟机，运行 Ubuntu 14.04 LTS，使用 资源管理器作为部署模型。地区选择 East US，以及 Azure pass subscription。</p>
 <p><strong>第二步</strong></p>
@@ -295,16 +297,16 @@
 <p><img src="/images/14529900566991.jpg" alt=""></p>
 <p><strong>第六步</strong></p>
 <p>虚拟机正在运行的时候，就可以通过 IP 来进行访问了，如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh [username]@[Public IP address]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">ssh [username]@[Public IP address]</div></pre></td></tr></table></figure>
 <p>都登录上之后类似这样：</p>
 <p><img src="/images/cc22.jpg" alt="c"></p>
-<h2 id="u7CFB_u7EDF_u6027_u80FD_u6D4B_u8BC4"><a href="#u7CFB_u7EDF_u6027_u80FD_u6D4B_u8BC4" class="headerlink" title="系统性能测评"></a>系统性能测评</h2><p>我们需要在已经启动的实例中安装性能测评工具。通过这个来评估完成一个任务所需的最佳实例组合以做到多快好省。</p>
+<h2 id="系统性能测评"><a href="#系统性能测评" class="headerlink" title="系统性能测评"></a>系统性能测评</h2><p>我们需要在已经启动的实例中安装性能测评工具。通过这个来评估完成一个任务所需的最佳实例组合以做到多快好省。</p>
 <p>虽然云服务提供商是利用虚拟化技术来提供资源，但是需要知道实例的性能一来不是稳定的，二来也不保证达到某个水平。这里我们使用 <code>sysbench</code> 来评估性能，它是一个轻量级跨平台的性能测试软件，能够快速评估 CPU，内存和文件读写性能。</p>
 <p>执行下面的命令安装：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install sysbench</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sudo apt-get update</div><div class="line">sudo apt-get install sysbench</div></pre></td></tr></table></figure>
 <p>安装完成之后就可以按照给出的三个配置来进行测试。</p>
-<h3 id="CPU__u6D4B_u8BD5"><a href="#CPU__u6D4B_u8BD5" class="headerlink" title="CPU 测试"></a>CPU 测试</h3><p>分别在三个不同的机器运行下列命令，统计结果：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sysbench --num-threads=<span class="number">8</span> --test=cpu --cpu-max-prime=<span class="number">20000</span> run</span><br><span class="line">sysbench --num-threads=<span class="number">1</span> --test=cpu --cpu-max-prime=<span class="number">40000</span> run</span><br><span class="line">sysbench --num-threads=<span class="number">4</span> --test=cpu --cpu-max-prime=<span class="number">50000</span> run</span><br></pre></td></tr></table></figure>
+<h3 id="CPU-测试"><a href="#CPU-测试" class="headerlink" title="CPU 测试"></a>CPU 测试</h3><p>分别在三个不同的机器运行下列命令，统计结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sysbench --num-threads=8 --test=cpu --cpu-max-prime=20000 run</div><div class="line">sysbench --num-threads=1 --test=cpu --cpu-max-prime=40000 run</div><div class="line">sysbench --num-threads=4 --test=cpu --cpu-max-prime=50000 run</div></pre></td></tr></table></figure>
 <p>表后面的三列分别是 A1, A2, A3 的总时间</p>
 <table>
 <thead>
@@ -341,9 +343,9 @@
 </tbody>
 </table>
 <p>可以看到 Azure 的区分度比 AWS 大很多，不同等级基本上是一倍的性能提高。</p>
-<h3 id="u6587_u4EF6_IO__u6027_u80FD_u6D4B_u8BD5"><a href="#u6587_u4EF6_IO__u6027_u80FD_u6D4B_u8BD5" class="headerlink" title="文件 IO 性能测试"></a>文件 IO 性能测试</h3><p>Azure 通常会保证 Input/Output Operations per Second (IOPS)。不同的硬盘访问逻辑对性能影响很大（缓存导致），传统的机械硬盘受寻址时间和旋转速度的影响，固态硬盘受驱动和设备控制器的影响。</p>
+<h3 id="文件-IO-性能测试"><a href="#文件-IO-性能测试" class="headerlink" title="文件 IO 性能测试"></a>文件 IO 性能测试</h3><p>Azure 通常会保证 Input/Output Operations per Second (IOPS)。不同的硬盘访问逻辑对性能影响很大（缓存导致），传统的机械硬盘受寻址时间和旋转速度的影响，固态硬盘受驱动和设备控制器的影响。</p>
 <p>同样用下面的命令来进行测试：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sysbench --test=fileio --file-total-size=<span class="number">20</span>G prepare </span><br><span class="line"><span class="comment"># 可能需要等待30分钟，使用 byobu / screen / tmux 来保持连接</span></span><br><span class="line"><span class="comment"># 或者可以在 iterm 设置中 profiles -&gt; sessions -&gt; When idel, send ASCII code</span></span><br><span class="line"><span class="comment"># 又或者 在客户端的 ~/.ssh/ 文件夹中添加 config 文件，并添加配置： ServerAliveInterval 60 </span></span><br><span class="line"></span><br><span class="line">sysbench --test=fileio --file-total-size=<span class="number">20</span>G --file-test-mode=rndrw --init-rng=on --max-time=<span class="number">300</span> --max-requests=<span class="number">0</span> run</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sysbench --test=fileio --file-total-size=20G prepare </div><div class="line"><span class="comment"># 可能需要等待30分钟，使用 byobu / screen / tmux 来保持连接</span></div><div class="line"><span class="comment"># 或者可以在 iterm 设置中 profiles -&gt; sessions -&gt; When idel, send ASCII code</span></div><div class="line"><span class="comment"># 又或者 在客户端的 ~/.ssh/ 文件夹中添加 config 文件，并添加配置： ServerAliveInterval 60 </span></div><div class="line"></div><div class="line">sysbench --test=fileio --file-total-size=20G --file-test-mode=rndrw --init-rng=on --max-time=300 --max-requests=0 run</div></pre></td></tr></table></figure>
 <table>
 <thead>
 <tr>
@@ -382,7 +384,7 @@
 </table>
 <p>比较一下表中的数据，是不是随着价格的提高，性能也有对应比例的提高？</p>
 <p>可以看到从 A1 到 A3 几乎没有提升，而且与 aws 的相比，速度也是非常慢，估计是因为机械硬盘的缘故。</p>
-<h2 id="Web__u670D_u52A1_u5668_u6027_u80FD_u6D4B_u8BD5"><a href="#Web__u670D_u52A1_u5668_u6027_u80FD_u6D4B_u8BD5" class="headerlink" title="Web 服务器性能测试"></a>Web 服务器性能测试</h2><p>这门课上我们会学会如何配置，搭建和部署 web 服务。所以需要熟悉如何折腾服务器。这里我们会在每个实例中安装和部署一个简单的 web 服务器，修改一下主页以便测试和评分。</p>
+<h2 id="Web-服务器性能测试"><a href="#Web-服务器性能测试" class="headerlink" title="Web 服务器性能测试"></a>Web 服务器性能测试</h2><p>这门课上我们会学会如何配置，搭建和部署 web 服务。所以需要熟悉如何折腾服务器。这里我们会在每个实例中安装和部署一个简单的 web 服务器，修改一下主页以便测试和评分。</p>
 <p><a href="https://youtu.be/6_tPobCyF9o" target="_blank" rel="external">Apache 简介视频（墙外）</a></p>
 <p>LAMP = Linux + Apache + MySQL + PHP</p>
 <p>用以下命令安装 apache：<code>sudo apt-get install apache2</code></p>
@@ -401,15 +403,15 @@
 <p>地址为 <code>http://p0.loadgen.theproject.zone</code></p>
 <p>VM 的地址就是 EC2 的 public dns 地址；然后输入 andrew id 和提交密码(在页面上方)</p>
 <p>测试成功的话会显示 <code>Success!! Check TPZ for your score</code>，然后就可以课程网站上查看自己的成绩。</p>
-<h2 id="Vertical_Scaling"><a href="#Vertical_Scaling" class="headerlink" title="Vertical Scaling"></a>Vertical Scaling</h2><p>根据需要来改变所需的系统资源称为 Vertical Scaling。</p>
+<h2 id="Vertical-Scaling"><a href="#Vertical-Scaling" class="headerlink" title="Vertical Scaling"></a>Vertical Scaling</h2><p>根据需要来改变所需的系统资源称为 Vertical Scaling。</p>
 <p>在这个场景中，我要启动一个 load generator，它会在一个数据中心实例上创造一些负载。通过一个恒定的负载，来比较不同类型实例的吞吐量（用 rps 来衡量，每秒处理的访问量）。</p>
 <p>在这里我们不能 SSH 连接到这些实例，但是可以通过访问特定的 endpoint 来查看当前的情况，具体步骤如下：</p>
 <p>先要把 load generator 和数据中心的镜像拷贝到自己的存储账户中。地址是：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Data Center: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-<span class="number">782</span>c-<span class="number">43</span>b5<span class="operator">-a</span>7df-<span class="number">1896844377</span>aa.vhd</span><br><span class="line"></span><br><span class="line">Load Generator: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.<span class="number">838</span>bf28c-ed03-<span class="number">41</span>f9-<span class="number">9810</span>-<span class="number">4</span>cbfa668d22e.vhd</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">Data Center: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-782c-43b5<span class="_">-a</span>7df-1896844377aa.vhd</div><div class="line"></div><div class="line">Load Generator: https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.838bf28c-ed03-41f9-9810-4cbfa668d22e.vhd</div></pre></td></tr></table></figure>
 <p>和 <a href="http://wdxtub.com/2016/01/15/cc-5/">云计算 第 5 课 Azure API</a> 的方法是一样的，因为我们之前已经创建了 AD 应用之类的东西，有所需的 AppId, AppKey, TenantId 等内容，所以现在可以直接用之前的命令，但是要拷贝的内容换成上面的地址</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Data Center</span></span><br><span class="line">azure storage blob copy start https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-<span class="number">782</span>c-<span class="number">43</span>b5<span class="operator">-a</span>7df-<span class="number">1896844377</span>aa.vhd  --dest-account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --dest-account-key PUT_YOUR_KEY1_HERE --dest-container system</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load Generator</span></span><br><span class="line">azure storage blob copy start https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.<span class="number">838</span>bf28c-ed03-<span class="number">41</span>f9-<span class="number">9810</span>-<span class="number">4</span>cbfa668d22e.vhd  --dest-account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --dest-account-key PUT_YOUR_KEY1_HERE --dest-container system</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># Data Center</span></div><div class="line">azure storage blob copy start https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-782c-43b5<span class="_">-a</span>7df-1896844377aa.vhd  --dest-account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --dest-account-key PUT_YOUR_KEY1_HERE --dest-container system</div><div class="line"></div><div class="line"><span class="comment"># Load Generator</span></div><div class="line">azure storage blob copy start https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.838bf28c-ed03-41f9-9810-4cbfa668d22e.vhd  --dest-account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --dest-account-key PUT_YOUR_KEY1_HERE --dest-container system</div></pre></td></tr></table></figure>
 <p>也需要一定时间，可以用下面的命令来查看进度</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Data Center</span></span><br><span class="line">azure storage blob copy show --account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --account-key PUT_YOUR_KEY1_HERE --container system --blob Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-<span class="number">782</span>c-<span class="number">43</span>b5<span class="operator">-a</span>7df-<span class="number">1896844377</span>aa.vhd</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load Generator</span></span><br><span class="line">azure storage blob copy show --account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --account-key PUT_YOUR_KEY1_HERE --container system --blob Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.<span class="number">838</span>bf28c-ed03-<span class="number">41</span>f9-<span class="number">9810</span>-<span class="number">4</span>cbfa668d22e.vhd</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># Data Center</span></div><div class="line">azure storage blob copy show --account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --account-key PUT_YOUR_KEY1_HERE --container system --blob Microsoft.Compute/Images/vhds/cc15619p0dcv2-osDisk.b7dbe1d0-782c-43b5<span class="_">-a</span>7df-1896844377aa.vhd</div><div class="line"></div><div class="line"><span class="comment"># Load Generator</span></div><div class="line">azure storage blob copy show --account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --account-key PUT_YOUR_KEY1_HERE --container system --blob Microsoft.Compute/Images/vhds/cc15619p0lgv2-osDisk.838bf28c-ed03-41f9-9810-4cbfa668d22e.vhd</div></pre></td></tr></table></figure>
 <p>类似下图</p>
 <p><img src="/images/cc14.jpg" alt="c"></p>
 <p>当结果从 pending 变成 success 的时候，就可以用这个镜像来创建一台虚拟机了，具体镜像的 url 可以在存储账户中对应镜像的</p>
@@ -417,7 +419,7 @@
 <p>这两个文件基本只需要改动 <code>create_vm_from_ami</code> 这个函数，因为参数默认值只有在参数不够的时候才会启用，所以保险起见，在函数体里面把需要更新的内容都再写一次。</p>
 <p>这里需要注意 <code>machine_size</code> 并没有对应的 D1 类型，所以先随便创建一个，之后去 web 控制台里进行修改</p>
 <p>命令如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># lg</span></span><br><span class="line">python azure_p0_create_lg.py STORAGE_ACCOUNT_NAME SUBSCRIPTION_ID ENDPOINT_URI APPLICATION_ID APPLICATION_SECRET_KEY</span><br><span class="line"></span><br><span class="line"><span class="comment">#dc</span></span><br><span class="line">python azure_p0_create_dc.py STORAGE_ACCOUNT_NAME SUBSCRIPTION_ID ENDPOINT_URI APPLICATION_ID APPLICATION_SECRET_KEY</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># lg</span></div><div class="line">python azure_p0_create_lg.py STORAGE_ACCOUNT_NAME SUBSCRIPTION_ID ENDPOINT_URI APPLICATION_ID APPLICATION_SECRET_KEY</div><div class="line"></div><div class="line"><span class="comment">#dc</span></div><div class="line">python azure_p0_create_dc.py STORAGE_ACCOUNT_NAME SUBSCRIPTION_ID ENDPOINT_URI APPLICATION_ID APPLICATION_SECRET_KEY</div></pre></td></tr></table></figure>
 <p>创建完成之后，先把 load generator 在 Web 界面改成 D1（可能需要停止虚拟机才能调整）</p>
 <p>然后访问 load generator 的 ip，可以看到下面的界面</p>
 <p><img src="/images/cc23.jpg" alt="c"></p>
@@ -791,42 +793,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

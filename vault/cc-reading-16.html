@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="In this module, we discuss a few popular NoSQL data stores: Apache HBase, MongoDB, Apache Cassandra and Amazon’s DynamoDB.">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 阅读材料 16 Case Studies - NoSQL Databases">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-reading-16.html">
@@ -108,6 +109,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 阅读材料 16 Case Studies - NoSQL Databases">
 <meta name="twitter:description" content="In this module, we discuss a few popular NoSQL data stores: Apache HBase, MongoDB, Apache Cassandra and Amazon’s DynamoDB.">
+<meta name="twitter:image" content="http://wdxtub.com/images/14589520232563.jpg">
 
 
 
@@ -131,7 +133,7 @@
   
     云计算 阅读材料 16 Case Studies - NoSQL Databases | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -152,7 +154,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -273,7 +275,7 @@
 <p><img src="/images/14589520232563.jpg" alt="Figure 3.38: A webtable"></p>
 <p>Each unique URL in a Web crawl can be stored as a row in a webtable, with the URL being the unique identifying characteristic of that row, which makes the URL the key. The columns of the webtable can store the binary content and metadata of the URL. As the webtable is parsed, new columns can be added with semantic information derived from the HTML content, such as the links of other pages in the URL object, and any other information. The webtable can also act as the database back end for a Web archive service, such as an Internet archive, and hence clients can directly retrieve objects using the URL as the key.</p>
 <p>Creating a webtable for a few URLs may be a simple task that can be handled by a traditional RDBMSs, but when billions of websites need to be crawled and their information has to be stored in a table that may be accessed by hundreds of thousands of clients simultaneously, then the data store is best maintained on a large cluster using a NoSQL solution.</p>
-<h2 id="Apache_HBase"><a href="#Apache_HBase" class="headerlink" title="Apache HBase"></a>Apache HBase</h2><p>Apache HBase is an open-source version of Google’s BigTable distributed storage system and is supported by the Apache Software Foundation. BigTable is a distributed, scalable, high-performance, versioned database. BigTable’s infrastructure is designed to store billions of rows and columns of data in loosely defined tables, such as the webtable described earlier. Video 4.16 contains an overview of HBase.</p>
+<h2 id="Apache-HBase"><a href="#Apache-HBase" class="headerlink" title="Apache HBase"></a>Apache HBase</h2><p>Apache HBase is an open-source version of Google’s BigTable distributed storage system and is supported by the Apache Software Foundation. BigTable is a distributed, scalable, high-performance, versioned database. BigTable’s infrastructure is designed to store billions of rows and columns of data in loosely defined tables, such as the webtable described earlier. Video 4.16 contains an overview of HBase.</p>
 <p><a href="http://youtu.be/e-ZvIRObAWk" target="_blank" rel="external">Video 4.16: HBase</a></p>
 <p>Just as traditional RDBMSs are designed to run on top of a local file system, HBase is designed to work on top of the Hadoop Distributed File System (HDFS). As described earlier, HDFS is a distributed file system that stores files as replicated blocks across multiple servers. HDFS lends a scalable and reliable file system back end to HBase.</p>
 <p><strong>HBase Data Model</strong></p>
@@ -325,7 +327,7 @@
 <p><a href="http://youtu.be/fN8zgNq-pdE" target="_blank" rel="external">Video 4.42: MongoDB</a></p>
 <p><strong>MongoDB Data Model</strong></p>
 <p>A document is the basic unit of data for MongoDB, roughly equivalent to a row in a relational database management system. A document is an ordered set of keys and their associated values. An example of a document is illustrated below:</p>
-<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line"><span class="collection">&#123;</span><br><span class="line">    item: <span class="string">"ABC1"</span>,</span><br><span class="line">    details: <span class="collection">&#123;</span><br><span class="line">    model: <span class="string">"14Q3"</span>,</span><br><span class="line">    manufacturer: <span class="string">"XYZ Company"</span></span><br><span class="line">    &#125;</span>,</span><br><span class="line">    stock: <span class="collection">[ <span class="collection">&#123; size: <span class="string">"S"</span>, qty: <span class="number">25</span> &#125;</span>, <span class="collection">&#123; size: <span class="string">"M"</span>, qty: <span class="number">50</span> &#125;</span> ]</span>,</span><br><span class="line">    category: <span class="string">"clothing"</span></span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    item: &quot;ABC1&quot;,</div><div class="line">    details: &#123;</div><div class="line">    model: &quot;14Q3&quot;,</div><div class="line">    manufacturer: &quot;XYZ Company&quot;</div><div class="line">    &#125;,</div><div class="line">    stock: [ &#123; size: &quot;S&quot;, qty: 25 &#125;, &#123; size: &quot;M&quot;, qty: 50 &#125; ],</div><div class="line">    category: &quot;clothing&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>MongoDB stores documents in groups known as a collection. MongoDB does not impose any restriction on the documents that are part of a collection. They can contain any number or type of keys and do not have to be related. The only restriction is that every document in a collection has a key called _id, which should have a unique value for every document in a collection. MongoDB can automatically generate the <code>_id</code> key for each document inserted into a collection.</p>
 <p>A collection is identified by a UTF-8 string known as the name of the collection. Many developers choose to group collections together using a naming convention, like using the . character to denote two types of blog collections: blog.posts and blog.authors. This is purely for organization, and MongoDB treats them as separate, unrelated collections.</p>
 <p>Finally, a group of collections make a MongoDB database. Just like collections, a MongoDB database is identified by a UTF-8 string name.</p>
@@ -355,7 +357,7 @@
 <p>Location-based data: MongoDB is unique in its ability to store and index geo-spatial data in an efficient manner. For this reason, MongoDB is used quite extensively for applications that use geo-spatial or map data. (Examples include booking applications, location-based services, etc)</p>
 <p>Applications with a high write load: MongoDB has built-in support for bulk inserts and supports a high-insert rate, while having relaxed transaction safety when compared to RDBMSes.</p>
 <p>High availability in an unreliable environment: MongoDB’s architecture allows for near-instant, automatic recovery from the failure of a Node when replication is configured. This is especially useful in unreliable environments.</p>
-<h2 id="Apache_Cassandra"><a href="#Apache_Cassandra" class="headerlink" title="Apache Cassandra"></a>Apache Cassandra</h2><p>Apache Cassandra is a fully distributed, structured key-value storage system. Cassandra marries the best aspects of both BigTable [1] and Amazon’s Dynamo. [4]Cassandra uses the data model of BigTable and the implementation architecture of Dynamo. Video 4.18 covers Cassandra.</p>
+<h2 id="Apache-Cassandra"><a href="#Apache-Cassandra" class="headerlink" title="Apache Cassandra"></a>Apache Cassandra</h2><p>Apache Cassandra is a fully distributed, structured key-value storage system. Cassandra marries the best aspects of both BigTable [1] and Amazon’s Dynamo. [4]Cassandra uses the data model of BigTable and the implementation architecture of Dynamo. Video 4.18 covers Cassandra.</p>
 <p><a href="http://youtu.be/FU_VALh1xN0" target="_blank" rel="external">Video 4.18: Cassandra</a></p>
 <p><strong>Cassandra Data Model</strong></p>
 <p>Cassandra implements the data model of BigTable (which is similar to HBase’s data model, as discussed on the previous page), with slightly different terminology.</p>
@@ -419,10 +421,10 @@
 <li>Hayashibara, Naohiro, et al. (2004). “”The φ accrual failure detector.” Reliable Distributed Systems, 2004. Proceedings of the 23rd IEEE International Symposium on Reliable Distributed Systems..” IEEE.</li>
 <li>DeCandia, Giuseppe, et al. (2007). “”Dynamo: Amazon’s highly available key-value store.” ACM SIGOPS Operating Systems Review. Vol. 41. No. 6.” ACM.</li>
 </ol>
-<h2 id="Amazon_u2019s_DynamoDB"><a href="#Amazon_u2019s_DynamoDB" class="headerlink" title="Amazon’s DynamoDB"></a>Amazon’s DynamoDB</h2><p><a href="http://aws.amazon.com/dynamodb" target="_blank" rel="external">DynamoDB</a> is a proprietary, highly available NoSQL data store offered by Amazon Web Services. DynamoDB has evolved from Dynamo, a distributed key-value storage system first described by Amazon in [1] . Dynamo shares some of the properties of databases as well as distributed hash tables (DHTs) and is designed using several techniques in distributed systems, including consistent hashing, quorum, and antientropy.</p>
+<h2 id="Amazon’s-DynamoDB"><a href="#Amazon’s-DynamoDB" class="headerlink" title="Amazon’s DynamoDB"></a>Amazon’s DynamoDB</h2><p><a href="http://aws.amazon.com/dynamodb" target="_blank" rel="external">DynamoDB</a> is a proprietary, highly available NoSQL data store offered by Amazon Web Services. DynamoDB has evolved from Dynamo, a distributed key-value storage system first described by Amazon in [1] . Dynamo shares some of the properties of databases as well as distributed hash tables (DHTs) and is designed using several techniques in distributed systems, including consistent hashing, quorum, and antientropy.</p>
 <p><strong>DynamoDB Data Model</strong></p>
 <p>Information in DynamoDB is stored in Tables. A table consists of multiple items, each of which has one or more attributes. DynamoDB has a flexible schema, and items can have any number of attributes. The only restriction in DynamoDB is that the size of an item must not exceed 400KB (This includes the sum of the lengths of individual attributes names and values for a single item). An example of an item in DynamoDB is given below:</p>
-<figure class="highlight protobuf"><table><tr><td class="code"><pre><span class="line">&#123;                                        </span><br><span class="line"><span class="constant">   Title</span> = <span class="string">"Book 101 Title"</span></span><br><span class="line"><span class="constant">   ISBN</span> = <span class="string">"111-1111111111"</span></span><br><span class="line"><span class="constant">   Authors</span> = <span class="string">"Author 1"</span></span><br><span class="line"><span class="constant">   Price</span> = -<span class="number">2</span></span><br><span class="line"><span class="constant">   Dimensions</span> = <span class="string">"8.5 x 11.0 x 0.5"</span></span><br><span class="line"><span class="constant">   PageCount</span> = <span class="number">500</span></span><br><span class="line"><span class="constant">   InPublication</span> = <span class="literal">true</span></span><br><span class="line"><span class="constant">   ProductCategory</span> = <span class="string">"Book"</span> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&#123;                                        </div><div class="line">   Title = &quot;Book 101 Title&quot;</div><div class="line">   ISBN = &quot;111-1111111111&quot;</div><div class="line">   Authors = &quot;Author 1&quot;</div><div class="line">   Price = -2</div><div class="line">   Dimensions = &quot;8.5 x 11.0 x 0.5&quot;</div><div class="line">   PageCount = 500</div><div class="line">   InPublication = true</div><div class="line">   ProductCategory = &quot;Book&quot; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>When a table is created in DynamoDB, one attribute must be designated as theprimary key of the table, and is used to identify every item in the table. The attribute must appear in every item in a DynamoDB table. Primary keys can be of two types: they can either be a Hash Type primary key, which consists of a single attribute as the key, a Hash and Range Type primary key, which consists of two attributes. In the hash and range type primary key, the first attribute is a hash index, while the second attribute is a range attribute.</p>
 <p>DynamoDB supports attributes that can be scalar (such as number, string, binary, boolean or null values), multi-valued (as a string, number or binary set of values), or can be a document type (such as a list or map).</p>
 <p><strong>Operations in DynamoDB</strong></p>
@@ -807,42 +809,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

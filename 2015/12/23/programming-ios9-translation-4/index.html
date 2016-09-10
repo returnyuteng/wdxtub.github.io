@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS9,动画,学习,笔记,翻译," />
+  <meta name="keywords" content="学习,动画,笔记,iOS9,翻译," />
 
 
 
@@ -128,6 +128,7 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
 <meta name="twitter:description" content="如果要从头折腾动画是很难的，因为有太多的计算，不过好在 iOS 给我们提供了很多帮助，我们只需要描述和指定动画，系统会自动帮我们做，也就是 animation on demand。
 设置动画就好像设置属性一样简单，例如下面一行代码就可以实现一个动画：
 myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
+<meta name="twitter:image" content="http://wdxtub.com/images/pios32.jpg">
 
 
 
@@ -145,7 +146,7 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
   };
 </script>
 
-  <title> Programming iOS9 学习笔记 4 - Animation | 小土刀 </title>
+  <title> Programming iOS9 学习笔记 4 - Animation | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -166,7 +167,7 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -368,10 +369,10 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
       
         <p>如果要从头折腾动画是很难的，因为有太多的计算，不过好在 iOS 给我们提供了很多帮助，我们只需要描述和指定动画，系统会自动帮我们做，也就是 animation on demand。</p>
 <p>设置动画就好像设置属性一样简单，例如下面一行代码就可以实现一个动画：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">myLayer.backgroundColor = <span class="type">UIColor</span>.redColor().<span class="type">CGColor</span> <span class="comment">// animate to red</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line">myLayer.backgroundColor = <span class="type">UIColor</span>.redColor().<span class="type">CGColor</span> <span class="comment">// animate to red</span></div></pre></td></tr></table></figure>
 <a id="more"></a>
 <hr>
-<h2 id="Drawing_2C_Animation_and_Threading"><a href="#Drawing_2C_Animation_and_Threading" class="headerlink" title="Drawing, Animation and Threading"></a>Drawing, Animation and Threading</h2><p>小提示：在模拟器中可以 Debug -&gt; Toggle Slow Animations 来用慢动作播放动画用来测试</p>
+<h2 id="Drawing-Animation-and-Threading"><a href="#Drawing-Animation-and-Threading" class="headerlink" title="Drawing, Animation and Threading"></a>Drawing, Animation and Threading</h2><p>小提示：在模拟器中可以 Debug -&gt; Toggle Slow Animations 来用慢动作播放动画用来测试</p>
 <p>系统会在重绘时累计所有的绘制并一次性绘制出来，举个例子，加入现在背景是绿色的，下列代码并不会使背景改变。</p>
 <p><img src="/images/pios32.jpg" alt="pios32"></p>
 <p>因为直到代码执行完成才会最后绘制最新的改动，也就还是绿色。</p>
@@ -389,7 +390,7 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
 <p>动画是多线程执行的，所以不用特别操心。但是在动画执行的之后屏幕实际上是可以响应触摸的，这样可能会导致出问题，所以一般的做法是在屏幕动画开始的时候关闭屏幕响应，然后在动画结束的时候再开启。</p>
 <p>设定动画的时候要注意不要冲突，尤其是在动画正在进行的时候修改了动画对象的值，可能会导致结果和预期的不一致。</p>
 <p>还有一些操作会打断动画，比如用户可能会点击 Home 按键，或者来了个电话什么的，这时候系统就会直接取消动画，并且在恢复的时候直接停留在最终的状态。如果想要在恢复的时候动画从之前的状态继续，就需要一些额外的代码了</p>
-<h2 id="Image_View_and_Image_Animation"><a href="#Image_View_and_Image_Animation" class="headerlink" title="Image View and Image Animation"></a>Image View and Image Animation</h2><p><code>UIImageView</code> 提供简易的动画，不过大多数时候是够用的。给 <code>UIImageView</code> 的 <code>animationImages</code> 或者 <code>highlightedAnimationImages</code> 属性一系列 <code>UIImage</code>，当调用 <code>startAnimating</code> 时，就会根据 <code>animationDuration</code> 属性来决定显示的时间，重复的次数由 <code>animationRepeatCount</code> 属性（默认是 0，就是一直重复），或者可以由 <code>stopAnimating</code> 方法来停止，例如：</p>
+<h2 id="Image-View-and-Image-Animation"><a href="#Image-View-and-Image-Animation" class="headerlink" title="Image View and Image Animation"></a>Image View and Image Animation</h2><p><code>UIImageView</code> 提供简易的动画，不过大多数时候是够用的。给 <code>UIImageView</code> 的 <code>animationImages</code> 或者 <code>highlightedAnimationImages</code> 属性一系列 <code>UIImage</code>，当调用 <code>startAnimating</code> 时，就会根据 <code>animationDuration</code> 属性来决定显示的时间，重复的次数由 <code>animationRepeatCount</code> 属性（默认是 0，就是一直重复），或者可以由 <code>stopAnimating</code> 方法来停止，例如：</p>
 <p><img src="/images/pios33.jpg" alt="pios33"></p>
 <p>还可以把 <code>UIImageView</code> 的动画和其他类型的动画结合起来使用。</p>
 <p><code>UIImage</code> 也有类似的动画方法：</p>
@@ -399,7 +400,7 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
 <li><code>animatedResizableImageNamed:capInsets:resizingMode:duration:</code></li>
 </ul>
 <p><img src="/images/pios34.jpg" alt="pios34"></p>
-<h2 id="View_Animation"><a href="#View_Animation" class="headerlink" title="View Animation"></a>View Animation</h2><p>所有的动画，归根到底都是 layer 动画。但是在少数情况下，你可以直接让 <code>UIView</code> 动起来，比如：<code>alpha</code>, <code>bounds</code>, <code>center</code>, <code>frame</code>, <code>transform</code> 或者(如果有实现的话) <code>drawRect:</code>, <code>backgroundColor</code>。具体的实现方式是通过一个 block 来定制动画，像下面这样：</p>
+<h2 id="View-Animation"><a href="#View-Animation" class="headerlink" title="View Animation"></a>View Animation</h2><p>所有的动画，归根到底都是 layer 动画。但是在少数情况下，你可以直接让 <code>UIView</code> 动起来，比如：<code>alpha</code>, <code>bounds</code>, <code>center</code>, <code>frame</code>, <code>transform</code> 或者(如果有实现的话) <code>drawRect:</code>, <code>backgroundColor</code>。具体的实现方式是通过一个 block 来定制动画，像下面这样：</p>
 <p><img src="/images/pios35.jpg" alt="pios35"></p>
 <p>所有在 block 之内的都会依次进行动画，所以可以直接设定俩：</p>
 <p><img src="/images/pios36.jpg" alt="pios36"></p>
@@ -407,7 +408,7 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
 <p><img src="/images/pios37.jpg" alt="pios37"></p>
 <p><img src="/images/pios38.jpg" alt="pios38"></p>
 <p><img src="/images/pios39.jpg" alt="pios39"></p>
-<h2 id="View_Animation_Options"><a href="#View_Animation_Options" class="headerlink" title="View Animation Options"></a>View Animation Options</h2><p>完整的动画函数是：</p>
+<h2 id="View-Animation-Options"><a href="#View-Animation-Options" class="headerlink" title="View Animation Options"></a>View Animation Options</h2><p>完整的动画函数是：</p>
 <p><code>animateWithDuration:delay:options:animations:completion:</code></p>
 <p>这里提一下 <code>options</code> 中可能的选项(<code>UIViewAnimationOptions</code>)</p>
 <ul>
@@ -422,23 +423,23 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
 <li><code>.Autoreverse</code> 动画会反过来再播一次，注意一般来说也需要对 view 做对应的修改保证动画效果一致性</li>
 </ul>
 <p><img src="/images/pios40.jpg" alt="pios40"></p>
-<h2 id="Canceling_a_View_Animation"><a href="#Canceling_a_View_Animation" class="headerlink" title="Canceling a View Animation"></a>Canceling a View Animation</h2><p>假设我们有这样一个动画</p>
+<h2 id="Canceling-a-View-Animation"><a href="#Canceling-a-View-Animation" class="headerlink" title="Canceling a View Animation"></a>Canceling a View Animation</h2><p>假设我们有这样一个动画</p>
 <p><img src="/images/pios41.jpg" alt="pios41"></p>
 <p>如果我们有一个按钮是取消这个动画的，可以用这个代码：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">self</span>.v.layer.removeAllAnimations()</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line"><span class="keyword">self</span>.v.layer.removeAllAnimations()</div></pre></td></tr></table></figure>
 <p>但是这样会比较突兀，比较好的方式是在用户想要取消动画时，快速完成动画，像这样：</p>
 <p><img src="/images/pios42.jpg" alt="pios42"></p>
 <p>但假设我们想要取消像下面这个不断重复的动画呢：</p>
 <p><img src="/images/pios43.jpg" alt="pios43"></p>
 <p>可以使用 <code>.BeginFromCurrentState</code> 来保证动画的连贯性</p>
 <p><img src="/images/pios44.jpg" alt="pios44"></p>
-<h2 id="Custom_Animatable_View_Properties"><a href="#Custom_Animatable_View_Properties" class="headerlink" title="Custom Animatable View Properties"></a>Custom Animatable View Properties</h2><p>也可以自定自己的属性来交给系统做动画，只要按照如下方法即可：</p>
+<h2 id="Custom-Animatable-View-Properties"><a href="#Custom-Animatable-View-Properties" class="headerlink" title="Custom Animatable View Properties"></a>Custom Animatable View Properties</h2><p>也可以自定自己的属性来交给系统做动画，只要按照如下方法即可：</p>
 <p><img src="/images/pios45.jpg" alt="pios45"></p>
 <p>调用的时候是这样</p>
 <p><img src="/images/pios46.jpg" alt="pios46"></p>
-<h2 id="Springing_View_Animation"><a href="#Springing_View_Animation" class="headerlink" title="Springing View Animation"></a>Springing View Animation</h2><p>Springing view animation 有一个非常快的 ease-in 和一个非常慢的 ease-out</p>
+<h2 id="Springing-View-Animation"><a href="#Springing-View-Animation" class="headerlink" title="Springing View Animation"></a>Springing View Animation</h2><p>Springing view animation 有一个非常快的 ease-in 和一个非常慢的 ease-out</p>
 <p><img src="/images/pios47.jpg" alt="pios47"></p>
-<h2 id="Keyframe_View_Animation"><a href="#Keyframe_View_Animation" class="headerlink" title="Keyframe View Animation"></a>Keyframe View Animation</h2><p>可以在动画中加入关键帧，控制动画的整体效果。具体的插值计算是由 <code>CaculationMode</code>(<code>UIKeyframeAnimationOptions</code>) 来决定的</p>
+<h2 id="Keyframe-View-Animation"><a href="#Keyframe-View-Animation" class="headerlink" title="Keyframe View Animation"></a>Keyframe View Animation</h2><p>可以在动画中加入关键帧，控制动画的整体效果。具体的插值计算是由 <code>CaculationMode</code>(<code>UIKeyframeAnimationOptions</code>) 来决定的</p>
 <h2 id="Transitions"><a href="#Transitions" class="headerlink" title="Transitions"></a>Transitions</h2><p>Transition 是用来强调 view 的内容的变化的动画，用下面两个方法之一来调用：</p>
 <ul>
 <li><code>transitionWithView:duration:options:animations:completion:</code></li>
@@ -455,10 +456,10 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
 <p><img src="/images/pios48.jpg" alt="pios48"></p>
 <p>也可以让自定义的类有 transition 效果</p>
 <p><img src="/images/pios49.jpg" alt="pios49"></p>
-<h2 id="Implicit_Layer_Animation"><a href="#Implicit_Layer_Animation" class="headerlink" title="Implicit Layer Animation"></a>Implicit Layer Animation</h2><p>layer 的动画是默认开启的，但是不会在 view 的 underlying layer 生效，并且只对已经在界面上的内容生效</p>
-<h2 id="Animation_Transactions"><a href="#Animation_Transactions" class="headerlink" title="Animation Transactions"></a>Animation Transactions</h2><p>一系列动画会被组成一个 transaction 然后交由 animation server 处理。在这里可以关闭 implicit animation</p>
+<h2 id="Implicit-Layer-Animation"><a href="#Implicit-Layer-Animation" class="headerlink" title="Implicit Layer Animation"></a>Implicit Layer Animation</h2><p>layer 的动画是默认开启的，但是不会在 view 的 underlying layer 生效，并且只对已经在界面上的内容生效</p>
+<h2 id="Animation-Transactions"><a href="#Animation-Transactions" class="headerlink" title="Animation Transactions"></a>Animation Transactions</h2><p>一系列动画会被组成一个 transaction 然后交由 animation server 处理。在这里可以关闭 implicit animation</p>
 <p><img src="/images/pios50.jpg" alt="pios50"></p>
-<h2 id="Media_Timing_Functions"><a href="#Media_Timing_Functions" class="headerlink" title="Media Timing Functions"></a>Media Timing Functions</h2><p><code>CAMediaTimingFunction</code>，用来控制动画曲线</p>
+<h2 id="Media-Timing-Functions"><a href="#Media-Timing-Functions" class="headerlink" title="Media Timing Functions"></a>Media Timing Functions</h2><p><code>CAMediaTimingFunction</code>，用来控制动画曲线</p>
 <ul>
 <li><code>kCAMediaTimingFunctionLinear</code></li>
 <li><code>kCAMediaTimingFunctionEaseIn</code></li>
@@ -470,7 +471,7 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
 <p><img src="/images/pios51.jpg" alt="pios51"></p>
 <p>代码就是</p>
 <p><img src="/images/pios52.jpg" alt="pios52"></p>
-<h2 id="Core_Animation"><a href="#Core_Animation" class="headerlink" title="Core Animation"></a>Core Animation</h2><p>是 iOS 动画技术的基础。</p>
+<h2 id="Core-Animation"><a href="#Core-Animation" class="headerlink" title="Core Animation"></a>Core Animation</h2><p>是 iOS 动画技术的基础。</p>
 <ul>
 <li>Core Animation 可以在 view 的 underlying layer 上工作，所以是 the only way to apply full-on layer property animation to a view</li>
 <li>Permits fine control over the intermediate values and timing of an animation</li>
@@ -478,7 +479,7 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
 </ul>
 <p><img src="/images/pios53.jpg" alt="pios53"></p>
 <p>这一部分也有很多细致的内容，会专门来写</p>
-<h2 id="UIKit_Dynamics"><a href="#UIKit_Dynamics" class="headerlink" title="UIKit Dynamics"></a>UIKit Dynamics</h2><p>可以给 UI 添加真实的物理效果，比如重力，碰撞，反弹等等。不应该把 UIKit 当做一个游戏引擎。依赖于 <code>CADisplayLink</code>，所有的计算和 frame 都在主线程进行，并且动画是实时的。</p>
+<h2 id="UIKit-Dynamics"><a href="#UIKit-Dynamics" class="headerlink" title="UIKit Dynamics"></a>UIKit Dynamics</h2><p>可以给 UI 添加真实的物理效果，比如重力，碰撞，反弹等等。不应该把 UIKit 当做一个游戏引擎。依赖于 <code>CADisplayLink</code>，所有的计算和 frame 都在主线程进行，并且动画是实时的。</p>
 <p>要实现一个 UIKit dynamics 需要配置下面三个东西：</p>
 <ul>
 <li>一个 dynamic animator：<code>UIDynamicAnimator</code> 的实例，是一个物理规则 </li>
@@ -491,8 +492,8 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
 <p><img src="/images/pios55.jpg" alt="pios55"></p>
 <p>注意这里的 <code>delay(0)</code> 保证了确实销毁了不需要的对象。除了重力还可以添加碰撞，这里就用下面代码做示范：</p>
 <p><img src="/images/pios56.jpg" alt="pios56"></p>
-<h2 id="Custom_Behavior"><a href="#Custom_Behavior" class="headerlink" title="Custom Behavior"></a>Custom Behavior</h2><p>也可以根据自己的需要自定义 behavior，比方说可以组合一个自己的有 gravity, collision 和 bounce 的 behavoir</p>
-<h2 id="Animator_and_Behaviors"><a href="#Animator_and_Behaviors" class="headerlink" title="Animator and Behaviors"></a>Animator and Behaviors</h2><p><code>UIDynamicAnimator</code> 还有如下的方法和属性</p>
+<h2 id="Custom-Behavior"><a href="#Custom-Behavior" class="headerlink" title="Custom Behavior"></a>Custom Behavior</h2><p>也可以根据自己的需要自定义 behavior，比方说可以组合一个自己的有 gravity, collision 和 bounce 的 behavoir</p>
+<h2 id="Animator-and-Behaviors"><a href="#Animator-and-Behaviors" class="headerlink" title="Animator and Behaviors"></a>Animator and Behaviors</h2><p><code>UIDynamicAnimator</code> 还有如下的方法和属性</p>
 <ul>
 <li><code>delegate</code></li>
 <li><code>running</code></li>
@@ -510,7 +511,7 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
 <li><code>UISnapBehavior</code></li>
 <li><code>UIAttachmentBehavior</code></li>
 </ul>
-<h2 id="Motion_Effects"><a href="#Motion_Effects" class="headerlink" title="Motion Effects"></a>Motion Effects</h2><p>可以利用这个来处理用户倾斜手机等姿势，这里略</p>
+<h2 id="Motion-Effects"><a href="#Motion-Effects" class="headerlink" title="Motion Effects"></a>Motion Effects</h2><p>可以利用这个来处理用户倾斜手机等姿势，这里略</p>
 
       
     </div>
@@ -548,13 +549,13 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
       
         <div class="post-tags">
           
-            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
+            <a href="/tags/学习/" rel="tag">#学习</a>
           
             <a href="/tags/动画/" rel="tag">#动画</a>
           
-            <a href="/tags/学习/" rel="tag">#学习</a>
-          
             <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
+            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
           
             <a href="/tags/翻译/" rel="tag">#翻译</a>
           
@@ -791,7 +792,7 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Drawing_2C_Animation_and_Threading"><span class="nav-number">1.</span> <span class="nav-text">Drawing, Animation and Threading</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Image_View_and_Image_Animation"><span class="nav-number">2.</span> <span class="nav-text">Image View and Image Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View_Animation"><span class="nav-number">3.</span> <span class="nav-text">View Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View_Animation_Options"><span class="nav-number">4.</span> <span class="nav-text">View Animation Options</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Canceling_a_View_Animation"><span class="nav-number">5.</span> <span class="nav-text">Canceling a View Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Custom_Animatable_View_Properties"><span class="nav-number">6.</span> <span class="nav-text">Custom Animatable View Properties</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Springing_View_Animation"><span class="nav-number">7.</span> <span class="nav-text">Springing View Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Keyframe_View_Animation"><span class="nav-number">8.</span> <span class="nav-text">Keyframe View Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transitions"><span class="nav-number">9.</span> <span class="nav-text">Transitions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implicit_Layer_Animation"><span class="nav-number">10.</span> <span class="nav-text">Implicit Layer Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Animation_Transactions"><span class="nav-number">11.</span> <span class="nav-text">Animation Transactions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Media_Timing_Functions"><span class="nav-number">12.</span> <span class="nav-text">Media Timing Functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Core_Animation"><span class="nav-number">13.</span> <span class="nav-text">Core Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIKit_Dynamics"><span class="nav-number">14.</span> <span class="nav-text">UIKit Dynamics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Custom_Behavior"><span class="nav-number">15.</span> <span class="nav-text">Custom Behavior</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Animator_and_Behaviors"><span class="nav-number">16.</span> <span class="nav-text">Animator and Behaviors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Motion_Effects"><span class="nav-number">17.</span> <span class="nav-text">Motion Effects</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Drawing-Animation-and-Threading"><span class="nav-number">1.</span> <span class="nav-text">Drawing, Animation and Threading</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Image-View-and-Image-Animation"><span class="nav-number">2.</span> <span class="nav-text">Image View and Image Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-Animation"><span class="nav-number">3.</span> <span class="nav-text">View Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-Animation-Options"><span class="nav-number">4.</span> <span class="nav-text">View Animation Options</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Canceling-a-View-Animation"><span class="nav-number">5.</span> <span class="nav-text">Canceling a View Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Custom-Animatable-View-Properties"><span class="nav-number">6.</span> <span class="nav-text">Custom Animatable View Properties</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Springing-View-Animation"><span class="nav-number">7.</span> <span class="nav-text">Springing View Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Keyframe-View-Animation"><span class="nav-number">8.</span> <span class="nav-text">Keyframe View Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transitions"><span class="nav-number">9.</span> <span class="nav-text">Transitions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implicit-Layer-Animation"><span class="nav-number">10.</span> <span class="nav-text">Implicit Layer Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Animation-Transactions"><span class="nav-number">11.</span> <span class="nav-text">Animation Transactions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Media-Timing-Functions"><span class="nav-number">12.</span> <span class="nav-text">Media Timing Functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Animation"><span class="nav-number">13.</span> <span class="nav-text">Core Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIKit-Dynamics"><span class="nav-number">14.</span> <span class="nav-text">UIKit Dynamics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Custom-Behavior"><span class="nav-number">15.</span> <span class="nav-text">Custom Behavior</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Animator-and-Behaviors"><span class="nav-number">16.</span> <span class="nav-text">Animator and Behaviors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Motion-Effects"><span class="nav-number">17.</span> <span class="nav-text">Motion Effects</span></a></li></ol></div>
             
           </div>
         </section>
@@ -971,42 +972,29 @@ myLayer.backgroundColor = UIColor.redColor().CGColor // animate to red">
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

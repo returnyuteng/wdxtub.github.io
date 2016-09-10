@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="这节课我们来看看关于内存分配的延伸话题，包括更加复杂的选择机制以及垃圾回收等相关内容。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 第 19 课 Dynamic Memory Allocation - Advanced Concept">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-19.html">
@@ -117,6 +118,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 第 19 课 Dynamic Memory Allocation - Advanced Concept">
 <meta name="twitter:description" content="这节课我们来看看关于内存分配的延伸话题，包括更加复杂的选择机制以及垃圾回收等相关内容。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14584386982186.jpg">
 
 
 
@@ -140,7 +142,7 @@
   
     深入理解计算机系统 第 19 课 Dynamic Memory Allocation - Advanced Concept | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -161,7 +163,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -277,7 +279,7 @@
 <hr>
 <p>这节课主要介绍后面三种方法，都是用来记录未分配空间的，具体如下：</p>
 <p><img src="/images/14584386982186.jpg" alt="Keeping Track of Free Blocks"></p>
-<h2 id="u663E_u5F0F_free__u5217_u8868"><a href="#u663E_u5F0F_free__u5217_u8868" class="headerlink" title="显式 free 列表"></a>显式 free 列表</h2><p>主要的改动在于，只记录 free block，而不是所有的 block。因为是指针，所以不仅需要记录后一个也需要记录前一个；与此同时，仍然需要 boundary tag 来作为合并的辅助信息。具体的结构如下：</p>
+<h2 id="显式-free-列表"><a href="#显式-free-列表" class="headerlink" title="显式 free 列表"></a>显式 free 列表</h2><p>主要的改动在于，只记录 free block，而不是所有的 block。因为是指针，所以不仅需要记录后一个也需要记录前一个；与此同时，仍然需要 boundary tag 来作为合并的辅助信息。具体的结构如下：</p>
 <p><img src="/images/14584389197608.jpg" alt="Explicit Free Lists"></p>
 <p>因为是指针，逻辑上是连续的，但实际上可以是无序的，如下图：</p>
 <p><img src="/images/14584389533544.jpg" alt="Logically vs Physically"></p>
@@ -300,7 +302,7 @@
 <li>因为需要切分 block 以及维护列表，所以稍微复杂一点</li>
 <li>对于每个链接来说需要 2 个额外的 word 来记录前面一个 free block 和后面一个 free block</li>
 </ul>
-<h2 id="Segregated_free__u5217_u8868"><a href="#Segregated_free__u5217_u8868" class="headerlink" title="Segregated free 列表"></a>Segregated free 列表</h2><blockquote>
+<h2 id="Segregated-free-列表"><a href="#Segregated-free-列表" class="headerlink" title="Segregated free 列表"></a>Segregated free 列表</h2><blockquote>
 <p>Most common use of linked lists is in conjunction with segregated free lists. Keep multiple linked lists of different size classes, or possibly for different types of objects.</p>
 </blockquote>
 <p>也就是说，每个不同大小 block 会在不同的列表里，对于较小的 size，一般会有单独的列表，对于稍大的 size，列表的范围也会更大，如下图所示：</p>
@@ -331,8 +333,8 @@
 </ul>
 </li>
 </ul>
-<h2 id="u5783_u573E_u56DE_u6536"><a href="#u5783_u573E_u56DE_u6536" class="headerlink" title="垃圾回收"></a>垃圾回收</h2><p>所谓垃圾回收，就是我们不再需要显式释放所申请内存空间了，例如：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> *p = <span class="built_in">malloc</span>(<span class="number">128</span>);</span><br><span class="line">    <span class="keyword">return</span>; <span class="comment">/* p block is now garbage*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h2><p>所谓垃圾回收，就是我们不再需要显式释放所申请内存空间了，例如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> *p = <span class="built_in">malloc</span>(<span class="number">128</span>);</div><div class="line">    <span class="keyword">return</span>; <span class="comment">/* p block is now garbage*/</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这种机制在许多动态语言中都有实现：Python, Ruby, Java, Perl, ML, Lisp, Mathematica。C 和 C++ 中也有类似的变种，但是需要注意的是，是不可能回收所有的垃圾的。</p>
 <p>我们如何知道什么东西才是『垃圾』呢？简单！只要没有任何指针指向的地方，不管有没有用，因为都不可能被使用，当然可以直接清理掉啦。不过这其实是需要一些前提条件的：</p>
 <ul>
@@ -345,7 +347,7 @@
 <p>这里我们主要讨论第一种 Mark-and-sweep collection 算法（居然已经有五十多年的历史了）</p>
 <p>内存具体的分布，可以看做是一个有向图，每个 block 相当于一个节点，每个指针相当于一条边。那些不在堆中的且指向堆的指针称为根节点（如寄存器，栈，全局变量等），如下图所示：</p>
 <p><img src="/images/14584420668262.jpg" alt="Memory as a Graph"></p>
-<h3 id="Mark_and_Sweep_Collecting"><a href="#Mark_and_Sweep_Collecting" class="headerlink" title="Mark and Sweep Collecting"></a>Mark and Sweep Collecting</h3><p>这个机制可以在 malloc/free 的基础上实现。当空间不够的时候， 在每个 block 的头部增加一个额外的 mark bit。</p>
+<h3 id="Mark-and-Sweep-Collecting"><a href="#Mark-and-Sweep-Collecting" class="headerlink" title="Mark and Sweep Collecting"></a>Mark and Sweep Collecting</h3><p>这个机制可以在 malloc/free 的基础上实现。当空间不够的时候， 在每个 block 的头部增加一个额外的 mark bit。</p>
 <ul>
 <li>Mark: Start at roots and set mark bit on each reachable block</li>
 <li>Sweep: Scan all blocks and free blocks that are not marked</li>
@@ -364,7 +366,7 @@
 <li>Balanced-tree pointers can be stored in header (use two additional words)</li>
 </ul>
 <p><img src="/images/14584429821424.jpg" alt="存储结构"></p>
-<h2 id="u5185_u5B58_u76F8_u5173_u9677_u9631"><a href="#u5185_u5B58_u76F8_u5173_u9677_u9631" class="headerlink" title="内存相关陷阱"></a>内存相关陷阱</h2><p>关于内存的使用需要注意避免以下问题：</p>
+<h2 id="内存相关陷阱"><a href="#内存相关陷阱" class="headerlink" title="内存相关陷阱"></a>内存相关陷阱</h2><p>关于内存的使用需要注意避免以下问题：</p>
 <ul>
 <li>Dereferencing bad pointers</li>
 <li>Reading uninitialized memory</li>
@@ -378,31 +380,31 @@
 <p><img src="/images/14584431989892.jpg" alt="C operators"></p>
 <p>下面是一些例子，一定要好好理解（指针什么的真的头疼）</p>
 <p><img src="/images/14584433625063.jpg" alt="C Pointer Declarations"></p>
-<h3 id="Dereferencing_Bad_Pointers"><a href="#Dereferencing_Bad_Pointers" class="headerlink" title="Dereferencing Bad Pointers"></a>Dereferencing Bad Pointers</h3><p>这是非常常见的例子，没有引用对应的地址，少了 <code>&amp;</code></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> val;</span><br><span class="line">...</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">"%d"</span>, val);</span><br></pre></td></tr></table></figure>
-<h3 id="Reading_Uninitialized_Memory"><a href="#Reading_Uninitialized_Memory" class="headerlink" title="Reading Uninitialized Memory"></a>Reading Uninitialized Memory</h3><p>不能假设堆中的数据会自动初始化为 0，下面的代码就会出现奇怪的问题</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">/* return y = Ax */</span><br><span class="line">int *matvec(int **A, int *x) &#123;</span><br><span class="line">    int *y = malloc(N * sizeof(int));</span><br><span class="line">    int i, j;</span><br><span class="line">    </span><br><span class="line">    for (i = 0; i &lt; N; i++)</span><br><span class="line">        for (j = 0; j &lt; N; j++)</span><br><span class="line">            y[i] += A[i][j] * x[j];</span><br><span class="line">    return y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Overwriting_Memory"><a href="#Overwriting_Memory" class="headerlink" title="Overwriting Memory"></a>Overwriting Memory</h3><p>这里有挺多问题，第一种是分配了错误的大小，下面的例子中，一开始不能用 <code>sizeof(int)</code>，因为指针的长度不一定和 int 一样。</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">int **p;</span><br><span class="line">p = malloc(N * sizeof(int));</span><br><span class="line"></span><br><span class="line">for (i = 0; i &lt; N; i++) </span><br><span class="line">    p[i] = malloc(M * sizeof(int));</span><br></pre></td></tr></table></figure>
+<h3 id="Dereferencing-Bad-Pointers"><a href="#Dereferencing-Bad-Pointers" class="headerlink" title="Dereferencing Bad Pointers"></a>Dereferencing Bad Pointers</h3><p>这是非常常见的例子，没有引用对应的地址，少了 <code>&amp;</code></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> val;</div><div class="line">...</div><div class="line"><span class="built_in">scanf</span>(<span class="string">"%d"</span>, val);</div></pre></td></tr></table></figure>
+<h3 id="Reading-Uninitialized-Memory"><a href="#Reading-Uninitialized-Memory" class="headerlink" title="Reading Uninitialized Memory"></a>Reading Uninitialized Memory</h3><p>不能假设堆中的数据会自动初始化为 0，下面的代码就会出现奇怪的问题</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="comment">/* return y = Ax */</span></div><div class="line"><span class="function"><span class="keyword">int</span> *<span class="title">matvec</span><span class="params">(<span class="keyword">int</span> **A, <span class="keyword">int</span> *x)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> *y = <span class="built_in">malloc</span>(N * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div><div class="line">    <span class="keyword">int</span> i, j;</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++)</div><div class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; N; j++)</div><div class="line">            y[i] += A[i][j] * x[j];</div><div class="line">    <span class="keyword">return</span> y;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Overwriting-Memory"><a href="#Overwriting-Memory" class="headerlink" title="Overwriting Memory"></a>Overwriting Memory</h3><p>这里有挺多问题，第一种是分配了错误的大小，下面的例子中，一开始不能用 <code>sizeof(int)</code>，因为指针的长度不一定和 int 一样。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> **p;</div><div class="line">p = <span class="built_in">malloc</span>(N * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div><div class="line"></div><div class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; N; i++) </div><div class="line">    p[i] = <span class="built_in">malloc</span>(M * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div></pre></td></tr></table></figure>
 <p>第二个问题是超出了分配的空间，下面代码的 for 循环中，因为使用了 <code>&lt;=</code>，会写入到其他位置</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">int **p;</span><br><span class="line"></span><br><span class="line">p = malloc(N * sizeof (int *));</span><br><span class="line"></span><br><span class="line">for (i = 0; i &lt;= N; i++)</span><br><span class="line">    p[i] = malloc(M * sizeof(int));</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> **p;</div><div class="line"></div><div class="line">p = <span class="built_in">malloc</span>(N * <span class="keyword">sizeof</span> (<span class="keyword">int</span> *));</div><div class="line"></div><div class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt;= N; i++)</div><div class="line">    p[i] = <span class="built_in">malloc</span>(M * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div></pre></td></tr></table></figure>
 <p>第三种是因为没有检查字符串的长度，超出部分就写到其他地方去了（经典的缓冲区溢出攻击也是利用相同的机制）</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> s[<span class="number">8</span>];</span><br><span class="line"><span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">gets(s); <span class="comment">/* reads "123456789" from stdin */</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">char</span> s[<span class="number">8</span>];</div><div class="line"><span class="keyword">int</span> i;</div><div class="line"></div><div class="line">gets(s); <span class="comment">/* reads "123456789" from stdin */</span></div></pre></td></tr></table></figure>
 <p>第四种是没有正确理解指针的大小以及对应的操作，应该使用 <code>sizeof(int *)</code></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> *<span class="title">search</span><span class="params">(<span class="keyword">int</span> *p, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (*p &amp;&amp; *p != null)</span><br><span class="line">        p += <span class="keyword">sizeof</span>(<span class="keyword">int</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> *<span class="title">search</span><span class="params">(<span class="keyword">int</span> *p, <span class="keyword">int</span> val)</span> </span>&#123;</div><div class="line">    <span class="keyword">while</span> (*p &amp;&amp; *p != null)</div><div class="line">        p += <span class="keyword">sizeof</span>(<span class="keyword">int</span>);</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> p;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>第五种是引用了指针，而不是其指向的对象，下面的例子中，<code>*size--</code> 一句因为 <code>--</code> 的优先级比较高，所以实际上是对指针进行了操作，正确的应该是 <code>(*size)--</code></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> *<span class="title">BinheapDelete</span><span class="params">(<span class="keyword">int</span> **binheap, <span class="keyword">int</span> *size)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> *packet;</span><br><span class="line">    packet = binheap[<span class="number">0</span>];</span><br><span class="line">    binheap[<span class="number">0</span>] = binheap[*size - <span class="number">1</span>];</span><br><span class="line">    *size--;</span><br><span class="line">    Heapify(binheap, *size, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> (packet);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Referencing_Nonexistent_Variables"><a href="#Referencing_Nonexistent_Variables" class="headerlink" title="Referencing Nonexistent Variables"></a>Referencing Nonexistent Variables</h3><p>下面的情况中，没有注意到局部变量会在函数返回的时候失效（所以对应的指针也会无效），这是传引用和返回引用需要注意的，传值的话则不用担心</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> *<span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &amp;val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Freeing_Blocks_Multiple_Times"><a href="#Freeing_Blocks_Multiple_Times" class="headerlink" title="Freeing Blocks Multiple Times"></a>Freeing Blocks Multiple Times</h3><p>这个不用多说，不能重复搞两次</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">x = malloc(N * sizeof(int));</span><br><span class="line">//  &lt;manipulate x&gt;</span><br><span class="line">free(x);</span><br><span class="line"></span><br><span class="line">y = malloc(M * sizeof(int));</span><br><span class="line">//  &lt;manipulate y&gt;</span><br><span class="line">free(x);</span><br></pre></td></tr></table></figure>
-<h3 id="Referencing_Freed_Blocks"><a href="#Referencing_Freed_Blocks" class="headerlink" title="Referencing Freed Blocks"></a>Referencing Freed Blocks</h3><p>同样是很明显的错误，不要犯</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">x = malloc(N * sizeof(int));</span><br><span class="line">//  &lt;manipulate x&gt;</span><br><span class="line">free(x);</span><br><span class="line">//  ....</span><br><span class="line"></span><br><span class="line">y = malloc(M * sizeof(int));</span><br><span class="line">for (i = 0; i &lt; M; i++)</span><br><span class="line">    y[i] = x[i]++;</span><br></pre></td></tr></table></figure>
-<h3 id="Memory_Leaks"><a href="#Memory_Leaks" class="headerlink" title="Memory Leaks"></a>Memory Leaks</h3><p>用完没有释放，就是内存泄露啦</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">foo() &#123;</span><br><span class="line">    int *x = malloc(N * sizeof(int));</span><br><span class="line">    // ...</span><br><span class="line">    return ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> *<span class="title">BinheapDelete</span><span class="params">(<span class="keyword">int</span> **binheap, <span class="keyword">int</span> *size)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> *packet;</div><div class="line">    packet = binheap[<span class="number">0</span>];</div><div class="line">    binheap[<span class="number">0</span>] = binheap[*size - <span class="number">1</span>];</div><div class="line">    *size--;</div><div class="line">    Heapify(binheap, *size, <span class="number">0</span>);</div><div class="line">    <span class="keyword">return</span> (packet);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Referencing-Nonexistent-Variables"><a href="#Referencing-Nonexistent-Variables" class="headerlink" title="Referencing Nonexistent Variables"></a>Referencing Nonexistent Variables</h3><p>下面的情况中，没有注意到局部变量会在函数返回的时候失效（所以对应的指针也会无效），这是传引用和返回引用需要注意的，传值的话则不用担心</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> *<span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> val;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> &amp;val;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Freeing-Blocks-Multiple-Times"><a href="#Freeing-Blocks-Multiple-Times" class="headerlink" title="Freeing Blocks Multiple Times"></a>Freeing Blocks Multiple Times</h3><p>这个不用多说，不能重复搞两次</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line">x = <span class="built_in">malloc</span>(N * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div><div class="line"><span class="comment">//  &lt;manipulate x&gt;</span></div><div class="line"><span class="built_in">free</span>(x);</div><div class="line"></div><div class="line">y = <span class="built_in">malloc</span>(M * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div><div class="line"><span class="comment">//  &lt;manipulate y&gt;</span></div><div class="line"><span class="built_in">free</span>(x);</div></pre></td></tr></table></figure>
+<h3 id="Referencing-Freed-Blocks"><a href="#Referencing-Freed-Blocks" class="headerlink" title="Referencing Freed Blocks"></a>Referencing Freed Blocks</h3><p>同样是很明显的错误，不要犯</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line">x = <span class="built_in">malloc</span>(N * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div><div class="line"><span class="comment">//  &lt;manipulate x&gt;</span></div><div class="line"><span class="built_in">free</span>(x);</div><div class="line"><span class="comment">//  ....</span></div><div class="line"></div><div class="line">y = <span class="built_in">malloc</span>(M * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div><div class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; M; i++)</div><div class="line">    y[i] = x[i]++;</div></pre></td></tr></table></figure>
+<h3 id="Memory-Leaks"><a href="#Memory-Leaks" class="headerlink" title="Memory Leaks"></a>Memory Leaks</h3><p>用完没有释放，就是内存泄露啦</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line">foo() &#123;</div><div class="line">    <span class="keyword">int</span> *x = <span class="built_in">malloc</span>(N * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div><div class="line">    <span class="comment">// ...</span></div><div class="line">    <span class="keyword">return</span> ;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>或者只释放了数据结构的一部分：</p>
 <p><img src="/images/14584447178117.jpg" alt="Freeing only part of a data structure"></p>
-<h3 id="u5BF9_u7B56"><a href="#u5BF9_u7B56" class="headerlink" title="对策"></a>对策</h3><p>我们可以使用下面的工具和方法来处理内存的 bug</p>
+<h3 id="对策"><a href="#对策" class="headerlink" title="对策"></a>对策</h3><p>我们可以使用下面的工具和方法来处理内存的 bug</p>
 <p><img src="/images/14584447590453.jpg" alt="Dealing With Memory Bugs"></p>
 
     
@@ -739,42 +741,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

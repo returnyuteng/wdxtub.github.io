@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="命令行,效率,窗口," />
+  <meta name="keywords" content="效率,命令行,窗口," />
 
 
 
@@ -98,6 +98,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="tmux 指南">
 <meta name="twitter:description" content="今天试用了一下 tmux，发现简直是神器！以前还傻傻不停开窗口，现在一个窗口就可以都搞定啦！">
+<meta name="twitter:image" content="http://wdxtub.com/images/14593788571503.jpg">
 
 
 
@@ -115,7 +116,7 @@
   };
 </script>
 
-  <title> tmux 指南 | 小土刀 </title>
+  <title> tmux 指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -136,7 +137,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -342,7 +343,7 @@
 <p>Tmux 简单来说就是终端里的『窗口管理器』，如果我使用终端登录到远程主机并运行前台程序，那么这个窗口等于就被占用了，想要看一下 CPU 的使用率，就得再连接一次。但是如果在远程主机上运行 tmux，那么就可以开启多个控制台（类似于窗口），相当高效，比方说可以像下面这样：</p>
 <p><img src="/images/14593788571503.jpg" alt="一个面板监视服务器，一个面板查看硬件状况"></p>
 <p>需要注意的是，这里是在我本地使用 tmux，最好在远程主机也安装 tmux，这样就只需要连接一次。</p>
-<h2 id="Hello_World"><a href="#Hello_World" class="headerlink" title="Hello World"></a>Hello World</h2><p>前面提到的窗口管理只是 tmux 功能的一小部分，另一个很有用的功能就是，连接到远程主机之后，一旦断开，那么当前账户登录的任务就被取消了，但是使用 tmux 可以在断开之后继续工作，下次登录可以查看。其他的功能还有：</p>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><p>前面提到的窗口管理只是 tmux 功能的一小部分，另一个很有用的功能就是，连接到远程主机之后，一旦断开，那么当前账户登录的任务就被取消了，但是使用 tmux 可以在断开之后继续工作，下次登录可以查看。其他的功能还有：</p>
 <ol>
 <li>窗口切换，每个窗口里还可以分割面板</li>
 <li>配置方便，可以使用脚本</li>
@@ -351,7 +352,7 @@
 </ol>
 <p>安装的话也很简单，在 mac 下直接 <code>brew install tmux</code>（前提需要安装 homebrew），ubuntu 下则直接 <code>sudo apt-get install tmux</code></p>
 <p>在终端中输入 <code>tmux</code> 就可以打开一个新的 tmux session，tmux 的所有操作必须先使用一个前缀键（默认是 <code>ctrl + b</code>）进入命令模式，或者说进入控制台，就像 vim 中的 esc。</p>
-<h2 id="u57FA_u672C_u64CD_u4F5C"><a href="#u57FA_u672C_u64CD_u4F5C" class="headerlink" title="基本操作"></a>基本操作</h2><blockquote>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><blockquote>
 <p>信息查询</p>
 </blockquote>
 <ul>
@@ -441,11 +442,11 @@
 <li><code>page down</code> 向下滚动屏幕，q 退出</li>
 </ul>
 <p>因为 iTerm2 的支持，很多切换的操作可以直接用鼠标进行，非常方便。具体大家可以自己尝试一下。</p>
-<h2 id="u914D_u7F6E"><a href="#u914D_u7F6E" class="headerlink" title="配置"></a>配置</h2><p>我们可以先进行一些简单的配置，修改 <code>~/.tmux.conf</code> 即可，让整个使用更方便。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">#<span class="comment">-- base --#</span></span><br><span class="line"></span><br><span class="line"><span class="operator"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">default</span>-terminal <span class="string">"screen-256color"</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> display-<span class="keyword">time</span> <span class="number">3000</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> history-<span class="keyword">limit</span> <span class="number">10000</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> base-<span class="keyword">index</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> pane-base-<span class="keyword">index</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">set</span> -s escape-<span class="keyword">time</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> mouse <span class="keyword">on</span></span><br><span class="line"></span><br><span class="line">#<span class="comment">-- bindkeys --#</span></span><br><span class="line"></span><br><span class="line"># <span class="keyword">split</span> windows <span class="keyword">like</span> vim.  - Note: vim<span class="string">'s definition of a horizontal/vertical split is reversed from tmux'</span>s</span><br><span class="line"></span><br><span class="line">unbind s</span><br><span class="line">bind s <span class="keyword">split</span>-window -v</span><br><span class="line">bind S <span class="keyword">split</span>-window -v -<span class="keyword">l</span> <span class="number">40</span></span><br><span class="line">bind v <span class="keyword">split</span>-window -h</span><br><span class="line">bind V <span class="keyword">split</span>-window -h -<span class="keyword">l</span> <span class="number">120</span></span><br><span class="line"></span><br><span class="line"># navigate panes <span class="keyword">with</span> hjkl</span><br><span class="line">bind h <span class="keyword">select</span>-pane -<span class="keyword">L</span></span><br><span class="line">bind j <span class="keyword">select</span>-pane -<span class="keyword">D</span></span><br><span class="line">bind <span class="keyword">k</span> <span class="keyword">select</span>-pane -U</span><br><span class="line">bind <span class="keyword">l</span> <span class="keyword">select</span>-pane -R</span><br><span class="line"></span><br><span class="line"># <span class="keyword">key</span> bindings <span class="keyword">for</span> horizontal <span class="keyword">and</span> vertical panes</span><br><span class="line">unbind %</span><br><span class="line">bind | <span class="keyword">split</span>-window -h      # 使用|竖屏，方便分屏</span><br><span class="line">unbind <span class="string">'"'</span></span><br><span class="line">bind - <span class="keyword">split</span>-window -v      # 使用-横屏，方便分屏</span><br><span class="line"></span><br><span class="line"># swap panes</span><br><span class="line">bind ^u swapp -U</span><br><span class="line">bind ^<span class="keyword">d</span> swapp -<span class="keyword">D</span></span><br><span class="line"></span><br><span class="line">bind q killp</span><br><span class="line">bind ^<span class="keyword">e</span> <span class="keyword">last</span></span><br><span class="line"></span><br><span class="line">unbind r</span><br><span class="line">bind r <span class="keyword">source</span>-<span class="keyword">file</span> ~/.tmux.conf \;</span> display "Configuration Reloaded!"</span><br><span class="line"></span><br><span class="line">#<span class="comment">-- statusbar --#</span></span><br><span class="line"></span><br><span class="line"><span class="operator"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-justify centre</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">left</span> <span class="string">"#[fg=red]s#S:w#I.p#P#[default]"</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">right</span> <span class="string">'[#(whoami)#(date +" %m-%d %H:%M ")]'</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">left</span>-<span class="keyword">attr</span> bright</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">left</span>-<span class="keyword">length</span> <span class="number">120</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">right</span>-<span class="keyword">length</span> <span class="number">120</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-utf8 <span class="keyword">on</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="built_in">interval</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> visual-activity <span class="keyword">on</span></span><br><span class="line">setw -<span class="keyword">g</span> monitor-activity <span class="keyword">on</span></span><br><span class="line">setw -<span class="keyword">g</span> <span class="keyword">automatic</span>-<span class="keyword">rename</span> <span class="keyword">off</span></span><br><span class="line"></span><br><span class="line"># <span class="keyword">default</span> statusbar colors</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-bg colour235 #base02</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-fg colour136 #yellow</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-<span class="keyword">attr</span> <span class="keyword">default</span></span><br><span class="line"></span><br><span class="line"># <span class="keyword">default</span> window title colors</span><br><span class="line">setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-fg colour244</span><br><span class="line">setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-bg <span class="keyword">default</span></span><br><span class="line">#setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">attr</span> dim</span><br><span class="line"></span><br><span class="line"># active window title colors</span><br><span class="line">setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">current</span>-fg colour166 #orange</span><br><span class="line">setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">current</span>-bg <span class="keyword">default</span></span><br><span class="line">#setw -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">current</span>-<span class="keyword">attr</span> bright</span><br><span class="line"></span><br><span class="line"># window title <span class="keyword">string</span> (uses statusbar <span class="keyword">variables</span>)</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">set</span>-titles-<span class="keyword">string</span> <span class="string">'#T'</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> <span class="keyword">status</span>-justify <span class="string">"centre"</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">format</span> <span class="string">'#I #W'</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> window-<span class="keyword">status</span>-<span class="keyword">current</span>-<span class="keyword">format</span> <span class="string">' #I #W '</span></span><br><span class="line"></span><br><span class="line"># pane border</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> pane-active-border-fg <span class="string">'#55ff55'</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> pane-border-fg <span class="string">'#555555'</span></span><br><span class="line"></span><br><span class="line"># message <span class="built_in">text</span></span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> message-bg colour235 #base02</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> message-fg colour166 #orange</span><br><span class="line"></span><br><span class="line"># pane <span class="built_in">number</span> display</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> display-panes-active-colour colour33 #blue</span><br><span class="line"><span class="keyword">set</span> -<span class="keyword">g</span> display-panes-colour colour166 #orange</span><br><span class="line"></span><br><span class="line"># clock</span><br><span class="line">setw -<span class="keyword">g</span> clock-<span class="keyword">mode</span>-colour colour64 #green</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 修改进入命令模式按键</span><br><span class="line"># remap prefix <span class="keyword">to</span> Control + a</span><br><span class="line"># <span class="keyword">set</span> -<span class="keyword">g</span> prefix <span class="keyword">C</span>-a</span><br><span class="line"># unbind <span class="keyword">C</span>-b</span><br><span class="line"># bind <span class="keyword">C</span>-a send-prefix</span></span><br></pre></td></tr></table></figure>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>我们可以先进行一些简单的配置，修改 <code>~/.tmux.conf</code> 即可，让整个使用更方便。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">#-- base --#</div><div class="line"></div><div class="line">set -g default-terminal &quot;screen-256color&quot;</div><div class="line">set -g display-time 3000</div><div class="line">set -g history-limit 10000</div><div class="line">set -g base-index 1</div><div class="line">set -g pane-base-index 1</div><div class="line">set -s escape-time 0</div><div class="line">set -g mouse on</div><div class="line"></div><div class="line">#-- bindkeys --#</div><div class="line"></div><div class="line"># split windows like vim.  - Note: vim&apos;s definition of a horizontal/vertical split is reversed from tmux&apos;s</div><div class="line"></div><div class="line">unbind s</div><div class="line">bind s split-window -v</div><div class="line">bind S split-window -v -l 40</div><div class="line">bind v split-window -h</div><div class="line">bind V split-window -h -l 120</div><div class="line"></div><div class="line"># navigate panes with hjkl</div><div class="line">bind h select-pane -L</div><div class="line">bind j select-pane -D</div><div class="line">bind k select-pane -U</div><div class="line">bind l select-pane -R</div><div class="line"></div><div class="line"># key bindings for horizontal and vertical panes</div><div class="line">unbind %</div><div class="line">bind | split-window -h      # 使用|竖屏，方便分屏</div><div class="line">unbind &apos;&quot;&apos;</div><div class="line">bind - split-window -v      # 使用-横屏，方便分屏</div><div class="line"></div><div class="line"># swap panes</div><div class="line">bind ^u swapp -U</div><div class="line">bind ^d swapp -D</div><div class="line"></div><div class="line">bind q killp</div><div class="line">bind ^e last</div><div class="line"></div><div class="line">unbind r</div><div class="line">bind r source-file ~/.tmux.conf \; display &quot;Configuration Reloaded!&quot;</div><div class="line"></div><div class="line">#-- statusbar --#</div><div class="line"></div><div class="line">set -g status-justify centre</div><div class="line">set -g status-left &quot;#[fg=red]s#S:w#I.p#P#[default]&quot;</div><div class="line">set -g status-right &apos;[#(whoami)#(date +&quot; %m-%d %H:%M &quot;)]&apos;</div><div class="line">set -g status-left-attr bright</div><div class="line">set -g status-left-length 120</div><div class="line">set -g status-right-length 120</div><div class="line">set -g status-utf8 on</div><div class="line">set -g status-interval 1</div><div class="line">set -g visual-activity on</div><div class="line">setw -g monitor-activity on</div><div class="line">setw -g automatic-rename off</div><div class="line"></div><div class="line"># default statusbar colors</div><div class="line">set -g status-bg colour235 #base02</div><div class="line">set -g status-fg colour136 #yellow</div><div class="line">set -g status-attr default</div><div class="line"></div><div class="line"># default window title colors</div><div class="line">setw -g window-status-fg colour244</div><div class="line">setw -g window-status-bg default</div><div class="line">#setw -g window-status-attr dim</div><div class="line"></div><div class="line"># active window title colors</div><div class="line">setw -g window-status-current-fg colour166 #orange</div><div class="line">setw -g window-status-current-bg default</div><div class="line">#setw -g window-status-current-attr bright</div><div class="line"></div><div class="line"># window title string (uses statusbar variables)</div><div class="line">set -g set-titles-string &apos;#T&apos;</div><div class="line">set -g status-justify &quot;centre&quot;</div><div class="line">set -g window-status-format &apos;#I #W&apos;</div><div class="line">set -g window-status-current-format &apos; #I #W &apos;</div><div class="line"></div><div class="line"># pane border</div><div class="line">set -g pane-active-border-fg &apos;#55ff55&apos;</div><div class="line">set -g pane-border-fg &apos;#555555&apos;</div><div class="line"></div><div class="line"># message text</div><div class="line">set -g message-bg colour235 #base02</div><div class="line">set -g message-fg colour166 #orange</div><div class="line"></div><div class="line"># pane number display</div><div class="line">set -g display-panes-active-colour colour33 #blue</div><div class="line">set -g display-panes-colour colour166 #orange</div><div class="line"></div><div class="line"># clock</div><div class="line">setw -g clock-mode-colour colour64 #green</div><div class="line"></div><div class="line"></div><div class="line"># 修改进入命令模式按键</div><div class="line"># remap prefix to Control + a</div><div class="line"># set -g prefix C-a</div><div class="line"># unbind C-b</div><div class="line"># bind C-a send-prefix</div></pre></td></tr></table></figure>
 <p>最终的效果是</p>
 <p><img src="/images/14593965566247.jpg" alt=""></p>
-<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="http://foocoder.com/blog/zhong-duan-huan-jing-zhi-tmux.html/" target="_blank" rel="external">终端环境之tmux</a></li>
 <li><a href="http://blog.jeswang.org/blog/2013/06/24/tmux-kuai-su-jiao-cheng/" target="_blank" rel="external">Tmux 快速教程</a></li>
 <li><a href="http://kumu-linux.github.io/blog/2013/08/06/tmux/" target="_blank" rel="external">Linux下终端利器tmux</a></li>
@@ -487,9 +488,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/命令行/" rel="tag">#命令行</a>
-          
             <a href="/tags/效率/" rel="tag">#效率</a>
+          
+            <a href="/tags/命令行/" rel="tag">#命令行</a>
           
             <a href="/tags/窗口/" rel="tag">#窗口</a>
           
@@ -726,7 +727,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello_World"><span class="nav-number">1.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u672C_u64CD_u4F5C"><span class="nav-number">2.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u914D_u7F6E"><span class="nav-number">3.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-World"><span class="nav-number">1.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本操作"><span class="nav-number">2.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">3.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
@@ -906,42 +907,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

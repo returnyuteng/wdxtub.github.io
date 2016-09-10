@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Ruby,异步,队列," />
+  <meta name="keywords" content="Ruby,队列,异步," />
 
 
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> 异步队列 sidekiq 指南 | 小土刀 </title>
+  <title> 异步队列 sidekiq 指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -134,7 +134,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -337,32 +337,32 @@
         <p>Sidekiq 是为 Ruby 打造的一个全功能后台处理框架，可以很方便地集成到大部分 Rails 程序中。网上关于 Sidekiq 的中文资料还是比较少，这里我结合官方文档给大家做简要介绍。版本：4.1.4</p>
 <a id="more"></a>
 <hr>
-<h2 id="u5FEB_u901F_u5165_u95E8"><a href="#u5FEB_u901F_u5165_u95E8" class="headerlink" title="快速入门"></a>快速入门</h2><p>开发者已经尽量考虑到集成的问题，所以只需要简单几步即可完成 sidekiq 的使用。</p>
+<h2 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h2><p>开发者已经尽量考虑到集成的问题，所以只需要简单几步即可完成 sidekiq 的使用。</p>
 <p>首先，在 <code>Gemfile</code> 中添加对应包 <code>gem &#39;sidekiq&#39;</code>。</p>
 <p>接着，在 <code>app/workers</code> 文件夹中添加一个 worker，来处理异步请求，比如</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HardWorker</span></span></span><br><span class="line">    <span class="keyword">include</span> <span class="constant">Sidekiq::Worker</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">perform</span><span class="params">(name, count)</span></span></span><br><span class="line">        <span class="comment"># do something</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HardWorker</span></span></div><div class="line">    <span class="keyword">include</span> Sidekiq::Worker</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">perform</span><span class="params">(name, count)</span></span></div><div class="line">        <span class="comment"># do something</span></div><div class="line">    <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 <p>然后在其他地方就可以提交异步任务了，如</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 常规提交</span></span><br><span class="line"><span class="constant">HardWorker</span>.perform_async(<span class="string">'wdxtub'</span>, <span class="number">1</span>)</span><br><span class="line"><span class="comment"># 延迟提交</span></span><br><span class="line"><span class="constant">HardWorker</span>.perform_in(<span class="number">5</span>.minutes, <span class="string">'wdxtub'</span>, <span class="number">1</span>)</span><br><span class="line"><span class="comment"># 也可以通过 delay 来新建任务</span></span><br><span class="line"><span class="constant">User</span>.delay.do_some_stuff(current_user.id, <span class="number">20</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 常规提交</span></div><div class="line">HardWorker.perform_async(<span class="string">'wdxtub'</span>, <span class="number">1</span>)</div><div class="line"><span class="comment"># 延迟提交</span></div><div class="line">HardWorker.perform_in(<span class="number">5</span>.minutes, <span class="string">'wdxtub'</span>, <span class="number">1</span>)</div><div class="line"><span class="comment"># 也可以通过 delay 来新建任务</span></div><div class="line">User.delay.do_some_stuff(current_user.id, <span class="number">20</span>)</div></pre></td></tr></table></figure>
 <p>最后在 Rails 应用的根目录启动 sidekiq 就会开始执行，命令为 <code>bundle exec sidekiq</code></p>
-<h2 id="u57FA_u7840_u77E5_u8BC6"><a href="#u57FA_u7840_u77E5_u8BC6" class="headerlink" title="基础知识"></a>基础知识</h2><p>Sidekiq 客户端通常运行在应用进程中（比方说一个 puma 或 passenger 进程），允许我们创建 job 之后处理，一般来说有下面两种方式</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 第一种方法：常规调用</span></span><br><span class="line"><span class="constant">MyWorker</span>.perform_async(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="comment"># 第二种方法：底层通用调用</span></span><br><span class="line"><span class="constant">Sidekiq::Client</span>.push(<span class="string">'class'</span> =&gt; <span class="constant">MyWorker</span>, <span class="string">'args'</span> =&gt; [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br></pre></td></tr></table></figure>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>Sidekiq 客户端通常运行在应用进程中（比方说一个 puma 或 passenger 进程），允许我们创建 job 之后处理，一般来说有下面两种方式</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 第一种方法：常规调用</span></div><div class="line">MyWorker.perform_async(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line"><span class="comment"># 第二种方法：底层通用调用</span></div><div class="line">Sidekiq::Client.push(<span class="string">'class'</span> =&gt; MyWorker, <span class="string">'args'</span> =&gt; [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</div></pre></td></tr></table></figure>
 <p>这两种方法是等价的，执行的时候会生成一个表示这个 job 的 hash，之后会转成一个 JSON 字符串并放到 Redis 队列中。这也意味着 worker 中的参数必须是简单的 JSON 类型（数字、字符串、布尔值、数组、哈希），如果是复杂的 Ruby 对象（比如 Date, Time 或者 ActiveRecord）则会出现无法正确序列化的问题。</p>
 <p>每个 Sidekiq 服务器进程会从 Redis 中拉取 job 并进行处理。和 web 进程一样，Sidekiq 会启动 Rails 所以所有的 job 和 worker 都可以使用全部的 Rails API（包括 Active Record）。服务器会实例化 worker 并调用其中的 <code>perform</code> 函数，剩下的就可以自由发挥了。</p>
-<h2 id="u6700_u4F73_u5B9E_u8DF5"><a href="#u6700_u4F73_u5B9E_u8DF5" class="headerlink" title="最佳实践"></a>最佳实践</h2><p><strong>让每个 job 的参数小而简单</strong></p>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><p><strong>让每个 job 的参数小而简单</strong></p>
 <p>从前面我们知道，Sidekiq 会把 <code>perform_async</code> 函数的参数保存在 Redis 中，而常见的错误做法是这样的：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">quote = <span class="constant">Quote</span>.find(quote_id)</span><br><span class="line"><span class="constant">SomeWorker</span>.perform_async(quote)</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line">quote = Quote.find(quote_id)</div><div class="line">SomeWorker.perform_async(quote)</div></pre></td></tr></table></figure>
 <p>这有什么问题呢？问题很大！把整个 quote 对象都保存在 Redis 中了，而且由于操作是通过异步队列来完成的，很可能在执行到这句话时，quote 本身都改变了，所以我们尽可能<strong>让每个 job 的参数小而简单</strong>，比方说可以改成像这样</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="constant">SomeWorker</span>.perform_async(quote_id)</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line">SomeWorker.perform_async(quote_id)</div></pre></td></tr></table></figure>
 <p>另外除了数据本身可能改变这个问题外，还有序列化和反序列化的问题。Sidekiq 使用 <code>JSON.dump</code> 和 <code>JSON.load</code> 来完成存取操作，所以如果不是简单的 JSON 数据类型，在这一步很可能出错。</p>
 <p><strong>让每个 job 满足幂等性和事务性</strong></p>
 <p>幂等性保证了任务可以执行很多次，不会出现结果不一致的情况；事务性则是保证了结果不因为在 job 执行半路出现问题。我们唯一能做的假设是 Sidekiq 至少会执行每个 job 一次。</p>
 <p><strong>拥抱并发</strong></p>
 <p>Sidekiq 是为并发设计的，所以在设计任务时一定要以并发的想法去思考。如果 Sidekiq 占用流量太高的话，可以考虑用连接池来限制连接数量。</p>
-<h2 id="Redis__u7684_u4F7F_u7528"><a href="#Redis__u7684_u4F7F_u7528" class="headerlink" title="Redis 的使用"></a>Redis 的使用</h2><p>Sidekiq 使用 Redis 来保存所有的 job 和操作数据。默认会去连接位于 <code>localhost:6379</code> 的 Redis 服务器。但是在生产环境中可能需要自定义地址，具体需要修改 <code>config/initializers/sidekiq.rb</code> 文件</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这里的地址和端口号(1643)都需要配置成正确的</span></span><br><span class="line"><span class="constant">Sidekiq</span>.configure_server <span class="keyword">do</span> |config|</span><br><span class="line">  config.redis = &#123; <span class="symbol">url:</span> <span class="string">'redis://redis.wdxtub.com:1643/12'</span> &#125;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="constant">Sidekiq</span>.configure_client <span class="keyword">do</span> |config|</span><br><span class="line">  config.redis = &#123; <span class="symbol">url:</span> <span class="string">'redis://redis.wdxtub.com:1643/12'</span> &#125;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2 id="Redis-的使用"><a href="#Redis-的使用" class="headerlink" title="Redis 的使用"></a>Redis 的使用</h2><p>Sidekiq 使用 Redis 来保存所有的 job 和操作数据。默认会去连接位于 <code>localhost:6379</code> 的 Redis 服务器。但是在生产环境中可能需要自定义地址，具体需要修改 <code>config/initializers/sidekiq.rb</code> 文件</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 这里的地址和端口号(1643)都需要配置成正确的</span></div><div class="line">Sidekiq.configure_server <span class="keyword">do</span> <span class="params">|config|</span></div><div class="line">  config.redis = &#123; <span class="symbol">url:</span> <span class="string">'redis://redis.wdxtub.com:1643/12'</span> &#125;</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line">Sidekiq.configure_client <span class="keyword">do</span> <span class="params">|config|</span></div><div class="line">  config.redis = &#123; <span class="symbol">url:</span> <span class="string">'redis://redis.wdxtub.com:1643/12'</span> &#125;</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 <p>如果要使用 UNIX socket，URL 应该类似于 <code>unix://#{Rails.root}/tmp/sockets/redis.sock</code></p>
 <p>另外部署在云端的化，根据不同的配置，也有不同的讲究，具体参考<a href="https://github.com/mperham/sidekiq/wiki/Using-Redis" target="_blank" rel="external">这里</a></p>
-<h2 id="u9519_u8BEF_u5904_u7406"><a href="#u9519_u8BEF_u5904_u7406" class="headerlink" title="错误处理"></a>错误处理</h2><p>最佳实践</p>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>最佳实践</p>
 <ol>
 <li>使用错误相关的服务，比如 Honeybadger, Airbrake, Rollbar, BugSnag, Sentry, Exceptiontrap, Raygun 等等，它们的特性和价格都差不多，但是一定要挑一个来用</li>
 <li>让 Sidekiq 捕获 job 引发的错误，内置的重试机制会按照规则来重试，并通过错误通知服务管理员</li>
@@ -370,30 +370,30 @@
 <li>6 个月之后，这个 job 将被丢弃</li>
 </ol>
 <p>更多详细信息参考<a href="https://github.com/mperham/sidekiq/wiki/Error-Handling" target="_blank" rel="external">这里</a></p>
-<h2 id="u914D_u7F6E_u6587_u4EF6"><a href="#u914D_u7F6E_u6587_u4EF6" class="headerlink" title="配置文件"></a>配置文件</h2><p>配置文件是 <code>config/sidekiq.yml</code>，只有在需要设置高级选项的时候才需要创建这个文件，一个例子为：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">---&#10;:concurrency: 5&#10;:pidfile: tmp/pids/sidekiq.pid&#10;staging:&#10;  :concurrency: 10&#10;production:&#10;  :concurrency: 20&#10;:queues:&#10;  - default&#10;  - [myqueue, 2]</span><br></pre></td></tr></table></figure>
+<h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>配置文件是 <code>config/sidekiq.yml</code>，只有在需要设置高级选项的时候才需要创建这个文件，一个例子为：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="meta">---</span></div><div class="line">:concurrency: <span class="number">5</span></div><div class="line">:pidfile: tmp/pids/sidekiq.pid</div><div class="line"><span class="attr">staging:</span></div><div class="line">  :concurrency: <span class="number">10</span></div><div class="line"><span class="attr">production:</span></div><div class="line">  :concurrency: <span class="number">20</span></div><div class="line">:queues:</div><div class="line"><span class="bullet">  -</span> default</div><div class="line"><span class="bullet">  -</span> [myqueue, <span class="number">2</span>]</div></pre></td></tr></table></figure>
 <p>如果不这样命名，或者不放在这个位置的话，在命令行中用 <code>-C</code> 来指定 <code>sidekiq -C config/myapp_sidekiq.yml</code></p>
-<h3 id="u961F_u5217"><a href="#u961F_u5217" class="headerlink" title="队列"></a>队列</h3><p>默认情况中 sidekiq 会使用 Redis 中名为 default 的队列，如果想用多个队列的话，要么在命令行中指定，要么在配置文件中指定。每个队列都可以配置对应的权重，如果一个队列的权重是 2，另一个是 1 的化，那么检查前一个队列的频率是第二个的两倍。</p>
+<h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>默认情况中 sidekiq 会使用 Redis 中名为 default 的队列，如果想用多个队列的话，要么在命令行中指定，要么在配置文件中指定。每个队列都可以配置对应的权重，如果一个队列的权重是 2，另一个是 1 的化，那么检查前一个队列的频率是第二个的两倍。</p>
 <p>用命令行参数 <code>sidekiq -q critical,2 -q default</code></p>
 <p>用配置文件</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line"># ...&#10;:queues:&#10;    - [critical, 2]&#10;    - default</span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line">:queues:</div><div class="line"><span class="bullet">    -</span> [critical, <span class="number">2</span>]</div><div class="line"><span class="bullet">    -</span> default</div></pre></td></tr></table></figure>
 <p>如果想让队列按照特定顺序执行，在列出来的时候就要按顺序，先处理的就在前面。</p>
 <p>用命令行参数 <code>sidekiq -q critical -q default -q low</code></p>
 <p>用配置文件</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line"># ...&#10;:queues:&#10;    - critical&#10;    - default&#10;    - low</span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line">:queues:</div><div class="line"><span class="bullet">    -</span> critical</div><div class="line"><span class="bullet">    -</span> default</div><div class="line"><span class="bullet">    -</span> low</div></pre></td></tr></table></figure>
 <p>如果想让队列随机执行的话，就把每个队列的权重都设为 1。比如：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line"># ...&#10;:queues:&#10;    - [&#34;wd&#34;, 1]&#10;    - [&#34;xt&#34;, 1]&#10;    - [&#34;ub&#34;, 1]</span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line">:queues:</div><div class="line"><span class="bullet">    -</span> [<span class="string">"wd"</span>, <span class="number">1</span>]</div><div class="line"><span class="bullet">    -</span> [<span class="string">"xt"</span>, <span class="number">1</span>]</div><div class="line"><span class="bullet">    -</span> [<span class="string">"ub"</span>, <span class="number">1</span>]</div></pre></td></tr></table></figure>
 <p>也可以给 worker 指定队列，如</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ImportantWorker</span></span></span><br><span class="line">  <span class="keyword">include</span> <span class="constant">Sidekiq::Worker</span></span><br><span class="line">  sidekiq_options <span class="symbol">queue:</span> <span class="string">'critical'</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">perform</span><span class="params">(*important_args)</span></span></span><br><span class="line">    puts <span class="string">"Doing critical work"</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ImportantWorker</span></span></div><div class="line">  <span class="keyword">include</span> Sidekiq::Worker</div><div class="line">  sidekiq_options <span class="symbol">queue:</span> <span class="string">'critical'</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">perform</span><span class="params">(*important_args)</span></span></div><div class="line">    puts <span class="string">"Doing critical work"</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 <p>但是开发组并不建议用太多队列，设计之初就没有这么打算。更多具体的信息请参考<a href="https://github.com/mperham/sidekiq/wiki/Advanced-Options" target="_blank" rel="external">这里</a></p>
-<h2 id="u8BA1_u5212_u4EFB_u52A1"><a href="#u8BA1_u5212_u4EFB_u52A1" class="headerlink" title="计划任务"></a>计划任务</h2><p>这一部分我们可以控制双方的行为，既可以控制任务本身，也可以控制获取任务的方式，比如</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 控制任务本身</span></span><br><span class="line"><span class="constant">MyWorker</span>.perform_in(<span class="number">3</span>.hours, <span class="string">'wdxtub'</span>, <span class="number">1</span>)</span><br><span class="line"><span class="constant">MyWorker</span>.perform_at(<span class="number">3</span>.hours.from_now, <span class="string">'wdxtub'</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 控制获取任务的方式</span></span><br><span class="line"><span class="comment"># 这里是平均 15 秒才去抓去一次任务</span></span><br><span class="line"><span class="constant">Sidekiq</span>.configure_server <span class="keyword">do</span> |config|</span><br><span class="line">  config.average_scheduled_poll_interval = <span class="number">15</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<h2 id="Delay__u6269_u5C55"><a href="#Delay__u6269_u5C55" class="headerlink" title="Delay 扩展"></a>Delay 扩展</h2><p>Delay 扩展提供了一种非常简单的异步调用方式，默认来说，所有的类方法和 ActionMailer 都可以异步执行，例如</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ActionMailer</span></span><br><span class="line"><span class="constant">UserMailer</span>.delay.welcome_email(<span class="variable">@user</span>.id)</span><br><span class="line"><span class="constant">UserMailer</span>.delay_for(<span class="number">5</span>.days).find_more_friends_email(<span class="variable">@user</span>.id)</span><br><span class="line"><span class="constant">UserMailer</span>.delay_until(<span class="number">5</span>.days.from_now).find_more_friends_email(<span class="variable">@user</span>.id)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ActiveRecord</span></span><br><span class="line"><span class="constant">User</span>.delay.delete_old_users(<span class="string">'some'</span>, <span class="string">'params'</span>)</span><br><span class="line"><span class="constant">User</span>.delay_for(<span class="number">2</span>.weeks).whatever</span><br><span class="line"><span class="constant">User</span>.delay_until(<span class="number">2</span>.weeks.from_now).whatever</span><br><span class="line"></span><br><span class="line"><span class="comment"># 类方法</span></span><br><span class="line"><span class="constant">MyClass</span>.delay.some_method(<span class="number">1</span>, <span class="string">'bob'</span>, <span class="keyword">true</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 高级选项</span></span><br><span class="line"><span class="constant">MyClass</span>.delay(<span class="symbol">:retry</span> =&gt; <span class="keyword">false</span>).some_method(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="constant">MyClass</span>.delay(<span class="symbol">:queue</span> =&gt; <span class="string">'low'</span>).some_method(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="constant">MyClass</span>.delay_for(<span class="number">10</span>.minutes, <span class="symbol">:retry</span> =&gt; <span class="keyword">false</span>).some_method(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="计划任务"><a href="#计划任务" class="headerlink" title="计划任务"></a>计划任务</h2><p>这一部分我们可以控制双方的行为，既可以控制任务本身，也可以控制获取任务的方式，比如</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 控制任务本身</span></div><div class="line">MyWorker.perform_in(<span class="number">3</span>.hours, <span class="string">'wdxtub'</span>, <span class="number">1</span>)</div><div class="line">MyWorker.perform_at(<span class="number">3</span>.hours.from_now, <span class="string">'wdxtub'</span>, <span class="number">1</span>)</div><div class="line"></div><div class="line"><span class="comment"># 控制获取任务的方式</span></div><div class="line"><span class="comment"># 这里是平均 15 秒才去抓去一次任务</span></div><div class="line">Sidekiq.configure_server <span class="keyword">do</span> <span class="params">|config|</span></div><div class="line">  config.average_scheduled_poll_interval = <span class="number">15</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<h2 id="Delay-扩展"><a href="#Delay-扩展" class="headerlink" title="Delay 扩展"></a>Delay 扩展</h2><p>Delay 扩展提供了一种非常简单的异步调用方式，默认来说，所有的类方法和 ActionMailer 都可以异步执行，例如</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># ActionMailer</span></div><div class="line">UserMailer.delay.welcome_email(@user.id)</div><div class="line">UserMailer.delay_for(<span class="number">5</span>.days).find_more_friends_email(@user.id)</div><div class="line">UserMailer.delay_until(<span class="number">5</span>.days.from_now).find_more_friends_email(@user.id)</div><div class="line"></div><div class="line"><span class="comment"># ActiveRecord</span></div><div class="line">User.delay.delete_old_users(<span class="string">'some'</span>, <span class="string">'params'</span>)</div><div class="line">User.delay_for(<span class="number">2</span>.weeks).whatever</div><div class="line">User.delay_until(<span class="number">2</span>.weeks.from_now).whatever</div><div class="line"></div><div class="line"><span class="comment"># 类方法</span></div><div class="line">MyClass.delay.some_method(<span class="number">1</span>, <span class="string">'bob'</span>, <span class="literal">true</span>)</div><div class="line"></div><div class="line"><span class="comment"># 高级选项</span></div><div class="line">MyClass.delay(<span class="symbol">:retry</span> =&gt; <span class="literal">false</span>).some_method(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line">MyClass.delay(<span class="symbol">:queue</span> =&gt; <span class="string">'low'</span>).some_method(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div><div class="line">MyClass.delay_for(<span class="number">10</span>.minutes, <span class="symbol">:retry</span> =&gt; <span class="literal">false</span>).some_method(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</div></pre></td></tr></table></figure>
 <p>如果想要禁用的话，可以这么做：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># config/initializers/sidekiq.rb</span></span><br><span class="line"><span class="comment"># Sidekiq.hook_rails! # uncomment if you want the delay extensions, but prefixed with `sidekiq_`</span></span><br><span class="line"><span class="constant">Sidekiq</span>.remove_delay!</span><br></pre></td></tr></table></figure>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>本文覆盖了 Sidekiq 最基本的使用，应该足够理解其工作机制并看懂已有的代码。更多的内容都可以在参考链接中找到，如果有需要请自行点击下面的链接。</p>
-<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># config/initializers/sidekiq.rb</span></div><div class="line"><span class="comment"># Sidekiq.hook_rails! # uncomment if you want the delay extensions, but prefixed with `sidekiq_`</span></div><div class="line">Sidekiq.remove_delay!</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文覆盖了 Sidekiq 最基本的使用，应该足够理解其工作机制并看懂已有的代码。更多的内容都可以在参考链接中找到，如果有需要请自行点击下面的链接。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="https://github.com/mperham/sidekiq" target="_blank" rel="external">Sidekiq Github</a></li>
 <li><a href="https://github.com/mperham/sidekiq/wiki" target="_blank" rel="external">Sidekiq 文档</a></li>
 </ul>
@@ -436,9 +436,9 @@
           
             <a href="/tags/Ruby/" rel="tag">#Ruby</a>
           
-            <a href="/tags/异步/" rel="tag">#异步</a>
-          
             <a href="/tags/队列/" rel="tag">#队列</a>
+          
+            <a href="/tags/异步/" rel="tag">#异步</a>
           
         </div>
       
@@ -673,7 +673,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5FEB_u901F_u5165_u95E8"><span class="nav-number">1.</span> <span class="nav-text">快速入门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u7840_u77E5_u8BC6"><span class="nav-number">2.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6700_u4F73_u5B9E_u8DF5"><span class="nav-number">3.</span> <span class="nav-text">最佳实践</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis__u7684_u4F7F_u7528"><span class="nav-number">4.</span> <span class="nav-text">Redis 的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9519_u8BEF_u5904_u7406"><span class="nav-number">5.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u914D_u7F6E_u6587_u4EF6"><span class="nav-number">6.</span> <span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u961F_u5217"><span class="nav-number">6.1.</span> <span class="nav-text">队列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BA1_u5212_u4EFB_u52A1"><span class="nav-number">7.</span> <span class="nav-text">计划任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Delay__u6269_u5C55"><span class="nav-number">8.</span> <span class="nav-text">Delay 扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">10.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#快速入门"><span class="nav-number">1.</span> <span class="nav-text">快速入门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础知识"><span class="nav-number">2.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最佳实践"><span class="nav-number">3.</span> <span class="nav-text">最佳实践</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-的使用"><span class="nav-number">4.</span> <span class="nav-text">Redis 的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#错误处理"><span class="nav-number">5.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置文件"><span class="nav-number">6.</span> <span class="nav-text">配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#队列"><span class="nav-number">6.1.</span> <span class="nav-text">队列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计划任务"><span class="nav-number">7.</span> <span class="nav-text">计划任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Delay-扩展"><span class="nav-number">8.</span> <span class="nav-text">Delay 扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">10.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
@@ -853,42 +853,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

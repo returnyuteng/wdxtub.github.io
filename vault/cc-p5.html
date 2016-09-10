@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="这一次我们需要利用 Map Reduce 处理大约 1T 的 Twitter 数据，并导入到对应的数据库中，这一部分因为奇奇怪怪的情况很多，所以一定要注意。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 Twitter 语料分析 5 ETL 导入数据">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-p5.html">
@@ -99,6 +100,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 Twitter 语料分析 5 ETL 导入数据">
 <meta name="twitter:description" content="这一次我们需要利用 Map Reduce 处理大约 1T 的 Twitter 数据，并导入到对应的数据库中，这一部分因为奇奇怪怪的情况很多，所以一定要注意。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14576579118826.jpg">
 
 
 
@@ -122,7 +124,7 @@
   
     云计算 Twitter 语料分析 5 ETL 导入数据 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -143,7 +145,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -257,15 +259,15 @@
       <p>这一次我们需要利用 Map Reduce 处理大约 1T 的 Twitter 数据，并导入到对应的数据库中，这一部分因为奇奇怪怪的情况很多，所以一定要注意。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u6570_u636E_u5904_u7406"><a href="#u6570_u636E_u5904_u7406" class="headerlink" title="数据处理"></a>数据处理</h2><p>这一部分主要是写一个 mapper 和 reducer，把原始数据的 json 格式处理成我们需要的格式（也就是下一步中我们需要返回的内容）。</p>
+<h2 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h2><p>这一部分主要是写一个 mapper 和 reducer，把原始数据的 json 格式处理成我们需要的格式（也就是下一步中我们需要返回的内容）。</p>
 <p>在决定具体需要获取什么内容之前，我们先来看看原始数据的结构。老师提供的数据地址是 <code>s3://cmucc-datasets/twitter/s16/part-00XXX</code>，我们可以直接用浏览器下载一个试试看，下载地址是 <code>http://s3.amazonaws.com/cmucc-datasets/twitter/s16/part-00000</code>（具体的转换过程可见参考资料）</p>
 <p>下载完成之后发现有差不多 2G，我们在本地只是做一下测试当然用不着这么多数据，所以用下面的命令拆出来几个子集：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">head -n <span class="number">100</span> part-<span class="number">00000</span> &gt; data100</span><br><span class="line">head -n <span class="number">1000</span> part-<span class="number">00000</span> &gt; data1K</span><br><span class="line">head -n <span class="number">10000</span> part-<span class="number">00000</span> &gt; data10K</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">head -n 100 part-00000 &gt; data100</div><div class="line">head -n 1000 part-00000 &gt; data1K</div><div class="line">head -n 10000 part-00000 &gt; data10K</div></pre></td></tr></table></figure>
 <p>然后我们输出一行来看一下，很长，如下</p>
 <p><code>{&quot;created_at&quot;:&quot;Thu May 15 09:02:20 +0000 2014&quot;,&quot;id&quot;:466866157933182977,&quot;id_str&quot;:&quot;466866157933182977&quot;,&quot;text&quot;:&quot;RT @Xxxshota7xxx: \u3010\u885d\u6483\u6620\u50cf\u3011\n\u30d0\u30e9\u30a8\u30c6\u30a3\u756a\u7d44\u3067\u30d0\u30a4\u30ad\u30f3\u30b0\u30fb\u5c0f\u5ce0\u306b\n\u4ed5\u639b\u3051\u305f\u30c9\u30c3\u30ad\u30ea\u304c\u9177\u3059\u304e\u3066\u5927\u708e\u4e0awww\n\n\u52d5\u753b\u306f\u3053\u3061\u3089\u21d2http:\/\/t.co\/DFtzc8nOcN\n\n\u4e2d\u5c45\u304f\u3093\u6016\u3059\u304e\u30ef\u30ed\u30bfww http:\/\/t.co\/Zph8jC6QzY&quot;,&quot;source&quot;:&quot;\u003ca href=\&quot;http:\/\/yahoo.co.jp\&quot; rel=\&quot;nofollow\&quot;\u003e\u3010\u7f8e\u4eba\u3011 \u60a9\u6bba\u7387100\uff05\u3067\u4eba\u6c17\u8870\u3048\u305a\uff01\u003c\/a\u003e&quot;,&quot;truncated&quot;:false,&quot;in_reply_to_status_id&quot;:null,&quot;in_reply_to_status_id_str&quot;:null,&quot;in_reply_to_user_id&quot;:null,&quot;in_reply_to_user_id_str&quot;:null,&quot;in_reply_to_screen_name&quot;:null,&quot;user&quot;:{&quot;id&quot;:1391544108,&quot;id_str&quot;:&quot;1391544108&quot;,&quot;name&quot;:&quot;v.i.p ryokun&quot;,&quot;screen_name&quot;:&quot;ryoryoryoryo10&quot;,&quot;location&quot;:&quot;\u26612013.06.29\u301c  m.love\u2026\u2661&quot;,&quot;url&quot;:null,&quot;description&quot;:&quot;Osaka Nishiyodogawa 17age Follow me Utajima 65th\u261eKitayodo51th&quot;,&quot;protected&quot;:false,&quot;followers_count&quot;:814,&quot;friends_count&quot;:689,&quot;listed_count&quot;:1,&quot;created_at&quot;:&quot;Tue Apr 30 08:53:33 +0000 2013&quot;,&quot;favourites_count&quot;:838,&quot;utc_offset&quot;:null,&quot;time_zone&quot;:null,&quot;geo_enabled&quot;:true,&quot;verified&quot;:false,&quot;statuses_count&quot;:9828,&quot;lang&quot;:&quot;ja&quot;,&quot;contributors_enabled&quot;:false,&quot;is_translator&quot;:false,&quot;is_translation_enabled&quot;:false,&quot;profile_background_color&quot;:&quot;C0DEED&quot;,&quot;profile_background_image_url&quot;:&quot;http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png&quot;,&quot;profile_background_image_url_https&quot;:&quot;https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png&quot;,&quot;profile_background_tile&quot;:false,&quot;profile_image_url&quot;:&quot;http:\/\/pbs.twimg.com\/profile_images\/464402846293573632\/iDbrYwVz_normal.jpeg&quot;,&quot;profile_image_url_https&quot;:&quot;https:\/\/pbs.twimg.com\/profile_images\/464402846293573632\/iDbrYwVz_normal.jpeg&quot;,&quot;profile_banner_url&quot;:&quot;https:\/\/pbs.twimg.com\/profile_banners\/1391544108\/1398871213&quot;,&quot;profile_link_color&quot;:&quot;0084B4&quot;,&quot;profile_sidebar_border_color&quot;:&quot;C0DEED&quot;,&quot;profile_sidebar_fill_color&quot;:&quot;DDEEF6&quot;,&quot;profile_text_color&quot;:&quot;333333&quot;,&quot;profile_use_background_image&quot;:true,&quot;default_profile&quot;:true,&quot;default_profile_image&quot;:false,&quot;following&quot;:null,&quot;follow_request_sent&quot;:null,&quot;notifications&quot;:null},&quot;geo&quot;:null,&quot;coordinates&quot;:null,&quot;place&quot;:null,&quot;contributors&quot;:null,&quot;retweeted_status&quot;:{&quot;created_at&quot;:&quot;Thu May 15 07:43:29 +0000 2014&quot;,&quot;id&quot;:466846313691115520,&quot;id_str&quot;:&quot;466846313691115520&quot;,&quot;text&quot;:&quot;\u3010\u885d\u6483\u6620\u50cf\u3011\n\u30d0\u30e9\u30a8\u30c6\u30a3\u756a\u7d44\u3067\u30d0\u30a4\u30ad\u30f3\u30b0\u30fb\u5c0f\u5ce0\u306b\n\u4ed5\u639b\u3051\u305f\u30c9\u30c3\u30ad\u30ea\u304c\u9177\u3059\u304e\u3066\u5927\u708e\u4e0awww\n\n\u52d5\u753b\u306f\u3053\u3061\u3089\u21d2http:\/\/t.co\/DFtzc8nOcN\n\n\u4e2d\u5c45\u304f\u3093\u6016\u3059\u304e\u30ef\u30ed\u30bfww http:\/\/t.co\/Zph8jC6QzY&quot;,&quot;source&quot;:&quot;\u003ca href=\&quot;http:\/\/yahoo.co.jp\&quot; rel=\&quot;nofollow\&quot;\u003e\u30d0\u30a4\u30ad\u30f3\u30b0\u30fb\u5c0f\u5ce0\u306b \u4ed5\u639b\u3051\u305f\u30c9\u30c3\u30ad\u30ea\u003c\/a\u003e&quot;,&quot;truncated&quot;:false,&quot;in_reply_to_status_id&quot;:null,&quot;in_reply_to_status_id_str&quot;:null,&quot;in_reply_to_user_id&quot;:null,&quot;in_reply_to_user_id_str&quot;:null,&quot;in_reply_to_screen_name&quot;:null,&quot;user&quot;:{&quot;id&quot;:962038489,&quot;id_str&quot;:&quot;962038489&quot;,&quot;name&quot;:&quot;\u3057\u3087\u30fc\u305f&quot;,&quot;screen_name&quot;:&quot;Xxxshota7xxx&quot;,&quot;location&quot;:&quot;\u5bcc\u7530\u6797&quot;,&quot;url&quot;:null,&quot;description&quot;:null,&quot;protected&quot;:false,&quot;followers_count&quot;:194,&quot;friends_count&quot;:156,&quot;listed_count&quot;:0,&quot;created_at&quot;:&quot;Wed Nov 21 08:46:53 +0000 2012&quot;,&quot;favourites_count&quot;:347,&quot;utc_offset&quot;:null,&quot;time_zone&quot;:null,&quot;geo_enabled&quot;:false,&quot;verified&quot;:false,&quot;statuses_count&quot;:2913,&quot;lang&quot;:&quot;ja&quot;,&quot;contributors_enabled&quot;:false,&quot;is_translator&quot;:false,&quot;is_translation_enabled&quot;:false,&quot;profile_background_color&quot;:&quot;C0DEED&quot;,&quot;profile_background_image_url&quot;:&quot;http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png&quot;,&quot;profile_background_image_url_https&quot;:&quot;https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png&quot;,&quot;profile_background_tile&quot;:false,&quot;profile_image_url&quot;:&quot;http:\/\/pbs.twimg.com\/profile_images\/378800000718547747\/89daed934729b4744480381a59081425_normal.jpeg&quot;,&quot;profile_image_url_https&quot;:&quot;https:\/\/pbs.twimg.com\/profile_images\/378800000718547747\/89daed934729b4744480381a59081425_normal.jpeg&quot;,&quot;profile_banner_url&quot;:&quot;https:\/\/pbs.twimg.com\/profile_banners\/962038489\/1387966350&quot;,&quot;profile_link_color&quot;:&quot;0084B4&quot;,&quot;profile_sidebar_border_color&quot;:&quot;C0DEED&quot;,&quot;profile_sidebar_fill_color&quot;:&quot;DDEEF6&quot;,&quot;profile_text_color&quot;:&quot;333333&quot;,&quot;profile_use_background_image&quot;:true,&quot;default_profile&quot;:true,&quot;default_profile_image&quot;:false,&quot;following&quot;:null,&quot;follow_request_sent&quot;:null,&quot;notifications&quot;:null},&quot;geo&quot;:null,&quot;coordinates&quot;:null,&quot;place&quot;:null,&quot;contributors&quot;:null,&quot;retweet_count&quot;:402,&quot;favorite_count&quot;:0,&quot;entities&quot;:{&quot;hashtags&quot;:[],&quot;symbols&quot;:[],&quot;urls&quot;:[{&quot;url&quot;:&quot;http:\/\/t.co\/DFtzc8nOcN&quot;,&quot;expanded_url&quot;:&quot;http:\/\/tinyurl.com\/lnpfgjb&quot;,&quot;display_url&quot;:&quot;tinyurl.com\/lnpfgjb&quot;,&quot;indices&quot;:[53,75]}],&quot;user_mentions&quot;:[],&quot;media&quot;:[{&quot;id&quot;:466846313540116480,&quot;id_str&quot;:&quot;466846313540116480&quot;,&quot;indices&quot;:[90,112],&quot;media_url&quot;:&quot;http:\/\/pbs.twimg.com\/media\/BnqSP6tCYAAt8C2.jpg&quot;,&quot;media_url_https&quot;:&quot;https:\/\/pbs.twimg.com\/media\/BnqSP6tCYAAt8C2.jpg&quot;,&quot;url&quot;:&quot;http:\/\/t.co\/Zph8jC6QzY&quot;,&quot;display_url&quot;:&quot;pic.twitter.com\/Zph8jC6QzY&quot;,&quot;expanded_url&quot;:&quot;http:\/\/twitter.com\/Xxxshota7xxx\/status\/466846313691115520\/photo\/1&quot;,&quot;type&quot;:&quot;photo&quot;,&quot;sizes&quot;:{&quot;large&quot;:{&quot;w&quot;:610,&quot;h&quot;:343,&quot;resize&quot;:&quot;fit&quot;},&quot;thumb&quot;:{&quot;w&quot;:150,&quot;h&quot;:150,&quot;resize&quot;:&quot;crop&quot;},&quot;small&quot;:{&quot;w&quot;:339,&quot;h&quot;:191,&quot;resize&quot;:&quot;fit&quot;},&quot;medium&quot;:{&quot;w&quot;:599,&quot;h&quot;:337,&quot;resize&quot;:&quot;fit&quot;}}}]},&quot;favorited&quot;:false,&quot;retweeted&quot;:false,&quot;possibly_sensitive&quot;:false,&quot;lang&quot;:&quot;ja&quot;},&quot;retweet_count&quot;:0,&quot;favorite_count&quot;:0,&quot;entities&quot;:{&quot;hashtags&quot;:[],&quot;symbols&quot;:[],&quot;urls&quot;:[{&quot;url&quot;:&quot;http:\/\/t.co\/DFtzc8nOcN&quot;,&quot;expanded_url&quot;:&quot;http:\/\/tinyurl.com\/lnpfgjb&quot;,&quot;display_url&quot;:&quot;tinyurl.com\/lnpfgjb&quot;,&quot;indices&quot;:[71,93]}],&quot;user_mentions&quot;:[{&quot;screen_name&quot;:&quot;Xxxshota7xxx&quot;,&quot;name&quot;:&quot;\u3057\u3087\u30fc\u305f&quot;,&quot;id&quot;:962038489,&quot;id_str&quot;:&quot;962038489&quot;,&quot;indices&quot;:[3,16]}],&quot;media&quot;:[{&quot;id&quot;:466846313540116480,&quot;id_str&quot;:&quot;466846313540116480&quot;,&quot;indices&quot;:[108,130],&quot;media_url&quot;:&quot;http:\/\/pbs.twimg.com\/media\/BnqSP6tCYAAt8C2.jpg&quot;,&quot;media_url_https&quot;:&quot;https:\/\/pbs.twimg.com\/media\/BnqSP6tCYAAt8C2.jpg&quot;,&quot;url&quot;:&quot;http:\/\/t.co\/Zph8jC6QzY&quot;,&quot;display_url&quot;:&quot;pic.twitter.com\/Zph8jC6QzY&quot;,&quot;expanded_url&quot;:&quot;http:\/\/twitter.com\/Xxxshota7xxx\/status\/466846313691115520\/photo\/1&quot;,&quot;type&quot;:&quot;photo&quot;,&quot;sizes&quot;:{&quot;large&quot;:{&quot;w&quot;:610,&quot;h&quot;:343,&quot;resize&quot;:&quot;fit&quot;},&quot;thumb&quot;:{&quot;w&quot;:150,&quot;h&quot;:150,&quot;resize&quot;:&quot;crop&quot;},&quot;small&quot;:{&quot;w&quot;:339,&quot;h&quot;:191,&quot;resize&quot;:&quot;fit&quot;},&quot;medium&quot;:{&quot;w&quot;:599,&quot;h&quot;:337,&quot;resize&quot;:&quot;fit&quot;}},&quot;source_status_id&quot;:466846313691115520,&quot;source_status_id_str&quot;:&quot;466846313691115520&quot;}]},&quot;favorited&quot;:false,&quot;retweeted&quot;:false,&quot;possibly_sensitive&quot;:false,&quot;lang&quot;:&quot;ja&quot;}</code></p>
 <p>至于为什么这么长，我也不知道，具体要去问 Twitter，我们要做的就是从中挑出我们想要的信息。那么问题就来了，我们需要什么信息呢？这就要涉及到返回的数据是什么了。</p>
 <p>我们需要做的很简单，就是返回某个用户用指定的 hashtag 发的 tweet，具体请求和响应的格式为：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">请求格式</span><br><span class="line"><span class="constant">GET</span> /q2?userid=uid&amp;hashtag=hashtag</span><br><span class="line"></span><br><span class="line">响应格式（如果有对应的推文）</span><br><span class="line"><span class="constant">TEAMID</span>,<span class="constant">TEAM_AWS_ACCOUNT_ID</span>\n</span><br><span class="line"><span class="constant">Sentiment_density1</span><span class="symbol">:Tweet_time1</span><span class="symbol">:Tweet_id1</span><span class="symbol">:Cencored_text1</span>\n</span><br><span class="line"><span class="constant">Sentiment_density2</span><span class="symbol">:Tweet_time2</span><span class="symbol">:Tweet_id2</span><span class="symbol">:Cencored_text2</span>\n</span><br><span class="line"><span class="constant">Sentiment_density3</span><span class="symbol">:Tweet_time3</span><span class="symbol">:Tweet_id3</span><span class="symbol">:Cencored_text3</span>\n</span><br><span class="line"></span><br><span class="line">响应格式（如果没有对应的推文）</span><br><span class="line"></span><br><span class="line"><span class="constant">TEAMID</span>,<span class="constant">TEAM_AWS_ACCOUNT_ID</span>\n</span><br><span class="line">\n</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">请求格式</div><div class="line">GET /q2?userid=uid&amp;hashtag=hashtag</div><div class="line"></div><div class="line">响应格式（如果有对应的推文）</div><div class="line">TEAMID,TEAM_AWS_ACCOUNT_ID\n</div><div class="line">Sentiment_density1:Tweet_time1:Tweet_id1:Cencored_text1\n</div><div class="line">Sentiment_density2:Tweet_time2:Tweet_id2:Cencored_text2\n</div><div class="line">Sentiment_density3:Tweet_time3:Tweet_id3:Cencored_text3\n</div><div class="line"></div><div class="line">响应格式（如果没有对应的推文）</div><div class="line"></div><div class="line">TEAMID,TEAM_AWS_ACCOUNT_ID\n</div><div class="line">\n</div></pre></td></tr></table></figure>
 <p>所以从这里我们可以知道，需要从前面那一大堆数据中提取出来的数据有：</p>
 <ul>
 <li>tweet ID: 从 <code>id</code> 或 <code>id_str</code> 中获取</li>
@@ -291,7 +293,7 @@
 <p>写完代码之后可以本地测试一下，这里我的代码结构是这样的：</p>
 <p><img src="/images/14576579118826.jpg" alt="代码结构"></p>
 <p>其中 gson 和 data1K 分别是解析 json 和一个一千条的小数据集。因为代码中有引用其他类与依赖，所以编译和执行的命令如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 编译</span></span><br><span class="line">$ javac Tweet.java Mapper.java -cp gson-<span class="number">2.6</span>.<span class="number">2</span>.jar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行</span></span><br><span class="line">$ java -cp gson-<span class="number">2.6</span>.<span class="number">2</span>.jar:./ Mapper</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 编译</span></div><div class="line">$ javac Tweet.java Mapper.java -cp gson-2.6.2.jar</div><div class="line"></div><div class="line"><span class="comment"># 执行</span></div><div class="line">$ java -cp gson-2.6.2.jar:./ Mapper</div></pre></td></tr></table></figure>
 <p>这里的 <code>-cp</code> 就是 <code>classpath</code> 的意思，这样就可以正常引用了。结果如下：</p>
 <p><img src="/images/14576581794601.jpg" alt="Mapper 结果"></p>
 <p>（题外话，Twitter 上的各种小黄图小黄视频多不胜数，刚上车的同学可以按图索骥）</p>
@@ -308,7 +310,7 @@
 <p>最后比较一下原始数据和 Mapper 之后数据的大小：</p>
 <p><img src="/images/14576586987867.jpg" alt="大小比较"></p>
 <p>少了非常多！但是这并不意味着写代码的时候可以太任性，一定要仔细思考在大数据量时候可能出现的问题！</p>
-<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
 <li><a href="http://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/AmazonS3.html" target="_blank" rel="external">Amazon Simple Storage Service (Amazon S3)</a></li>
 </ul>
 
@@ -646,42 +648,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

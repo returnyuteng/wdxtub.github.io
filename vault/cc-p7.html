@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="优化 HBase 性能的时候遇到了诸多问题，主要原因在于对于 HBase 细节的不理解，所以要对着官方文档，仔细过一次，希望能以此找到症结所在。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 Twitter 语料分析 7 探索 HBase">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-p7.html">
@@ -97,6 +98,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 Twitter 语料分析 7 探索 HBase">
 <meta name="twitter:description" content="优化 HBase 性能的时候遇到了诸多问题，主要原因在于对于 HBase 细节的不理解，所以要对着官方文档，仔细过一次，希望能以此找到症结所在。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14586555778927.jpg">
 
 
 
@@ -120,7 +122,7 @@
   
     云计算 Twitter 语料分析 7 探索 HBase | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -141,7 +143,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -262,23 +264,23 @@
 </blockquote>
 <p>就抱着『新参者』的心态，来重新开始这次的旅程吧。</p>
 <p>先装好 Linux（我用的是 Ubuntu 14.04，虚拟机），我习惯装下面这个插件，可以直接在右键菜单中在当前文件夹打开终端，还是比较方便的，具体安装只需：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install nautilus-open-terminalnautilus -q</span><br></pre></td></tr></table></figure>
-<h2 id="u5FEB_u901F_u5165_u95E8_-__u5355_u673A"><a href="#u5FEB_u901F_u5165_u95E8_-__u5355_u673A" class="headerlink" title="快速入门 - 单机"></a>快速入门 - 单机</h2><p>然后我们就来安装 HBase 吧！没有 0.94.18 版本下载，所以在官网上选择了最接近的 <a href="http://apache.mirrors.tds.net/hbase/hbase-0.94.27/" target="_blank" rel="external">hbase-0.94.27</a>版本，下载完成之后解压，我就把解压后的文件夹放到 <code>~/</code> 下了。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sudo apt-get install nautilus-open-terminalnautilus -q</div></pre></td></tr></table></figure>
+<h2 id="快速入门-单机"><a href="#快速入门-单机" class="headerlink" title="快速入门 - 单机"></a>快速入门 - 单机</h2><p>然后我们就来安装 HBase 吧！没有 0.94.18 版本下载，所以在官网上选择了最接近的 <a href="http://apache.mirrors.tds.net/hbase/hbase-0.94.27/" target="_blank" rel="external">hbase-0.94.27</a>版本，下载完成之后解压，我就把解压后的文件夹放到 <code>~/</code> 下了。</p>
 <p>然后需要改动 <code>conf/hbase-site.xml</code>，添加一个 <code>hbase.rootdir</code> 属性。默认 hbase.rootdir 是指向 <code>/tmp/hbase-${user.name}</code> ，也就说你会在重启后丢失数据(重启的时候操作系统会清理<code>/tmp</code>目录)，这里我们改一下，放到根目录下名为 db 的文件夹下，<code>conf/hbase-site.xml</code> 大概像这样：</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0"?&gt;</span><span class="pi">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span><span class="tag">&lt;<span class="title">configuration</span>&gt;</span>  <span class="tag">&lt;<span class="title">property</span>&gt;</span>    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hbase.rootdir<span class="tag">&lt;/<span class="title">name</span>&gt;</span>    <span class="tag">&lt;<span class="title">value</span>&gt;</span>file:///home/parallels/db<span class="tag">&lt;/<span class="title">value</span>&gt;</span>  <span class="tag">&lt;/<span class="title">property</span>&gt;</span><span class="tag">&lt;/<span class="title">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="code"><pre><div class="line">&lt;?xml version="1.0"?&gt;&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;<span class="tag">&lt;<span class="name">configuration</span>&gt;</span>  <span class="tag">&lt;<span class="name">property</span>&gt;</span>    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.rootdir<span class="tag">&lt;/<span class="name">name</span>&gt;</span>    <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:///home/parallels/db<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  <span class="tag">&lt;/<span class="name">property</span>&gt;</span><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></div></pre></td></tr></table></figure>
 <p>运行 HBase 需要 Java，我们需要安装并配置 <code>JAVA_HOME</code>，先 <code>sudo apt-get install default-jdk</code>，然后修改 <code>/etc/environment</code>（或者 <code>~/.bashrc</code>），添加下面两行：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">J<span class="built_in">AVA_HOME</span>=/usr/lib/jvm/<span class="keyword">default</span>-java</span><br><span class="line"><span class="keyword">export</span> J<span class="built_in">AVA_HOME</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">JAVA_HOME=/usr/lib/jvm/default-java</div><div class="line">export JAVA_HOME</div></pre></td></tr></table></figure>
 <p>最后输入 <code>. /etc/environment</code> 载入环境变量，我们就可以以单机模式启动了，命令如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./bin/start-hbase.sh</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">./bin/start-hbase.sh</div></pre></td></tr></table></figure>
 <p>执行结果为：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">parallels@ubuntu:~/hbase-0.94.27$ ./bin/<span class="operator"><span class="keyword">start</span>-hbase.sh <span class="keyword">starting</span> <span class="keyword">master</span>, <span class="keyword">logging</span> <span class="keyword">to</span> /home/parallels/hbase-<span class="number">0.94</span><span class="number">.27</span>/<span class="keyword">bin</span>/../<span class="keyword">logs</span>/hbase-parallels-<span class="keyword">master</span>-ubuntu.<span class="keyword">out</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">parallels@ubuntu:~/hbase-0.94.27$ ./bin/start-hbase.sh starting master, logging to /home/parallels/hbase-0.94.27/bin/../logs/hbase-parallels-master-ubuntu.out</div></pre></td></tr></table></figure>
 <p>所有的服务都运行在一个JVM上，包括HBase和Zookeeper。HBase的日志放在logs目录,当你启动出问题的时候，可以检查这个日志。</p>
 <p>这之后就可以用我们属性的 <code>hbase shell</code> 来连接了，因为没有把当前文件夹加到路径中，所以需要完整路径，如果不想这样的话，仍然是打开 <code>/etc/environment</code>，把 <code>/home/parallels/hbase-0.94.27/bin</code> 添加到 <code>PATH</code> 中，这样执行的时候就会搜索这个文件夹（仍然需要 <code>. /etc/environment</code> 载入环境变量）。具体如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">parallels@ubuntu:~/hbase-<span class="number">0.94</span>.<span class="number">27</span>$ hbase shellHBase Shell; enter <span class="string">'help&lt;RETURN&gt;'</span> <span class="keyword">for</span> list of supported commands.Type <span class="string">"exit&lt;RETURN&gt;"</span> to leave the HBase ShellVersion <span class="number">0.94</span>.<span class="number">27</span>, rfb434617716493eac82b55180b0bbd653beb90bf, Thu Mar <span class="number">19</span> <span class="number">06</span>:<span class="number">17</span>:<span class="number">55</span> UTC <span class="number">2015</span>hbase(main):<span class="number">001</span>:<span class="number">0</span>&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">parallels@ubuntu:~/hbase-0.94.27$ hbase shellHBase Shell; enter <span class="string">'help&lt;RETURN&gt;'</span> <span class="keyword">for</span> list of supported commands.Type <span class="string">"exit&lt;RETURN&gt;"</span> to leave the HBase ShellVersion 0.94.27, rfb434617716493eac82b55180b0bbd653beb90bf, Thu Mar 19 06:17:55 UTC 2015hbase(main):001:0&gt;</div></pre></td></tr></table></figure>
 <p>输入 <code>help</code> 可以查看帮助信息，基本的操作如下：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">create</span> <span class="string">'wdxtub'</span>, <span class="string">'data'</span></span><br><span class="line"><span class="keyword">list</span></span><br><span class="line">put <span class="string">'wdxtub'</span>, <span class="string">'row1'</span>, <span class="string">'data:a'</span>, <span class="string">'value1'</span></span><br><span class="line"><span class="keyword">scan</span> <span class="string">'wdxtub'</span></span><br><span class="line"><span class="keyword">get</span> <span class="string">'wdxtub'</span>, <span class="string">'row1'</span></span><br><span class="line"><span class="keyword">disable</span> <span class="string">'wdxtub'</span></span><br><span class="line"><span class="keyword">drop</span> <span class="string">'wdxtub'</span></span><br><span class="line"><span class="keyword">exit</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">create &apos;wdxtub&apos;, &apos;data&apos;</div><div class="line">list</div><div class="line">put &apos;wdxtub&apos;, &apos;row1&apos;, &apos;data:a&apos;, &apos;value1&apos;</div><div class="line">scan &apos;wdxtub&apos;</div><div class="line">get &apos;wdxtub&apos;, &apos;row1&apos;</div><div class="line">disable &apos;wdxtub&apos;</div><div class="line">drop &apos;wdxtub&apos;</div><div class="line">exit</div></pre></td></tr></table></figure>
 <p>使用停止脚本来停止 HBase <code>./bin/stop-hbase.sh</code>。</p>
-<h2 id="u5206_u5E03_u5F0F_u914D_u7F6E"><a href="#u5206_u5E03_u5F0F_u914D_u7F6E" class="headerlink" title="分布式配置"></a>分布式配置</h2><p>HBase使用和Hadoop一样配置系统。具体的做法是编辑 <code>conf/hbase-env.sh</code> 中的环境变量。在分布模式下运行时，在编辑HBase配置文件之后，确认将conf目录复制到集群中的每个节点。HBase不会自动同步，可以使用 <code>rsync</code> 来完成这个工作。另外，重启集群才能使新的配置生效。</p>
+<h2 id="分布式配置"><a href="#分布式配置" class="headerlink" title="分布式配置"></a>分布式配置</h2><p>HBase使用和Hadoop一样配置系统。具体的做法是编辑 <code>conf/hbase-env.sh</code> 中的环境变量。在分布模式下运行时，在编辑HBase配置文件之后，确认将conf目录复制到集群中的每个节点。HBase不会自动同步，可以使用 <code>rsync</code> 来完成这个工作。另外，重启集群才能使新的配置生效。</p>
 <p>具体的做法可以参考<a href="http://abloz.com/hbase/book.html" target="_blank" rel="external">官方文档</a>，我会在之后的文章中记录自己具体的配置过程。这篇文章主要是偏理论的介绍和研究。</p>
 <h3 id="hbase-site-xml"><a href="#hbase-site-xml" class="headerlink" title="hbase-site.xml"></a>hbase-site.xml</h3><p>HBase 的配置文件是 <code>conf/hbase-site.xml</code>，具体的项目比较多，我选取了部分如下：</p>
 <blockquote>
@@ -438,7 +440,7 @@
 <h3 id="hbase-env-sh"><a href="#hbase-env-sh" class="headerlink" title="hbase-env.sh"></a>hbase-env.sh</h3><p>在这个文件里面设置HBase环境变量。比如可以配置JVM启动的堆大小或者GC的参数。你还可在这里配置HBase的参数，如Log位置，niceness(译者注:优先级)，ssh参数还有pid文件的位置等等。打开文件conf/hbase-env.sh细读其中的内容。每个选项都是有详尽的注释的。你可以在此添加自己的环境变量。</p>
 <p>这个文件的改动系统HBase重启才能生效。</p>
 <h3 id="log4j-properties"><a href="#log4j-properties" class="headerlink" title="log4j.properties"></a>log4j.properties</h3><p>编辑这个文件可以改变HBase的日志的级别，轮滚策略等等。<br>这个文件的改动系统HBase重启才能生效。 日志级别的更改会影响到HBase UI</p>
-<h3 id="u63A8_u8350_u914D_u7F6E"><a href="#u63A8_u8350_u914D_u7F6E" class="headerlink" title="推荐配置"></a>推荐配置</h3><blockquote>
+<h3 id="推荐配置"><a href="#推荐配置" class="headerlink" title="推荐配置"></a>推荐配置</h3><blockquote>
 <p>zookeeper.session.timeout</p>
 </blockquote>
 <p>这个默认值是3分钟。这意味着一旦一个server宕掉了，Master至少需要3分钟才能察觉到宕机，开始恢复。你可能希望将这个超时调短，这样Master就能更快的察觉到了。在你调这个值之前，你需要确认你的JVM的GC参数，否则一个长时间的GC操作就可能导致超时。（当一个RegionServer在运行一个长时间的GC的时候，你可能想要重启并恢复它）.</p>
@@ -472,18 +474,18 @@
 <p>更大的Region可以使你集群上的Region的总数量较少。 一般来言，更少的Region可以使你的集群运行更加流畅。(你可以自己随时手工将大Region切割，这样单个热点Region就会被分布在集群的更多节点上)。</p>
 <p>较少的Region较好。一般每个RegionServer在20到小几百之间。 调整Region大小以适合该数字。</p>
 <p>可以调整hbase-site.xml中的 hbase.hregion.max.filesize属性. RegionSize 也可以基于每个表设置</p>
-<h2 id="HBase_Shell"><a href="#HBase_Shell" class="headerlink" title="HBase Shell"></a>HBase Shell</h2><p>输入 help 就会返回Shell的命令列表和选项。可以看看在Help文档尾部的关于如何输入变量和选项。尤其要注意的是表名，行，列名必须要加引号。</p>
+<h2 id="HBase-Shell"><a href="#HBase-Shell" class="headerlink" title="HBase Shell"></a>HBase Shell</h2><p>输入 help 就会返回Shell的命令列表和选项。可以看看在Help文档尾部的关于如何输入变量和选项。尤其要注意的是表名，行，列名必须要加引号。</p>
 <p>如果要使用脚本，可以看HBase的bin 目录.在里面找到后缀为 *.rb的脚本.要想运行这个脚本，要这样</p>
 <p><code>$ ./bin/hbase org.jruby.Main PATH_TO_SCRIPT</code></p>
 <p>可以在你自己的Home目录下创建一个 <code>.irbrc</code> 文件. 在这个文件里加入自定义的命令。有一个有用的命令就是记录命令历史，这样你就可以把你的命令保存起来。</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>more .irbrc</span><br><span class="line"><span class="keyword">require</span> <span class="string">'irb/ext/save-history'</span></span><br><span class="line"><span class="constant">IRB</span>.conf[<span class="symbol">:SAVE_HISTORY</span>] = <span class="number">100</span></span><br><span class="line"><span class="constant">IRB</span>.conf[<span class="symbol">:HISTORY_FILE</span>] = <span class="string">"<span class="subst">#&#123;<span class="constant">ENV</span>[<span class="string">'HOME'</span>]&#125;</span>/.irb-save-history"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ more .irbrc</div><div class="line">require &apos;irb/ext/save-history&apos;</div><div class="line">IRB.conf[:SAVE_HISTORY] = 100</div><div class="line">IRB.conf[:HISTORY_FILE] = &quot;#&#123;ENV[&apos;HOME&apos;]&#125;/.irb-save-history&quot;</div></pre></td></tr></table></figure>
 <p>你可以将shell切换成debug模式。这样可以看到更多的信息。例如可以看到命令异常的stack trace:</p>
-<figure class="highlight pf"><table><tr><td class="code"><pre><span class="line">hbase&gt; <span class="keyword">debug</span> <span class="variable">&lt;RETURN&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">hbase&gt; debug &lt;RETURN&gt;</div></pre></td></tr></table></figure>
 <p>想要在 shell 中看到 DEBUG 级别的 logging ，可以在启动的时候加上 -d 参数.</p>
-<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">$ ./bin/hbase <span class="keyword">shell</span> -<span class="literal">d</span></span><br></pre></td></tr></table></figure>
-<h2 id="u6570_u636E_u6A21_u578B"><a href="#u6570_u636E_u6A21_u578B" class="headerlink" title="数据模型"></a>数据模型</h2><p>简单来说，应用程序是以表的方式在HBase存储数据的。表是由行和列构成的，所有的列是从属于某一个列族的。行和列的交叉点称之为cell,cell是版本化的。cell的内容是不可分割的字节数组。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">$ ./bin/hbase shell -d</div></pre></td></tr></table></figure>
+<h2 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h2><p>简单来说，应用程序是以表的方式在HBase存储数据的。表是由行和列构成的，所有的列是从属于某一个列族的。行和列的交叉点称之为cell,cell是版本化的。cell的内容是不可分割的字节数组。</p>
 <p>表的行键也是一段字节数组，所以任何东西都可以保存进去，不论是字符串或者数字。HBase的表是按key排序的，排序方式之针对字节的。所有的表都必须要有主键-key.</p>
-<h3 id="u57FA_u672C_u6982_u5FF5"><a href="#u57FA_u672C_u6982_u5FF5" class="headerlink" title="基本概念"></a>基本概念</h3><p>有一个名为webtable的表，包含两个列族：contents和anchor.在这个例子里面，anchor有两个列 (anchor:cssnsi.com,anchor:my.look.ca)，contents仅有一列(contents:html)</p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>有一个名为webtable的表，包含两个列族：contents和anchor.在这个例子里面，anchor有两个列 (anchor:cssnsi.com,anchor:my.look.ca)，contents仅有一列(contents:html)</p>
 <blockquote>
 <p>一个列名是由它的列族前缀和修饰符(qualifier)连接而成。例如列contents:html是列族 contents加冒号(:)加 修饰符 html组成的。</p>
 </blockquote>
@@ -509,10 +511,10 @@
 </ul>
 <p>操作主要是四个：Get, Put, Scans, Delete</p>
 <p>HBase是否支持联合是一个网上常问问题。简单来说 : 不支持。至少不想传统RDBMS那样支持(如 SQL中带 equi-joins 或 outer-joins). 正如本章描述的，读数据模型是 Get 和 Scan.<br>但并不表示等价联合不能在应用程序中支持，只是必须自己做。 两种方法，要么指示要写到HBase的数据，要么查询表并在应用或MapReduce代码中做联合(如 RDBMS所展示,有几种步骤来实现，依赖于表的大小。如 nested loops vs. hash-joins). 哪个更好？依赖于你准备做什么，所以没有一个单一的回答适合所有方面。</p>
-<h2 id="Schema__u8BBE_u8BA1"><a href="#Schema__u8BBE_u8BA1" class="headerlink" title="Schema 设计"></a>Schema 设计</h2><h3 id="u5217_u65CF_u8BBE_u8BA1"><a href="#u5217_u65CF_u8BBE_u8BA1" class="headerlink" title="列族设计"></a>列族设计</h3><p>现在HBase并不能很好的处理两个或者三个以上的列族，所以尽量让你的列族数量少一些。目前，flush和compaction操作是针对一个Region。所以当一个列族操作大量数据的时候会引发一个flush。那些不相关的列族也有进行flush操作，尽管他们没有操作多少数据。Compaction操作现在是根据一个列族下的全部文件的数量触发的，而不是根据文件大小触发的。当很多的列族在flush和compaction时,会造成很多没用的I/O负载(要想解决这个问题，需要将flush和compaction操作只针对一个列族) 。 </p>
+<h2 id="Schema-设计"><a href="#Schema-设计" class="headerlink" title="Schema 设计"></a>Schema 设计</h2><h3 id="列族设计"><a href="#列族设计" class="headerlink" title="列族设计"></a>列族设计</h3><p>现在HBase并不能很好的处理两个或者三个以上的列族，所以尽量让你的列族数量少一些。目前，flush和compaction操作是针对一个Region。所以当一个列族操作大量数据的时候会引发一个flush。那些不相关的列族也有进行flush操作，尽管他们没有操作多少数据。Compaction操作现在是根据一个列族下的全部文件的数量触发的，而不是根据文件大小触发的。当很多的列族在flush和compaction时,会造成很多没用的I/O负载(要想解决这个问题，需要将flush和compaction操作只针对一个列族) 。 </p>
 <p>尽量在你的应用中使用一个列族。只有你的所有查询操作只访问一个列族的时候，可以引入第二个和第三个列族.例如，你有两个列族,但你查询的时候总是访问其中的一个，从来不会两个一起访问。</p>
 <p>一个表存在多列族，注意基数(如, 行数). 如果列族A有100万行，列族B有10亿行，列族A可能被分散到很多很多区(及区服务器)。这导致扫描列族A低效。</p>
-<h3 id="u884C_u952E_28RowKey_29_u8BBE_u8BA1"><a href="#u884C_u952E_28RowKey_29_u8BBE_u8BA1" class="headerlink" title="行键(RowKey)设计"></a>行键(RowKey)设计</h3><p>下面是一些具体的技巧</p>
+<h3 id="行键-RowKey-设计"><a href="#行键-RowKey-设计" class="headerlink" title="行键(RowKey)设计"></a>行键(RowKey)设计</h3><p>下面是一些具体的技巧</p>
 <ul>
 <li>使用了顺序的key会将本没有顺序的数据变得有顺序，把负载压在一台机器上。所以要尽量避免时间戳或者(e.g. 1, 2, 3)这样的key。</li>
 <li>尽量最小化行和列的大小。大部分时候，小的低效不会影响很大。不幸的是，这里会是个问题。无论是列族，属性和行键都会在数据中重复上亿次。</li>
@@ -523,7 +525,7 @@
 <li>一个数据库处理的通常问题是找到最近版本的值。采用倒序时间戳作为键的一部分可以对此特定情况有很大帮助。</li>
 <li>行键不能改变。唯一可以“改变”的方式是删除然后再插入。这是一个网上常问问题，所以要注意开始就要让行键正确(且/或在插入很多数据之前)。</li>
 </ul>
-<h2 id="u6027_u80FD_u8C03_u4F18"><a href="#u6027_u80FD_u8C03_u4F18" class="headerlink" title="性能调优"></a>性能调优</h2><ul>
+<h2 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h2><ul>
 <li>RAM, RAM, RAM. 不要饿着 HBase.</li>
 <li>使用 64-bit 平台(和64-bit JVM).</li>
 <li>小心交换，将交换区设为0。</li>
@@ -876,42 +878,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

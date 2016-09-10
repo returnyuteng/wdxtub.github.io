@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="了解了数据在内存中的基本存储形式，同时也知道了整型的表达方法，这一讲我们来看看另一大类别的数字——浮点数——是如何在计算机中表示的。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 第 3 课 Floating Point">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-3.html">
@@ -111,6 +112,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 第 3 课 Floating Point">
 <meta name="twitter:description" content="了解了数据在内存中的基本存储形式，同时也知道了整型的表达方法，这一讲我们来看看另一大类别的数字——浮点数——是如何在计算机中表示的。">
+<meta name="twitter:image" content="http://wdxtub.com/images/csapp13.jpg">
 
 
 
@@ -134,7 +136,7 @@
   
     深入理解计算机系统 第 3 课 Floating Point | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -155,7 +157,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -280,7 +282,7 @@
 <p>通常用 $1.0-\epsilon$ 来表示这个值。</p>
 <p>细心的同学就会发现，这种表达方式其实是比较明显的限制的，比如说，只有形为 $\frac{x}{2^k}$ 的小数部分可以被精确表示，其他的数字会变成循环的小数，例如：$\frac{1}{3}=0.0101010101[01]…_2$。</p>
 <p>除此之外，另一个问题在于，如果给定了 w 个比特，能够表达的数字其实是有限的。</p>
-<h2 id="IEEE_Floating_Point"><a href="#IEEE_Floating_Point" class="headerlink" title="IEEE Floating Point"></a>IEEE Floating Point</h2><p>实话说，这个标准更多是从数值角度来建立的，对于舍入，上溢出和下溢出都有比较好的处理方法，但与此同时，给硬件优化带来了比较大的困难。从理解的角度来看，也不够直观，但是好在主流的 CPU 都支持浮点数，所以我们不必过多涉及这方面的细节，但是了解定义本身还是很重要的。</p>
+<h2 id="IEEE-Floating-Point"><a href="#IEEE-Floating-Point" class="headerlink" title="IEEE Floating Point"></a>IEEE Floating Point</h2><p>实话说，这个标准更多是从数值角度来建立的，对于舍入，上溢出和下溢出都有比较好的处理方法，但与此同时，给硬件优化带来了比较大的困难。从理解的角度来看，也不够直观，但是好在主流的 CPU 都支持浮点数，所以我们不必过多涉及这方面的细节，但是了解定义本身还是很重要的。</p>
 <p>我们用下面的公式来表达浮点数：</p>
 <p>$$(-1)^s \; M \; 2^E$$</p>
 <p>其中 s 是符号位，决定正负；M 通常是一个值在 [1.0, 2.0) 的小数；E 是次方数。具体编码的时候是这样的：</p>
@@ -288,7 +290,7 @@
 <p>其中 s 对应着符号位，exp 对应着 E（注意，不一定等于 E，因为位数限制表达能力有限），frac 对应着 M（注意，不一定等于 M，因为位数限制表达能力有限）。</p>
 <p>不同的位数就代表了不同的表示能力，也就是单精度，双精度，扩展精度的来源，具体的位数表示如下：</p>
 <p><img src="/images/csapp15.jpg" alt="csapp15"></p>
-<h3 id="Normalized_Values"><a href="#Normalized_Values" class="headerlink" title="Normalized Values"></a>Normalized Values</h3><p>在 $exp \ne 000…0$ 和 $exp \ne 111…1$ 时，表示的其实都是规范化的值，为什么说是规范化呢？这里只需要大概知道因为实数轴上原来连续的值会被规范到有限的定值上并且这些定值之间的间距也是不一样的，具体可以通过后面给出的例子来理解（所以现在不明白也不用担心）</p>
+<h3 id="Normalized-Values"><a href="#Normalized-Values" class="headerlink" title="Normalized Values"></a>Normalized Values</h3><p>在 $exp \ne 000…0$ 和 $exp \ne 111…1$ 时，表示的其实都是规范化的值，为什么说是规范化呢？这里只需要大概知道因为实数轴上原来连续的值会被规范到有限的定值上并且这些定值之间的间距也是不一样的，具体可以通过后面给出的例子来理解（所以现在不明白也不用担心）</p>
 <p>$$v=(-1)^s \; M \; 2^E$$</p>
 <p>这里的 E 是一个偏移的值 $$E=Exp-Bias$$，其中</p>
 <ul>
@@ -305,17 +307,17 @@
 <p>$$15213_{10}=11101101101101_2=1.1101101101101_2 \times 2^13$$</p>
 <p>于是 frac 部分的值就是小数点后面的数值，而 Exp = E + Bias = 13 + 127 = 140 = $10001100_2$，于是编码出来的浮点数是这样的：</p>
 <p><img src="/images/csapp16.jpg" alt="csapp16"></p>
-<h3 id="Denormalized_Values"><a href="#Denormalized_Values" class="headerlink" title="Denormalized Values"></a>Denormalized Values</h3><p>当 $exp = 000…0$ 的时候，值是非规范化的，意思是，虽然实数轴上原来连续的值会被规范到有限的定值上，但是并些定值之间的间距也是一样的，具体可以通过后面给出的例子来理解（所以现在不明白也不用担心）</p>
+<h3 id="Denormalized-Values"><a href="#Denormalized-Values" class="headerlink" title="Denormalized Values"></a>Denormalized Values</h3><p>当 $exp = 000…0$ 的时候，值是非规范化的，意思是，虽然实数轴上原来连续的值会被规范到有限的定值上，但是并些定值之间的间距也是一样的，具体可以通过后面给出的例子来理解（所以现在不明白也不用担心）</p>
 <p>$$v=(-1)^s \; M \; 2^E$$</p>
 <p>和前面不同的是 </p>
 <p>$$E = 1 - Bias$$</p>
 <p>而且 $M=0.xxx…x_2$，不是以 1 开头了。</p>
 <p>当 exp=000…0 且 frac = 000…0 时，表示 0，而且因为符号位的缘故，实际上是有 +0 和 -0 两种的。</p>
 <p>而在 exp=000..0 且 $frac \ne 000…0$ 时，数值是接近 0 的，并且间距是一致的</p>
-<h3 id="Special_Values"><a href="#Special_Values" class="headerlink" title="Special Values"></a>Special Values</h3><p>还有一种特殊情况，就是 $exp = 111…1$ 时，表示一些特殊值。</p>
+<h3 id="Special-Values"><a href="#Special-Values" class="headerlink" title="Special Values"></a>Special Values</h3><p>还有一种特殊情况，就是 $exp = 111…1$ 时，表示一些特殊值。</p>
 <p>当 exp=111…1 且 frac = 000…0 时，表示 $\infty$，而且因为符号位的缘故，实际上是有 $+\infty$ 和 $-\infty$ 两种的。那些会溢出的操作就会用这个来表示，比如 $1.0/0.0=-1.0/0.0=+\infty\;,\;1.0/-0.0=-\infty$</p>
 <p>而在 exp=111…1 且 $frac \ne 000…0$ 时，我们认为这不是一个数值（Not-a-Number，NaN），用来表示那些没办法确定的值，比如 $sqrt(-1),\infty-\infty,\infty\times 0$</p>
-<h3 id="u5C0F_u7ED3"><a href="#u5C0F_u7ED3" class="headerlink" title="小结"></a>小结</h3><p>可能通过文字描述还是不够清晰，我们来看看上面各种情况对应到数轴中是怎么样的：</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>可能通过文字描述还是不够清晰，我们来看看上面各种情况对应到数轴中是怎么样的：</p>
 <p><img src="/images/csapp17.jpg" alt="csapp17"><br>（对应理解一下上面所说的内容）</p>
 <p>接下来举一个实际的例子，我们的编码形式是这样的：</p>
 <p><img src="/images/csapp18.jpg" alt="csapp18"></p>
@@ -359,7 +361,7 @@
 <p><img src="/images/csapp24.jpg" alt="csapp24"></p>
 <p>对于二进制数也是类似的</p>
 <p><img src="/images/csapp25.jpg" alt="csapp25"></p>
-<h3 id="u6D6E_u70B9_u6570_u4E58_u6CD5"><a href="#u6D6E_u70B9_u6570_u4E58_u6CD5" class="headerlink" title="浮点数乘法"></a>浮点数乘法</h3><p>$$(-1)^{s1}\; M1 \; 2^{E1} \times (-1)^{s2}\; M2 \; 2^{E2}$$</p>
+<h3 id="浮点数乘法"><a href="#浮点数乘法" class="headerlink" title="浮点数乘法"></a>浮点数乘法</h3><p>$$(-1)^{s1}\; M1 \; 2^{E1} \times (-1)^{s2}\; M2 \; 2^{E2}$$</p>
 <p>结果是 $(-1)^{s}\; M \; 2^{E}$，其中 s= s1 ^ s2, M = M1 * M2, E = E1 + E2</p>
 <ul>
 <li>如果 M 大于等于 2，那么把 M 右移，并增加 E 的值。</li>
@@ -375,7 +377,7 @@
 <li>不满足分配率 <code>1e20*(1e20-1e20)=0.0</code> 但 <code>1e20*1e20-1e20*1e20=NaN</code></li>
 <li>除了 infinity 和 NaN，满足单调性，即 $a\ge b \to a\times c \ge a\times b$</li>
 </ul>
-<h3 id="u6D6E_u70B9_u6570_u52A0_u6CD5"><a href="#u6D6E_u70B9_u6570_u52A0_u6CD5" class="headerlink" title="浮点数加法"></a>浮点数加法</h3><p>$$(-1)^{s1}\; M1 \; 2^{E1} + (-1)^{s2}\; M2 \; 2^{E2}$$，这里假设 E1 &gt; E2</p>
+<h3 id="浮点数加法"><a href="#浮点数加法" class="headerlink" title="浮点数加法"></a>浮点数加法</h3><p>$$(-1)^{s1}\; M1 \; 2^{E1} + (-1)^{s2}\; M2 \; 2^{E2}$$，这里假设 E1 &gt; E2</p>
 <p><img src="/images/csapp26.jpg" alt="csapp26"></p>
 <p>结果是 $(-1)^{s}\; M \; 2^{E}$，其中 s= s1 ^ s2, M = M1 + M2, E = E1</p>
 <ul>
@@ -393,7 +395,7 @@
 <li>除了 infinity 和 NaN，每个元素都有对应的倒数</li>
 <li>除了 infinity 和 NaN，满足单调性，即 $a\ge b \to a+c \ge a+b$</li>
 </ul>
-<h3 id="C__u8BED_u8A00_u4E2D_u7684_u6D6E_u70B9_u6570"><a href="#C__u8BED_u8A00_u4E2D_u7684_u6D6E_u70B9_u6570" class="headerlink" title="C 语言中的浮点数"></a>C 语言中的浮点数</h3><p>保证两种精度：float(单精度)，double(双精度)</p>
+<h3 id="C-语言中的浮点数"><a href="#C-语言中的浮点数" class="headerlink" title="C 语言中的浮点数"></a>C 语言中的浮点数</h3><p>保证两种精度：float(单精度)，double(双精度)</p>
 <p>在 int, float, double 间转换会改变其 bit </p>
 <ul>
 <li>double/float 到 int<ul>
@@ -412,7 +414,7 @@
 </li>
 </ul>
 <h3 id="Puzzles"><a href="#Puzzles" class="headerlink" title="Puzzles"></a>Puzzles</h3><p>声明下面变量</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> x = ...;</span><br><span class="line"><span class="keyword">float</span> f = ...;</span><br><span class="line"><span class="keyword">double</span> d = ...;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> x = ...;</div><div class="line"><span class="keyword">float</span> f = ...;</div><div class="line"><span class="keyword">double</span> d = ...;</div></pre></td></tr></table></figure>
 <p>判断下面的表达式是否正确</p>
 <ul>
 <li><code>x == (int)(float)x</code> 错误，可能会损失精度，因为 float 的位数不足以表达所有可能的 int</li>
@@ -426,7 +428,7 @@
 <li><code>d * d &gt;= 0.0</code> 正确</li>
 <li><code>(d+f)-d == f</code> 错误，可能会因为舍入损失精度</li>
 </ul>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
 <li>IEEE 浮点数有明确的数学性质</li>
 <li>使用 $M\times 2^E$ 的形式来表达数值</li>
 <li>操作实际上是与实现方式无关的，因为需要满足同样的数学规律，具体怎么实现不重要</li>
@@ -772,42 +774,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

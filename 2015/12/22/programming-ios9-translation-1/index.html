@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS9,学习,笔记,翻译,视图," />
+  <meta name="keywords" content="学习,笔记,iOS9,翻译,视图," />
 
 
 
@@ -110,6 +110,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Programming iOS9 学习笔记 1 - Views">
 <meta name="twitter:description" content="第一章是视图的基本知识，最重要的是了解 view hierarchy 和布局的相关知识。">
+<meta name="twitter:image" content="http://wdxtub.com/images/pios1.jpg">
 
 
 
@@ -127,7 +128,7 @@
   };
 </script>
 
-  <title> Programming iOS9 学习笔记 1 - Views | 小土刀 </title>
+  <title> Programming iOS9 学习笔记 1 - Views | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -148,7 +149,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -356,12 +357,12 @@
 <p>一个 view 也是一个 responder (<code>UIView</code> 是 <code>UIResponder</code> 的子类)。也就是说，view 不仅可以给用户看，还可以给用户交互。</p>
 <p>View hierarchy 是主要的 view 组织形式。一个 view 可以有多个 subviews，但是一个 subview 只能有一个直接的 superview。所以很多 view 就会组成一棵树。如果一个 view 被移出 view hierarchy，它的子类也会被移除；如果一个 view 被隐藏，它的子类也会被隐藏；如果一个 view 移动，它的子类也会被移动。View hierarchy 也是 responder chain 的基础（但是不一定完全一致）</p>
 <p>一个 view 可以从 nib 生成，也可以在代码中创建。总体来看，哪种方法都没有比另一种好特别多，具体选择哪种需要具体情况具体考虑，不能一概而论</p>
-<h2 id="The_Window"><a href="#The_Window" class="headerlink" title="The Window"></a>The Window</h2><p>View hierarchy 的顶层是应用的 window，是 <code>UIWindow</code>(<code>UIView</code> 的子类) 的一个实例。你的应用应该只有一个 main window。它将在应用启动时被创建并且不会被销毁或者代替。它是应用的背景并且是终极 superview，也就是所有其他的 view 都是它的 subviews。</p>
+<h2 id="The-Window"><a href="#The-Window" class="headerlink" title="The Window"></a>The Window</h2><p>View hierarchy 的顶层是应用的 window，是 <code>UIWindow</code>(<code>UIView</code> 的子类) 的一个实例。你的应用应该只有一个 main window。它将在应用启动时被创建并且不会被销毁或者代替。它是应用的背景并且是终极 superview，也就是所有其他的 view 都是它的 subviews。</p>
 <blockquote>
 <p>假如你的应用要显示在外接屏幕上，就需要创建额外的 <code>UIWindow</code>，但是这种情况不在这一章的讨论范围</p>
 </blockquote>
 <p>应用的 window 必须填充设备的 <code>screen</code>，具体的做法是在 window 初始化时把 window 的 <code>frame</code> 设置成 screen 的 <code>bounds</code>（<code>frame</code> 和 <code>bounds</code> 是很容易搞混的概念，之后会解释它们的异同）。使用 main storyboard 的话这个事情会由 <code>UIApplicationMain</code> 函数在应用启动的时候自动完成。如果不用 main storyboard 的话就需要自己在应用的声明周期中创建 window 并且设置好 <code>frame</code></p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> w = <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.mainScreen().bounds)</span><br><span class="line"></span><br><span class="line"><span class="comment">// iOS 9 中可以不传入 frame，默认会设置成 screen 的 bounds，如下</span></span><br><span class="line"><span class="keyword">let</span> w = <span class="type">UIWindow</span>()</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> w = <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.mainScreen().bounds)</div><div class="line"></div><div class="line"><span class="comment">// iOS 9 中可以不传入 frame，默认会设置成 screen 的 bounds，如下</span></div><div class="line"><span class="keyword">let</span> w = <span class="type">UIWindow</span>()</div></pre></td></tr></table></figure>
 <p>这个 window 必须在应用而生命周期中一直保持着。为了做到这样，<code>app delegate</code> 类会用一个 strong retain policy 来持有一个 <code>window</code> 属性。具体的过程是：在应用启动时，<code>UIApplicationMain</code> 方法会初始化 <code>app delegate</code> 类并且一直持有它，然后 window 实例就会被赋值到 <code>app delegate</code> 的 <code>window</code> 属性上，所以也会被一直持有。</p>
 <p>通常来说不要手动或者直接在 main window 上添加任何 view。通常来说，你会得到一个 view controller 并且会被赋值到 main window 的 <code>rootViewController</code> 属性上。如果你用的是 main storyboard，这都都会自动初始化好。</p>
 <p>当一个 view controller 成为 main window 的 <code>rootViewController</code>，它的 view 就成为了 main window 有且仅有的一个直接 subview，也就是 main window 的 root view。之后所有的 view 都只能是这个 root view 的 subview。也就是说 root view 是 view hierarchy 中用户通常能看到的地位最高的对象。</p>
@@ -407,11 +408,11 @@
 </ul>
 </li>
 </ul>
-<h2 id="Experimenting_With_Views"><a href="#Experimenting_With_Views" class="headerlink" title="Experimenting With Views"></a>Experimenting With Views</h2><p>这里只介绍有 storyboard 的情况。创建一个 Single View Application，并在对应的 view controller 的 <code>viewDidLoad()</code> 方法中添加如下代码：</p>
+<h2 id="Experimenting-With-Views"><a href="#Experimenting-With-Views" class="headerlink" title="Experimenting With Views"></a>Experimenting With Views</h2><p>这里只介绍有 storyboard 的情况。创建一个 Single View Application，并在对应的 view controller 的 <code>viewDidLoad()</code> 方法中添加如下代码：</p>
 <p><img src="/images/pios2.jpg" alt="pios2"></p>
 <p>效果如下</p>
 <p><img src="/images/pios3.jpg" alt="pios3"></p>
-<h2 id="Subview_and_Superview"><a href="#Subview_and_Superview" class="headerlink" title="Subview and Superview"></a>Subview and Superview</h2><p>在 iOS 中，subview 的一部分甚至是全部，可以出现在 superview 之外。一个 view 可以和另一个 view 重叠，即使不是其 subview 也可以绘制部分或全部绘制在另一个 view 之前。</p>
+<h2 id="Subview-and-Superview"><a href="#Subview-and-Superview" class="headerlink" title="Subview and Superview"></a>Subview and Superview</h2><p>在 iOS 中，subview 的一部分甚至是全部，可以出现在 superview 之外。一个 view 可以和另一个 view 重叠，即使不是其 subview 也可以绘制部分或全部绘制在另一个 view 之前。</p>
 <p><img src="/images/pios4.jpg" alt="pios4"></p>
 <p>View Hierarchy 的特点</p>
 <ul>
@@ -438,8 +439,8 @@
 <li><code>bringSubviewToFront:</code>, <code>sendSubviewToBack:</code></li>
 </ul>
 <p>奇怪的是，没有一个方法可以直接移除一个 view 的所有 subview。然而，因为一个 view 的 subview 数组是一个不可变的数组，所以可以用如下方法一次移除全部：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">myView.subviews.forEach &#123;$<span class="number">0</span>.removeFromSuperview&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Visibility_and_Opacity"><a href="#Visibility_and_Opacity" class="headerlink" title="Visibility and Opacity"></a>Visibility and Opacity</h2><p>视图的可见性可以通过设置 <code>hidden</code> 属性来更改。一个隐藏的 view 无法接收触摸事件，所以对于用户来说相当于不存在，但实际上是存在的，所以仍然可以在代码中对其操作。</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line">myView.subviews.forEach &#123;$<span class="number">0</span>.removeFromSuperview&#125;</div></pre></td></tr></table></figure>
+<h2 id="Visibility-and-Opacity"><a href="#Visibility-and-Opacity" class="headerlink" title="Visibility and Opacity"></a>Visibility and Opacity</h2><p>视图的可见性可以通过设置 <code>hidden</code> 属性来更改。一个隐藏的 view 无法接收触摸事件，所以对于用户来说相当于不存在，但实际上是存在的，所以仍然可以在代码中对其操作。</p>
 <p>View 的背景颜色可以通过其 <code>backgroundColor</code> 属性来设置，颜色属于 <code>UIColor</code> 类。如果 <code>backgroundColor</code> 为 <code>nil</code> 那么背景就是透明的。可以通过设置 view 的 <code>alpha</code> 属性来修改透明程度，1.0 是完全不透明，0.0 是透明。假设一个 view 的 <code>alpha</code> 是 0.5，那么它的 subview 的 <code>alpha</code> 都是以 0.5 为基准的，不可能高于 0.5。而 <code>UIColor</code> 也有 <code>alpha</code> 这个属性，所以即使一个 view 的 <code>alpha</code> 是 1.0，它仍旧可能是透明的，因为其 <code>backgroundColor</code> 可以是透明的。一个 <code>alpha</code> 为 0.0 的 view 是完全透明的所以是不可见的，通常来说也不可能被点击。</p>
 <p>View 的 <code>alpha</code> 属性不仅影响背景颜色，也会影响其内容的透明度。</p>
 <p>View 的 <code>opaque</code> 属性的修改并不会影响 view 的样子，更多的是对于系统绘制时的提示。如果一个 view 的 <code>opaque</code> 设为 true，因为不用考虑透明的绘制，所以效率会高一点，并且再设置透明的背景颜色或者 <code>alpha</code> 属性都无效。可能会让人吃惊，它的默认值是 true</p>
@@ -449,7 +450,7 @@
 <p><img src="/images/pios5.jpg" alt="pios5"></p>
 <p>效果如下（就是之前图中的形状，注意 v2 是添加在 v1 上的）：</p>
 <p><img src="/images/pios6.jpg" alt="pios6"></p>
-<h2 id="Bounds_and_Center"><a href="#Bounds_and_Center" class="headerlink" title="Bounds and Center"></a>Bounds and Center</h2><p><code>bounds</code> 属性对应的是一个 view 在自己的坐标系统中的矩形尺寸（注意，<code>frame</code> 是在 superview 的坐标系下的），例如如下代码：</p>
+<h2 id="Bounds-and-Center"><a href="#Bounds-and-Center" class="headerlink" title="Bounds and Center"></a>Bounds and Center</h2><p><code>bounds</code> 属性对应的是一个 view 在自己的坐标系统中的矩形尺寸（注意，<code>frame</code> 是在 superview 的坐标系下的），例如如下代码：</p>
 <p><img src="/images/pios7.jpg" alt="pios7"></p>
 <p>效果如下：</p>
 <p><img src="/images/pios8.jpg" alt="pios8"></p>
@@ -464,7 +465,7 @@
 <p><img src="/images/pios12.jpg" alt="pios12"></p>
 <p>可以看到 subviw 向着原点移动方向的反方向进行了移动，这是因为一个 view 的原点与其 frame 的左上角一致。</p>
 <p>改变 view 的 bounds 大小会影响到 frame，反之亦然，唯一不变的是 view 的 center，可以通过下面代码获取</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="built_in">c</span> = <span class="type">CGPointMake</span>(theView.bounds.midX, theView.bounds.midY)</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> <span class="built_in">c</span> = <span class="type">CGPointMake</span>(theView.bounds.midX, theView.bounds.midY)</div></pre></td></tr></table></figure>
 <p>改变 view 的 bounds 不会影响其 center，改变一个 view 的 center 不会影响其 bounds。所以其实一个 view 的 bounds 和 center 就可以确定其在 superview 中的位置，frame 可以看作是一个由 bounds 和 center 组成的表达式的简便写法而已。注意有些情况下 frame 会没有什么意义，但是 bounds 和 center 总是有效的，所以建议多用 bounds 和 center 的组合，也比较容易理解。</p>
 <ul>
 <li>bounds: 一个 view 自己的坐标系统</li>
@@ -476,10 +477,10 @@
 <li><code>convertRect:fromView:</code>, <code>convertRect:toView:</code></li>
 </ul>
 <p>如果第二个参数为 <code>nil</code>，那么就取 window 的值。例如，如果 v2 是 v1 的 subview，那么要把 v2 放到 v1 的中心，就可以用</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">v2.center = v1.convertPoint(v1.center, fromView: v1.superview)</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line">v2.center = v1.convertPoint(v1.center, fromView: v1.superview)</div></pre></td></tr></table></figure>
 <p>注意，通过改变 center 来设置 view 的位置时，如果高或宽不是偶数，那么可能会导致 <code>misaligned</code>。可以通过打开模拟器的 Debug -&gt; Color Misaligned Images 来进行检测。一个简单的方法是调整好位置之后调用 <code>makeIntegralInPlace</code> 来设置 view 的 frame，</p>
-<h2 id="Window_Coordinates_and_Screen_Coordinates"><a href="#Window_Coordinates_and_Screen_Coordinates" class="headerlink" title="Window Coordinates and Screen Coordinates"></a>Window Coordinates and Screen Coordinates</h2><p>设备屏幕是没有 frame 的，但是有 bounds。Main window 也没有 superview，不过其 frame 被设置为屏幕的 bounds，如：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> w = <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.mainScreen().bounds)</span><br></pre></td></tr></table></figure>
+<h2 id="Window-Coordinates-and-Screen-Coordinates"><a href="#Window-Coordinates-and-Screen-Coordinates" class="headerlink" title="Window Coordinates and Screen Coordinates"></a>Window Coordinates and Screen Coordinates</h2><p>设备屏幕是没有 frame 的，但是有 bounds。Main window 也没有 superview，不过其 frame 被设置为屏幕的 bounds，如：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> w = <span class="type">UIWindow</span>(frame: <span class="type">UIScreen</span>.mainScreen().bounds)</div></pre></td></tr></table></figure>
 <p>在大部分情况下，window 坐标系就是 screen 坐标系。现在的 iOS 中坐标系和手机是否选择是有关的，有如下两个属性：</p>
 <ul>
 <li>UIScreen 的 <code>coordinateSpace</code> 属性<ul>
@@ -497,7 +498,7 @@
 <li><code>convertRect:fromCoordinateSpace:</code>, <code>convertRect:toCoordinateSpace:</code></li>
 </ul>
 <p>假设界面中有一个 <code>UIView</code> v，我们想知道它的实际设备坐标，可以用下面的代码：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> r = v.superview!convertRect(v.frame, toCoordinateSpace: <span class="type">UIScreen</span>.mainScreen().fixedCoordinateSpace)</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line"><span class="keyword">let</span> r = v.superview!convertRect(v.frame, toCoordinateSpace: <span class="type">UIScreen</span>.mainScreen().fixedCoordinateSpace)</div></pre></td></tr></table></figure>
 <p>但实际上你需要这种信息的机会非常少，或者其实几乎都不用担心 window 坐标，因为所有的可见操作都会在 root view contoller 的 main view 中进行，它的 bounds 是会自动调整的。</p>
 <h2 id="Transform"><a href="#Transform" class="headerlink" title="Transform"></a>Transform</h2><p>一个 view 的 <code>transform</code> 属性改变这个 view 是如何被绘制的，实际上就是一个 <code>CGAffineTransform</code>类的 3x3 矩阵（线性代数中的概念）。所有的变换都是以这个 view 的 center 做基准的，下面就是具体的例子：</p>
 <p><img src="/images/pios13.jpg" alt="pios13"></p>
@@ -505,7 +506,7 @@
 <p><img src="/images/pios14.jpg" alt="pios14"></p>
 <p>注意，这里 view 的 center 和 bounds 都没变，但是 frame 的数值已经没有意义，因为现在它的尺寸是能够覆盖当前 view 的最小的矩形，并不会随着 view 的旋转而选择。</p>
 <p>根据仿射变化的定义，因为背后实际上是矩阵乘法，所以不同的变换是可以叠加的，并且顺序是重要的（矩阵乘法不满足交换律）</p>
-<h2 id="Trait_Collections_and_Size_Classes"><a href="#Trait_Collections_and_Size_Classes" class="headerlink" title="Trait Collections and Size Classes"></a>Trait Collections and Size Classes</h2><p>界面上的每个 view 都有一个 <code>traitCollection</code> 属性，值是一个 <code>UITraitCollection</code>，包含下面四个属性：</p>
+<h2 id="Trait-Collections-and-Size-Classes"><a href="#Trait-Collections-and-Size-Classes" class="headerlink" title="Trait Collections and Size Classes"></a>Trait Collections and Size Classes</h2><p>界面上的每个 view 都有一个 <code>traitCollection</code> 属性，值是一个 <code>UITraitCollection</code>，包含下面四个属性：</p>
 <ul>
 <li><code>displayScale</code>，由当前屏幕决定的缩放尺寸，1(single resolution) 2(double resolution) 3(iPhone 6/6s Plus)</li>
 <li><code>userInterfaceIdiom</code>，一个 <code>UserIterfaceIdiom</code> 值，可能是 <code>.Phone</code> 或 <code>.Pad</code>，来标志不同的设备，默认来说和 <code>UIDevice</code> 的 <code>userInterfaceIdiom</code> 属性一致</li>
@@ -564,11 +565,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
-          
             <a href="/tags/学习/" rel="tag">#学习</a>
           
             <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
+            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
           
             <a href="/tags/翻译/" rel="tag">#翻译</a>
           
@@ -807,7 +808,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#The_Window"><span class="nav-number">1.</span> <span class="nav-text">The Window</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Experimenting_With_Views"><span class="nav-number">2.</span> <span class="nav-text">Experimenting With Views</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Subview_and_Superview"><span class="nav-number">3.</span> <span class="nav-text">Subview and Superview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Visibility_and_Opacity"><span class="nav-number">4.</span> <span class="nav-text">Visibility and Opacity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Frame"><span class="nav-number">5.</span> <span class="nav-text">Frame</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bounds_and_Center"><span class="nav-number">6.</span> <span class="nav-text">Bounds and Center</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Window_Coordinates_and_Screen_Coordinates"><span class="nav-number">7.</span> <span class="nav-text">Window Coordinates and Screen Coordinates</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transform"><span class="nav-number">8.</span> <span class="nav-text">Transform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Trait_Collections_and_Size_Classes"><span class="nav-number">9.</span> <span class="nav-text">Trait Collections and Size Classes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layout"><span class="nav-number">10.</span> <span class="nav-text">Layout</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Window"><span class="nav-number">1.</span> <span class="nav-text">The Window</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Experimenting-With-Views"><span class="nav-number">2.</span> <span class="nav-text">Experimenting With Views</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Subview-and-Superview"><span class="nav-number">3.</span> <span class="nav-text">Subview and Superview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Visibility-and-Opacity"><span class="nav-number">4.</span> <span class="nav-text">Visibility and Opacity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Frame"><span class="nav-number">5.</span> <span class="nav-text">Frame</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bounds-and-Center"><span class="nav-number">6.</span> <span class="nav-text">Bounds and Center</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Window-Coordinates-and-Screen-Coordinates"><span class="nav-number">7.</span> <span class="nav-text">Window Coordinates and Screen Coordinates</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transform"><span class="nav-number">8.</span> <span class="nav-text">Transform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Trait-Collections-and-Size-Classes"><span class="nav-number">9.</span> <span class="nav-text">Trait Collections and Size Classes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layout"><span class="nav-number">10.</span> <span class="nav-text">Layout</span></a></li></ol></div>
             
           </div>
         </section>
@@ -987,42 +988,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

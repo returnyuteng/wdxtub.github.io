@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS9,学习,层,笔记,翻译," />
+  <meta name="keywords" content="学习,笔记,iOS9,翻译,层," />
 
 
 
@@ -116,6 +116,7 @@ Layers 拓展了 view 的能力：
 Layers have properties that affet drawing
 Layers can be combined within a single view
 Layers">
+<meta name="twitter:image" content="http://wdxtub.com/images/pios27.jpg">
 
 
 
@@ -133,7 +134,7 @@ Layers">
   };
 </script>
 
-  <title> Programming iOS9 学习笔记 3 - Layer | 小土刀 </title>
+  <title> Programming iOS9 学习笔记 3 - Layer | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -154,7 +155,7 @@ Layers">
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -363,14 +364,14 @@ Layers">
 </ul>
 <a id="more"></a>
 <hr>
-<h2 id="View_and_Layer"><a href="#View_and_Layer" class="headerlink" title="View and Layer"></a>View and Layer</h2><p>一个 <code>UIView</code> 实例有一个附属的 <code>CALayer</code> 实例，可以通过访问 <code>layer</code> 属性来获取。这个 layer 没有对应的 <code>view</code> 属性，但是 view 是这个 layer 的 delegate。</p>
+<h2 id="View-and-Layer"><a href="#View-and-Layer" class="headerlink" title="View and Layer"></a>View and Layer</h2><p>一个 <code>UIView</code> 实例有一个附属的 <code>CALayer</code> 实例，可以通过访问 <code>layer</code> 属性来获取。这个 layer 没有对应的 <code>view</code> 属性，但是 view 是这个 layer 的 delegate。</p>
 <p>要自定义的话可以通过下面的方式，其中 <code>CompassLayer</code> 是 <code>CALayer</code> 的子类</p>
 <p><img src="/images/pios27.jpg" alt="pios27"></p>
 <p>一个 <code>UIView</code> 必须是其 layer 的 delegate，也不能是其他 layer 的 delegate。</p>
 <p>如果改变了 <code>UIView</code> 的尺寸，默认是不会进行重新绘制的，而是用一个拉伸的缓存 layer image，直到调用 <code>drawRect:</code> 方法，才会重新绘制</p>
-<h2 id="Layers_and_Sublayers"><a href="#Layers_and_Sublayers" class="headerlink" title="Layers and Sublayers"></a>Layers and Sublayers</h2><p>layer 可以有 sublayers，一个 layer 只能有一个 superlayer，实际上就和 view 一个意思，但是 layer 可以拓展得更复杂一些</p>
+<h2 id="Layers-and-Sublayers"><a href="#Layers-and-Sublayers" class="headerlink" title="Layers and Sublayers"></a>Layers and Sublayers</h2><p>layer 可以有 sublayers，一个 layer 只能有一个 superlayer，实际上就和 view 一个意思，但是 layer 可以拓展得更复杂一些</p>
 <p><img src="/images/pios28.jpg" alt="pios28"></p>
-<h2 id="Manipulating_the_Layer_Hierarchy"><a href="#Manipulating_the_Layer_Hierarchy" class="headerlink" title="Manipulating the Layer Hierarchy"></a>Manipulating the Layer Hierarchy</h2><p>和 view hierarcy 一样，也有很多方法来修改 layer hierarchy。一个 layer 有一个 <code>superlayer</code> 属性和一个 <code>sublayers</code> 属性，以及如下方法：</p>
+<h2 id="Manipulating-the-Layer-Hierarchy"><a href="#Manipulating-the-Layer-Hierarchy" class="headerlink" title="Manipulating the Layer Hierarchy"></a>Manipulating the Layer Hierarchy</h2><p>和 view hierarcy 一样，也有很多方法来修改 layer hierarchy。一个 layer 有一个 <code>superlayer</code> 属性和一个 <code>sublayers</code> 属性，以及如下方法：</p>
 <ul>
 <li><code>addSublayer:</code></li>
 <li><code>insertSublayer:atIndex:</code></li>
@@ -386,7 +387,7 @@ Layers">
 <li><code>convertPoint:fromLayer:</code>, <code>convertPoint:toLayer:</code></li>
 <li><code>converRect:fromLayer:</code>, <code>convertRect:toLayer:</code></li>
 </ul>
-<h2 id="Positioning_a_Sublayer"><a href="#Positioning_a_Sublayer" class="headerlink" title="Positioning a Sublayer"></a>Positioning a Sublayer</h2><p>与 view 不同的是，sublayer 没有 center，一个 sublayer 是通过下面两个属性共同来决定在 superlayer 中的位置的：</p>
+<h2 id="Positioning-a-Sublayer"><a href="#Positioning-a-Sublayer" class="headerlink" title="Positioning a Sublayer"></a>Positioning a Sublayer</h2><p>与 view 不同的是，sublayer 没有 center，一个 sublayer 是通过下面两个属性共同来决定在 superlayer 中的位置的：</p>
 <ul>
 <li>position: 在 superlayer 坐标系中一个点的位置</li>
 <li>anchorPoint: position 这个点会放在当前 layer 的哪个位置，相当于把 sublayer 挂在 superlayer 上，是一个 <code>CGPoint</code> 值来表示比例，(0.0, 0.0) 是左上，(1.0, 1.0) 是右下</li>
@@ -399,12 +400,12 @@ Layers">
 <li><code>scrollToPoint:</code> 把当前 <code>CAScrollLayer</code> 的 bounds 的原点移动到某一个位置</li>
 <li><code>scrollToRect:</code> 把当前 <code>CAScrollLayer</code> 的 bounds 的原点移动尽量少的位置使得它能被显示出来</li>
 </ul>
-<h2 id="Layout_of_Sublayers"><a href="#Layout_of_Sublayers" class="headerlink" title="Layout of Sublayers"></a>Layout of Sublayers</h2><p>iOS 中没有 layer 的 automatic layout。当一个 layer 的 bounds 改变或者调用了 <code>setNeedsLayout</code> 时才会进行重新布局，有以下两种处理方式</p>
+<h2 id="Layout-of-Sublayers"><a href="#Layout-of-Sublayers" class="headerlink" title="Layout of Sublayers"></a>Layout of Sublayers</h2><p>iOS 中没有 layer 的 automatic layout。当一个 layer 的 bounds 改变或者调用了 <code>setNeedsLayout</code> 时才会进行重新布局，有以下两种处理方式</p>
 <ul>
 <li>当前 layer 的 <code>layoutSublayers</code> 方法会被调用，可以子类化一个 <code>CALayer</code> 然后重写该方法</li>
 <li>在 layer 的 delegate 中实现 <code>layoutSublayersOfLayer:</code> 方法</li>
 </ul>
-<h2 id="Drawing_in_a_Layer"><a href="#Drawing_in_a_Layer" class="headerlink" title="Drawing in a Layer"></a>Drawing in a Layer</h2><p>通过给 <code>content</code> 属性赋值来进行绘制，注意这里不是用 <code>UIImage</code> 而是用 <code>CGImage</code>，用 <code>UIImage</code> 会什么都显示不出来但是没有任何错误提示！</p>
+<h2 id="Drawing-in-a-Layer"><a href="#Drawing-in-a-Layer" class="headerlink" title="Drawing in a Layer"></a>Drawing in a Layer</h2><p>通过给 <code>content</code> 属性赋值来进行绘制，注意这里不是用 <code>UIImage</code> 而是用 <code>CGImage</code>，用 <code>UIImage</code> 会什么都显示不出来但是没有任何错误提示！</p>
 <p><img src="/images/pios29.jpg" alt="pios29"></p>
 <p>类似 <code>UIView</code> 的 <code>drawRect</code> 方法，layer 也有类似的绘制方法，但是都是由 layer 自己维护，绝不要自己自己去调用。以下这些情况会使得 layer 重新绘制自己：</p>
 <ul>
@@ -440,25 +441,25 @@ Layers">
 <p>还有，千万不要给 view 的 underlying layer 设定 delegate，这个 view 就是其 delegate。</p>
 <p>Layer 也有很 view 一样的类似属性：<code>contentsScale</code>, <code>backgroundColor</code>, <code>opacity</code>, <code>opaque</code></p>
 <p><img src="/images/pios30.jpg" alt="pios30"></p>
-<h2 id="Content_Resizing_and_Positioning"><a href="#Content_Resizing_and_Positioning" class="headerlink" title="Content Resizing and Positioning"></a>Content Resizing and Positioning</h2><p>一个 layer 的内容会被缓存为位图，然后根据不同属性的设定来进行配置</p>
+<h2 id="Content-Resizing-and-Positioning"><a href="#Content-Resizing-and-Positioning" class="headerlink" title="Content Resizing and Positioning"></a>Content Resizing and Positioning</h2><p>一个 layer 的内容会被缓存为位图，然后根据不同属性的设定来进行配置</p>
 <ul>
 <li>如果 content 来自一幅图片，那么缓存的内容就是那张图，尺寸就是 <code>CGImage</code> 的尺寸</li>
 <li>如果 content 来自 graphic context，那么会缓存整个 graphic context，尺寸是当时绘制的大小</li>
 </ul>
 <p>属性包括：<code>contentsGravity</code>, <code>contentsRect</code>, <code>contentsCenter</code></p>
-<h2 id="Layers_that_Draw_Themselves"><a href="#Layers_that_Draw_Themselves" class="headerlink" title="Layers that Draw Themselves"></a>Layers that Draw Themselves</h2><p>一些内置的 <code>CALayer</code> 的子类提供一些非常基础但是有用的自绘能力</p>
+<h2 id="Layers-that-Draw-Themselves"><a href="#Layers-that-Draw-Themselves" class="headerlink" title="Layers that Draw Themselves"></a>Layers that Draw Themselves</h2><p>一些内置的 <code>CALayer</code> 的子类提供一些非常基础但是有用的自绘能力</p>
 <p><code>CATextLayer</code>, <code>CAShapeLayer</code>, <code>CAGradientLayer</code></p>
 <h2 id="Transforms"><a href="#Transforms" class="headerlink" title="Transforms"></a>Transforms</h2><p>变形和 view 的基本类似，唯一不同是 view 的不动点是 center，layer 的不动点是 anchorPoint</p>
 <p>还可以做三维的变换，比如修改 <code>anchorPointZ</code> 属性，并且由 <code>CATransform3D</code> 这个类来描述具体的变换，具体的变换也是数学，举个例子，下面的代码沿着 y 轴翻转了 layer</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">someLayer.transform = <span class="type">CATransform3DMakeRotation</span>(<span class="type">CGFloat</span>(<span class="type">M_PI</span>), <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line">someLayer.transform = <span class="type">CATransform3DMakeRotation</span>(<span class="type">CGFloat</span>(<span class="type">M_PI</span>), <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)</div></pre></td></tr></table></figure>
 <h2 id="Depth"><a href="#Depth" class="headerlink" title="Depth"></a>Depth</h2><p>其实有两个属性可以更改，并且是相关的，是：<code>zPosition</code> 和 z-direction translation。一般用前者就好。</p>
 <p>修改 <code>zPosition</code> 的值会让物体看起来变大或者变小，但是并不是因为实现了透视。</p>
 <p>可以利用 <code>CATransformLayer</code> 做出景深和立体的动画效果</p>
-<h2 id="Shadows_2C_Border_2C_and_Masks"><a href="#Shadows_2C_Border_2C_and_Masks" class="headerlink" title="Shadows, Border, and Masks"></a>Shadows, Border, and Masks</h2><p>对应的属性为 <code>shadowColor</code>, <code>shadowOpacity</code>, <code>shadowRadius</code>, <code>shadowOffset</code></p>
+<h2 id="Shadows-Border-and-Masks"><a href="#Shadows-Border-and-Masks" class="headerlink" title="Shadows, Border, and Masks"></a>Shadows, Border, and Masks</h2><p>对应的属性为 <code>shadowColor</code>, <code>shadowOpacity</code>, <code>shadowRadius</code>, <code>shadowOffset</code></p>
 <p><img src="/images/pios31.jpg" alt="pios31"></p>
-<h2 id="Layer_Efficiency"><a href="#Layer_Efficiency" class="headerlink" title="Layer Efficiency"></a>Layer Efficiency</h2><p>通常来说，opaque drawing 是最有效率的，也可以通过更改 <code>drawAsynchronously</code> 属性来异步绘制</p>
-<h2 id="Layers_and_Key-Value_Coding"><a href="#Layers_and_Key-Value_Coding" class="headerlink" title="Layers and Key-Value Coding"></a>Layers and Key-Value Coding</h2><p>所有 layer 的属性都是通过 键值对来访问的，我们可以用下面两种方法来赋值：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">layer.mask = mask</span><br><span class="line">layer.setValue(mask, forKey: <span class="string">"mask"</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="Layer-Efficiency"><a href="#Layer-Efficiency" class="headerlink" title="Layer Efficiency"></a>Layer Efficiency</h2><p>通常来说，opaque drawing 是最有效率的，也可以通过更改 <code>drawAsynchronously</code> 属性来异步绘制</p>
+<h2 id="Layers-and-Key-Value-Coding"><a href="#Layers-and-Key-Value-Coding" class="headerlink" title="Layers and Key-Value Coding"></a>Layers and Key-Value Coding</h2><p>所有 layer 的属性都是通过 键值对来访问的，我们可以用下面两种方法来赋值：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line">layer.mask = mask</div><div class="line">layer.setValue(mask, forKey: <span class="string">"mask"</span>)</div></pre></td></tr></table></figure>
 <p>这种方法主要是为了下一章动画的实现而设计的</p>
 
       
@@ -497,15 +498,15 @@ Layers">
       
         <div class="post-tags">
           
-            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
-          
             <a href="/tags/学习/" rel="tag">#学习</a>
-          
-            <a href="/tags/层/" rel="tag">#层</a>
           
             <a href="/tags/笔记/" rel="tag">#笔记</a>
           
+            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
+          
             <a href="/tags/翻译/" rel="tag">#翻译</a>
+          
+            <a href="/tags/层/" rel="tag">#层</a>
           
         </div>
       
@@ -740,7 +741,7 @@ Layers">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#View_and_Layer"><span class="nav-number">1.</span> <span class="nav-text">View and Layer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layers_and_Sublayers"><span class="nav-number">2.</span> <span class="nav-text">Layers and Sublayers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Manipulating_the_Layer_Hierarchy"><span class="nav-number">3.</span> <span class="nav-text">Manipulating the Layer Hierarchy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Positioning_a_Sublayer"><span class="nav-number">4.</span> <span class="nav-text">Positioning a Sublayer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CAScollLayer"><span class="nav-number">5.</span> <span class="nav-text">CAScollLayer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layout_of_Sublayers"><span class="nav-number">6.</span> <span class="nav-text">Layout of Sublayers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Drawing_in_a_Layer"><span class="nav-number">7.</span> <span class="nav-text">Drawing in a Layer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Content_Resizing_and_Positioning"><span class="nav-number">8.</span> <span class="nav-text">Content Resizing and Positioning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layers_that_Draw_Themselves"><span class="nav-number">9.</span> <span class="nav-text">Layers that Draw Themselves</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transforms"><span class="nav-number">10.</span> <span class="nav-text">Transforms</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Depth"><span class="nav-number">11.</span> <span class="nav-text">Depth</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shadows_2C_Border_2C_and_Masks"><span class="nav-number">12.</span> <span class="nav-text">Shadows, Border, and Masks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layer_Efficiency"><span class="nav-number">13.</span> <span class="nav-text">Layer Efficiency</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layers_and_Key-Value_Coding"><span class="nav-number">14.</span> <span class="nav-text">Layers and Key-Value Coding</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#View-and-Layer"><span class="nav-number">1.</span> <span class="nav-text">View and Layer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layers-and-Sublayers"><span class="nav-number">2.</span> <span class="nav-text">Layers and Sublayers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Manipulating-the-Layer-Hierarchy"><span class="nav-number">3.</span> <span class="nav-text">Manipulating the Layer Hierarchy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Positioning-a-Sublayer"><span class="nav-number">4.</span> <span class="nav-text">Positioning a Sublayer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CAScollLayer"><span class="nav-number">5.</span> <span class="nav-text">CAScollLayer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layout-of-Sublayers"><span class="nav-number">6.</span> <span class="nav-text">Layout of Sublayers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Drawing-in-a-Layer"><span class="nav-number">7.</span> <span class="nav-text">Drawing in a Layer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Content-Resizing-and-Positioning"><span class="nav-number">8.</span> <span class="nav-text">Content Resizing and Positioning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layers-that-Draw-Themselves"><span class="nav-number">9.</span> <span class="nav-text">Layers that Draw Themselves</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transforms"><span class="nav-number">10.</span> <span class="nav-text">Transforms</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Depth"><span class="nav-number">11.</span> <span class="nav-text">Depth</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shadows-Border-and-Masks"><span class="nav-number">12.</span> <span class="nav-text">Shadows, Border, and Masks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layer-Efficiency"><span class="nav-number">13.</span> <span class="nav-text">Layer Efficiency</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Layers-and-Key-Value-Coding"><span class="nav-number">14.</span> <span class="nav-text">Layers and Key-Value Coding</span></a></li></ol></div>
             
           </div>
         </section>
@@ -920,42 +921,29 @@ Layers">
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="iOS9,学习,滚动视图,笔记,翻译," />
+  <meta name="keywords" content="学习,笔记,iOS9,翻译,滚动视图," />
 
 
 
@@ -120,6 +120,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Programming iOS9 学习笔记 7 - Scroll View">
 <meta name="twitter:description" content="UIScrollView 是这样一个 view，其内容比 bounds 要大，用户需要通过滚动和拖拽来查看所有内容，当然，我们也可以利用代码进行定位。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14557110626509.jpg">
 
 
 
@@ -137,7 +138,7 @@
   };
 </script>
 
-  <title> Programming iOS9 学习笔记 7 - Scroll View | 小土刀 </title>
+  <title> Programming iOS9 学习笔记 7 - Scroll View | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -158,7 +159,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -372,11 +373,11 @@
 </ul>
 <p>scroll view 用 <code>contentSize</code> 属性和它自己的 bounds 来决定 <code>bounds</code> 的原点最多可以是多少。如果 <code>contentSize</code> 还不如自身的 <code>bounds</code> 大，那么实际上是不能进行滚动的，默认的 <code>contentSize</code> 大小是 (0.0, 0.0)，也就是不可滚动。</p>
 <p>想让 scroll view 正常工作的话，一定要正确设置 <code>contentSize</code>，可以在代码中完成，也可以使用 autolayout。接下来都会有介绍。</p>
-<h2 id="u7528_u4EE3_u7801_u521B_u5EFA_Scoll_View"><a href="#u7528_u4EE3_u7801_u521B_u5EFA_Scoll_View" class="headerlink" title="用代码创建 Scoll View"></a>用代码创建 Scoll View</h2><p>我们先创建一个单视图应用，然后在其 ViewController 的 <code>viewDidLoad</code> 函数中，创建一个 scroll view 并添加一些 <code>UILabel</code> 当做 subview，这样滚动的时候我们就能看到：</p>
+<h2 id="用代码创建-Scoll-View"><a href="#用代码创建-Scoll-View" class="headerlink" title="用代码创建 Scoll View"></a>用代码创建 Scoll View</h2><p>我们先创建一个单视图应用，然后在其 ViewController 的 <code>viewDidLoad</code> 函数中，创建一个 scroll view 并添加一些 <code>UILabel</code> 当做 subview，这样滚动的时候我们就能看到：</p>
 <p><img src="/images/14557110626509.jpg" alt=""></p>
 <p>留意最后一行，它告诉了这个 scrollview 其 content 的大小是多少，少了这行就无法滚动了。设置 <code>contentSize</code> 和添加子视图并没有顺序要求，只要保证一致即可。</p>
 <p>还有一点需要注意的是，scroll view 的直接子视图需要设置 autoresizing，因为 scroll view 本身的大小可能会变化，所以在前面的代码的 for 循环中加入以下代码</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">lab.frame.width = <span class="keyword">self</span>.view.bounds.width - <span class="number">20</span></span><br><span class="line">lab.backgroundColor = <span class="type">UIColor</span>.redColor()</span><br><span class="line">lab.autoresizingMask = .<span class="type">FlexibleWidth</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line">lab.frame.width = <span class="keyword">self</span>.view.bounds.width - <span class="number">20</span></div><div class="line">lab.backgroundColor = <span class="type">UIColor</span>.redColor()</div><div class="line">lab.autoresizingMask = .<span class="type">FlexibleWidth</span></div></pre></td></tr></table></figure>
 <p>但是 scroll view 的 bounds 改变并不会影响其 <code>contentSize</code>，<code>contentSize</code> 只是决定 scroll view 具体的滚动范围，如果想要在方向改变时变化，需要手动修改。</p>
 <p>如果我们要用 autolayout 来自动调整 <code>contentSize</code> 的话，一个很重要的概念就是 scroll view 和其子视图之间的约束并不是某种包含关系，而是一种描述 <code>contentSize</code> 的方式，我们来看看改写后的代码：</p>
 <p><img src="/images/14557117752506.jpg" alt=""></p>
@@ -391,12 +392,12 @@
 </ul>
 <p>这种做法的好处在于 content view 的子视图的具体的实现和 scroll view 无关，我们可以按照喜欢的方式进行组合，有以下四种方式：</p>
 <p><img src="/images/14557124263249.jpg" alt=""></p>
-<h2 id="Nib__u4E2D_u7684_Scroll_View"><a href="#Nib__u4E2D_u7684_Scroll_View" class="headerlink" title="Nib 中的 Scroll View"></a>Nib 中的 Scroll View</h2><p>可以直接拖入一个 <code>UIScrollView</code> 或者使用 Embed in -&gt; Scroll View 来进行创建。如果不使用 autolayout 的话，就要小心使用 autoresizing，如下图所示：</p>
+<h2 id="Nib-中的-Scroll-View"><a href="#Nib-中的-Scroll-View" class="headerlink" title="Nib 中的 Scroll View"></a>Nib 中的 Scroll View</h2><p>可以直接拖入一个 <code>UIScrollView</code> 或者使用 Embed in -&gt; Scroll View 来进行创建。如果不使用 autolayout 的话，就要小心使用 autoresizing，如下图所示：</p>
 <p><img src="/images/14557134533914.jpg" alt=""></p>
 <p>这里 scroll view 是 main view 的子视图，并且边缘和主视图绑定，所以当主视图变化的时候，scroll view 会跟着变化。但是运行的时候我们会发现仍然不能滚动，还是老原因，因为我们没有设置 <code>contentSize</code>，而且在编辑器里也无法设置，必须在代码中完成，这也是为什么我要用一个 content view（上面的做法）的原因，设置 <code>contentSize</code> 的时候只需要设置为 content view 的大小即可：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> didSetup = <span class="literal">false</span></span><br><span class="line"><span class="keyword">override</span> <span class="func"><span class="keyword">func</span> <span class="title">viewDidLayoutSubviews</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> !<span class="keyword">self</span>.didSetup &#123;</span><br><span class="line">        <span class="keyword">self</span>.didSetup = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">self</span>.sv.contentSize = <span class="keyword">self</span>.cv.bounds.size</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> didSetup = <span class="literal">false</span></div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLayoutSubviews</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> !<span class="keyword">self</span>.didSetup &#123;</div><div class="line">        <span class="keyword">self</span>.didSetup = <span class="literal">true</span></div><div class="line">        <span class="keyword">self</span>.sv.contentSize = <span class="keyword">self</span>.cv.bounds.size</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>使用 autolayout 的话，constraints 会做好这一切，不需要在代码中设置 <code>contentSize</code>。既可以显式设置 content view 的 width/height constraint，也可以让 content view 的子视图来决定具体的大小，只要设置的时候注意排除所有编辑器给出的警告即可。</p>
-<h2 id="u6EDA_u52A8"><a href="#u6EDA_u52A8" class="headerlink" title="滚动"></a>滚动</h2><p>滚动视图最重要的就是滚动，以下这些属性会影响滚动时的用户体验：</p>
+<h2 id="滚动"><a href="#滚动" class="headerlink" title="滚动"></a>滚动</h2><p>滚动视图最重要的就是滚动，以下这些属性会影响滚动时的用户体验：</p>
 <p><img src="/images/14557141547625.jpg" alt=""></p>
 <p><img src="/images/14557141792259.jpg" alt=""></p>
 <p><img src="/images/14557142355411.jpg" alt=""></p>
@@ -407,9 +408,9 @@
 <p>最后，下面这两个属性会影响 scroll view 的结构：</p>
 <p><img src="/images/14557145113752.jpg" alt=""></p>
 <p><code>contentInset</code> 的一个常见用法就是在界面元素重合的时候，保证即使滚动到头，内容也不会被遮挡（比方说可能被状态栏、导航栏、工具栏等等遮挡），如果我们不想被状态栏遮住内容，可以：</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">sv.contentInset = <span class="type">UIEdgeInsetsMake</span>(<span class="number">20</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line">sv.contentInset = <span class="type">UIEdgeInsetsMake</span>(<span class="number">20</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)</div></pre></td></tr></table></figure>
 <p>这样滚动到最下面，内容也不会被遮挡了。改动 <code>contentInset</code> 的同时，最好也对应修改 <code>scrollIndicatorInsets</code>，这样视觉效果比较统一</p>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">sv.contentInset = <span class="type">UIEdgeInsetsMake</span>(<span class="number">20</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">sv.scrollIndicatorInsets = sv.contentInset</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line">sv.contentInset = <span class="type">UIEdgeInsetsMake</span>(<span class="number">20</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)</div><div class="line">sv.scrollIndicatorInsets = sv.contentInset</div></pre></td></tr></table></figure>
 <p>除了状态栏还有其他诸如导航栏之类的话，使用 <code>topLayoutGuide</code> 和 <code>bottomLayoutGuide</code> 来确定具体的数值比较方便，如：</p>
 <p><img src="/images/14557153090520.jpg" alt=""></p>
 <p>如果我们的 main view 包含一个主 scroll view，而且是在 nib 中创建的话，如果设置 <code>automaticallyAdjustsScrollViewInsets</code> 为 <code>true</code> 的话，runtime 会自动设置好 <code>contentInset</code> 和 <code>scrollIndicatorInsets</code>，一点代码都不用写（不过如果是代码中创建 subview 的话这个方法是无效的）</p>
@@ -426,7 +427,7 @@
 <p>如果想要通过写代码来进行缩放，有以下两种方式：</p>
 <p><img src="/images/14557176470190.jpg" alt=""></p>
 <p>默认来说，当 scroll view 缩放时，是做一个 scale 变换，也就是说，缓存中有多少数据，就会显示多少，如果放大倍数比较大的话就会模糊，如果我们想要在放大之后进行重绘，需要做一些额外的操作。同样可以利用 <code>CATiledLayer</code>，尤其是 <code>levelsOfDetail</code> 和 <code>levelsOfDetailBias</code> 两个属性</p>
-<h2 id="Scoll_View_Delegate"><a href="#Scoll_View_Delegate" class="headerlink" title="Scoll View Delegate"></a>Scoll View Delegate</h2><p><code>UIScrollViewDelegate</code> 协议会接受很多帮助我们追踪用户滚动的事件：</p>
+<h2 id="Scoll-View-Delegate"><a href="#Scoll-View-Delegate" class="headerlink" title="Scoll View Delegate"></a>Scoll View Delegate</h2><p><code>UIScrollViewDelegate</code> 协议会接受很多帮助我们追踪用户滚动的事件：</p>
 <p><img src="/images/14557183050896.jpg" alt=""></p>
 <p><img src="/images/14557186620863.jpg" alt=""></p>
 <p>如果想要在滚动结束之后做一些操作，需要实现以下这些 delegate 方法：</p>
@@ -438,7 +439,7 @@
 <p><img src="/images/14557187790988.jpg" alt=""></p>
 <p>以及两个报告状态的只读属性</p>
 <p><img src="/images/14557190104565.jpg" alt=""></p>
-<h2 id="u6027_u80FD_u8003_u8651"><a href="#u6027_u80FD_u8003_u8651" class="headerlink" title="性能考虑"></a>性能考虑</h2><ul>
+<h2 id="性能考虑"><a href="#性能考虑" class="headerlink" title="性能考虑"></a>性能考虑</h2><ul>
 <li>能不透明的东西就不透明</li>
 <li>如果要绘制阴影，使用 <code>shadowPath</code> 或者 Core Graphics</li>
 <li>自己完成缩放，不要让绘制系统帮忙做这个事情</li>
@@ -482,15 +483,15 @@
       
         <div class="post-tags">
           
-            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
-          
             <a href="/tags/学习/" rel="tag">#学习</a>
-          
-            <a href="/tags/滚动视图/" rel="tag">#滚动视图</a>
           
             <a href="/tags/笔记/" rel="tag">#笔记</a>
           
+            <a href="/tags/iOS9/" rel="tag">#iOS9</a>
+          
             <a href="/tags/翻译/" rel="tag">#翻译</a>
+          
+            <a href="/tags/滚动视图/" rel="tag">#滚动视图</a>
           
         </div>
       
@@ -725,7 +726,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7528_u4EE3_u7801_u521B_u5EFA_Scoll_View"><span class="nav-number">1.</span> <span class="nav-text">用代码创建 Scoll View</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nib__u4E2D_u7684_Scroll_View"><span class="nav-number">2.</span> <span class="nav-text">Nib 中的 Scroll View</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6EDA_u52A8"><span class="nav-number">3.</span> <span class="nav-text">滚动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scoll_View_Delegate"><span class="nav-number">4.</span> <span class="nav-text">Scoll View Delegate</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6027_u80FD_u8003_u8651"><span class="nav-number">5.</span> <span class="nav-text">性能考虑</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用代码创建-Scoll-View"><span class="nav-number">1.</span> <span class="nav-text">用代码创建 Scoll View</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nib-中的-Scroll-View"><span class="nav-number">2.</span> <span class="nav-text">Nib 中的 Scroll View</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滚动"><span class="nav-number">3.</span> <span class="nav-text">滚动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scoll-View-Delegate"><span class="nav-number">4.</span> <span class="nav-text">Scoll View Delegate</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#性能考虑"><span class="nav-number">5.</span> <span class="nav-text">性能考虑</span></a></li></ol></div>
             
           </div>
         </section>
@@ -905,42 +906,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

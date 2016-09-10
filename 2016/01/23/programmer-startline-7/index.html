@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="图,思维,技能,树,程序员," />
+  <meta name="keywords" content="程序员,思维,技能,树,图," />
 
 
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> 编程起跑线 第 7 课 树和图 | 小土刀 </title>
+  <title> 编程起跑线 第 7 课 树和图 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -134,7 +134,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -337,23 +337,23 @@
         <p>树和图的问题，说难也难，说简单也简单。难在思路和理解，简单在很多时候可以利用递归得到非常优雅的解法。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u89E3_u9898_u7B56_u7565"><a href="#u89E3_u9898_u7B56_u7565" class="headerlink" title="解题策略"></a>解题策略</h2><p>对于树和图的性质，一般全局解依赖于局部解。通常可以用DFS来判断子问题的解，然后综合得到当前的全局结论。</p>
+<h2 id="解题策略"><a href="#解题策略" class="headerlink" title="解题策略"></a>解题策略</h2><p>对于树和图的性质，一般全局解依赖于局部解。通常可以用DFS来判断子问题的解，然后综合得到当前的全局结论。</p>
 <p>值得注意的是，当我们在传递节点指针的时候，其实其代表的不只是这个节点本身，而是指对整个子树、子图进行操作。只要每次递归的操作对象的结构一致，我们就可以选择Divide and Conquer(事实上对于树和图总是如此，因为subgraph和subtree仍然是graph和tree结构)。实现函数递归的步骤是：首先设置函数出口，就此类问题而言，递归出口往往是node == NULL。其次，在构造递归的时候，不妨将递归调用自身的部分视为黑盒，并想象它能够完整解决子问题。以二叉树的中序遍历为例，函数的实现为：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InOrderTraversal</span><span class="params">(TreeNode *root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    InOrderTraversal(root-&gt;left);</span><br><span class="line">    root-&gt;print();</span><br><span class="line">    InOrderTraversal(root-&gt;right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">InOrderTraversal</span><span class="params">(TreeNode *root)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (root == <span class="literal">NULL</span>) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    InOrderTraversal(root-&gt;left);</div><div class="line">    root-&gt;print();</div><div class="line">    InOrderTraversal(root-&gt;right);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>想象递归调用的部分 <code>InOrderTraversal(root-&gt;left)／InOrderTraversal(root-&gt;right)</code>能够完整地中序遍历一棵子树，那么根据中序遍历“按中序遍历左子树；访问根结点；按中序遍历右子树”的定义，写出上述实现就显得很自然了。</p>
-<h3 id="DFS__u5904_u7406_u6811_u7684_u95EE_u9898"><a href="#DFS__u5904_u7406_u6811_u7684_u95EE_u9898" class="headerlink" title="DFS 处理树的问题"></a>DFS 处理树的问题</h3><p>有一类关于树的问题是， 要求找出一条满足特定条件的路径 。对于这类问题，通常都是传入一个 vector 记录当前走过的路径(为尽可能模版化，统一记为path)，传入 path 的时候可以是引用，可以是值。还需要传入另一个 vector 引用记录所有符合条件的 path (为尽可能模版化，统一记为result)。注意， result 可以用引用或指针形式，相当于一个全局变量，或者就开辟一个独立于函数的成员变量。由于 path 通常是vector ，那么result就是 <vector> 。当然，那个特定条件，也是函数的一个输入变量。</vector></p>
+<h3 id="DFS-处理树的问题"><a href="#DFS-处理树的问题" class="headerlink" title="DFS 处理树的问题"></a>DFS 处理树的问题</h3><p>有一类关于树的问题是， 要求找出一条满足特定条件的路径 。对于这类问题，通常都是传入一个 vector 记录当前走过的路径(为尽可能模版化，统一记为path)，传入 path 的时候可以是引用，可以是值。还需要传入另一个 vector 引用记录所有符合条件的 path (为尽可能模版化，统一记为result)。注意， result 可以用引用或指针形式，相当于一个全局变量，或者就开辟一个独立于函数的成员变量。由于 path 通常是vector ，那么result就是 <vector> 。当然，那个特定条件，也是函数的一个输入变量。</vector></p>
 <p>在解答此类问题的时候，通常都采用DFS来访问，利用回溯思想，直到无法继续访问再返回。值得注意的是，如果path本身是以引用(reference)的形式传入，那么需要在返回之前消除之前所做的影响(回溯)。因为传引用(Pass by reference)相当于把path也看作全局变量，对path的任何操作都会影响其他递归状态，而传值(pass by value)则不会。传引用的好处是可以减小空间开销。</p>
-<h3 id="u6811_u548C_u5176_u4ED6_u6570_u636E_u7ED3_u6784_u7684_u76F8_u4E92_u8F6C_u6362"><a href="#u6811_u548C_u5176_u4ED6_u6570_u636E_u7ED3_u6784_u7684_u76F8_u4E92_u8F6C_u6362" class="headerlink" title="树和其他数据结构的相互转换"></a>树和其他数据结构的相互转换</h3><p>这类题目要求将树的结构转化成其他数据结构，例如链表、数组等，或者反之，从数组等结构构成一棵树。前者通常是通过树的遍历，合并局部解来得到全局解，而后者则可以利用D&amp;C的策略，递归将数据结构的两部分分别转换成子树，再合并。</p>
-<h3 id="u5BFB_u627E_u7279_u5B9A_u8282_u70B9"><a href="#u5BFB_u627E_u7279_u5B9A_u8282_u70B9" class="headerlink" title="寻找特定节点"></a>寻找特定节点</h3><p>此类题目通常会传入一个当前节点，要求找到与此节点具有一定关系的特定节点：例如前驱、后继、左／右兄弟等。</p>
+<h3 id="树和其他数据结构的相互转换"><a href="#树和其他数据结构的相互转换" class="headerlink" title="树和其他数据结构的相互转换"></a>树和其他数据结构的相互转换</h3><p>这类题目要求将树的结构转化成其他数据结构，例如链表、数组等，或者反之，从数组等结构构成一棵树。前者通常是通过树的遍历，合并局部解来得到全局解，而后者则可以利用D&amp;C的策略，递归将数据结构的两部分分别转换成子树，再合并。</p>
+<h3 id="寻找特定节点"><a href="#寻找特定节点" class="headerlink" title="寻找特定节点"></a>寻找特定节点</h3><p>此类题目通常会传入一个当前节点，要求找到与此节点具有一定关系的特定节点：例如前驱、后继、左／右兄弟等。</p>
 <p>对于这类题目，首先可以了解一下常见特定节点的定义及性质。在存在指向父节点指针的情况下，通常可以由当前节点出发，向上倒推解决。如果节点没有父节点指针，一般需要从根节点出发向下搜索，搜索的过程就是DFS。</p>
-<h3 id="u56FE_u7684_u8BBF_u95EE"><a href="#u56FE_u7684_u8BBF_u95EE" class="headerlink" title="图的访问"></a>图的访问</h3><p>关于图的问题一般有两类。一类是前面提到的关于图的基本问题，例如图的遍历、最短路径、可达性等；另一类是将问题转化成图，再通过图的遍历解决问题。第二类问题有一定的难度，但也有一些规律可循：如果题目有一个起始点和一个终止点，可以考虑看成图的最短路径问题。</p>
-<h2 id="u6811"><a href="#u6811" class="headerlink" title="树"></a>树</h2><h3 id="u6811_u7684_u6982_u5FF5"><a href="#u6811_u7684_u6982_u5FF5" class="headerlink" title="树的概念"></a>树的概念</h3><p>树(tree)是一种能够分层存储数据的重要数据结构，树中的每个元素被称为树的节点，每个节点有若干个指针指向子节点。从节点的角度来看，树是由唯一的起始节点引出的节点集合。这个起始结点称为根(root)。树中节点的子树数目称为节点的度(degree)。在面试中，关于树的面试问题非常常见，尤其是关于二叉树(binary tree)，二叉搜索树(Binary Search Tree, BST)的问题。</p>
+<h3 id="图的访问"><a href="#图的访问" class="headerlink" title="图的访问"></a>图的访问</h3><p>关于图的问题一般有两类。一类是前面提到的关于图的基本问题，例如图的遍历、最短路径、可达性等；另一类是将问题转化成图，再通过图的遍历解决问题。第二类问题有一定的难度，但也有一些规律可循：如果题目有一个起始点和一个终止点，可以考虑看成图的最短路径问题。</p>
+<h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><h3 id="树的概念"><a href="#树的概念" class="headerlink" title="树的概念"></a>树的概念</h3><p>树(tree)是一种能够分层存储数据的重要数据结构，树中的每个元素被称为树的节点，每个节点有若干个指针指向子节点。从节点的角度来看，树是由唯一的起始节点引出的节点集合。这个起始结点称为根(root)。树中节点的子树数目称为节点的度(degree)。在面试中，关于树的面试问题非常常见，尤其是关于二叉树(binary tree)，二叉搜索树(Binary Search Tree, BST)的问题。</p>
 <p>所谓的二叉树，是指对于树中的每个节点而言，至多有左右两个子节点，即任意节点的度小于等于2。而广义的树则没有如上限制。二叉树是最常见的树形结构。二分查找树是二叉树的一种特例，对于二分查找树的任意节点，该节点存储的数值一定比左子树的所有节点的值大比右子树的所有节点的值小“(与之完全对称的情况也是有效的：即该节点存储的数值一定比左子树的所有节点的值小比右子树的所有节点的值大)。</p>
 <p>基于这个特性，二分查找树通常被用于维护有序数据。二分查找树查找、删除、插入的效率都会于一般的线性数据结构。事实上，对于二分查找树的操作相当于执行二分搜索，其执行效率与树的高度(depth)有关，检索任意数据的比较次数不会多于树的高度。这里需要引入高度的概念：对一棵树而言，从根节点到某个节点的路径长度称为该节点的层数(level)，根节点为第0层，非根节点的层数是其父节点的层数加1。树的高度定义为该树中层数最大的叶节点的层数加1，即相当于于从根节点到叶节点的最长路径加1。由此，对于n个数据，二分查找树应该以“尽可能小的高度存储所有数据。由于二叉树第L层至多可以存储 2^L 个节点，故树的高度应在logn量级，因此，二分查找树的搜索效率为O(logn)。</p>
 <p>直观上看，尽可能地把二分查找树的每一层“塞满”数据可以使得搜索效率最高，但考虑到每次插入删除都需要维护二分查找树的性质，要实现这点并不容易。特别地，当二分查找树退化为一个由小到大排列的单链表(每个节点只有右孩子)，其搜索效率变为O(n)。为了解决这样的问题，人们引入平衡二叉树的概念。所谓平衡二叉树，是指一棵树的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。通过恰当的构造与调整，平衡二叉树能够保证每次插入删除之后都保持平衡性。平衡二叉树的具体实现算法包括AVL算法和红黑算法等。由于平衡二叉树的实现比较复杂，故一般面试官只会问些概念性的问题。</p>
-<h3 id="u6811_u578B_u7684_u6982_u5FF5"><a href="#u6811_u578B_u7684_u6982_u5FF5" class="headerlink" title="树型的概念"></a>树型的概念</h3><p>满二叉树(full binary tree)：如果一棵二叉树的任何结点，或者是叶节点，或者左右子树都存在，则这棵二叉树称作满二叉树。</p>
+<h3 id="树型的概念"><a href="#树型的概念" class="headerlink" title="树型的概念"></a>树型的概念</h3><p>满二叉树(full binary tree)：如果一棵二叉树的任何结点，或者是叶节点，或者左右子树都存在，则这棵二叉树称作满二叉树。</p>
 <p>完全二叉树(complete binary tree)：如果一棵二叉树最多只有最下面的两层节点度数可以小于2，并且最下面一层的节点都集中在该层最左边的连续位置上，则此二叉树称作完全二叉树。</p>
-<h3 id="u4E8C_u53C9_u6811_u7684_u904D_u5386"><a href="#u4E8C_u53C9_u6811_u7684_u904D_u5386" class="headerlink" title="二叉树的遍历"></a>二叉树的遍历</h3><p>二叉树的常见操作包括树的遍历，即以一种特定的规律访问树中的所有节点。常见的遍历方式包括：</p>
+<h3 id="二叉树的遍历"><a href="#二叉树的遍历" class="headerlink" title="二叉树的遍历"></a>二叉树的遍历</h3><p>二叉树的常见操作包括树的遍历，即以一种特定的规律访问树中的所有节点。常见的遍历方式包括：</p>
 <ul>
 <li>前序遍历(Pre-order traversal)：访问根结点；按前序遍历左子树；按前序遍历右子树。</li>
 <li>中序遍历(In-order traversal)：按中序遍历左子树；访问根结点；按中序遍历右子树。特别地，对于二分查找树而言，中序遍历可以获得一个由小到大或者由大到小的有序序列。</li>
@@ -367,10 +367,10 @@
 Ann 18
 Bob 30
 </code></pre><p>则构成的字典树如下：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">.                 root: level <span class="number">0</span></span><br><span class="line">a---------b       level <span class="number">1</span></span><br><span class="line">|         |  </span><br><span class="line">m---n     o       level <span class="number">2</span></span><br><span class="line">|   |     |</span><br><span class="line">y   n     b       level <span class="number">3</span></span><br><span class="line">|   |     |</span><br><span class="line"><span class="number">12</span>  <span class="number">18</span>   <span class="number">30</span>       level <span class="number">4</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">.                 root: level 0</div><div class="line">a---------b       level 1</div><div class="line">|         |  </div><div class="line">m---n     o       level 2</div><div class="line">|   |     |</div><div class="line">y   n     b       level 3</div><div class="line">|   |     |</div><div class="line">12  18   30       level 4</div></pre></td></tr></table></figure>
 <p>由于Amy和Ann共享前缀a，故第二个字母m和n构成兄弟关系。</p>
 <p>字典树以及字典树节点的原型：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> TrieNode &#123;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        T mContent;</span><br><span class="line">        <span class="built_in">vector</span>&lt;TrieNode*&gt; mChildren;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        Node();</span><br><span class="line">        ~Node();</span><br><span class="line">        <span class="keyword">friend</span> <span class="keyword">class</span> Trie;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> Trie &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Trie();</span><br><span class="line">    ~Trie();</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addWord</span><span class="params">(<span class="built_in">string</span> s)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">searchWord</span><span class="params">(<span class="built_in">string</span> s)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">deleteWord</span><span class="params">(<span class="built_in">string</span> s)</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    TrieNode* root;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">class TrieNode &#123;</div><div class="line">    private:</div><div class="line">        T mContent;</div><div class="line">        vector&lt;TrieNode*&gt; mChildren;</div><div class="line">    public:</div><div class="line">        Node();</div><div class="line">        ~Node();</div><div class="line">        friend class Trie;</div><div class="line">&#125;;</div><div class="line">class Trie &#123;</div><div class="line">public:</div><div class="line">    Trie();</div><div class="line">    ~Trie();</div><div class="line">    void addWord(string s);</div><div class="line">    bool searchWord(string s);</div><div class="line">    void deleteWord(string s);</div><div class="line">private:</div><div class="line">    TrieNode* root;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
 <p>字典树的基本功能如下：</p>
 <p>1) void addWord(string key, int value);</p>
 <p>添加一个键:值对。添加时从根节点出发，如果在第i层找到了字符串的第i个字母，则沿该节点方向下降一层(注意，如果下一层存储的是数据，则视为没有找到)。否则，将第i个字母作为新的兄弟插入到第i层。将键插入完成后插入值节点。</p>
@@ -378,34 +378,34 @@ Bob 30
 <p>查找某个键是否存在，并返回值。从根节点出发，在第i层寻找字符串中第i个字母是否存在。如果是，沿着该节点方向下降一层；否则，返回false。</p>
 <p>3) void deleteWord(string  key)</p>
 <p>删除一个键:值对。删除时从底层向上删除节点，“直到遇到第一个有兄弟的节点(说明该节点向上都是与其他节点共享的前缀)，删除该节点。</p>
-<h2 id="u5806_u4E0E_u4F18_u5148_u961F_u5217"><a href="#u5806_u4E0E_u4F18_u5148_u961F_u5217" class="headerlink" title="堆与优先队列"></a>堆与优先队列</h2><p>通常所说的堆(Heap)是指二叉堆，从结构上说是完全二叉树，从实现上说一般用数组。以数组的下标建立父子节点关系：对于下标为i的节点，其父节点为(int)i/2，其左子节点为2i，右子节点为2i+1。堆最重要的性质是，它满足部分有序(partial order)：最大(小)堆的父节点一定大于等于(小于等于)当前节点，且堆顶元素一定是当前所有元素的最大(小)值。</p>
+<h2 id="堆与优先队列"><a href="#堆与优先队列" class="headerlink" title="堆与优先队列"></a>堆与优先队列</h2><p>通常所说的堆(Heap)是指二叉堆，从结构上说是完全二叉树，从实现上说一般用数组。以数组的下标建立父子节点关系：对于下标为i的节点，其父节点为(int)i/2，其左子节点为2i，右子节点为2i+1。堆最重要的性质是，它满足部分有序(partial order)：最大(小)堆的父节点一定大于等于(小于等于)当前节点，且堆顶元素一定是当前所有元素的最大(小)值。</p>
 <p>堆算法的核心在于插入，删除算法如何保持堆的性质(以下讨论均以最大堆为例):</p>
 <p>下移(shift-down)操作：下移是堆算法的核心。对于最大值堆而言，对于某个节点的下移操作相当于比较当前节点与其左右子节点的相对大小。如果当前节点小于其子节点，则将当前节点与其左右子节点中较大的子节点对换，直至操作无法进行(即当前节点大于其左右子节点)。</p>
 <p>建堆：假设堆数组长度为n，建堆过程如下，注意这里数组的下标是从 1 开始的：</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="tag">i</span>, n/<span class="number">2</span> downto <span class="number">1</span></span><br><span class="line">    do <span class="function"><span class="title">shift-down</span><span class="params">(A,i)</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">for i, n/2 downto 1</div><div class="line">    do shift-down(A,i)</div></pre></td></tr></table></figure>
 <p>插入：将新元素插入堆的末尾，并且与父节点进行比较，如果新节点的值大于父节点，则与之交换，即上移(shift-up)，直至操作无法进行。</p>
 <p>弹出堆顶元素：弹出堆顶元素(假设记为A[1]，堆尾元素记为A[n])并维护堆性质的过程如下：</p>
-<figure class="highlight autohotkey"><table><tr><td class="code"><pre><span class="line">output = <span class="literal">A</span>[<span class="number">1</span>]</span><br><span class="line">exchange <span class="literal">A</span>[<span class="number">1</span>] &lt;-&gt; <span class="literal">A</span>[n]</span><br><span class="line">heap size -= <span class="number">1</span></span><br><span class="line">shift-down(<span class="literal">A</span>,<span class="number">1</span>)</span><br><span class="line"><span class="keyword">return</span> output</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">output = A[1]</div><div class="line">exchange A[1] &lt;-&gt; A[n]</div><div class="line">heap size -= 1</div><div class="line">shift-down(A,1)</div><div class="line">return output</div></pre></td></tr></table></figure>
 <p>值得注意的是，堆的插入操作逐层上移，耗时O(log(n))，与二叉搜索树的插入相同。但建堆通过下移所有非叶子节点(下标n/2至1)实现，耗时O(n)，小于BST的O(nlog(n))。</p>
 <p>通过上述描述，不难发现堆其实就是一个优先队列。对于C++，标准模版库中的priority_queue是堆的一种具体实现。</p>
-<h2 id="u56FE"><a href="#u56FE" class="headerlink" title="图"></a>图</h2><p>图(Graph)是节点集合的一个拓扑结构，节点之间通过边相连。图分为有向图和无向图。有向图的边具有指向性，即AB仅表示由A到B的路径，但并不意味着B可以连到A。与之对应地，无向图的每条边都表示一条双向路径。</p>
+<h2 id="图"><a href="#图" class="headerlink" title="图"></a>图</h2><p>图(Graph)是节点集合的一个拓扑结构，节点之间通过边相连。图分为有向图和无向图。有向图的边具有指向性，即AB仅表示由A到B的路径，但并不意味着B可以连到A。与之对应地，无向图的每条边都表示一条双向路径。</p>
 <p>图的数据表示方式也分为两种，即邻接表(adjacency list)和邻接矩阵(adjacency matrix)。对于节点A，A的邻接表将与A之间相连的所有节点以链表的形势存储起来，节点A为链表的头节点。这样，对于有V个节点的图而言，邻接表表示法包含V个链表。因此，链接表需要的空间复杂度为O(V+E)。邻接表适用于边数不多的稀疏图。但是，如果要确定图中边(u, v)是否存在，则只能在节点u对应的邻接表中以O(E)复杂度线性搜索。</p>
 <p>对于有V个节点的图而言，邻接矩阵用V*V的二维矩阵形式表示一个图。矩阵中的元素Aij表示节点i到节点j之间是否直接有边相连。若有，则Aij数值为该边的权值，否则Aij数值为0。特别地，对于无向图，由于边的双向性，其邻接矩阵的转置矩阵为其本身。邻接矩阵的空间复杂度为O(V^2 )，适用于边较为密集的图。邻接矩阵在检索两个节点之间是否有边相连这样一个需求上，具有优势。</p>
-<h2 id="u56FE_u7684_u904D_u5386"><a href="#u56FE_u7684_u904D_u5386" class="headerlink" title="图的遍历"></a>图的遍历</h2><p>对于图的遍历(Graph Transversal)类似于树的遍历(事实上，树可以看成是图的一个特例)，也分为广度优先搜索和深度优先搜索。算法描述如下：</p>
-<h3 id="u5E7F_u5EA6_u4F18_u5148"><a href="#u5E7F_u5EA6_u4F18_u5148" class="headerlink" title="广度优先"></a>广度优先</h3><p>对于某个节点，广度优先会先访问其所有邻近节点，再访问其他节点。即，对于任意节点，算法首先发现距离为d的节点，当所有距离为d的节点都被访问后，算法才会访问距离为d+1的节点。广度优先算法将每个节点着色为白，灰或黑，白色表示未被发现，灰色表示被发现，黑色表示已访问。算法利用先进先出队列来管理所有灰色节点。一句话总结，广度优先算法先访问当前节点，一旦发现未被访问的邻近节点，推入队列，以待访问。</p>
+<h2 id="图的遍历"><a href="#图的遍历" class="headerlink" title="图的遍历"></a>图的遍历</h2><p>对于图的遍历(Graph Transversal)类似于树的遍历(事实上，树可以看成是图的一个特例)，也分为广度优先搜索和深度优先搜索。算法描述如下：</p>
+<h3 id="广度优先"><a href="#广度优先" class="headerlink" title="广度优先"></a>广度优先</h3><p>对于某个节点，广度优先会先访问其所有邻近节点，再访问其他节点。即，对于任意节点，算法首先发现距离为d的节点，当所有距离为d的节点都被访问后，算法才会访问距离为d+1的节点。广度优先算法将每个节点着色为白，灰或黑，白色表示未被发现，灰色表示被发现，黑色表示已访问。算法利用先进先出队列来管理所有灰色节点。一句话总结，广度优先算法先访问当前节点，一旦发现未被访问的邻近节点，推入队列，以待访问。</p>
 <p>《算法导论》第22章图的基本算法给出了广度优先的伪代码实现，引用如下：</p>
-<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">BFS(<span class="keyword">G</span>, s)</span><br><span class="line"><span class="keyword">For</span> each vertex <span class="keyword">u</span> exept <span class="literal">s</span></span><br><span class="line">    <span class="keyword">Do</span> Color[<span class="keyword">u</span>] = WHITE</span><br><span class="line">        Distance[<span class="keyword">u</span>] = <span class="literal">MAX</span></span><br><span class="line">        Parent[<span class="keyword">u</span>] = NIL</span><br><span class="line">Color[s] = GRAY</span><br><span class="line">Distance[s] = 0</span><br><span class="line">Parent[s] = NIL</span><br><span class="line">Enqueue(Q, s)</span><br><span class="line"><span class="keyword">While</span> Q not empty</span><br><span class="line">    <span class="keyword">Do</span> <span class="keyword">u</span> = Dequeue(Q)</span><br><span class="line">        <span class="keyword">For</span> each v is the neighbor of <span class="keyword">u</span></span><br><span class="line">            <span class="keyword">Do</span> <span class="keyword">if</span> Color[v] == WHITE</span><br><span class="line">                Color[v] = GRAY</span><br><span class="line">                Distance[v] = Distance[<span class="keyword">u</span>] + 1</span><br><span class="line">                Parent[v] = <span class="keyword">u</span></span><br><span class="line">                Enqueue(Q, v)</span><br><span class="line">            Color[<span class="keyword">u</span>] = BLACK”</span><br></pre></td></tr></table></figure>
-<h3 id="u6DF1_u5EA6_u4F18_u5148"><a href="#u6DF1_u5EA6_u4F18_u5148" class="headerlink" title="深度优先"></a>深度优先</h3><p>深度优先算法尽可能“深”地搜索一个图。对于某个节点v，如果它有未搜索的边，则沿着这条边继续搜索下去，直到该路径无法发现新的节点，回溯回节点v，继续搜索它的下一条边。深度优先算法也通过着色标记节点，白色表示未被发现，灰色表示被发现，黑色表示已访问。算法通过递归实现先进后出。一句话总结，深度优先算法一旦发现没被访问过的邻近节点，则立刻递归访问它，直到所有邻近节点都被访问过了，最后访问自己。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">BFS(G, s)</div><div class="line">For each vertex u exept s</div><div class="line">    Do Color[u] = WHITE</div><div class="line">        Distance[u] = MAX</div><div class="line">        Parent[u] = NIL</div><div class="line">Color[s] = GRAY</div><div class="line">Distance[s] = 0</div><div class="line">Parent[s] = NIL</div><div class="line">Enqueue(Q, s)</div><div class="line">While Q not empty</div><div class="line">    Do u = Dequeue(Q)</div><div class="line">        For each v is the neighbor of u</div><div class="line">            Do if Color[v] == WHITE</div><div class="line">                Color[v] = GRAY</div><div class="line">                Distance[v] = Distance[u] + 1</div><div class="line">                Parent[v] = u</div><div class="line">                Enqueue(Q, v)</div><div class="line">            Color[u] = BLACK”</div></pre></td></tr></table></figure>
+<h3 id="深度优先"><a href="#深度优先" class="headerlink" title="深度优先"></a>深度优先</h3><p>深度优先算法尽可能“深”地搜索一个图。对于某个节点v，如果它有未搜索的边，则沿着这条边继续搜索下去，直到该路径无法发现新的节点，回溯回节点v，继续搜索它的下一条边。深度优先算法也通过着色标记节点，白色表示未被发现，灰色表示被发现，黑色表示已访问。算法通过递归实现先进后出。一句话总结，深度优先算法一旦发现没被访问过的邻近节点，则立刻递归访问它，直到所有邻近节点都被访问过了，最后访问自己。</p>
 <p>《算法导论》第22章图的基本算法给出了深度优先的伪代码实现，引用如下：</p>
-<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">DFS(<span class="keyword">G</span>)</span><br><span class="line"><span class="keyword">For</span> each vertex v <span class="keyword">in</span> <span class="keyword">G</span></span><br><span class="line">    <span class="keyword">Do</span> Color[v] = WHITE</span><br><span class="line">    Parent[v] = NIL</span><br><span class="line"><span class="keyword">For</span> each vertex v <span class="keyword">in</span> <span class="keyword">G</span></span><br><span class="line">    DFS_Visit(v)</span><br><span class="line"></span><br><span class="line">DFS_Visit(<span class="keyword">u</span>)</span><br><span class="line">Color[<span class="keyword">u</span>] = GRAY</span><br><span class="line"><span class="keyword">For</span> each v is the neighbor of <span class="keyword">u</span></span><br><span class="line">    <span class="keyword">If</span> Color[v] == WHITE</span><br><span class="line">        Parent[v] = <span class="keyword">u</span></span><br><span class="line">        DFS_Visit(v)</span><br><span class="line">Color[<span class="keyword">u</span>] = BLACK</span><br></pre></td></tr></table></figure>
-<h2 id="u5355_u6E90_u6700_u77ED_u8DEF_u5F84_u95EE_u9898"><a href="#u5355_u6E90_u6700_u77ED_u8DEF_u5F84_u95EE_u9898" class="headerlink" title="单源最短路径问题"></a>单源最短路径问题</h2><p>对于每条边都有一个权值的图来说，单源最短路径问题是指从某个节点出发，到其他节点的最短距离。该问题的常见算法有Bellman-Ford和Dijkstra算法。前者适用于一般情况(包括存在负权值的情况，但不存在从源点可达的负权值回路)，后者仅适用于均为非负权值边的情况。Dijkstra的运行时间可以小于Bellman-Ford。本小节重点介绍Dijkstra算法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">DFS(G)</div><div class="line">For each vertex v in G</div><div class="line">    Do Color[v] = WHITE</div><div class="line">    Parent[v] = NIL</div><div class="line">For each vertex v in G</div><div class="line">    DFS_Visit(v)</div><div class="line"></div><div class="line">DFS_Visit(u)</div><div class="line">Color[u] = GRAY</div><div class="line">For each v is the neighbor of u</div><div class="line">    If Color[v] == WHITE</div><div class="line">        Parent[v] = u</div><div class="line">        DFS_Visit(v)</div><div class="line">Color[u] = BLACK</div></pre></td></tr></table></figure>
+<h2 id="单源最短路径问题"><a href="#单源最短路径问题" class="headerlink" title="单源最短路径问题"></a>单源最短路径问题</h2><p>对于每条边都有一个权值的图来说，单源最短路径问题是指从某个节点出发，到其他节点的最短距离。该问题的常见算法有Bellman-Ford和Dijkstra算法。前者适用于一般情况(包括存在负权值的情况，但不存在从源点可达的负权值回路)，后者仅适用于均为非负权值边的情况。Dijkstra的运行时间可以小于Bellman-Ford。本小节重点介绍Dijkstra算法。</p>
 <p>特别地，如果每条边权值相同(无权图)，由于从源开始访问图遇到节点的最小深度 就等于到该节点的最短路径，因此 Priority Queue就退化成Queue，Dijkstra算法就退化成BFS。</p>
 <p>Dijkstra的核心在于，构造一个节点集合S，对于S中的每一个节点，源点到该节点的最短距离已经确定。进一步地，对于不在S中的节点，“我们总是选择其中到源点最近的节点，将它加入S，并且更新其邻近节点到源点的距离。算法实现时需要依赖优先队列。一句话总结，Dijkstra算法利用贪心的思想，在剩下的节点中选取离源点最近的那个加入集合，并且更新其邻近节点到源点的距离，直至所有节点都被加入集合。关于Dijkstra算法的正确性分析，可以使用数学归纳法证明，详见《算法导论》第24章，单源最短路径。 给出伪代码如下：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">DIJKSTRA(G, s)</span><br><span class="line">S = EMPTY</span><br><span class="line"><span class="operator"><span class="keyword">Insert</span> all vertexes <span class="keyword">into</span> Q</span><br><span class="line"><span class="keyword">While</span> Q <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">empty</span></span><br><span class="line">    u = Q.top</span><br><span class="line">    S.<span class="keyword">insert</span>(u)</span><br><span class="line">    <span class="keyword">For</span> <span class="keyword">each</span> v <span class="keyword">is</span> the neighbor <span class="keyword">of</span> u</span><br><span class="line">        <span class="keyword">If</span> <span class="keyword">d</span>[v] &gt; <span class="keyword">d</span>[u] + weight(u, v)</span><br><span class="line">            <span class="keyword">d</span>[v] = <span class="keyword">d</span>[u] + weight(u, v)</span><br><span class="line">            <span class="keyword">parent</span>[v] = u</span></span><br></pre></td></tr></table></figure>
-<h2 id="u4EFB_u610F_u4E24_u70B9_u4E4B_u95F4_u7684_u6700_u77ED_u8DDD_u79BB"><a href="#u4EFB_u610F_u4E24_u70B9_u4E4B_u95F4_u7684_u6700_u77ED_u8DDD_u79BB" class="headerlink" title="任意两点之间的最短距离"></a>任意两点之间的最短距离</h2><p>另一个关于图常见的算法是，如何获得任意两点之间的最短距离(All-pairs shortest paths)。直观的想法是，可以对于每个节点运行Dijkstra算法，该方法可行，但更适合的算法是Floyd-Warshall算法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">DIJKSTRA(G, s)</div><div class="line">S = EMPTY</div><div class="line">Insert all vertexes into Q</div><div class="line">While Q is not empty</div><div class="line">    u = Q.top</div><div class="line">    S.insert(u)</div><div class="line">    For each v is the neighbor of u</div><div class="line">        If d[v] &gt; d[u] + weight(u, v)</div><div class="line">            d[v] = d[u] + weight(u, v)</div><div class="line">            parent[v] = u</div></pre></td></tr></table></figure>
+<h2 id="任意两点之间的最短距离"><a href="#任意两点之间的最短距离" class="headerlink" title="任意两点之间的最短距离"></a>任意两点之间的最短距离</h2><p>另一个关于图常见的算法是，如何获得任意两点之间的最短距离(All-pairs shortest paths)。直观的想法是，可以对于每个节点运行Dijkstra算法，该方法可行，但更适合的算法是Floyd-Warshall算法。</p>
 <p>Floyd算法的核心是动态编程，利用二维矩阵存储i，j之间的最短距离，矩阵的初始值为i，j之间的权值，如果i，j不直接相连，则值为正无穷。动态编程的递归式为：d(k)ij = min(d(k-1)ij, d(k-1)ik+ d(k-1)kj)  (1&lt;= k &lt;= n)。直观上理解，对于第k次更新，我们比较从i到j只经过节点编号小于k的中间节点(d(k-1)ij)，和从i到k，从k到j的距离之和(d(k-1)ik+ d(k-1)kj)。Floyd算法的复杂度是O(n^3)。关于Floyd算法的理论分析，请见《算法导论》第25章，每对顶点间的最短路径。 给出伪代码如下：</p>
-<figure class="highlight lisp"><table><tr><td class="code"><pre><span class="line">FLOYD<span class="list">(<span class="keyword">G</span>)</span></span><br><span class="line">Distance<span class="list">(<span class="number">0</span>)</span> = Weight<span class="list">(<span class="keyword">G</span>)</span></span><br><span class="line">For k = <span class="number">1</span> to n</span><br><span class="line">    For i = <span class="number">1</span> to n</span><br><span class="line">        For j = <span class="number">1</span> to n</span><br><span class="line">Distance<span class="list">(<span class="keyword">k</span>)</span>ij = min<span class="list">(<span class="keyword">Distance</span> <span class="list">(<span class="keyword">k-1</span>)</span>ij, Distance <span class="list">(<span class="keyword">k-1</span>)</span>ik+ Distance<span class="list">(<span class="keyword">k-1</span>)</span>kj)</span>  </span><br><span class="line">Return Distance<span class="list">(<span class="keyword">n</span>)</span></span><br></pre></td></tr></table></figure>
-<h2 id="u9644_u5F55"><a href="#u9644_u5F55" class="headerlink" title="附录"></a>附录</h2><ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">FLOYD(G)</div><div class="line">Distance(0) = Weight(G)</div><div class="line">For k = 1 to n</div><div class="line">    For i = 1 to n</div><div class="line">        For j = 1 to n</div><div class="line">Distance(k)ij = min(Distance (k-1)ij, Distance (k-1)ik+ Distance(k-1)kj)  </div><div class="line">Return Distance(n)</div></pre></td></tr></table></figure>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><ul>
 <li><a href="http://wdxtub.com/interview/14520607221934.html">Zigzag Level Order Traversal</a></li>
 <li><a href="http://wdxtub.com/interview/14520607221747.html">Word Ladder</a></li>
 <li><a href="http://wdxtub.com/interview/14520607221562.html">Word Ladder II</a></li>
@@ -505,7 +505,7 @@ Bob 30
       
         <div class="post-tags">
           
-            <a href="/tags/图/" rel="tag">#图</a>
+            <a href="/tags/程序员/" rel="tag">#程序员</a>
           
             <a href="/tags/思维/" rel="tag">#思维</a>
           
@@ -513,7 +513,7 @@ Bob 30
           
             <a href="/tags/树/" rel="tag">#树</a>
           
-            <a href="/tags/程序员/" rel="tag">#程序员</a>
+            <a href="/tags/图/" rel="tag">#图</a>
           
         </div>
       
@@ -748,7 +748,7 @@ Bob 30
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u89E3_u9898_u7B56_u7565"><span class="nav-number">1.</span> <span class="nav-text">解题策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DFS__u5904_u7406_u6811_u7684_u95EE_u9898"><span class="nav-number">1.1.</span> <span class="nav-text">DFS 处理树的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6811_u548C_u5176_u4ED6_u6570_u636E_u7ED3_u6784_u7684_u76F8_u4E92_u8F6C_u6362"><span class="nav-number">1.2.</span> <span class="nav-text">树和其他数据结构的相互转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u5BFB_u627E_u7279_u5B9A_u8282_u70B9"><span class="nav-number">1.3.</span> <span class="nav-text">寻找特定节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u56FE_u7684_u8BBF_u95EE"><span class="nav-number">1.4.</span> <span class="nav-text">图的访问</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6811"><span class="nav-number">2.</span> <span class="nav-text">树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u6811_u7684_u6982_u5FF5"><span class="nav-number">2.1.</span> <span class="nav-text">树的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6811_u578B_u7684_u6982_u5FF5"><span class="nav-number">2.2.</span> <span class="nav-text">树型的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u4E8C_u53C9_u6811_u7684_u904D_u5386"><span class="nav-number">2.3.</span> <span class="nav-text">二叉树的遍历</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Trie"><span class="nav-number">3.</span> <span class="nav-text">Trie</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5806_u4E0E_u4F18_u5148_u961F_u5217"><span class="nav-number">4.</span> <span class="nav-text">堆与优先队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u56FE"><span class="nav-number">5.</span> <span class="nav-text">图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u56FE_u7684_u904D_u5386"><span class="nav-number">6.</span> <span class="nav-text">图的遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u5E7F_u5EA6_u4F18_u5148"><span class="nav-number">6.1.</span> <span class="nav-text">广度优先</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u6DF1_u5EA6_u4F18_u5148"><span class="nav-number">6.2.</span> <span class="nav-text">深度优先</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5355_u6E90_u6700_u77ED_u8DEF_u5F84_u95EE_u9898"><span class="nav-number">7.</span> <span class="nav-text">单源最短路径问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4EFB_u610F_u4E24_u70B9_u4E4B_u95F4_u7684_u6700_u77ED_u8DDD_u79BB"><span class="nav-number">8.</span> <span class="nav-text">任意两点之间的最短距离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9644_u5F55"><span class="nav-number">9.</span> <span class="nav-text">附录</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#解题策略"><span class="nav-number">1.</span> <span class="nav-text">解题策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DFS-处理树的问题"><span class="nav-number">1.1.</span> <span class="nav-text">DFS 处理树的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#树和其他数据结构的相互转换"><span class="nav-number">1.2.</span> <span class="nav-text">树和其他数据结构的相互转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#寻找特定节点"><span class="nav-number">1.3.</span> <span class="nav-text">寻找特定节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图的访问"><span class="nav-number">1.4.</span> <span class="nav-text">图的访问</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#树"><span class="nav-number">2.</span> <span class="nav-text">树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#树的概念"><span class="nav-number">2.1.</span> <span class="nav-text">树的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#树型的概念"><span class="nav-number">2.2.</span> <span class="nav-text">树型的概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二叉树的遍历"><span class="nav-number">2.3.</span> <span class="nav-text">二叉树的遍历</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Trie"><span class="nav-number">3.</span> <span class="nav-text">Trie</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#堆与优先队列"><span class="nav-number">4.</span> <span class="nav-text">堆与优先队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图"><span class="nav-number">5.</span> <span class="nav-text">图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图的遍历"><span class="nav-number">6.</span> <span class="nav-text">图的遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#广度优先"><span class="nav-number">6.1.</span> <span class="nav-text">广度优先</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深度优先"><span class="nav-number">6.2.</span> <span class="nav-text">深度优先</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单源最短路径问题"><span class="nav-number">7.</span> <span class="nav-text">单源最短路径问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任意两点之间的最短距离"><span class="nav-number">8.</span> <span class="nav-text">任意两点之间的最短距离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">9.</span> <span class="nav-text">附录</span></a></li></ol></div>
             
           </div>
         </section>
@@ -928,42 +928,29 @@ Bob 30
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

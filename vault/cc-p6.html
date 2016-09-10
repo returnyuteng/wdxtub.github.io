@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="完成了数据处理，我们就可以把清洗之后的数据导入数据库了，需要分别针对 MySQL 和 HBase 写两套代码。具体我们可以把数据库与前端分离，只要配置好能让前端来连接即可。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 Twitter 语料分析 6 MySQL 和 HBase 配置及测试">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-p6.html">
@@ -97,6 +98,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 Twitter 语料分析 6 MySQL 和 HBase 配置及测试">
 <meta name="twitter:description" content="完成了数据处理，我们就可以把清洗之后的数据导入数据库了，需要分别针对 MySQL 和 HBase 写两套代码。具体我们可以把数据库与前端分离，只要配置好能让前端来连接即可。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14578035746426.jpg">
 
 
 
@@ -120,7 +122,7 @@
   
     云计算 Twitter 语料分析 6 MySQL 和 HBase 配置及测试 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -141,7 +143,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -255,24 +257,24 @@
       <p>完成了数据处理，我们就可以把清洗之后的数据导入数据库了，需要分别针对 MySQL 和 HBase 写两套代码。具体我们可以把数据库与前端分离，只要配置好能让前端来连接即可。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u6570_u636E_u5E93_u8BBE_u8BA1"><a href="#u6570_u636E_u5E93_u8BBE_u8BA1" class="headerlink" title="数据库设计"></a>数据库设计</h2><p>我们需要做的很简单，就是返回某个用户用指定的 hashtag 发的 tweet，具体请求和响应的格式为：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">请求格式</span><br><span class="line"><span class="constant">GET</span> /q2?userid=uid&amp;hashtag=hashtag</span><br><span class="line"></span><br><span class="line">响应格式（如果有对应的推文）</span><br><span class="line"><span class="constant">TEAMID</span>,<span class="constant">TEAM_AWS_ACCOUNT_ID</span>\n</span><br><span class="line"><span class="constant">Sentiment_density1</span><span class="symbol">:Tweet_time1</span><span class="symbol">:Tweet_id1</span><span class="symbol">:Cencored_text1</span>\n</span><br><span class="line"><span class="constant">Sentiment_density2</span><span class="symbol">:Tweet_time2</span><span class="symbol">:Tweet_id2</span><span class="symbol">:Cencored_text2</span>\n</span><br><span class="line"><span class="constant">Sentiment_density3</span><span class="symbol">:Tweet_time3</span><span class="symbol">:Tweet_id3</span><span class="symbol">:Cencored_text3</span>\n</span><br><span class="line"></span><br><span class="line">响应格式（如果没有对应的推文）</span><br><span class="line"></span><br><span class="line"><span class="constant">TEAMID</span>,<span class="constant">TEAM_AWS_ACCOUNT_ID</span>\n</span><br><span class="line">\n</span><br></pre></td></tr></table></figure>
+<h2 id="数据库设计"><a href="#数据库设计" class="headerlink" title="数据库设计"></a>数据库设计</h2><p>我们需要做的很简单，就是返回某个用户用指定的 hashtag 发的 tweet，具体请求和响应的格式为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">请求格式</div><div class="line">GET /q2?userid=uid&amp;hashtag=hashtag</div><div class="line"></div><div class="line">响应格式（如果有对应的推文）</div><div class="line">TEAMID,TEAM_AWS_ACCOUNT_ID\n</div><div class="line">Sentiment_density1:Tweet_time1:Tweet_id1:Cencored_text1\n</div><div class="line">Sentiment_density2:Tweet_time2:Tweet_id2:Cencored_text2\n</div><div class="line">Sentiment_density3:Tweet_time3:Tweet_id3:Cencored_text3\n</div><div class="line"></div><div class="line">响应格式（如果没有对应的推文）</div><div class="line"></div><div class="line">TEAMID,TEAM_AWS_ACCOUNT_ID\n</div><div class="line">\n</div></pre></td></tr></table></figure>
 <p>可以看到，实际要在数据库中检索的内容，就是 <code>userid</code> 和 <code>hashtag</code>，其他的列只需要按照格式建立对应的列即可（后面需要用来排序）。</p>
-<h3 id="MySQL_Schema"><a href="#MySQL_Schema" class="headerlink" title="MySQL Schema"></a>MySQL Schema</h3><p>一个可能的表格</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`q2`</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`q2`</span> (</span><br><span class="line">  <span class="string">`tweet_id`</span> <span class="built_in">BIGINT</span>(<span class="number">20</span>) <span class="keyword">UNSIGNED</span></span><br><span class="line">	<span class="string">`user_id`</span> <span class="built_in">BIGINT</span>(<span class="number">20</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">	<span class="string">`time`</span> <span class="built_in">char</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>, </span><br><span class="line">	<span class="string">`content`</span> <span class="built_in">varchar</span>(<span class="number">140</span>),</span><br><span class="line">	<span class="string">`score`</span> <span class="built_in">REAL</span>,</span><br><span class="line">	<span class="string">`hashtag`</span> <span class="built_in">varchar</span>(<span class="number">14</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> = utf8mb4 <span class="keyword">COLLATE</span> = utf8mb4_unicode_ci;</span></span><br></pre></td></tr></table></figure>
+<h3 id="MySQL-Schema"><a href="#MySQL-Schema" class="headerlink" title="MySQL Schema"></a>MySQL Schema</h3><p>一个可能的表格</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><div class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`q2`</span>;</div><div class="line"></div><div class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`q2`</span> (</div><div class="line">  <span class="string">`tweet_id`</span> <span class="built_in">BIGINT</span>(<span class="number">20</span>) <span class="keyword">UNSIGNED</span></div><div class="line">	<span class="string">`user_id`</span> <span class="built_in">BIGINT</span>(<span class="number">20</span>) <span class="keyword">UNSIGNED</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</div><div class="line">	<span class="string">`time`</span> <span class="built_in">char</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>, </div><div class="line">	<span class="string">`content`</span> <span class="built_in">varchar</span>(<span class="number">140</span>),</div><div class="line">	<span class="string">`score`</span> <span class="built_in">REAL</span>,</div><div class="line">	<span class="string">`hashtag`</span> <span class="built_in">varchar</span>(<span class="number">14</span>)</div><div class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> = utf8mb4 <span class="keyword">COLLATE</span> = utf8mb4_unicode_ci;</div></pre></td></tr></table></figure>
 <ul>
 <li>索引要怎么建立</li>
 <li>导入数据时可以使用 MyISAM engine，导入数据时较快，增加 <code>key_buffer_size</code></li>
 </ul>
 <p>创建的时候可以直接命令执行（直接用的之前的命令，注意对应改）</p>
 <p><code>mysql -u root -pdb15319root song_db &lt; create_tables.sql</code></p>
-<h3 id="HBase_Table"><a href="#HBase_Table" class="headerlink" title="HBase Table"></a>HBase Table</h3><p>HBase 的设计主要是需要决定具体的 rowkey 是什么（需要是唯一的），可以考虑用不同的项拼成一个 rowkey，然后剩下的数据放在 column family 中。</p>
+<h3 id="HBase-Table"><a href="#HBase-Table" class="headerlink" title="HBase Table"></a>HBase Table</h3><p>HBase 的设计主要是需要决定具体的 rowkey 是什么（需要是唯一的），可以考虑用不同的项拼成一个 rowkey，然后剩下的数据放在 column family 中。</p>
 <p>一个可能的设计是用 <code>tweet_id+user_id+hashtag</code> 作为 rowkey，具体怎么弄还要测试</p>
 <ul>
 <li>增加 BlockCache size</li>
 <li>增加第二个索引: Phoenix -&gt; converted index</li>
 </ul>
-<h2 id="u5BFC_u5165_u6570_u636E"><a href="#u5BFC_u5165_u6570_u636E" class="headerlink" title="导入数据"></a>导入数据</h2><h3 id="u9884_u5904_u7406"><a href="#u9884_u5904_u7406" class="headerlink" title="预处理"></a>预处理</h3><p>这里我们需要把 MapReduce 得到的结果合并、排序并处理成我们需要的形式。</p>
+<h2 id="导入数据"><a href="#导入数据" class="headerlink" title="导入数据"></a>导入数据</h2><h3 id="预处理"><a href="#预处理" class="headerlink" title="预处理"></a>预处理</h3><p>这里我们需要把 MapReduce 得到的结果合并、排序并处理成我们需要的形式。</p>
 <p>首先是把数据下载到机器（本地或者 EC2 都可以）上，我们的结果放在 <code>s3://housailei15619/alloutput/</code> 中，直接 <code>wget</code> 应该就可以：</p>
 <ul>
 <li><code>wget http://s3.amazonaws.com/housailei15619/alloutput/part-00000</code></li>
@@ -315,11 +317,11 @@
 <li><code>aws s3 cp ./hbasedata s3://housailei15619/alloutput/</code></li>
 </ul>
 <p>测试之后发现可能会有重复的记录，可以用 <code>grep</code> 来看到底出了什么问题 <code>grep &quot;1000001233&quot; hbasedata | grep &quot;BabyyO&quot;</code></p>
-<h3 id="u5BFC_u5165_MySQL"><a href="#u5BFC_u5165_MySQL" class="headerlink" title="导入 MySQL"></a>导入 MySQL</h3><p>大概的语法是：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">date</span><br><span class="line">mysqlimport --local --fields-terminated-by=<span class="string">'\t'</span> --lines-terminated-by=<span class="string">'\n'</span> -uroot -proot --default-character-set=utf8mb4 dbname filename</span><br><span class="line">date</span><br></pre></td></tr></table></figure>
+<h3 id="导入-MySQL"><a href="#导入-MySQL" class="headerlink" title="导入 MySQL"></a>导入 MySQL</h3><p>大概的语法是：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">date</div><div class="line">mysqlimport --local --fields-terminated-by=<span class="string">'\t'</span> --lines-terminated-by=<span class="string">'\n'</span> -uroot -proot --default-character-set=utf8mb4 dbname filename</div><div class="line">date</div></pre></td></tr></table></figure>
 <p>建立索引</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">date</span><br><span class="line">mysql -uroot -proot dbname <span class="operator">-e</span> <span class="string">"create index iname on tablename (column1, column2,..)"</span></span><br><span class="line">date</span><br></pre></td></tr></table></figure>
-<h3 id="u5BFC_u5165_HBase"><a href="#u5BFC_u5165_HBase" class="headerlink" title="导入 HBase"></a>导入 HBase</h3><p>需要使用 EMR 进行导入，具体参考 <a href="http://wdxtub.com/2016/02/22/cc-14/">云计算 第 14 课 文件 vs 数据库</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">date</div><div class="line">mysql -uroot -proot dbname <span class="_">-e</span> <span class="string">"create index iname on tablename (column1, column2,..)"</span></div><div class="line">date</div></pre></td></tr></table></figure>
+<h3 id="导入-HBase"><a href="#导入-HBase" class="headerlink" title="导入 HBase"></a>导入 HBase</h3><p>需要使用 EMR 进行导入，具体参考 <a href="http://wdxtub.com/2016/02/22/cc-14/">云计算 第 14 课 文件 vs 数据库</a></p>
 <ol>
 <li>启动 EMR 集群：1 master &amp; 1 core <ul>
 <li>在创建页面中选择 “Go to advanced options”</li>
@@ -343,15 +345,15 @@
 </ul>
 <p>开启之后连接上去 <code>ssh -i group2 hadoop@dns.compute-1.amazonaws.com</code></p>
 <p>然后用 <code>hdfs dfsadmin -report</code> 检查状态，一切正常之后就可以上传数据了，用如下命令即可</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir Q2</span><br><span class="line"><span class="built_in">cd</span> Q2</span><br><span class="line">scp -i group2.pem ./cdata hadoop@ec2-<span class="number">52</span>-<span class="number">91</span>-<span class="number">183</span>-<span class="number">102</span>.compute-<span class="number">1</span>.amazonaws.com:~/Q2/</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">mkdir Q2</div><div class="line"><span class="built_in">cd</span> Q2</div><div class="line">scp -i group2.pem ./cdata hadoop@ec2-52-91-183-102.compute-1.amazonaws.com:~/Q2/</div></pre></td></tr></table></figure>
 <p>然后创建对应的 HDFS 目录，再把 csv 文件移过去：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hadoop fs -mkdir /housailei</span><br><span class="line">hadoop fs -mkdir /housailei/csv</span><br><span class="line">hadoop fs -put ./cdata /housailei/csv/</span><br><span class="line"><span class="comment"># 查看</span></span><br><span class="line">hadoop fs -ls /housailei/csv/</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">hadoop fs -mkdir /housailei</div><div class="line">hadoop fs -mkdir /housailei/csv</div><div class="line">hadoop fs -put ./cdata /housailei/csv/</div><div class="line"><span class="comment"># 查看</span></div><div class="line">hadoop fs -ls /housailei/csv/</div></pre></td></tr></table></figure>
 <p>然后进入 HBase Shell 操作 <code>hbase shell</code></p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">hbase(main):<span class="number">001</span>:<span class="number">0</span>&gt; create <span class="string">'q2db'</span>, &#123;NAME =&gt; <span class="string">'data'</span>, DATA_BLOCK_ENCODING =&gt; <span class="string">'FAST_DIFF'</span>, COMPRESSION =&gt; <span class="string">'SNAPPY'</span>, BLOCKSIZE =&gt; <span class="string">'131072'</span>, IN_MEMORY =&gt; <span class="string">'true'</span>, BLOCKCACHE =&gt; <span class="string">'true'</span>, BLOOMFILTER =&gt; <span class="string">'ROWCOL'</span>&#125;</span><br><span class="line">hbase(main):<span class="number">002</span>:<span class="number">0</span>&gt; <span class="keyword">list</span></span><br><span class="line">hbase(main):<span class="number">003</span>:<span class="number">0</span>&gt; describe <span class="string">'q2db'</span></span><br><span class="line">hbase(main):<span class="number">004</span>:<span class="number">0</span>&gt; <span class="keyword">exit</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">hbase(main):001:0&gt; create &apos;q2db&apos;, &#123;NAME =&gt; &apos;data&apos;, DATA_BLOCK_ENCODING =&gt; &apos;FAST_DIFF&apos;, COMPRESSION =&gt; &apos;SNAPPY&apos;, BLOCKSIZE =&gt; &apos;131072&apos;, IN_MEMORY =&gt; &apos;true&apos;, BLOCKCACHE =&gt; &apos;true&apos;, BLOOMFILTER =&gt; &apos;ROWCOL&apos;&#125;</div><div class="line">hbase(main):002:0&gt; list</div><div class="line">hbase(main):003:0&gt; describe &apos;q2db&apos;</div><div class="line">hbase(main):004:0&gt; exit</div></pre></td></tr></table></figure>
 <p>然后就需要具体的导入了，可能会遇到数据太大放不进去的问题，这时候放到挂载的目录下 <code>/mnt</code> 才行，命令如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /mnt</span><br><span class="line">wget http://s3.amazonaws.com/housailei15619/alloutput/hbasedata</span><br><span class="line">aws s3 cp s3://housailei15619/alloutput/hbasedata ./</span><br><span class="line"></span><br><span class="line">hadoop fs -put ./hbasedata /housailei/csv/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里是处理完全部数据导入的时候的命令</span></span><br><span class="line"><span class="comment"># rowkey 直接是 userid+hashtag：</span></span><br><span class="line"><span class="comment"># 以 \t 为分隔符的话就不需要设定，这是默认的</span></span><br><span class="line">hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.bulk.output=/hfile_groupt1 -Dimporttsv.columns=HBASE_ROW_KEY,data:t q2db /housailei/csv/hbasedata</span><br><span class="line"></span><br><span class="line">hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /hfile_groupt1 q2db</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="built_in">cd</span> /mnt</div><div class="line">wget http://s3.amazonaws.com/housailei15619/alloutput/hbasedata</div><div class="line">aws s3 cp s3://housailei15619/alloutput/hbasedata ./</div><div class="line"></div><div class="line">hadoop fs -put ./hbasedata /housailei/csv/</div><div class="line"></div><div class="line"><span class="comment"># 这里是处理完全部数据导入的时候的命令</span></div><div class="line"><span class="comment"># rowkey 直接是 userid+hashtag：</span></div><div class="line"><span class="comment"># 以 \t 为分隔符的话就不需要设定，这是默认的</span></div><div class="line">hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.bulk.output=/hfile_groupt1 -Dimporttsv.columns=HBASE_ROW_KEY,data:t q2db /housailei/csv/hbasedata</div><div class="line"></div><div class="line">hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /hfile_groupt1 q2db</div></pre></td></tr></table></figure>
 <p>完成之后测试一下 <code>hbase shell</code>：</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">hbase</span><span class="params">(main)</span></span>:<span class="number">001</span>:<span class="number">0</span>&gt; scan <span class="string">'q2db'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">hbase(main):001:0&gt; scan &apos;q2db&apos;</div></pre></td></tr></table></figure>
 <p>如果导入错误的话，可以在 hbase shell 中 <code>disable &#39;q2db&#39;</code> 之后 <code>drop &#39;q2db&#39;</code> 来删除这个表，还要原来的 shell 中删除原来的数据文件 <code>hadoop fs -rm /housailei/csv/cdata</code></p>
 <p>重新导入的时候需要注意输出文件夹不能已存在，每次换新的就好。注意需要确保没有 <code>BAD_LINE</code> 才能继续。</p>
 <p>在 HBase 的 master node 中备份（注意需要创建好对应的文件夹）：<code>aws emr create-hbase-backup --cluster-id j-3CU55C20WQ5E4 --dir s3://housailei15619/backups/j-3CU55C20WQ5E4 --consistent</code> </p>
@@ -360,7 +362,7 @@
 <li><code>mapred job -list</code> 查看当前在执行的任务列表</li>
 <li><code>hadoop job -kill $jobId</code> 杀掉当前的任务</li>
 </ul>
-<h2 id="u524D_u7AEF_u8BBE_u8BA1"><a href="#u524D_u7AEF_u8BBE_u8BA1" class="headerlink" title="前端设计"></a>前端设计</h2><p>其实只需要写两个连接器用来连接对应的数据库，然后在 Undertow 的 handler 中对应调用即可。具体访问的方式同样可以参考 <a href="http://wdxtub.com/2016/02/22/cc-14/">云计算 第 14 课 文件 vs 数据库</a></p>
+<h2 id="前端设计"><a href="#前端设计" class="headerlink" title="前端设计"></a>前端设计</h2><p>其实只需要写两个连接器用来连接对应的数据库，然后在 Undertow 的 handler 中对应调用即可。具体访问的方式同样可以参考 <a href="http://wdxtub.com/2016/02/22/cc-14/">云计算 第 14 课 文件 vs 数据库</a></p>
 <ul>
 <li>HBase 直接在 EMR 上做完，所以直接连接即可，不需要怎么配置</li>
 <li>MySQL 就需要自己安装和配置了</li>
@@ -379,10 +381,10 @@
 <p>可能还需要修改 java 虚拟机默认的堆的大小，在 <code>~/.bashrc</code> 中加入 <code>export MAVEN_OPTS=”-Xms14000m -Xmx14000m”</code> 并 <code>source .bashrc</code></p>
 <p>杀掉当前在跑的进程 <code>ps -ef | grep mvn</code> 然后 <code>kill pid</code>，然后去 <code>/etc/init.d</code> 文件夹下把开机启动脚本删除（因为队友建的镜像默认是开机启动的，不方便调试）</p>
 <p>启动 server <code>mvn clean; mvn compile; sudo mvn exec:java</code></p>
-<h2 id="u4F18_u5316_u6280_u5DE7"><a href="#u4F18_u5316_u6280_u5DE7" class="headerlink" title="优化技巧"></a>优化技巧</h2><h3 id="MySQL__u4F18_u5316"><a href="#MySQL__u4F18_u5316" class="headerlink" title="MySQL 优化"></a>MySQL 优化</h3><blockquote>
+<h2 id="优化技巧"><a href="#优化技巧" class="headerlink" title="优化技巧"></a>优化技巧</h2><h3 id="MySQL-优化"><a href="#MySQL-优化" class="headerlink" title="MySQL 优化"></a>MySQL 优化</h3><blockquote>
 <p>为查询缓存优化你的查询</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 查询缓存不开启</span></span><br><span class="line">$r = mysql_query(<span class="string">"SELECT username FROM user WHERE signup_date &gt;= CURDATE()"</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 开启查询缓存</span></span><br><span class="line">$today = date(<span class="string">"Y-m-d"</span>);</span><br><span class="line">$r = mysql_query(<span class="string">"SELECT username FROM user WHERE signup_date &gt;= '$today'"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 查询缓存不开启</span></div><div class="line">$r = mysql_query(<span class="string">"SELECT username FROM user WHERE signup_date &gt;= CURDATE()"</span>);</div><div class="line"> </div><div class="line"><span class="comment">// 开启查询缓存</span></div><div class="line">$today = date(<span class="string">"Y-m-d"</span>);</div><div class="line">$r = mysql_query(<span class="string">"SELECT username FROM user WHERE signup_date &gt;= '$today'"</span>);</div></pre></td></tr></table></figure>
 <p>上面两条SQL语句的差别就是 CURDATE() ，MySQL的查询缓存对这个函数不起作用。所以，像 NOW() 和 RAND() 或是其它的诸如此类的SQL函数都不会开启查询缓存，因为这些函数的返回是会不定的易变的。所以，你所需要的就是用一个变量来代替MySQL的函数，从而开启缓存。</p>
 <blockquote>
 <p>为搜索字段建索引</p>
@@ -423,7 +425,7 @@
 </ul>
 </li>
 </ul>
-<h3 id="HBase__u4F18_u5316"><a href="#HBase__u4F18_u5316" class="headerlink" title="HBase 优化"></a>HBase 优化</h3><p>HBase 不能支持 where 条件、Order by 查询，只支持按照主键 Rowkey 和主键的 range 来查询，但是可以通过 HBase 提供的 API 进行条件过滤。</p>
+<h3 id="HBase-优化"><a href="#HBase-优化" class="headerlink" title="HBase 优化"></a>HBase 优化</h3><p>HBase 不能支持 where 条件、Order by 查询，只支持按照主键 Rowkey 和主键的 range 来查询，但是可以通过 HBase 提供的 API 进行条件过滤。</p>
 <p>HBase 的 Rowkey 是数据行的唯一标识，必须通过它进行数据行访问，目前有三种方式，单行键访问、行键范围访问、全表扫描访问。数据按行键的方式排序存储，依次按位比较，数值较大的排列在后，例如 int 方式的排序：1，10，100，11，12，2，20…，906，…。</p>
 <p>ColumnFamily 是“列族”，属于 schema 表，在建表时定义，每个列属于一个列族，列名用列族作为前缀“ColumnFamily：qualifier”，访问控制、磁盘和内存的使用统计都是在列族层面进行的。<br>Cell 是通过行和列确定的一个存储单元，值以字节码存储，没有类型。</p>
 <p>Timestamp 是区分不同版本 Cell 的索引，64 位整型。不同版本的数据按照时间戳倒序排列，最新的数据版本排在最前面。</p>
@@ -450,7 +452,7 @@
 <p>硬件优化</p>
 </blockquote>
 <p>增加数据节点</p>
-<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
 <li><a href="http://coolshell.cn/articles/1846.html" target="_blank" rel="external">MySQL性能优化的最佳20+条经验</a></li>
 <li><a href="http://dev.mysql.com/doc/refman/5.1/en/myisam-storage-engine.html" target="_blank" rel="external">target=”_blank”MyISAM Storage Engine</a></li>
 <li><a href="http://dev.mysql.com/doc/refman/5.1/en/innodb.html" target="_blank" rel="external">InnoDB Storage Engine</a></li>
@@ -794,42 +796,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

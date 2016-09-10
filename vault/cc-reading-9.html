@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="A key element, which is also one of the more complex parts of virtualization, is CPU virtualization.">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 阅读材料 9 Resource Virtualization - CPU">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-reading-9.html">
@@ -103,6 +104,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 阅读材料 9 Resource Virtualization - CPU">
 <meta name="twitter:description" content="A key element, which is also one of the more complex parts of virtualization, is CPU virtualization.">
+<meta name="twitter:image" content="http://wdxtub.com/images/14551131967470.jpg">
 
 
 
@@ -126,7 +128,7 @@
   
     云计算 阅读材料 9 Resource Virtualization - CPU | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -147,7 +149,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -267,7 +269,7 @@
 <li>Virtualizing the ISA of a pCPU in order to make vCPUs with different ISAs run on this pCPU.</li>
 </ul>
 <p>In this module, we present some conditions for virtualizing ISAs. Second, we describe ISA virtualization. Third, we make a distinction between two types of ISA virtualization: full virtualization and paravirtualization. Fourth, we discuss emulation, a major technique for virtualizing CPUs. Fifth, we compare two kinds of VMs: simultaneous multiprocessing (SMP) and uniprocessors (UP) VMs. Finally, we close with a discussion on vCPU scheduling. As examples, we present two popular Xen vCPU schedulers.</p>
-<h2 id="The_Conditions_for_Virtualizing_ISAs"><a href="#The_Conditions_for_Virtualizing_ISAs" class="headerlink" title="The Conditions for Virtualizing ISAs"></a>The Conditions for Virtualizing ISAs</h2><p><strong>Virtualizing an ISA</strong></p>
+<h2 id="The-Conditions-for-Virtualizing-ISAs"><a href="#The-Conditions-for-Virtualizing-ISAs" class="headerlink" title="The Conditions for Virtualizing ISAs"></a>The Conditions for Virtualizing ISAs</h2><p><strong>Virtualizing an ISA</strong></p>
 <p>The key to virtualizing a CPU lies in the execution of both privileged and unprivileged instructions issued by guest virtual processors. The set of any processor instructions is documented and provided in the ISA. The following video (Video 3.5) outlines the issues regarding virtualizing an ISA:</p>
 <p><a href="http://youtu.be/L55ut9i10O8" target="_blank" rel="external">Video 3.5: Virtualizing an ISA.</a></p>
 <p>Special privileges to system resources are permitted by defining modes of operations (or rings) in the ISA. Each CPU ISA usually specifies two modes of operations, system (or supervisor/kernel/privileged) mode and user mode (see Fig. 3.18(a)). System mode allows a wide accessibility to system components, while user mode restricts such accessibility. In an attempt to provide security and resource isolations, OSs in traditional systems are executed in system mode, while associated applications are run in user mode. Some ISAs, however, support more than two rings. For instance, the Intel IA-32 ISA supports four rings (see Fig. 3.18(b)). In traditional systems, when Linux is implemented on an IA-32 ISA, the OS is executed in Ring 0 and application processes are executed in Ring 3.</p>
@@ -281,7 +283,7 @@
 <ol>
 <li>Popek, J., and Goldberg, R. (1974). “Formal Requirements for Virtualizable Third Generation Architectures.” Commun. ACM, Vol. 17, No. 7.</li>
 </ol>
-<h2 id="Full_Virtualization_and_Paravirtualization"><a href="#Full_Virtualization_and_Paravirtualization" class="headerlink" title="Full Virtualization and Paravirtualization"></a>Full Virtualization and Paravirtualization</h2><p>A problem arises when an instruction that is sensitive but unprivileged is issued by a process running on a VM in user mode. According to Popek and Goldberg (1974), sensitive instructions have to trap to the hypervisor if executed in user mode. However, as explained earlier, sensitive instructions can be privileged (e.g., LPSW) and unprivileged (e.g., POPF). Unprivileged instructions do not trap to the hypervisor. Instructions that are sensitive and unprivileged are called critical (see Fig. 3.21). ISAs that contain critical instructions do not satisfy Popek and Goldberg’s theorem [1] . Video 3.6 covers this concept and ways around it:</p>
+<h2 id="Full-Virtualization-and-Paravirtualization"><a href="#Full-Virtualization-and-Paravirtualization" class="headerlink" title="Full Virtualization and Paravirtualization"></a>Full Virtualization and Paravirtualization</h2><p>A problem arises when an instruction that is sensitive but unprivileged is issued by a process running on a VM in user mode. According to Popek and Goldberg (1974), sensitive instructions have to trap to the hypervisor if executed in user mode. However, as explained earlier, sensitive instructions can be privileged (e.g., LPSW) and unprivileged (e.g., POPF). Unprivileged instructions do not trap to the hypervisor. Instructions that are sensitive and unprivileged are called critical (see Fig. 3.21). ISAs that contain critical instructions do not satisfy Popek and Goldberg’s theorem [1] . Video 3.6 covers this concept and ways around it:</p>
 <p><a href="http://youtu.be/ay0ZpkMbw_8" target="_blank" rel="external">Video 3.6: ISA virtualization techniques.</a></p>
 <p>The challenge becomes, can a hypervisor be constructed in the presence of critical instructions? The answer is yes. Nonetheless, Smith and Nair [2] distinguish between a hypervisor that complies with Popek and Goldberg’s theorem and one that does not comply by referring to the former as a true or an efficient hypervisor and to the latter simply as a hypervisor.</p>
 <p><img src="/images/14551133049722.jpg" alt="Figure 3.21: Instructions that do not satisfy Popek and Goldberg’&#39; theorem. They are called critical instructions."></p>
@@ -299,7 +301,7 @@
 <p><a href="http://youtu.be/wnbYwUm6KgY" target="_blank" rel="external">Video 3.8: Binary Translation.</a></p>
 <p>As presented in Video 3.8, binary translation tries to amortize the fetch and analysis costs caused by the direct-threaded interpreter through: (1) translating a block of source instructions (rather than a single instruction) to a block of target instructions and (2) caching the translated code in an attempt to save interpreting source instructions more than once. The following table compares binary translation, decode-and-dispatch, indirect-threaded, and direct-threaded emulation techniques in terms of four metrics: memory requirements, startup performance, steady-state performance, and code portability. For instance, the decode-and-dispatch interpreter row reads as follows: first, with decode and dispatch, memory requirements remain low because of having only one interpreter routine for each instruction type in the target ISA. Furthermore, decode and dispatch avoids threading the dispatch code at the end of each routine. Second, startup performance is fast because neither predecoding nor translation of the source binary is applied. Third, steady-state performance (i.e., the performance after starting up the interpreter) is slow because of the high number of branches and the interpretation of every instruction per each appearance. Finally, code portability is good because predecoding with addresses of interpreter routines is not applied by decode-and-dispatch interpreters (in contrast to direct-threaded interpreters).</p>
 <p><img src="/images/14551136108303.jpg" alt=""></p>
-<h2 id="Virtual_CPU"><a href="#Virtual_CPU" class="headerlink" title="Virtual CPU"></a>Virtual CPU</h2><p><strong>Uniprocessor and Multiprocessor VMs</strong></p>
+<h2 id="Virtual-CPU"><a href="#Virtual-CPU" class="headerlink" title="Virtual CPU"></a>Virtual CPU</h2><p><strong>Uniprocessor and Multiprocessor VMs</strong></p>
 <p>As described earlier in the unit, a virtual CPU (vCPU) acts as a proxy to a physical CPU (pCPU). In other words, a vCPU is a representation of a pCPU to a guest OS (i.e., an OS that runs on a VM). A vCPU can be initiated in a VM and mapped to an underlying pCPU by the hypervisor. In principle, a VM can have one or many vCPUs. For instance, a VM in VMware ESX 4 can have up to eight vCPUs. The amount of vCPUs represents the width of a VM. A VM with a width greater than one is called a symmetric multiprocessing (SMP) VM. In reverse, a VM with a width equal to one is called a uniprocessor (UP) VM. Video 3.9 discusses Multiprocesseor VMs in detail:</p>
 <p><a href="http://youtu.be/0iZrCvccTdY" target="_blank" rel="external">Video 3.9: Multiprocessor VMs.</a></p>
 <p>Figure 3.23 demonstrates an SMP native system VM with a width of four and a UP native system VM, both running on the same hardware.</p>
@@ -679,42 +681,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

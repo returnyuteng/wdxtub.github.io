@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Logstash,日志,管理," />
+  <meta name="keywords" content="管理,日志,Logstash," />
 
 
 
@@ -97,6 +97,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Logstash 入门指南">
 <meta name="twitter:description" content="日志作为运维中非常重要的一环，往往只有在出了问题的时候才被重视起来，不同部门，不同项目的不同日志如果能够统一规范管理，对日常的开发和业务的运营都是有很大帮助的，这里我们来了解一下实时日志处理领域开源第一选择 - ELK 套餐中的 L - Logstash">
+<meta name="twitter:image" content="http://wdxtub.com/images/14693152085839.jpg">
 
 
 
@@ -114,7 +115,7 @@
   };
 </script>
 
-  <title> Logstash 入门指南 | 小土刀 </title>
+  <title> Logstash 入门指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -135,7 +136,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -338,12 +339,12 @@
         <p>日志作为运维中非常重要的一环，往往只有在出了问题的时候才被重视起来，不同部门，不同项目的不同日志如果能够统一规范管理，对日常的开发和业务的运营都是有很大帮助的，这里我们来了解一下实时日志处理领域开源第一选择 - ELK 套餐中的 L - Logstash</p>
 <a id="more"></a>
 <hr>
-<h2 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h2><p>从 Logstash 的名字就能看出，它主要负责跟日志相关的各类操作，不过在此之前，我们先来看看日志管理的三个境界吧。</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>从 Logstash 的名字就能看出，它主要负责跟日志相关的各类操作，不过在此之前，我们先来看看日志管理的三个境界吧。</p>
 <p>境界一：『昨夜西风凋碧树。独上高楼，望尽天涯路』，在各台服务器上用传统的 linux 工具（如 cat, tail, sed, awk, grep 等）对日志进行简单的分析和处理，基本上可以认为是命令级别的操作，成本很低，速度很快，但难以复用，也只能完成基本的操作。</p>
 <p>境界二：『衣带渐宽终不悔，为伊消得人憔悴』，服务器多了之后，分散管理的成本变得越来越多，所以会利用 <code>rsyslog</code> 这样的工具，把各台机器上的日志汇总到某一台指定的服务器上，进行集中化管理。这样带来的问题是日志量剧增，小作坊式的管理基本难以满足需求。</p>
 <p>境界三：『众里寻他千百度，蓦然回首，那人却在灯火阑珊处』，随着日志量的增大，我们从日志中获取去所需信息，并找到各类关联事件的难度会逐渐加大，这个时候，就是 Logstash 登场的时候了。</p>
 <p>Logstash 的主要优势在我看来有俩，一个是在支持各类插件的前提下提供统一的管道进行日志处理（就是 input-filter-output 这一套），二个是灵活且性能不错。</p>
-<h2 id="u67B6_u6784"><a href="#u67B6_u6784" class="headerlink" title="架构"></a>架构</h2><p>Logstash 是由 JRuby 编写的，使用基于消息的简单架构，在 JVM 上运行。理念非常简单，如果说 MapReduce 框架分为 Mapper 和 Reducer 两大模块，那么 Logstash 有仨：</p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>Logstash 是由 JRuby 编写的，使用基于消息的简单架构，在 JVM 上运行。理念非常简单，如果说 MapReduce 框架分为 Mapper 和 Reducer 两大模块，那么 Logstash 有仨：</p>
 <ol>
 <li>Collect: 数据输入。对应 input</li>
 <li>Enrich: 数据处理。对应 filter</li>
@@ -358,21 +359,21 @@
 <li>Indexer 负责日志存储。在这个架构中会从 Redis 接收日志，写入到本地文件。因为架构比较灵活，如果不想用 Logstash 的存储，也可以对接到 Elasticsearch，这也就是前面所说的 ELK 的套路了。</li>
 </ul>
 <p>一个 Logstash 进程可以有多个输入源，同时也可以有多个输出源，输入输出均支持过滤和改写，非常灵活。如果需要 Broker 的话，官方推荐 Redis，因为其支持订阅发布和队列两种模式，能够自行根据需求选用。</p>
-<h2 id="u5B89_u88C5_u90E8_u7F72"><a href="#u5B89_u88C5_u90E8_u7F72" class="headerlink" title="安装部署"></a>安装部署</h2><p>Logstash 的安装也非常简单，我们先装好 JDK，配好 <code>JAVA_HOME</code> 即可，然后下载 Logstash 的安装包，一般来说我们会解压到 <code>/usr/local/</code> 中，运行的时候执行 logstash 文件夹下 bin 文件夹的 <code>logstash</code> 文件即可。就是这么轻松，也就部署完成了，如果需要管理集群，可以配合 <code>ansible</code> 这类轻量级的配置管理工具，之后我也会具体介绍。</p>
+<h2 id="安装部署"><a href="#安装部署" class="headerlink" title="安装部署"></a>安装部署</h2><p>Logstash 的安装也非常简单，我们先装好 JDK，配好 <code>JAVA_HOME</code> 即可，然后下载 Logstash 的安装包，一般来说我们会解压到 <code>/usr/local/</code> 中，运行的时候执行 logstash 文件夹下 bin 文件夹的 <code>logstash</code> 文件即可。就是这么轻松，也就部署完成了，如果需要管理集群，可以配合 <code>ansible</code> 这类轻量级的配置管理工具，之后我也会具体介绍。</p>
 <p>当然在 mac 下，可以直接 <code>brew install logstash</code> 即可。</p>
-<h2 id="u7B80_u5355_u6D41_u7A0B"><a href="#u7B80_u5355_u6D41_u7A0B" class="headerlink" title="简单流程"></a>简单流程</h2><p>更详细的介绍会在之后的《ELK 指南》中提及，这里就简单说一下 Logstash 具体的执行吧。按照惯例，从 Hello World 开始，运行如下命令：</p>
+<h2 id="简单流程"><a href="#简单流程" class="headerlink" title="简单流程"></a>简单流程</h2><p>更详细的介绍会在之后的《ELK 指南》中提及，这里就简单说一下 Logstash 具体的执行吧。按照惯例，从 Hello World 开始，运行如下命令：</p>
 <p><code>bin/logstash -e &#39;input{stdin{}}output{stdout{codec=&gt;rubydebug}}&#39;</code></p>
 <p>然后在终端里随便输入点什么，比如说 Hello world，我们就可以看到如下结果：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># dawang at wdxtub.local in ~/Documents/Blog [7:34:06]</span></span><br><span class="line">$ logstash <span class="operator">-e</span> <span class="string">'input&#123;stdin&#123;&#125;&#125;output&#123;stdout&#123;codec=&gt;rubydebug&#125;&#125;'</span></span><br><span class="line">Settings: Default pipeline workers: <span class="number">4</span></span><br><span class="line">Pipeline main started</span><br><span class="line">Hello World! I<span class="string">'m wdxtub</span><br><span class="line">&#123;</span><br><span class="line">       "message" =&gt; "Hello World! I'</span>m wdxtub<span class="string">",</span><br><span class="line">      "</span>@version<span class="string">" =&gt; "</span><span class="number">1</span><span class="string">",</span><br><span class="line">    "</span>@timestamp<span class="string">" =&gt; "</span><span class="number">2016</span>-<span class="number">07</span>-<span class="number">23</span>T23:<span class="number">35</span>:<span class="number">27.773</span>Z<span class="string">",</span><br><span class="line">          "</span>host<span class="string">" =&gt; "</span>wdxtub.local<span class="string">"</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># dawang at wdxtub.local in ~/Documents/Blog [7:34:06]</span></div><div class="line">$ logstash <span class="_">-e</span> <span class="string">'input&#123;stdin&#123;&#125;&#125;output&#123;stdout&#123;codec=&gt;rubydebug&#125;&#125;'</span></div><div class="line">Settings: Default pipeline workers: 4</div><div class="line">Pipeline main started</div><div class="line">Hello World! I<span class="string">'m wdxtub</span></div><div class="line">&#123;</div><div class="line">       "message" =&gt; "Hello World! I'm wdxtub<span class="string">",</span></div><div class="line">      "@version<span class="string">" =&gt; "</span>1<span class="string">",</span></div><div class="line">    "@timestamp<span class="string">" =&gt; "</span>2016-07-23T23:35:27.773Z<span class="string">",</span></div><div class="line">          "host<span class="string">" =&gt; "</span>wdxtub.local<span class="string">"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>如果需要配置的东西比较多，还用命令行输入就比较费劲了，这时我们可以使用 <code>.conf</code> 文件来进行配置，再交由 <code>logstash -f</code> 来执行。另外我们可以把所有的配置文件放在 <code>/etc/logstash.d/</code> 中，logstash 会自动读取该目录下所有 <code>*.conf</code> 的文本文件，然后再拼接成一个完整的大配置文件执行。</p>
 <p>具体的命令行参数如下，这里就不再赘述了：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ logstash -h</span><br><span class="line">Usage:</span><br><span class="line">    /bin/logstash agent [OPTIONS]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">    <span class="operator">-f</span>, --config CONFIG_PATH      Load the logstash config from a specific file</span><br><span class="line">                                  or directory.  If a directory is given, all</span><br><span class="line">                                  files <span class="keyword">in</span> that directory will be concatenated</span><br><span class="line">                                  <span class="keyword">in</span> lexicographical order and <span class="keyword">then</span> parsed as a</span><br><span class="line">                                  single config file. You can also specify</span><br><span class="line">                                  wildcards (globs) and any matched files will</span><br><span class="line">                                  be loaded <span class="keyword">in</span> the order described above.</span><br><span class="line">    <span class="operator">-e</span> CONFIG_STRING              Use the given string as the configuration</span><br><span class="line">                                  data. Same syntax as the config file. If no</span><br><span class="line">                                  input is specified, <span class="keyword">then</span> the following is</span><br><span class="line">                                  used as the default input:</span><br><span class="line">                                  <span class="string">"input &#123; stdin &#123; type =&gt; stdin &#125; &#125;"</span></span><br><span class="line">                                  and <span class="keyword">if</span> no output is specified, <span class="keyword">then</span> the</span><br><span class="line">                                  following is used as the default output:</span><br><span class="line">                                  <span class="string">"output &#123; stdout &#123; codec =&gt; rubydebug &#125; &#125;"</span></span><br><span class="line">                                  If you wish to use both defaults, please use</span><br><span class="line">                                  the empty string <span class="keyword">for</span> the <span class="string">'-e'</span> flag.</span><br><span class="line">                                   (default: <span class="string">""</span>)</span><br><span class="line">    -w, --pipeline-workers COUNT  Sets the number of pipeline workers to run.</span><br><span class="line">                                   (default: <span class="number">4</span>)</span><br><span class="line">    -b, --pipeline-batch-size SIZE Size of batches the pipeline is to work in.</span><br><span class="line">                                   (default: <span class="number">125</span>)</span><br><span class="line">    -u, --pipeline-batch-delay DELAY_IN_MS When creating pipeline batches, how long to <span class="built_in">wait</span> <span class="keyword">while</span> polling</span><br><span class="line">                                  <span class="keyword">for</span> the next event.</span><br><span class="line">                                   (default: <span class="number">5</span>)</span><br><span class="line">    --filterworkers COUNT         DEPRECATED. Now an <span class="built_in">alias</span> <span class="keyword">for</span> --pipeline-workers and -w</span><br><span class="line">    <span class="operator">-l</span>, --log FILE                Write logstash internal logs to the given</span><br><span class="line">                                  file. Without this flag, logstash will emit</span><br><span class="line">                                  logs to standard output.</span><br><span class="line">    -v                            Increase verbosity of logstash internal logs.</span><br><span class="line">                                  Specifying once will show <span class="string">'informational'</span></span><br><span class="line">                                  logs. Specifying twice will show <span class="string">'debug'</span></span><br><span class="line">                                  logs. This flag is deprecated. You should use</span><br><span class="line">                                  --verbose or --debug instead.</span><br><span class="line">    --quiet                       Quieter logstash logging. This causes only</span><br><span class="line">                                  errors to be emitted.</span><br><span class="line">    --verbose                     More verbose logging. This causes <span class="string">'info'</span></span><br><span class="line">                                  level logs to be emitted.</span><br><span class="line">    --debug                       Most verbose logging. This causes <span class="string">'debug'</span></span><br><span class="line">                                  level logs to be emitted.</span><br><span class="line">    --debug-config                translation missing: en.logstash.runner.flag.debug_config (default: <span class="literal">false</span>)</span><br><span class="line">    -V, --version                 Emit the version of logstash and its friends,</span><br><span class="line">                                  <span class="keyword">then</span> exit.</span><br><span class="line">    -p, --pluginpath PATH         A path of <span class="built_in">where</span> to find plugins. This flag</span><br><span class="line">                                  can be given multiple <span class="built_in">times</span> to include</span><br><span class="line">                                  multiple paths. Plugins are expected to be</span><br><span class="line">                                  <span class="keyword">in</span> a specific directory hierarchy:</span><br><span class="line">                                  <span class="string">'PATH/logstash/TYPE/NAME.rb'</span> <span class="built_in">where</span> TYPE is</span><br><span class="line">                                  <span class="string">'inputs'</span> <span class="string">'filters'</span>, <span class="string">'outputs'</span> or <span class="string">'codecs'</span></span><br><span class="line">                                  and NAME is the name of the plugin.</span><br><span class="line">    -t, --configtest              Check configuration <span class="keyword">for</span> valid syntax and <span class="keyword">then</span> exit.</span><br><span class="line">    --[no-]allow-unsafe-shutdown  Force logstash to <span class="built_in">exit</span> during shutdown even</span><br><span class="line">                                  <span class="keyword">if</span> there are still inflight events <span class="keyword">in</span> memory.</span><br><span class="line">                                  By default, logstash will refuse to quit until all</span><br><span class="line">                                  received events have been pushed to the outputs. (default: <span class="literal">false</span>)</span><br><span class="line">    -r, --[no-]auto-reload        Monitor configuration changes and reload</span><br><span class="line">                                  whenever it is changed.</span><br><span class="line">                                  NOTE: use SIGHUP to manually reload the config</span><br><span class="line">                                   (default: <span class="literal">false</span>)</span><br><span class="line">    --reload-interval RELOAD_INTERVAL How frequently to poll the configuration location</span><br><span class="line">                                  <span class="keyword">for</span> changes, <span class="keyword">in</span> seconds.</span><br><span class="line">                                   (default: <span class="number">3</span>)</span><br><span class="line">    --allow-env                   EXPERIMENTAL. Enables templating of environment variable</span><br><span class="line">                                  values. Instances of <span class="string">"<span class="variable">$&#123;VAR&#125;</span>"</span> <span class="keyword">in</span> strings will be replaced</span><br><span class="line">                                  with the respective environment variable value named <span class="string">"VAR"</span>.</span><br><span class="line">                                   (default: <span class="literal">false</span>)</span><br><span class="line">    -h, --help                    <span class="built_in">print</span> <span class="built_in">help</span></span><br></pre></td></tr></table></figure>
-<h2 id="u5C0F_u7ED3"><a href="#u5C0F_u7ED3" class="headerlink" title="小结"></a>小结</h2><p>更多关于 Logstash 的内容可以在 <a href="https://www.gitbook.com/book/chenryn/kibana-guide-cn/details" target="_blank" rel="external">ELKstack 中文指南</a> 查阅，只要明白了基本的套路，剩下的就是根据业务需求不断实践了，不过这里再说两点：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">$ logstash -h</div><div class="line">Usage:</div><div class="line">    /bin/logstash agent [OPTIONS]</div><div class="line"></div><div class="line">Options:</div><div class="line">    <span class="_">-f</span>, --config CONFIG_PATH      Load the logstash config from a specific file</div><div class="line">                                  or directory.  If a directory is given, all</div><div class="line">                                  files <span class="keyword">in</span> that directory will be concatenated</div><div class="line">                                  <span class="keyword">in</span> lexicographical order and <span class="keyword">then</span> parsed as a</div><div class="line">                                  single config file. You can also specify</div><div class="line">                                  wildcards (globs) and any matched files will</div><div class="line">                                  be loaded <span class="keyword">in</span> the order described above.</div><div class="line">    <span class="_">-e</span> CONFIG_STRING              Use the given string as the configuration</div><div class="line">                                  data. Same syntax as the config file. If no</div><div class="line">                                  input is specified, <span class="keyword">then</span> the following is</div><div class="line">                                  used as the default input:</div><div class="line">                                  <span class="string">"input &#123; stdin &#123; type =&gt; stdin &#125; &#125;"</span></div><div class="line">                                  and <span class="keyword">if</span> no output is specified, <span class="keyword">then</span> the</div><div class="line">                                  following is used as the default output:</div><div class="line">                                  <span class="string">"output &#123; stdout &#123; codec =&gt; rubydebug &#125; &#125;"</span></div><div class="line">                                  If you wish to use both defaults, please use</div><div class="line">                                  the empty string <span class="keyword">for</span> the <span class="string">'-e'</span> flag.</div><div class="line">                                   (default: <span class="string">""</span>)</div><div class="line">    -w, --pipeline-workers COUNT  Sets the number of pipeline workers to run.</div><div class="line">                                   (default: 4)</div><div class="line">    -b, --pipeline-batch-size SIZE Size of batches the pipeline is to work in.</div><div class="line">                                   (default: 125)</div><div class="line">    -u, --pipeline-batch-delay DELAY_IN_MS When creating pipeline batches, how long to <span class="built_in">wait</span> <span class="keyword">while</span> polling</div><div class="line">                                  <span class="keyword">for</span> the next event.</div><div class="line">                                   (default: 5)</div><div class="line">    --filterworkers COUNT         DEPRECATED. Now an <span class="built_in">alias</span> <span class="keyword">for</span> --pipeline-workers and -w</div><div class="line">    <span class="_">-l</span>, --log FILE                Write logstash internal logs to the given</div><div class="line">                                  file. Without this flag, logstash will emit</div><div class="line">                                  logs to standard output.</div><div class="line">    -v                            Increase verbosity of logstash internal logs.</div><div class="line">                                  Specifying once will show <span class="string">'informational'</span></div><div class="line">                                  logs. Specifying twice will show <span class="string">'debug'</span></div><div class="line">                                  logs. This flag is deprecated. You should use</div><div class="line">                                  --verbose or --debug instead.</div><div class="line">    --quiet                       Quieter logstash logging. This causes only</div><div class="line">                                  errors to be emitted.</div><div class="line">    --verbose                     More verbose logging. This causes <span class="string">'info'</span></div><div class="line">                                  level logs to be emitted.</div><div class="line">    --debug                       Most verbose logging. This causes <span class="string">'debug'</span></div><div class="line">                                  level logs to be emitted.</div><div class="line">    --debug-config                translation missing: en.logstash.runner.flag.debug_config (default: <span class="literal">false</span>)</div><div class="line">    -V, --version                 Emit the version of logstash and its friends,</div><div class="line">                                  <span class="keyword">then</span> exit.</div><div class="line">    -p, --pluginpath PATH         A path of <span class="built_in">where</span> to find plugins. This flag</div><div class="line">                                  can be given multiple <span class="built_in">times</span> to include</div><div class="line">                                  multiple paths. Plugins are expected to be</div><div class="line">                                  <span class="keyword">in</span> a specific directory hierarchy:</div><div class="line">                                  <span class="string">'PATH/logstash/TYPE/NAME.rb'</span> <span class="built_in">where</span> TYPE is</div><div class="line">                                  <span class="string">'inputs'</span> <span class="string">'filters'</span>, <span class="string">'outputs'</span> or <span class="string">'codecs'</span></div><div class="line">                                  and NAME is the name of the plugin.</div><div class="line">    -t, --configtest              Check configuration <span class="keyword">for</span> valid syntax and <span class="keyword">then</span> exit.</div><div class="line">    --[no-]allow-unsafe-shutdown  Force logstash to <span class="built_in">exit</span> during shutdown even</div><div class="line">                                  <span class="keyword">if</span> there are still inflight events <span class="keyword">in</span> memory.</div><div class="line">                                  By default, logstash will refuse to quit until all</div><div class="line">                                  received events have been pushed to the outputs. (default: <span class="literal">false</span>)</div><div class="line">    -r, --[no-]auto-reload        Monitor configuration changes and reload</div><div class="line">                                  whenever it is changed.</div><div class="line">                                  NOTE: use SIGHUP to manually reload the config</div><div class="line">                                   (default: <span class="literal">false</span>)</div><div class="line">    --reload-interval RELOAD_INTERVAL How frequently to poll the configuration location</div><div class="line">                                  <span class="keyword">for</span> changes, <span class="keyword">in</span> seconds.</div><div class="line">                                   (default: 3)</div><div class="line">    --allow-env                   EXPERIMENTAL. Enables templating of environment variable</div><div class="line">                                  values. Instances of <span class="string">"<span class="variable">$&#123;VAR&#125;</span>"</span> <span class="keyword">in</span> strings will be replaced</div><div class="line">                                  with the respective environment variable value named <span class="string">"VAR"</span>.</div><div class="line">                                   (default: <span class="literal">false</span>)</div><div class="line">    -h, --help                    <span class="built_in">print</span> <span class="built_in">help</span></div></pre></td></tr></table></figure>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>更多关于 Logstash 的内容可以在 <a href="https://www.gitbook.com/book/chenryn/kibana-guide-cn/details" target="_blank" rel="external">ELKstack 中文指南</a> 查阅，只要明白了基本的套路，剩下的就是根据业务需求不断实践了，不过这里再说两点：</p>
 <ul>
 <li>插件的使用类似于 Rails 中 Gemfile 的表现，都是利用 Ruby 强大的 DSL 实现的</li>
 <li>配置文件的语法不算复杂，但是有些东西比较细，需要测试后再投入使用</li>
 </ul>
-<h2 id="u53C2_u8003_u94FE_u63A5"><a href="#u53C2_u8003_u94FE_u63A5" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="https://www.elastic.co/products/logstash" target="_blank" rel="external">LogStash 官网</a></li>
 <li><a href="http://xxrenzhe.blog.51cto.com/4036116/1352353" target="_blank" rel="external">LogStash日志分析展示系统</a></li>
 <li><a href="http://blog.jobbole.com/96823/" target="_blank" rel="external">Logstash实践: 分布式系统的日志监控</a></li>
@@ -415,11 +416,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Logstash/" rel="tag">#Logstash</a>
+            <a href="/tags/管理/" rel="tag">#管理</a>
           
             <a href="/tags/日志/" rel="tag">#日志</a>
           
-            <a href="/tags/管理/" rel="tag">#管理</a>
+            <a href="/tags/Logstash/" rel="tag">#Logstash</a>
           
         </div>
       
@@ -654,7 +655,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u4ECB"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u67B6_u6784"><span class="nav-number">2.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B89_u88C5_u90E8_u7F72"><span class="nav-number">3.</span> <span class="nav-text">安装部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B80_u5355_u6D41_u7A0B"><span class="nav-number">4.</span> <span class="nav-text">简单流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u94FE_u63A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装部署"><span class="nav-number">3.</span> <span class="nav-text">安装部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单流程"><span class="nav-number">4.</span> <span class="nav-text">简单流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
@@ -834,42 +835,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

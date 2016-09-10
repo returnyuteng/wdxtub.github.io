@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="如果想要充分利用硬件资源，就要尽可能让计算机同时处理多项事务，具体是怎么实现的？又哪些基本的策略？这节课会一一解答。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 第 22 课 Concurrent Programming">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-22.html">
@@ -118,6 +119,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 第 22 课 Concurrent Programming">
 <meta name="twitter:description" content="如果想要充分利用硬件资源，就要尽可能让计算机同时处理多项事务，具体是怎么实现的？又哪些基本的策略？这节课会一一解答。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14599962597558.jpg">
 
 
 
@@ -141,7 +143,7 @@
   
     深入理解计算机系统 第 22 课 Concurrent Programming | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -162,7 +164,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -279,13 +281,13 @@
 <p>首先一定要清楚地意识到：『并行编程不简单』！最主要的原因恐怕就是我们自己的大脑，人脑实际上是一个非常精妙的系统，所采取的并行策略是一明一暗两条线，但是对于明线来说，是线性的，于是就和计算机中并行的概念冲突了。另外时间这个概念也是线性的，这就导致了想要处理好并行程序可能出现的各种问题几乎是不可能的（或者常常要出错）。</p>
 <p>常见的错误有仨：竞争条件、死锁和活锁，具体如下：</p>
 <p><img src="/images/14599962597558.jpg" alt="Classical problem classes"></p>
-<h2 id="u670D_u52A1_u5668_u7684_u4F8B_u5B50"><a href="#u670D_u52A1_u5668_u7684_u4F8B_u5B50" class="headerlink" title="服务器的例子"></a>服务器的例子</h2><p>我们前面实现的服务器，一次只能处理一个请求，只有当前的请求处理完了，才能继续处理下一个。</p>
+<h2 id="服务器的例子"><a href="#服务器的例子" class="headerlink" title="服务器的例子"></a>服务器的例子</h2><p>我们前面实现的服务器，一次只能处理一个请求，只有当前的请求处理完了，才能继续处理下一个。</p>
 <p><img src="/images/14599976220466.jpg" alt=""></p>
 <p>这里具体讲解一下：Client 1 向 Server 发送连接请求(connect)，Server 接受(accept)之后开始等待 Client 1 发送请求（也就是开始 read），这之后 Client 1 发送具体的内容(write)后转为等待响应(call read)，Server 的 read 接收到了内容之后，发送响应(write) 后仅需进入等待(read)，而 Client 1 接收到了响应(ret read)，最后根据用户指令退出(close)。</p>
 <p>而只有当 Client 1 断开之后，Server 才会处理 Client 2 的请求，从图中也可以看到这一点。具体是在哪里等待呢？因为 TCP 会缓存，所以实际上 Client 2 在 <code>ret read</code> 之前进行等待，如：</p>
 <p><img src="/images/14599992829071.jpg" alt="Where Does Second Client Block"></p>
 <p>为了解决这个问题，我们可以使用并行的策略，同时处理不同客户端发来的请求。</p>
-<h2 id="u5E76_u884C_u65B9_u6CD5"><a href="#u5E76_u884C_u65B9_u6CD5" class="headerlink" title="并行方法"></a>并行方法</h2><p>总体来说，根据系统机制的层级和实现方式，有下面三大类方法：</p>
+<h2 id="并行方法"><a href="#并行方法" class="headerlink" title="并行方法"></a>并行方法</h2><p>总体来说，根据系统机制的层级和实现方式，有下面三大类方法：</p>
 <ol>
 <li>基于进程<ul>
 <li>内核自动管理多个逻辑流</li>
@@ -305,10 +307,10 @@
 </ul>
 </li>
 </ol>
-<h3 id="u57FA_u4E8E_u8FDB_u7A0B"><a href="#u57FA_u4E8E_u8FDB_u7A0B" class="headerlink" title="基于进程"></a>基于进程</h3><p>为每个客户端分离出一个单独的进程，是建立了连接之后才开始并行，连接的建立还是串行的。</p>
+<h3 id="基于进程"><a href="#基于进程" class="headerlink" title="基于进程"></a>基于进程</h3><p>为每个客户端分离出一个单独的进程，是建立了连接之后才开始并行，连接的建立还是串行的。</p>
 <p><img src="/images/14600273587521.jpg" alt="Spawn separate process for each client"></p>
 <p>具体的代码为</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sigchld_handler</span><span class="params">(<span class="keyword">int</span> sig)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (waitpid(-<span class="number">1</span>, <span class="number">0</span>, WNOHANG) &gt; <span class="number">0</span>)</span><br><span class="line">        ;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// Reap all zombie children</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> listenfd, connfd;</span><br><span class="line">    <span class="keyword">socklen_t</span> clientlen;</span><br><span class="line">    <span class="keyword">struct</span> sockaddr_storage clientaddr;</span><br><span class="line">    </span><br><span class="line">    Signal(SIGCHLD, sigchld_handler);</span><br><span class="line">    listenfd = Open_listenfd(argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        clientlen = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_storage);</span><br><span class="line">        connfd = Accept(listenfd, (SA *) &amp;clientaddr, &amp;clientlen);</span><br><span class="line">        <span class="keyword">if</span> (Fork() == <span class="number">0</span>) &#123;</span><br><span class="line">            Close(listenfd); <span class="comment">// Child closes its listening socket</span></span><br><span class="line">            echo(connfd); <span class="comment">// Child services client</span></span><br><span class="line">            Close(connfd); <span class="comment">// Child closes connection with client</span></span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">0</span>); <span class="comment">// Child exits</span></span><br><span class="line">        &#125;</span><br><span class="line">        Close(connfd); <span class="comment">// Parent closes connected socket (important!)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sigchld_handler</span><span class="params">(<span class="keyword">int</span> sig)</span></span>&#123;</div><div class="line">    <span class="keyword">while</span> (waitpid(<span class="number">-1</span>, <span class="number">0</span>, WNOHANG) &gt; <span class="number">0</span>)</div><div class="line">        ;</div><div class="line">    <span class="keyword">return</span>;</div><div class="line">    <span class="comment">// Reap all zombie children</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> listenfd, connfd;</div><div class="line">    <span class="keyword">socklen_t</span> clientlen;</div><div class="line">    <span class="keyword">struct</span> sockaddr_storage clientaddr;</div><div class="line">    </div><div class="line">    Signal(SIGCHLD, sigchld_handler);</div><div class="line">    listenfd = Open_listenfd(argv[<span class="number">1</span>]);</div><div class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">        clientlen = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_storage);</div><div class="line">        connfd = Accept(listenfd, (SA *) &amp;clientaddr, &amp;clientlen);</div><div class="line">        <span class="keyword">if</span> (Fork() == <span class="number">0</span>) &#123;</div><div class="line">            Close(listenfd); <span class="comment">// Child closes its listening socket</span></div><div class="line">            echo(connfd); <span class="comment">// Child services client</span></div><div class="line">            Close(connfd); <span class="comment">// Child closes connection with client</span></div><div class="line">            <span class="built_in">exit</span>(<span class="number">0</span>); <span class="comment">// Child exits</span></div><div class="line">        &#125;</div><div class="line">        Close(connfd); <span class="comment">// Parent closes connected socket (important!)</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>关键步骤(accept)的描述为</p>
 <p><img src="/images/14600278440053.jpg" alt="Concurrent Server: `accept` Illustrated"></p>
 <p>执行模型为</p>
@@ -328,14 +330,14 @@
 <p>优劣</p>
 </blockquote>
 <p><img src="/images/14600282200028.jpg" alt="Pros and Cons of Process-based Servers"></p>
-<h3 id="u57FA_u4E8E_u4E8B_u4EF6"><a href="#u57FA_u4E8E_u4E8B_u4EF6" class="headerlink" title="基于事件"></a>基于事件</h3><p>服务器会维护一个 connection 数组，包含若干 <code>connfd</code>，具体的过程为：</p>
+<h3 id="基于事件"><a href="#基于事件" class="headerlink" title="基于事件"></a>基于事件</h3><p>服务器会维护一个 connection 数组，包含若干 <code>connfd</code>，具体的过程为：</p>
 <p><img src="/images/14600283355967.jpg" alt=""></p>
 <p>这里一个很重要的技术是 I/O Multiplexing，感兴趣的同学可以查阅书中对应章节（具体内容会在习题课中介绍）。</p>
 <blockquote>
 <p>优劣</p>
 </blockquote>
 <p><img src="/images/14600283984253.jpg" alt="Pros and Cons of Event-based Servers"></p>
-<h3 id="u57FA_u4E8E_u7EBF_u7A0B"><a href="#u57FA_u4E8E_u7EBF_u7A0B" class="headerlink" title="基于线程"></a>基于线程</h3><p>和基于进程的方法非常相似，唯一的区别是这里用线程。进程其实是比较『重』的，一个进程包括：</p>
+<h3 id="基于线程"><a href="#基于线程" class="headerlink" title="基于线程"></a>基于线程</h3><p>和基于进程的方法非常相似，唯一的区别是这里用线程。进程其实是比较『重』的，一个进程包括：</p>
 <p><img src="/images/14600286544772.jpg" alt="Traditional View of a Process"></p>
 <p>当然，我们也可以从线程的角度来描述进程：</p>
 <p><img src="/images/14600286291425.jpg" alt="Alternate View of a Process"></p>
@@ -349,14 +351,14 @@
 <p>单核与多核处理器也有一点点不同：</p>
 <p><img src="/images/14600297006546.jpg" alt="Concurrent Thread Execution"></p>
 <p>进程和线程的差别已经被说了太多次，这里简单提一下。相同点在于，它们都有自己的逻辑控制流，可以并行，都需要进行上下文切换。不同点在于，线程共享代码和数据（进程通常不会），线程开销比较小（创建和回收）</p>
-<h2 id="Posix_Threads__28Pthreads_29_Interface"><a href="#Posix_Threads__28Pthreads_29_Interface" class="headerlink" title="Posix Threads (Pthreads) Interface"></a>Posix Threads (Pthreads) Interface</h2><p>Pthreads 是一个线程库，基本上只要是 C 程序能跑的平台，都会支持这个标准，具体如下；</p>
+<h2 id="Posix-Threads-Pthreads-Interface"><a href="#Posix-Threads-Pthreads-Interface" class="headerlink" title="Posix Threads (Pthreads) Interface"></a>Posix Threads (Pthreads) Interface</h2><p>Pthreads 是一个线程库，基本上只要是 C 程序能跑的平台，都会支持这个标准，具体如下；</p>
 <p><img src="/images/14600332547386.jpg" alt=""></p>
 <p>一个例子</p>
 <p><img src="/images/14600332776267.jpg" alt="The Pthreads &quot;hello, world&quot; Program"></p>
 <p>这个程序的流程描述为</p>
 <p><img src="/images/14600338560676.jpg" alt="Execution of Thread &quot;hello, world&quot;"></p>
 <p>我们用线程的方式重写一次之前的 Echo Server</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Thread routine</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">thread</span><span class="params">(<span class="keyword">void</span> *vargp)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> connf = *((<span class="keyword">int</span> *)vargp);</span><br><span class="line">    <span class="comment">// detach 之后不用显式 join，会在执行完毕后自动回收</span></span><br><span class="line">    Pthread_detach(pthread_self());</span><br><span class="line">    Free(vargp);</span><br><span class="line">    echo(connfd);</span><br><span class="line">    <span class="comment">// 一定要记得关闭！</span></span><br><span class="line">    Close(connfd);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> listenfd, *connfdp;</span><br><span class="line">    <span class="keyword">socklen_t</span> clientlen;</span><br><span class="line">    <span class="keyword">struct</span> sockaddr_storage clientaddr;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid;</span><br><span class="line">    </span><br><span class="line">    listenfd = Open_listenfd(argv[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        clientlen = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_storage);</span><br><span class="line">        <span class="comment">// 这里使用新分配的 connected descriptor 来避免竞争条件</span></span><br><span class="line">        connfdp = Malloc(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">        *connfdp = Accept(listenfd, (SA *) &amp; clientaddr, &amp;clientlen);</span><br><span class="line">        Pthread_create(&amp;tid, <span class="literal">NULL</span>, thread, connfdp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Thread routine</span></div><div class="line"><span class="function"><span class="keyword">void</span> *<span class="title">thread</span><span class="params">(<span class="keyword">void</span> *vargp)</span></span>&#123;</div><div class="line">    <span class="keyword">int</span> connf = *((<span class="keyword">int</span> *)vargp);</div><div class="line">    <span class="comment">// detach 之后不用显式 join，会在执行完毕后自动回收</span></div><div class="line">    Pthread_detach(pthread_self());</div><div class="line">    Free(vargp);</div><div class="line">    echo(connfd);</div><div class="line">    <span class="comment">// 一定要记得关闭！</span></div><div class="line">    Close(connfd);</div><div class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> listenfd, *connfdp;</div><div class="line">    <span class="keyword">socklen_t</span> clientlen;</div><div class="line">    <span class="keyword">struct</span> sockaddr_storage clientaddr;</div><div class="line">    <span class="keyword">pthread_t</span> tid;</div><div class="line">    </div><div class="line">    listenfd = Open_listenfd(argv[<span class="number">1</span>]);</div><div class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</div><div class="line">        clientlen = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_storage);</div><div class="line">        <span class="comment">// 这里使用新分配的 connected descriptor 来避免竞争条件</span></div><div class="line">        connfdp = Malloc(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div><div class="line">        *connfdp = Accept(listenfd, (SA *) &amp; clientaddr, &amp;clientlen);</div><div class="line">        Pthread_create(&amp;tid, <span class="literal">NULL</span>, thread, connfdp);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>具体的执行模型为：</p>
 <p><img src="/images/14600343334886.jpg" alt="Thread-based Server Execution Model"></p>
 <p>在这个模型中，每个客户端由单独的线程进行处理，这些线程除了线程 id 之外，共享所有的进程状态（但是每个线程有自己的局部变量栈）。需要注意的有：</p>
@@ -366,7 +368,7 @@
 <p>优劣</p>
 </blockquote>
 <p><img src="/images/14600346688214.jpg" alt=""></p>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>这里我们了解了三大类方法的特点，具体的会在习题课结合例子说明，这里是一个简单的总结</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这里我们了解了三大类方法的特点，具体的会在习题课结合例子说明，这里是一个简单的总结</p>
 <p><img src="/images/14600347193577.jpg" alt=""></p>
 
     
@@ -703,42 +705,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

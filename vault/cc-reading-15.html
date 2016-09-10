@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="In this module, we discuss two distributed file systems: the Hadoop Distributed File System (HDFS) and Ceph FS.">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 阅读材料 15 Case Studies - Distributed File Systems">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-reading-15.html">
@@ -109,6 +110,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 阅读材料 15 Case Studies - Distributed File Systems">
 <meta name="twitter:description" content="In this module, we discuss two distributed file systems: the Hadoop Distributed File System (HDFS) and Ceph FS.">
+<meta name="twitter:image" content="http://wdxtub.com/images/14579572277505.jpg">
 
 
 
@@ -132,7 +134,7 @@
   
     云计算 阅读材料 15 Case Studies - Distributed File Systems | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -153,7 +155,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -276,7 +278,7 @@
 <p>In 2003, Google revealed the design of its distributed file system, called GFS [2] , which was designed from scratch to provide efficient, reliable access to data using large clusters of commodity hardware. GFS is designed to store very large files as chunks stored on multiple servers (typically of size 64MB), in a replicated fashion. Although GFS has a singular client view like AFS, the location of file chunks is exposed to the user, given opportunities to fetch files from the closest available replica. GFS, however, is not POSIX compliant, which means that applications have to use an special API to work with GFS. The Hadoop Distributed File System (HDFS), is an open-source variant of GFS, which we will explore in detail in this module.</p>
 <p>In 2006, Ceph was first described in a paper by Weil et.al [1] . Ceph is designed to be a distributed object storage service that can be scaled to hundreds of thousands of machines, while storing petabytes of data. Applications then talk to Ceph through various APIs, ranging from a native API that is similar to the way GFS works, to a POSIX-compliant file system API called Ceph FS. Ceph also supports a block device abstraction, which makes it a file system that is suitable for storing virtual machine images.</p>
 <p>This domain is changing quite fast. Google has evolved GFS into a system known as Colossus [3] . Although details are sketchy, it appears that Google has moved away from GFS’s design of a single metadata master and instead use multiple metadata servers. It also appears that they have moved away from simple replication to a scheme based on Reed-Solomon encoding to ensure that data is recoverable in case of failures.</p>
-<h2 id="The_Hadoop_Distributed_File_System__28HDFS_29"><a href="#The_Hadoop_Distributed_File_System__28HDFS_29" class="headerlink" title="The Hadoop Distributed File System (HDFS)"></a>The Hadoop Distributed File System (HDFS)</h2><p><strong>HDFS</strong></p>
+<h2 id="The-Hadoop-Distributed-File-System-HDFS"><a href="#The-Hadoop-Distributed-File-System-HDFS" class="headerlink" title="The Hadoop Distributed File System (HDFS)"></a>The Hadoop Distributed File System (HDFS)</h2><p><strong>HDFS</strong></p>
 <p>Google’s MapReduce programming model allows computational jobs to be structured in terms of two functions: map and reduce. Input is fed into MapReduce as key-value pairs, where it is then processed through a map function and fed into a reduce function. The reduce operation then produces a result, which is also in the form of key-value pairs. MapReduce is designed to execute many instances of map and reduce operations in parallel over a large computational cluster. The MapReduce programming model is covered in detail in the next unit of this course.</p>
 <p>The MapReduce programming model assumes the availability of a distributed storage system that is available across all the nodes of the cluster, with a single namespace, which is where Google File System (GFS) [1] comes in. GFS is a distributed file system (DFS) that is collocated with the nodes of the MapReduce cluster. GFS is designed to work in tandem with MapReduce and maintains a single namespace for the entire MapReduce cluster.</p>
 <p><a href="http://youtu.be/w4hbR_jcfSg" target="_blank" rel="external">Video 4.12: Hadoop Distributed File System</a></p>
@@ -346,7 +348,7 @@
 <li>Ghemawat, Sanjay, Gobioff, Howard, and Leung, Shun-Tak (October 2003). “19th Symposium on Operating Systems Principles (conference), Lake George, NY.” The Google File System.</li>
 <li>White, Tom (2012). Hadoop: The Definitive Guide. O’Reilly Media, Yahoo Press.</li>
 </ol>
-<h2 id="Ceph_FS"><a href="#Ceph_FS" class="headerlink" title="Ceph FS"></a>Ceph FS</h2><p><strong>Ceph</strong></p>
+<h2 id="Ceph-FS"><a href="#Ceph-FS" class="headerlink" title="Ceph FS"></a>Ceph FS</h2><p><strong>Ceph</strong></p>
 <p>Ceph is a storage system that can be deployed on large clusters of servers with attached disks. Video 4.14 covers the basic concepts behind Ceph.</p>
 <p><a href="http://youtu.be/-WzMtI_SfPI" target="_blank" rel="external">Video 4.14: Ceph</a></p>
 <p>The design goals for Ceph [2] include the following:</p>
@@ -409,7 +411,7 @@
 <li>Weil, S. A., Brandt, S. A., Miller, E. L., &amp; Maltzahn, C. (2006). “Ceph: A scalable, high-performance distributed file system.” Proceedings of the 7th symposium on Operating systems design and implementation (OSDI). 307-320 Pages.</li>
 <li>Weil, S. A., Pollack, K. T., Brandt, S. A., &amp; Miller, E. L. (2004). “Dynamic metadata management for petabyte-scale file systems.” In Proceedings of the 2004 ACM/IEEE conference on Supercomputing. 4 Pages.</li>
 </ol>
-<h2 id="HDFS_versus_Ceph"><a href="#HDFS_versus_Ceph" class="headerlink" title="HDFS versus Ceph"></a>HDFS versus Ceph</h2><p>We now summarize [1] the primary differences between HDFS and Ceph.</p>
+<h2 id="HDFS-versus-Ceph"><a href="#HDFS-versus-Ceph" class="headerlink" title="HDFS versus Ceph"></a>HDFS versus Ceph</h2><p>We now summarize [1] the primary differences between HDFS and Ceph.</p>
 <ul>
 <li>Architectural differences: HDFS follows the model of collocating compute and storage. HDFS DataNodes are typically coresident with MapReduce nodes, and the key idea behind the entire model is to bring the computation to the data. Ceph is designed to be a stand-alone storage service, although the OSDs that store data in Ceph could potentially be co-located with MapReduce nodes.</li>
 <li>Compatibility: HDFS clients have to be implemented using one of the APIs. HDFS was not designed to be a POSIX file system and does not support some of the POSIX semantics (e.g., opening existing files for writing). Workarounds, such as a FUSE driver, exist that allow HDFS to be mounted. However, most applications will have to be reimplemented with an HDFS client if they do not already support the workaround. Ceph, on the other hand, exposes multiple APIs, including the POSIX-compliant Ceph FS driver, which makes it much easier to integrate with existing applications when compared to HDFS.</li>
@@ -781,42 +783,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="CMU,原理,计算机," />
+  <meta name="keywords" content="CMU,计算机,原理," />
 
 
 
@@ -245,6 +245,7 @@ Notes from Da Wang, Feb.2 2015">
 <meta name="twitter:title" content="【深入理解计算机系统】读书笔记">
 <meta name="twitter:description" content="这是我之前自学时的笔记，本文的内容为第二版，现在最新是第三版。
 Notes from Da Wang, Feb.2 2015">
+<meta name="twitter:image" content="http://wdxtub.com/images/csapp1.1.jpg">
 
 
 
@@ -262,7 +263,7 @@ Notes from Da Wang, Feb.2 2015">
   };
 </script>
 
-  <title> 【深入理解计算机系统】读书笔记 | 小土刀 </title>
+  <title> 【深入理解计算机系统】读书笔记 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -283,7 +284,7 @@ Notes from Da Wang, Feb.2 2015">
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -489,8 +490,8 @@ Notes from Da Wang, Feb.2 2015">
 <hr>
 <p>从程序员的角度来学习计算机系统是如何工作的会非常有趣，主要是因为你可以主动地来做这件事情。无论何时你学到一些新的东西，都可以马上试验并且直接看到运行结果。事实上，我们相信学习系统的唯一方法就是做(do)系统，即再真正的系统上解决具体的问题，或是编写和运行程序。</p>
 <p>本书起源于1998年秋季，作者在 CMU 开设的编号为15-213的介绍性课程：计算机系统导论(Introduction to Computer Systems, ICS)，是大多数高级系统课程的先行必修课。宗旨是用一种不同的方式向学生介绍计算机，只讨论那些影响用户级 C 语言程序的性能、正确性或实用性的主题。</p>
-<h1 id="u8BA1_u7B97_u673A_u7CFB_u7EDF_u6F2B_u6E38"><a href="#u8BA1_u7B97_u673A_u7CFB_u7EDF_u6F2B_u6E38" class="headerlink" title="计算机系统漫游"></a>计算机系统漫游</h1><p>我们通过跟踪 helloworld 程序的生命周期来开始对系统的学习——从它被程序员创建，到在系统上运行，输出简单的消息，然后终止。</p>
-<h2 id="u4FE1_u606F_u5C31_u662F_u4F4D_+__u4E0A_u4E0B_u6587"><a href="#u4FE1_u606F_u5C31_u662F_u4F4D_+__u4E0A_u4E0B_u6587" class="headerlink" title="信息就是位 + 上下文"></a>信息就是位 + 上下文</h2><p><img src="/images/csapp1.1.jpg" alt="csapp1.1"></p>
+<h1 id="计算机系统漫游"><a href="#计算机系统漫游" class="headerlink" title="计算机系统漫游"></a>计算机系统漫游</h1><p>我们通过跟踪 helloworld 程序的生命周期来开始对系统的学习——从它被程序员创建，到在系统上运行，输出简单的消息，然后终止。</p>
+<h2 id="信息就是位-上下文"><a href="#信息就是位-上下文" class="headerlink" title="信息就是位 + 上下文"></a>信息就是位 + 上下文</h2><p><img src="/images/csapp1.1.jpg" alt="csapp1.1"></p>
 <p>hello.c 程序以字节序列的方式存储在文件中。每个字节都有一个整数值，而该整数值对应于某个字符。</p>
 <p><img src="/images/csapp1.2.jpg" alt="csapp1.2"></p>
 <p>hello.c 的表示方法说明了一个基本的思想：系统中所有的信息——包括磁盘文件、存储器中的程序、存储器中存放的用户数据以及网络上传送的数据，都是由一串位表示的。区分不同数据对象的唯一方式是我们读到这些数据对象时的上下文。</p>
@@ -502,14 +503,14 @@ Notes from Da Wang, Feb.2 2015">
 <li>C 语言是为实践目的而设计的</li>
 <li>C 语言是系统级编程的首选，同时它也非常适用于应用级程序的编写。然而，它也并非适用于所有的程序员和所有的情况。C 语言的指针是造成困惑和程序错误的一个常见原因。同时，C 语言还缺乏对非常有用的抽象（类、对象和异常）的显式支持。</li>
 </ul>
-<h2 id="u7A0B_u5E8F_u88AB_u5176_u4ED6_u7A0B_u5E8F_u7FFB_u8BD1_u6210_u4E0D_u540C_u7684_u683C_u5F0F"><a href="#u7A0B_u5E8F_u88AB_u5176_u4ED6_u7A0B_u5E8F_u7FFB_u8BD1_u6210_u4E0D_u540C_u7684_u683C_u5F0F" class="headerlink" title="程序被其他程序翻译成不同的格式"></a>程序被其他程序翻译成不同的格式</h2><p>hello 程序的生命周期是从一个高级 C 语言程序开始的，因为这种形式能够被人读懂。为了在系统上运行，每条 C 语句都必须被其他程序转化为一系列的低级<strong>机器语言</strong>指令。然后这些指令按照一种称为<strong>可执行目标程序</strong>的格式打好包，并以二进制磁盘文件的形式存放起来。目标程序也称为<strong>可执行目标文件</strong>。</p>
+<h2 id="程序被其他程序翻译成不同的格式"><a href="#程序被其他程序翻译成不同的格式" class="headerlink" title="程序被其他程序翻译成不同的格式"></a>程序被其他程序翻译成不同的格式</h2><p>hello 程序的生命周期是从一个高级 C 语言程序开始的，因为这种形式能够被人读懂。为了在系统上运行，每条 C 语句都必须被其他程序转化为一系列的低级<strong>机器语言</strong>指令。然后这些指令按照一种称为<strong>可执行目标程序</strong>的格式打好包，并以二进制磁盘文件的形式存放起来。目标程序也称为<strong>可执行目标文件</strong>。</p>
 <p>在 Unix 系统上，从源文件到目标文件的转化是由编译器驱动程序完成的：</p>
 <pre><code>unix&gt; gcc -o hello hello.c
 </code></pre><p>这个翻译过程可分为四个阶段。这行这四个阶段的程序（预处理器cpp、编译器ccl、汇编器as和链接器ld）一起构成了编译系统（compilation system）。</p>
 <p><img src="/images/csapp1.3.jpg" alt="csapp1.3"></p>
 <p><strong>GNU 项目</strong></p>
 <p>GCC 是 GNU(GNU’s Not Unix) 项目开发出来的众多有用工具之一。GNU 项目已经开发出了一个包含 Unix 操作系统的所有主要部件的环境，但内核除外，内核是由 Linux 项目独立发展而来的。GNU 环境包括 EMACS 编辑器、GCC 编译器、GDB 调试器、汇编器、链接器、处理二进制文件的工具以及其他一些部件。</p>
-<h2 id="u4E86_u89E3_u7F16_u8BD1_u7CFB_u7EDF_u5982_u4F55_u5DE5_u4F5C_u662F_u5927_u6709_u76CA_u5904_u7684"><a href="#u4E86_u89E3_u7F16_u8BD1_u7CFB_u7EDF_u5982_u4F55_u5DE5_u4F5C_u662F_u5927_u6709_u76CA_u5904_u7684" class="headerlink" title="了解编译系统如何工作是大有益处的"></a>了解编译系统如何工作是大有益处的</h2><p>知道编译系统是如何工作非常重要，原因如下：</p>
+<h2 id="了解编译系统如何工作是大有益处的"><a href="#了解编译系统如何工作是大有益处的" class="headerlink" title="了解编译系统如何工作是大有益处的"></a>了解编译系统如何工作是大有益处的</h2><p>知道编译系统是如何工作非常重要，原因如下：</p>
 <ul>
 <li><strong>优化程序性能</strong>。了解一些机器代码以及编译器将不同的 C 语句转换为机器代码的方式。<ul>
 <li>一个 <code>switch</code> 语句是否总是比一系列 <code>if-else</code> 语句高效得多？</li>
@@ -528,7 +529,7 @@ Notes from Da Wang, Feb.2 2015">
 </li>
 <li><strong>避免安全漏洞</strong>。学习安全变成的第一步就是理解数据和控制信息存储在程序栈上的方式会引起的后果。</li>
 </ul>
-<h2 id="u5904_u7406_u5668_u8BFB_u5E76_u89E3_u91CA_u5B58_u50A8_u5728_u5B58_u50A8_u5668_u4E2D_u7684_u6307_u4EE4"><a href="#u5904_u7406_u5668_u8BFB_u5E76_u89E3_u91CA_u5B58_u50A8_u5728_u5B58_u50A8_u5668_u4E2D_u7684_u6307_u4EE4" class="headerlink" title="处理器读并解释存储在存储器中的指令"></a>处理器读并解释存储在存储器中的指令</h2><p>要想在 Unix 系统上运行可执行目标文件 hello，将文件名输入到 shell 中：</p>
+<h2 id="处理器读并解释存储在存储器中的指令"><a href="#处理器读并解释存储在存储器中的指令" class="headerlink" title="处理器读并解释存储在存储器中的指令"></a>处理器读并解释存储在存储器中的指令</h2><p>要想在 Unix 系统上运行可执行目标文件 hello，将文件名输入到 shell 中：</p>
 <pre><code>unix&gt; ./hello
 hello, world
 unix&gt;
@@ -553,12 +554,12 @@ unix&gt;
 <p><img src="/images/csapp1.6.jpg" alt="csapp1.6"></p>
 <p>一旦目标文件中的代码和数据被加载到主存，处理器就开始执行 hello 程序的 main 程序中的机器语言指令。这些指令将“hello, world\n”字符串中的字节从主存复制到寄存器文件，再从寄存器文件中复制到显示设备，最终显示在屏幕上。</p>
 <p><img src="/images/csapp1.7.jpg" alt="csapp1.7"></p>
-<h2 id="u9AD8_u901F_u7F13_u5B58_u81F3_u5173_u91CD_u8981"><a href="#u9AD8_u901F_u7F13_u5B58_u81F3_u5173_u91CD_u8981" class="headerlink" title="高速缓存至关重要"></a>高速缓存至关重要</h2><p>这个简单的例子揭示了一个重要的问题，即系统花费了大量的时间把信息从一个地方挪到另一个地方。因此，系统设计者的一个主要目的就是使这些复制操作尽可能快地完成。</p>
+<h2 id="高速缓存至关重要"><a href="#高速缓存至关重要" class="headerlink" title="高速缓存至关重要"></a>高速缓存至关重要</h2><p>这个简单的例子揭示了一个重要的问题，即系统花费了大量的时间把信息从一个地方挪到另一个地方。因此，系统设计者的一个主要目的就是使这些复制操作尽可能快地完成。</p>
 <p><img src="/images/csapp1.8.jpg" alt="csapp1.8"></p>
 <p>较大的存储设备要比较小的存储设备运行得慢，而快速设备的造价远高于同类的低速设备。针对这种差异，系统设计者采用了更小、更快的存储设备，即<strong>高速缓存存储器</strong>，作为暂时的集结区域，用一种叫<strong>做静态随机访问存储器(SRAM)</strong>的硬件技术实现。</p>
-<h2 id="u5B58_u50A8_u8BBE_u5907_u5F62_u6210_u5C42_u6B21_u7ED3_u6784"><a href="#u5B58_u50A8_u8BBE_u5907_u5F62_u6210_u5C42_u6B21_u7ED3_u6784" class="headerlink" title="存储设备形成层次结构"></a>存储设备形成层次结构</h2><p>从上至下，设备的访问速度越来越慢、容量越来越大，每字节的造价也越来越便宜。</p>
+<h2 id="存储设备形成层次结构"><a href="#存储设备形成层次结构" class="headerlink" title="存储设备形成层次结构"></a>存储设备形成层次结构</h2><p>从上至下，设备的访问速度越来越慢、容量越来越大，每字节的造价也越来越便宜。</p>
 <p><img src="/images/csapp1.9.jpg" alt="csapp1.9"></p>
-<h2 id="u64CD_u4F5C_u7CFB_u7EDF_u7BA1_u7406_u786C_u4EF6"><a href="#u64CD_u4F5C_u7CFB_u7EDF_u7BA1_u7406_u786C_u4EF6" class="headerlink" title="操作系统管理硬件"></a>操作系统管理硬件</h2><p>我们可以把操作系统看成是应用程序和硬件之间插入的一层软件，所有应用程序对硬件的操作尝试都必须通过操作系统。操作系统有两个基本功能：</p>
+<h2 id="操作系统管理硬件"><a href="#操作系统管理硬件" class="headerlink" title="操作系统管理硬件"></a>操作系统管理硬件</h2><p>我们可以把操作系统看成是应用程序和硬件之间插入的一层软件，所有应用程序对硬件的操作尝试都必须通过操作系统。操作系统有两个基本功能：</p>
 <ol>
 <li>防止硬件被失控的应用程序滥用。</li>
 <li>向应用程序提供简单一致的机制来控制复杂而又通常大相径庭的低级硬件设备。</li>
@@ -596,9 +597,9 @@ unix&gt;
 <p>文件</p>
 </blockquote>
 <p><strong>文件</strong>就是字节序列，仅此而已。这个简单而精致的概念拥有极其丰富的内涵，它向应用程序提供了一个统一的视角，来看待系统中可能含有的所有 I/O 设备。</p>
-<h2 id="u7CFB_u7EDF_u4E4B_u95F4_u5229_u7528_u7F51_u7EDC_u901A_u4FE1"><a href="#u7CFB_u7EDF_u4E4B_u95F4_u5229_u7528_u7F51_u7EDC_u901A_u4FE1" class="headerlink" title="系统之间利用网络通信"></a>系统之间利用网络通信</h2><p>从一个单独的系统来看，网络可视为一个 I/O 设备。当系统从主存将一串字节复制到网络适配器时，数据流经过网络到达另一台机器，而不是其他地方。相似地，系统可以读取从其他机器发送来的数据，并把数据复制到自己的主存。</p>
+<h2 id="系统之间利用网络通信"><a href="#系统之间利用网络通信" class="headerlink" title="系统之间利用网络通信"></a>系统之间利用网络通信</h2><p>从一个单独的系统来看，网络可视为一个 I/O 设备。当系统从主存将一串字节复制到网络适配器时，数据流经过网络到达另一台机器，而不是其他地方。相似地，系统可以读取从其他机器发送来的数据，并把数据复制到自己的主存。</p>
 <p><img src="/images/csapp1.14.jpg" alt="csapp1.14"></p>
-<h2 id="u91CD_u8981_u4E3B_u9898"><a href="#u91CD_u8981_u4E3B_u9898" class="headerlink" title="重要主题"></a>重要主题</h2><p>系统不仅仅只是硬件，而是硬件和系统软件互相交织的集合体，它们必须共同协作以达到运行应用程序的最终目的。下面是几个贯穿计算机系统所有方面的重要概念：</p>
+<h2 id="重要主题"><a href="#重要主题" class="headerlink" title="重要主题"></a>重要主题</h2><p>系统不仅仅只是硬件，而是硬件和系统软件互相交织的集合体，它们必须共同协作以达到运行应用程序的最终目的。下面是几个贯穿计算机系统所有方面的重要概念：</p>
 <blockquote>
 <p>并发和并行</p>
 </blockquote>
@@ -622,13 +623,13 @@ unix&gt;
 <hr>
 <p><strong>第一部分：程序结构和执行</strong></p>
 <p>计算机由处理器和存储器子系统组成。在核心部分，我们需要方法来表示基本数据类型，比如整数和实数运算的近似值。然后，我们考虑机器级指令如何操作这样的数据，以及编译器如何将 C 程序翻译成这样的指令。这一部分将帮助你深入了解如何表示和执行应用程序。</p>
-<h1 id="u4FE1_u606F_u7684_u8868_u793A_u548C_u5904_u7406"><a href="#u4FE1_u606F_u7684_u8868_u793A_u548C_u5904_u7406" class="headerlink" title="信息的表示和处理"></a>信息的表示和处理</h1><p>单个 bit 不是非常有用，然而，当把 bit 组合在一起，再加上某种解释(interpretation)，即给不同的可能位模式赋予含义，就能够表示任何有限集合的元素。计算机的表示法适用有限数量的 bit 来对一个数字编码，因此，当结果太大以至于不能表示时，某些运算就会<strong>溢出(overflow)</strong>。</p>
+<h1 id="信息的表示和处理"><a href="#信息的表示和处理" class="headerlink" title="信息的表示和处理"></a>信息的表示和处理</h1><p>单个 bit 不是非常有用，然而，当把 bit 组合在一起，再加上某种解释(interpretation)，即给不同的可能位模式赋予含义，就能够表示任何有限集合的元素。计算机的表示法适用有限数量的 bit 来对一个数字编码，因此，当结果太大以至于不能表示时，某些运算就会<strong>溢出(overflow)</strong>。</p>
 <p>浮点运算有完全不同的数学属性，由于精度有限，浮点运算是不可结合的。整数的表示虽然只能编码一个相对较小的数值范围，但这种表示是精确的；而浮点数虽然可以编码一个较大的数值范围，但这种表示只是近似的。</p>
 <p><strong>C 编程语言的演变</strong></p>
 <p>C -> ANSI C -> ISO C90 -> ISO C99</p>
 <p>GNU 编译器套装(GNU Compiler Collection, GCC)可以基于不同的命令行选项，依照多个不同版本的 C 语言规则来编译程序。</p>
 <p><img src="/images/csapp2.1.jpg" alt="csapp2.1"></p>
-<h2 id="u4FE1_u606F_u5B58_u50A8"><a href="#u4FE1_u606F_u5B58_u50A8" class="headerlink" title="信息存储"></a>信息存储</h2><p>大多数计算机使用8位的块，或者 byte 作为最小的可寻址的存储器单位，而不是在存储器中访问单独的 bit。机器级程序将存储器视为一个非常大的字节数组，称为<strong>虚拟存储器(virtual memory)</strong>。存储器的每个字节都由一个唯一的数字来标识，称为它的<strong>地址(address)</strong>，所有可能的地址集合称为<strong>虚拟地址空间(virtual address space)</strong>。</p>
+<h2 id="信息存储"><a href="#信息存储" class="headerlink" title="信息存储"></a>信息存储</h2><p>大多数计算机使用8位的块，或者 byte 作为最小的可寻址的存储器单位，而不是在存储器中访问单独的 bit。机器级程序将存储器视为一个非常大的字节数组，称为<strong>虚拟存储器(virtual memory)</strong>。存储器的每个字节都由一个唯一的数字来标识，称为它的<strong>地址(address)</strong>，所有可能的地址集合称为<strong>虚拟地址空间(virtual address space)</strong>。</p>
 <blockquote>
 <p>十六进制表示法</p>
 </blockquote>
@@ -692,7 +693,7 @@ unix&gt;
 <p>C 语言还提供了一组移位运算，以便向左或者向右移动位模式：\&lt;\&lt;、>>。</p>
 <p>x \&lt;\&lt; k 会生成一个值，x 向左移动 k 位，丢弃最高的 k 位，并在右端补 k 个 0。</p>
 <p>右移 x >> k 比较微妙，一般而言，机器支持两种形式的右移：逻辑右移(补 0)和算术右移(补 1)。对于无符号数据，右移必须是逻辑的。对于有符号数据，几乎所有的编译器 / 机器组合都使用算术右移。</p>
-<h2 id="u6574_u6570_u8868_u793A"><a href="#u6574_u6570_u8868_u793A" class="headerlink" title="整数表示"></a>整数表示</h2><blockquote>
+<h2 id="整数表示"><a href="#整数表示" class="headerlink" title="整数表示"></a>整数表示</h2><blockquote>
 <p>整型数据类型</p>
 </blockquote>
 <p>C 语言支持多种整型数据类型——表示有限范围的整数。C 语言标准定义了每种数据类型必须能够表示的最小的取值范围。</p>
@@ -732,7 +733,7 @@ unix&gt;
 </blockquote>
 <p>有符号数到无符号数的隐式强制类型转换导致了某些非直观的行为。而这些非直观的特性经常导致程序错误，并且这种包含隐式强制类型转换细微差别的错误很难被发现。因为这种强制类型转换是在代码中没有明确指示的情况下发生的，程序员经常忽视了它的影响。</p>
 <p>避免这类错误的一种方法就是绝不使用无符号数。实际上，除了 C 以外，很少有语言支持无符号整数。</p>
-<h2 id="u6574_u6570_u8FD0_u7B97"><a href="#u6574_u6570_u8FD0_u7B97" class="headerlink" title="整数运算"></a>整数运算</h2><p>理解计算机运算的细微之处能够帮助程序员编写更可靠的代码。</p>
+<h2 id="整数运算"><a href="#整数运算" class="headerlink" title="整数运算"></a>整数运算</h2><p>理解计算机运算的细微之处能够帮助程序员编写更可靠的代码。</p>
 <blockquote>
 <p>无符号加法</p>
 </blockquote>
@@ -759,7 +760,7 @@ unix&gt;
 <p>关于整数运算的最后思考</p>
 </blockquote>
 <p>计算机执行“整数”运算实际上是一种模运算形式。表示数字的有限字长限制了可能的值的取值范围，结果运算可能溢出。补码表示提供了一种既能表示负数也能表示正数的灵活方法，同时使用了与执行无符号算术相同的位级实现。</p>
-<h2 id="u6D6E_u70B9_u6570"><a href="#u6D6E_u70B9_u6570" class="headerlink" title="浮点数"></a>浮点数</h2><p>浮点表示对形如 V = x * 2^y 的有理数进行编码，IEEE 标准 754 规定了如何表示浮点数及其运算。</p>
+<h2 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h2><p>浮点表示对形如 V = x * 2^y 的有理数进行编码，IEEE 标准 754 规定了如何表示浮点数及其运算。</p>
 <blockquote>
 <p>二进制小数</p>
 </blockquote>
@@ -805,12 +806,12 @@ unix&gt;
 <li>从 double 转换成 float，可能溢出成为正无穷或负无穷，也可能被舍入。</li>
 <li>从 float 或者 double 转换成 int，值会向零舍入。例如 1.999 将被转换成 1。</li>
 </ul>
-<h2 id="u5C0F_u7ED3"><a href="#u5C0F_u7ED3" class="headerlink" title="小结"></a>小结</h2><p>计算机将信息按位编码，通常组织成字节序列。用不同的编码方式表示整数、实数和字符串。不同的计算机模型在编码数字和多字节数据中的字节排序时使用不同的约定。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>计算机将信息按位编码，通常组织成字节序列。用不同的编码方式表示整数、实数和字符串。不同的计算机模型在编码数字和多字节数据中的字节排序时使用不同的约定。</p>
 <p>由于编码的长度有限，与传统整数和实数运算想必，计算机运算具有完全不同的属性。当超出表示范围时，有限长度能够引起数值溢出。当浮点数非常接近于 0.0，从而转换成零时，也会瞎溢。</p>
 <p>必须非常小心地使用浮点运算，因为浮点运算只有有限的范围和精度，而且不遵守普遍的算术属性，比如结合性。</p>
-<h1 id="u7A0B_u5E8F_u7684_u673A_u5668_u7EA7_u8868_u793A"><a href="#u7A0B_u5E8F_u7684_u673A_u5668_u7EA7_u8868_u793A" class="headerlink" title="程序的机器级表示"></a>程序的机器级表示</h1><p>计算机执行<strong>机器代码</strong>，用字节序列编码低级的操作，包括处理数据、管理存储器、读写存储设备上的数据，以及利用网络通信。编译器基于编程语言的原则、目标机器的指令集和操作系统遵循的规则，经过一系列的阶段产生机器代码。GCC C 语言汇编器以<strong>汇编代码</strong>的形式产生输出，汇编代码是机器代码的文本表示，给出程序中的每一条指令。然后 GCC 调用<strong>汇编器</strong>和<strong>链接器</strong>，从而根据汇编代码生成可执行的机器代码。</p>
-<h2 id="u5386_u53F2_u89C2_u70B9"><a href="#u5386_u53F2_u89C2_u70B9" class="headerlink" title="历史观点"></a>历史观点</h2><p>Intel 处理器系列俗称 x86，经历了一个长期的、不断进化的发展过程。</p>
-<h2 id="u7A0B_u5E8F_u7F16_u7801"><a href="#u7A0B_u5E8F_u7F16_u7801" class="headerlink" title="程序编码"></a>程序编码</h2><p>假设一个 C 程序，有两个文件 p1.c 和 p2.c。我们在一台 IA32 机器上，用 Unix 命令行编译这些代码如下：</p>
+<h1 id="程序的机器级表示"><a href="#程序的机器级表示" class="headerlink" title="程序的机器级表示"></a>程序的机器级表示</h1><p>计算机执行<strong>机器代码</strong>，用字节序列编码低级的操作，包括处理数据、管理存储器、读写存储设备上的数据，以及利用网络通信。编译器基于编程语言的原则、目标机器的指令集和操作系统遵循的规则，经过一系列的阶段产生机器代码。GCC C 语言汇编器以<strong>汇编代码</strong>的形式产生输出，汇编代码是机器代码的文本表示，给出程序中的每一条指令。然后 GCC 调用<strong>汇编器</strong>和<strong>链接器</strong>，从而根据汇编代码生成可执行的机器代码。</p>
+<h2 id="历史观点"><a href="#历史观点" class="headerlink" title="历史观点"></a>历史观点</h2><p>Intel 处理器系列俗称 x86，经历了一个长期的、不断进化的发展过程。</p>
+<h2 id="程序编码"><a href="#程序编码" class="headerlink" title="程序编码"></a>程序编码</h2><p>假设一个 C 程序，有两个文件 p1.c 和 p2.c。我们在一台 IA32 机器上，用 Unix 命令行编译这些代码如下：</p>
 <pre><code>unix&gt; gcc -O1 -o p p1.c p2.c
 </code></pre><p>编译选项 -O1 告诉编译器使用第一级优化。使用更高级别的优化产生的代码会严重改变形式，以至于产生的机器代码和初始源代码之间的关系非常难以理解。实际中，从得到的程序性能方面考虑，第二级优化(-O2)被认为是较好的选择。</p>
 <p>实际上 gcc 命令调用了一系列程序，将源代码转化成可执行代码。首先，<strong>C 预处理器</strong>扩展源代码，插入所有用 #include 命令指定的文件，并扩展所有用 #define 声明指定的宏。然后，<strong>编译器</strong>产生两个源代码的汇编代码，名字分别为 p1.s 和 p2.s。接下来，<strong>汇编器</strong>将汇编代码转化成二进制目标代码，文件名为 p1.o 和 p2.o。目标代码是机器代码的一种形式，它包含所有指令的二进制表示，但是还没有填入地址的全局值。最后，<strong>链接器</strong>将两个目标代码文件与实现库函数(例如 printf )的代码合并，并产生最终的可执行代码文件 p。</p>
@@ -854,7 +855,7 @@ int sum(int x, int y){
 </blockquote>
 <p>由于是从 16 位体系结构扩展成 32 位的，Intel 用术语 word 表示 16 位数据类型。因此，称 32 位数为 double words，称 64 位数为 quad words。后面遇到的大多数指令都是对 word 或者 double words 操作的。</p>
 <p><img src="/images/csapp3.1.jpg" alt="csapp3.1"></p>
-<h2 id="u8BBF_u95EE_u4FE1_u606F"><a href="#u8BBF_u95EE_u4FE1_u606F" class="headerlink" title="访问信息"></a>访问信息</h2><p>一个 IA32 CPU 包含一组 8 个存储 32 位值的寄存器。这些寄存器用来存储整数数据和指针。它们的名字都以 %e 开头，不过它们都另有特殊的名字。</p>
+<h2 id="访问信息"><a href="#访问信息" class="headerlink" title="访问信息"></a>访问信息</h2><p>一个 IA32 CPU 包含一组 8 个存储 32 位值的寄存器。这些寄存器用来存储整数数据和指针。它们的名字都以 %e 开头，不过它们都另有特殊的名字。</p>
 <p><img src="/images/csapp3.2.jpg" alt="csapp3.2"></p>
 <p>对前三个寄存器(%eax, %ecx, %edx)的保存和恢复惯例不同于接下来的三个寄存器(%ebx, %edi, %esi)。最后两个寄存器(%ebp, %esp)保存着指向程序栈中重要位置的指针。只有根据栈管理的标准惯例才能修改这两个寄存器中的值。</p>
 <p>字节操作指令可以独立地读写前 4 个寄存器的 2 个低位字节。8086 中提供这样的特性是为了兼容 8008 和 8080。当一条字节指令更新这些单字节“寄存器元素”中的一个时，余下的 3 个字节不会改变。</p>
@@ -873,7 +874,7 @@ int sum(int x, int y){
 </blockquote>
 <p>将数据从一个位置复制到另一个位置的指令是最频繁使用的指令。操作数表示的通用性使得一条简单的数据传送指令能够完成在许多机器中要好几条指令才能完成的功能。</p>
 <p><img src="/images/csapp3.4.jpg" alt="csapp3.4"></p>
-<h2 id="u7B97_u672F_u548C_u903B_u8F91_u64CD_u4F5C"><a href="#u7B97_u672F_u548C_u903B_u8F91_u64CD_u4F5C" class="headerlink" title="算术和逻辑操作"></a>算术和逻辑操作</h2><p>给出的每个指令类都有对字节、字和双字数据进行操作的指令。这些操作被分为四组：加载有效地址、亿元操作、二元操作和移位。</p>
+<h2 id="算术和逻辑操作"><a href="#算术和逻辑操作" class="headerlink" title="算术和逻辑操作"></a>算术和逻辑操作</h2><p>给出的每个指令类都有对字节、字和双字数据进行操作的指令。这些操作被分为四组：加载有效地址、亿元操作、二元操作和移位。</p>
 <blockquote>
 <p>加载有效地址</p>
 </blockquote>
@@ -896,7 +897,7 @@ int sum(int x, int y){
 <p>特殊的算术操作</p>
 </blockquote>
 <p><img src="/images/csapp3.9.jpg" alt="csapp3.9"></p>
-<h2 id="u63A7_u5236"><a href="#u63A7_u5236" class="headerlink" title="控制"></a>控制</h2><p>机器代码提供两种基本的低级机制来实现有条件的行为：测试数据值，然后根据测试的结果来改变控制流或者数据流。</p>
+<h2 id="控制"><a href="#控制" class="headerlink" title="控制"></a>控制</h2><p>机器代码提供两种基本的低级机制来实现有条件的行为：测试数据值，然后根据测试的结果来改变控制流或者数据流。</p>
 <blockquote>
 <p>条件码</p>
 </blockquote>
@@ -942,7 +943,7 @@ int sum(int x, int y){
 </blockquote>
 <p>switch 语句可以根据一个整数索引值进行多重分支(multi-way branching)。不仅提高了 C 代码的可读性，而且通过使用<strong>跳转表(jump table)</strong>和使用一组很长的 if-else 语句相比，使用跳转表的优点是执行开关语句的时间与开关情况的数量无关。GCC 根据开关情况的数量和开关情况值的 sprsity 来翻译开关语句。</p>
 <p><img src="/images/csapp3.18.jpg" alt="csapp3.18"></p>
-<h2 id="u8FC7_u7A0B"><a href="#u8FC7_u7A0B" class="headerlink" title="过程"></a>过程</h2><p>一个过程调用包括将数据和控制从代码的一部分传递到另一部分。另外，它还必须在进入时为过程的局部变量分配空间，并在退出时释放这些空间。大多数机器，包括 IA32，只提供转移控制到过程和从过程转移出控制这种简单的指令。数据传递、局部变量的分配和释放通过操纵程序栈来实现。</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>一个过程调用包括将数据和控制从代码的一部分传递到另一部分。另外，它还必须在进入时为过程的局部变量分配空间，并在退出时释放这些空间。大多数机器，包括 IA32，只提供转移控制到过程和从过程转移出控制这种简单的指令。数据传递、局部变量的分配和释放通过操纵程序栈来实现。</p>
 <blockquote>
 <p>栈帧结构</p>
 </blockquote>
@@ -967,7 +968,7 @@ int sum(int x, int y){
 </blockquote>
 <p><img src="/images/csapp3.25.jpg" alt="csapp3.25"></p>
 <p><img src="/images/csapp3.27.jpg" alt="csapp3.27"></p>
-<h2 id="u6570_u7EC4_u5206_u914D_u548C_u8BBF_u95EE"><a href="#u6570_u7EC4_u5206_u914D_u548C_u8BBF_u95EE" class="headerlink" title="数组分配和访问"></a>数组分配和访问</h2><p>C 语言实现数组的方式非常简单，因此很容易翻译成机器代码。C 语言一个不同寻常的特点是可以产生指向数组中元素的指针，并对这些指针进行运算。在机器代码中，这些指针会被翻译成地址计算。</p>
+<h2 id="数组分配和访问"><a href="#数组分配和访问" class="headerlink" title="数组分配和访问"></a>数组分配和访问</h2><p>C 语言实现数组的方式非常简单，因此很容易翻译成机器代码。C 语言一个不同寻常的特点是可以产生指向数组中元素的指针，并对这些指针进行运算。在机器代码中，这些指针会被翻译成地址计算。</p>
 <p>优化编译器非常善于简化数组索引所使用的地址计算。不过这使得 C 代码和它机器代码的翻译之间的对应关系有些难以理解。</p>
 <blockquote>
 <p>基本原则</p>
@@ -999,7 +1000,7 @@ row3_t A[5];
 <p>变长数组</p>
 </blockquote>
 <p><img src="/images/csapp3.29.jpg" alt="csapp3.29"></p>
-<h2 id="u5F02_u8D28_u7684_u6570_u636E_u7ED3_u6784"><a href="#u5F02_u8D28_u7684_u6570_u636E_u7ED3_u6784" class="headerlink" title="异质的数据结构"></a>异质的数据结构</h2><p>C 语言提供了两种结合不同类型的对象来创建数据类型的机制：<strong>结构(structure)</strong>，用关键字<code>struct</code>声明，将多个对象集合到一个单位中；<strong>联合(union)</strong>，用关键字<code>union</code>声明，允许用几种不同的类型来引用一个对象。</p>
+<h2 id="异质的数据结构"><a href="#异质的数据结构" class="headerlink" title="异质的数据结构"></a>异质的数据结构</h2><p>C 语言提供了两种结合不同类型的对象来创建数据类型的机制：<strong>结构(structure)</strong>，用关键字<code>struct</code>声明，将多个对象集合到一个单位中；<strong>联合(union)</strong>，用关键字<code>union</code>声明，允许用几种不同的类型来引用一个对象。</p>
 <blockquote>
 <p>结构</p>
 </blockquote>
@@ -1014,7 +1015,7 @@ row3_t A[5];
 <p>许多计算机系统对基本数据类型合法地址做出了一些限制，要求某种类型对象的地址必须是某个值 K(通常是 2、4、8)。这种对齐限制简化了形成处理器和存储器系统之间接口的硬件设计</p>
 <p><strong>强制对齐的情况</strong></p>
 <p>对于大多数 IA32 指令来说，保持数据对齐能够提高效率，但是它不会影响程序的行为。另一方面，如果数据未对齐，有些实现多媒体操作的 SSE 指令就无法正确工作。</p>
-<h2 id="u7EFC_u5408_uFF1A_u7406_u89E3_u6307_u9488"><a href="#u7EFC_u5408_uFF1A_u7406_u89E3_u6307_u9488" class="headerlink" title="综合：理解指针"></a>综合：理解指针</h2><p>指针是 C 语言的一个重要特征。它们以一种统一方式，对不同数据结构中的元素产生引用。这里介绍一些指针和它们映射到机器代码的关键原则。</p>
+<h2 id="综合：理解指针"><a href="#综合：理解指针" class="headerlink" title="综合：理解指针"></a>综合：理解指针</h2><p>指针是 C 语言的一个重要特征。它们以一种统一方式，对不同数据结构中的元素产生引用。这里介绍一些指针和它们映射到机器代码的关键原则。</p>
 <ul>
 <li><strong>每个指针都对应一个类型。</strong>这个类型表明指针指向哪一类对象。</li>
 <li><strong>每个指针都有一个值。</strong>这个值是某个指定类型对象的地址。特殊的 NULL(0) 值表示该指针没有指向任何地方</li>
@@ -1031,9 +1032,9 @@ fp = fun;
 </code></pre><p>然后用以下真真来调用这个函数</p>
 <pre><code>int y = 1;
 int result = fp(3, &amp;y);
-</code></pre><h2 id="u5E94_u7528_uFF1A_u4F7F_u7528_GDB__u8C03_u8BD5_u5668"><a href="#u5E94_u7528_uFF1A_u4F7F_u7528_GDB__u8C03_u8BD5_u5668" class="headerlink" title="应用：使用 GDB 调试器"></a>应用：使用 GDB 调试器</h2><p>启动 GDB:</p>
+</code></pre><h2 id="应用：使用-GDB-调试器"><a href="#应用：使用-GDB-调试器" class="headerlink" title="应用：使用 GDB 调试器"></a>应用：使用 GDB 调试器</h2><p>启动 GDB:</p>
 <pre><code>unix&gt; gdb prog
-</code></pre><h2 id="u5B58_u50A8_u5668_u7684_u8D8A_u754C_u5F15_u7528_u548C_u7F13_u51B2_u533A_u6EA2_u51FA"><a href="#u5B58_u50A8_u5668_u7684_u8D8A_u754C_u5F15_u7528_u548C_u7F13_u51B2_u533A_u6EA2_u51FA" class="headerlink" title="存储器的越界引用和缓冲区溢出"></a>存储器的越界引用和缓冲区溢出</h2><p>C 对于数组引用不进行任何边界检查，而局部变量和状态信息，都存放在栈中。这两种情况结合到一起就可能导致严重的程序错误，对越界的数组元素的写操作会破坏存储在栈中的状态信息。当程序使用这个被破坏的状态，试图重新加载寄存器或执行 ret 指令时，就会出现很严重的错误。</p>
+</code></pre><h2 id="存储器的越界引用和缓冲区溢出"><a href="#存储器的越界引用和缓冲区溢出" class="headerlink" title="存储器的越界引用和缓冲区溢出"></a>存储器的越界引用和缓冲区溢出</h2><p>C 对于数组引用不进行任何边界检查，而局部变量和状态信息，都存放在栈中。这两种情况结合到一起就可能导致严重的程序错误，对越界的数组元素的写操作会破坏存储在栈中的状态信息。当程序使用这个被破坏的状态，试图重新加载寄存器或执行 ret 指令时，就会出现很严重的错误。</p>
 <p>缓冲区溢出的一个更加致命的使用就是让程序执行它本来不愿意执行的函数。这是一种最常见的通过计算机网络攻击系统安全的方法。通常，输入和程序一个字符串，这个字符串包含一些可执行代码的字节编码，称为**攻击代码(exploit code)，另外还有一些字节会用一个指向攻击代码的指针覆盖返回地址。那么执行 ret 指令的效果就是跳转到攻击代码。</p>
 <p>一种攻击形式，攻击代码会使用系统调用启动一个外壳程序，给攻击者提供一组操作系统函数。另一种攻击形式是，攻击代码会执行一些未授权的任务，修复对栈的破坏，然后第二次执行 ret 指令，(表面上)正常返回给调用者。</p>
 <p><strong>对抗缓冲区溢出攻击</strong></p>
@@ -1047,7 +1048,7 @@ int result = fp(3, &amp;y);
 <p>3.限制可执行代码区域</p>
 <p>消除攻击者向系统中插入可执行代码的能力，只有保存编译器产生的代码的那部分妇女初期才是可执行的，其他部分可以被限制为只允许读和写</p>
 <p><img src="/images/csapp3.33.jpg" alt="csapp3.33"></p>
-<h2 id="x86-64_3A__u5C06_IA32__u6269_u5C55_u5230_64__u4F4D"><a href="#x86-64_3A__u5C06_IA32__u6269_u5C55_u5230_64__u4F4D" class="headerlink" title="x86-64: 将 IA32 扩展到 64 位"></a>x86-64: 将 IA32 扩展到 64 位</h2><p>IA32 的 32 位字长已经成为限制微处理器能力不断增长的主要因素。最重要的是，机器的字长定义了程序能够使用的虚拟地址范围，32 位字长就是 4GB 虚拟地址空间。现在机器很容易就可以配置 4G 以上 RAM，但是系统却不能有效利用它。</p>
+<h2 id="x86-64-将-IA32-扩展到-64-位"><a href="#x86-64-将-IA32-扩展到-64-位" class="headerlink" title="x86-64: 将 IA32 扩展到 64 位"></a>x86-64: 将 IA32 扩展到 64 位</h2><p>IA32 的 32 位字长已经成为限制微处理器能力不断增长的主要因素。最重要的是，机器的字长定义了程序能够使用的虚拟地址范围，32 位字长就是 4GB 虚拟地址空间。现在机器很容易就可以配置 4G 以上 RAM，但是系统却不能有效利用它。</p>
 <p>Intel 和 AMD 提供的新硬件和以这些为目标的 GCC 新版本的组合，使得 x86-64 代码与为 IA32 机器生成的代码有极大的不同。主要特性如下：</p>
 <ul>
 <li>指针和长整数是 64 位长。整数运算支持 8/16/32/64 位数据类型</li>
@@ -1057,12 +1058,12 @@ int result = fp(3, &amp;y);
 <li>浮点操作用面向寄存器的指令集来实现</li>
 </ul>
 <p><img src="/images/csapp3.34.jpg" alt="csapp3.34"></p>
-<h2 id="u6D6E_u70B9_u7A0B_u5E8F_u7684_u673A_u5668_u7EA7_u8868_u793A"><a href="#u6D6E_u70B9_u7A0B_u5E8F_u7684_u673A_u5668_u7EA7_u8868_u793A" class="headerlink" title="浮点程序的机器级表示"></a>浮点程序的机器级表示</h2><p>我们把存储模型、指令和传递规则的组合称为机器的<strong>浮点体系结构</strong>。由于 x86 处理器有很长的发展演变历史，它提供了多种浮点体系结构，目前有两种还在使用：x87 和 SSE</p>
-<h2 id="u5C0F_u7ED3-1"><a href="#u5C0F_u7ED3-1" class="headerlink" title="小结"></a>小结</h2><p>机器级程序和它们的汇编代码表示，与 C 程序的差别很大。在汇编语言程序中，各种数据类型之间的差别很小。程序是以指令序列来表示的，每条指令都完成一个单独的操作。部分程序状态，如寄存器和运行时栈，对程序员来说是直接可见的。</p>
+<h2 id="浮点程序的机器级表示"><a href="#浮点程序的机器级表示" class="headerlink" title="浮点程序的机器级表示"></a>浮点程序的机器级表示</h2><p>我们把存储模型、指令和传递规则的组合称为机器的<strong>浮点体系结构</strong>。由于 x86 处理器有很长的发展演变历史，它提供了多种浮点体系结构，目前有两种还在使用：x87 和 SSE</p>
+<h2 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h2><p>机器级程序和它们的汇编代码表示，与 C 程序的差别很大。在汇编语言程序中，各种数据类型之间的差别很小。程序是以指令序列来表示的，每条指令都完成一个单独的操作。部分程序状态，如寄存器和运行时栈，对程序员来说是直接可见的。</p>
 <p>C 语言中缺乏边界检查，使得许多程序容易出现缓冲区溢出。虽然最近的运行时系统提供了安全保护，而且编译器帮助使得程序更加安全，但是这已经使许多系统容易收到入侵者的恶意攻击。</p>
-<h1 id="u5904_u7406_u5668_u4F53_u7CFB_u7ED3_u6784"><a href="#u5904_u7406_u5668_u4F53_u7CFB_u7ED3_u6784" class="headerlink" title="处理器体系结构"></a>处理器体系结构</h1><p>现代微处理器可以称得上时人类创造的最复杂的系统之一。一个处理器支持的指令和指令的字节级编码称为它的<strong>指令集体系结构(Instruction-Set Architecture, ISA)</strong>。不同的处理器家族，有不同的 ISA。一个程序编译成在一种机器上运行。</p>
+<h1 id="处理器体系结构"><a href="#处理器体系结构" class="headerlink" title="处理器体系结构"></a>处理器体系结构</h1><p>现代微处理器可以称得上时人类创造的最复杂的系统之一。一个处理器支持的指令和指令的字节级编码称为它的<strong>指令集体系结构(Instruction-Set Architecture, ISA)</strong>。不同的处理器家族，有不同的 ISA。一个程序编译成在一种机器上运行。</p>
 <p>注：这一章偏硬件实现部分将较为简略，具体参看原书。</p>
-<h2 id="Y86__u6307_u4EE4_u96C6_u4F53_u7CFB_u7ED3_u6784"><a href="#Y86__u6307_u4EE4_u96C6_u4F53_u7CFB_u7ED3_u6784" class="headerlink" title="Y86 指令集体系结构"></a>Y86 指令集体系结构</h2><p>定义一个指令集体系结构，包括定义各种状态元素、指令集和它们的编码、一组编程规范和异常事件处理。</p>
+<h2 id="Y86-指令集体系结构"><a href="#Y86-指令集体系结构" class="headerlink" title="Y86 指令集体系结构"></a>Y86 指令集体系结构</h2><p>定义一个指令集体系结构，包括定义各种状态元素、指令集和它们的编码、一组编程规范和异常事件处理。</p>
 <blockquote>
 <p>程序员可见的状态</p>
 </blockquote>
@@ -1092,7 +1093,7 @@ int result = fp(3, &amp;y);
 <p><img src="/images/csapp4.3.jpg" alt="csapp4.3"></p>
 <p>CISC vs RISC</p>
 <p><img src="/images/csapp0.8.jpg" alt="csapp0.8"></p>
-<h2 id="u903B_u8F91_u8BBE_u8BA1_u548C_u786C_u4EF6_u63A7_u5236_u8BED_u8A00_HCL"><a href="#u903B_u8F91_u8BBE_u8BA1_u548C_u786C_u4EF6_u63A7_u5236_u8BED_u8A00_HCL" class="headerlink" title="逻辑设计和硬件控制语言 HCL"></a>逻辑设计和硬件控制语言 HCL</h2><p>在硬件设计中，用电子电路来计算来计算对位进行运算的函数，以及在各种存储器元素中存储位。大多数现代电路技术都用信号线上的高电压或低电压来表示不同的位值。</p>
+<h2 id="逻辑设计和硬件控制语言-HCL"><a href="#逻辑设计和硬件控制语言-HCL" class="headerlink" title="逻辑设计和硬件控制语言 HCL"></a>逻辑设计和硬件控制语言 HCL</h2><p>在硬件设计中，用电子电路来计算来计算对位进行运算的函数，以及在各种存储器元素中存储位。大多数现代电路技术都用信号线上的高电压或低电压来表示不同的位值。</p>
 <blockquote>
 <p>逻辑门</p>
 </blockquote>
@@ -1109,16 +1110,16 @@ int result = fp(3, &amp;y);
 <p>字级的组合电路和 HCL 整数表达式</p>
 </blockquote>
 <p>通过将逻辑门组合成大的网，可以构造出能计算更加复杂函数的组合电路。</p>
-<h2 id="Y86__u7684_u987A_u5E8F_u5B9E_u73B0"><a href="#Y86__u7684_u987A_u5E8F_u5B9E_u73B0" class="headerlink" title="Y86 的顺序实现"></a>Y86 的顺序实现</h2><p>将处理组织成阶段</p>
+<h2 id="Y86-的顺序实现"><a href="#Y86-的顺序实现" class="headerlink" title="Y86 的顺序实现"></a>Y86 的顺序实现</h2><p>将处理组织成阶段</p>
 <p>取指(fetch)、译码(decode)、执行(execute)、访存(memory)、写回(write back)、更新 PC(PC update)</p>
-<h2 id="u6D41_u6C34_u7EBF_u7684_u901A_u7528_u539F_u7406"><a href="#u6D41_u6C34_u7EBF_u7684_u901A_u7528_u539F_u7406" class="headerlink" title="流水线的通用原理"></a>流水线的通用原理</h2><p>参考 Foundation of Computer Architecture，此略</p>
-<h2 id="u5C0F_u7ED3-2"><a href="#u5C0F_u7ED3-2" class="headerlink" title="小结"></a>小结</h2><p>有关处理器设计的几个重要经验：</p>
+<h2 id="流水线的通用原理"><a href="#流水线的通用原理" class="headerlink" title="流水线的通用原理"></a>流水线的通用原理</h2><p>参考 Foundation of Computer Architecture，此略</p>
+<h2 id="小结-2"><a href="#小结-2" class="headerlink" title="小结"></a>小结</h2><p>有关处理器设计的几个重要经验：</p>
 <ul>
 <li>管理复杂性是首要问题。想要优化使用硬件资源，在最小的成本下获得最大的性能</li>
 <li>我们不需要直接实现 ISA</li>
 <li>硬件设计人员必须非常谨慎小心</li>
 </ul>
-<h1 id="u4F18_u5316_u7A0B_u5E8F_u6027_u80FD"><a href="#u4F18_u5316_u7A0B_u5E8F_u6027_u80FD" class="headerlink" title="优化程序性能"></a>优化程序性能</h1><blockquote>
+<h1 id="优化程序性能"><a href="#优化程序性能" class="headerlink" title="优化程序性能"></a>优化程序性能</h1><blockquote>
 <p>你能获得的对程序最大的加速比就是当你第一次让它工作起来的时候。 —— John K.Ousterhout</p>
 </blockquote>
 <p>写程序最主要的目标就是使它在所有可能的情况下都正确工作。程序员必须写出清晰简洁的代码，这样做不仅是为了程序员能够看懂代码，也是为了在检查代码和今后需要修改代码时，其他人能够读懂和理解代码。</p>
@@ -1126,7 +1127,7 @@ int result = fp(3, &amp;y);
 <p>在程序开发和优化的过程中，我们必须考虑代码使用的方式，以及影响它的关键因素。通常，程序员必须在实现和维护程序的简单性与它的运行速度之间做出权衡。</p>
 <p>程序优化的第一步就是消除不必要的内容，让代码尽可能有效地执行它期望的工作。这包括消除不必要的函数调用、条件测试和存储器引用。这些优化不依赖于目标机器的任何具体属性。</p>
 <p>研究程序的汇编代码表示，是理解编译器，以及产生的代码如何运行的最有效的手段之一。仔细研究内循环的代码是一个很好的开端。</p>
-<h2 id="u4F18_u5316_u7F16_u8BD1_u5668_u7684_u80FD_u529B_u548C_u5C40_u9650_u6027"><a href="#u4F18_u5316_u7F16_u8BD1_u5668_u7684_u80FD_u529B_u548C_u5C40_u9650_u6027" class="headerlink" title="优化编译器的能力和局限性"></a>优化编译器的能力和局限性</h2><p>现代编译器运用复杂精细的算法来确定一个程序中计算的是什么值，以及它们是被如何使用的。然后它们会利用一些机会来简化表达式，在几个不同的地方使用同一个计算，以及降低一个给定的计算必须被执行的次数。</p>
+<h2 id="优化编译器的能力和局限性"><a href="#优化编译器的能力和局限性" class="headerlink" title="优化编译器的能力和局限性"></a>优化编译器的能力和局限性</h2><p>现代编译器运用复杂精细的算法来确定一个程序中计算的是什么值，以及它们是被如何使用的。然后它们会利用一些机会来简化表达式，在几个不同的地方使用同一个计算，以及降低一个给定的计算必须被执行的次数。</p>
 <p>限制编译器只进行安全的优化，消除了一些造成不希望的运行时行为的可能原因，但这也意味着程序员必须花费更大的力气写出程序使编译器能够将之转换成有效机器代码。请看下面这个例子</p>
 <pre><code>void twiddle1(int *xp, int *yp){
     *xp += *yp;
@@ -1155,7 +1156,7 @@ int f(){
     return counter++;
 }
 </code></pre><p>这个函数有个副作用——它修改了全局程序状态的一部分。改变调用它的次数会改变程序的行为。所以，编译器会假设最早的情况，并保持所有函数调用不变。</p>
-<h2 id="u8868_u793A_u7A0B_u5E8F_u6027_u80FD"><a href="#u8868_u793A_u7A0B_u5E8F_u6027_u80FD" class="headerlink" title="表示程序性能"></a>表示程序性能</h2><p>我们引入度量标准<strong>每元素的周期数(Cycles Per Element, CPE)</strong>作为一种表示性能并指导我们改进代码的方法。处理器活动的顺序是由时钟控制的，时钟提供了某个频率的规律信号，通常用<strong>千兆赫兹(GHz)</strong>，即十亿周期每秒来表示。CPE 越小越好。</p>
+<h2 id="表示程序性能"><a href="#表示程序性能" class="headerlink" title="表示程序性能"></a>表示程序性能</h2><p>我们引入度量标准<strong>每元素的周期数(Cycles Per Element, CPE)</strong>作为一种表示性能并指导我们改进代码的方法。处理器活动的顺序是由时钟控制的，时钟提供了某个频率的规律信号，通常用<strong>千兆赫兹(GHz)</strong>，即十亿周期每秒来表示。CPE 越小越好。</p>
 <p>许多过程含有在一组元素上迭代的循环。如下图中的函数 psum1 和 psum2 计算都是一个长度为 n 的向量的前置和(prefix sum)，对于向量 a={a0,a1,…,an-1}，前置和 p={p0,p1,…pn-1}定义为</p>
 <pre><code>p0 = a0
 pi = pi-1 + ai, 1&lt;= i &lt; n
@@ -1163,7 +1164,7 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <p><img src="/images/csapp5.1.jpg" alt="csapp5.1"></p>
 <p>我们发现，psum1 和 psum2 的运行时间(以时钟周期为单位)分辨近似于等式 496+10.0n 和 500+6.5n。</p>
 <p><img src="/images/csapp5.2.jpg" alt="csapp5.2"></p>
-<h2 id="u7A0B_u5E8F_u793A_u4F8B"><a href="#u7A0B_u5E8F_u793A_u4F8B" class="headerlink" title="程序示例"></a>程序示例</h2><p>考虑如下图所示的简单向量数据结构，由两个存储器块表示：头部和数据数组。头部是一个声明如下的结构</p>
+<h2 id="程序示例"><a href="#程序示例" class="headerlink" title="程序示例"></a>程序示例</h2><p>考虑如下图所示的简单向量数据结构，由两个存储器块表示：头部和数据数组。头部是一个声明如下的结构</p>
 <p><img src="/images/csapp5.3.jpg" alt="csapp5.3"></p>
 <p>这个声明用数据类型 data_t 作为基本元素的数据类型。例如 <code>typedef int data_t</code>。</p>
 <p><img src="/images/csapp5.4.jpg" alt="csapp5.4"></p>
@@ -1176,15 +1177,15 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 </code></pre><p><img src="/images/csapp5.5.jpg" alt="csapp5.5"></p>
 <p>我们会进行一组变换，发现有很多智能带来很小的性能提高，而其他的能带来更巨大的效果。确定该使用哪些变换的组合确实是编写快速代码的魔术(black art)。</p>
 <p>未经优化的代码是从 C 语言代码到机器代码的直接翻译，通常有明显的低效率。简单地使用命令行选项 <code>-O1</code>，就会进行一些基本的优化，可以显著提高性能。</p>
-<h2 id="u6D88_u9664_u5FAA_u73AF_u7684_u4F4E_u6548_u7387"><a href="#u6D88_u9664_u5FAA_u73AF_u7684_u4F4E_u6548_u7387" class="headerlink" title="消除循环的低效率"></a>消除循环的低效率</h2><p>可以观察到，过程 combine1 调用函数 <code>vec_length</code> 作为 for 循环的测试条件。我们其实可以只计算一次向量的长度，然后在我们的测试条件中都使用这个值。如下图所示：</p>
+<h2 id="消除循环的低效率"><a href="#消除循环的低效率" class="headerlink" title="消除循环的低效率"></a>消除循环的低效率</h2><p>可以观察到，过程 combine1 调用函数 <code>vec_length</code> 作为 for 循环的测试条件。我们其实可以只计算一次向量的长度，然后在我们的测试条件中都使用这个值。如下图所示：</p>
 <p><img src="/images/csapp5.6.jpg" alt="csapp5.6"></p>
 <p>这个优化是一类常见的优化的一个例子，称为<strong>代码移动(code motion)</strong>。这类优化包括识别要执行多次(例如在循环里)但是计算结果不会改变的计算。因而可以将计算移动到代码前面不会被多次求值的部分。</p>
 <p>编程时一个常见的问题就是一个看上去无足轻重的代码片段有隐藏的渐进低效率(asymptotic inefficiency)</p>
-<h2 id="u51CF_u5C11_u8FC7_u7A0B_u8C03_u7528"><a href="#u51CF_u5C11_u8FC7_u7A0B_u8C03_u7528" class="headerlink" title="减少过程调用"></a>减少过程调用</h2><p>过程调用会代码相当大的开销，而且妨碍大多数形式的程序优化。从上图可以看出，每次循环迭代都会调用 <code>get_vec_element</code> 来获取下一个向量元素。我们可以直接访问数组，而不是利用函数调用并加上边界检查：</p>
+<h2 id="减少过程调用"><a href="#减少过程调用" class="headerlink" title="减少过程调用"></a>减少过程调用</h2><p>过程调用会代码相当大的开销，而且妨碍大多数形式的程序优化。从上图可以看出，每次循环迭代都会调用 <code>get_vec_element</code> 来获取下一个向量元素。我们可以直接访问数组，而不是利用函数调用并加上边界检查：</p>
 <p><img src="/images/csapp5.9.jpg" alt="csapp5.9"></p>
-<h2 id="u6D88_u9664_u4E0D_u5FC5_u8981_u7684_u5B58_u50A8_u5668_u5F15_u7528"><a href="#u6D88_u9664_u4E0D_u5FC5_u8981_u7684_u5B58_u50A8_u5668_u5F15_u7528" class="headerlink" title="消除不必要的存储器引用"></a>消除不必要的存储器引用</h2><p>累加过程中其实没有必要每次都把结果写入到 dest 中，可以使用一个临时变量，消除不必要的存储器引用：</p>
+<h2 id="消除不必要的存储器引用"><a href="#消除不必要的存储器引用" class="headerlink" title="消除不必要的存储器引用"></a>消除不必要的存储器引用</h2><p>累加过程中其实没有必要每次都把结果写入到 dest 中，可以使用一个临时变量，消除不必要的存储器引用：</p>
 <p><img src="/images/csapp5.10.jpg" alt="csapp5.10"></p>
-<h2 id="u7406_u89E3_u73B0_u4EE3_u5904_u7406_u5668"><a href="#u7406_u89E3_u73B0_u4EE3_u5904_u7406_u5668" class="headerlink" title="理解现代处理器"></a>理解现代处理器</h2><p>要想获得充分提高的性能，需要仔细地分析程序，同时代码的生成也要针对目标处理器进行调整。由于可以将大量的晶体管继承到一块新品啊上，现代微处理器采用了复杂的硬件，试图使程序性能最大化。带来的一个后果就是处理器的实际操作与观察机器级程序锁察觉到的大相径庭。在代码级上，看上去似乎是一次执行一条指令，每条指令都包括从寄存器或存储器取值，执行一个操作，并把结果存回到一个寄存器或存储器位置。在实际的处理器中，是同时对多条指令求值，这个现象称为<strong>指令级并行</strong>。现代微处理器取得的了不起的功绩之一是：它们采用复杂而奇异的微处理器结构，其中，多条指令可以并行地执行，同时又呈现一种简单地顺序执行指令的表象。</p>
+<h2 id="理解现代处理器"><a href="#理解现代处理器" class="headerlink" title="理解现代处理器"></a>理解现代处理器</h2><p>要想获得充分提高的性能，需要仔细地分析程序，同时代码的生成也要针对目标处理器进行调整。由于可以将大量的晶体管继承到一块新品啊上，现代微处理器采用了复杂的硬件，试图使程序性能最大化。带来的一个后果就是处理器的实际操作与观察机器级程序锁察觉到的大相径庭。在代码级上，看上去似乎是一次执行一条指令，每条指令都包括从寄存器或存储器取值，执行一个操作，并把结果存回到一个寄存器或存储器位置。在实际的处理器中，是同时对多条指令求值，这个现象称为<strong>指令级并行</strong>。现代微处理器取得的了不起的功绩之一是：它们采用复杂而奇异的微处理器结构，其中，多条指令可以并行地执行，同时又呈现一种简单地顺序执行指令的表象。</p>
 <p>两种下界描述了程序的最大性能。当一系列操作必须按照严格顺序执行时，就会遇到<strong>延迟界限(latency bound)</strong>，因为在下一条指令开始之前，这条指令必须结束。当代码中的数据相关限制了处理器利用指令级并行的能力时，延迟界限能够限定程序性能。<strong>吞吐量界限(throughput bound)</strong>刻画了处理器功能单元的原始计算能力。这个界限是程序性能的终极限制。</p>
 <blockquote>
 <p>整体操作</p>
@@ -1199,9 +1200,9 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <p>处理器操作的抽象模型</p>
 </blockquote>
 <p>我们会使用程序的数据流(data-flow)表示，作为分析在现代处理器上执行的机器级程序性能的一个工具，这是一种图形化的表示方法，展现了不同操作之间的数据相关是如何限制它们的执行顺序的。这种限制形成了图中的<strong>关键路径(critical path)</strong>，这是执行一组机器指令所需时钟周期数的一个下界。</p>
-<h2 id="u5FAA_u73AF_u5C55_u5F00"><a href="#u5FAA_u73AF_u5C55_u5F00" class="headerlink" title="循环展开"></a>循环展开</h2><p>循环展开是一种程序变换，通过增加每次迭代计算的元素的数量，减少循环的迭代次数。循环展开能够从两个方面改善程序的性能。首先，它减少了不直接有助于程序结果的操作的数量，例如循环索引计算和条件分支。其次，它提供了一些方法，可以进一步变化代码，减少整个计算中关键路径上的操作数量。</p>
-<h2 id="u63D0_u9AD8_u5E76_u884C_u6027"><a href="#u63D0_u9AD8_u5E76_u884C_u6027" class="headerlink" title="提高并行性"></a>提高并行性</h2><p>对于一个可结合和可交互的合并运算来说，比如说整数加法或乘法，我们可以通过将一组合并运算分割成两个或更多的部分，并在最后合并结果来提高性能。</p>
-<h2 id="u4E00_u4E9B_u9650_u5236_u56E0_u7D20"><a href="#u4E00_u4E9B_u9650_u5236_u56E0_u7D20" class="headerlink" title="一些限制因素"></a>一些限制因素</h2><ul>
+<h2 id="循环展开"><a href="#循环展开" class="headerlink" title="循环展开"></a>循环展开</h2><p>循环展开是一种程序变换，通过增加每次迭代计算的元素的数量，减少循环的迭代次数。循环展开能够从两个方面改善程序的性能。首先，它减少了不直接有助于程序结果的操作的数量，例如循环索引计算和条件分支。其次，它提供了一些方法，可以进一步变化代码，减少整个计算中关键路径上的操作数量。</p>
+<h2 id="提高并行性"><a href="#提高并行性" class="headerlink" title="提高并行性"></a>提高并行性</h2><p>对于一个可结合和可交互的合并运算来说，比如说整数加法或乘法，我们可以通过将一组合并运算分割成两个或更多的部分，并在最后合并结果来提高性能。</p>
+<h2 id="一些限制因素"><a href="#一些限制因素" class="headerlink" title="一些限制因素"></a>一些限制因素</h2><ul>
 <li>寄存器溢出</li>
 <li>分支预测和预测错误处罚</li>
 </ul>
@@ -1211,7 +1212,7 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <li>书写适合用条件传送实现的代码</li>
 </ul>
 <p><img src="/images/csapp0.9.jpg" alt="csapp0.9"></p>
-<h2 id="u7406_u89E3_u5B58_u50A8_u5668_u6027_u80FD"><a href="#u7406_u89E3_u5B58_u50A8_u5668_u6027_u80FD" class="headerlink" title="理解存储器性能"></a>理解存储器性能</h2><p>现代处理器有专门的功能单元来执行加载和存储操作，这些单元有内部的缓冲区来保存未完成的存储器操作请求集合。</p>
+<h2 id="理解存储器性能"><a href="#理解存储器性能" class="headerlink" title="理解存储器性能"></a>理解存储器性能</h2><p>现代处理器有专门的功能单元来执行加载和存储操作，这些单元有内部的缓冲区来保存未完成的存储器操作请求集合。</p>
 <blockquote>
 <p>加载的性能</p>
 </blockquote>
@@ -1220,7 +1221,7 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <p>存储的性能</p>
 </blockquote>
 <p>存储操作将一个寄存器值写到存储器。</p>
-<h2 id="u5E94_u7528_uFF1A_u6027_u80FD_u63D0_u9AD8_u6280_u672F"><a href="#u5E94_u7528_uFF1A_u6027_u80FD_u63D0_u9AD8_u6280_u672F" class="headerlink" title="应用：性能提高技术"></a>应用：性能提高技术</h2><ol>
+<h2 id="应用：性能提高技术"><a href="#应用：性能提高技术" class="headerlink" title="应用：性能提高技术"></a>应用：性能提高技术</h2><ol>
 <li>高级设计。为遇到的问题选择适当的算法和数据结构。要特别警觉，避免使用那些会渐进地产生糟糕性能的算法或编码技术。</li>
 <li>基本编码原则。避免限制优化的因素，这样编译器就能产生高效的代码。<ul>
 <li>消除连续的函数调用。在可能时，将计算移到循环外。考虑有选择地拖鞋程序的模块性以获得更大的效率</li>
@@ -1234,7 +1235,7 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 </ul>
 </li>
 </ol>
-<h2 id="u786E_u5B9A_u548C_u6D88_u9664_u6027_u80FD_u74F6_u9888"><a href="#u786E_u5B9A_u548C_u6D88_u9664_u6027_u80FD_u74F6_u9888" class="headerlink" title="确定和消除性能瓶颈"></a>确定和消除性能瓶颈</h2><p>系统优化的通用原则：Amdahl’s law</p>
+<h2 id="确定和消除性能瓶颈"><a href="#确定和消除性能瓶颈" class="headerlink" title="确定和消除性能瓶颈"></a>确定和消除性能瓶颈</h2><p>系统优化的通用原则：Amdahl’s law</p>
 <p>Unix 的程序剖析(profiling)工具 GPROF。这个程序产生两种形式的信息。首先，它确定程序中每个函数花费了多少 CPU 时间。其次，它计算每个函数被调用的次数，以执行调用的函数来分类。</p>
 <p>运行时需要三个步骤</p>
 <ol>
@@ -1243,11 +1244,11 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <li>调用 GPROF 来分析 <code>gmon.out</code> 中的数据：<code>unix&gt; gprof prog</code></li>
 </ol>
 <p>具体的用法请参考书本或者网上的例子，此略</p>
-<h2 id="u5C0F_u7ED3-3"><a href="#u5C0F_u7ED3-3" class="headerlink" title="小结"></a>小结</h2><p>没有任何编译器能用一个好的算法或数据结构代替低效率的算法或数据结构，因此程序设计时的这些方面仍然应该是程序员主要关心的。</p>
-<h1 id="u5B58_u50A8_u5668_u5C42_u6B21_u7ED3_u6784"><a href="#u5B58_u50A8_u5668_u5C42_u6B21_u7ED3_u6784" class="headerlink" title="存储器层次结构"></a>存储器层次结构</h1><p>存储器系统(memory system)是一个具有不同容量、成本和访问时间的存储设备的层次结构。CPU 寄存器保存着最常用的数据。靠近 CPU 的晓得、快速的<strong>高速缓存存储器(cache memory)</strong>作为一部分存储在相对慢速的主存储器(main memory)中的数据和指令的缓冲区域。主存暂时存放在容量较大的、慢速磁盘上的数据，而这些磁盘常常又作为存储在通过网络连接的其他机器的磁盘或磁带上的区域的缓冲区域。</p>
+<h2 id="小结-3"><a href="#小结-3" class="headerlink" title="小结"></a>小结</h2><p>没有任何编译器能用一个好的算法或数据结构代替低效率的算法或数据结构，因此程序设计时的这些方面仍然应该是程序员主要关心的。</p>
+<h1 id="存储器层次结构"><a href="#存储器层次结构" class="headerlink" title="存储器层次结构"></a>存储器层次结构</h1><p>存储器系统(memory system)是一个具有不同容量、成本和访问时间的存储设备的层次结构。CPU 寄存器保存着最常用的数据。靠近 CPU 的晓得、快速的<strong>高速缓存存储器(cache memory)</strong>作为一部分存储在相对慢速的主存储器(main memory)中的数据和指令的缓冲区域。主存暂时存放在容量较大的、慢速磁盘上的数据，而这些磁盘常常又作为存储在通过网络连接的其他机器的磁盘或磁带上的区域的缓冲区域。</p>
 <p>如果你理解了系统是如何将数据在存储器层次结构中上上下下移动的，那么你就可以编写你的应用程序，使得它们的数据项存储在层次结构中较高的地方，在那里 CPU 能更快地访问到它们。</p>
 <p>这个思想围绕着计算机程序的一个称为<strong>局部性(locality)</strong>的基本属性。具有良好局部性的程序倾向于一次又一次地访问相同的数据项集合，或是倾向于访问临近的数据项集合。</p>
-<h2 id="u5B58_u50A8_u6280_u672F"><a href="#u5B58_u50A8_u6280_u672F" class="headerlink" title="存储技术"></a>存储技术</h2><p>计算机技术的成功很大程度上源自于存储技术的巨大进步。</p>
+<h2 id="存储技术"><a href="#存储技术" class="headerlink" title="存储技术"></a>存储技术</h2><p>计算机技术的成功很大程度上源自于存储技术的巨大进步。</p>
 <blockquote>
 <p>随机访问存储器</p>
 </blockquote>
@@ -1266,14 +1267,14 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <li>不同的存储技术的价格和性能属性一截然不同的速率变化着</li>
 <li>DRAM 和磁盘的性能滞后于 CPU 的性能</li>
 </ul>
-<h2 id="u5C40_u90E8_u6027"><a href="#u5C40_u90E8_u6027" class="headerlink" title="局部性"></a>局部性</h2><p>一个编写良好的计算机程序常常具有良好的局部性(locality)。也就是说，它们倾向于引用临近于其他最近引用过的数据项的数据项，或者最近引用过的数据项本身。这种倾向性，被称为<strong>局部性原理(principle of locality)</strong>，是一个持久的概念，对硬件和软件系统的设计和性能都有着极大的影响。</p>
+<h2 id="局部性"><a href="#局部性" class="headerlink" title="局部性"></a>局部性</h2><p>一个编写良好的计算机程序常常具有良好的局部性(locality)。也就是说，它们倾向于引用临近于其他最近引用过的数据项的数据项，或者最近引用过的数据项本身。这种倾向性，被称为<strong>局部性原理(principle of locality)</strong>，是一个持久的概念，对硬件和软件系统的设计和性能都有着极大的影响。</p>
 <p>局部性通常有两种不同的形式：<strong>时间局部性(temporal locality)</strong>和<strong>空间局部性(spatial locality)</strong>。有良好局部性的程序比局部性差的程序运行得更快。</p>
 <ul>
 <li>重复引用同一个变量的程序有良好的时间局部性</li>
 <li>对于具有步长为 k 的引用模式的程序，步长越小，空间局部性越好</li>
 <li>对于取指令来说，循环有好的时间和空间局部性。循环体越小，循环迭代次数越多，局部性越好</li>
 </ul>
-<h2 id="u5B58_u50A8_u5668_u5C42_u6B21_u7ED3_u6784-1"><a href="#u5B58_u50A8_u5668_u5C42_u6B21_u7ED3_u6784-1" class="headerlink" title="存储器层次结构"></a>存储器层次结构</h2><p>存储器层次结构(memory hierarchy)如下图所示</p>
+<h2 id="存储器层次结构-1"><a href="#存储器层次结构-1" class="headerlink" title="存储器层次结构"></a>存储器层次结构</h2><p>存储器层次结构(memory hierarchy)如下图所示</p>
 <p><img src="/images/csapp6.23.jpg" alt="csapp6.23"></p>
 <blockquote>
 <p>存储器层次结构中的缓存</p>
@@ -1291,12 +1292,12 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <p>一个空的缓存有时称为<strong>冷缓存(cold cache)</strong>，此类不命中称为<strong>compulsory miss</strong> 或 <strong>cold miss</strong>。</p>
 <p>只要发生了 cache miss，第 k 层的缓存就必须执行某个<strong>放置策略(placement policy)</strong>，确定把它从第 k+1 层中取出的块放在哪里。一般来说是用映射来确定放在哪里，如果两个不同的块映射到同一个位置，就引起了 conflict miss。当工作集的大小超过缓存的大小时，就会有 capacity miss。</p>
 <p><img src="/images/csapp6.25.jpg" alt="csapp6.25"></p>
-<h2 id="u9AD8_u901F_u7F13_u5B58_u5B58_u50A8_u5668"><a href="#u9AD8_u901F_u7F13_u5B58_u5B58_u50A8_u5668" class="headerlink" title="高速缓存存储器"></a>高速缓存存储器</h2><p>早期计算机系统的存储器结构只有三层：CPU 寄存器、DRAM 主存储器和磁盘存储。不过，由于 CPU 和主存之间逐渐增大的差距，系统设计者被迫在 CPU 寄存器文件和主存之间插入了一个小的 SRAM 高速缓存存储器，称为 L1 高速缓存。之后又插入了一个更大的高速缓存，称为 L2 高速缓存，之后还有 L3 高速缓存。周期数：L1(2~4), L2(~10), L3(~30~40)</p>
-<h2 id="u7F16_u5199_u9AD8_u901F_u7F13_u5B58_u53CB_u597D_u7684_u4EE3_u7801"><a href="#u7F16_u5199_u9AD8_u901F_u7F13_u5B58_u53CB_u597D_u7684_u4EE3_u7801" class="headerlink" title="编写高速缓存友好的代码"></a>编写高速缓存友好的代码</h2><ul>
+<h2 id="高速缓存存储器"><a href="#高速缓存存储器" class="headerlink" title="高速缓存存储器"></a>高速缓存存储器</h2><p>早期计算机系统的存储器结构只有三层：CPU 寄存器、DRAM 主存储器和磁盘存储。不过，由于 CPU 和主存之间逐渐增大的差距，系统设计者被迫在 CPU 寄存器文件和主存之间插入了一个小的 SRAM 高速缓存存储器，称为 L1 高速缓存。之后又插入了一个更大的高速缓存，称为 L2 高速缓存，之后还有 L3 高速缓存。周期数：L1(2~4), L2(~10), L3(~30~40)</p>
+<h2 id="编写高速缓存友好的代码"><a href="#编写高速缓存友好的代码" class="headerlink" title="编写高速缓存友好的代码"></a>编写高速缓存友好的代码</h2><ul>
 <li>让最常见的情况运行得快</li>
 <li>在每个循环内部缓存不命中数量最小</li>
 </ul>
-<h2 id="u7EFC_u5408_uFF1A_u9AD8_u901F_u7F13_u5B58_u5BF9_u7A0B_u5E8F_u6027_u80FD_u7684_u5F71_u54CD"><a href="#u7EFC_u5408_uFF1A_u9AD8_u901F_u7F13_u5B58_u5BF9_u7A0B_u5E8F_u6027_u80FD_u7684_u5F71_u54CD" class="headerlink" title="综合：高速缓存对程序性能的影响"></a>综合：高速缓存对程序性能的影响</h2><blockquote>
+<h2 id="综合：高速缓存对程序性能的影响"><a href="#综合：高速缓存对程序性能的影响" class="headerlink" title="综合：高速缓存对程序性能的影响"></a>综合：高速缓存对程序性能的影响</h2><blockquote>
 <p>存储器山</p>
 </blockquote>
 <p>一个程序从存储系统中读数据的速率称为<strong>度吞吐量(read throughput)</strong>，或者有时称为<strong>读带宽(read bandwidth)</strong>。</p>
@@ -1313,11 +1314,11 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <li>通过按照数据对象存储在存储器中的顺序、以步长为 1 的来读数据，从而使得程序中的空间局部性最大</li>
 <li>一旦从存储器中读入了一个数据对象，就尽可能多地使用它，从而使得程序中的时间局部性最大</li>
 </ul>
-<h2 id="u5C0F_u7ED3-4"><a href="#u5C0F_u7ED3-4" class="headerlink" title="小结"></a>小结</h2><p>程序员可以通过编写有良好空间和时间局部性的程序来显著地改进程序的运行时间。利用基于 SRAM 的高速缓存存储器特别重要。</p>
-<h1 id="u94FE_u63A5"><a href="#u94FE_u63A5" class="headerlink" title="链接"></a>链接</h1><p>链接(linking)是将各种代码和数据部分收集起来并组合成为一个单一文件的过程，这个文件可被加载到存储器并执行。链接可以执行于编译时(compile time)，也可以执行于加载时(load time)，甚至执行于运行时(run time)。</p>
+<h2 id="小结-4"><a href="#小结-4" class="headerlink" title="小结"></a>小结</h2><p>程序员可以通过编写有良好空间和时间局部性的程序来显著地改进程序的运行时间。利用基于 SRAM 的高速缓存存储器特别重要。</p>
+<h1 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h1><p>链接(linking)是将各种代码和数据部分收集起来并组合成为一个单一文件的过程，这个文件可被加载到存储器并执行。链接可以执行于编译时(compile time)，也可以执行于加载时(load time)，甚至执行于运行时(run time)。</p>
 <p>链接器在软件开发中扮演着一个关键的角色，因为它们使得分离编译(separate compilation)成为可能。</p>
-<h2 id="u7F16_u8BD1_u5668_u9A71_u52A8_u7A0B_u5E8F"><a href="#u7F16_u8BD1_u5668_u9A71_u52A8_u7A0B_u5E8F" class="headerlink" title="编译器驱动程序"></a>编译器驱动程序</h2><p>大多数编译系统提供<strong>编译驱动程序(compiler driver)</strong>，它代表用户在需要时调用语言预处理器、编译器、汇编器和链接器。</p>
-<h2 id="u9759_u6001_u8FDE_u63A5"><a href="#u9759_u6001_u8FDE_u63A5" class="headerlink" title="静态连接"></a>静态连接</h2><p>静态链接器(static linker)以一组可重定位目标文件和命令行参数作为输入，生成一个完全链接的可以加载和运行的可执行目标文件作为输出。输入的可重定位目标文件由各种不同的代码和数据节(section)组成。指令在一个 section 中，初始化的全局变量在另一个 section 中，而未初始化的变量又在另一个 section 中。</p>
+<h2 id="编译器驱动程序"><a href="#编译器驱动程序" class="headerlink" title="编译器驱动程序"></a>编译器驱动程序</h2><p>大多数编译系统提供<strong>编译驱动程序(compiler driver)</strong>，它代表用户在需要时调用语言预处理器、编译器、汇编器和链接器。</p>
+<h2 id="静态连接"><a href="#静态连接" class="headerlink" title="静态连接"></a>静态连接</h2><p>静态链接器(static linker)以一组可重定位目标文件和命令行参数作为输入，生成一个完全链接的可以加载和运行的可执行目标文件作为输出。输入的可重定位目标文件由各种不同的代码和数据节(section)组成。指令在一个 section 中，初始化的全局变量在另一个 section 中，而未初始化的变量又在另一个 section 中。</p>
 <p><img src="/images/csapp7.2.jpg" alt="csapp7.2"></p>
 <p>为了构造可执行文件，链接器必须完成两个主要任务：</p>
 <ul>
@@ -1325,40 +1326,40 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <li>重定位(relocation)。编译器和汇编器生成从地址 0 开始的代码和数据节。链接器通过把每个符号定义域一个存储器位置联系起来，然后修改所有对这些符号的引用，使得它们指向这个存储器位置，从而重定位这些节。</li>
 </ul>
 <p>关于链接器的一些基本事实：目标文件纯粹是字节块的集合。这些块中，有些包含程序代码，有些则包含程序数据，而其他的则包含指导链接器和加载器的数据结构。链接器将这些块连接起来，确定被连接块的运行时位置，并且修改代码和数据块中的各种位置。链接器对目标机器了解甚少。产生目标文件的编译器和汇编器已经完成了大部分工作。</p>
-<h2 id="u76EE_u6807_u6587_u4EF6"><a href="#u76EE_u6807_u6587_u4EF6" class="headerlink" title="目标文件"></a>目标文件</h2><p>目标文件有三种形式：</p>
+<h2 id="目标文件"><a href="#目标文件" class="headerlink" title="目标文件"></a>目标文件</h2><p>目标文件有三种形式：</p>
 <ul>
 <li>可重定位目标文件。包含二进制代码和数据，其形式可以在编译时与其他可重定位目标文件合并起来，创建一个可执行目标文件。</li>
 <li>可执行目标文件。包含二进制代码和数据，其形式可以被直接拷贝到存储器并执行。</li>
 <li>共享目标文件。一种特殊类型的可重定位目标文件，可以在加载或者运行时被动态地加载到存储器并链接。</li>
 </ul>
-<h2 id="u53EF_u91CD_u5B9A_u4F4D_u76EE_u6807_u6587_u4EF6"><a href="#u53EF_u91CD_u5B9A_u4F4D_u76EE_u6807_u6587_u4EF6" class="headerlink" title="可重定位目标文件"></a>可重定位目标文件</h2><p>下图是一个典型的 ELF 可重定位目标文件的格式。ELF 头(ELF header)以一个 16 字节的序列开始，这个序列描述了生成该文件的系统的字的大小和字节顺序。</p>
+<h2 id="可重定位目标文件"><a href="#可重定位目标文件" class="headerlink" title="可重定位目标文件"></a>可重定位目标文件</h2><p>下图是一个典型的 ELF 可重定位目标文件的格式。ELF 头(ELF header)以一个 16 字节的序列开始，这个序列描述了生成该文件的系统的字的大小和字节顺序。</p>
 <p><img src="/images/csapp7.3.jpg" alt="csapp7.3"></p>
-<h2 id="u7B26_u53F7_u548C_u7B26_u53F7_u8868"><a href="#u7B26_u53F7_u548C_u7B26_u53F7_u8868" class="headerlink" title="符号和符号表"></a>符号和符号表</h2><p>每个可重定位目标模块 m 都有一个符号表，它包含 m 所定义和引用的符号的信息。在链接器的上下文中，有三种不同的符号：</p>
+<h2 id="符号和符号表"><a href="#符号和符号表" class="headerlink" title="符号和符号表"></a>符号和符号表</h2><p>每个可重定位目标模块 m 都有一个符号表，它包含 m 所定义和引用的符号的信息。在链接器的上下文中，有三种不同的符号：</p>
 <ul>
 <li>由 m 定义并能被其他模块引用的全局符号。全局链接器符号对应于非静态的 C 函数以及被定义为不带 C static 属性的全局变量</li>
 <li>由其他模块定义的并被模块 m 引用的全局符号。这些符号称为外部符号(external)，对应于定义在其他模块中的 C 函数和变量。</li>
 <li>只被模块 m 定义和引用的本地符号。有的本地链接器符号对应于带 static 属性的 C 函数和全局变量。</li>
 </ul>
 <p>C 程序员使用 static 属性在模块内部隐藏变量和函数声明。</p>
-<h2 id="u7B26_u53F7_u89E3_u6790"><a href="#u7B26_u53F7_u89E3_u6790" class="headerlink" title="符号解析"></a>符号解析</h2><p>链接器解析符号引用的方法是将每个引用与它输入的可重定位目标文件的符号表中的一个确定的符号定义联系起来。对那些和引用定义在相同模块中的本地符号的引用，符号解析是非常简单明了的。编译器只允许每个模块中每个本地符号只有一个定义。编译器还确保静态本地变量，它们也会有本地链接器符号，拥有唯一的名字。</p>
-<h2 id="u91CD_u5B9A_u4F4D"><a href="#u91CD_u5B9A_u4F4D" class="headerlink" title="重定位"></a>重定位</h2><p>一旦链接器完成了符号解析这一步，它就把代码中的每个符号引用和确定的一个符号定义联系起来。在此时，链接器就知道它的输入目标模块中的代码节和数据节的确切大小。重定位由两步组成：</p>
+<h2 id="符号解析"><a href="#符号解析" class="headerlink" title="符号解析"></a>符号解析</h2><p>链接器解析符号引用的方法是将每个引用与它输入的可重定位目标文件的符号表中的一个确定的符号定义联系起来。对那些和引用定义在相同模块中的本地符号的引用，符号解析是非常简单明了的。编译器只允许每个模块中每个本地符号只有一个定义。编译器还确保静态本地变量，它们也会有本地链接器符号，拥有唯一的名字。</p>
+<h2 id="重定位"><a href="#重定位" class="headerlink" title="重定位"></a>重定位</h2><p>一旦链接器完成了符号解析这一步，它就把代码中的每个符号引用和确定的一个符号定义联系起来。在此时，链接器就知道它的输入目标模块中的代码节和数据节的确切大小。重定位由两步组成：</p>
 <ul>
 <li>重定位节和符号定义</li>
 <li>重定位节中的符号引用</li>
 </ul>
-<h2 id="u53EF_u6267_u884C_u76EE_u6807_u6587_u4EF6"><a href="#u53EF_u6267_u884C_u76EE_u6807_u6587_u4EF6" class="headerlink" title="可执行目标文件"></a>可执行目标文件</h2><p>可执行目标文件的格式类似于可重定位目标文件的格式，如下图所示。ELF 头部描述文件的总体格式。它还包括程序的入口点(entry point)，也就是当程序要执行的第一条指令的地址。</p>
+<h2 id="可执行目标文件"><a href="#可执行目标文件" class="headerlink" title="可执行目标文件"></a>可执行目标文件</h2><p>可执行目标文件的格式类似于可重定位目标文件的格式，如下图所示。ELF 头部描述文件的总体格式。它还包括程序的入口点(entry point)，也就是当程序要执行的第一条指令的地址。</p>
 <p><img src="/images/csapp7.11.jpg" alt="csapp7.11"></p>
-<h2 id="u52A0_u8F7D_u53EF_u6267_u884C_u76EE_u6807_u6587_u4EF6"><a href="#u52A0_u8F7D_u53EF_u6267_u884C_u76EE_u6807_u6587_u4EF6" class="headerlink" title="加载可执行目标文件"></a>加载可执行目标文件</h2><p>要允许可执行目标文件 p，可以在 Unix 外壳的命令行中输入它的名字</p>
+<h2 id="加载可执行目标文件"><a href="#加载可执行目标文件" class="headerlink" title="加载可执行目标文件"></a>加载可执行目标文件</h2><p>要允许可执行目标文件 p，可以在 Unix 外壳的命令行中输入它的名字</p>
 <pre><code>unix&gt; ./p
 </code></pre><p>因为 p 不是一个内置的外壳命令，所以外壳会认为 p 是一个可执行目标文件，通过调用某个驻留在存储器中称为加载器(loader)的操作系统代码来运行它。任何 Unix 程序都可以通过调用 execve 函数来调用加载器。加载器将可执行目标文件中的代码和数据从磁盘拷贝到存储器，然后通过跳转到程序的第一条指令或入口点(entry point)来运行该程序。这个将程序拷贝到存储器并运行的过程叫做加载(loading)。</p>
 <p><img src="/images/csapp7.13.jpg" alt="csapp7.13"></p>
 <p>每个 Unix 程序都有一个运行时存储器映像，如上图所示。在 32 位 Linux 系统中，代码段总是从地址 0x08048000 处开始。数据段是在接下来的下一个 4KB 对齐的地址处。运行时<strong>堆</strong>再读/写段之后接下来的第一个 4KB 对齐的地址处，并通过调用 malloc 库往上增长。还有一个段是为共享库保留的。用户栈总是从最大的合法用户地址开始，向下增长的(向低存储器地址方向增长)。从栈的上部开始的段是为操作系统主流存储器的部分(也就是内核)的代码和数据保留的。</p>
-<h2 id="u52A8_u6001_u94FE_u63A5_u5171_u4EAB_u5E93"><a href="#u52A8_u6001_u94FE_u63A5_u5171_u4EAB_u5E93" class="headerlink" title="动态链接共享库"></a>动态链接共享库</h2><p>共享库(shared library)是致力于解决静态库缺陷的一个现代创新产物。共享库是一个目标模块，在运行时，可以加载到任意的存储器地址，并和一个在存储器中的程序链接起来。这个过程称为<strong>动态链接(dynamic linking)</strong>，是由一个叫做<strong>动态链接器</strong>的程序来执行的。</p>
+<h2 id="动态链接共享库"><a href="#动态链接共享库" class="headerlink" title="动态链接共享库"></a>动态链接共享库</h2><p>共享库(shared library)是致力于解决静态库缺陷的一个现代创新产物。共享库是一个目标模块，在运行时，可以加载到任意的存储器地址，并和一个在存储器中的程序链接起来。这个过程称为<strong>动态链接(dynamic linking)</strong>，是由一个叫做<strong>动态链接器</strong>的程序来执行的。</p>
 <p>共享库也称为<strong>共享目标(shared object)</strong>，在 Unix 系统中通常用 .so 后缀来表示。微软的操作系统大量地利用了共享库，它们称为 DLL。</p>
 <p><img src="/images/csapp7.15.jpg" alt="csapp7.15"></p>
 <p>共享库是以两种不同方式来“共享”的。首先，在任何给定的文件系统中，对于一个库只有一个 .so 文件。所有引用该库的可执行目标文件共享这个 .so 文件中的代码和数据，而不是像静态库的内容那样被拷贝和嵌入到引用它们的可执行的文件中。</p>
-<h2 id="u4E0E_u4F4D_u7F6E_u65E0_u5173_u7684_u4EE3_u7801_28PIC_29"><a href="#u4E0E_u4F4D_u7F6E_u65E0_u5173_u7684_u4EE3_u7801_28PIC_29" class="headerlink" title="与位置无关的代码(PIC)"></a>与位置无关的代码(PIC)</h2><p>PIC 数据引用；PIC 函数调用</p>
-<h2 id="u5904_u7406_u76EE_u6807_u6587_u4EF6_u7684_u5DE5_u5177"><a href="#u5904_u7406_u76EE_u6807_u6587_u4EF6_u7684_u5DE5_u5177" class="headerlink" title="处理目标文件的工具"></a>处理目标文件的工具</h2><p>在 Unix 系统中有大量可用的工具可以帮助你理解和处理目标文件。特别的，GNU binutils 包尤其有帮助，而且可以运行在每个 Unix 平台上。</p>
+<h2 id="与位置无关的代码-PIC"><a href="#与位置无关的代码-PIC" class="headerlink" title="与位置无关的代码(PIC)"></a>与位置无关的代码(PIC)</h2><p>PIC 数据引用；PIC 函数调用</p>
+<h2 id="处理目标文件的工具"><a href="#处理目标文件的工具" class="headerlink" title="处理目标文件的工具"></a>处理目标文件的工具</h2><p>在 Unix 系统中有大量可用的工具可以帮助你理解和处理目标文件。特别的，GNU binutils 包尤其有帮助，而且可以运行在每个 Unix 平台上。</p>
 <ul>
 <li>AR: 创建静态库，插入、删除、列出和提取成员</li>
 <li>STRINGS: 列出一个目标文件中所有可打印的字符串</li>
@@ -1369,15 +1370,15 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <li>OBJDUMP: 二进制工具之母。能够显示一个目标文件中所有的信息。它最大的作用是反汇编 .text 节中的二进制命令</li>
 <li>LDD: 列出一个可执行文件在运行时所需要的共享库</li>
 </ul>
-<h2 id="u5C0F_u7ED3-5"><a href="#u5C0F_u7ED3-5" class="headerlink" title="小结"></a>小结</h2><p>链接可以在编译时由静态编译器来完成，也可以在加载时和运行时由动态链接器来完成。链接器处理称为目标文件的二进制文件，它又三种不同的形式：可重定位的、可执行的和共享的。可重定位的目标文件由静态链接器合并成一个可执行的目标文件，它可以加载到存储器中并执行。共享目标文件(共享库)是在运行时由动态链接器链接和加载的，或者隐含地在调用程序被加载和开始执行时，或者根据需要在程序调用 dlopen 库的函数时。</p>
+<h2 id="小结-5"><a href="#小结-5" class="headerlink" title="小结"></a>小结</h2><p>链接可以在编译时由静态编译器来完成，也可以在加载时和运行时由动态链接器来完成。链接器处理称为目标文件的二进制文件，它又三种不同的形式：可重定位的、可执行的和共享的。可重定位的目标文件由静态链接器合并成一个可执行的目标文件，它可以加载到存储器中并执行。共享目标文件(共享库)是在运行时由动态链接器链接和加载的，或者隐含地在调用程序被加载和开始执行时，或者根据需要在程序调用 dlopen 库的函数时。</p>
 <p>链接器的两个主要任务是符号解析和重定位，符号解析将目标文件中的每个全局符号都绑定到一个唯一的定义，而重定位确定每个符号的最终存储器地址，并修改对那些目标的引用。</p>
 <p>静态链接器是由像 GCC 这样的编译驱动器调用的。它们将多个可重定位目标文件合并成一个单独的可执行目标文件。多个目标文件可以定义相同的符号，而链接器用来悄悄地解析这些多重定义的规则可能在用户程序中引入的微妙错误。</p>
 <p>多个目标文件可以被连接到一个单独的静态库中。链接器用库来解析其他目标模块中的符号引用。许多链接器通过从左到右的顺序扫描来解析符号引用，这是另一个引起迷惑的链接时错误来源。</p>
 <p>加载器将可执行文件的内容映射到存储器，并运行这个程序。链接器还可能生成部分链接的可执行目标文件，这样的文件中有对定义在共享库中的程序和数据的未解析的引用。在加载时，加载器将部分链接的可执行文件映射到存储器，然后调用动态链接器，它通过加载共享库和重定位程序中的引用来完成链接任务。</p>
 <p>被编译为位置无关代码的共享库可以加载到任何地方，也可以在运行时被多个进程共享。为了加载、链接和访问共享库的函数和数据，应用程序还可以在运行时使用动态链接器。</p>
-<h1 id="u5F02_u5E38_u63A7_u5236_u6D41"><a href="#u5F02_u5E38_u63A7_u5236_u6D41" class="headerlink" title="异常控制流"></a>异常控制流</h1><p>系统必须能够对系统状态的变化做出反应，这些系统状态不是被内部程序变量捕获的，而且也不一定要和程序的执行相关。比如，一个硬件定时器定期产生信号，这个事件必须得到处理。当子进程终止时，创造这些子进程的父进程必须得到通知。</p>
+<h1 id="异常控制流"><a href="#异常控制流" class="headerlink" title="异常控制流"></a>异常控制流</h1><p>系统必须能够对系统状态的变化做出反应，这些系统状态不是被内部程序变量捕获的，而且也不一定要和程序的执行相关。比如，一个硬件定时器定期产生信号，这个事件必须得到处理。当子进程终止时，创造这些子进程的父进程必须得到通知。</p>
 <p>线代系统通过使控制流发生突变来对这些情况做出反应。一般而言，我们把这些突变称为<strong>异常控制流(Exceptional Control Flow, ECF)</strong>。异常控制流发生在计算机系统的各个层次。比如，在硬件层，硬件检测到的事件会触发控制突然转移到异常处理程序。在操作系统层，内核通过上下文转换将控制从一个用户进程转移到另一个用户进程。在应用层，一个进程可以发送<strong>信号</strong>到另一个进程，而接受者会将控制突然转移到它的一个信号处理程序。一个程序可以通过回避通常的栈规则，并执行到其他函数中任意位置的非本地跳转来对错误做出反应。</p>
-<h2 id="u5F02_u5E38"><a href="#u5F02_u5E38" class="headerlink" title="异常"></a>异常</h2><p>异常是异常控制流的一种形式，它一部分是由硬件实现的，一部分是由操作系统实现的。因为它们有一部分是由硬件实现的，所以具体细节将随系统的不同而有所不同。然而，对于每个系统而言，基本的思想都是相同的。</p>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><p>异常是异常控制流的一种形式，它一部分是由硬件实现的，一部分是由操作系统实现的。因为它们有一部分是由硬件实现的，所以具体细节将随系统的不同而有所不同。然而，对于每个系统而言，基本的思想都是相同的。</p>
 <p>异常(exception)就是控制流中的突变，用来响应处理器状态中的某些变化。如下图所示：</p>
 <p><img src="/images/csapp8.1.jpg" alt="csapp8.1"></p>
 <p>在图中，当处理器状态中发生一个重要的变化时，处理器正在执行某个当前指令。在处理器中，状态被编码为不同的位和信号。状态变化称为<strong>事件(event)</strong>。事件可能和当前指令的执行直接相关。比如，发生虚拟存储器缺页、算术溢出，或者一条指令试图除以零。另一方面，事件也可能和当前指令的执行没有关系。比如，一个系统定时器产生信号或者一个 I/O 请求完成。</p>
@@ -1431,7 +1432,7 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <p><strong>Linux/IA32 系统调用</strong></p>
 <p>每个系统调用都有一个唯一的整数号，对应于一个到内核中跳转表的偏移量。</p>
 <p><img src="/images/csapp8.10.jpg" alt="csapp8.10"></p>
-<h2 id="u8FDB_u7A0B"><a href="#u8FDB_u7A0B" class="headerlink" title="进程"></a>进程</h2><p>异常是允许操作系统提供<strong>进程(process)</strong>的概念所需要的基本构造块，进程是计算机可续重最深刻最成功的概念之一。当我们在一个现代系统上运行一个程序时，会得到一个假象，就好像我们的程序是系统中当前运行着的唯一的程序。</p>
+<h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><p>异常是允许操作系统提供<strong>进程(process)</strong>的概念所需要的基本构造块，进程是计算机可续重最深刻最成功的概念之一。当我们在一个现代系统上运行一个程序时，会得到一个假象，就好像我们的程序是系统中当前运行着的唯一的程序。</p>
 <p>进程的经典定义就是一个<strong>执行中的程序的实例</strong>。系统中的每个程序都是运行在某个进程的<strong>上下文(context)</strong>中的。上下文是由程序正确运行所需的状态组成的。这个状态包括存放在存储器中的程序的代码和数据，它的栈、通用目的寄存器的内容、程序计数器、环境变量以及打开文件描述符的集合。</p>
 <p>每次用户通过向外壳输入一个可执行目标文件的名字，并运行一个程序时，shell 就会创建一个新的进程，然后在这个新进程的上下文中运行这个可执行目标文件。应用程序也能够创建新进程，且在这个新进程的上下文中运行它们自己的代码或其他应用程序。</p>
 <blockquote>
@@ -1465,8 +1466,8 @@ pi = pi-1 + ai, 1&lt;= i &lt; n
 <p>内核为每个进程维持一个<strong>上下文(context)</strong>。上下文就是内核重新启动一个被抢占的进程所需的状态。它由一些对象的值组成，这些对象包括通用目的寄存器、浮点寄存器、程序计数器、用户栈、状态寄存器、内核栈和各种内核数据结构，比如描绘地址空间的页表、包含有关当前进程信息的<strong>进程表</strong>，以及包含进程已打开文件的信息的<strong>文件表</strong>。</p>
 <p>在进程执行的某些时刻，内核可以决定抢占当前进程，并重新开始一个先前被抢占的进程。这种决定就叫做<strong>调度(schedule)</strong>，是由内核中称为<strong>调度器(scheduler)</strong>的代码处理的。当内核选择一个新的进程运行时，我们就说内核调度了这个进程。</p>
 <p><img src="/images/csapp8.14.jpg" alt="csapp8.14"></p>
-<h2 id="u7CFB_u7EDF_u8C03_u7528_u9519_u8BEF_u5904_u7406"><a href="#u7CFB_u7EDF_u8C03_u7528_u9519_u8BEF_u5904_u7406" class="headerlink" title="系统调用错误处理"></a>系统调用错误处理</h2><p>当 Unix 系统级函数遇到错误时，它们典型地会返回 -1，并设置全局帧数变量 errno 来表示什么出错了。通过使用<strong>错误处理包装(error-handling wrapper)</strong>函数，可以简化错误处理代码。</p>
-<h2 id="u8FDB_u7A0B_u63A7_u5236"><a href="#u8FDB_u7A0B_u63A7_u5236" class="headerlink" title="进程控制"></a>进程控制</h2><p>Unix 提供了大量从 C 程序中操作进程的系统调用。</p>
+<h2 id="系统调用错误处理"><a href="#系统调用错误处理" class="headerlink" title="系统调用错误处理"></a>系统调用错误处理</h2><p>当 Unix 系统级函数遇到错误时，它们典型地会返回 -1，并设置全局帧数变量 errno 来表示什么出错了。通过使用<strong>错误处理包装(error-handling wrapper)</strong>函数，可以简化错误处理代码。</p>
+<h2 id="进程控制"><a href="#进程控制" class="headerlink" title="进程控制"></a>进程控制</h2><p>Unix 提供了大量从 C 程序中操作进程的系统调用。</p>
 <blockquote>
 <p>获取进程 ID</p>
 </blockquote>
@@ -1541,7 +1542,7 @@ int execve(const char *filename, const char *argv[], const char *envp[]);
 <p>利用 fork 和 execve 运行程序</p>
 </blockquote>
 <p>Shell 是一个交互型的应用级程序，它代表用户运行其他程序。最早的 shell 是 sh 程序，后面出现了一些变种，比如 csh, tcsh, ksh 和 bash。Shell 执行一系列的<strong>读/求值(read/evaluate)</strong>步骤，然后终止。读步骤读取来自用户的一个命令行。求值步骤解析命令行，并代表用户运行程序。</p>
-<h2 id="u4FE1_u53F7"><a href="#u4FE1_u53F7" class="headerlink" title="信号"></a>信号</h2><p>一个信号就是一条小消息，它通知进程系统中发生了一个某种类型的事件。下图是 Linux 系统支持的 30 种不同类型的信号。在 shell 中输入 <code>man 7 signal</code> 就能得到这个列表。</p>
+<h2 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h2><p>一个信号就是一条小消息，它通知进程系统中发生了一个某种类型的事件。下图是 Linux 系统支持的 30 种不同类型的信号。在 shell 中输入 <code>man 7 signal</code> 就能得到这个列表。</p>
 <p><img src="/images/csapp8.25.jpg" alt="csapp8.25"></p>
 <p>每种信号类型都对应于某种系统事件。低层的硬件异常是由内核异常处理程序处理的，正常情况下，对用户进程而言是不可见的。信号提供了一种机制，通知用户进程发生了这些异常。比如，如果一个进程试图除以 0，那么内核就发送给他一个 <code>SIGFPE</code> 信号(8)。其他信号对应于内核或者其他用户进程中较高层的软件事件。比如，如果当进程在前台运行时，按下 ctrl-c，那么内核就会发送一个 <code>SIGINT</code> 信号(2)给这个前台进程。</p>
 <blockquote>
@@ -1610,7 +1611,7 @@ unsigned int alarm(unsigned int secs);
 <p>同步流以避免讨厌的并发错误</p>
 </blockquote>
 <p><strong>竞争(race)</strong>，经典同步错误</p>
-<h2 id="u975E_u672C_u5730_u8DF3_u8F6C"><a href="#u975E_u672C_u5730_u8DF3_u8F6C" class="headerlink" title="非本地跳转"></a>非本地跳转</h2><p>C 语言提供了一种用户级一场控制流形式，称为<strong>非本地跳转(nonlocal jump)</strong>，它将控制直接从一个函数转移到另一个当前正在执行的函数，而不需要经过正常的调用——返回序列，通过 <code>setjmp</code> 和 <code>longjmp</code> 函数来提供的。</p>
+<h2 id="非本地跳转"><a href="#非本地跳转" class="headerlink" title="非本地跳转"></a>非本地跳转</h2><p>C 语言提供了一种用户级一场控制流形式，称为<strong>非本地跳转(nonlocal jump)</strong>，它将控制直接从一个函数转移到另一个当前正在执行的函数，而不需要经过正常的调用——返回序列，通过 <code>setjmp</code> 和 <code>longjmp</code> 函数来提供的。</p>
 <pre><code>#include &lt;setjmp.h&gt;
 
 int setjmp(jmp_buf env);
@@ -1625,7 +1626,7 @@ void siglongjmp(sigjmp_buf env, int retval);
 <p>非本地跳转的一个重要应用就是允许从一个深层嵌套的函数调用中立即返回，通常是由检测到某个错误情况引起的。如果在一个深层嵌套的函数调用中发现了一个错误，我们可以使用非本地跳转直接返回到一个普通的本地化的错误处理程序，而不是费力地解开调用栈。</p>
 <p>非本地跳转的另一个重要应用是使一个信号处理程序分支到一个特殊的代码位置，而不是返回到被信号到达中断了的指令的位置。</p>
 <p><img src="/images/csapp8.39.jpg" alt="csapp8.39"></p>
-<h2 id="u64CD_u4F5C_u8FDB_u7A0B_u7684_u5DE5_u5177"><a href="#u64CD_u4F5C_u8FDB_u7A0B_u7684_u5DE5_u5177" class="headerlink" title="操作进程的工具"></a>操作进程的工具</h2><p>Linux 系统提供了大量的监控和操作进程的有用工具：</p>
+<h2 id="操作进程的工具"><a href="#操作进程的工具" class="headerlink" title="操作进程的工具"></a>操作进程的工具</h2><p>Linux 系统提供了大量的监控和操作进程的有用工具：</p>
 <ul>
 <li>STRACE：打印一个正在运行的程序和它的子进程调用的每个系统调用的轨迹。用 <code>-static</code> 编译你的程序，能得到一个更干净的、不带有大量与共享库相关的输出的 trace</li>
 <li>PS：列出当前系统中的进程(包括僵死进程)</li>
@@ -1633,23 +1634,23 @@ void siglongjmp(sigjmp_buf env, int retval);
 <li>PMAP：显示进程的存储器映射</li>
 <li>/proc：一个虚拟文件系统，以 ASCII 文本格式输出大量内核数据结构的内容，用户可以读取这些内容</li>
 </ul>
-<h2 id="u5C0F_u7ED3-6"><a href="#u5C0F_u7ED3-6" class="headerlink" title="小结"></a>小结</h2><p>异常控制流(ECF)发生在计算机系统的各个层次，是计算机系统中提供并发的基本机制。</p>
+<h2 id="小结-6"><a href="#小结-6" class="headerlink" title="小结"></a>小结</h2><p>异常控制流(ECF)发生在计算机系统的各个层次，是计算机系统中提供并发的基本机制。</p>
 <p>在硬件层，异常是由处理器中的事件触发的控制流中的突变。控制流传递给一个软件处理程序，该处理程序进行一些处理，然后返回控制给被中断的控制流。</p>
 <p>有四种不同类型的异常：中断、故障、终止和陷阱。</p>
 <p>在操作系统层，内核用 ECF 提供进程的基本概念。进程提供给应用两个重要的抽象：1）逻辑控制流，它提供给每个程序一个假象，好像它是在独占地使用处理器，2）私有地址空间，它提供给每个程序一个假象，好像它是在独占地使用主存。</p>
 <p>在操作系统和应用程序之间的接口处，应用程序可以创建子进程，等待它们的子进程停止或者终止，运行新的程序，以及不活来自其他进程的信号。信号处理的语义是微妙的，并且随着系统不同而不同。然而，在与 Posix 兼容的系统上存在着一些机制，允许程序清楚地指定期望的信号处理语义。</p>
-<h1 id="u865A_u62DF_u5B58_u50A8_u5668"><a href="#u865A_u62DF_u5B58_u50A8_u5668" class="headerlink" title="虚拟存储器"></a>虚拟存储器</h1><p>一个系统中的进程是与其他进程共享 CPU 和主存资源的。然而，共享主存会形成一些特殊的挑战。随着对 CPU 需求的增长，进程以某种合理的平滑方式慢了下来。但是如果太多的进程需要太多的存储器，那么它们中的一些就根本无法运行。当一个程序没有空间可用时，那就是它运气不好了。存储器还很容易被破坏。如果某个进程不小心写了另一个进程使用的存储器，它就可能以某种完全和程序逻辑无关的令人迷惑的方式失败。</p>
+<h1 id="虚拟存储器"><a href="#虚拟存储器" class="headerlink" title="虚拟存储器"></a>虚拟存储器</h1><p>一个系统中的进程是与其他进程共享 CPU 和主存资源的。然而，共享主存会形成一些特殊的挑战。随着对 CPU 需求的增长，进程以某种合理的平滑方式慢了下来。但是如果太多的进程需要太多的存储器，那么它们中的一些就根本无法运行。当一个程序没有空间可用时，那就是它运气不好了。存储器还很容易被破坏。如果某个进程不小心写了另一个进程使用的存储器，它就可能以某种完全和程序逻辑无关的令人迷惑的方式失败。</p>
 <p>为了更加有效地管理存储器并且少出错，现代系统提供了一种对主存的抽象概念，叫做<strong>虚拟存储器(VM)</strong>。虚拟存储器是硬件异常、硬件地址翻译、主存、磁盘文件和内核软件的完美交互，它为每个进程提供了一个大的、一致的和私有的地址空间。通过一个很清晰的机制，虚拟存储器提供了三个重要的能力：1）它将主存看成是一个存储在磁盘上的地址空间的高速缓存，在主存中只保存活动区域，并根据需要在磁盘和主存之间来回传送数据，通过这种方式，它高效地使用了主存。2）它为每个进程提供了一致的地址空间，从而简化了存储器管理。3）它保护了每个进程的地址空间不被其他进程破坏。</p>
 <p>虚拟存储器是计算机系统最重要的概念之一。它成功的一个主要原因就是因为它是沉默地、自动地工作的，不需要应用程序员的任何干涉。</p>
-<h2 id="u7269_u7406_u548C_u865A_u62DF_u5BFB_u5740"><a href="#u7269_u7406_u548C_u865A_u62DF_u5BFB_u5740" class="headerlink" title="物理和虚拟寻址"></a>物理和虚拟寻址</h2><p>计算机系统的主存被组织成一个由 M 个连续的字节大小的单元组成的数组。每字节都有一个唯一的<strong>物理地址(Physical Address, PA)</strong>。第一个字节的地址为 0，接下来的字节地址为 1，再下一个为 2，以此类推。给定这种简单的结构，CPU 访问存储器的最自然的方式就是使用物理地址。我们把这种方式称为<strong>物理寻址(physical addressing)</strong>。如下图所示</p>
+<h2 id="物理和虚拟寻址"><a href="#物理和虚拟寻址" class="headerlink" title="物理和虚拟寻址"></a>物理和虚拟寻址</h2><p>计算机系统的主存被组织成一个由 M 个连续的字节大小的单元组成的数组。每字节都有一个唯一的<strong>物理地址(Physical Address, PA)</strong>。第一个字节的地址为 0，接下来的字节地址为 1，再下一个为 2，以此类推。给定这种简单的结构，CPU 访问存储器的最自然的方式就是使用物理地址。我们把这种方式称为<strong>物理寻址(physical addressing)</strong>。如下图所示</p>
 <p><img src="/images/csapp9.1.jpg" alt="csapp9.1"></p>
 <p>当 CPU 执行这条加载指令时，它会生成一个有效物理地址，通过存储器总线，把它传递给主存。主存取出从物理地址 4 处开始的 4 字节的字，并将它返回给 CPU，CPU 会将它存放在一个寄存器里。</p>
 <p>早起的 PC 使用 物理寻址，现代处理器使用的是一种称为<strong>虚拟寻址(virtual addressing)</strong>的寻址形式，如下图所示：</p>
 <p><img src="/images/csapp9.2.jpg" alt="csapp9.2"></p>
 <p>使用虚拟寻址时，CPU 通过生成一个<strong>虚拟地址(Virtual Address, VA)</strong>来访问主存，这个虚拟地址在被送到存储器之前先转换成适当的物理地址。将一个虚拟地址转换为物理地址的任务叫做<strong>地址翻译(address translation)</strong>。就像异常处理一样，地址翻译需要 CPU 硬件和操作系统之间的紧密合作。CPU 芯片上叫做<strong>存储器管理单元(Memory Management Unit, MMU)</strong>的专用硬件，利用存放在主存中的查询表来动态翻译虚拟地址，该表的内容是由操作系统管理的。</p>
-<h2 id="u5730_u5740_u7A7A_u95F4"><a href="#u5730_u5740_u7A7A_u95F4" class="headerlink" title="地址空间"></a>地址空间</h2><p><strong>地址空间(address space)</strong>是一个非负整数地址的有序集合：{0, 1, 2, …}。如果地址空间中的整数是连续的，那么我们说它是一个<strong>线性地址空间(linear address space)</strong>。</p>
+<h2 id="地址空间"><a href="#地址空间" class="headerlink" title="地址空间"></a>地址空间</h2><p><strong>地址空间(address space)</strong>是一个非负整数地址的有序集合：{0, 1, 2, …}。如果地址空间中的整数是连续的，那么我们说它是一个<strong>线性地址空间(linear address space)</strong>。</p>
 <p>地址空间的概念是很重要的，因为它清楚地区分了数据对象(字节)和它们的属性(地址)。</p>
-<h2 id="u865A_u62DF_u5B58_u50A8_u5668_u4F5C_u4E3A_u7F13_u5B58_u7684_u5DE5_u5177"><a href="#u865A_u62DF_u5B58_u50A8_u5668_u4F5C_u4E3A_u7F13_u5B58_u7684_u5DE5_u5177" class="headerlink" title="虚拟存储器作为缓存的工具"></a>虚拟存储器作为缓存的工具</h2><p>概念上而言，虚拟存储器(VM)被组织为一个由存放在磁盘上的 N 个连续的字节大小的单元组成的数组。每字节都有一个唯一的虚拟地址，这个唯一的虚拟地址是作为到数组的索引的。VM 系统通过将虚拟存储器分割为<strong>虚拟页(Virtual Page, VP)</strong>的大小固定的块来处理这个问题。每个虚拟页的大小为 P=2^p 字节。类似地，物理存储器被分割为<strong>物理页(Physical Page, PP)</strong>，大小也为 P 字节(物理页也称为<strong>页帧(page frame)</strong>)。</p>
+<h2 id="虚拟存储器作为缓存的工具"><a href="#虚拟存储器作为缓存的工具" class="headerlink" title="虚拟存储器作为缓存的工具"></a>虚拟存储器作为缓存的工具</h2><p>概念上而言，虚拟存储器(VM)被组织为一个由存放在磁盘上的 N 个连续的字节大小的单元组成的数组。每字节都有一个唯一的虚拟地址，这个唯一的虚拟地址是作为到数组的索引的。VM 系统通过将虚拟存储器分割为<strong>虚拟页(Virtual Page, VP)</strong>的大小固定的块来处理这个问题。每个虚拟页的大小为 P=2^p 字节。类似地，物理存储器被分割为<strong>物理页(Physical Page, PP)</strong>，大小也为 P 字节(物理页也称为<strong>页帧(page frame)</strong>)。</p>
 <p>在任意时刻，虚拟页面的集合部分都分为三个不相交的子集：</p>
 <ul>
 <li>未分配的：VM 系统还未分配(或者创建)的页。未分配的块没有任何数据和它们相关联，因此也就不占用任何磁盘空间。</li>
@@ -1687,23 +1688,23 @@ void siglongjmp(sigjmp_buf env, int retval);
 <p>又是局部性救了我们</p>
 </blockquote>
 <p>尽管在整个运行过程中程序引用的不同页面的总数可能超出物理存储器总的大小，但是局部性原则保证了在任意时刻，程序往往在一个较小的<strong>活动页面(active page)</strong>集合上工作，这个集合叫做<strong>工作集(working set)</strong>或者<strong>常驻集(resident set)</strong>。</p>
-<h2 id="u865A_u62DF_u5B58_u50A8_u5668_u4F5C_u4E3A_u5B58_u50A8_u5668_u7BA1_u7406_u7684_u5DE5_u5177"><a href="#u865A_u62DF_u5B58_u50A8_u5668_u4F5C_u4E3A_u5B58_u50A8_u5668_u7BA1_u7406_u7684_u5DE5_u5177" class="headerlink" title="虚拟存储器作为存储器管理的工具"></a>虚拟存储器作为存储器管理的工具</h2><p>操作系统为每个进程提供了一个独立的页表，因为也就是一个独立的虚拟地址空间。如下图所示：</p>
+<h2 id="虚拟存储器作为存储器管理的工具"><a href="#虚拟存储器作为存储器管理的工具" class="headerlink" title="虚拟存储器作为存储器管理的工具"></a>虚拟存储器作为存储器管理的工具</h2><p>操作系统为每个进程提供了一个独立的页表，因为也就是一个独立的虚拟地址空间。如下图所示：</p>
 <p><img src="/images/csapp9.9.jpg" alt="csapp9.9"></p>
-<h2 id="u865A_u62DF_u5B58_u50A8_u5668_u4F5C_u4E3A_u5B58_u50A8_u5668_u4FDD_u62A4_u7684_u5DE5_u5177"><a href="#u865A_u62DF_u5B58_u50A8_u5668_u4F5C_u4E3A_u5B58_u50A8_u5668_u4FDD_u62A4_u7684_u5DE5_u5177" class="headerlink" title="虚拟存储器作为存储器保护的工具"></a>虚拟存储器作为存储器保护的工具</h2><p>如果一条指令违反了许可操作，那么 CPU 就出发一个一般保护故障，将控制传递给一个内核中的异常处理程序。Unix shell 一般将这种异常报告为<strong>段错误(sgmentation fault)</strong>。</p>
+<h2 id="虚拟存储器作为存储器保护的工具"><a href="#虚拟存储器作为存储器保护的工具" class="headerlink" title="虚拟存储器作为存储器保护的工具"></a>虚拟存储器作为存储器保护的工具</h2><p>如果一条指令违反了许可操作，那么 CPU 就出发一个一般保护故障，将控制传递给一个内核中的异常处理程序。Unix shell 一般将这种异常报告为<strong>段错误(sgmentation fault)</strong>。</p>
 <p><img src="/images/csapp9.10.jpg" alt="csapp9.10"></p>
-<h2 id="u5730_u5740_u7FFB_u8BD1"><a href="#u5730_u5740_u7FFB_u8BD1" class="headerlink" title="地址翻译"></a>地址翻译</h2><p>地址翻译的基础知识。</p>
+<h2 id="地址翻译"><a href="#地址翻译" class="headerlink" title="地址翻译"></a>地址翻译</h2><p>地址翻译的基础知识。</p>
 <p><img src="/images/csapp9.11.jpg" alt="csapp9.11"></p>
 <p><img src="/images/csapp9.12.jpg" alt="csapp9.12"></p>
 <p>后面的暂略，几乎很少接触</p>
-<h1 id="u7CFB_u7EDF_u7EA7_I/O"><a href="#u7CFB_u7EDF_u7EA7_I/O" class="headerlink" title="系统级 I/O"></a>系统级 I/O</h1><p>输入/输出是在主存和外部设备之间拷贝数据的过程。所有语言的运行时系统都提供执行 I/O 的较高级别的工具。</p>
-<h2 id="Unix_I/O"><a href="#Unix_I/O" class="headerlink" title="Unix I/O"></a>Unix I/O</h2><p>一个 Unix 文件就是一个 m 字节的序列。所有的 I/O 设备，如网络、磁盘和终端，都被模型化为文件，而所有的输入和输出都被当作对相应文件的读和写来执行。这种将设备优雅地映射为文件的方式，允许 Unix 内核引出一个简单、低级的应用接口，称为 Unix I/O，这使得所有的输入和输出都能以一种统一且一致的方式来执行：</p>
+<h1 id="系统级-I-O"><a href="#系统级-I-O" class="headerlink" title="系统级 I/O"></a>系统级 I/O</h1><p>输入/输出是在主存和外部设备之间拷贝数据的过程。所有语言的运行时系统都提供执行 I/O 的较高级别的工具。</p>
+<h2 id="Unix-I-O"><a href="#Unix-I-O" class="headerlink" title="Unix I/O"></a>Unix I/O</h2><p>一个 Unix 文件就是一个 m 字节的序列。所有的 I/O 设备，如网络、磁盘和终端，都被模型化为文件，而所有的输入和输出都被当作对相应文件的读和写来执行。这种将设备优雅地映射为文件的方式，允许 Unix 内核引出一个简单、低级的应用接口，称为 Unix I/O，这使得所有的输入和输出都能以一种统一且一致的方式来执行：</p>
 <ul>
 <li>打开文件：一个应用程序通过要求内核打开相应的文件，来宣告它想要访问一个 I/O 设备。内核返回一个小的非负整数，叫做<strong>描述符</strong>，它在后续对此文件的所有操作中标识这个文件。内核记录有关这个打开文件的所有信息。应用程序只需记住这个描述符。</li>
 <li>改变当前的文件位置。</li>
 <li>读写文件</li>
 <li>关闭文件</li>
 </ul>
-<h2 id="u6253_u5F00_u548C_u5173_u95ED_u6587_u4EF6"><a href="#u6253_u5F00_u548C_u5173_u95ED_u6587_u4EF6" class="headerlink" title="打开和关闭文件"></a>打开和关闭文件</h2><p>进程是通过调用 <code>open</code> 函数来打开一个已存在的文件或者创建一个新文件的。若成功则返回新文件描述符，否为返回 -1。</p>
+<h2 id="打开和关闭文件"><a href="#打开和关闭文件" class="headerlink" title="打开和关闭文件"></a>打开和关闭文件</h2><p>进程是通过调用 <code>open</code> 函数来打开一个已存在的文件或者创建一个新文件的。若成功则返回新文件描述符，否为返回 -1。</p>
 <pre><code>#include &lt;sys/types.h&gt;
 #include &lt;sys/stat.h&gt;
 #include &lt;fcntl.h&gt;
@@ -1713,20 +1714,20 @@ int open(char *filename, int flags, mode_t mode);
 <pre><code>#include &lt;unistd.h&gt;
 
 int close(int fd);
-</code></pre><h2 id="u8BFB_u548C_u5199_u6587_u4EF6"><a href="#u8BFB_u548C_u5199_u6587_u4EF6" class="headerlink" title="读和写文件"></a>读和写文件</h2><p>应用程序是通过分别调用 <code>read</code> 和 <code>write</code> 函数来执行输入和输出的。</p>
+</code></pre><h2 id="读和写文件"><a href="#读和写文件" class="headerlink" title="读和写文件"></a>读和写文件</h2><p>应用程序是通过分别调用 <code>read</code> 和 <code>write</code> 函数来执行输入和输出的。</p>
 <pre><code>#include &lt;unistd.h&gt;
 
 ssize_t read(int fd, void *buf, size_t n);
 ssize_t write(int fd, const void *buf, size_t n);
-</code></pre><h2 id="u7528_RIO__u5305_u5065_u58EE_u5730_u8BFB_u5199"><a href="#u7528_RIO__u5305_u5065_u58EE_u5730_u8BFB_u5199" class="headerlink" title="用 RIO 包健壮地读写"></a>用 RIO 包健壮地读写</h2><p>提供两类不同的函数：无缓冲的输入输出函数与带缓冲的输入函数。</p>
-<h2 id="u8BFB_u53D6_u6587_u4EF6_u5143_u6570_u636E"><a href="#u8BFB_u53D6_u6587_u4EF6_u5143_u6570_u636E" class="headerlink" title="读取文件元数据"></a>读取文件元数据</h2><p>应用程序能够通过调用 <code>stat</code> 和 <code>fstat</code> 函数，检索到关于文件的信息，有时也称为文件的<strong>元数据(metadata)</strong>。</p>
+</code></pre><h2 id="用-RIO-包健壮地读写"><a href="#用-RIO-包健壮地读写" class="headerlink" title="用 RIO 包健壮地读写"></a>用 RIO 包健壮地读写</h2><p>提供两类不同的函数：无缓冲的输入输出函数与带缓冲的输入函数。</p>
+<h2 id="读取文件元数据"><a href="#读取文件元数据" class="headerlink" title="读取文件元数据"></a>读取文件元数据</h2><p>应用程序能够通过调用 <code>stat</code> 和 <code>fstat</code> 函数，检索到关于文件的信息，有时也称为文件的<strong>元数据(metadata)</strong>。</p>
 <pre><code>#include &lt;unistd.h&gt;
 #include &lt;sys/stat.h&gt;
 
 int stat(const char *filename, struct stat *buf);
 int fstat(int fd, struct stat *buf);
 </code></pre><p><img src="/images/csapp10.8.jpg" alt="csapp10.8"></p>
-<h2 id="u5171_u4EAB_u6587_u4EF6"><a href="#u5171_u4EAB_u6587_u4EF6" class="headerlink" title="共享文件"></a>共享文件</h2><p>可以用许多不同的方式来共享 Unix 文件。内核用三个相关的数据结构来表示打开的文件：</p>
+<h2 id="共享文件"><a href="#共享文件" class="headerlink" title="共享文件"></a>共享文件</h2><p>可以用许多不同的方式来共享 Unix 文件。内核用三个相关的数据结构来表示打开的文件：</p>
 <ul>
 <li>描述符表(descriptor table)。每个进程都有它独立的描述符表，它的表项是由进程打开的文件描述符来索引的。每个打开的描述符表指向<strong>文件表</strong>中的一个表项。</li>
 <li>文件表(file table)。打开文件的集合是由一张文件表来表示的，所有的进程共享这张表。每个文件表的表项包括当前的文件位置、**引用计数(reference count)，以及一个指向 <code>v-node 表</code>中对应表项的指针。</li>
@@ -1735,27 +1736,27 @@ int fstat(int fd, struct stat *buf);
 <p><img src="/images/csapp10.11.jpg" alt="csapp10.11"></p>
 <p><img src="/images/csapp10.12.jpg" alt="csapp10.12"></p>
 <p><img src="/images/csapp10.13.jpg" alt="csapp10.13"></p>
-<h2 id="I/O__u91CD_u5B9A_u5411"><a href="#I/O__u91CD_u5B9A_u5411" class="headerlink" title="I/O 重定向"></a>I/O 重定向</h2><p>Unix shell 提供了 I/O 重定向操作符，允许用户将磁盘文件和标准输入输出联系起来，例如</p>
+<h2 id="I-O-重定向"><a href="#I-O-重定向" class="headerlink" title="I/O 重定向"></a>I/O 重定向</h2><p>Unix shell 提供了 I/O 重定向操作符，允许用户将磁盘文件和标准输入输出联系起来，例如</p>
 <pre><code>unix&gt; ls &gt; foo.txt
 </code></pre><p><img src="/images/csapp10.14.jpg" alt="csapp10.14"></p>
-<h2 id="u6807_u51C6_I/O"><a href="#u6807_u51C6_I/O" class="headerlink" title="标准 I/O"></a>标准 I/O</h2><p>ANSI C 定义了一组高级输入输出函数，称为<strong>标准 I/O 库</strong>，为程序员提供了 Unix I/O 的较高级别的替代。这个库(libc)提供了打开和关闭文件的函数(<code>fopen</code>和<code>fclose</code>)，读和写字节的函数(<code>fread</code>和<code>fwrite</code>)，读和写字符串的函数(<code>fgets</code>和<code>fputs</code>)，以及复杂的格式化的 I/O 函数(<code>scanf</code>和<code>printf</code>)。</p>
+<h2 id="标准-I-O"><a href="#标准-I-O" class="headerlink" title="标准 I/O"></a>标准 I/O</h2><p>ANSI C 定义了一组高级输入输出函数，称为<strong>标准 I/O 库</strong>，为程序员提供了 Unix I/O 的较高级别的替代。这个库(libc)提供了打开和关闭文件的函数(<code>fopen</code>和<code>fclose</code>)，读和写字节的函数(<code>fread</code>和<code>fwrite</code>)，读和写字符串的函数(<code>fgets</code>和<code>fputs</code>)，以及复杂的格式化的 I/O 函数(<code>scanf</code>和<code>printf</code>)。</p>
 <p>标准 I/O 库将一个打开的文件模型化为一个<strong>流</strong>。对于程序员而言，一个流就是一个指向 FILE 类型的结构的指针。</p>
-<h2 id="u7EFC_u5408_uFF1A_u8BE5_u4F7F_u7528_u54EA_u4E9B_I/O__u51FD_u6570"><a href="#u7EFC_u5408_uFF1A_u8BE5_u4F7F_u7528_u54EA_u4E9B_I/O__u51FD_u6570" class="headerlink" title="综合：该使用哪些 I/O 函数"></a>综合：该使用哪些 I/O 函数</h2><p><img src="/images/csapp10.15.jpg" alt="csapp10.15"></p>
+<h2 id="综合：该使用哪些-I-O-函数"><a href="#综合：该使用哪些-I-O-函数" class="headerlink" title="综合：该使用哪些 I/O 函数"></a>综合：该使用哪些 I/O 函数</h2><p><img src="/images/csapp10.15.jpg" alt="csapp10.15"></p>
 <p>标准 I/O 流，从某种意义上而言是<strong>全双工</strong>的，因为程序能够在同一个流上执行输入和输出。然而，对流的限制和对套接字的限制，有时候会互相冲突：</p>
 <ul>
 <li>限制一：跟在输出函数之后的输入函数。如果中间没有插入对 <code>fflush</code>, <code>fseek</code>, <code>fsetpos</code> 或者 <code>rewind</code> 的调用，一个输入函数不能跟随在一个输出函数之后。<code>fflush</code> 函数清空与流相关的缓冲区。后三个函数使用 Unix I/O <code>lseek</code> 函数来重置当前的文件位置。</li>
 <li>限制二：跟在输入函数之后的输出函数。如果中间没有插入对 <code>fseek</code>, <code>fsetpos</code> 或者 <code>rewind</code> 的调用，一个输出函数不能跟随在一个输入函数之后，除非该输入函数遇到了一个 EOF。</li>
 </ul>
 <p>这些限制给网络应用带来了一个问题，因为对套接字使用 <code>lseek</code> 函数是非法的，所以在网络套接字上不要使用标准 I/O 进行输入和输出，而要使用健壮的 <code>RIO</code> 函数。</p>
-<h2 id="u5C0F_u7ED3-7"><a href="#u5C0F_u7ED3-7" class="headerlink" title="小结"></a>小结</h2><p>Unix 提供了少量的系统级函数，它们允许应用程序打开、关闭、读和写文件，提取文件的元数据，以及执行 I/O 重定向。 Unix 的读和写操作会出现不足值，应用程序必须能正确地预计和处理这种情况。应用程序不应直接调用 Unix I/O 函数，而应该使用 RIO 包，RIO 包通过反复执行读写操作，直到传送完所有的请求数据，自动处理不足值。</p>
+<h2 id="小结-7"><a href="#小结-7" class="headerlink" title="小结"></a>小结</h2><p>Unix 提供了少量的系统级函数，它们允许应用程序打开、关闭、读和写文件，提取文件的元数据，以及执行 I/O 重定向。 Unix 的读和写操作会出现不足值，应用程序必须能正确地预计和处理这种情况。应用程序不应直接调用 Unix I/O 函数，而应该使用 RIO 包，RIO 包通过反复执行读写操作，直到传送完所有的请求数据，自动处理不足值。</p>
 <p>Unix 内核使用三个相关的数据结构来表示打开的文件。描述符表中的表项指向打开文件表中的表项，而打开文件表中的表项又指向 v-node 表中的表项。</p>
 <p>标准 I/O 库是基于 Unix I/O 实现的，并提供了一组强大的高级 I/O 例程。对于大多数应用程序而言，标准 I/O 更简单，是优于 Unix I/O 的选择。然而，因为对标准 I/O 和网络文件的一些相互不兼容的限制，Unix I/O 比标准 I/O 更适用于网络应用程序。</p>
-<h1 id="u7F51_u7EDC_u7F16_u7A0B"><a href="#u7F51_u7EDC_u7F16_u7A0B" class="headerlink" title="网络编程"></a>网络编程</h1><p>网络应用随处可见。有趣的是，所有的网络应用都是基于相同的基本编程模型，有着相似的整体逻辑结构，并且一来相同的编程接口。</p>
+<h1 id="网络编程"><a href="#网络编程" class="headerlink" title="网络编程"></a>网络编程</h1><p>网络应用随处可见。有趣的是，所有的网络应用都是基于相同的基本编程模型，有着相似的整体逻辑结构，并且一来相同的编程接口。</p>
 <p>网络应用依赖于很多在系统研究正已经学习过的概念，例如，进程、信号、字节顺序、存储器映射以及动态存储分配，都扮演着重要的角色。</p>
-<h2 id="u5BA2_u6237_u7AEF-_u670D_u52A1_u5668_u7F16_u7A0B_u6A21_u578B"><a href="#u5BA2_u6237_u7AEF-_u670D_u52A1_u5668_u7F16_u7A0B_u6A21_u578B" class="headerlink" title="客户端-服务器编程模型"></a>客户端-服务器编程模型</h2><p>每个网络应用都是基于<strong>客户端-服务器模型</strong>模型的。采用这个模型，一个应用是由一个<strong>服务器</strong>进程和一个或者多个<strong>客户端</strong>进程组成。服务器管理某种<strong>资源</strong>，并且通过操作这种资源来为它的客户端提供某种<strong>服务</strong>。</p>
+<h2 id="客户端-服务器编程模型"><a href="#客户端-服务器编程模型" class="headerlink" title="客户端-服务器编程模型"></a>客户端-服务器编程模型</h2><p>每个网络应用都是基于<strong>客户端-服务器模型</strong>模型的。采用这个模型，一个应用是由一个<strong>服务器</strong>进程和一个或者多个<strong>客户端</strong>进程组成。服务器管理某种<strong>资源</strong>，并且通过操作这种资源来为它的客户端提供某种<strong>服务</strong>。</p>
 <p>客户端-服务器模型中的基本操作是<strong>事务(transaction)</strong>，由四步组成，如下图所示：</p>
 <p><img src="/images/csapp11.1.jpg" alt="csapp11.1"></p>
-<h2 id="u7F51_u7EDC"><a href="#u7F51_u7EDC" class="headerlink" title="网络"></a>网络</h2><p>客户端和服务器通常运行在不同的主机上，并且通过<strong>计算机网络</strong>的硬件和软件资源来通信。对于一台主机而言，网络只是又一种 I/O 设备，作为数据源和数据接收方，如下图所示。</p>
+<h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><p>客户端和服务器通常运行在不同的主机上，并且通过<strong>计算机网络</strong>的硬件和软件资源来通信。对于一台主机而言，网络只是又一种 I/O 设备，作为数据源和数据接收方，如下图所示。</p>
 <p><img src="/images/csapp11.2.jpg" alt="csapp11.2"></p>
 <p>物理上而言，网络是一个按照地理远近组成的层次系统。最底层是 LAN(Local Area Network, 局域网)，在一个建筑或者校园范围内。迄今为止，最流行的局域网技术是<strong>以太网(Ethernet)</strong>。</p>
 <p>每个以太网适配器都有一个全球唯一的 48 位地址，一台主机可以发送一段位，称为<strong>帧(frame)</strong>，到这个网段内的其他任何主机。每个帧包括一些固定数量的<strong>头部(header)</strong>位，用来标识此帧的源和目的地址以及此帧的长度，伺候紧随的就是数据位的<strong>有效载荷</strong>。每个主机适配器都能看到这个帧，但是只有目的主机实际读取它。</p>
@@ -1795,7 +1796,7 @@ char *inet_ntoa(struct in_addr in);
 <p>一个连接由它两端的套接字地址唯一确定。这对套接字地址叫做<strong>套接字对(socket pair)</strong>，由下列元组来表示：</p>
 <pre><code>(cliaddr:cliport, servaddr:servport)
 </code></pre><p><img src="/images/csapp11.13.jpg" alt="csapp11.13"></p>
-<h2 id="u5957_u63A5_u5B57_u63A5_u53E3"><a href="#u5957_u63A5_u5B57_u63A5_u53E3" class="headerlink" title="套接字接口"></a>套接字接口</h2><p><strong>套接字接口(socket interface)</strong>是一组函数，它们和 Unix I/O 函数结合起来，用以创建网络应用。</p>
+<h2 id="套接字接口"><a href="#套接字接口" class="headerlink" title="套接字接口"></a>套接字接口</h2><p><strong>套接字接口(socket interface)</strong>是一组函数，它们和 Unix I/O 函数结合起来，用以创建网络应用。</p>
 <p><img src="/images/csapp11.14.jpg" alt="csapp11.14"></p>
 <blockquote>
 <p>套接字地址结构</p>
@@ -1817,7 +1818,7 @@ int socket(int domain, int type, int protocol);
 
 int connect(int sockfd, struct sockaddr *serv_addr, int addrlen);
 </code></pre><p>剩下还有<code>bind</code>, <code>listen</code>, <code>accept</code> 等函数，略</p>
-<h2 id="Web__u670D_u52A1_u5668"><a href="#Web__u670D_u52A1_u5668" class="headerlink" title="Web 服务器"></a>Web 服务器</h2><blockquote>
+<h2 id="Web-服务器"><a href="#Web-服务器" class="headerlink" title="Web 服务器"></a>Web 服务器</h2><blockquote>
 <p>Web 基础</p>
 </blockquote>
 <p>Web 客户端和服务器之间的交互用的是一个基于文本的应用级协议，叫做 HTTP(Hypertext Transfer Protocol)。HTTP 是一个简单的协议。一个 Web客户端打开一个到服务器的因特网连接，并且请求某些内容。服务器响应所请求的内容，然后关闭连接。浏览器读取这些内容，并把它显示在屏幕上。</p>
@@ -1852,8 +1853,8 @@ int connect(int sockfd, struct sockaddr *serv_addr, int addrlen);
 <pre><code>&lt;version&gt; &lt;status code&gt; &lt;status message&gt;
 </code></pre><p>版本字段描述的是响应所遵循的 HTTP 版本。<strong>状态码(status code)</strong>是一个三位数的正整数，指明对请求的处理。<strong>状态消息(status message)</strong>给出与错误代码等价的英文描述。第9-13行的响应报头提供了关于响应的附加信息。针对我们的目的，两个最重要的报头是 <code>Content-Type</code>(line 12)，它告诉客户端响应主体中内容 MIME 类型；以及 <code>Content-Length</code>(line 13)，用来指示响应主体的字节大小。</p>
 <p><img src="/images/csapp11.24.jpg" alt="csapp11.24"></p>
-<h2 id="u5C0F_u7ED3-8"><a href="#u5C0F_u7ED3-8" class="headerlink" title="小结"></a>小结</h2><p>Web 服务器使用 HTTP 协议和它们的客户端彼此通信。浏览器向服务器请求静态或者动态内容。CGI 标准提供了一组规则，来管理客户端如何将程序参数传递给服务器，服务器如何将这些参数以及其他信息传递给子进程，以及子进程如何将它的输出发送会客户端。</p>
-<h1 id="u5E76_u53D1_u7F16_u7A0B"><a href="#u5E76_u53D1_u7F16_u7A0B" class="headerlink" title="并发编程"></a>并发编程</h1><p>应用级并发在以下情况下很有用：</p>
+<h2 id="小结-8"><a href="#小结-8" class="headerlink" title="小结"></a>小结</h2><p>Web 服务器使用 HTTP 协议和它们的客户端彼此通信。浏览器向服务器请求静态或者动态内容。CGI 标准提供了一组规则，来管理客户端如何将程序参数传递给服务器，服务器如何将这些参数以及其他信息传递给子进程，以及子进程如何将它的输出发送会客户端。</p>
+<h1 id="并发编程"><a href="#并发编程" class="headerlink" title="并发编程"></a>并发编程</h1><p>应用级并发在以下情况下很有用：</p>
 <ul>
 <li>访问慢速 I/O 设备</li>
 <li>与人交互</li>
@@ -1867,19 +1868,19 @@ int connect(int sockfd, struct sockaddr *serv_addr, int addrlen);
 <li>I/O 多路复用。在这种形式的并发编程中，应用程序在一个进程的上下文中显式地调度它们自己的逻辑流。逻辑流被模型化为状态机，数据到达文件描述符后，主程序显式地从一个状态转换到另一个状态。因为程序是一个单独的进程，所以所有的流都共享同一个地址空间。</li>
 <li>线程。线程是运行在一个单一进程上下文中的逻辑流，由内核进行调度。你可以把线程看成是其他两种方式的混合体，像进程流一样由内核进行调度，而像 I/O 多路复用一样共享同一个虚拟地址空间。</li>
 </ul>
-<h2 id="u57FA_u4E8E_u8FDB_u7A0B_u7684_u5E76_u53D1_u7F16_u7A0B"><a href="#u57FA_u4E8E_u8FDB_u7A0B_u7684_u5E76_u53D1_u7F16_u7A0B" class="headerlink" title="基于进程的并发编程"></a>基于进程的并发编程</h2><p>构造并发程序最简单的方法就是用进程，使用那些大家都很熟悉的函数，像 <code>fork</code>, <code>exec</code> 和 <code>waitpid</code>。</p>
+<h2 id="基于进程的并发编程"><a href="#基于进程的并发编程" class="headerlink" title="基于进程的并发编程"></a>基于进程的并发编程</h2><p>构造并发程序最简单的方法就是用进程，使用那些大家都很熟悉的函数，像 <code>fork</code>, <code>exec</code> 和 <code>waitpid</code>。</p>
 <p><img src="/images/csapp12.1.jpg" alt="csapp12.1"></p>
 <p><img src="/images/csapp12.2.jpg" alt="csapp12.2"></p>
 <p><img src="/images/csapp12.3.jpg" alt="csapp12.3"></p>
 <p><img src="/images/csapp12.4.jpg" alt="csapp12.4"></p>
 <p>对于在父、子进程间共享状态信息，进程有一个非常清晰的模型：共享文件表，但是不共享用户地址空间。进程有独立的地址空间既是优点也是缺点。这样一来，一个进程不可能不小心覆盖另一个进程的虚拟存储器，这就消除了许多令人迷惑的错误。</p>
 <p>另一方面，独立的地址空间使得进程共享状态信息变得更加困难。为了共享信息，它们必须使用显式的 IPC 机制。基于进程的设计的另一个缺点是，它们往往比较慢，因为进程控制和 IPC 的开销很高。</p>
-<h2 id="u57FA_u4E8E_I/O__u591A_u8DEF_u590D_u7528_u7684_u5E76_u53D1_u7F16_u7A0B"><a href="#u57FA_u4E8E_I/O__u591A_u8DEF_u590D_u7528_u7684_u5E76_u53D1_u7F16_u7A0B" class="headerlink" title="基于 I/O 多路复用的并发编程"></a>基于 I/O 多路复用的并发编程</h2><p>I/O 多路复用可以用作并发<strong>事件驱动(event-driven)</strong>程序的基础，在事件驱动程序中，流是因为某种事件而前进的。一般概念是将逻辑流模型化为状态机。不严格地说，一个<strong>状态机(state machine)</strong>就是一组<strong>状态(state)</strong>、<strong>输入事件(input event)</strong>和<strong>转移(transition)</strong>，其中转移就是将状态和输入事件映射到状态。每个状态都将一个(输入状态，输入事件)对映射到一个输出状态。<strong>自循环(self-loop)</strong>是同一组输入和输出状态之间的转移。通常把状态机花城有向图，其中节点表示状态，有向弧表示转移，而弧上的标号表示输入事件。一个状态机从某种初始状态开始执行。每个输入事件都会引发一个从当前状态到下一状态的转移。</p>
+<h2 id="基于-I-O-多路复用的并发编程"><a href="#基于-I-O-多路复用的并发编程" class="headerlink" title="基于 I/O 多路复用的并发编程"></a>基于 I/O 多路复用的并发编程</h2><p>I/O 多路复用可以用作并发<strong>事件驱动(event-driven)</strong>程序的基础，在事件驱动程序中，流是因为某种事件而前进的。一般概念是将逻辑流模型化为状态机。不严格地说，一个<strong>状态机(state machine)</strong>就是一组<strong>状态(state)</strong>、<strong>输入事件(input event)</strong>和<strong>转移(transition)</strong>，其中转移就是将状态和输入事件映射到状态。每个状态都将一个(输入状态，输入事件)对映射到一个输出状态。<strong>自循环(self-loop)</strong>是同一组输入和输出状态之间的转移。通常把状态机花城有向图，其中节点表示状态，有向弧表示转移，而弧上的标号表示输入事件。一个状态机从某种初始状态开始执行。每个输入事件都会引发一个从当前状态到下一状态的转移。</p>
 <p>事件驱动设计的一个优点是，它比基于进程的设计给了程序员更多的对程序行为的控制。另一个优点是在流之间共享数据变得很容易，而且事件驱动设计常常比基于进程的设计要高效得多，因为它们不需要进程上下文切换来调度新的流。</p>
 <p>事件驱动设计的一个明显的缺点就是编码复杂，另一重大缺点时它们不能充分利用多核处理器。</p>
-<h2 id="u57FA_u4E8E_u7EBF_u7A0B_u7684_u5E76_u53D1_u7F16_u7A0B"><a href="#u57FA_u4E8E_u7EBF_u7A0B_u7684_u5E76_u53D1_u7F16_u7A0B" class="headerlink" title="基于线程的并发编程"></a>基于线程的并发编程</h2><p><strong>线程(thread)</strong>就是运行在进程上下文中的逻辑流，由内核自动调度。每个线程都有它自己的<strong>线程上下文(thread context)</strong>，包括一个唯一的整数<strong>线程ID(Thread ID, TID)</strong>、栈、栈指针、程序计数器、通用目的寄存器和条件码。所有的运行在一个进程里的线程共享该进程的整个虚拟地址空间。</p>
+<h2 id="基于线程的并发编程"><a href="#基于线程的并发编程" class="headerlink" title="基于线程的并发编程"></a>基于线程的并发编程</h2><p><strong>线程(thread)</strong>就是运行在进程上下文中的逻辑流，由内核自动调度。每个线程都有它自己的<strong>线程上下文(thread context)</strong>，包括一个唯一的整数<strong>线程ID(Thread ID, TID)</strong>、栈、栈指针、程序计数器、通用目的寄存器和条件码。所有的运行在一个进程里的线程共享该进程的整个虚拟地址空间。</p>
 <p><img src="/images/csapp12.12.jpg" alt="csapp12.12"></p>
-<h2 id="u591A_u7EBF_u7A0B_u7A0B_u5E8F_u4E2D_u7684_u5171_u4EAB_u53D8_u91CF"><a href="#u591A_u7EBF_u7A0B_u7A0B_u5E8F_u4E2D_u7684_u5171_u4EAB_u53D8_u91CF" class="headerlink" title="多线程程序中的共享变量"></a>多线程程序中的共享变量</h2><p>从一个程序员的角度来看，线程很有吸引力的一个方面就是多个线程很容易共享相同的程序变量。然而，这种共享也是很棘手的。</p>
+<h2 id="多线程程序中的共享变量"><a href="#多线程程序中的共享变量" class="headerlink" title="多线程程序中的共享变量"></a>多线程程序中的共享变量</h2><p>从一个程序员的角度来看，线程很有吸引力的一个方面就是多个线程很容易共享相同的程序变量。然而，这种共享也是很棘手的。</p>
 <blockquote>
 <p>线程存储器模型</p>
 </blockquote>
@@ -1894,9 +1895,9 @@ int connect(int sockfd, struct sockaddr *serv_addr, int addrlen);
 <li>本地自动变量：定义在函数内部但是没有 static 属性的变量。在运行时，每个线程的栈都包含它自己的所有本地自动变量的实例</li>
 <li>本地静态变量：定义在函数内部并有 static 属性的变量，和全局变量一样</li>
 </ul>
-<h2 id="u7528_u4FE1_u53F7_u91CF_u540C_u6B65_u7EBF_u7A0B"><a href="#u7528_u4FE1_u53F7_u91CF_u540C_u6B65_u7EBF_u7A0B" class="headerlink" title="用信号量同步线程"></a>用信号量同步线程</h2><p>共享变量是十分方便的，但是它们也引入了<strong>同步错误(synchronization error)</strong>的可能性。一般而言，你没有办法预测操作系统是否将为你的线程选择一个正确的顺序。</p>
+<h2 id="用信号量同步线程"><a href="#用信号量同步线程" class="headerlink" title="用信号量同步线程"></a>用信号量同步线程</h2><p>共享变量是十分方便的，但是它们也引入了<strong>同步错误(synchronization error)</strong>的可能性。一般而言，你没有办法预测操作系统是否将为你的线程选择一个正确的顺序。</p>
 <p>一些关键词：进度图，信号量，使用信号量来实现互斥，生产者-消费者问题，两类读者-写者问题</p>
-<h2 id="u5176_u4ED6_u5E76_u53D1_u95EE_u9898"><a href="#u5176_u4ED6_u5E76_u53D1_u95EE_u9898" class="headerlink" title="其他并发问题"></a>其他并发问题</h2><p>这些典型问题是任何类型的并发流操作共享资源时都会出现的。</p>
+<h2 id="其他并发问题"><a href="#其他并发问题" class="headerlink" title="其他并发问题"></a>其他并发问题</h2><p>这些典型问题是任何类型的并发流操作共享资源时都会出现的。</p>
 <blockquote>
 <p>线程安全</p>
 </blockquote>
@@ -1928,7 +1929,7 @@ int connect(int sockfd, struct sockaddr *serv_addr, int addrlen);
 <p><img src="/images/csapp12.42.jpg" alt="csapp12.42"></p>
 <p><img src="/images/csapp12.43.jpg" alt="csapp12.43"></p>
 <p>重叠的禁止区域引起了一组称为<strong>死锁区域(deadlock region)</strong>的状态。</p>
-<h2 id="u5C0F_u7ED3-9"><a href="#u5C0F_u7ED3-9" class="headerlink" title="小结"></a>小结</h2><p>无论哪种并发机制，同步对于共享数据的并发访问都是一个困难的问题。提出对信号的 P 和 V 操作就是为了帮助解决这个问题。信号量操作可以用来提供对共享数据的互斥访问，也对诸如生产者-消费者程序中有限缓冲区和读者-写者系统中的共享对象这样的资源访问进行调度。</p>
+<h2 id="小结-9"><a href="#小结-9" class="headerlink" title="小结"></a>小结</h2><p>无论哪种并发机制，同步对于共享数据的并发访问都是一个困难的问题。提出对信号的 P 和 V 操作就是为了帮助解决这个问题。信号量操作可以用来提供对共享数据的互斥访问，也对诸如生产者-消费者程序中有限缓冲区和读者-写者系统中的共享对象这样的资源访问进行调度。</p>
 <p>并发也引入了其他一些困难的问题。被线程调用的函数必须具有一种称为线程安全的属性。竞争和死锁是并发程序中出现的另一些困难的问题。当程序员错误地假设逻辑流该如何调度时，就会发生竞争。当一个流等待一个永远不会发生的事件时，就会产生死锁。</p>
 
       
@@ -1969,9 +1970,9 @@ int connect(int sockfd, struct sockaddr *serv_addr, int addrlen);
           
             <a href="/tags/CMU/" rel="tag">#CMU</a>
           
-            <a href="/tags/原理/" rel="tag">#原理</a>
-          
             <a href="/tags/计算机/" rel="tag">#计算机</a>
+          
+            <a href="/tags/原理/" rel="tag">#原理</a>
           
         </div>
       
@@ -2206,7 +2207,7 @@ int connect(int sockfd, struct sockaddr *serv_addr, int addrlen);
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#u8BA1_u7B97_u673A_u7CFB_u7EDF_u6F2B_u6E38"><span class="nav-number">1.</span> <span class="nav-text">计算机系统漫游</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4FE1_u606F_u5C31_u662F_u4F4D_+__u4E0A_u4E0B_u6587"><span class="nav-number">1.1.</span> <span class="nav-text">信息就是位 + 上下文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7A0B_u5E8F_u88AB_u5176_u4ED6_u7A0B_u5E8F_u7FFB_u8BD1_u6210_u4E0D_u540C_u7684_u683C_u5F0F"><span class="nav-number">1.2.</span> <span class="nav-text">程序被其他程序翻译成不同的格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E86_u89E3_u7F16_u8BD1_u7CFB_u7EDF_u5982_u4F55_u5DE5_u4F5C_u662F_u5927_u6709_u76CA_u5904_u7684"><span class="nav-number">1.3.</span> <span class="nav-text">了解编译系统如何工作是大有益处的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5904_u7406_u5668_u8BFB_u5E76_u89E3_u91CA_u5B58_u50A8_u5728_u5B58_u50A8_u5668_u4E2D_u7684_u6307_u4EE4"><span class="nav-number">1.4.</span> <span class="nav-text">处理器读并解释存储在存储器中的指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9AD8_u901F_u7F13_u5B58_u81F3_u5173_u91CD_u8981"><span class="nav-number">1.5.</span> <span class="nav-text">高速缓存至关重要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B58_u50A8_u8BBE_u5907_u5F62_u6210_u5C42_u6B21_u7ED3_u6784"><span class="nav-number">1.6.</span> <span class="nav-text">存储设备形成层次结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u64CD_u4F5C_u7CFB_u7EDF_u7BA1_u7406_u786C_u4EF6"><span class="nav-number">1.7.</span> <span class="nav-text">操作系统管理硬件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7CFB_u7EDF_u4E4B_u95F4_u5229_u7528_u7F51_u7EDC_u901A_u4FE1"><span class="nav-number">1.8.</span> <span class="nav-text">系统之间利用网络通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u91CD_u8981_u4E3B_u9898"><span class="nav-number">1.9.</span> <span class="nav-text">重要主题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u4FE1_u606F_u7684_u8868_u793A_u548C_u5904_u7406"><span class="nav-number">2.</span> <span class="nav-text">信息的表示和处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4FE1_u606F_u5B58_u50A8"><span class="nav-number">2.1.</span> <span class="nav-text">信息存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6574_u6570_u8868_u793A"><span class="nav-number">2.2.</span> <span class="nav-text">整数表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6574_u6570_u8FD0_u7B97"><span class="nav-number">2.3.</span> <span class="nav-text">整数运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6D6E_u70B9_u6570"><span class="nav-number">2.4.</span> <span class="nav-text">浮点数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3"><span class="nav-number">2.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u7A0B_u5E8F_u7684_u673A_u5668_u7EA7_u8868_u793A"><span class="nav-number">3.</span> <span class="nav-text">程序的机器级表示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5386_u53F2_u89C2_u70B9"><span class="nav-number">3.1.</span> <span class="nav-text">历史观点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7A0B_u5E8F_u7F16_u7801"><span class="nav-number">3.2.</span> <span class="nav-text">程序编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BBF_u95EE_u4FE1_u606F"><span class="nav-number">3.3.</span> <span class="nav-text">访问信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B97_u672F_u548C_u903B_u8F91_u64CD_u4F5C"><span class="nav-number">3.4.</span> <span class="nav-text">算术和逻辑操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u63A7_u5236"><span class="nav-number">3.5.</span> <span class="nav-text">控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FC7_u7A0B"><span class="nav-number">3.6.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6570_u7EC4_u5206_u914D_u548C_u8BBF_u95EE"><span class="nav-number">3.7.</span> <span class="nav-text">数组分配和访问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5F02_u8D28_u7684_u6570_u636E_u7ED3_u6784"><span class="nav-number">3.8.</span> <span class="nav-text">异质的数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7EFC_u5408_uFF1A_u7406_u89E3_u6307_u9488"><span class="nav-number">3.9.</span> <span class="nav-text">综合：理解指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E94_u7528_uFF1A_u4F7F_u7528_GDB__u8C03_u8BD5_u5668"><span class="nav-number">3.10.</span> <span class="nav-text">应用：使用 GDB 调试器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B58_u50A8_u5668_u7684_u8D8A_u754C_u5F15_u7528_u548C_u7F13_u51B2_u533A_u6EA2_u51FA"><span class="nav-number">3.11.</span> <span class="nav-text">存储器的越界引用和缓冲区溢出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#x86-64_3A__u5C06_IA32__u6269_u5C55_u5230_64__u4F4D"><span class="nav-number">3.12.</span> <span class="nav-text">x86-64: 将 IA32 扩展到 64 位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6D6E_u70B9_u7A0B_u5E8F_u7684_u673A_u5668_u7EA7_u8868_u793A"><span class="nav-number">3.13.</span> <span class="nav-text">浮点程序的机器级表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3-1"><span class="nav-number">3.14.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u5904_u7406_u5668_u4F53_u7CFB_u7ED3_u6784"><span class="nav-number">4.</span> <span class="nav-text">处理器体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Y86__u6307_u4EE4_u96C6_u4F53_u7CFB_u7ED3_u6784"><span class="nav-number">4.1.</span> <span class="nav-text">Y86 指令集体系结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u903B_u8F91_u8BBE_u8BA1_u548C_u786C_u4EF6_u63A7_u5236_u8BED_u8A00_HCL"><span class="nav-number">4.2.</span> <span class="nav-text">逻辑设计和硬件控制语言 HCL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Y86__u7684_u987A_u5E8F_u5B9E_u73B0"><span class="nav-number">4.3.</span> <span class="nav-text">Y86 的顺序实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6D41_u6C34_u7EBF_u7684_u901A_u7528_u539F_u7406"><span class="nav-number">4.4.</span> <span class="nav-text">流水线的通用原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3-2"><span class="nav-number">4.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u4F18_u5316_u7A0B_u5E8F_u6027_u80FD"><span class="nav-number">5.</span> <span class="nav-text">优化程序性能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4F18_u5316_u7F16_u8BD1_u5668_u7684_u80FD_u529B_u548C_u5C40_u9650_u6027"><span class="nav-number">5.1.</span> <span class="nav-text">优化编译器的能力和局限性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8868_u793A_u7A0B_u5E8F_u6027_u80FD"><span class="nav-number">5.2.</span> <span class="nav-text">表示程序性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7A0B_u5E8F_u793A_u4F8B"><span class="nav-number">5.3.</span> <span class="nav-text">程序示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6D88_u9664_u5FAA_u73AF_u7684_u4F4E_u6548_u7387"><span class="nav-number">5.4.</span> <span class="nav-text">消除循环的低效率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u51CF_u5C11_u8FC7_u7A0B_u8C03_u7528"><span class="nav-number">5.5.</span> <span class="nav-text">减少过程调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6D88_u9664_u4E0D_u5FC5_u8981_u7684_u5B58_u50A8_u5668_u5F15_u7528"><span class="nav-number">5.6.</span> <span class="nav-text">消除不必要的存储器引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7406_u89E3_u73B0_u4EE3_u5904_u7406_u5668"><span class="nav-number">5.7.</span> <span class="nav-text">理解现代处理器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5FAA_u73AF_u5C55_u5F00"><span class="nav-number">5.8.</span> <span class="nav-text">循环展开</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u63D0_u9AD8_u5E76_u884C_u6027"><span class="nav-number">5.9.</span> <span class="nav-text">提高并行性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_u4E9B_u9650_u5236_u56E0_u7D20"><span class="nav-number">5.10.</span> <span class="nav-text">一些限制因素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7406_u89E3_u5B58_u50A8_u5668_u6027_u80FD"><span class="nav-number">5.11.</span> <span class="nav-text">理解存储器性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E94_u7528_uFF1A_u6027_u80FD_u63D0_u9AD8_u6280_u672F"><span class="nav-number">5.12.</span> <span class="nav-text">应用：性能提高技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u786E_u5B9A_u548C_u6D88_u9664_u6027_u80FD_u74F6_u9888"><span class="nav-number">5.13.</span> <span class="nav-text">确定和消除性能瓶颈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3-3"><span class="nav-number">5.14.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u5B58_u50A8_u5668_u5C42_u6B21_u7ED3_u6784"><span class="nav-number">6.</span> <span class="nav-text">存储器层次结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B58_u50A8_u6280_u672F"><span class="nav-number">6.1.</span> <span class="nav-text">存储技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C40_u90E8_u6027"><span class="nav-number">6.2.</span> <span class="nav-text">局部性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B58_u50A8_u5668_u5C42_u6B21_u7ED3_u6784-1"><span class="nav-number">6.3.</span> <span class="nav-text">存储器层次结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9AD8_u901F_u7F13_u5B58_u5B58_u50A8_u5668"><span class="nav-number">6.4.</span> <span class="nav-text">高速缓存存储器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7F16_u5199_u9AD8_u901F_u7F13_u5B58_u53CB_u597D_u7684_u4EE3_u7801"><span class="nav-number">6.5.</span> <span class="nav-text">编写高速缓存友好的代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7EFC_u5408_uFF1A_u9AD8_u901F_u7F13_u5B58_u5BF9_u7A0B_u5E8F_u6027_u80FD_u7684_u5F71_u54CD"><span class="nav-number">6.6.</span> <span class="nav-text">综合：高速缓存对程序性能的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3-4"><span class="nav-number">6.7.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u94FE_u63A5"><span class="nav-number">7.</span> <span class="nav-text">链接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7F16_u8BD1_u5668_u9A71_u52A8_u7A0B_u5E8F"><span class="nav-number">7.1.</span> <span class="nav-text">编译器驱动程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u9759_u6001_u8FDE_u63A5"><span class="nav-number">7.2.</span> <span class="nav-text">静态连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u76EE_u6807_u6587_u4EF6"><span class="nav-number">7.3.</span> <span class="nav-text">目标文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53EF_u91CD_u5B9A_u4F4D_u76EE_u6807_u6587_u4EF6"><span class="nav-number">7.4.</span> <span class="nav-text">可重定位目标文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B26_u53F7_u548C_u7B26_u53F7_u8868"><span class="nav-number">7.5.</span> <span class="nav-text">符号和符号表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B26_u53F7_u89E3_u6790"><span class="nav-number">7.6.</span> <span class="nav-text">符号解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u91CD_u5B9A_u4F4D"><span class="nav-number">7.7.</span> <span class="nav-text">重定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53EF_u6267_u884C_u76EE_u6807_u6587_u4EF6"><span class="nav-number">7.8.</span> <span class="nav-text">可执行目标文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u52A0_u8F7D_u53EF_u6267_u884C_u76EE_u6807_u6587_u4EF6"><span class="nav-number">7.9.</span> <span class="nav-text">加载可执行目标文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u52A8_u6001_u94FE_u63A5_u5171_u4EAB_u5E93"><span class="nav-number">7.10.</span> <span class="nav-text">动态链接共享库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E0E_u4F4D_u7F6E_u65E0_u5173_u7684_u4EE3_u7801_28PIC_29"><span class="nav-number">7.11.</span> <span class="nav-text">与位置无关的代码(PIC)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5904_u7406_u76EE_u6807_u6587_u4EF6_u7684_u5DE5_u5177"><span class="nav-number">7.12.</span> <span class="nav-text">处理目标文件的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3-5"><span class="nav-number">7.13.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u5F02_u5E38_u63A7_u5236_u6D41"><span class="nav-number">8.</span> <span class="nav-text">异常控制流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5F02_u5E38"><span class="nav-number">8.1.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FDB_u7A0B"><span class="nav-number">8.2.</span> <span class="nav-text">进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7CFB_u7EDF_u8C03_u7528_u9519_u8BEF_u5904_u7406"><span class="nav-number">8.3.</span> <span class="nav-text">系统调用错误处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8FDB_u7A0B_u63A7_u5236"><span class="nav-number">8.4.</span> <span class="nav-text">进程控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4FE1_u53F7"><span class="nav-number">8.5.</span> <span class="nav-text">信号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u975E_u672C_u5730_u8DF3_u8F6C"><span class="nav-number">8.6.</span> <span class="nav-text">非本地跳转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u64CD_u4F5C_u8FDB_u7A0B_u7684_u5DE5_u5177"><span class="nav-number">8.7.</span> <span class="nav-text">操作进程的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3-6"><span class="nav-number">8.8.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u865A_u62DF_u5B58_u50A8_u5668"><span class="nav-number">9.</span> <span class="nav-text">虚拟存储器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u7269_u7406_u548C_u865A_u62DF_u5BFB_u5740"><span class="nav-number">9.1.</span> <span class="nav-text">物理和虚拟寻址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5730_u5740_u7A7A_u95F4"><span class="nav-number">9.2.</span> <span class="nav-text">地址空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u865A_u62DF_u5B58_u50A8_u5668_u4F5C_u4E3A_u7F13_u5B58_u7684_u5DE5_u5177"><span class="nav-number">9.3.</span> <span class="nav-text">虚拟存储器作为缓存的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u865A_u62DF_u5B58_u50A8_u5668_u4F5C_u4E3A_u5B58_u50A8_u5668_u7BA1_u7406_u7684_u5DE5_u5177"><span class="nav-number">9.4.</span> <span class="nav-text">虚拟存储器作为存储器管理的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u865A_u62DF_u5B58_u50A8_u5668_u4F5C_u4E3A_u5B58_u50A8_u5668_u4FDD_u62A4_u7684_u5DE5_u5177"><span class="nav-number">9.5.</span> <span class="nav-text">虚拟存储器作为存储器保护的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5730_u5740_u7FFB_u8BD1"><span class="nav-number">9.6.</span> <span class="nav-text">地址翻译</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u7CFB_u7EDF_u7EA7_I/O"><span class="nav-number">10.</span> <span class="nav-text">系统级 I/O</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Unix_I/O"><span class="nav-number">10.1.</span> <span class="nav-text">Unix I/O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6253_u5F00_u548C_u5173_u95ED_u6587_u4EF6"><span class="nav-number">10.2.</span> <span class="nav-text">打开和关闭文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BFB_u548C_u5199_u6587_u4EF6"><span class="nav-number">10.3.</span> <span class="nav-text">读和写文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7528_RIO__u5305_u5065_u58EE_u5730_u8BFB_u5199"><span class="nav-number">10.4.</span> <span class="nav-text">用 RIO 包健壮地读写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u8BFB_u53D6_u6587_u4EF6_u5143_u6570_u636E"><span class="nav-number">10.5.</span> <span class="nav-text">读取文件元数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5171_u4EAB_u6587_u4EF6"><span class="nav-number">10.6.</span> <span class="nav-text">共享文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I/O__u91CD_u5B9A_u5411"><span class="nav-number">10.7.</span> <span class="nav-text">I/O 重定向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6807_u51C6_I/O"><span class="nav-number">10.8.</span> <span class="nav-text">标准 I/O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7EFC_u5408_uFF1A_u8BE5_u4F7F_u7528_u54EA_u4E9B_I/O__u51FD_u6570"><span class="nav-number">10.9.</span> <span class="nav-text">综合：该使用哪些 I/O 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3-7"><span class="nav-number">10.10.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u7F51_u7EDC_u7F16_u7A0B"><span class="nav-number">11.</span> <span class="nav-text">网络编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5BA2_u6237_u7AEF-_u670D_u52A1_u5668_u7F16_u7A0B_u6A21_u578B"><span class="nav-number">11.1.</span> <span class="nav-text">客户端-服务器编程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7F51_u7EDC"><span class="nav-number">11.2.</span> <span class="nav-text">网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5957_u63A5_u5B57_u63A5_u53E3"><span class="nav-number">11.3.</span> <span class="nav-text">套接字接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web__u670D_u52A1_u5668"><span class="nav-number">11.4.</span> <span class="nav-text">Web 服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3-8"><span class="nav-number">11.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#u5E76_u53D1_u7F16_u7A0B"><span class="nav-number">12.</span> <span class="nav-text">并发编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u4E8E_u8FDB_u7A0B_u7684_u5E76_u53D1_u7F16_u7A0B"><span class="nav-number">12.1.</span> <span class="nav-text">基于进程的并发编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u4E8E_I/O__u591A_u8DEF_u590D_u7528_u7684_u5E76_u53D1_u7F16_u7A0B"><span class="nav-number">12.2.</span> <span class="nav-text">基于 I/O 多路复用的并发编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u57FA_u4E8E_u7EBF_u7A0B_u7684_u5E76_u53D1_u7F16_u7A0B"><span class="nav-number">12.3.</span> <span class="nav-text">基于线程的并发编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u591A_u7EBF_u7A0B_u7A0B_u5E8F_u4E2D_u7684_u5171_u4EAB_u53D8_u91CF"><span class="nav-number">12.4.</span> <span class="nav-text">多线程程序中的共享变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7528_u4FE1_u53F7_u91CF_u540C_u6B65_u7EBF_u7A0B"><span class="nav-number">12.5.</span> <span class="nav-text">用信号量同步线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5176_u4ED6_u5E76_u53D1_u95EE_u9898"><span class="nav-number">12.6.</span> <span class="nav-text">其他并发问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5C0F_u7ED3-9"><span class="nav-number">12.7.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#计算机系统漫游"><span class="nav-number">1.</span> <span class="nav-text">计算机系统漫游</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#信息就是位-上下文"><span class="nav-number">1.1.</span> <span class="nav-text">信息就是位 + 上下文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#程序被其他程序翻译成不同的格式"><span class="nav-number">1.2.</span> <span class="nav-text">程序被其他程序翻译成不同的格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#了解编译系统如何工作是大有益处的"><span class="nav-number">1.3.</span> <span class="nav-text">了解编译系统如何工作是大有益处的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理器读并解释存储在存储器中的指令"><span class="nav-number">1.4.</span> <span class="nav-text">处理器读并解释存储在存储器中的指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高速缓存至关重要"><span class="nav-number">1.5.</span> <span class="nav-text">高速缓存至关重要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储设备形成层次结构"><span class="nav-number">1.6.</span> <span class="nav-text">存储设备形成层次结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作系统管理硬件"><span class="nav-number">1.7.</span> <span class="nav-text">操作系统管理硬件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统之间利用网络通信"><span class="nav-number">1.8.</span> <span class="nav-text">系统之间利用网络通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重要主题"><span class="nav-number">1.9.</span> <span class="nav-text">重要主题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#信息的表示和处理"><span class="nav-number">2.</span> <span class="nav-text">信息的表示和处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#信息存储"><span class="nav-number">2.1.</span> <span class="nav-text">信息存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整数表示"><span class="nav-number">2.2.</span> <span class="nav-text">整数表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整数运算"><span class="nav-number">2.3.</span> <span class="nav-text">整数运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浮点数"><span class="nav-number">2.4.</span> <span class="nav-text">浮点数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">2.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#程序的机器级表示"><span class="nav-number">3.</span> <span class="nav-text">程序的机器级表示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#历史观点"><span class="nav-number">3.1.</span> <span class="nav-text">历史观点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#程序编码"><span class="nav-number">3.2.</span> <span class="nav-text">程序编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问信息"><span class="nav-number">3.3.</span> <span class="nav-text">访问信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算术和逻辑操作"><span class="nav-number">3.4.</span> <span class="nav-text">算术和逻辑操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#控制"><span class="nav-number">3.5.</span> <span class="nav-text">控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过程"><span class="nav-number">3.6.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组分配和访问"><span class="nav-number">3.7.</span> <span class="nav-text">数组分配和访问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异质的数据结构"><span class="nav-number">3.8.</span> <span class="nav-text">异质的数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#综合：理解指针"><span class="nav-number">3.9.</span> <span class="nav-text">综合：理解指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用：使用-GDB-调试器"><span class="nav-number">3.10.</span> <span class="nav-text">应用：使用 GDB 调试器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储器的越界引用和缓冲区溢出"><span class="nav-number">3.11.</span> <span class="nav-text">存储器的越界引用和缓冲区溢出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#x86-64-将-IA32-扩展到-64-位"><span class="nav-number">3.12.</span> <span class="nav-text">x86-64: 将 IA32 扩展到 64 位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浮点程序的机器级表示"><span class="nav-number">3.13.</span> <span class="nav-text">浮点程序的机器级表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-1"><span class="nav-number">3.14.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#处理器体系结构"><span class="nav-number">4.</span> <span class="nav-text">处理器体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Y86-指令集体系结构"><span class="nav-number">4.1.</span> <span class="nav-text">Y86 指令集体系结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑设计和硬件控制语言-HCL"><span class="nav-number">4.2.</span> <span class="nav-text">逻辑设计和硬件控制语言 HCL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Y86-的顺序实现"><span class="nav-number">4.3.</span> <span class="nav-text">Y86 的顺序实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流水线的通用原理"><span class="nav-number">4.4.</span> <span class="nav-text">流水线的通用原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-2"><span class="nav-number">4.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化程序性能"><span class="nav-number">5.</span> <span class="nav-text">优化程序性能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#优化编译器的能力和局限性"><span class="nav-number">5.1.</span> <span class="nav-text">优化编译器的能力和局限性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表示程序性能"><span class="nav-number">5.2.</span> <span class="nav-text">表示程序性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#程序示例"><span class="nav-number">5.3.</span> <span class="nav-text">程序示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消除循环的低效率"><span class="nav-number">5.4.</span> <span class="nav-text">消除循环的低效率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#减少过程调用"><span class="nav-number">5.5.</span> <span class="nav-text">减少过程调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消除不必要的存储器引用"><span class="nav-number">5.6.</span> <span class="nav-text">消除不必要的存储器引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解现代处理器"><span class="nav-number">5.7.</span> <span class="nav-text">理解现代处理器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#循环展开"><span class="nav-number">5.8.</span> <span class="nav-text">循环展开</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提高并行性"><span class="nav-number">5.9.</span> <span class="nav-text">提高并行性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些限制因素"><span class="nav-number">5.10.</span> <span class="nav-text">一些限制因素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解存储器性能"><span class="nav-number">5.11.</span> <span class="nav-text">理解存储器性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用：性能提高技术"><span class="nav-number">5.12.</span> <span class="nav-text">应用：性能提高技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确定和消除性能瓶颈"><span class="nav-number">5.13.</span> <span class="nav-text">确定和消除性能瓶颈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-3"><span class="nav-number">5.14.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存储器层次结构"><span class="nav-number">6.</span> <span class="nav-text">存储器层次结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#存储技术"><span class="nav-number">6.1.</span> <span class="nav-text">存储技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#局部性"><span class="nav-number">6.2.</span> <span class="nav-text">局部性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储器层次结构-1"><span class="nav-number">6.3.</span> <span class="nav-text">存储器层次结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高速缓存存储器"><span class="nav-number">6.4.</span> <span class="nav-text">高速缓存存储器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写高速缓存友好的代码"><span class="nav-number">6.5.</span> <span class="nav-text">编写高速缓存友好的代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#综合：高速缓存对程序性能的影响"><span class="nav-number">6.6.</span> <span class="nav-text">综合：高速缓存对程序性能的影响</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-4"><span class="nav-number">6.7.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#链接"><span class="nav-number">7.</span> <span class="nav-text">链接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#编译器驱动程序"><span class="nav-number">7.1.</span> <span class="nav-text">编译器驱动程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态连接"><span class="nav-number">7.2.</span> <span class="nav-text">静态连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标文件"><span class="nav-number">7.3.</span> <span class="nav-text">目标文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可重定位目标文件"><span class="nav-number">7.4.</span> <span class="nav-text">可重定位目标文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#符号和符号表"><span class="nav-number">7.5.</span> <span class="nav-text">符号和符号表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#符号解析"><span class="nav-number">7.6.</span> <span class="nav-text">符号解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重定位"><span class="nav-number">7.7.</span> <span class="nav-text">重定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可执行目标文件"><span class="nav-number">7.8.</span> <span class="nav-text">可执行目标文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加载可执行目标文件"><span class="nav-number">7.9.</span> <span class="nav-text">加载可执行目标文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态链接共享库"><span class="nav-number">7.10.</span> <span class="nav-text">动态链接共享库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#与位置无关的代码-PIC"><span class="nav-number">7.11.</span> <span class="nav-text">与位置无关的代码(PIC)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理目标文件的工具"><span class="nav-number">7.12.</span> <span class="nav-text">处理目标文件的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-5"><span class="nav-number">7.13.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#异常控制流"><span class="nav-number">8.</span> <span class="nav-text">异常控制流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#异常"><span class="nav-number">8.1.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程"><span class="nav-number">8.2.</span> <span class="nav-text">进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统调用错误处理"><span class="nav-number">8.3.</span> <span class="nav-text">系统调用错误处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程控制"><span class="nav-number">8.4.</span> <span class="nav-text">进程控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信号"><span class="nav-number">8.5.</span> <span class="nav-text">信号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非本地跳转"><span class="nav-number">8.6.</span> <span class="nav-text">非本地跳转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作进程的工具"><span class="nav-number">8.7.</span> <span class="nav-text">操作进程的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-6"><span class="nav-number">8.8.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟存储器"><span class="nav-number">9.</span> <span class="nav-text">虚拟存储器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#物理和虚拟寻址"><span class="nav-number">9.1.</span> <span class="nav-text">物理和虚拟寻址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#地址空间"><span class="nav-number">9.2.</span> <span class="nav-text">地址空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟存储器作为缓存的工具"><span class="nav-number">9.3.</span> <span class="nav-text">虚拟存储器作为缓存的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟存储器作为存储器管理的工具"><span class="nav-number">9.4.</span> <span class="nav-text">虚拟存储器作为存储器管理的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟存储器作为存储器保护的工具"><span class="nav-number">9.5.</span> <span class="nav-text">虚拟存储器作为存储器保护的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#地址翻译"><span class="nav-number">9.6.</span> <span class="nav-text">地址翻译</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#系统级-I-O"><span class="nav-number">10.</span> <span class="nav-text">系统级 I/O</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Unix-I-O"><span class="nav-number">10.1.</span> <span class="nav-text">Unix I/O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打开和关闭文件"><span class="nav-number">10.2.</span> <span class="nav-text">打开和关闭文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读和写文件"><span class="nav-number">10.3.</span> <span class="nav-text">读和写文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用-RIO-包健壮地读写"><span class="nav-number">10.4.</span> <span class="nav-text">用 RIO 包健壮地读写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取文件元数据"><span class="nav-number">10.5.</span> <span class="nav-text">读取文件元数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#共享文件"><span class="nav-number">10.6.</span> <span class="nav-text">共享文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I-O-重定向"><span class="nav-number">10.7.</span> <span class="nav-text">I/O 重定向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标准-I-O"><span class="nav-number">10.8.</span> <span class="nav-text">标准 I/O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#综合：该使用哪些-I-O-函数"><span class="nav-number">10.9.</span> <span class="nav-text">综合：该使用哪些 I/O 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-7"><span class="nav-number">10.10.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络编程"><span class="nav-number">11.</span> <span class="nav-text">网络编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端-服务器编程模型"><span class="nav-number">11.1.</span> <span class="nav-text">客户端-服务器编程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络"><span class="nav-number">11.2.</span> <span class="nav-text">网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#套接字接口"><span class="nav-number">11.3.</span> <span class="nav-text">套接字接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web-服务器"><span class="nav-number">11.4.</span> <span class="nav-text">Web 服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-8"><span class="nav-number">11.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#并发编程"><span class="nav-number">12.</span> <span class="nav-text">并发编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于进程的并发编程"><span class="nav-number">12.1.</span> <span class="nav-text">基于进程的并发编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于-I-O-多路复用的并发编程"><span class="nav-number">12.2.</span> <span class="nav-text">基于 I/O 多路复用的并发编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于线程的并发编程"><span class="nav-number">12.3.</span> <span class="nav-text">基于线程的并发编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程程序中的共享变量"><span class="nav-number">12.4.</span> <span class="nav-text">多线程程序中的共享变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用信号量同步线程"><span class="nav-number">12.5.</span> <span class="nav-text">用信号量同步线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他并发问题"><span class="nav-number">12.6.</span> <span class="nav-text">其他并发问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结-9"><span class="nav-number">12.7.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
@@ -2386,42 +2387,29 @@ int connect(int sockfd, struct sockaddr *serv_addr, int addrlen);
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

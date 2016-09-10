@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="CMU,云计算,优化,思考," />
+  <meta name="keywords" content="思考,CMU,云计算,优化," />
 
 
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> 云计算 反思课 3 提高 Web 服务性能的策略与思考 | 小土刀 </title>
+  <title> 云计算 反思课 3 提高 Web 服务性能的策略与思考 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -134,7 +134,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -337,7 +337,7 @@
         <p>学习是一个不断改进方法论的过程，<a href="http://wdxtub.com/2016/03/11/cc-p6/">课程项目 6 MySQL 和 HBase 配置及测试</a>，因为自己对于搭建基于 NoSQL 数据库的 Web 服务缺乏足够的经验，在具体对前后端进行优化的时候走了很多弯路，也意识到了没有目的的优化很可能是劣化，这里主要整理一下自己对于优化问题的思考。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u5E94_u7528_u573A_u666F"><a href="#u5E94_u7528_u573A_u666F" class="headerlink" title="应用场景"></a>应用场景</h2><p>因为涉及到具体的问题，所以先大概说明一下应用场景，方便之后的叙述。事情大概是这样的：</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>因为涉及到具体的问题，所以先大概说明一下应用场景，方便之后的叙述。事情大概是这样的：</p>
 <ul>
 <li>数据是 5100W 条左右带 tag 的 tweet</li>
 <li>这些 tweet 有各种语言</li>
@@ -346,7 +346,7 @@
 <li>有一定的预算限制（不能开多台机器来凑）</li>
 </ul>
 <p>难点在于，优化问题其实是一个涉及多层级多组件的『复杂』问题，需要考虑的东西很多，更纠结的是，整个系统是符合『木桶理论』的，也就是最短板决定了系统的整体性能。那么就牵扯出两个关键问题：短板在哪里？短板怎么解决。</p>
-<h2 id="u4E00_u4E9B_u601D_u8003"><a href="#u4E00_u4E9B_u601D_u8003" class="headerlink" title="一些思考"></a>一些思考</h2><p>对于 Web 服务来说，所谓优化，可以简单粗暴分为两个子类，一是增加吞吐量，二是增加并发数。优化的整体思路，按照实施的顺序来看，大概是这样的：</p>
+<h2 id="一些思考"><a href="#一些思考" class="headerlink" title="一些思考"></a>一些思考</h2><p>对于 Web 服务来说，所谓优化，可以简单粗暴分为两个子类，一是增加吞吐量，二是增加并发数。优化的整体思路，按照实施的顺序来看，大概是这样的：</p>
 <ol>
 <li>充分理解应用场景<ul>
 <li>服务具体接收的请求的格式和具体需要返回的内容是什么</li>
@@ -381,7 +381,7 @@
 </ul>
 </li>
 </ol>
-<h2 id="u4E00_u4E9B_u7B56_u7565"><a href="#u4E00_u4E9B_u7B56_u7565" class="headerlink" title="一些策略"></a>一些策略</h2><p>前面从总体的思路切入，这里因为涉及到具体的指标要求，所以会从细节方面切入。</p>
+<h2 id="一些策略"><a href="#一些策略" class="headerlink" title="一些策略"></a>一些策略</h2><p>前面从总体的思路切入，这里因为涉及到具体的指标要求，所以会从细节方面切入。</p>
 <p>首先要意识到从我们在浏览器中输入网址，到最后看到显示的内容之间发生了什么。因为这里不是网络分析课（Amazon 的网络我们能调优的范围也有限），所以 DNS 路由之类的内容这里不提，具体可以参考<a href="http://wdxtub.com/2016/02/10/internet-protocol/">计算机网络</a>一文。</p>
 <p>那么到底中间的过程是什么呢？其实就 3 步：</p>
 <ol>
@@ -399,7 +399,7 @@
 <p>后台数据库和前台缓存实际上类似于 Memory Hierarchy，需要利用看似不大存在的 Locality 来获得最快的访问速度（经过测试如果缓存命中基本上可以认为是无延迟）。这里的 Locality，可以认为是具体流量模式的 Locality，而并非是在数据库中顺序访问。</p>
 <p>有缓存，那么肯定就有预热，预热的重要性在于，把常用的记录缓存下来，具体缓存要多大呢？我也不知道，反正可能情况下，越大是越好的（这就是为啥最好开一个内存优化的机器，比其他系列多一倍内存）</p>
 <p>最后说一下数据库的参数优化，不知道是不是 Amazon EMR 本身根据不同的配置会进行一定的优化，我并没有改动 HBase 的任何设置。这里的问题在于，因为刚接触 HBase，很多内容不熟悉，所以看着网上的教程瞎折腾很容易弄巧成拙，在优化的时候，一定要确定每一步都清楚自己在干嘛，不然就会出现自己以为正确的错误，而这种错误往往是最难解决的（因为自己压根不知道错了）</p>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>总体来说，这次的任务还是很有趣的，我也已经意识到了优化真心是一个牵一发动全身的问题，还是要有更加清晰的大局观和思路，才不至于迷失方向。不过话说回来，遇到不懂的问题，最好的方法是停下来，把相关的概念都捋一遍（比方说官方文档就不错），思考具体的问题所在，大胆假设小心验证，才更能找到令自己满意的答案。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总体来说，这次的任务还是很有趣的，我也已经意识到了优化真心是一个牵一发动全身的问题，还是要有更加清晰的大局观和思路，才不至于迷失方向。不过话说回来，遇到不懂的问题，最好的方法是停下来，把相关的概念都捋一遍（比方说官方文档就不错），思考具体的问题所在，大胆假设小心验证，才更能找到令自己满意的答案。</p>
 <p>另外，对于分析 web 服务的各类工具一头雾水（甚至都不知道有啥），还是得抽空研究一下，不然依靠手动输出计算时间效率太低，得到的数据可能也不准确。</p>
 
       
@@ -438,13 +438,13 @@
       
         <div class="post-tags">
           
+            <a href="/tags/思考/" rel="tag">#思考</a>
+          
             <a href="/tags/CMU/" rel="tag">#CMU</a>
           
             <a href="/tags/云计算/" rel="tag">#云计算</a>
           
             <a href="/tags/优化/" rel="tag">#优化</a>
-          
-            <a href="/tags/思考/" rel="tag">#思考</a>
           
         </div>
       
@@ -679,7 +679,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E94_u7528_u573A_u666F"><span class="nav-number">1.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_u4E9B_u601D_u8003"><span class="nav-number">2.</span> <span class="nav-text">一些思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_u4E9B_u7B56_u7565"><span class="nav-number">3.</span> <span class="nav-text">一些策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用场景"><span class="nav-number">1.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些思考"><span class="nav-number">2.</span> <span class="nav-text">一些思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些策略"><span class="nav-number">3.</span> <span class="nav-text">一些策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>
@@ -859,42 +859,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

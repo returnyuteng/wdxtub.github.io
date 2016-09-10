@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="这一讲我们就要开始实际接触一个真实的项目——处理一个大文本数据集了。在云上编程和平时学习的可能有一些不同，这里会尽量写得详细一些。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 9 课 Sequential Programming">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-9.html">
@@ -101,6 +102,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 9 课 Sequential Programming">
 <meta name="twitter:description" content="这一讲我们就要开始实际接触一个真实的项目——处理一个大文本数据集了。在云上编程和平时学习的可能有一些不同，这里会尽量写得详细一些。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14532371430507.jpg">
 
 
 
@@ -124,7 +126,7 @@
   
     云计算 第 9 课 Sequential Programming | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -145,7 +147,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -266,10 +268,10 @@
 </ol>
 <p>这次我们会在特定的 AMI(可以理解为系统镜像)上进行操作，注意不能用外部依赖（也就是不能 <code>sudo apt-get install</code> 任何软件或库，即使装了在测试的时候也没办法运行）</p>
 <p>数据集来自维基的<a href="http://dumps.wikimedia.org/other/pagecounts-raw/" target="_blank" rel="external">页面访问统计数据 hourly page view statistics</a></p>
-<h2 id="u5173_u4E8E_u6570_u636E_u96C6"><a href="#u5173_u4E8E_u6570_u636E_u96C6" class="headerlink" title="关于数据集"></a>关于数据集</h2><p><code>Wikimedia</code> 会维护所有保存在服务器的对象的每小时页面访问数据并以开放数据集的形式给大家使用。我们会使用这些数据来分析一定时间内页面浏览的趋势。</p>
+<h2 id="关于数据集"><a href="#关于数据集" class="headerlink" title="关于数据集"></a>关于数据集</h2><p><code>Wikimedia</code> 会维护所有保存在服务器的对象的每小时页面访问数据并以开放数据集的形式给大家使用。我们会使用这些数据来分析一定时间内页面浏览的趋势。</p>
 <p><img src="/images/14532371430507.jpg" alt=""><br>A simplified diagram of a page access form Wikimedia. <a href="http://en.wikipedia.org/wiki/Wikimedia_Foundation#Hardware" target="_blank" rel="external">More information</a></p>
 <p>每个对于维基服务器的请求会被当做一个 <a href="http://en.wikipedia.org/wiki/Squid_%28software%29" target="_blank" rel="external">squid cache proxy</a> 来进行处理，同时也会把这些请求记录到日志中。这些日志每个小时更新，大家都可以访问。文件里的每一行对应着一次访问记录，格式如下：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">[项目名称] [页面标题] [访问次数] [总共返回的字节数]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">[项目名称] [页面标题] [访问次数] [总共返回的字节数]</div></pre></td></tr></table></figure>
 <p><code>[项目名称]</code>包括两个部分，一个是语言标识符和一个子项目后缀，具体如下：</p>
 <ul>
 <li><code>(no suffix)</code> : wikipedia</li>
@@ -284,12 +286,12 @@
 <li><code>.w</code> : mediawiki</li>
 </ul>
 <p>举个例子，假设有一行是这样的：</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">fr.b <span class="constant">Special</span><span class="symbol">:Recherche/All_Mixed_Up</span> <span class="number">1</span> <span class="number">730</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">fr.b Special:Recherche/All_Mixed_Up 1 730</div></pre></td></tr></table></figure>
 <p>就说明这条记录的产生是因为有人访问了 <code>French Wikibooks</code> 中的 <code>Special:Recherche/All_Mixed_Up</code> 页面 1 次，并且总共传输了 730 个字节。</p>
 <p>这个项目中，我们主要会分析 2015 年 12 月的数据。不过现在我们只需要处理 12 月 1 日的第一个小时的数据。数据在 <code>s3://cmucc-datasets/wikipediatraf/201512/pagecounts-20151201-000000.gz</code>。可以使用 <code>aws-cli</code>, <code>s3cmd</code> 或者 S3 查看器来了解。但是在服务器上，就需要用 <code>wget</code> 来下载了，具体的地址是 <a href="https://cmucc-datasets.s3.amazonaws.com/wikipediatraf/201512/pagecounts-20151201-000000.gz" target="_blank" rel="external">https://cmucc-datasets.s3.amazonaws.com/wikipediatraf/201512/pagecounts-20151201-000000.gz</a></p>
 <p>命令为 <code>wget https://cmucc-datasets.s3.amazonaws.com/wikipediatraf/201512/pagecounts-20151201-000000.gz</code></p>
 <p>如果不是很了解如何访问 Amazon S3，可以回头看看<a href="http://wdxtub.com/2016/01/15/cc-2/">云计算 第 2 课 AWS 简介</a></p>
-<h2 id="Data_Filtering"><a href="#Data_Filtering" class="headerlink" title="Data Filtering"></a>Data Filtering</h2><p>简单来说，我们要从维基的访问数据中，用各类数据分析的方法，看看能不能找到些什么有意思的东西。</p>
+<h2 id="Data-Filtering"><a href="#Data-Filtering" class="headerlink" title="Data Filtering"></a>Data Filtering</h2><p>简单来说，我们要从维基的访问数据中，用各类数据分析的方法，看看能不能找到些什么有意思的东西。</p>
 <p>我们会先从第一个小时的维基流量日志开始分析，主要关注英文维基的内容。这种从完整数据的一个子集开始测试起并最终应用到全部数据的方法，在之后的项目中会很有用。</p>
 <p>我们先使用 <code>ami-95e9cdff</code>（社区 AMI 中）来创建一个 <code>t1.micro</code> 实例，记得在右上角把地区切换为 <code>弗吉尼亚北部</code>。允许 SSH 和 HTTP 连接（可以使用之前的安全组）。像下面这样：</p>
 <p><img src="/images/14533207601658.jpg" alt=""></p>
@@ -305,7 +307,7 @@
 <p>那些不是来自英文维基的页面访问需要过滤掉，也就是说，如果某一行不是以 <code>en</code> 开始的（大小写敏感），就需要过滤</p>
 <p><strong>需要过滤的内容 3</strong></p>
 <p>维基的特殊页面在这里不需要考虑，排除那些以如下字段开始的标题（大小写敏感）：</p>
-<figure class="highlight avrasm"><table><tr><td class="code"><pre><span class="line"><span class="label">Media:</span></span><br><span class="line"><span class="label">Special:</span></span><br><span class="line"><span class="label">Talk:</span></span><br><span class="line"><span class="label">User:</span></span><br><span class="line"><span class="label">User_talk:</span></span><br><span class="line"><span class="label">Project:</span></span><br><span class="line"><span class="label">Project_talk:</span></span><br><span class="line"><span class="label">File:</span></span><br><span class="line"><span class="label">File_talk:</span></span><br><span class="line"><span class="label">MediaWiki:</span></span><br><span class="line"><span class="label">MediaWiki_talk:</span></span><br><span class="line"><span class="label">Template:</span></span><br><span class="line"><span class="label">Template_talk:</span></span><br><span class="line"><span class="label">Help:</span></span><br><span class="line"><span class="label">Help_talk:</span></span><br><span class="line"><span class="label">Category:</span></span><br><span class="line"><span class="label">Category_talk:</span></span><br><span class="line"><span class="label">Portal:</span></span><br><span class="line"><span class="label">Wikipedia:</span></span><br><span class="line"><span class="label">Wikipedia_talk:</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">Media:</div><div class="line">Special:</div><div class="line">Talk:</div><div class="line">User:</div><div class="line">User_talk:</div><div class="line">Project:</div><div class="line">Project_talk:</div><div class="line">File:</div><div class="line">File_talk:</div><div class="line">MediaWiki:</div><div class="line">MediaWiki_talk:</div><div class="line">Template:</div><div class="line">Template_talk:</div><div class="line">Help:</div><div class="line">Help_talk:</div><div class="line">Category:</div><div class="line">Category_talk:</div><div class="line">Portal:</div><div class="line">Wikipedia:</div><div class="line">Wikipedia_talk:</div></pre></td></tr></table></figure>
 <p><strong>需要过滤的内容 4</strong></p>
 <p>维基的政策规定所有的英文文章都必须以大写字母开头，过滤掉那些以小写字母开头的访问记录。注意，有些页面的标题是非英文字符，应该保留。</p>
 <p><strong>需要过滤的内容 5</strong></p>
@@ -313,7 +315,7 @@
 <p><code>.jpg, .gif, .png, .JPG, .GIF, .PNG, .txt, .ico</code></p>
 <p><strong>需要过滤的内容 6</strong></p>
 <p>还有一些无关的页面记录需要移除，如果页面标题是如下内容（大小写敏感），需要过滤掉：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">404</span>_error/</span><br><span class="line">Main_Page</span><br><span class="line">Hypertext_Transfer_Protocol</span><br><span class="line">Search</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">404_error/</div><div class="line">Main_Page</div><div class="line">Hypertext_Transfer_Protocol</div><div class="line">Search</div></pre></td></tr></table></figure>
 <p>这些都完成之后，把剩余的记录用下面的格式输出：</p>
 <p><code>[page title]\t[number of accesses]</code></p>
 <p>注意：</p>
@@ -322,7 +324,7 @@
 <li>输出应该根据访问次数降序排列</li>
 </ul>
 <p>接下来会用几种不同的方式来完成，我们先解压文件 <code>gzip -d pagecounts-20151201-000000.gz</code></p>
-<h3 id="awk__u7248_u672C"><a href="#awk__u7248_u672C" class="headerlink" title="awk 版本"></a>awk 版本</h3><p>因为第一步只是做简单的文字处理，所以用命令行自带的 awk 应用就可以完成。awk 的用法这里不详细介绍，在 <code>runner.sh</code> 中的 <code>answer_0()</code> 函数中填写下面代码：</p>
+<h3 id="awk-版本"><a href="#awk-版本" class="headerlink" title="awk 版本"></a>awk 版本</h3><p>因为第一步只是做简单的文字处理，所以用命令行自带的 awk 应用就可以完成。awk 的用法这里不详细介绍，在 <code>runner.sh</code> 中的 <code>answer_0()</code> 函数中填写下面代码：</p>
 <p><img src="/images/14533240490475.jpg" alt=""></p>
 <p>然后执行 <code>./runner.sh</code>，就可以看到：</p>
 <p><img src="/images/14533240848416.jpg" alt=""></p>
@@ -331,7 +333,7 @@
 <p>如果引用了其他的内容，需要把对应的资料放到 <code>reference</code> 文件夹中，不然抄袭后果很严重。</p>
 <p>因为这一问不评分，所以并没有结果。</p>
 <p>这里我又用 java 重写了一次，这里建议大家最好在本地测试运行一下再上传到 AWS 上。考虑到 python 性能比较差，所以从一开始就用 java。</p>
-<h3 id="Data_Analysis"><a href="#Data_Analysis" class="headerlink" title="Data Analysis"></a>Data Analysis</h3><p>接下来就是完成 <code>runner.sh</code> 中的各项任务了，具体任务如下：</p>
+<h3 id="Data-Analysis"><a href="#Data-Analysis" class="headerlink" title="Data Analysis"></a>Data Analysis</h3><p>接下来就是完成 <code>runner.sh</code> 中的各项任务了，具体任务如下：</p>
 <ol>
 <li>输出过滤前所有的行数</li>
 <li>输出过滤前所有的访问数的总和</li>
@@ -346,12 +348,12 @@
 <p>这里需要注意的是，因为在 <code>runner.sh</code> 中分成了九个不同的函数来做，而其实这些都可以一次处理完，所以我会把结果存在临时文件里，然后用 bash 输出。</p>
 <p>如果不想在命令行里编程，可以把文件弄到本地来进行编写，命令如下：</p>
 <p>远程到本地 </p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo scp -i demo.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">165</span>-<span class="number">218</span>-<span class="number">37</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_1/SeqProg.java ./</span><br><span class="line"></span><br><span class="line">sudo scp -i demo.pem ubuntu@ec2-<span class="number">54</span>-<span class="number">165</span>-<span class="number">218</span>-<span class="number">37</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_1/runner.sh ./</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sudo scp -i demo.pem ubuntu@ec2-54-165-218-37.compute-1.amazonaws.com:~/Project1_1/SeqProg.java ./</div><div class="line"></div><div class="line">sudo scp -i demo.pem ubuntu@ec2-54-165-218-37.compute-1.amazonaws.com:~/Project1_1/runner.sh ./</div></pre></td></tr></table></figure>
 <p>本地到远程 </p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo scp -i demo.pem ./SeqProg.java ubuntu@ec2-<span class="number">54</span>-<span class="number">165</span>-<span class="number">218</span>-<span class="number">37</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_1/</span><br><span class="line"></span><br><span class="line">sudo scp -i demo.pem ./runner.sh ubuntu@ec2-<span class="number">54</span>-<span class="number">165</span>-<span class="number">218</span>-<span class="number">37</span>.compute-<span class="number">1</span>.amazonaws.com:~/Project1_1/</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sudo scp -i demo.pem ./SeqProg.java ubuntu@ec2-54-165-218-37.compute-1.amazonaws.com:~/Project1_1/</div><div class="line"></div><div class="line">sudo scp -i demo.pem ./runner.sh ubuntu@ec2-54-165-218-37.compute-1.amazonaws.com:~/Project1_1/</div></pre></td></tr></table></figure>
 <p>提交用：</p>
 <p><code>./submitter -a dawang -l java</code></p>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
 <li>一定要认真看题</li>
 <li>一定要认真看题</li>
 <li>一定要认真看题</li>
@@ -693,42 +695,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="经过上一节课的『锻炼』，这一次我们要迎来更大的挑战。前面很多时候都是通过 Web 界面来进行云资源的管理，这里我们需要学会如何用代码来申请和控制各种资源。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 11 课 Horizontal Scaling and Advanced Resource Scaling">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-11.html">
@@ -112,6 +113,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 11 课 Horizontal Scaling and Advanced Resource Scaling">
 <meta name="twitter:description" content="经过上一节课的『锻炼』，这一次我们要迎来更大的挑战。前面很多时候都是通过 Web 界面来进行云资源的管理，这里我们需要学会如何用代码来申请和控制各种资源。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14543608717887.jpg">
 
 
 
@@ -135,7 +137,7 @@
   
     云计算 第 11 课 Horizontal Scaling and Advanced Resource Scaling | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -156,7 +158,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -270,7 +272,7 @@
       <p>经过上一节课的『锻炼』，这一次我们要迎来更大的挑战。前面很多时候都是通过 Web 界面来进行云资源的管理，这里我们需要学会如何用代码来申请和控制各种资源。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u5B66_u4E60_u76EE_u6807"><a href="#u5B66_u4E60_u76EE_u6807" class="headerlink" title="学习目标"></a>学习目标</h2><p>这一次课时间紧任务重，需要掌握的知识和技能有：</p>
+<h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><p>这一次课时间紧任务重，需要掌握的知识和技能有：</p>
 <ol>
 <li>根据需求利用代码通过云 API 来申请所需资源</li>
 <li>能够在故障、花费和性能等限制条件下完成 web 服务的部署</li>
@@ -290,19 +292,19 @@
 <li>AWS 中只能使用 <code>m3.medium</code> 或 <code>m3.large</code></li>
 <li>Azure 中只能使用 <code>Standard_A1(DC)</code> 和 <code>Standard_D1(LG)</code></li>
 </ul>
-<h2 id="u57FA_u7840_u77E5_u8BC6"><a href="#u57FA_u7840_u77E5_u8BC6" class="headerlink" title="基础知识"></a>基础知识</h2><p>上一课里，我们使用云来进行了大数据处理和分析，只需要几行代码，就可以启动一个 EMR 集群来进行并行处理运算。但是，类似 EMR 这种服务通常很贵，并且内部具体的运行状况我们很多时候无从得知。另外，虽然 EMR 支持很多不同的应用，但是实际上还是有诸多限制，比方说主要是应用在批处理和分析上。这一次我们会部署一个 web 服务，用来响应各种 web 请求（类似于<a href="http://wdxtub.com/2016/01/16/cc-7">第 7 课 AWS 动手玩</a>）</p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>上一课里，我们使用云来进行了大数据处理和分析，只需要几行代码，就可以启动一个 EMR 集群来进行并行处理运算。但是，类似 EMR 这种服务通常很贵，并且内部具体的运行状况我们很多时候无从得知。另外，虽然 EMR 支持很多不同的应用，但是实际上还是有诸多限制，比方说主要是应用在批处理和分析上。这一次我们会部署一个 web 服务，用来响应各种 web 请求（类似于<a href="http://wdxtub.com/2016/01/16/cc-7">第 7 课 AWS 动手玩</a>）</p>
 <p>在<a href="http://wdxtub.com/2016/01/20/cc-9/">第 9 课 Sequential Programming</a>中，我们故意选择了一个 <code>t1.micro</code> 实例，只有很有限的硬件资源。在这种条件的制约下，就很容易出现运行缓慢，甚至内存不够的问题，于是需要我们去尽可能优化代码。</p>
 <p>但是代码优化总有一个极限，很多时候我们必须指定合适的硬件资源才能更有效率地完成各项任务。在云计算中，调整分配给不同工作/任务/服务的资源的过程称为 scaling。</p>
 <p>Scaling 具体来说，可以分成两类</p>
-<h3 id="Scaling__u7684_u5206_u7C7B"><a href="#Scaling__u7684_u5206_u7C7B" class="headerlink" title="Scaling 的分类"></a>Scaling 的分类</h3><p><strong>Vertical Scaling</strong></p>
+<h3 id="Scaling-的分类"><a href="#Scaling-的分类" class="headerlink" title="Scaling 的分类"></a>Scaling 的分类</h3><p><strong>Vertical Scaling</strong></p>
 <p>这是最简单的方法，也就是提高系统中资源的容量。例如，改变核心的数量，内存的大小或者处理器的计算速度。我们在之前的课程中也进行过测试。</p>
 <p><strong>Horizontal Scaling</strong></p>
 <p>Horizontal scaling 就复杂很多，因为需要把任务进行切分，然后分配到不同的资源上。一个比较简单的机制就是不断增加相同的资源（实例），这次我们主要以这种方式来完成 horizontal scaling</p>
 <p>在没有云之前，要对资源进行 scaling 是一个很复杂的任务，云的其中一个突出好处就是可以动态添加资源，也就是这节课着重要强调的内容。</p>
 <p>这里我们要做的就是写代码来和云上的资源进行交互，简单来说，就是把各种 API 连起来用正确的顺序进行调用，但是需要注意代码的可靠性和容错性。因为实际上是发送过去一个请求，然后得到一个返回结果，所以需要做好各种可能的预防措施，比如失败的话，可能需要重新申请。</p>
-<h2 id="u5267_u60C5_u6897_u6982"><a href="#u5267_u60C5_u6897_u6982" class="headerlink" title="剧情梗概"></a>剧情梗概</h2><p>设定很有意思，居然强行扯上了<a href="http://www.wikiwand.com/en/Orwellian" target="_blank" rel="external">奥威尔的世界观</a>，简单来说，这个世界观比这门课有意思多啦！《1984》+《动物农场》，你值得拥有。大概是这样的：</p>
+<h2 id="剧情梗概"><a href="#剧情梗概" class="headerlink" title="剧情梗概"></a>剧情梗概</h2><p>设定很有意思，居然强行扯上了<a href="http://www.wikiwand.com/en/Orwellian" target="_blank" rel="external">奥威尔的世界观</a>，简单来说，这个世界观比这门课有意思多啦！《1984》+《动物农场》，你值得拥有。大概是这样的：</p>
 <p><img src="/images/14543608717887.jpg" alt=""></p>
-<h2 id="Azure_Horizontal_Scaling"><a href="#Azure_Horizontal_Scaling" class="headerlink" title="Azure Horizontal Scaling"></a>Azure Horizontal Scaling</h2><ul>
+<h2 id="Azure-Horizontal-Scaling"><a href="#Azure-Horizontal-Scaling" class="headerlink" title="Azure Horizontal Scaling"></a>Azure Horizontal Scaling</h2><ul>
 <li>Scaling out: 从一个 <code>Standard_A1</code> 虚拟机扩展到很多个 <code>Standard_A1</code> 虚拟机</li>
 <li>Scaling in: 减少虚拟机的数量</li>
 </ul>
@@ -319,7 +321,7 @@
 <li>Load Generator, <code>Standard_D1</code>, <code>https://cmucc.blob.core.windows.net/public/Microsoft.Compute/Images/vhds/cc15619p21lgv10-osDisk.f6be8828-8cab-45ae-a611-904aeeef3c9e.vhd</code></li>
 </ul>
 <p>命令如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 复制</span></span><br><span class="line">azure storage blob copy start https://cmucc.blob.core.windows.net/public/Microsoft.Compute/Images/vhds/cc15619p21dcv5-osDisk.e27faca3<span class="operator">-f</span>177-<span class="number">40</span>ea<span class="operator">-a</span>740-<span class="number">9</span>a1838326ae6.vhd --dest-account-name YOURNAME --dest-account-key YOURKEY --dest-container YOURCONTAINER</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看</span></span><br><span class="line">azure storage blob copy show --account-name YOURNAME --account-key YOURKEY --container system --blob Microsoft.Compute/Images/vhds/cc15619p21dcv5-osDisk.e27faca3<span class="operator">-f</span>177-<span class="number">40</span>ea<span class="operator">-a</span>740-<span class="number">9</span>a1838326ae6.vhd</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 复制</span></div><div class="line">azure storage blob copy start https://cmucc.blob.core.windows.net/public/Microsoft.Compute/Images/vhds/cc15619p21dcv5-osDisk.e27faca3<span class="_">-f</span>177-40ea<span class="_">-a</span>740-9a1838326ae6.vhd --dest-account-name YOURNAME --dest-account-key YOURKEY --dest-container YOURCONTAINER</div><div class="line"></div><div class="line"><span class="comment"># 查看</span></div><div class="line">azure storage blob copy show --account-name YOURNAME --account-key YOURKEY --container system --blob Microsoft.Compute/Images/vhds/cc15619p21dcv5-osDisk.e27faca3<span class="_">-f</span>177-40ea<span class="_">-a</span>740-9a1838326ae6.vhd</div></pre></td></tr></table></figure>
 <p>大概要等一阵子，可以先来看看具体的测试规则：</p>
 <ol>
 <li>Data Center 必须用 <code>Standard_A1</code>，Load Generator 必须用 <code>Standard_D1</code></li>
@@ -364,10 +366,10 @@
 <li>确保这一步没错才开始下一步，这样比较保险。</li>
 </ul>
 <p>这里我判断重试的逻辑有一点问题，注意 try catch 语句可能引起的特殊流程</p>
-<h2 id="Azure_Autoscaling"><a href="#Azure_Autoscaling" class="headerlink" title="Azure Autoscaling"></a>Azure Autoscaling</h2><p>在前面的任务中，我们做的是 horizontal scaling，利用代码来增加 data center 虚拟机的数量。这种方法的局限性在于：</p>
+<h2 id="Azure-Autoscaling"><a href="#Azure-Autoscaling" class="headerlink" title="Azure Autoscaling"></a>Azure Autoscaling</h2><p>在前面的任务中，我们做的是 horizontal scaling，利用代码来增加 data center 虚拟机的数量。这种方法的局限性在于：</p>
 <p>整个 scale 的过程需要程序执行，如果程序因为某些原因关闭了，那么就不会再发送 API 请求了。而且，这种情况下负载是不均衡了，每次增加 data center，需要通知 load generator，这之后才能对其发送请求。</p>
 <p>诸如 AWS 和 Azure 的云服务提供商都可以自动进行资源扩展和负载均衡。我们所要做的就是进行一些配置，一旦配置成功，就会自动进行资源调度了。接下来我们会在 Azure 上体验一下</p>
-<h3 id="Virtual_Machine_Scale_Sets"><a href="#Virtual_Machine_Scale_Sets" class="headerlink" title="Virtual Machine Scale Sets"></a>Virtual Machine Scale Sets</h3><p><img src="/images/14545355285392.jpg" alt=""></p>
+<h3 id="Virtual-Machine-Scale-Sets"><a href="#Virtual-Machine-Scale-Sets" class="headerlink" title="Virtual Machine Scale Sets"></a>Virtual Machine Scale Sets</h3><p><img src="/images/14545355285392.jpg" alt=""></p>
 <p>Azure 的 Virtual Machine Scale Sets 其实就是一个集群，集群中的每个虚拟机都是一样的。我们可以利用基于 json 的部署脚本，通过 Azure 资源管理器或者命令行工具来进行配置。使用之前我们需要对 json 脚本进行一些配置。</p>
 <ul>
 <li>Virtual Machine Configuration<ul>
@@ -389,7 +391,7 @@
 </ul>
 <p>因为是动态资源管理，所以负载均衡器需要对其背后的机器有一些了解。所以通常会定期检查各个主机是否正常运行，如果不正常，就会停止对其发送请求。</p>
 <p>因此，我们的负载均衡器必须配置好 IP 地址，负载均衡规则（决定需要进行转发的琉璃那个），以及探测器（检查实例是否正常运行）</p>
-<h3 id="Configuring_an_Azure_VM_Scaling_Set"><a href="#Configuring_an_Azure_VM_Scaling_Set" class="headerlink" title="Configuring an Azure VM Scaling Set"></a>Configuring an Azure VM Scaling Set</h3><p>这里，我们可以自动进行 scaling，而不需要像第一个任务那样手动申请。Load Generator 会不断增加发送的请求，从一台 data center 虚拟机开始，Azure 会自动增加虚拟机的数量，以便处理更多的请求。</p>
+<h3 id="Configuring-an-Azure-VM-Scaling-Set"><a href="#Configuring-an-Azure-VM-Scaling-Set" class="headerlink" title="Configuring an Azure VM Scaling Set"></a>Configuring an Azure VM Scaling Set</h3><p>这里，我们可以自动进行 scaling，而不需要像第一个任务那样手动申请。Load Generator 会不断增加发送的请求，从一台 data center 虚拟机开始，Azure 会自动增加虚拟机的数量，以便处理更多的请求。</p>
 <p>我们还会用之前的 data center 和 load generator 虚拟机镜像。接着我们会用 JSON 格式的模板来创建 auto scaling set。下载 <a href="https://s3.amazonaws.com/15619public/webcontent/azuredeploy.json" target="_blank" rel="external">Azuredeploy.json</a> 和 <a href="https://s3.amazonaws.com/15619public/webcontent/azuredeploy.parameters.json" target="_blank" rel="external">Azuredeploy.parameters.json</a>。下面是运行部署命令会创建的资源列表：</p>
 <blockquote>
 <p>azuredeploy.json</p>
@@ -440,9 +442,9 @@
 <li><code>backEndLBPort</code>: Keep it <code>80</code>.</li>
 </ul>
 <p>配置好了对应参数，就可以用下面的命令来创建了，注意需要提供一个新的 <code>RESOURCE_GROUP_NAME</code>（除了虚拟机磁盘，都会在这个资源组创建）以及你的 <code>AZURE_SUBSCRIPTION_ID</code>。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">azure group create  <span class="operator">-f</span> ./azuredeploy.json <span class="operator">-e</span>  ./azuredeploy.parameters.json -n &lt;RESOURCE_GROUP_NAME&gt; <span class="operator">-l</span> <span class="string">"East US"</span> --subscription &lt;AZURE_SUBSCRIPTION_ID&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">azure group create  <span class="_">-f</span> ./azuredeploy.json <span class="_">-e</span>  ./azuredeploy.parameters.json -n &lt;RESOURCE_GROUP_NAME&gt; <span class="_">-l</span> <span class="string">"East US"</span> --subscription &lt;AZURE_SUBSCRIPTION_ID&gt;</div></pre></td></tr></table></figure>
 <p>之后注意去 web 界面检查下是不是真的开启成功了。</p>
-<h3 id="Running_the_Autoscaling_Test"><a href="#Running_the_Autoscaling_Test" class="headerlink" title="Running the Autoscaling Test"></a>Running the Autoscaling Test</h3><p>部署成功之后就可以进行测试了。具体的任务步骤如下：</p>
+<h3 id="Running-the-Autoscaling-Test"><a href="#Running-the-Autoscaling-Test" class="headerlink" title="Running the Autoscaling Test"></a>Running the Autoscaling Test</h3><p>部署成功之后就可以进行测试了。具体的任务步骤如下：</p>
 <ol>
 <li>根据之前给出的配置文件，用命令行工具进行部署</li>
 <li>确保部署成功，并且 load generator 正常运行。可以通过访问 <code>http://${vmScalingSetName}.eastus.cloudapp.azure.com/lookup/random</code> 来进行测试（注意修改为自己的地址）</li>
@@ -456,7 +458,7 @@
 <li>目标是 30 分钟达到 900 rps</li>
 <li>Load Generator 只使用 <code>Standard_D1</code>，Data Center 只使用 <code>Standard_A1</code> </li>
 </ul>
-<h2 id="AWS_Horizontal_Scaling"><a href="#AWS_Horizontal_Scaling" class="headerlink" title="AWS Horizontal Scaling"></a>AWS Horizontal Scaling</h2><p>AWS 的这个部分需要完成的和 Azure 类似，需要注意以下几点：</p>
+<h2 id="AWS-Horizontal-Scaling"><a href="#AWS-Horizontal-Scaling" class="headerlink" title="AWS Horizontal Scaling"></a>AWS Horizontal Scaling</h2><p>AWS 的这个部分需要完成的和 Azure 类似，需要注意以下几点：</p>
 <ol>
 <li>使用 <code>m3.medium</code> 用 <code>ami-8ac4e9e0</code> 来作为 load generator</li>
 <li>使用 <code>m3.medium</code> 用 <code>ami-349fbb5e</code> 来作为 data center</li>
@@ -479,7 +481,7 @@
 <p>完成之后，就可以发现现在这种方法的局限：</p>
 <p>我们有一个 Load Generator，若干个 data center 会试着从中获取数据。每次添加实例，都需要通知 load generator，然后需要进行一些计算使得各个 data center 获得相同的流量。但是如果不想要这么多 data center，或者忽然有一个实例挂掉了呢？怎么去监控这个事情呢？怎么保证每个 data center 的负载均衡呢？</p>
 <p>所以 AWS 提供一个叫做 Elastic Load Balancing 的服务，可以自动把流量均分给连接的实例，也能处理好实例挂掉的情况。接下来我们会做一些这个方面的尝试。</p>
-<h2 id="AWS_Autoscaling"><a href="#AWS_Autoscaling" class="headerlink" title="AWS Autoscaling"></a>AWS Autoscaling</h2><p>服务质量（QoS）和花费是部署云服务时非常重要的两个方面。如果不能提供高质量的服务，肯定会损失用户。性能，可用性，可靠性和安全性都是服务质量中很重要的因素。</p>
+<h2 id="AWS-Autoscaling"><a href="#AWS-Autoscaling" class="headerlink" title="AWS Autoscaling"></a>AWS Autoscaling</h2><p>服务质量（QoS）和花费是部署云服务时非常重要的两个方面。如果不能提供高质量的服务，肯定会损失用户。性能，可用性，可靠性和安全性都是服务质量中很重要的因素。</p>
 <p>Elastic Load Balancer 像是一个网络路由器，会用 round-robin 的方式转发进入的请求给不同的 EC2 实例。</p>
 <p>ELB 指向的机器可以通过 web 界面手动添加，也可以写代码或者通过 Auto Scaling Group(ASG)，这里 AWS 会有一个实例池。ELB 同时也会检查实例是否正常运行，如果不是的话会停止发送请求。目前，ELB 每小时花费 <code>$0.025</code> 加 <code>$0.008</code> 每 GB 数据传输费。下图大概描述了 ELB 的功能。<a href="https://youtu.be/Fw0aNoMZesg" target="_blank" rel="external">Video</a> 中也对 ELB 有详细的介绍。</p>
 <p><img src="/images/14545429009811.jpg" alt=""></p>
@@ -523,7 +525,7 @@
 <p>所以我们先创建好 ELB，然后来到 Auto Scaling 的页面，选择一个镜像，然后创建启动配置，这里勾上 CloudWatch 监控选项，接着一路继续，可以选择和 ELB 一样的安全组，接着就可以创建了。</p>
 <p>下一步需要起个名字，从 1 台机器开始，然后给定之前创建的 ELB，然后可以自定义最大和最小的机器数量，这里可以自定各种 CloudWatch 的警报然后设定对应要做的事情。这里也可以设定一个冷却时间（即一次 scaling 之后多久才能继续 scaling）</p>
 <p>如何删除呢？如果在 EC2 页面删除，那么 ASG 会认为是实例失败，然后重新创建。所以需要改 ASG 的规则，设置最大和最小都是 0，就会自动进行关闭了。然后才可以删除对应的 ASG，一定要注意这个顺序。</p>
-<h2 id="Amazon_CloudWatch"><a href="#Amazon_CloudWatch" class="headerlink" title="Amazon CloudWatch"></a>Amazon CloudWatch</h2><p>我们在项目中会使用 CloudWatch 来制定高效的 auto scaling policy。Amazon CloudWatch 让开发者可以监控 AWS 资源的状态。通过 API，开发者就可以知道最新的信息，并且据此来进行自动调整。CloudWatch 允许你设置警报，并且可以设置警报触发时需要完成的一系列动作。</p>
+<h2 id="Amazon-CloudWatch"><a href="#Amazon-CloudWatch" class="headerlink" title="Amazon CloudWatch"></a>Amazon CloudWatch</h2><p>我们在项目中会使用 CloudWatch 来制定高效的 auto scaling policy。Amazon CloudWatch 让开发者可以监控 AWS 资源的状态。通过 API，开发者就可以知道最新的信息，并且据此来进行自动调整。CloudWatch 允许你设置警报，并且可以设置警报触发时需要完成的一系列动作。</p>
 <p>CloudWatch 可以监控的 AWS 资源有：</p>
 <ul>
 <li>EC2 instances</li>
@@ -534,7 +536,7 @@
 <p>对于 EC2 实例, CloudWatch 能帮助我们监控 CPU，内存和磁盘占用率（在网页上的监控那一栏可以看到）。更多信息可以参考 <a href="http://aws.amazon.com/documentation/cloudwatch/" target="_blank" rel="external">Amazon CloudWatch 文档</a>。这里是一个<a href="https://youtu.be/cu2_AbfXn2k" target="_blank" rel="external">介绍视频</a></p>
 <p>视频主要讲解 CloudWatch 设定 Alarm 的一些逻辑，某条命令：</p>
 <p><code>aws cloudwatch put-metric-data --metric-name PageViewCount --namespace &quot;MyService&quot; -- value 2 --timestamp 2014-02-14T12:00:00:00.000Z</code></p>
-<h2 id="Advanced_Auto_Scaling_in_AWS"><a href="#Advanced_Auto_Scaling_in_AWS" class="headerlink" title="Advanced Auto Scaling in AWS"></a>Advanced Auto Scaling in AWS</h2><p>这里我们需要用 AWS API 来创建或者启动最终测试所需的所有资源。最终测试中，load generator 会给你的 ELB 发送动态负载，然后 autoscale policy 会自动调整实例的数量，最终以实例的小时数和每秒的请求来进行统计。</p>
+<h2 id="Advanced-Auto-Scaling-in-AWS"><a href="#Advanced-Auto-Scaling-in-AWS" class="headerlink" title="Advanced Auto Scaling in AWS"></a>Advanced Auto Scaling in AWS</h2><p>这里我们需要用 AWS API 来创建或者启动最终测试所需的所有资源。最终测试中，load generator 会给你的 ELB 发送动态负载，然后 autoscale policy 会自动调整实例的数量，最终以实例的小时数和每秒的请求来进行统计。</p>
 <blockquote>
 <p>因为时间限制，我们会用 48 分钟的测试代替实际的 1 天，也就是说，现实世界中的 1 个小时相当于测试中的 2 分钟。</p>
 </blockquote>
@@ -547,7 +549,7 @@
 <p>应该使用 ELB 来在实例间平分流量。借助 Auto Scaling 和 CloudWatch 能够对系统进行调整以适应流量变化。后面会给出一个例子，不过只要能完成任务，也可以自己设定具体的规则。</p>
 <p><strong>错误容忍</strong></p>
 <p>我们的 data center 实例可能会时不时崩溃，除非被标记为不健康，load balancer 还是会一直发送请求，你需要设置 ELB 来检测崩溃的实例以避免这种情况，当实例失败时，可能需要做对应的处理</p>
-<h3 id="u603B_u4F53_u6D41_u7A0B"><a href="#u603B_u4F53_u6D41_u7A0B" class="headerlink" title="总体流程"></a>总体流程</h3><p>需要用 Java, Python 或者命令行工具来完成下列步骤，并且在完成之后上传源代码。这个流程可以在网页上模拟运行来了解具体的步骤。</p>
+<h3 id="总体流程"><a href="#总体流程" class="headerlink" title="总体流程"></a>总体流程</h3><p>需要用 Java, Python 或者命令行工具来完成下列步骤，并且在完成之后上传源代码。这个流程可以在网页上模拟运行来了解具体的步骤。</p>
 <p>一开始你可以不设置 CloudWatch 和 Auto Scaling Group，而是先用固定数量的实例来了解流量的模式。一旦清楚了流量的波动，就可以进行下面的测试了（对应步骤的图片有编号放在最后）</p>
 <ol>
 <li>创建两个允许所有流量进出的且所有端口打开的安全组，其中一个会被关联到 ELB 和 ASG 上（之后需要通过代码删除）</li>
@@ -611,7 +613,7 @@
 <p>如果你的 rps = 1350 用了 150 实例小时, 那么得分是 18.75 + 25 = 43.75</p>
 <p>如果你的 rps = 1800 用了 250 实例小时, 那么得分是 25 + 22.5 = 47.5</p>
 <p>代码最后需要手动提交</p>
-<h3 id="u4EFB_u52A1_u76EE_u6807"><a href="#u4EFB_u52A1_u76EE_u6807" class="headerlink" title="任务目标"></a>任务目标</h3><ol>
+<h3 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h3><ol>
 <li>用 Java, Python 或者命令行工具来使用 AWS API</li>
 <li>程序要启动一个 load generator 和多个 data center，注意 ami 和 类型要保证正确</li>
 <li>程序需要创建安全组，启动 ELB 和初始化 ASG（包括启动配置，Auto Scale Policies 和 CloudWatch 警报）。需要等待所有资源创建完毕才能继续</li>
@@ -635,13 +637,13 @@
 <li>最好禁止 ELB 的跨区域负载均衡，把所有的 data center 放到一个地区</li>
 <li>会以最新的提交来评分，而不是最高的那次</li>
 </ul>
-<h2 id="u4E00_u4E9B_u8D44_u6E90"><a href="#u4E00_u4E9B_u8D44_u6E90" class="headerlink" title="一些资源"></a>一些资源</h2><ul>
+<h2 id="一些资源"><a href="#一些资源" class="headerlink" title="一些资源"></a>一些资源</h2><ul>
 <li><a href="http://awsdocs.s3.amazonaws.com/AutoScaling/latest/as-dg.pdf" target="_blank" rel="external">Autoscaling Developer Guide</a></li>
 <li><a href="http://awsdocs.s3.amazonaws.com/AutoScaling/latest/as-api.pdf" target="_blank" rel="external">Autoscaling API Guide</a></li>
 <li><a href="http://aws.amazon.com/documentation/cloudwatch/" target="_blank" rel="external">CloudWatch Documentation</a></li>
 <li><a href="http://aws.amazon.com/documentation/elastic-load-balancing/" target="_blank" rel="external">Elastic Load Balancing Documentation</a></li>
 </ul>
-<h2 id="u4E00_u4E9B_u95EE_u9898_u4EE5_u53CA_u5BF9_u7B56"><a href="#u4E00_u4E9B_u95EE_u9898_u4EE5_u53CA_u5BF9_u7B56" class="headerlink" title="一些问题以及对策"></a>一些问题以及对策</h2><ul>
+<h2 id="一些问题以及对策"><a href="#一些问题以及对策" class="headerlink" title="一些问题以及对策"></a>一些问题以及对策</h2><ul>
 <li>Load Generator 有时候会发送消息让 Data Center 自杀<ul>
 <li>解决方法是尽快让 ELB 发现挂了的 dc，快速反应重启</li>
 </ul>
@@ -996,42 +998,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

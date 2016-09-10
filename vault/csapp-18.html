@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="前面了解了虚拟内存的相关知识，这节课我们来看看动态内存分配的基本概念，相信这之后就知道诸如 malloc 和 new 这类方法是怎么做的了。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 第 18 课 Dynamic Memory Allocation - Basic Concept">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-18.html">
@@ -119,6 +120,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 第 18 课 Dynamic Memory Allocation - Basic Concept">
 <meta name="twitter:description" content="前面了解了虚拟内存的相关知识，这节课我们来看看动态内存分配的基本概念，相信这之后就知道诸如 malloc 和 new 这类方法是怎么做的了。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14584238419962.jpg">
 
 
 
@@ -142,7 +144,7 @@
   
     深入理解计算机系统 第 18 课 Dynamic Memory Allocation - Basic Concept | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -163,7 +165,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -277,7 +279,7 @@
       <p>前面了解了虚拟内存的相关知识，这节课我们来看看动态内存分配的基本概念，相信这之后就知道诸如 <code>malloc</code> 和 <code>new</code> 这类方法是怎么做的了。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u57FA_u7840_u6982_u5FF5"><a href="#u57FA_u7840_u6982_u5FF5" class="headerlink" title="基础概念"></a>基础概念</h2><p>程序员通过动态内存分配（例如 <code>malloc</code>）来让程序在运行时得到虚拟内存。动态内存分配器会管理一个虚拟内存区域，称为堆(heap)，如下图所示：</p>
+<h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><p>程序员通过动态内存分配（例如 <code>malloc</code>）来让程序在运行时得到虚拟内存。动态内存分配器会管理一个虚拟内存区域，称为堆(heap)，如下图所示：</p>
 <p><img src="/images/14584238419962.jpg" alt="Dynamic Memory Allocation"></p>
 <p>分配器以 block 为单位来维护 heap，可以进行 allocate 或 free。有两种类型的分配器：</p>
 <ul>
@@ -287,7 +289,7 @@
 <h2 id="malloc"><a href="#malloc" class="headerlink" title="malloc"></a>malloc</h2><p>我们来看看 <code>malloc</code> 函数：</p>
 <p><img src="/images/14584242618725.jpg" alt="The malloc Package"></p>
 <p>一个简单的例子：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line"></span><br><span class="line">void foo(int n) &#123;</span><br><span class="line">    int i, *p;</span><br><span class="line">    </span><br><span class="line">    /* Allocate a block of n ints */</span><br><span class="line">    p = (int *) malloc(n * sizeof(int));</span><br><span class="line">    if (p == NULL) &#123;</span><br><span class="line">        perror("malloc");</span><br><span class="line">        exit(0);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    /* Initialize allocated block */</span><br><span class="line">    for (i=0; i&lt;n; i++)</span><br><span class="line">        p[i] = i;</span><br><span class="line"></span><br><span class="line">    /* Return allocated block to the heap */</span><br><span class="line">    free(p);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> i, *p;</div><div class="line">    </div><div class="line">    <span class="comment">/* Allocate a block of n ints */</span></div><div class="line">    p = (<span class="keyword">int</span> *) <span class="built_in">malloc</span>(n * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div><div class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) &#123;</div><div class="line">        perror(<span class="string">"malloc"</span>);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">/* Initialize allocated block */</span></div><div class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;n; i++)</div><div class="line">        p[i] = i;</div><div class="line"></div><div class="line">    <span class="comment">/* Return allocated block to the heap */</span></div><div class="line">    <span class="built_in">free</span>(p);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这节课中，为了讲述方便，我们做如下假设：</p>
 <ul>
 <li>Memory is word addressed</li>
@@ -306,7 +308,7 @@
 <li>只能操作和修改未分配的内存</li>
 <li>不能移动已分配的 block</li>
 </ul>
-<h2 id="u6027_u80FD_u6307_u6807"><a href="#u6027_u80FD_u6307_u6807" class="headerlink" title="性能指标"></a>性能指标</h2><p>现在我们可以来看看如何去评测具体的分配算法了。假设给定一个 <code>malloc</code> 和 <code>free</code> 的请求的序列：</p>
+<h2 id="性能指标"><a href="#性能指标" class="headerlink" title="性能指标"></a>性能指标</h2><p>现在我们可以来看看如何去评测具体的分配算法了。假设给定一个 <code>malloc</code> 和 <code>free</code> 的请求的序列：</p>
  $$R_0, R_1, ..., R_k, ..., R_{n-1}$$ 
 <p>目标是尽可能提高吞吐量以及内存利用率（注意，这两个目标常常是冲突的）</p>
 <p>吞吐量是在单位时间内完成的请求数量。假设在 10 秒中之内进行了 5000 次 <code>malloc</code> 和 5000 次 <code>free</code> 调用，那么吞吐量是 1000 operations/second</p>
@@ -317,7 +319,7 @@
 <li>internal fragmentation</li>
 <li>external fragmentation</li>
 </ul>
-<h3 id="u5185_u90E8_u788E_u7247"><a href="#u5185_u90E8_u788E_u7247" class="headerlink" title="内部碎片"></a>内部碎片</h3><p>对于给定的 block，internal fragmentation 主要是因为 payload 小于 block size 造成的，如下图所示：</p>
+<h3 id="内部碎片"><a href="#内部碎片" class="headerlink" title="内部碎片"></a>内部碎片</h3><p>对于给定的 block，internal fragmentation 主要是因为 payload 小于 block size 造成的，如下图所示：</p>
 <p><img src="/images/14584268109274.jpg" alt="internal fragmentation"></p>
 <p>主要是由以下原因导致；</p>
 <ul>
@@ -326,10 +328,10 @@
 <li>Explicit policy decisions</li>
 </ul>
 <p>只依赖于上一个请求的具体模式，所以比较容易测量。</p>
-<h3 id="u5916_u90E8_u788E_u7247"><a href="#u5916_u90E8_u788E_u7247" class="headerlink" title="外部碎片"></a>外部碎片</h3><p>指的是内存中没有足够的连续空间，如下图所示：</p>
+<h3 id="外部碎片"><a href="#外部碎片" class="headerlink" title="外部碎片"></a>外部碎片</h3><p>指的是内存中没有足够的连续空间，如下图所示：</p>
 <p><img src="/images/14584269418830.jpg" alt="External Fragmentation"></p>
 <p>依赖于未来的请求模式，所以比较难测量。</p>
-<h3 id="u5B9E_u73B0_u7EC6_u8282"><a href="#u5B9E_u73B0_u7EC6_u8282" class="headerlink" title="实现细节"></a>实现细节</h3><p>在具体实现之前，需要考虑以下问题：</p>
+<h3 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h3><p>在具体实现之前，需要考虑以下问题：</p>
 <ul>
 <li>给定一个指针，我们如何知道需要释放多少内存？</li>
 <li>如何记录未分配的 block ？</li>
@@ -341,7 +343,7 @@
 <p><img src="/images/14584273450722.jpg" alt="Standard method"></p>
 <p>这里我们先给出常用的四种方式，这节课主要介绍第一种，下节课会介绍后面的方法：</p>
 <p><img src="/images/14584273923045.jpg" alt="Keeping Track of Free Blocks"></p>
-<h2 id="u9690_u5F0F_free__u5217_u8868"><a href="#u9690_u5F0F_free__u5217_u8868" class="headerlink" title="隐式 free 列表"></a>隐式 free 列表</h2><p>对于每个 block 来说，我们需要知道大小和具体的状态（已分配/未分配），可以用两个 word 来存储，但是这样太浪费了。</p>
+<h2 id="隐式-free-列表"><a href="#隐式-free-列表" class="headerlink" title="隐式 free 列表"></a>隐式 free 列表</h2><p>对于每个 block 来说，我们需要知道大小和具体的状态（已分配/未分配），可以用两个 word 来存储，但是这样太浪费了。</p>
 <p>如果一个 block 已经对其，低位地址一定是 0，所以我们可以用来当做 allocated/free 标志，当读入 word 大小的时候，需要标记出这个值。</p>
 <p><img src="/images/14584304354717.jpg" alt="Implicit List"></p>
 <p><img src="/images/14584304662424.jpg" alt="Detailed Implicit Free List Example"></p>
@@ -349,7 +351,7 @@
 <p><img src="/images/14584305912848.jpg" alt="Finding a Free Block"></p>
 <p>确定空间之后，具体进行分配如下：</p>
 <p><img src="/images/14584306987840.jpg" alt="Allocating in Free Block"></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addblock</span><span class="params">(ptr p, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> newsize = ((len + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>) &lt;&lt; <span class="number">1</span>;  <span class="comment">// round up to even</span></span><br><span class="line">    <span class="keyword">int</span> oldsize = *p &amp; -<span class="number">2</span>;                <span class="comment">// mask out low bit</span></span><br><span class="line">    *p = newsize | <span class="number">1</span>;                     <span class="comment">// set new length</span></span><br><span class="line">    <span class="keyword">if</span> (newsize &lt; oldsize)</span><br><span class="line">        *(p+newsize) = oldsize - newsize; <span class="comment">// set length in remaining</span></span><br><span class="line">                                          <span class="comment">// part of block</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">addblock</span><span class="params">(ptr p, <span class="keyword">int</span> len)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> newsize = ((len + <span class="number">1</span>) &gt;&gt; <span class="number">1</span>) &lt;&lt; <span class="number">1</span>;  <span class="comment">// round up to even</span></div><div class="line">    <span class="keyword">int</span> oldsize = *p &amp; <span class="number">-2</span>;                <span class="comment">// mask out low bit</span></div><div class="line">    *p = newsize | <span class="number">1</span>;                     <span class="comment">// set new length</span></div><div class="line">    <span class="keyword">if</span> (newsize &lt; oldsize)</div><div class="line">        *(p+newsize) = oldsize - newsize; <span class="comment">// set length in remaining</span></div><div class="line">                                          <span class="comment">// part of block</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>在释放空间的时候如果 block 后面也是未分配的空间，只做基本的处理的话，会出现有足够的位置，但是因为多余的分隔而找不到对应的位置，如下所示：</p>
 <p><img src="/images/14584314075261.jpg" alt="Freeing a Block"></p>
 <p>解决的办法是 Coalescing：</p>
@@ -708,42 +710,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

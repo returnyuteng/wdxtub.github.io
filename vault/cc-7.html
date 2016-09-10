@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="了解了基本的原理和工具后，这一讲我们用一个实际的例子来上手 AWS。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 7 课 AWS 动手玩">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-7.html">
@@ -100,6 +101,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 7 课 AWS 动手玩">
 <meta name="twitter:description" content="了解了基本的原理和工具后，这一讲我们用一个实际的例子来上手 AWS。">
+<meta name="twitter:image" content="http://wdxtub.com/images/cc20.jpg">
 
 
 
@@ -123,7 +125,7 @@
   
     云计算 第 7 课 AWS 动手玩 | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -144,7 +146,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -267,7 +269,7 @@
 </ul>
 <p>这些问题都不简单，但是这一讲会给你一点点启发。</p>
 <p>我们首先会启动三种不同的 EC2 实例，利用内置的性能测评来比较它们的相对性能表现，最后用公共访问的 web 服务器来测试性能。</p>
-<h2 id="u542F_u52A8_u5B9E_u4F8B_u4E0E_u6027_u80FD_u6D4B_u8BC4"><a href="#u542F_u52A8_u5B9E_u4F8B_u4E0E_u6027_u80FD_u6D4B_u8BC4" class="headerlink" title="启动实例与性能测评"></a>启动实例与性能测评</h2><p>虽然我们知道有几种不同的配置，但是除了纸面上的差别，真正的性能差别有多少呢？现在我们就来分别测试一下，按照以下步骤进行</p>
+<h2 id="启动实例与性能测评"><a href="#启动实例与性能测评" class="headerlink" title="启动实例与性能测评"></a>启动实例与性能测评</h2><p>虽然我们知道有几种不同的配置，但是除了纸面上的差别，真正的性能差别有多少呢？现在我们就来分别测试一下，按照以下步骤进行</p>
 <ol>
 <li>启动三个分别为 <code>t2.small</code>, <code>t2.medium</code>, <code>t2.large</code> 的实例，硬盘选择 30GB 的 General SSD，镜像选择 Ubuntu Server 14.04 LTS (HVM), General SSD Volume Type (ami-d05e75b8)。这里最好选择 <strong>spot instances</strong>，可以省点钱，更多请查看<a href="https://aws.amazon.com/ec2/spot/" target="_blank" rel="external">这里</a>。如果 spot instances 不可用的话，那么选择 on-demand instances</li>
 <li>在启动这些实例的时候，需要指定 <strong>Security Group</strong>，创建允许 HTTP(TCP 端口 80) 和 SSH(TCP 端口 22) 的 security group</li>
@@ -277,14 +279,14 @@
 </ol>
 <p>启动完成后大概是这样：</p>
 <p><img src="/images/cc20.jpg" alt="cc20"></p>
-<h2 id="u7CFB_u7EDF_u6027_u80FD_u6D4B_u8BC4"><a href="#u7CFB_u7EDF_u6027_u80FD_u6D4B_u8BC4" class="headerlink" title="系统性能测评"></a>系统性能测评</h2><p>我们需要在已经启动的实例中安装性能测评工具。通过这个来评估完成一个任务所需的最佳实例组合以做到多快好省。</p>
+<h2 id="系统性能测评"><a href="#系统性能测评" class="headerlink" title="系统性能测评"></a>系统性能测评</h2><p>我们需要在已经启动的实例中安装性能测评工具。通过这个来评估完成一个任务所需的最佳实例组合以做到多快好省。</p>
 <p>虽然云服务提供商是利用虚拟化技术来提供资源，但是需要知道实例的性能一来不是稳定的，二来也不保证达到某个水平。这里我们使用 <code>sysbench</code> 来评估性能，它是一个轻量级跨平台的性能测试软件，能够快速评估 CPU，内存和文件读写性能。</p>
 <p>用 <code>ssh -i keyfile.pem ubuntu@dnsaddress</code> 来进行连接</p>
 <p>然后执行下面的命令安装：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install sysbench</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sudo apt-get update</div><div class="line">sudo apt-get install sysbench</div></pre></td></tr></table></figure>
 <p>安装完成之后就可以按照给出的三个配置来进行测试。</p>
-<h3 id="CPU__u6D4B_u8BD5"><a href="#CPU__u6D4B_u8BD5" class="headerlink" title="CPU 测试"></a>CPU 测试</h3><p>分别在三个不同的机器运行下列命令，统计结果：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sysbench --num-threads=<span class="number">8</span> --test=cpu --cpu-max-prime=<span class="number">20000</span> run</span><br><span class="line">sysbench --num-threads=<span class="number">1</span> --test=cpu --cpu-max-prime=<span class="number">40000</span> run</span><br><span class="line">sysbench --num-threads=<span class="number">4</span> --test=cpu --cpu-max-prime=<span class="number">50000</span> run</span><br></pre></td></tr></table></figure>
+<h3 id="CPU-测试"><a href="#CPU-测试" class="headerlink" title="CPU 测试"></a>CPU 测试</h3><p>分别在三个不同的机器运行下列命令，统计结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sysbench --num-threads=8 --test=cpu --cpu-max-prime=20000 run</div><div class="line">sysbench --num-threads=1 --test=cpu --cpu-max-prime=40000 run</div><div class="line">sysbench --num-threads=4 --test=cpu --cpu-max-prime=50000 run</div></pre></td></tr></table></figure>
 <p>表后面的三列分别是 <code>t2.small</code>, <code>t2.medium</code>, <code>t2.large</code> 的总时间</p>
 <table>
 <thead>
@@ -321,9 +323,9 @@
 </tbody>
 </table>
 <p>可以看到其实在当前任务下，<code>t2.medium</code> 与 <code>t2.large</code> 的性能差别并不大，就可以根据价格来进行取舍了。</p>
-<h3 id="u6587_u4EF6_IO__u6027_u80FD_u6D4B_u8BD5"><a href="#u6587_u4EF6_IO__u6027_u80FD_u6D4B_u8BD5" class="headerlink" title="文件 IO 性能测试"></a>文件 IO 性能测试</h3><p>AWS 通常会保证 Input/Output Operations per Second (IOPS)。不同的硬盘访问逻辑对性能影响很大（缓存导致），传统的机械硬盘受寻址时间和旋转速度的影响，固态硬盘受驱动和设备控制器的影响。</p>
+<h3 id="文件-IO-性能测试"><a href="#文件-IO-性能测试" class="headerlink" title="文件 IO 性能测试"></a>文件 IO 性能测试</h3><p>AWS 通常会保证 Input/Output Operations per Second (IOPS)。不同的硬盘访问逻辑对性能影响很大（缓存导致），传统的机械硬盘受寻址时间和旋转速度的影响，固态硬盘受驱动和设备控制器的影响。</p>
 <p>同样用下面的命令来进行测试：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sysbench --test=fileio --file-total-size=<span class="number">20</span>G prepare </span><br><span class="line"><span class="comment"># 可能需要等待30分钟，使用 byobu / screen / tmux 来保持连接</span></span><br><span class="line"><span class="comment"># 或者可以在 iterm 设置中 profiles -&gt; sessions -&gt; When idel, send ASCII code</span></span><br><span class="line"><span class="comment"># 又或者 在客户端的 ~/.ssh/ 文件夹中添加 config 文件，并添加配置： ServerAliveInterval 60 </span></span><br><span class="line"></span><br><span class="line">sysbench --test=fileio --file-total-size=<span class="number">20</span>G --file-test-mode=rndrw --init-rng=on --max-time=<span class="number">300</span> --max-requests=<span class="number">0</span> run</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sysbench --test=fileio --file-total-size=20G prepare </div><div class="line"><span class="comment"># 可能需要等待30分钟，使用 byobu / screen / tmux 来保持连接</span></div><div class="line"><span class="comment"># 或者可以在 iterm 设置中 profiles -&gt; sessions -&gt; When idel, send ASCII code</span></div><div class="line"><span class="comment"># 又或者 在客户端的 ~/.ssh/ 文件夹中添加 config 文件，并添加配置： ServerAliveInterval 60 </span></div><div class="line"></div><div class="line">sysbench --test=fileio --file-total-size=20G --file-test-mode=rndrw --init-rng=on --max-time=300 --max-requests=0 run</div></pre></td></tr></table></figure>
 <table>
 <thead>
 <tr>
@@ -362,7 +364,7 @@
 </table>
 <p>比较一下表中的数据，是不是随着价格的提高，性能也有对应比例的提高？</p>
 <p>可以看到从 small 到 medium 几乎没有提升，但是到 large 就有比较大的提升</p>
-<h2 id="Web__u670D_u52A1_u5668_u6027_u80FD_u6D4B_u8BD5"><a href="#Web__u670D_u52A1_u5668_u6027_u80FD_u6D4B_u8BD5" class="headerlink" title="Web 服务器性能测试"></a>Web 服务器性能测试</h2><p>这门课上我们会学会如何配置，搭建和部署 web 服务。所以需要熟悉如何折腾服务器。这里我们会在每个实例中安装和部署一个简单的 web 服务器，修改一下主页以便测试和评分。</p>
+<h2 id="Web-服务器性能测试"><a href="#Web-服务器性能测试" class="headerlink" title="Web 服务器性能测试"></a>Web 服务器性能测试</h2><p>这门课上我们会学会如何配置，搭建和部署 web 服务。所以需要熟悉如何折腾服务器。这里我们会在每个实例中安装和部署一个简单的 web 服务器，修改一下主页以便测试和评分。</p>
 <p><a href="https://youtu.be/6_tPobCyF9o" target="_blank" rel="external">Apache 简介视频（墙外）</a></p>
 <p>LAMP = Linux + Apache + MySQL + PHP</p>
 <p>用以下命令安装 apache：<code>sudo apt-get install apache2</code></p>
@@ -381,7 +383,7 @@
 <p>地址为 <code>http://p0.loadgen.theproject.zone</code></p>
 <p>VM 的地址就是 EC2 的 public dns 地址；然后输入 andrew id 和提交密码(在页面上方)</p>
 <p>测试成功的话会显示 <code>Success!! Check TPZ for your score</code>，然后就可以课程网站上查看自己的成绩。</p>
-<h2 id="Vertical_Scaling"><a href="#Vertical_Scaling" class="headerlink" title="Vertical Scaling"></a>Vertical Scaling</h2><p>根据需要来改变所需的系统资源称为 Vertical Scaling。</p>
+<h2 id="Vertical-Scaling"><a href="#Vertical-Scaling" class="headerlink" title="Vertical Scaling"></a>Vertical Scaling</h2><p>根据需要来改变所需的系统资源称为 Vertical Scaling。</p>
 <p>在这个场景中，我要启动一个 load generator，它会在一个数据中心实例上创造一些负载。通过一个恒定的负载，来比较不同类型实例的吞吐量（用 rps 来衡量，每秒处理的访问量）。</p>
 <p>在这里我们不能 SSH 连接到这些实例，但是可以通过访问特定的 endpoint 来查看当前的情况，具体步骤如下：</p>
 <ol>
@@ -759,42 +761,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

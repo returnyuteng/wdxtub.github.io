@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="上一讲介绍了关于 SSH 和 Linux 的相关知识，这一讲我们来看看，如何通过代码，而不是界面或者命令行，来控制 Azure。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="云计算 第 5 课 Azure API">
 <meta property="og:url" content="http://wdxtub.com/vault/cc-5.html">
@@ -118,6 +119,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="云计算 第 5 课 Azure API">
 <meta name="twitter:description" content="上一讲介绍了关于 SSH 和 Linux 的相关知识，这一讲我们来看看，如何通过代码，而不是界面或者命令行，来控制 Azure。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14529146793205.jpg">
 
 
 
@@ -141,7 +143,7 @@
   
     云计算 第 5 课 Azure API | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -162,7 +164,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -276,8 +278,8 @@
       <p>上一讲介绍了关于 SSH 和 Linux 的相关知识，这一讲我们来看看，如何通过代码，而不是界面或者命令行，来控制 Azure。</p>
 <a id="more"></a>
 <hr>
-<h2 id="Microsoft_Azure"><a href="#Microsoft_Azure" class="headerlink" title="Microsoft Azure"></a>Microsoft Azure</h2><p>在 Azure 中，你没有办法通过 web 控制台来启动一个预先定义好的镜像。这一讲会介绍如何通过 Azure API 来创建一个虚拟机。</p>
-<h3 id="Azure__u9A8C_u8BC1_u548C_u73AF_u5883_u914D_u7F6E"><a href="#Azure__u9A8C_u8BC1_u548C_u73AF_u5883_u914D_u7F6E" class="headerlink" title="Azure 验证和环境配置"></a>Azure 验证和环境配置</h3><p>这里先用 Azure 命令行工具来登录作为体验。</p>
+<h2 id="Microsoft-Azure"><a href="#Microsoft-Azure" class="headerlink" title="Microsoft Azure"></a>Microsoft Azure</h2><p>在 Azure 中，你没有办法通过 web 控制台来启动一个预先定义好的镜像。这一讲会介绍如何通过 Azure API 来创建一个虚拟机。</p>
+<h3 id="Azure-验证和环境配置"><a href="#Azure-验证和环境配置" class="headerlink" title="Azure 验证和环境配置"></a>Azure 验证和环境配置</h3><p>这里先用 Azure 命令行工具来登录作为体验。</p>
 <p>Azure 使用 Azure Active Directory(Azure AD) 服务来完成身份管理。我们首先需要从 Azure 云服务获取权限，才能使用 Java/Python API。</p>
 <p>Azure 需要一个验证的 token，为了获得这个 token，需要完成以下步骤：</p>
 <ol>
@@ -293,13 +295,13 @@
 <p>然后就可以按照下面的步骤来在 Azure AD 中创建一个 AD 应用：</p>
 <p><strong>第一步</strong></p>
 <p>运行 <code>azure ad app create</code> 命令来创建一个新的 Azure AD 应用：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">azure ad app create --name &#123;Your Application Display Name&#125; --home-page https://&#123;YourApplicationHomePage&#125; --identifier-uris https://&#123;YouApplicationUri&#125; --password &#123;YourApplicationKey&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">azure ad app create --name &#123;Your Application Display Name&#125; --home-page https://&#123;YourApplicationHomePage&#125; --identifier-uris https://&#123;YouApplicationUri&#125; --password &#123;YourApplicationKey&#125;</div></pre></td></tr></table></figure>
 <p>成功的话，可以看到如下的结果：</p>
 <p><img src="/images/cc9.jpg" alt="c"></p>
 <p>记下这里的 <code>AppId</code> 和 <code>Appkey</code>(就是刚才设置的密码)，等下获取 token 的时候要用</p>
 <p><strong>第二步</strong></p>
 <p>一个实例或者是一个 AD 应用被当做是 service principal 来进行引用，所以我们需要创建一个 service principal，使用刚才得到的 <code>AppId</code></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">azure ad sp create &#123;YourApplicationID&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">azure ad sp create &#123;YourApplicationID&#125;</div></pre></td></tr></table></figure>
 <p>成功之后会得到一个 object id，记下来，这个在下一步要用到。</p>
 <p><img src="/images/cc10.jpg" alt="cc10"></p>
 <p>现在这个服务没有任何权限，我们接下来就是要给出权限</p>
@@ -307,12 +309,12 @@
 <p>这一步需要提供 <code>subscriptionID</code>，可以在下图所示位置找到</p>
 <p><img src="/images/cc11.jpg" alt="c"></p>
 <p>命令如下</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">azure role assignment create --objectId &#123;objectID&#125; -o Owner -c /subscriptions/&#123;subscriptionId&#125;/</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">azure role assignment create --objectId &#123;objectID&#125; -o Owner -c /subscriptions/&#123;subscriptionId&#125;/</div></pre></td></tr></table></figure>
 <p>成功后结果如下图：</p>
 <p><img src="/images/cc12.jpg" alt="c"></p>
 <p><strong>第四步</strong></p>
 <p>每个 Azure AD 应用都有一个独立的 <code>TenantId</code>，使用下面的命令来获取：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">azure account list --json</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">azure account list --json</div></pre></td></tr></table></figure>
 <p>如下图所示</p>
 <p><img src="/images/cc13.jpg" alt="c"></p>
 <p>在使用 Java/Python API 时，需要提供的信息是 <code>AppId</code>, <code>AppKey</code>(密码) 和 <code>TenantId</code> 。</p>
@@ -350,18 +352,18 @@
 <p><strong>第八步</strong></p>
 <p>现在我们的存储账户中已经有了容器，就可以把系统镜像拷贝过来了。需要复制的原因是只能由位于同一个存储账户中的镜像来创建 osdisk</p>
 <p>执行下面的代码：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">azure storage blob copy start https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/primertest-osDisk.<span class="number">7</span>ec2e680-<span class="number">5</span>a2f-<span class="number">462</span>b-ba77-cd7b707389d4.vhd  --dest-account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --dest-account-key PUT_YOUR_KEY1_HERE --dest-container system</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">azure storage blob copy start https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/primertest-osDisk.7ec2e680-5a2f-462b-ba77-cd7b707389d4.vhd  --dest-account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --dest-account-key PUT_YOUR_KEY1_HERE --dest-container system</div></pre></td></tr></table></figure>
 <p>如下图所示</p>
 <p><img src="/images/cc14.jpg" alt="c"></p>
 <p><strong>第九步</strong></p>
 <p>大概需要二十分钟，这期间可以通过命令行来查看载入的进度</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">azure storage blob copy show --account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --account-key PUT_YOUR_KEY1_HERE --container system --blob Microsoft.Compute/Images/vhds/primertest-osDisk.<span class="number">7</span>ec2e680-<span class="number">5</span>a2f-<span class="number">462</span>b-ba77-cd7b707389d4.vhd</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">azure storage blob copy show --account-name PUT_YOUR_STORAGE_ACCOUNT_NAME_HERE --account-key PUT_YOUR_KEY1_HERE --container system --blob Microsoft.Compute/Images/vhds/primertest-osDisk.7ec2e680-5a2f-462b-ba77-cd7b707389d4.vhd</div></pre></td></tr></table></figure>
 <p>当结果从 pending 变成 success 的时候，就可以用这个镜像来创建一台虚拟机了</p>
 <p><strong>第十步</strong></p>
 <p>复制完成后，点击 system 容器，记下镜像的 URL</p>
 <p><img src="/images/14529201199175.jpg" alt=""></p>
 <p>有了镜像 URL，接下来就可以来创建新的虚拟机了。</p>
-<h3 id="Azure_Python_API"><a href="#Azure_Python_API" class="headerlink" title="Azure Python API"></a>Azure Python API</h3><p>为了介绍如何使用 Python API 来创建和管理 Azure 资源，这里通过一个例子来介绍如何通过一个预定义的镜像来创建虚拟机。</p>
+<h3 id="Azure-Python-API"><a href="#Azure-Python-API" class="headerlink" title="Azure Python API"></a>Azure Python API</h3><p>为了介绍如何使用 Python API 来创建和管理 Azure 资源，这里通过一个例子来介绍如何通过一个预定义的镜像来创建虚拟机。</p>
 <p>这个例子在之后的项目中非常有用。为了使用 Azure Python API 来创建虚拟机，需要完成以下几个步骤：</p>
 <ul>
 <li>安装 Python SDK</li>
@@ -374,21 +376,21 @@
 <p>其中：</p>
 <p><code>-H</code> set the home directory of the new user in the place of the original user’s home. (without it, $HOME refers to the original user’s home). </p>
 <p>每次执行下面的代码，都会拿到一个新的 token，这个 token 可以被用来创建资源管理对象。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="comment"># make sure you configure these three variables correctly before you try to run the code </span></span><br><span class="line">AZURE_ENDPOINT_URL=<span class="string">'https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/oauth2/token'</span></span><br><span class="line">AZURE_APP_ID=YOUR_APP_ID </span><br><span class="line">AZURE_APP_SECRET=YOUR_APP_SECRET</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_token_from_client_credentials</span><span class="params">(endpoint, client_id, client_secret)</span>:</span></span><br><span class="line">    payload = &#123;</span><br><span class="line">        <span class="string">'grant_type'</span>: <span class="string">'client_credentials'</span>,</span><br><span class="line">        <span class="string">'client_id'</span>: client_id,</span><br><span class="line">        <span class="string">'client_secret'</span>: client_secret,</span><br><span class="line">        <span class="string">'resource'</span>: <span class="string">'https://management.core.windows.net/'</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    response = requests.post(endpoint, data=payload).json()</span><br><span class="line">    <span class="keyword">return</span> response[<span class="string">'access_token'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># test</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    auth_token = get_token_from_client_credentials(endpoint=AZURE_ENDPOINT_URL,</span><br><span class="line">            client_id=AZURE_APP_ID,</span><br><span class="line">            client_secret=AZURE_APP_SECRET)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">print</span> auth_token</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> requests</div><div class="line"><span class="keyword">import</span> os</div><div class="line"></div><div class="line"><span class="comment"># make sure you configure these three variables correctly before you try to run the code </span></div><div class="line">AZURE_ENDPOINT_URL=<span class="string">'https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/oauth2/token'</span></div><div class="line">AZURE_APP_ID=YOUR_APP_ID </div><div class="line">AZURE_APP_SECRET=YOUR_APP_SECRET</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_token_from_client_credentials</span><span class="params">(endpoint, client_id, client_secret)</span>:</span></div><div class="line">    payload = &#123;</div><div class="line">        <span class="string">'grant_type'</span>: <span class="string">'client_credentials'</span>,</div><div class="line">        <span class="string">'client_id'</span>: client_id,</div><div class="line">        <span class="string">'client_secret'</span>: client_secret,</div><div class="line">        <span class="string">'resource'</span>: <span class="string">'https://management.core.windows.net/'</span>,</div><div class="line">    &#125;</div><div class="line">    response = requests.post(endpoint, data=payload).json()</div><div class="line">    <span class="keyword">return</span> response[<span class="string">'access_token'</span>]</div><div class="line"></div><div class="line"><span class="comment"># test</span></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    auth_token = get_token_from_client_credentials(endpoint=AZURE_ENDPOINT_URL,</div><div class="line">            client_id=AZURE_APP_ID,</div><div class="line">            client_secret=AZURE_APP_SECRET)</div><div class="line"></div><div class="line">    <span class="keyword">print</span> auth_token</div></pre></td></tr></table></figure>
 <p>这里我们需要 OAUTH 2.0 的 endpoint URL，到 web 控制台-&gt;浏览-&gt;Active Directory。然后会跳转到另一个控制台，点击应用程序，再点击页面下方的查看端点，如下图所示</p>
 <p><img src="/images/14529493984204.jpg" alt=""></p>
 <p>记录下 OAUTH 2.0 令牌端点的地址。</p>
 <p>前面已经把位于 <code>https://cc15619.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/primertest-osDisk.7ec2e680-5a2f-462b-ba77-cd7b707389d4.vhd</code> 的镜像拷贝到了自己的账户中，接下来就可以开始创建了，首先从<a href="https://s3.amazonaws.com/15619public/webcontent/azure_demo_create_vm_from_ami.py" target="_blank" rel="external">这里</a>下载代码，其中的 <code>azure_api.create_vm_from_ami()</code> 函数在之后的 project 中会很有用。</p>
 <p>也可以来参考 <a href="https://azure-sdk-for-python.readthedocs.org/en/latest/index.html" target="_blank" rel="external">Python SDK 文档</a>来找到所需的 API。</p>
 <p>我们提供了一个 <code>demo()</code> 函数来展示如何使用，通过填写对应的参数来用以下代码运行 demo：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python azure_demo_create_vm_from_ami.py STORAGE_ACCOUNT_NAME SUBSCRIPTION_ID ENDPOINT_URI APPLICATION_ID APPLICATION_SECRET_KEY</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">python azure_demo_create_vm_from_ami.py STORAGE_ACCOUNT_NAME SUBSCRIPTION_ID ENDPOINT_URI APPLICATION_ID APPLICATION_SECRET_KEY</div></pre></td></tr></table></figure>
 <p>这里出现了一些问题，后来发现是 python 的 requests 包版本过低导致的，使用 <code>pip install --upgrade requests</code> 解决。</p>
 <p>运行的时候会有 InsecurePlatformWarning，这个是因为没有安装 <code>security</code> 包，用这条语句来安装 <code>$ pip install requests[security]</code> 或者直接安装 <code>$ pip install pyopenssl ndg-httpsclient pyasn1</code>。这之后 就会自动用加密的请求</p>
 <p><img src="/images/14529531648561.jpg" alt=""></p>
 <p>完成之后就可以通过给出的 IP 地址来访问，用户名是 ubuntu，密码是 Cloud@123，然后就登录完成了</p>
 <p><img src="/images/cc15.jpg" alt="c"></p>
 <p>记得在操作完成之后删除对应的资源。</p>
-<h3 id="Azure_Java_API"><a href="#Azure_Java_API" class="headerlink" title="Azure Java API"></a>Azure Java API</h3><p>为了介绍如何使用 Java API 来创建和管理 Azure 资源，这里通过一个例子来介绍如何通过一个预定义的镜像来创建虚拟机。</p>
+<h3 id="Azure-Java-API"><a href="#Azure-Java-API" class="headerlink" title="Azure Java API"></a>Azure Java API</h3><p>为了介绍如何使用 Java API 来创建和管理 Azure 资源，这里通过一个例子来介绍如何通过一个预定义的镜像来创建虚拟机。</p>
 <p>这个例子在之后的项目中非常有用。为了使用 Azure Java API 来创建虚拟机，需要完成以下几个步骤：</p>
 <ul>
 <li>安装 Java SDK</li>
@@ -397,7 +399,7 @@
 <li>利用提供的代码来部署一个虚拟机</li>
 </ul>
 <p>我需要以下的 SDK</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">azure-mgmt-compute</span><br><span class="line">azure-mgmt-utility</span><br><span class="line">azure-mgmt-network</span><br><span class="line">azure-mgmt-storage</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">azure-mgmt-compute</div><div class="line">azure-mgmt-utility</div><div class="line">azure-mgmt-network</div><div class="line">azure-mgmt-storage</div></pre></td></tr></table></figure>
 <p>按照 Java SDK 的意思是把这些 SDK 包含在项目中，方便起见，可以用<code>maven</code> 来编译和运行样例代码，步骤为：</p>
 <ol>
 <li>在电脑上安装 maven</li>
@@ -411,13 +413,13 @@
 <p>然后打开终端，设置一下 Maven classpath</p>
 <p><code>$ vi ~/.bash_profile</code></p>
 <p>添加</p>
-<figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">export M2_HOME=/Users/dawang/apache-maven-<span class="number">3.3</span>.<span class="number">9</span></span><br><span class="line">export PATH=<span class="variable">$PATH</span>:<span class="variable">$M2</span>_HOME/bin</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">export M2_HOME=/Users/dawang/apache-maven-3.3.9</div><div class="line">export PATH=$PATH:$M2_HOME/bin</div></pre></td></tr></table></figure>
 <p>然后输入 <code>source ~/.bash_profile</code> 让命令生效，并用 <code>mvn -v</code> 来检验是否成功安装，如果出错，基本是因为没有设置 <code>JAVA_HOME</code> 环境变量所导致，重新编辑 <code>bash_profile</code> 增加</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1<span class="number">.8</span><span class="number">.0</span>_60.jdk/Contents/Home</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home</div></pre></td></tr></table></figure>
 <p>重新输入 <code>source ~/.bash_profile</code> 让命令生效，就可以看到 maven 成功安装了，如下图：</p>
 <p><img src="/images/cc16.jpg" alt="c"></p>
 <p>然后在<a href="https://s3.amazonaws.com/15619public/webcontent/azureDemo.tar.gz" target="_blank" rel="external">这里</a>下载代码，解压之后通过下面的命令来进行编译执行，注意添加对应的参数：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mvn compile &amp;&amp; mvn <span class="built_in">exec</span>:java -Dexec.mainClass=<span class="string">"AzureVMApiDemo"</span> -Dexec.args=<span class="string">"RESOURCEGROUP STORAGEACCOUNT VHDNAME SUBSCRIPTIONID TENANTID APPLICATIONID APPLICATIONKEY"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">mvn compile &amp;&amp; mvn <span class="built_in">exec</span>:java -Dexec.mainClass=<span class="string">"AzureVMApiDemo"</span> -Dexec.args=<span class="string">"RESOURCEGROUP STORAGEACCOUNT VHDNAME SUBSCRIPTIONID TENANTID APPLICATIONID APPLICATIONKEY"</span></div></pre></td></tr></table></figure>
 <p>其中</p>
 <ul>
 <li>STORAGEACCOUNT, RESOURCEGROUP are corresponding to resources where you put the copied image;</li>
@@ -766,42 +768,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

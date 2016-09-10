@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -87,6 +87,7 @@
 
 
 <meta name="description" content="上一讲我们了解了关于机器代码，汇编和 CPU 相关的基础知识，这一讲要来说一下具体机器是怎么实现代码中常见的流程控制的。这一部分涉及的代码和思路稍微有些不容易理解，我会尽量写得详细一些。">
+<meta name="keywords">
 <meta property="og:type" content="website">
 <meta property="og:title" content="深入理解计算机系统 第 5 课 Machine Control">
 <meta property="og:url" content="http://wdxtub.com/vault/csapp-5.html">
@@ -114,6 +115,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统 第 5 课 Machine Control">
 <meta name="twitter:description" content="上一讲我们了解了关于机器代码，汇编和 CPU 相关的基础知识，这一讲要来说一下具体机器是怎么实现代码中常见的流程控制的。这一部分涉及的代码和思路稍微有些不容易理解，我会尽量写得详细一些。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14533022194673.jpg">
 
 
 
@@ -137,7 +139,7 @@
   
     深入理解计算机系统 第 5 课 Machine Control | 小土刀
   
-</title>
+</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -158,7 +160,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -281,7 +283,7 @@
 <li>目前的代码控制点存储在 (%rip, …) 中</li>
 <li>目前测试的状态放在 CF, ZF, SF, OF 中</li>
 </ul>
-<h2 id="Condition_Codes"><a href="#Condition_Codes" class="headerlink" title="Condition Codes"></a>Condition Codes</h2><p>最后的四个寄存器（CF, ZF, SF, OF）就是用来辅助程序的流程控制的，意思是：</p>
+<h2 id="Condition-Codes"><a href="#Condition-Codes" class="headerlink" title="Condition Codes"></a>Condition Codes</h2><p>最后的四个寄存器（CF, ZF, SF, OF）就是用来辅助程序的流程控制的，意思是：</p>
 <ul>
 <li>CF: Carry Flag (for unsigned)</li>
 <li>ZF: Zero Flag</li>
@@ -316,7 +318,7 @@
 <p><img src="/images/14533041584630.jpg" alt=""></p>
 <p>这里有一点要进行说明，到底 %eax 寄存器在哪里呢？图上怎么没有？其实 %eax 就是 %rax 寄存器的后 32 位的名称。</p>
 <p>那为什么我们要用 32 位的指令呢，剩下的高位怎么办？这是因为在 x86-64 的架构设计中有一条规则『如果对 64 位寄存器设置 32 位数据，那么高位会被设置为 0』，所以可以通过 32 位的指令对 %eax 进行操作处理（如果忽略这个很容易让人困惑），相当于是处理好了 64 位的 %rax 寄存器。</p>
-<h2 id="Condition_Branch"><a href="#Condition_Branch" class="headerlink" title="Condition Branch"></a>Condition Branch</h2><p>介绍完了条件代码，就可以来看看具体的跳转了，跳转实际上就是根据条件代码的不同，来进行跳转，具体如下：</p>
+<h2 id="Condition-Branch"><a href="#Condition-Branch" class="headerlink" title="Condition Branch"></a>Condition Branch</h2><p>介绍完了条件代码，就可以来看看具体的跳转了，跳转实际上就是根据条件代码的不同，来进行跳转，具体如下：</p>
 <p><img src="/images/14533045268420.jpg" alt=""></p>
 <p>我们先来看一个比较原始的例子（编译器没有进行主要优化）：</p>
 <p><img src="/images/14533045995659.jpg" alt=""></p>
@@ -324,11 +326,11 @@
 <p><img src="/images/14533047116967.jpg" alt=""></p>
 <p>我们再看另一种条件语句要如何翻译，比如 <code>val = Test ? Then_Expr : Else_Expr;</code>，重写上面的函数就是：<code>val = x&gt;y ? x-y : y-x;</code></p>
 <p>转换成 goto 形式就是：</p>
-<figure class="highlight fortran"><table><tr><td class="code"><pre><span class="line">	ntest = <span class="comment">!Test;</span></span><br><span class="line">	<span class="keyword">if</span> (ntest) <span class="keyword">goto</span> <span class="keyword">Else</span>;</span><br><span class="line">	<span class="keyword">value</span> = Then_Expr;</span><br><span class="line">	<span class="keyword">goto</span> Done;</span><br><span class="line"><span class="keyword">Else</span>:</span><br><span class="line">	val = Else_Expr;</span><br><span class="line">Done:</span><br><span class="line">	...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">	ntest = !Test;</div><div class="line">	if (ntest) goto Else;</div><div class="line">	value = Then_Expr;</div><div class="line">	goto Done;</div><div class="line">Else:</div><div class="line">	val = Else_Expr;</div><div class="line">Done:</div><div class="line">	...</div></pre></td></tr></table></figure>
 <p>但是实际上汇编出来的代码，并不是这样的，会采用另一种方法来加速分支语句的执行。现在我们先来说一说，为什么分支语句会对性能造成很大的影响。</p>
 <p>我们知道现在的 CPU 都是依靠流水线工作的，比方说执行一系列操作需要 ABCDE 五个步骤，那么在执行 A 的时候，实际上执行 B 所需的数据会在执行 A 的同时加载到寄存器中，这样运算器执行外 A，就可以立刻执行 B 而无须等待数据载入。如果程序一直是顺序的，那么这个过程就可以一直进行下去，效率会很高。但是一旦遇到分支，那么可能执行完 A 下一步要执行的是 C，但是载入的数据是 B，这时候就要把流水线清空（因为后面载入的东西都错了），然后重新载入 C 所需要的数据，这就带来了很大的性能影响。为此人们常常用『分支预测』这一技术来解决（分支预测是另一个话题这里不展开），但是对于这类只需要判断一次的条件语句来说，其实有更好的方法。</p>
 <p>处理器有一条指令支持 <code>if(Test) Dest &lt;- Src</code> 的操作，也就是说可以不用跳转，利用条件代码来进行赋值，于是编译器在可能的时候会把上面的 goto 程序改成如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">result = Then_Expr;</span><br><span class="line">eval = Else_Expr;</span><br><span class="line">nt = !Test;</span><br><span class="line"><span class="keyword">if</span> (nt) result = eval;</span><br><span class="line"><span class="keyword">return</span> result;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line">result = Then_Expr;</div><div class="line">eval = Else_Expr;</div><div class="line">nt = !Test;</div><div class="line"><span class="keyword">if</span> (nt) result = eval;</div><div class="line"><span class="keyword">return</span> result;</div></pre></td></tr></table></figure>
 <p>具体的做法是：反正一共就两个分支，我都算出行不行，然后利用上面的条件指令来进行赋值，这样就完美避免了因为分支可能带来的性能问题（需要清空流水线），像下面这样：</p>
 <p><img src="/images/14533057292618.jpg" alt=""></p>
 <p>这个方法好是好，但是也有一些情况并不适用于：</p>
@@ -342,22 +344,22 @@
 <p>这个函数计算参数 x 中有多少位是 1，翻译成汇编如下：</p>
 <p><img src="/images/14533063334333.jpg" alt=""></p>
 <p>其中 %rdi 中存储的是参数 x，%rax 存储的是返回值。换成更通用的形式：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C Code</span></span><br><span class="line"><span class="function"><span class="keyword">do</span></span><br><span class="line">	Body</span><br><span class="line">	<span class="title">while</span> <span class="params">(Test)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Goto Version</span></span><br><span class="line">loop:</span><br><span class="line">	<span class="function">Body</span><br><span class="line">	<span class="title">if</span> <span class="params">(Test)</span></span><br><span class="line">		<span class="keyword">goto</span> loop</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="comment">// C Code</span></div><div class="line"><span class="function"><span class="keyword">do</span></span></div><div class="line">	Body</div><div class="line">	<span class="title">while</span> <span class="params">(Test)</span>;</div><div class="line"></div><div class="line"><span class="comment">// Goto Version</span></div><div class="line">loop:</div><div class="line">	<span class="function">Body</span></div><div class="line">	<span class="title">if</span> <span class="params">(Test)</span></div><div class="line">		<span class="keyword">goto</span> loop</div></pre></td></tr></table></figure>
 <p>而对于 While 语句的转换，会直接跳到中间，如：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C While version</span></span><br><span class="line"><span class="keyword">while</span> (Test)</span><br><span class="line">	Body</span><br><span class="line"></span><br><span class="line"><span class="comment">// Goto Version</span></span><br><span class="line">	<span class="keyword">goto</span> test;</span><br><span class="line">loop:</span><br><span class="line">	Body</span><br><span class="line">test:</span><br><span class="line">	<span class="keyword">if</span> (Test)</span><br><span class="line">		<span class="keyword">goto</span> loop;</span><br><span class="line">done:</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="comment">// C While version</span></div><div class="line"><span class="keyword">while</span> (Test)</div><div class="line">	Body</div><div class="line"></div><div class="line"><span class="comment">// Goto Version</span></div><div class="line">	<span class="keyword">goto</span> test;</div><div class="line">loop:</div><div class="line">	Body</div><div class="line">test:</div><div class="line">	<span class="keyword">if</span> (Test)</div><div class="line">		<span class="keyword">goto</span> loop;</div><div class="line">done:</div></pre></td></tr></table></figure>
 <p>举个具体的例子：</p>
 <p><img src="/images/14533065773830.jpg" alt=""></p>
 <p>如果在编译器中开启 <code>-O1</code> 优化，那么会把 While 先翻译成 Do-While，然后再转换成对应的 Goto 版本：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C While version</span></span><br><span class="line"><span class="keyword">while</span> (Test)</span><br><span class="line">	Body</span><br><span class="line"></span><br><span class="line"><span class="comment">// C Do-While Version</span></span><br><span class="line">	<span class="keyword">if</span> (!Test)</span><br><span class="line">		<span class="keyword">goto</span> done;</span><br><span class="line">	<span class="function"><span class="keyword">do</span></span><br><span class="line">		Body</span><br><span class="line">		<span class="title">while</span><span class="params">(Test)</span></span>;</span><br><span class="line">done:</span><br><span class="line"></span><br><span class="line"><span class="comment">// Goto Version</span></span><br><span class="line">	<span class="keyword">if</span> (!Test)</span><br><span class="line">		<span class="keyword">goto</span> done;</span><br><span class="line">loop:</span><br><span class="line">	<span class="function">Body</span><br><span class="line">	<span class="title">if</span> <span class="params">(Test)</span></span><br><span class="line">		<span class="keyword">goto</span> loop</span>;</span><br><span class="line">done:</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="comment">// C While version</span></div><div class="line"><span class="keyword">while</span> (Test)</div><div class="line">	Body</div><div class="line"></div><div class="line"><span class="comment">// C Do-While Version</span></div><div class="line">	<span class="keyword">if</span> (!Test)</div><div class="line">		<span class="keyword">goto</span> done;</div><div class="line">	<span class="function"><span class="keyword">do</span></span></div><div class="line">		Body</div><div class="line">		<span class="title">while</span><span class="params">(Test)</span>;</div><div class="line">done:</div><div class="line"></div><div class="line"><span class="comment">// Goto Version</span></div><div class="line">	<span class="keyword">if</span> (!Test)</div><div class="line">		<span class="keyword">goto</span> done;</div><div class="line">loop:</div><div class="line">	<span class="function">Body</span></div><div class="line">	<span class="title">if</span> <span class="params">(Test)</span></div><div class="line">		<span class="keyword">goto</span> loop;</div><div class="line">done:</div></pre></td></tr></table></figure>
 <p>具体的例子是：</p>
 <p><img src="/images/14533068824241.jpg" alt=""></p>
 <p>为什么要这样做呢，因为 Do-While 语句执行起来更快，更符合 CPU 的运算模型。</p>
 <p>然后来看看最常用的 For 循环，也可以一步一步转换成 While 的形式，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// For</span></span><br><span class="line"><span class="keyword">for</span> (Init; Test; Update)</span><br><span class="line">	Body</span><br><span class="line">	</span><br><span class="line"><span class="comment">// While Version</span></span><br><span class="line">Init;</span><br><span class="line"><span class="keyword">while</span> (Test) &#123;</span><br><span class="line">	Body</span><br><span class="line">	Update;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="comment">// For</span></div><div class="line"><span class="keyword">for</span> (Init; Test; Update)</div><div class="line">	Body</div><div class="line">	</div><div class="line"><span class="comment">// While Version</span></div><div class="line">Init;</div><div class="line"><span class="keyword">while</span> (Test) &#123;</div><div class="line">	Body</div><div class="line">	Update;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>而在具体转换成 Do-While 模式的时候，会把最初的测试优化去除</p>
 <p><img src="/images/14533070757433.jpg" alt=""></p>
-<h2 id="Switch_Statement"><a href="#Switch_Statement" class="headerlink" title="Switch Statement"></a>Switch Statement</h2><p>最后我们来看看最复杂的 switch 语句，这种类型的语句一次判断会有多种可能的跳转路径（知道 CPU 的分支预测会多抓狂吗）。这里用一个具体的例子来进行讲解：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">switch_eg</span> <span class="params">(<span class="keyword">long</span> x, <span class="keyword">long</span> y, <span class="keyword">long</span> z)</span></span>&#123;</span><br><span class="line">	<span class="keyword">long</span> w = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">switch</span> (x) &#123;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">			w = y*z;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">			w = y/z;</span><br><span class="line">			<span class="comment">// fall through</span></span><br><span class="line">		<span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">			w += z;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">		<span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">			w -= z;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			w = <span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> w;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Switch-Statement"><a href="#Switch-Statement" class="headerlink" title="Switch Statement"></a>Switch Statement</h2><p>最后我们来看看最复杂的 switch 语句，这种类型的语句一次判断会有多种可能的跳转路径（知道 CPU 的分支预测会多抓狂吗）。这里用一个具体的例子来进行讲解：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">long</span> <span class="title">switch_eg</span> <span class="params">(<span class="keyword">long</span> x, <span class="keyword">long</span> y, <span class="keyword">long</span> z)</span></span>&#123;</div><div class="line">	<span class="keyword">long</span> w = <span class="number">1</span>;</div><div class="line">	<span class="keyword">switch</span> (x) &#123;</div><div class="line">		<span class="keyword">case</span> <span class="number">1</span>:</div><div class="line">			w = y*z;</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		<span class="keyword">case</span> <span class="number">2</span>:</div><div class="line">			w = y/z;</div><div class="line">			<span class="comment">// fall through</span></div><div class="line">		<span class="keyword">case</span> <span class="number">3</span>:</div><div class="line">			w += z;</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		<span class="keyword">case</span> <span class="number">5</span>:</div><div class="line">		<span class="keyword">case</span> <span class="number">6</span>:</div><div class="line">			w -= z;</div><div class="line">			<span class="keyword">break</span>;</div><div class="line">		<span class="keyword">default</span>:</div><div class="line">			w = <span class="number">2</span>;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> w;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这个例子中包含了大部分比较特殊的情况：</p>
 <ul>
 <li>共享的条件：5 和 6</li>
@@ -376,7 +378,7 @@
 <p><img src="/images/14533122886722.jpg" alt=""></p>
 <p>处理 fall through 的方式：</p>
 <p><img src="/images/14533123220172.jpg" alt=""></p>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>这节课我们学到了</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这节课我们学到了</p>
 <ul>
 <li>C 语言的控制流程<ul>
 <li>if-then-else</li>
@@ -734,42 +736,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>

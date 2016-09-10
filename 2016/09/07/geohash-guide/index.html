@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="位置,索引," />
+  <meta name="keywords" content="索引,位置," />
 
 
 
@@ -100,6 +100,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GeoHash 指南">
 <meta name="twitter:description" content="做任何跟地理位置相关的服务，位置如何表示及存储是绝对绕不开的问题之一。位置的表示倒是可以用经纬度，但是索引和检索的时候，经纬度这种二维表示法就比较麻烦了，这时我们就可以利用 GeoHash 进行『降维攻击』来解决这个问题了。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14732507518837.jpg">
 
 
 
@@ -117,7 +118,7 @@
   };
 </script>
 
-  <title> GeoHash 指南 | 小土刀 </title>
+  <title> GeoHash 指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -138,7 +139,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -341,11 +342,11 @@
         <p>做任何跟地理位置相关的服务，位置如何表示及存储是绝对绕不开的问题之一。位置的表示倒是可以用经纬度，但是索引和检索的时候，经纬度这种二维表示法就比较麻烦了，这时我们就可以利用 GeoHash 进行『降维攻击』来解决这个问题了。</p>
 <a id="more"></a>
 <hr>
-<h2 id="u573A_u666F"><a href="#u573A_u666F" class="headerlink" title="场景"></a>场景</h2><p>前几年 LBS 的特性像一股龙卷风一样席卷了整个 App 圈，任何应用都迫不及待地加入了基于地理位置的相关特性。这之中一个非常火的功能就是——查看附近的人/地点/事情，比方说查看附近的餐馆、景点、朋友等等。那么问题就来了，怎么判断是不是附近呢？怎么样定义这个『附近』呢？</p>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>前几年 LBS 的特性像一股龙卷风一样席卷了整个 App 圈，任何应用都迫不及待地加入了基于地理位置的相关特性。这之中一个非常火的功能就是——查看附近的人/地点/事情，比方说查看附近的餐馆、景点、朋友等等。那么问题就来了，怎么判断是不是附近呢？怎么样定义这个『附近』呢？</p>
 <p>就用『附近的人』这个功能来举例，假如我要找自己身边的人，最简单粗暴的办法就是把我跟所有人的距离算一次，然后选一个阈值，在这个阈值范围内的，认为是『附近』。但是问题来了，如果我们的数据库中有一亿人，那不是每次都要计算一亿次？我们得想个办法减少计算量。</p>
 <p>因为知道自己的经纬度，所以可以知道自己在哪里，比方说深圳市南山区，那么我只需要计算同在南山区的人即可，考虑到我可能在边界上，那么多加周边的几个区进行计算即可。这样一来就可以过滤掉大部分的无用计算了。</p>
 <p>这种方式有一个问题，就是需要很多额外的信息，比方说我得知道南山区，不同国家不同地区各种区域划分，而且有时候区域还会变化（比方说萝岗和南沙并入广州），这样就引入了许多不必要的复杂度。不过即使如此，这种利用特定区域划分来减少计算范围的方法，非常有借鉴意义，类似于搜素剪枝，也就是索引。</p>
-<h2 id="u539F_u7406"><a href="#u539F_u7406" class="headerlink" title="原理"></a>原理</h2><p>因为要使用索引的思想，那么就需要确定拿来建立索引的字段，可是经纬度这种二维的数据很难通过一维索引来高效检索，于是我们可以利用 GeoHash 来进行转换。</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>因为要使用索引的思想，那么就需要确定拿来建立索引的字段，可是经纬度这种二维的数据很难通过一维索引来高效检索，于是我们可以利用 GeoHash 来进行转换。</p>
 <p>不过在此之前，我们先来看看另一个概念 —— <a href="https://zh.wikipedia.org/wiki/Trie" target="_blank" rel="external">字典树 Trie</a>。</p>
 <blockquote>
 <p>在计算机科学中，trie，又称前缀树或字典树，是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和部分内部节点所对应的键才有相关的值。</p>
@@ -364,7 +365,7 @@
 <p>至于选择哪种算法，在地理位置相关的应用中，主要考虑的是实现的难度和区域的突变特性。这里以 Peano 填充曲线来做例子，具体的编码方式是从左下角开始的，然后逐步进行递归细化。</p>
 <p><img src="/images/14732507303613.jpg" alt=""></p>
 <p>Peano 曲线的主要问题是突变性，比方说从 0111 到 1000，虽然数值只变了 1，但是具体的区域就是一上一下两个极端（观察上面图片 Hilbert 曲线的变化幅度就小很多）。</p>
-<h2 id="u7B97_u6CD5"><a href="#u7B97_u6CD5" class="headerlink" title="算法"></a>算法</h2><p>了解了基本概念，现在我们可以来看看到底怎么把经纬度转换成 GeoHash 字符串了。主要分三个步骤：</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>了解了基本概念，现在我们可以来看看到底怎么把经纬度转换成 GeoHash 字符串了。主要分三个步骤：</p>
 <ol>
 <li>分别计算经纬度，转换成二进制字符串</li>
 <li>合并字符串并分组</li>
@@ -617,7 +618,7 @@
 <p>可以得到广州的坐标（北纬 23.1291，东经 113.2644）经过 GeoHash 之后的前四位是 <code>ws0e</code>，我们在 GeoHash 的<a href="http://geohash.org/ws0e96s8g" target="_blank" rel="external">官方网站</a> 检验一下：</p>
 <p><img src="/images/14732507181227.jpg" alt=""></p>
 <p>可以看到前四位确实是 <code>ws0e</code>，我们手算的结果是正确的！不过因为计算精度的问题，这里只算了前四位，实际上是可以根据我们的需要来进行更多位数的计算的，网页中的编码长度是 9 位，精度基本达到 2 米的数量级（8 位的话则是 19 米，7 位是 76 米，6 位是 610 米）。如果是要做『附近』功能的话，至少要到 6 位的精度。</p>
-<h2 id="u5E94_u7528"><a href="#u5E94_u7528" class="headerlink" title="应用"></a>应用</h2><p>了解了具体的 GeoHash 算法之后，我们可以来看看具体在实际应用中可能遇到的各种问题：</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>了解了具体的 GeoHash 算法之后，我们可以来看看具体在实际应用中可能遇到的各种问题：</p>
 <ul>
 <li>GeoHash 编码对应的是矩形区域，在边界处需要处理临近区域，但是具体区域的编码并不完全跟 hash 之后的字符串一致（参考前面 0111 和 1000的例子）。为此，我们需要使用周围八个区域的 GeoHash 编码，通过有限扩大搜索范围的方法来解决这个问题</li>
 <li>如果是用传统关系型数据库，可以直接利用 GeoHash 的前缀进行检索，比方说 <code>select * from locations where geohash like &#39;ws03%&#39;</code></li>
@@ -625,8 +626,8 @@
 <li>计算周围 8 个矩形区域，利用原始的 GeoHash 字符串显然是不行的（考虑分别处于赤道两边且很相近的两个点）对于经度一个维度来说，无论切分几次，它的左邻和右邻都只会和它相差1。画一下就知道它是一棵有序的01满二叉树。根据当前矩形的经度串，很容易就获得了它的两个东西邻接经度串。同理，可以根据其纬度串获取南北邻接纬度串。连同当前矩形的经度串和纬度串，就能组合得到周边的8个矩形的二进制串了。Base32 编码后的到 geohash 值，即是所需要的8个索引了（此段<a href="http://evthoriz.com/2015/07/02/Geohash%20%E7%AE%97%E6%B3%95%E7%9A%84%E8%BE%B9%E7%95%8C%E9%97%AE%E9%A2%98/" target="_blank" rel="external">来源</a>）</li>
 <li>Base32 是一种简单的加密算法，详情请参考后文链接</li>
 </ul>
-<h2 id="u603B_u7ED3"><a href="#u603B_u7ED3" class="headerlink" title="总结"></a>总结</h2><p>本文我们见到了解了 GeoHash 的相关概念和应用，具体的使用过程中还需要根据具体需求来进行调整（比方说不同的曲线填充算法），但是要保证具体实现的一致性。</p>
-<h2 id="u53C2_u8003_u8D44_u6599"><a href="#u53C2_u8003_u8D44_u6599" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文我们见到了解了 GeoHash 的相关概念和应用，具体的使用过程中还需要根据具体需求来进行调整（比方说不同的曲线填充算法），但是要保证具体实现的一致性。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
 <li><a href="https://en.wikipedia.org/wiki/Geohash" target="_blank" rel="external">Geohash - From Wikipedia, the free encyclopedia</a></li>
 <li><a href="http://geohash.org/ws0e96s8g" target="_blank" rel="external">geohash.org</a></li>
 <li><a href="http://charlee.li/geohash-intro.html" target="_blank" rel="external">geohash：用字符串实现附近地点搜索</a></li>
@@ -672,9 +673,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/位置/" rel="tag">#位置</a>
-          
             <a href="/tags/索引/" rel="tag">#索引</a>
+          
+            <a href="/tags/位置/" rel="tag">#位置</a>
           
         </div>
       
@@ -909,7 +910,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u573A_u666F"><span class="nav-number">1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u539F_u7406"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u7B97_u6CD5"><span class="nav-number">3.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5E94_u7528"><span class="nav-number">4.</span> <span class="nav-text">应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u603B_u7ED3"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u53C2_u8003_u8D44_u6599"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#场景"><span class="nav-number">1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法"><span class="nav-number">3.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用"><span class="nav-number">4.</span> <span class="nav-text">应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
           </div>
         </section>
@@ -1089,42 +1090,29 @@
       }
     });
   </script>
-  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-
-  
-
-  
-
-<!-- mathjax config similar to math.stackexchange -->
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
 
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
     }
   });
 </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
 <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
 </body>
 </html>
