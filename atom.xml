@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2016-09-10T01:33:24.000Z</updated>
+  <updated>2016-09-10T02:45:52.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -16,42 +16,2303 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>推荐系统指南</title>
+    <link href="http://wdxtub.com/2016/09/10/recsys-guide/"/>
+    <id>http://wdxtub.com/2016/09/10/recsys-guide/</id>
+    <published>2016-09-10T02:40:43.000Z</published>
+    <updated>2016-09-10T02:45:52.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文是我学习推荐系统时候的一些笔记和总结，因为时间比较长了，参考链接都遗失了，在这里感谢各位老司机在我学习过程中给我的帮助。</p>
+<a id="more"></a>
+<hr>
+<p>推荐系统也是我比较感兴趣并且最近一年一直在研究的方向，搜索可以看做是上一个时代的钥匙，但是在信息爆炸的今天，推荐是现在的钥匙。</p>
+<p>推荐算法五花八门，但是其实各有各的局限，比较常用的有：</p>
+<ul>
+<li>基于内容推荐</li>
+<li>协同过滤推荐</li>
+<li>基于关联规则推荐</li>
+<li>基于效用推荐</li>
+<li>基于知识推荐</li>
+<li>组合推荐</li>
+</ul>
+<p>推荐算法本身是一个综合性的问题，他说浅他可以做的很浅，说深也可以把他做到很深。你可以简单地用最基本的Content-based，再复杂点可以Collaborative Filtering，如果你想做的深入一些，基于SVD/LDA等的降维算法，基于SVD++等的评分预测算法，基于Learning To Rank的排序算法，甚至你再转换问题，把推荐问题再转换成分类问题，或者采用以上算法前先用各种聚类算法做数据的预处理，你可以折腾出很多很多的花样。所以做推荐领域的工程师是个很“痛苦”的事儿，因为只要机器学习领域有任何的突破性进展，你都需要去做跟踪，NLP领域出了Word2Vec，出了GloVe，其他领域的算法工程师可以说我对NLP不感兴趣，但是你必须跟踪，因为他可以辅助你去做文本内容类的推荐算法；Deep Learning可以让图像识别领域做更棒的特征工程，你也马上要去跟踪学习，因为在做图片推荐时终于有一种方式也许能解决元信息问题；RecSys2013的best paper通过调整节点顺序从而优化矩阵分块策略，极大改善了矩阵分解算法的效率，你就要去跟踪来更新自己的旧有离线算法；微软亚研搞出了一个Light LDA允许在低网络流量下去做LDA的多机并行，你就要兴冲冲地跑过去读他们啰啰嗦嗦的几十页的paper，因为终于不用忍受LDA低劣的性能了，而这些追踪往往是无穷无尽的。但是如果你一旦停止了更新知识库，就会学术界远远甩在身后，做一个“协同过滤”工程师。</p>
+<p>但是算法的一切调整只有寄托于产品才能发挥出其最大的威力，但是如何根据产品去选择和调整算法是我认识大多数的算法工程师所非常薄弱的一点。举个实际的例子，我们都知道在所有的比赛中，多种算法的混合是最重要的环节，经常就会有人问我，说哪种混合策略是最好的，但是其实这是严重依赖于产品本身的。例如Tinder，他们的产品形态是每次只出现一个人，让你点击喜欢还是不喜欢，那么这种情况你必须需要一个算法的分类器来为每个用户选择一个合适的推荐算法，并且根据用户的反馈来实时调整分类器，因为如果用户连续Unlike了几个用户，他可能就流失掉了。但是对于LinkedIn的用户推荐列表中，你很适合用若干算法混合的算法，因为这样可以保证至少让整个列表中至少有X个所感兴趣的用户，而往往同一个推荐算法的Items是趋同的。再对于展示在首页的推荐入口区域，可以优先选择若干推荐算法的交集策略，这样可以用少量的高质量Item最大化的满足用户的心理底线，从而吸引用户点击。所以认清产品的形态和交互形式，依据产品去订制算法是成为优秀算法工程师，而非算法研究员的重要一点。</p>
+<p>数据工程师不仅仅是处理数据而是理解数据。我遇到的数据工程师大抵分成两类，一类是数据开发工程师，例如Hadoop工程师，数据仓库工程师；一类是学术化的工程师，深钻模型，这种工程师其实还是更适合研究院；当然，这两种工程师都各有优缺点，但是我更觉得对于大部分企业来说更需要一个理解数据而非处理数据的工程师，核心价值更应该在于深入去理解产品业务，数据处理，数据建模，做数据分析和挖掘，接下来对于产品的发展做数据化的驱动，并且知道何时应该继续对模型进行优化，何时应该适可而止。</p>
+<p>沿着上一点继续说，Growth Hacker &amp; Data Scientist。一个优秀的算法/数据工程师应该具备Growth Hacker 和 Data Scientist的能力，其实这两点也恰恰标志着不仅仅是数据，而是一个产品的最重要两点：增长和留存。作为Growth Hacker，你应该为企业找到潜在的机会点，帮助产品增长；另一方面，你也应该作为Data Scientist，发现现有数据的问题，帮助产品优化体验，提升留存，而推荐系统往往是属于这一部分的子集。</p>
+<p>数据驱动是什么？数据驱动是从已有的数据中去发现规律对产品进行优化，但是数据做不到的是从未知中挖掘机会点，而这往往是一个优秀产品经理的直觉。我经常和人举的一个例子是，要是数据驱动，也许今天应该也出现不了微信。很多时候优秀的创意就是来源于一个直觉，而不是循规蹈矩的分析推导，因为这样往往会陷入我在上文提到的大数据的窘境。所以不要无视数据，更不要神化数据，该相信直觉的时候还是相信直觉。其实有时候做算法也是一样，你不可能把上千种算法都A-B Test一次，有时候别人问我为什么，我能说的也就是直觉，作为算法工程师的直觉，“用另外一种算法效果不会更好的”。</p>
+<h2 id="主要推荐方法的对比"><a href="#主要推荐方法的对比" class="headerlink" title="主要推荐方法的对比"></a>主要推荐方法的对比</h2><table>
+<thead>
+<tr>
+<th>推荐方法</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基于内容推荐</td>
+<td>推荐结果直观，容易解释；不需要领域知识</td>
+<td>稀疏问题；新用户问题；复杂属性不好处理；要有足够数据构造分类器</td>
+</tr>
+<tr>
+<td>协同过滤推荐</td>
+<td>新异兴趣发现、不需要领域知识；随着时间推移性能提高；推荐个性化、自动化程度高；能处理复杂的非结构化对象</td>
+<td>稀疏问题；可扩展性问题；新用户问题；质量取决于历史数据集；系统开始时推荐质量差；</td>
+</tr>
+<tr>
+<td>基于规则推荐</td>
+<td>能发现新兴趣点；不要领域知识</td>
+<td>规则抽取难、耗时；产品名同义性问题；个性化程度低；</td>
+</tr>
+<tr>
+<td>基于效用推荐</td>
+<td>无冷开始和稀疏问题；对用户偏好变化敏感；能考虑非产品特性</td>
+<td>用户必须输入效用函数；推荐是静态的，灵活性差；属性重叠问题；</td>
+</tr>
+<tr>
+<td>基于知识推荐</td>
+<td>能把用户需求映射到产品上；能考虑非产品属性</td>
+<td>知识难获得；推荐是静态的</td>
+</tr>
+</tbody>
+</table>
+<h2 id="冷启动问题"><a href="#冷启动问题" class="headerlink" title="冷启动问题"></a>冷启动问题</h2><ul>
+<li>用户冷启动<ul>
+<li>提供 热门排行榜/热销榜/热搜榜，引导用户</li>
+<li>利用客户提交的年龄，性别做粗粒度的个性化</li>
+</ul>
+</li>
+<li>物品冷启动<ul>
+<li>精准推荐/模糊推荐  </li>
+<li>推荐给喜欢该商品的用户/商品相似度的用户</li>
+</ul>
+</li>
+<li>提供非个性化的推荐<ul>
+<li>利用社交网站授权，导入好友关系，给用户推荐好友喜欢的物品</li>
+<li>登录时根据用户的反馈，收集用户兴趣，给用户推荐和反馈的相似的物品（ItemCF） </li>
+</ul>
+</li>
+<li>利用用户注册信息<ul>
+<li>人口统计学信息（年龄/性别/职业/学历/居住地）</li>
+<li>用户兴趣的描述</li>
+<li>导入站外行为数据（社交网络的数据）</li>
+</ul>
+</li>
+<li>流程<ul>
+<li>获取用户注册信息</li>
+<li>将注册的用户分类</li>
+<li>给用户推荐所属分类中用户喜欢的物品</li>
+</ul>
+</li>
+<li>选择合适的物品启动用户兴趣<ul>
+<li>热门</li>
+<li>具有代表性和区分性  电影：卖票并且受欢迎的</li>
+<li>启动物品集合需要多样性  Nadav Golbandi</li>
+</ul>
+</li>
+<li>利用物品的内容信息<ul>
+<li>关键词向量（文本-分词-实体检测-关键词排名-关键词向量）</li>
+</ul>
+</li>
+<li>发挥专家的作用<ul>
+<li>Pandora（个性化电台）组织专家项目组，对歌曲维度进行标注</li>
+</ul>
+</li>
+<li>Jinni（电影基因系统）<ul>
+<li>半人工-专家总结电影基因，创建基因库</li>
+<li>半自动-文本分析</li>
+</ul>
+</li>
+</ul>
+<h2 id="AB-测试"><a href="#AB-测试" class="headerlink" title="AB 测试"></a>AB 测试</h2><p>产品的改变并不总是意味着进步，有时候无法评判多种设计方案中哪一种更优秀的， 这时A/B test就派上用场了，A/B test可以回答两个问题：</p>
+<ol>
+<li>哪个方案好</li>
+<li>结果的可信程度</li>
+</ol>
+<p>A/B test结果是基于用户得到的结果，用数据说话， 而不是凭空想象去为用户代言，并且通过一定的数学分析给出结果的可信度。</p>
+<p>A/B test需要如下几个前提：</p>
+<ol>
+<li>多个方案并行测试；</li>
+<li>每个方案只有一个变量不同（当然，这太严格了）；</li>
+<li>能够以某种规则优胜劣汰</li>
+</ol>
+<p>其中第2点暗示了A/B测试的应用范围：A/B测试必须是单变量，但有的时候，我们并不追求知道某个细节对方案的影响，而只想知道方案的整体效果如何，那么可以适当增加变量，当然测试方案有非常大的差异时一般不太适合做A/B测试，因为它们的 变量太多了，变量之间会有很多的干扰，所以很难通过A/B测试的方法找出各个变量对结果的影响程度。</p>
+<p>在满足上述前提时，便可以做A/B test了。</p>
+<h3 id="置信区间"><a href="#置信区间" class="headerlink" title="置信区间"></a>置信区间</h3><p>目标转换率变化区间估计：在做A/B test的时候，抽样得到的数据并不能准确反映整体的真实水平，即样本得到的估计是有偏差的，因此需要去评估这个值可能的变化区间。例如通过区间估计得到：</p>
+<ul>
+<li>A方案转换率为：6.5% ± 1.5%</li>
+<li>B方案转换率为：7.5% ± 1.5%</li>
+</ul>
+<p>方案胜出概率估计：由于最终有意义的是确立胜出的版本，然而并不是所有的实验都能做到样本足够大，区分度足够高的，因此确定版本胜出的概率，很多英文资料里面记为Chance to beat baseline，即在给定转换率下，变体版本的实际转换率高于参展版本（默认是原始版本）的实际转换率的可能性。在实验之前需要设定一个阈值（称为置信度），某版本胜出的可能性高于这个值并且稳定时，便可以宣布该版本胜出。置信度越高，结果的可靠信越高；随着置信度的增加实验时间将会变长。</p>
+<p>我们使用统计学理论计算Z检验和区间估计计算出误差范围及胜出概率</p>
+<p>统计概率这部分知识暂略</p>
+<h2 id="十条经验和教训"><a href="#十条经验和教训" class="headerlink" title="十条经验和教训"></a>十条经验和教训</h2><ol>
+<li>确定你真的需要推荐系统。推荐系统只有在用户遇到信息过载时才必要。如果你的网站物品不太多，或者用户兴趣都比较单一，那么也许并不需要推荐系统。所以不要纠结于推荐系统这个词，不要为了做推荐系统而做推荐系统，而是应该从用户的角度出发，设计出能够真正帮助用户发现内容的系统，无论这个系统算法是否复杂，只要能够真正帮助用户，就是一个好的系统。</li>
+<li>确定商业目标和用户满意度之间的关系。对用户好的推荐系统不代表商业上有用的推荐系统，因此要首先确定用户满意的推荐系统和商业上需求的差距。一般来说，有些时候用户满意和商业需求并不吻合。但是一般情况下，用户满意度总是符合企业的长期利益，因此这一条的主要观点是要平衡企业的长期利益和短期利益之间的关系。</li>
+<li>选择合适的开发人员。一般来说，如果是一家大公司，应该雇用自己的开发人员来专门进行推荐系统的开发。</li>
+<li>忘记冷启动的问题。不断地创新，互联网上有任何你想要的数据。只要用户喜欢你的产品，他们就会不断贡献新的数据。</li>
+<li>平衡数据和算法之间的关系。使用正确的用户数据对推荐系统至关重要。对用户行为数据的深刻理解是设计好推荐系统的必要条件，因此分析数据是设计系统中最重要的部分。数据分析决定了如何设计模型，而算法只是决定了最终如何优化模型。</li>
+<li>找到相关的物品很容易，但是何时以何种方式将它们展现给用户是很困难的。不要为了推荐而推荐。</li>
+<li>不要浪费时间计算相似兴趣的用户，可以直接利用社会网络数据。</li>
+<li>需要不断地提升算法的扩展性。</li>
+<li>选择合适的用户反馈方式。</li>
+<li>设计合理的评测系统，时刻关注推荐系统各方面的性能。</li>
+</ol>
+<h2 id="基于内容推荐"><a href="#基于内容推荐" class="headerlink" title="基于内容推荐"></a>基于内容推荐</h2><p>基于内容的推荐（Content-based Recommendation）是信息过滤技术的延续与发展，它是建立在项目的内容信息上作出推荐的，而不需要依据用户对项目的评价意见，更多地需要用机 器学习的方法从关于内容的特征描述的事例中得到用户的兴趣资料。在基于内容的推荐系统中，项目或对象是通过相关的特征的属性来定义，系统基于用户评价对象 的特征，学习用户的兴趣，考察用户资料与待预测项目的相匹配程度。用户的资料模型取决于所用学习方法，常用的有决策树、神经网络和基于向量的表示方法等。 基于内容的用户资料是需要有用户的历史数据，用户资料模型可能随着用户的偏好改变而发生变化。</p>
+<p>基于内容推荐方法的优点是：</p>
+<ol>
+<li>不需要其它用户的数据，没有冷开始问题和稀疏问题。</li>
+<li>能为具有特殊兴趣爱好的用户进行推荐。</li>
+<li>能推荐新的或不是很流行的项目，没有新项目问题。</li>
+<li>通过列出推荐项目的内容特征，可以解释为什么推荐那些项目。</li>
+<li>已有比较好的技术，如关于分类学习方面的技术已相当成熟。</li>
+</ol>
+<p>缺点是要求内容能容易抽取成有意义的特征，要求特征内容有良好的结构性，并且用户的口味必须能够用内容特征形式来表达，不能显式地得到其它用户的判断情况。</p>
+<h2 id="协同过滤推荐"><a href="#协同过滤推荐" class="headerlink" title="协同过滤推荐"></a>协同过滤推荐</h2><p>协同过滤推荐（Collaborative Filtering Recommendation）技术是推荐系统中应用最早和最为成功的技术之一。它一般采用最近邻技术，利用用户的历史喜好信息计算用户之间的距离，然后 利用目标用户的最近邻居用户对商品评价的加权评价值来预测目标用户对特定商品的喜好程度，系统从而根据这一喜好程度来对目标用户进行推荐。协同过滤最大优 点是对推荐对象没有特殊的要求，能处理非结构化的复杂对象，如音乐、电影。</p>
+<p>协同过滤是基于这样的假设：为一用户找到他真正感兴趣的内容的好方法是首先找到与此用户有相似兴趣的其他用户，然后将他们感兴趣的内容推荐给此用户。其基本 思想非常易于理解，在日常生活中，我们往往会利用好朋友的推荐来进行一些选择。协同过滤正是把这一思想运用到电子商务推荐系统中来，基于其他用户对某一内 容的评价来向目标用户进行推荐。</p>
+<p>基于协同过滤的推荐系统可以说是从用户的角度来进行相应推荐的，而且是自动的，即用户获得的推荐是系统从购买模式或浏览行为等隐式获得的，不需要用户努力地找到适合自己兴趣的推荐信息，如填写一些调查表格等。</p>
+<p>和基于内容的过滤方法相比，协同过滤具有如下的优点：</p>
+<ol>
+<li>能够过滤难以进行机器自动内容分析的信息，如艺术品，音乐等。</li>
+<li>共享其他人的经验，避免了内容分析的不完全和不精确，并且能够基于一些复杂的，难以表述的概念（如信息质量、个人品味）进行过滤。</li>
+<li>有推荐新信息的能力。可以发现内容上完全不相似的信息，用户对推荐信息的内容事先是预料不到的。这也是协同过滤和基于内容的过滤一个较大的差别，基于内容的过滤推荐很多都是用户本来就熟悉的内容，而协同过滤可以发现用户潜在的但自己尚未发现的兴趣偏好。</li>
+<li>能够有效的使用其他相似用户的反馈信息，较少用户的反馈量，加快个性化学习的速度。<br>虽然协同过滤作为一种典型的推荐技术有其相当的应用，但协同过滤仍有许多的问题需要解决。最典型的问题有稀疏问题（Sparsity）和可扩展问题（Scalability）。</li>
+</ol>
+<p>协同过滤（CF）可以看做是一个分类问题，也可以看做是矩阵分解问题。协同滤波主要是基于每个人自己的喜好都类似这一特征，它不依赖于个人的基本信息。比如刚刚那个电影评分的例子中，预测那些没有被评分的电影的分数只依赖于已经打分的那些分数，并不需要去学习那些电影的特征。</p>
+<p>SVD将矩阵分解为三个矩阵的乘积，公式如下所示：</p>
+ $$Data_{m\times n}=U_{m\times m}\Sigma_{m\times n}V_{n\times n}^T$$ 
+<p>中间的矩阵sigma为对角矩阵，对角元素的值为Data矩阵的奇异值(注意奇异值和特征值是不同的)，且已经从大到小排列好了。即使去掉特征值小的那些特征，依然可以很好的重构出原始矩阵。</p>
+<p>如果 m 代表商品的个数，n 代表用户的个数，则 U 矩阵的每一行代表商品的属性，现在通过降维 U 矩阵（取深色部分）后，每一个商品的属性可以用更低的维度表示（假设为 k 维）。这样当新来一个用户的商品推荐向量 X，则可以根据公式  $X'U_1\Sigma_1^{-1}$$X’U_1\Sigma_1^{-1}$ 得到一个 k 维的向量，然后在 V’ 中寻找最相似的那一个用户（相似度测量可用余弦公式等），根据这个用户的评分来推荐（主要是推荐新用户未打分的那些商品）。</p>
+<h2 id="基于关联规则推荐"><a href="#基于关联规则推荐" class="headerlink" title="基于关联规则推荐"></a>基于关联规则推荐</h2><p>基于关联规则的推荐（Association Rule-based Recommendation）是以关联规则为基础，把已购商品作为规则头，规则体为推荐对象。关联规则挖掘可以发现不同商品在销售过程中的相关性，在零 售业中已经得到了成功的应用。管理规则就是在一个交易数据库中统计购买了商品集X的交易中有多大比例的交易同时购买了商品集Y，其直观的意义就是用户在购 买某些商品的时候有多大倾向去购买另外一些商品。比如购买牛奶的同时很多人会同时购买面包。</p>
+<p>算法的第一步关联规则的发现最为关键且最耗时，是算法的瓶颈，但可以离线进行。其次，商品名称的同义性问题也是关联规则的一个难点。</p>
+<h2 id="基于效用推荐"><a href="#基于效用推荐" class="headerlink" title="基于效用推荐"></a>基于效用推荐</h2><p>基于效用的推荐（Utility-based Recommendation）是建立在对用户使用项目的效用情况上计算的，其核心问题是怎么样为每一个用户去创建一个效用函数，因此，用户资料模型很大 程度上是由系统所采用的效用函数决定的。基于效用推荐的好处是它能把非产品的属性，如提供商的可靠性（Vendor Reliability）和产品的可得性（Product Availability）等考虑到效用计算中。</p>
+<h2 id="基于知识推荐"><a href="#基于知识推荐" class="headerlink" title="基于知识推荐"></a>基于知识推荐</h2><p>基于知识的推荐（Knowledge-based Recommendation）在某种程度是可以看成是一种推理（Inference）技术，它不是建立在用户需要和偏好基础上推荐的。基于知识的方法因它们所用的功能知识不同而有明显区别。效用知识（Functional Knowledge）是一种关于一个项目如何满足某一特定用户的知识，因此能解释需要和推荐的关系，所以用户资料可以是任何能支持推理的知识结构，它可以是用户已经规范化的查询，也可以是一个更详细的用户需要的表示。</p>
+<h2 id="组合推荐"><a href="#组合推荐" class="headerlink" title="组合推荐"></a>组合推荐</h2><p>由于各种推荐方法都有优缺点，所以在实际中，组合推荐（Hybrid Recommendation）经常被采用。研究和应用最多的是内容推荐和协同过滤推荐的组合。最简单的做法就是分别用基于内容的方法和协同过滤推荐方法 去产生一个推荐预测结果，然后用某方法组合其结果。尽管从理论上有很多种推荐组合方法，但在某一具体问题中并不见得都有效，组合推荐一个最重要原则就是通 过组合后要能避免或弥补各自推荐技术的弱点。</p>
+<p>在组合方式上，有研究人员提出了七种组合思路：</p>
+<ol>
+<li>加权（Weight）：加权多种推荐技术结果。</li>
+<li>变换（Switch）：根据问题背景和实际情况或要求决定变换采用不同的推荐技术。</li>
+<li>混合（Mixed）：同时采用多种推荐技术给出多种推荐结果为用户提供参考。</li>
+<li>特征组合（Feature combination）：组合来自不同推荐数据源的特征被另一种推荐算法所采用。</li>
+<li>层叠（Cascade）：先用一种推荐技术产生一种粗糙的推荐结果，第二种推荐技术在此推荐结果的基础上进一步作出更精确的推荐。</li>
+<li>特征扩充（Feature augmentation）：一种技术产生附加的特征信息嵌入到另一种推荐技术的特征输入中。</li>
+<li>元级别（Meta-level）：用一种推荐方法产生的模型作为另一种推荐方法的输入。</li>
+</ol>
+<h2 id="推荐书籍"><a href="#推荐书籍" class="headerlink" title="推荐书籍"></a>推荐书籍</h2><ul>
+<li>《推荐系统实践》</li>
+<li>一些发表的综述论文</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文是我学习推荐系统时候的一些笔记和总结，因为时间比较长了，参考链接都遗失了，在这里感谢各位老司机在我学习过程中给我的帮助。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="笔记" scheme="http://wdxtub.com/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="推荐系统" scheme="http://wdxtub.com/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>数据分析指南</title>
+    <link href="http://wdxtub.com/2016/09/10/data-analysis-guide/"/>
+    <id>http://wdxtub.com/2016/09/10/data-analysis-guide/</id>
+    <published>2016-09-10T02:38:12.000Z</published>
+    <updated>2016-09-10T02:39:03.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文是我学习数据分析时候的一些笔记和总结，因为时间比较长了，参考链接都遗失了，在这里感谢各位老司机在我学习过程中给我的帮助。</p>
+<a id="more"></a>
+<hr>
+<p>数据分析是我这一年多来才开始研究的方向，资历尚浅，但是看了不少科普类书籍，有一些小小的感悟，记录在这里。最后是之前上的一套公开课的笔记，感觉对于入门还是很有帮助的。</p>
+<h2 id="统计分析中的一些陷阱"><a href="#统计分析中的一些陷阱" class="headerlink" title="统计分析中的一些陷阱"></a>统计分析中的一些陷阱</h2><ul>
+<li>有 3 种谎言：谎言，糟糕透顶的谎言和统计资料</li>
+<li>对于追求效率的公民而言，统计思维总有一天会和读写能力一样重要</li>
+<li>使我们陷入麻烦的通常并非我们不知道的事情，而是那些我们知道却不正确的事情</li>
+<li>整数总是不完善的</li>
+<li>我需要完成一个很大的课题——统计学，但却感到我的写作功底十分有限，如果不牺牲准确性和完整性，就很难使人理解</li>
+<li>单凭某一数据很难反应实情</li>
+<li>一条河永远不可能高于它的源头，同理，对样本研究后得到的结论不会好于样本本身</li>
+<li>一个以抽样为基础的报告如果要有价值，就必须使用具有代表性的样本，这种样本排除了各种误差</li>
+<li>无形的误差与有形的误差一样容易破坏样本的可信度</li>
+<li>普查工作者一般都具有足够的统计知识、技术以及调查费用以确保抽样的精确度。他们并非居心叵测之徒。但并不是所有能见到的数据都产生于这样良好的环境，也并不是所有的数据都会有附有类似的精确度说明</li>
+<li>如果某条信息提供了显著性程度，你将对它有更深的了解。显著成都通常用概率表示。</li>
+<li>将『正常的』与『期望的』混为一谈导致事情变得更糟</li>
+<li>这些没有透露的数据其欺骗性在于人们经常忽略了它们的不存在，这当然也是使用这些数据的人获取成功的奥秘</li>
+<li>当一个平均数、一张图表或者某种趋势遗漏了这些重要的数据，请对它们保留一些怀疑。</li>
+<li>你的样本以多大的精度代表总体是可以用数据来衡量的，那就是：可能误差和标准误差</li>
+<li>只有当差别有意义时才能称之为差别</li>
+<li>注意比例尺和起始标尺，这可能会产生极大的误导性</li>
+<li>利用一维图形的信息不对称，可以营造出非常夸张的视觉效果</li>
+<li>如果你想证明某事，却发现没有能力办到，那么试着解释其他事情并假装它们是同一回事。</li>
+<li>相关并不等于因果，一定要注意这里的区别</li>
+<li>扭曲统计数据的最巧妙方法是利用地图</li>
+<li>百分数也给误解提供了肥沃的土壤。和小数一样，它也能为不确切的食物蒙上精确的面纱</li>
+<li>将一些看似能直接相加却不能这样操作的事情加在一起会产生大量的欺骗和隐瞒</li>
+<li>对统计资料提出的五个问题<ol>
+<li>谁说的？有意识的偏差和无意识的偏差</li>
+<li>他是如何知道的？注意样本的有偏，数值是否足够大</li>
+<li>遗漏了什么？</li>
+<li>是否有人偷换了概念？</li>
+<li>这个资料有意义吗？</li>
+</ol>
+</li>
+<li>我们以为自己可以控制很多风险，但结果并非如此，也许这才是更大的威胁。</li>
+<li>贪婪和恐惧是两个非常不稳定的因素，只有两者保持平衡，经济才能顺利发展。若贪婪在经济体系中占上风，就会产生经济泡沫；若恐惧因素压过贪婪，经济又会陷入恐慌。</li>
+<li>狐狸型预测方法<ul>
+<li>用概率的方法思考问题</li>
+<li>今天的预测是你以后人生的第一个预测</li>
+<li>寻求共识 </li>
+</ul>
+</li>
+<li>信息是决定预测成败的关键，并不是信息越多，预测就越成功</li>
+<li>经济是一个动态系统，不是一个方程式</li>
+<li>运气和技能通常被视为两个极端，但两者之间的关系其实更复杂一些</li>
+<li>若想做出更准确的预测，就必须承认我们的判断是不可靠的</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">狐狸型专家的想法</th>
+<th style="text-align:center">刺猬型专家的想法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">千伎百俩：汇聚不同学科的思想，忽略最初的政治派别</td>
+<td style="text-align:center">一技之长：把大部分精力投入到一两个重大问题上，以怀疑的眼光看待『局外人』的观点</td>
+</tr>
+<tr>
+<td style="text-align:center">适应力强：最初的方法失效后，试图找到新的方法，或同时寻求多种方法</td>
+<td style="text-align:center">坚持力强：坚持『总揽一切』的方法，新数据只能用来改善原始模式</td>
+</tr>
+<tr>
+<td style="text-align:center">严于律己：有时会愿意（或是欣于）承认预测中的错误并接受谴责</td>
+<td style="text-align:center">固执己见：错误归咎到坏运气或特殊情况上——好模式没有赶上好时机</td>
+</tr>
+<tr>
+<td style="text-align:center">承认复杂性：承认宇宙的复杂性，认为许多基本问题不可解决或本身就是不可预测的</td>
+<td style="text-align:center">寻找秩序：一旦从噪声中找到信号，便期望世界遵循某种相对简单的支配关系</td>
+</tr>
+<tr>
+<td style="text-align:center">谨慎：用概率术语表达预测结论，并且证明自己的观点是正确的</td>
+<td style="text-align:center">自信：很少对自己的预测进行正面回复，并且不愿改变自己的预测</td>
+</tr>
+<tr>
+<td style="text-align:center">经验主义：更多地依赖观察而非理论</td>
+<td style="text-align:center">意识形态：期待日常的问题正是宏伟理论或斗争的体现</td>
+</tr>
+<tr>
+<td style="text-align:center">较好的预测家</td>
+<td style="text-align:center">较差的预测家</td>
+</tr>
+</tbody>
+</table>
+<h2 id="互联网数据挖掘"><a href="#互联网数据挖掘" class="headerlink" title="互联网数据挖掘"></a>互联网数据挖掘</h2><p>万小军 <a href="http://www.icst.pku.edu.cn/lcwm" target="_blank" rel="external">http://www.icst.pku.edu.cn/lcwm</a></p>
+<h2 id="互联网挖掘概述"><a href="#互联网挖掘概述" class="headerlink" title="互联网挖掘概述"></a>互联网挖掘概述</h2><ul>
+<li>Web 挖掘<ul>
+<li>由 Etzioni(1996) 提出</li>
+<li>使用数据挖掘的技术自动从 Web文档/服务发现和提取信息和知识，包括隐含的模式和关系等</li>
+</ul>
+</li>
+<li>相关技术<ul>
+<li>信息检索</li>
+<li>互联网</li>
+<li>数据库</li>
+<li>机器学习</li>
+<li>自然语言处理</li>
+<li>数据挖掘</li>
+</ul>
+</li>
+<li>相关学术会议<ul>
+<li>Web 搜索: SIGIR, WWW, CIKM, WSDM</li>
+<li>数据挖掘: KDD, ICDM</li>
+<li>自然语言处理: ACL, EMNLP</li>
+<li>多媒体检索: ACM, MM</li>
+</ul>
+</li>
+<li>应用<ul>
+<li>垂直搜索</li>
+<li>个性化推荐</li>
+<li>智能问答</li>
+<li>机器翻译</li>
+<li>舆情监测</li>
+<li>情报与反恐</li>
+<li>预测</li>
+</ul>
+</li>
+</ul>
+<h2 id="文本信息检索"><a href="#文本信息检索" class="headerlink" title="文本信息检索"></a>文本信息检索</h2><ul>
+<li>两个核心问题<ul>
+<li>效果<ul>
+<li>如何准确匹配查询与文档</li>
+<li>基于检索模型</li>
+</ul>
+</li>
+<li>效率<ul>
+<li>如何快速返回检索结果</li>
+<li>基于索引</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="文档表示"><a href="#文档表示" class="headerlink" title="文档表示"></a>文档表示</h3><ul>
+<li>元描述(Meta-descriptions)<ul>
+<li>域信息(author, title, date)</li>
+<li>关键词、受控词汇</li>
+<li>分类</li>
+<li>优点<ul>
+<li>主要依赖人工标注，结果比较可靠</li>
+<li>基于受控词汇的检索很高效</li>
+</ul>
+</li>
+<li>不足<ul>
+<li>人工标注非常耗时</li>
+<li>检索受限制</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>自动文档表示<ul>
+<li>词袋(Bag of Words)<ul>
+<li>一篇文档由该文档中出现的词的集合所表示</li>
+<li>词语的无序集合，句法信息丢失</li>
+<li>符号化(tokenization):识别词的边界</li>
+<li>英文中大小写</li>
+<li>词语形态规范化<ul>
+<li>匹配 company 和 companies? sell 与 sold?</li>
+<li>删除词语的形态信息: 时态，数量…</li>
+</ul>
+</li>
+<li>词根(Stemming)<ul>
+<li>删除后缀</li>
+<li>基于规则进行(例如 Porter’s stemmer)</li>
+<li>Stemming 的结果可能不是词语</li>
+<li>不相关的词可能具有相同的 stem</li>
+</ul>
+</li>
+<li>词形还原(Lemmatization)<ul>
+<li>将词语变为其语法原型(syntactic stem)</li>
+<li>使用一般规则与例外处理</li>
+<li>处理结果仍然为词</li>
+<li>处理过程要考虑词性的不同</li>
+</ul>
+</li>
+<li>停用词(Stop Words)<ul>
+<li>不具有内容信息的词</li>
+<li>停用词表依赖于具体文档集及具体应用</li>
+<li>过滤停用词的原因<ul>
+<li>停用词并不能提高检索效果</li>
+<li>可以大幅减少索引大小</li>
+<li>减少检索时间</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>大部分互联网搜索引擎并不使用 stemming/lemmatizatoin<ul>
+<li>文档集很大</li>
+<li>不太考虑召回率</li>
+<li>Stemming 结果并不完美</li>
+</ul>
+</li>
+<li>大部分互联网搜索引擎使用停用词表</li>
+<li>无法从词袋表示恢复原文档</li>
+<li>优点: 简单、有效</li>
+<li>缺点: 忽略了词之间和句法关系以及篇章结构的信息</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="文档索引"><a href="#文档索引" class="headerlink" title="文档索引"></a>文档索引</h3><ul>
+<li>目的在于提高检索效率</li>
+<li>索引对象的选择</li>
+<li>Phrase 识别比较困难，并不能显著提高检索效果</li>
+<li>通常采用 word 构建索引</li>
+<li>索引压缩: 减小索引大小</li>
+<li>动态索引: 索引库的动态维护、更新</li>
+<li>分布式索引: 索引信息分布在不同机器上</li>
+<li>具体细节参阅 Lucene 开源检索系统的相关代码</li>
+</ul>
+<h4 id="倒排索引-inverted-index"><a href="#倒排索引-inverted-index" class="headerlink" title="倒排索引(inverted index)"></a>倒排索引(inverted index)</h4><ul>
+<li>以关键词为核心对文档进行索引</li>
+<li>帮助快速地找到文档中所包含的关键词</li>
+<li>可看做连标数组，每个链表的表头包含关键词，其后序单元则包括所有包括这个关键词的文档标号，以及一些其他信息，如该词的频率和位置等</li>
+<li>优势<ul>
+<li>关键词个数比文档少，因此检索效率高</li>
+<li>特别适合信息检索</li>
+</ul>
+</li>
+<li>数据结构<ul>
+<li>关键词查询一般采用 B-Tree 或哈希表</li>
+<li>文档列表组织一般采用二叉搜索树</li>
+</ul>
+</li>
+</ul>
+<h3 id="文本信息检索模型"><a href="#文本信息检索模型" class="headerlink" title="文本信息检索模型"></a>文本信息检索模型</h3><ul>
+<li>基本思想: 如果一篇文档与一个查询相似，那么该文档与查询相关</li>
+<li>相似性<ul>
+<li>字符串匹配</li>
+<li>相似的词汇</li>
+<li>相同的语义</li>
+</ul>
+</li>
+<li>检索模型<ul>
+<li>对实际检索过程的抽象和建模</li>
+<li>终极目标是基于语义进行匹配</li>
+</ul>
+</li>
+</ul>
+<h4 id="布尔模型-Boolean-Model"><a href="#布尔模型-Boolean-Model" class="headerlink" title="布尔模型(Boolean Model)"></a>布尔模型(Boolean Model)</h4><ul>
+<li>基于布尔代数</li>
+<li>优点<ul>
+<li>简单</li>
+<li>对查询严格掌控</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>一般用户难以构造布尔查询</li>
+<li>检索结果文档无法排序</li>
+<li>严格匹配，导致过少或过多的检索结果</li>
+</ul>
+</li>
+<li>尽管布尔模型不再用作主流文档检索模型，但其思想常用于实现高级(综合)检索功能</li>
+</ul>
+<h4 id="向量空间模型-Vector-Space-Model"><a href="#向量空间模型-Vector-Space-Model" class="headerlink" title="向量空间模型(Vector Space Model)"></a>向量空间模型(Vector Space Model)</h4><ul>
+<li>现代信息检索系统中比较常用的检索模型</li>
+<li>特性<ul>
+<li>用户输入自由文本作为查询</li>
+<li>对文档进行排序</li>
+<li>匹配准则放松</li>
+</ul>
+</li>
+<li>思想: 文档与查询都是高维空间中的一个向量</li>
+<li>向量空间表示<ul>
+<li>文档是词语组成的向量</li>
+<li>词语是文档组成的向量</li>
+<li>查询是词语组成的向量</li>
+</ul>
+</li>
+<li>相似性<ul>
+<li>用内积衡量<ul>
+<li>缺点<ul>
+<li>长文档由于更可能包含匹配词语，因而更可能相关</li>
+<li>然而，如果两篇文档具有同样的相似值，用户更倾向于短文档，短文档更聚焦在用户信息需求上</li>
+</ul>
+</li>
+<li>相似性计算中应该考虑文档长度(进行规范化)</li>
+</ul>
+</li>
+<li>用夹角来衡量<ul>
+<li>向量归一化</li>
+<li>余弦度量(Cosine Measure)</li>
+<li>余弦相似度(Cosine Similarity)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>词语权重<ul>
+<li>之前采用二值表示: 非 1 即 0<ul>
+<li>没有反映词语频率</li>
+<li>假定所有词语均同等重要</li>
+</ul>
+</li>
+<li>tf: 词语出现的频率<ul>
+<li>tf~i,j~ = frequency of term i in document j</li>
+</ul>
+</li>
+<li>idf: 区别不同词语的重要性</li>
+<li>tfidf</li>
+</ul>
+</li>
+<li>其他相似性度量<ul>
+<li>Minkowski metric(dissimilarity)</li>
+<li>Euclidian distance(dissimilarity)</li>
+<li>Jacquard measure</li>
+<li>Dice’s coefficient</li>
+</ul>
+</li>
+</ul>
+<h4 id="概率模型-Probabilistic-Model"><a href="#概率模型-Probabilistic-Model" class="headerlink" title="概率模型(Probabilistic Model)"></a>概率模型(Probabilistic Model)</h4><ul>
+<li>1977 年由 Stephen Robertson 提出</li>
+</ul>
+<h3 id="信息检索评价"><a href="#信息检索评价" class="headerlink" title="信息检索评价"></a>信息检索评价</h3><ul>
+<li>评鉴检索模型或搜索引擎的性能</li>
+<li>搜索质量 vs 搜索效率</li>
+<li>对搜索质量的评价<ul>
+<li>评测数据集</li>
+<li>评测指标</li>
+</ul>
+</li>
+<li>相关评测<ul>
+<li>TREC<ul>
+<li>trec.nist.gov</li>
+<li>最具影响力</li>
+<li>多种信息检索任务，侧重于英文</li>
+</ul>
+</li>
+<li>NTCIR<ul>
+<li>research.nii.ac.jp/ntcir/</li>
+</ul>
+</li>
+<li>CLEF<ul>
+<li>www.clef-campaign.org</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>评测数据集<ul>
+<li>一般人工构建</li>
+<li>构成<ul>
+<li>较大规模的文档集合 D</li>
+<li>查询集 Q 以及每个查询 q 对应的相关文档列表 REL~q~</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>评价指标<ul>
+<li>衡量检索结果与标准答案的一致性</li>
+<li>对非排序检索的评价<ul>
+<li>对检索结果集合进行整体评价</li>
+<li>准确率(precision)与召回率(recall)，通常相互依赖</li>
+<li>F 值(F-measure)</li>
+</ul>
+</li>
+<li>对排序结果的评价<ul>
+<li>考虑相关文档在检索结果中的排序位置</li>
+<li>在不同 recall levels 的 precision 值</li>
+<li>沿着检索结果列表从头往后考察</li>
+</ul>
+</li>
+<li>对多级排序检索的评价<ul>
+<li>NDCG - Normalized Discounted Cumulative Gain</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Web-检索"><a href="#Web-检索" class="headerlink" title="Web 检索"></a>Web 检索</h2><p>Web 检索 = 文档检索 + 针对 Web 检索的新技术</p>
+<h3 id="Web-页面采集"><a href="#Web-页面采集" class="headerlink" title="Web 页面采集"></a>Web 页面采集</h3><ul>
+<li>Web Crawler, spider<ul>
+<li>快速有效地收集尽可能多的有用 Web 页面，包括页面之间的链接结构</li>
+</ul>
+</li>
+<li>Web 爬虫需要具备的特性<ul>
+<li>健壮 robustness, 避免 spider traps</li>
+<li>友好 politeness, 遵守 web server 的采集协议</li>
+<li>分布式 distributed, 多台机器分布式采集</li>
+<li>可扩展 scalable, 爬虫架构方便扩展</li>
+<li>性能与效率，有效利用系统资源</li>
+<li>质量 quality, 倾向于采集有用的页面</li>
+<li>新颖 freshness, 获取网页的最新版本</li>
+<li>可扩充 Extensible, 能够处理新数据类型、新的采集协议等</li>
+</ul>
+</li>
+<li>Web 页面爬取策略<ul>
+<li>深度优先</li>
+<li>广度优先</li>
+<li>实际应用中以广度优先为主，深度优先为辅</li>
+</ul>
+</li>
+<li>难点<ul>
+<li>暗网的采集，只有向数据库提交查询才形成的 Web 页面</li>
+<li>Web 2.0 内容，脚本语言等生成的动态内容</li>
+<li>多媒体内容</li>
+</ul>
+</li>
+</ul>
+<h3 id="Web-页面排序"><a href="#Web-页面排序" class="headerlink" title="Web 页面排序"></a>Web 页面排序</h3><ul>
+<li>与查询相似度最大的网页并不一定是最好的结果</li>
+<li>用户对 Web 页面的期望<ul>
+<li>易于理解，可靠，作为查询话题的入口，能够回答差群的信息需求</li>
+</ul>
+</li>
+<li>基于相关度的排序<ul>
+<li>计算查询与页面内容的相似程度(依据文档检索模型)</li>
+</ul>
+</li>
+<li>基于重要性的排序<ul>
+<li>基于链接分析计算</li>
+</ul>
+</li>
+<li>综合排序<ul>
+<li>页面排序值 = 页面内容相关度 +/* 页面重要性</li>
+</ul>
+</li>
+</ul>
+<h3 id="Web-链接分析"><a href="#Web-链接分析" class="headerlink" title="Web 链接分析"></a>Web 链接分析</h3><ul>
+<li>Web 页面之间的超链关系非常重要</li>
+<li>一条从页面 A 指向页面 B 的链接表明<ul>
+<li>A 与 B 相关</li>
+<li>A 推荐/引用/投票/赞成 B</li>
+</ul>
+</li>
+<li>经典算法<ul>
+<li>HITS[Kleinberg, 1997] - Hypertext Induced Topic Selection</li>
+<li>PageRank[Page &amp; Brin, 1998]</li>
+</ul>
+</li>
+<li>排序沉入(Rank Sink)<ul>
+<li>形成 loop, 没有 outlink</li>
+<li>页面 A 与 B 相互提高 Rank, 而不向外分发 Rank</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于学习的网页排序"><a href="#基于学习的网页排序" class="headerlink" title="基于学习的网页排序"></a>基于学习的网页排序</h3><ul>
+<li>Learning to Rank 主流算法<ul>
+<li>RankSVM</li>
+<li>RankNet</li>
+<li>ListNet</li>
+</ul>
+</li>
+<li>Learning to Rank 工具包<ul>
+<li>RankLib</li>
+<li>people.cs.umass.edu/~vdang/ranklib.html</li>
+</ul>
+</li>
+</ul>
+<h3 id="搜索引擎优化-SEO"><a href="#搜索引擎优化-SEO" class="headerlink" title="搜索引擎优化(SEO)"></a>搜索引擎优化(SEO)</h3><ul>
+<li>Search engine optimization<ul>
+<li>提高网站或网页在搜索引擎中可见度(排名)的过程</li>
+</ul>
+</li>
+<li>基本思想<ul>
+<li>基于各类搜索引擎的工作原理(采集、索引、排序等)，对网站进行相关的优化的调整，提高网站在搜索引擎中的排名</li>
+<li>白帽：合理优化，不牺牲用户体验</li>
+<li>黑帽：不正当优化，牺牲用户体验<ul>
+<li>重复、隐藏文字、链接工厂、桥页、跳页</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>影响排名的因素<ul>
+<li>内部因素<ul>
+<li>URL 中出现关键词</li>
+<li>网页 Title 中出现关键词</li>
+<li>常规内容中出现关键词</li>
+<li>在页面的最后一段中出现关键词</li>
+<li><code>&lt;Head&gt;</code> 标签 比如 h1, h2 中出现关键词</li>
+<li>站内的链接中出现关键词</li>
+<li>导向相关内容的导出链接</li>
+<li>导出链接中出现关键词</li>
+<li>图片文件名中出现关键词</li>
+<li>Alt 标签中出现关键词</li>
+<li>comment 中出现关键词</li>
+<li>合理的频率更新内容</li>
+<li>内容对搜索引擎的展示位置</li>
+<li>网站结构循环 PR, 而非散发 PR</li>
+<li>关键词进行适当的修饰(加粗、斜体等)</li>
+</ul>
+</li>
+<li>外部因素<ul>
+<li>大量的导入链接</li>
+<li>从高 PR 值的网页获得导入链接</li>
+<li>从相关内容网站获得导入链接</li>
+<li>导入链接指向的网页有具体内容</li>
+<li>锚文字中有关键词</li>
+<li>锚文字周围有相关词</li>
+<li>锚文字存在于文章或句子中</li>
+<li>导入链接的时间长度，一般导入链接的存在时间有3-6个月</li>
+<li>单向链接的价值高于交换链接</li>
+<li>导入链接的页面的导出链接小于 100 个，流出链接越少越好</li>
+<li>链接来自不同 IP</li>
+<li>合理的导入链接增长频率</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SEO 操作<ul>
+<li>站外 SEO<ul>
+<li>网站外部链接优化、网站的链接见识、网站的外部数据分析等</li>
+<li>交换、购买链接，提交网址到分类目录等</li>
+</ul>
+</li>
+<li>站内 SEO<ul>
+<li>网站结构的设计、网站代码优化和内部链接优化、网站内容的优化、网站用户体验优化等</li>
+<li>丰富网站关键词、主题集中、友好的网页结构、避免重复、有规律的更新等</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="自然语言处理基础"><a href="#自然语言处理基础" class="headerlink" title="自然语言处理基础"></a>自然语言处理基础</h2><p>又称<strong>自然语言理解</strong>，是人工智能和语言学领域的分支学科。利用计算机对人类特有的书面形式和口头形式的自然语言进行各种类型处理和加工的技术。</p>
+<p>自然语言生成：利用计算机自动生成可理解的自然语言文本的技术</p>
+<h3 id="基本任务"><a href="#基本任务" class="headerlink" title="基本任务"></a>基本任务</h3><ul>
+<li>关键任务<ul>
+<li>自动分词</li>
+<li>命名实体识别</li>
+<li>词性标注</li>
+<li>句法分析</li>
+<li>语义分析</li>
+<li>篇章分析</li>
+</ul>
+</li>
+<li>应用型任务<ul>
+<li>机器翻译 Translation</li>
+<li><strong>文本分类</strong> Classification</li>
+<li>情感分析</li>
+<li>信息检索与过滤 Mining/Retrieval</li>
+<li>自动问答 Question Answering</li>
+<li><strong>信息抽取</strong> Extraction</li>
+<li><strong>自动文摘</strong> Summarization</li>
+<li>人机对话 Dialogue</li>
+</ul>
+</li>
+</ul>
+<h3 id="为什么如此之难"><a href="#为什么如此之难" class="headerlink" title="为什么如此之难"></a>为什么如此之难</h3><ul>
+<li>自然语言与生俱来的歧义问题</li>
+<li>自然语言中存在未知的语言现象<ul>
+<li>新的词汇</li>
+<li>新的含义</li>
+<li>新的用法和语句结构</li>
+</ul>
+</li>
+<li>人类用语言进行社会交流时会省略公有制是，但机器很难获取及更新世界知识</li>
+</ul>
+<h3 id="推荐教材"><a href="#推荐教材" class="headerlink" title="推荐教材"></a>推荐教材</h3><ul>
+<li>Foundations of Statistical Natrual Language Processing</li>
+<li>Speech and Language Processing</li>
+<li>统计自然语言处理</li>
+</ul>
+<h3 id="汉语自动分词"><a href="#汉语自动分词" class="headerlink" title="汉语自动分词"></a>汉语自动分词</h3><p>一般认为：词是最小的、能够独立运用的、有意义的语言单位</p>
+<p><strong>汉语分词的挑战</strong></p>
+<ul>
+<li>词和词组的边界模糊</li>
+<li>新词(未登陆词)</li>
+<li>切分歧义<ul>
+<li>汉字串 AJB 被称作<strong>交集型切分歧义</strong>，如果满足 AJ, JB 同时为词，此时汉字串 J 被称作交集串</li>
+<li>汉字串 AB 被称作<strong>组合型切分歧义</strong>，如果满足条件 A, B, AB 同时为词</li>
+<li>真歧义：存在两种或两种以上的真实存在的切分形式</li>
+</ul>
+</li>
+</ul>
+<p><strong>分词方法</strong></p>
+<ul>
+<li>简单的模式匹配<ul>
+<li>正向最大匹配(FMM)、逆向最大匹配(BMM, 比正向更有效)、双向匹配(BM, 比较两种方法的结果，大颗粒词越多越好，非词典词和单子词越少越好，可以识别出交叉歧义)</li>
+</ul>
+</li>
+<li>基于规则的方法<ul>
+<li>最少分词算法</li>
+</ul>
+</li>
+<li>基于统计的方法<ul>
+<li>统计语言模型分词、串频统计和词形匹配相结合的汉语自动分词、无词典分词</li>
+<li>第一步是候选网格构造：利用词典匹配，列举输入句子所有可能的切分词语，并以词网格形式保存</li>
+<li>第二步计算词网格中的每一条路径的权值，权值通过计算图中的每一个节点(每一个词)的一元统计概率和节点之间的二元统计概率的相关信息</li>
+<li>最后根据图搜索算法在图中找到一条权值最大的路径，作为最后的分词结果</li>
+<li>优缺点：可利用不同的统计语言模型计算最优路径，具有比较高的分词正确率；但算法时间、空间复杂度较高</li>
+</ul>
+</li>
+</ul>
+<h3 id="词性标注-POS-Tagging"><a href="#词性标注-POS-Tagging" class="headerlink" title="词性标注(POS Tagging)"></a>词性标注(POS Tagging)</h3><ul>
+<li>为句子中的每个词语标注词性(part-of-speech marker)</li>
+<li>可看做是词法分析的关键任务，也可看做是句法分析的最低层次</li>
+<li>对后续句法分析、词义消岐等任务非常有用</li>
+</ul>
+<h3 id="句法分析"><a href="#句法分析" class="headerlink" title="句法分析"></a>句法分析</h3><ul>
+<li>句法/成分/短语结构分析 vs 依存关系分析</li>
+<li>完全分析 vs 局部分析/浅层分析</li>
+<li>Context Free Grammars(CFG)</li>
+</ul>
+<h2 id="数据挖掘概述与关联规则挖掘"><a href="#数据挖掘概述与关联规则挖掘" class="headerlink" title="数据挖掘概述与关联规则挖掘"></a>数据挖掘概述与关联规则挖掘</h2><p>数据挖掘从多学科领域发展而来：Statistics/AI, Machine Learning, Pattern Recognition, Database systems</p>
+<h3 id="数据挖掘流程"><a href="#数据挖掘流程" class="headerlink" title="数据挖掘流程"></a>数据挖掘流程</h3><p><strong>Data</strong> -Selection-&gt; <strong>Target data</strong> -Preprocessing-&gt; <strong>Preprocessed data</strong> -Transformation-&gt; <strong>Transformed data</strong> -Data mining-&gt; <strong>Patterns</strong> -Interpretation/evaluatoin-&gt; <strong>Knowledge</strong></p>
+<h3 id="数据挖掘任务"><a href="#数据挖掘任务" class="headerlink" title="数据挖掘任务"></a>数据挖掘任务</h3><ul>
+<li>预测型(Prediction Methods): 基于一些变量预测其他变量的未知值或未来值<ul>
+<li>分类 Classification</li>
+<li>回归 Regression</li>
+<li>偏差检测 Deviation Detection</li>
+</ul>
+</li>
+<li>描述型(Description Methods): 发现描述数据的人们可解释的模式<ul>
+<li>聚类 Clustering</li>
+<li>关联规则挖掘 Association Rule Discovery</li>
+<li>摘要 Summarization</li>
+</ul>
+</li>
+</ul>
+<h3 id="关联规则挖掘：定义"><a href="#关联规则挖掘：定义" class="headerlink" title="关联规则挖掘：定义"></a>关联规则挖掘：定义</h3><p>关联规则反映一个事物与其他事物之间的相互依存性和关联性。如果两个或者多个事物之间存在一定的关联关系，那么其中一个事物就能够通过其他事物预测到。关联规则表示了项之间的关系。</p>
+<ul>
+<li>给定一个记录集合，每个记录包含若干项<ul>
+<li>产生依赖规则，可以基于某些项的出现预测一个项的出现</li>
+</ul>
+</li>
+</ul>
+<p>应用：市场营销</p>
+<ul>
+<li>假如发现一条规则</li>
+<li>{面包圈..} -&gt; {薯片}</li>
+<li>可以帮助提高薯片的销量</li>
+</ul>
+<h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>为数据集进行总结，提供一个简洁/紧凑的表示，包括可视化与报表生成</p>
+<h3 id="回归"><a href="#回归" class="headerlink" title="回归"></a>回归</h3><ul>
+<li>基于若干变量的值预测一个给定的具有连续值的变量的值<ul>
+<li>假设一个线性或非线性的依赖模型</li>
+</ul>
+</li>
+<li>举例<ul>
+<li>基于广告开支预测新产品的销售额</li>
+<li>基于温度、湿度、气压等预测风速</li>
+<li>预测股票指数</li>
+</ul>
+</li>
+</ul>
+<p>为数据预测一个连续值，确定两种或两种以上变量间的相互依赖关系。</p>
+<ul>
+<li>最简单的情形: 一元线性回归<ul>
+<li>只包括一个自变量 x 和一个因变量 y，且二者的关系可用一条直线近似表示</li>
+<li>回归分析的目标为找一个线性函数迎合训练数据</li>
+<li>可采用最小二乘法</li>
+</ul>
+</li>
+<li>其他回归方法<ul>
+<li>Logistic 回归</li>
+<li>岭回归</li>
+<li>支持向量回归</li>
+</ul>
+</li>
+<li>回归结果评价<ul>
+<li>均方误差(Mean Squared Error, MSE)</li>
+<li>均方根误差(root mean square error, RMSE)</li>
+</ul>
+</li>
+</ul>
+<h3 id="偏差-异常检测"><a href="#偏差-异常检测" class="headerlink" title="偏差/异常检测"></a>偏差/异常检测</h3><ul>
+<li>从正常行为中检测显著的偏差/异常</li>
+<li>举例<ul>
+<li>信用卡欺诈检测</li>
+<li>网络入侵检测</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据挖掘工具"><a href="#数据挖掘工具" class="headerlink" title="数据挖掘工具"></a>数据挖掘工具</h3><ul>
+<li>Free open-source software and application<ul>
+<li>Weka</li>
+<li>GATE</li>
+<li>Carrot2</li>
+<li>NLTK</li>
+<li>Orange</li>
+<li>RapidMiner</li>
+<li>KNIME</li>
+</ul>
+</li>
+<li>Commercial software<ul>
+<li>IBM InfoSphere Warehouse</li>
+<li>Microsoft Analysis Services</li>
+<li>SAS Enterprise Miner</li>
+<li>STATISTICA Data Miner</li>
+<li>Oracle Data Mining</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据挖掘的挑战"><a href="#数据挖掘的挑战" class="headerlink" title="数据挖掘的挑战"></a>数据挖掘的挑战</h3><ul>
+<li>可拓展性</li>
+<li>挖掘高维数据、高速数据流</li>
+<li>挖掘序列数据、时间序列数据</li>
+<li>从复杂、异构、网络化数据中挖掘复杂知识</li>
+<li>挖掘低质量数据</li>
+<li>安全性、隐私保护</li>
+</ul>
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>将数据划分到已知类别。分类器的构建基于有监督学习(标注数据:训练集)</p>
+<ul>
+<li>给定一个样例集合(训练集)<ul>
+<li>每个样例包含一个属性集合，其中一个属性是类标记/类号</li>
+</ul>
+</li>
+<li>基于训练集构建一个模型，该模型将类标记属性看作是其它属性值的一个函数</li>
+<li>目标：对心的样例尽可能准确地赋予标记<ul>
+<li>基于一个测试集来评估模型的准确性</li>
+</ul>
+</li>
+</ul>
+<p>Training Set -&gt; Learn Classifier -&gt; Model &lt;- Test set</p>
+<ul>
+<li>二类分类：正、负</li>
+<li>多类分类：多类(&gt;=3)</li>
+</ul>
+<p>二类分类是分类问题的最基本形式，多类分类问题可通过转化为二类分类问题加以解决。</p>
+<ul>
+<li>One vs. One<ul>
+<li>对于 K 类分类需要 K(K-1)/2 个二类分类器</li>
+<li>测试分类时采用投票方式确定类别</li>
+<li>E.g. Labels: a, b, c</li>
+<li>分类器: a vs b, b vs c, a vs c</li>
+</ul>
+</li>
+<li>One vs. All(Rest):<ul>
+<li>对于 K 类分类需要 K 个二类分类器</li>
+<li>测试分类时取返回最大值的类别</li>
+<li>E.g. Labels: a, b, c</li>
+<li>分类器: a vs (b, c), b vs (a, c), c vs (a, b)</li>
+</ul>
+</li>
+</ul>
+<p>层次式分类，类别构成层次式结构(树状)。中图法、ODP目录。</p>
+<ul>
+<li>应用<ul>
+<li>新闻分类</li>
+<li>广告页面判别</li>
+<li>垃圾邮件过滤</li>
+<li>垃圾短信过滤</li>
+<li>博客风格判断</li>
+<li>评论情感分析</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于规则的分类"><a href="#基于规则的分类" class="headerlink" title="基于规则的分类"></a>基于规则的分类</h3><p>人工/专家制定分类规则，使用布尔操作符(AND, OR, NOT)，可将规则组织成决策树，节点代表规则，叶节点代表类别</p>
+<ul>
+<li>优势<ul>
+<li>透明，易于理解，易于修改</li>
+</ul>
+</li>
+<li>劣势<ul>
+<li>复杂，耗时</li>
+<li>主要依赖人工/专家的智能，而非系统/机器智能</li>
+<li>不易拓展</li>
+<li>绝对的类别划分，无置信度</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于统计的分类"><a href="#基于统计的分类" class="headerlink" title="基于统计的分类"></a>基于统计的分类</h3><ul>
+<li>优势<ul>
+<li>可以输出置信概率、允许阈值控制、可扩展</li>
+</ul>
+</li>
+<li>劣势<ul>
+<li>需要已标注好的训练数据</li>
+</ul>
+</li>
+<li>典型方法<ul>
+<li>朴素贝叶斯</li>
+<li>Rocchio</li>
+<li>K 近邻</li>
+<li>支持向量机</li>
+</ul>
+</li>
+</ul>
+<h3 id="文本统计分类流程"><a href="#文本统计分类流程" class="headerlink" title="文本统计分类流程"></a>文本统计分类流程</h3><ul>
+<li>预处理<ul>
+<li>Tokenization</li>
+<li>Filtering</li>
+<li>Stemming</li>
+</ul>
+</li>
+<li>特征计算<ul>
+<li>tf</li>
+<li>Log(tf+1)</li>
+<li>tfidf</li>
+</ul>
+</li>
+<li>特征选择<ul>
+<li>MI</li>
+<li>Chi-Square</li>
+<li>Information Gain</li>
+</ul>
+</li>
+<li>分类学习<ul>
+<li>SVM</li>
+<li>Rocchio</li>
+<li>Naive Bayes</li>
+</ul>
+</li>
+<li>结果评估<ul>
+<li>Recall</li>
+<li>F-Measure</li>
+<li>Precision</li>
+</ul>
+</li>
+</ul>
+<h3 id="文本分类-特征向量表示"><a href="#文本分类-特征向量表示" class="headerlink" title="文本分类-特征向量表示"></a>文本分类-特征向量表示</h3><ul>
+<li>文本表示为特征向量<ul>
+<li>词语(term): 基本单元</li>
+<li>权重 TF * IDF<ul>
+<li>TF: 词频</li>
+<li>IDF: log(N/DF), N 为文档总数量，DF 为包含该词语的文档数量</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="文本分类-特征选择"><a href="#文本分类-特征选择" class="headerlink" title="文本分类-特征选择"></a>文本分类-特征选择</h3><ul>
+<li>好处<ul>
+<li>减少特征维数，改善效果</li>
+<li>防止过拟合，增强模型的泛化能力</li>
+<li>提高学习效率</li>
+<li>提高模型的可解释性</li>
+</ul>
+</li>
+<li>方法，从原有特征集合中找出一个更加有效的子集<ul>
+<li>Document Frequency 文档频率<ul>
+<li>词语的 DF 小于某个阈值去掉(太小，没有代表性)</li>
+<li>词语的 DF 大于某个阈值也去掉(太多，没有区分度)</li>
+</ul>
+</li>
+<li>Mutual Information 互信息<ul>
+<li>MI 越大词语 t 和 c 共现程度越大</li>
+</ul>
+</li>
+<li>Information Gain 信息增益<ul>
+<li>词语 t 为整个分类所能提供的信息量(不考虑任何特征的熵和考虑该特征后的熵的差值)</li>
+</ul>
+</li>
+<li>Information Ratio</li>
+<li>Chi Squrae</li>
+<li>Odd Ratio</li>
+</ul>
+</li>
+</ul>
+<h3 id="朴素贝叶斯分类"><a href="#朴素贝叶斯分类" class="headerlink" title="朴素贝叶斯分类"></a>朴素贝叶斯分类</h3><ul>
+<li>基于概率理论的学习和分类方法</li>
+<li>贝叶斯理论充当重要角色</li>
+<li>分类是根据给定样本描述的可能的类别基础上产生的后验概率分布<ul>
+<li>基于贝叶斯理论来计算后验概率</li>
+</ul>
+</li>
+<li>分类原理：最大后验估计 MAP(maximum posteriori)</li>
+</ul>
+<h3 id="Rocchio-分类方法"><a href="#Rocchio-分类方法" class="headerlink" title="Rocchio 分类方法"></a>Rocchio 分类方法</h3><ul>
+<li>使用中心向量(centroid vector)表示一个类别<ul>
+<li>中心向量为某个类别下所有文档向量的平均向量</li>
+<li>基于训练集计算</li>
+</ul>
+</li>
+<li>对于新文档，计算该文档与每个类别的中心向量的距离/相似度<ul>
+<li>基于余弦测度</li>
+</ul>
+</li>
+<li>确定其类别为距离最小/相似性最大的类别</li>
+<li>优势: 训练快速，模型很小，快速分类</li>
+<li>劣势: 类别数量增加时准确率降低</li>
+</ul>
+<h3 id="K-近邻分类方法"><a href="#K-近邻分类方法" class="headerlink" title="K 近邻分类方法"></a>K 近邻分类方法</h3><ul>
+<li>与 Rocchio 方法类似</li>
+<li>检查新文档的 k 个近邻向量，利用这些近邻向量的类别来确定该文档的类别<ul>
+<li>K 通过实验确定</li>
+<li>“近邻” 通过相似度/距离测度来定义</li>
+</ul>
+</li>
+<li>1 近邻分类方法<ul>
+<li>将新文档划分到与其最相近的文档样例所属的类别</li>
+</ul>
+</li>
+<li>K 近邻分类方法<ul>
+<li>基于投票机制，将新文档划分到 k 个近邻文档中多数文档所属的类别</li>
+<li>进一步，基于加权投票机制，根据近邻文档的相近程度，赋予每个近邻文档一定的权重</li>
+</ul>
+</li>
+<li>优势<ul>
+<li>不需要训练阶段</li>
+<li>类别数量增加也具有良好的扩展性</li>
+</ul>
+</li>
+<li>劣势<ul>
+<li>训练数据很大时模型很大</li>
+<li>需要大量内存</li>
+<li>性能较慢</li>
+</ul>
+</li>
+</ul>
+<h3 id="支持向量机-Support-Vector-Machine"><a href="#支持向量机-Support-Vector-Machine" class="headerlink" title="支持向量机 Support Vector Machine"></a>支持向量机 Support Vector Machine</h3><ul>
+<li>对于二类分类，该方法在向量空间中找出一个决策超平面(分类函数 f(x) = wx + b)，对属于两个类别的文档向量进行有效粉绿<ul>
+<li>通常有很多可能的分割超平面</li>
+<li>找到最好的一个超平面: 最大间隔准则<ul>
+<li>使得属于不同类别的数据点间隔最大</li>
+</ul>
+</li>
+<li>间隔区边缘上的向量称为支撑向量</li>
+</ul>
+</li>
+<li>实际上要求解一个带约束的二次规划(quadratic programming, QP)问题</li>
+<li>训练结果<ul>
+<li>支撑向量</li>
+</ul>
+</li>
+<li>分类<ul>
+<li>计算新文档向量与支撑向量的距离</li>
+</ul>
+</li>
+<li>常用工具<ul>
+<li>SVMLight</li>
+<li>LIBSVM</li>
+</ul>
+</li>
+<li>优势<ul>
+<li>只有支撑向量用来对新文档分类</li>
+<li>模型小</li>
+<li>一般不会过拟合</li>
+</ul>
+</li>
+<li>劣势<ul>
+<li>训练过程非常复杂: 优化问题</li>
+</ul>
+</li>
+</ul>
+<h3 id="分类结果评估"><a href="#分类结果评估" class="headerlink" title="分类结果评估"></a>分类结果评估</h3><ul>
+<li>对每个分类都可以计算出 precision, recall, F-measure<ul>
+<li>一般侧重正例的结果</li>
+</ul>
+</li>
+<li>总体评价: 精度(Accuracy) = 正确分类的样本数量 / 总样本数量</li>
+</ul>
+<h3 id="如何应用于实际"><a href="#如何应用于实际" class="headerlink" title="如何应用于实际"></a>如何应用于实际</h3><ul>
+<li>大多数应用都是直接采用已有的分类算法与工具<ul>
+<li>不需要开发新的</li>
+</ul>
+</li>
+<li>关键在于特征工程<ul>
+<li>针对特定应用问题寻找合理、有效的特征集</li>
+</ul>
+</li>
+<li>一般需要调节分类算法与工具的多个参数<ul>
+<li>比如 KNN 中的 K，SVM 中的 C 参数等</li>
+</ul>
+</li>
+</ul>
+<h2 id="聚类"><a href="#聚类" class="headerlink" title="聚类"></a>聚类</h2><ul>
+<li>给定一个数据点集合，每个数据点具有一组属性，数据点之间能进行相似度度量，聚类目标为找到若干类簇：<ul>
+<li>同一类簇中的数据点相似</li>
+<li>不同类簇中的数据点不相似</li>
+</ul>
+</li>
+<li>无监督学习<ul>
+<li>没有标注数据</li>
+<li>类簇未知</li>
+</ul>
+</li>
+<li>相似度度量准则<ul>
+<li>欧氏距离(L2 norm)</li>
+<li>余弦准则</li>
+<li>L1 范式(L1 norm)</li>
+</ul>
+</li>
+<li>聚类算法<ul>
+<li>K-Means 聚类</li>
+<li>层次式聚类(Hierarchical clustering)</li>
+<li>增量式单遍聚类</li>
+<li>基于图分割的聚类</li>
+<li>基于密度峰值的聚类</li>
+</ul>
+</li>
+</ul>
+<p>应用：文档聚类</p>
+<ul>
+<li>目标：发现文档类簇，同一类簇中文档相似(基于重要词语)</li>
+<li>方法：识别每篇文档中的重要词语，基于文档相似性进行聚类</li>
+</ul>
+<h3 id="层次式聚类"><a href="#层次式聚类" class="headerlink" title="层次式聚类"></a>层次式聚类</h3><ul>
+<li>自底向上的凝聚式聚类(Agglomerative clustering)<ul>
+<li>初始每个文档自成一个类簇</li>
+<li>每次合并最相似/距离最近的两个类簇，形成一个新类簇，循环执行，直到满足终止条件<ul>
+<li>终止条件为类簇数量或者相似度阈值</li>
+</ul>
+</li>
+<li>结果为树形图</li>
+</ul>
+</li>
+<li>不同的计算类簇间距离/相似性的方法<ul>
+<li>最小距离(single link)</li>
+<li>最大距离(complete link)</li>
+<li>平均距离(group average)</li>
+</ul>
+</li>
+<li>自顶向下的划分式聚类(Divisive clustering)<ul>
+<li>初始只有一个类簇，包括所有文档</li>
+<li>每次从当前类簇中选择最大(或最不合理)的一个类簇，将其分割成两个(或多个)新的类簇，循环执行，直到满足终止条件<ul>
+<li>类簇分割方法可以采用其他聚类方法，比如 K 均值算法等</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="K-均值-K-means-聚类"><a href="#K-均值-K-means-聚类" class="headerlink" title="K 均值(K-means)聚类"></a>K 均值(K-means)聚类</h3><ul>
+<li>一种基于划分的聚类算法</li>
+<li>算法将文档集划分到 k 个类簇中<ul>
+<li>每个类簇有一个类簇中心，称为 centroid</li>
+<li>可基于该类簇文档向量的平均向量计算</li>
+</ul>
+</li>
+<li>K 由用户指定</li>
+</ul>
+<h3 id="Buckshot-算法"><a href="#Buckshot-算法" class="headerlink" title="Buckshot 算法"></a>Buckshot 算法</h3><p>结合 K-means 与凝聚式聚类</p>
+<ul>
+<li>从原始 n 个数据点中随机取 √n 个数据点</li>
+<li>针对这些样本数据点上运行凝聚式聚类</li>
+<li>使用凝聚式聚类结果作为初始种子点</li>
+<li>在元数据上基于初始种子点运行 K-means</li>
+</ul>
+<p>改善了种子点的选择</p>
+<h3 id="增量式单遍聚类-Single-Pass"><a href="#增量式单遍聚类-Single-Pass" class="headerlink" title="增量式单遍聚类(Single-Pass)"></a>增量式单遍聚类(Single-Pass)</h3><ul>
+<li>增量式聚类，适合于高效处理动态文本数据流</li>
+<li>将新文档与已有类簇逐一对比，如果与某个类簇的相似度值大于设定的阈值，那么将该文档归并到相应类簇中，否则基于该文档形成一个新的类簇<ul>
+<li>数据流中第一个文档形成第一个类簇</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于图分割的聚类"><a href="#基于图分割的聚类" class="headerlink" title="基于图分割的聚类"></a>基于图分割的聚类</h3><ul>
+<li>计算文档对之间的相似度值，构建相似度图 G=(V,E)<ul>
+<li>每个文档为图的一个节点</li>
+<li>文档之间有边连接，边的权重 W 为文档相似度</li>
+</ul>
+</li>
+<li>文档聚类问题转换成在图上进行顶点分割的问题</li>
+<li>切割标准 min cut(A,B)</li>
+<li>问题<ul>
+<li>只考虑了类簇之间的连接情况</li>
+<li>没有考虑类簇内部的密度</li>
+</ul>
+</li>
+<li>改进方法: Normalized Cut</li>
+</ul>
+<h3 id="基于密度峰值的聚类-Science"><a href="#基于密度峰值的聚类-Science" class="headerlink" title="基于密度峰值的聚类(Science)"></a>基于密度峰值的聚类(Science)</h3><ul>
+<li>简单优美，可自动确定聚类数目，检测孤立点，可识别不同形状的聚类</li>
+<li>假设: 类簇中心被一些局部密度较低的点围绕，并且这些点距离其他有高局部密度的点的距离都比较大</li>
+<li>聚类过程<ul>
+<li>计算出所有数据点的局部密度值和到高局部密度点的距离后，可以得到一张决策图</li>
+<li>在决策图上挑选具有较大密度的样本点作为类簇中心</li>
+<li>将其他样本点按照局部密度从高到底依次确定所属类簇，其类簇为领域内最近的高于该点局部密度的样本点所处的类簇</li>
+</ul>
+</li>
+</ul>
+<h3 id="半监督聚类"><a href="#半监督聚类" class="headerlink" title="半监督聚类"></a>半监督聚类</h3><p>除了带聚类的数据，还提供了少量先验知识</p>
+<ul>
+<li>部分标注信息<ul>
+<li>例如为若干数据点标注了类簇</li>
+</ul>
+</li>
+<li>约束信息<ul>
+<li>例如要求某两个数据点必须在同一类簇，或者某两个数据点不能在同一类簇</li>
+</ul>
+</li>
+<li>Seeded K-means<ul>
+<li>用户提供了 Seeded points</li>
+<li>利用提供的标注信息(seeded points)寻找初始类簇中心，然后运行 K-means</li>
+<li>Seeded points 的标签可能会改变</li>
+</ul>
+</li>
+<li>Constrained K-means<ul>
+<li>用户提供了 Seeded points</li>
+<li>利用提供的标注信息(seeded points)寻找初始类簇中心，然后运行 K-means</li>
+<li>Seeded points 的标签不允许被改变</li>
+</ul>
+</li>
+</ul>
+<h3 id="聚类结果评估"><a href="#聚类结果评估" class="headerlink" title="聚类结果评估"></a>聚类结果评估</h3><ul>
+<li>基于人工标注的类簇进行评价</li>
+<li>评价准则包括: F 值、纯度(Purity)、规范化信息(NMI)</li>
+</ul>
+<h3 id="聚类算法的选择"><a href="#聚类算法的选择" class="headerlink" title="聚类算法的选择"></a>聚类算法的选择</h3><ul>
+<li>聚类算法的选择具有挑战性<ul>
+<li>每种算法都有各自的优势与不足，聚类效果通常依赖于聚类算法、距离函数、具体的数据与应用</li>
+</ul>
+</li>
+<li>实际做法<ul>
+<li>运行使用不同距离函数的多个聚类算法，分析和比较聚类结果</li>
+</ul>
+</li>
+<li>对聚类结果的解释要基于原始数据的意义以及聚类算法的特性</li>
+</ul>
+<h3 id="半监督聚类-1"><a href="#半监督聚类-1" class="headerlink" title="半监督聚类"></a>半监督聚类</h3><ul>
+<li>COP K-means<ul>
+<li>用户提供了 must-link 与 cannot-link 约束</li>
+<li>初始化: 类簇中心随机选择，但必须保证满足 must-link 约束，也就是 must-link 的两个数据点不能选择做为不同类簇的中心</li>
+<li>算法: 一个数据点必须在不违反任何约束的情况下归属到临近的类簇</li>
+</ul>
+</li>
+</ul>
+<h3 id="检索结果聚类"><a href="#检索结果聚类" class="headerlink" title="检索结果聚类"></a>检索结果聚类</h3><ul>
+<li>两类方法<ul>
+<li>先对 snippet 进行聚类，然后为每个类簇选择标签</li>
+<li>先分析获取有意义的类簇标签，然后将检索结果划分到不同标签</li>
+</ul>
+</li>
+<li>基于后缀树的检索结果聚类(Suffix Tree Clustering, STC)<ul>
+<li>时间复杂度低，高效</li>
+<li>容易获得每个类簇的关键词标签</li>
+<li>允许一个文档属于多个类簇</li>
+</ul>
+</li>
+<li>基于回归学习的检索结果聚类<ul>
+<li>现货的重要的短语代表类簇，然后再将检索结果跟类簇关联</li>
+<li>同样允许一文档隶属多个类簇</li>
+<li>候选短语(频率大于3的n-gram(n&lt;=3))</li>
+<li>短语重要性排序<ul>
+<li>看做回归问题</li>
+<li>利用 SVM-Light 实现的支撑向量回归等多个回归方法</li>
+<li>人工标注短语训练集，也即短语与其重要性分值</li>
+</ul>
+</li>
+<li>短语特征<ul>
+<li>Phrase Frequency/Inverted Document Frequency(TFIDF)</li>
+<li>Phrase Length</li>
+<li>Intra-Cluster Similarity</li>
+<li>Cluster Entropy</li>
+<li>Phrase Independence</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="智能问答基础技术"><a href="#智能问答基础技术" class="headerlink" title="智能问答基础技术"></a>智能问答基础技术</h2><p>起源于信息检索社区。根据用户的提问给出简短的答案，有时需要提供答案的证据。</p>
+<h3 id="问题类型"><a href="#问题类型" class="headerlink" title="问题类型"></a>问题类型</h3><ul>
+<li>根据答案类型划分<ul>
+<li>事实型问题(Factual questions)</li>
+<li>观点型问题(Opinions)</li>
+<li>摘要型问题(Summaries)</li>
+</ul>
+</li>
+<li>根据问题言语行为(question speech act)划分<ul>
+<li>是否型问题(Yes/NO questions)</li>
+<li>WH 问题(WH questions)</li>
+<li>间接请求(Indirect Requests)</li>
+<li>命令(Commands)</li>
+</ul>
+</li>
+<li>复杂/困难问题<ul>
+<li>为什么/怎么样(Why, How questions)</li>
+<li>什么(What questions)</li>
+</ul>
+</li>
+</ul>
+<h3 id="主要技术"><a href="#主要技术" class="headerlink" title="主要技术"></a>主要技术</h3><ul>
+<li>传统自动问答技术<ul>
+<li>基于语料库的自动问答<ul>
+<li>问题分析(分类、模板匹配、语义分析)</li>
+<li>段落检测(段落抽取、排序)</li>
+<li>答案抽取(实体识别、模板匹配、排序)</li>
+</ul>
+</li>
+<li>基于知识库的自动问答</li>
+</ul>
+</li>
+<li>社区问答技术<ul>
+<li>问题分类、问题推荐</li>
+<li>专家发现、信誉评估</li>
+<li>知识抽取</li>
+</ul>
+</li>
+</ul>
+<h2 id="互联网信息抽取"><a href="#互联网信息抽取" class="headerlink" title="互联网信息抽取"></a>互联网信息抽取</h2><p><strong>非结构化数据</strong>(纯文本，句子，查询字符串) 和<strong>半结构化数据</strong>(HTML文档，查询日志，词典) -IE-&gt; <strong>结构化数据</strong>(语义知识)</p>
+<ul>
+<li>网页主要文本抽取(BTE)方法<ul>
+<li>识别出一个包含最多词语(排除最多标签)的连续区域</li>
+</ul>
+</li>
+<li>基于文本标签比例的抽取方法(CERT, Content Extraction via Tag Ratios)<ul>
+<li>绘制文本标签直方图</li>
+<li>对文本标签直方图进行变换，并进行聚类，得到网页内容</li>
+</ul>
+</li>
+<li>基于网页分块重要性识别的抽取方法(Learning Block Importance Models for Web Pages)<ul>
+<li>首先将网页分为块状区域(VIPS, 基于视觉的网页分块算法)</li>
+<li>然后对每块区域判断重要性</li>
+</ul>
+</li>
+<li>基于模板的方法<ul>
+<li>基于批量处子统一模板的网页来自动检测模板</li>
+<li>利用模板抽取网页内容</li>
+</ul>
+</li>
+</ul>
+<h3 id="文本语义信息抽取"><a href="#文本语义信息抽取" class="headerlink" title="文本语义信息抽取"></a>文本语义信息抽取</h3><p><strong>主要任务</strong></p>
+<ul>
+<li>命名实体抽取(Named entity extraction)<ul>
+<li>命名实体识别(Named entity recognitoin, NER)</li>
+<li>共指消解(Co-reference resolution)</li>
+</ul>
+</li>
+<li>属性抽取(Attribute extraction)</li>
+<li>关系挖掘(Relation mining)<ul>
+<li>相关短语和实体(Related terms and entities)</li>
+<li>归类(Categorization)</li>
+<li>关系检测与分类(Relation detection and classification)</li>
+</ul>
+</li>
+<li>事件挖掘(Event mining)<ul>
+<li>事件检测与分类(Event detection and classification)</li>
+</ul>
+</li>
+</ul>
+<h3 id="实体识别"><a href="#实体识别" class="headerlink" title="实体识别"></a>实体识别</h3><ul>
+<li>识别文本中出现的实体<ul>
+<li>MUC(1997): Person, Location, Organization, Date/Time/Currency</li>
+<li>ACE(2005): 100 多种更具体的类型</li>
+</ul>
+</li>
+<li>人工规则 vs 机器学习方法</li>
+<li>针对不同试题类型与领域考虑不同方法<ul>
+<li>封闭类(e.g., geographical locations, disease names, gene &amp; protein names): 人工规则 + 词典</li>
+<li>语法相关(e.g., phone numbers, zip codes): 正则表达式</li>
+<li>语义相关(e.g., person and compnay names): 综合考虑上下文，句法特征，词典，启发式规则等</li>
+<li>对于典型的实体类型抽取效果已经较好</li>
+</ul>
+</li>
+</ul>
+<h3 id="语义类挖掘"><a href="#语义类挖掘" class="headerlink" title="语义类挖掘"></a>语义类挖掘</h3><ul>
+<li>目标：发现同位短语(coordinate terms), 类似于可比实体发现</li>
+<li>主要方法<ul>
+<li>一阶共现(First-order co-occurrences): 普通共现 &amp; 模板</li>
+<li><strong>二阶共现(Second-order co-occurrences)</strong>: 分布式相似性<ul>
+<li>分布式假设：出现在相似上下文(词语、句法)中的词语比较相似</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>基于分布相似性(DS)</strong></p>
+<ul>
+<li>定义上下文：句法上下文，词语上下文</li>
+<li>将每个短语表示为一个特征向量<ul>
+<li>特征：短语出现的一个上下文</li>
+<li>特征值：上下文针对短语的权重</li>
+</ul>
+</li>
+<li>计算短语相似性<ul>
+<li>特征向量之间的相似性</li>
+</ul>
+</li>
+</ul>
+<p><strong>语义层级构建</strong></p>
+<ul>
+<li>主要子任务<ul>
+<li>为短语(term)赋予类标签或上位词(label)<ul>
+<li>Beijing -&gt; city, cpatial</li>
+<li>Apple -&gt; company, fruit</li>
+<li>Red -&gt; Color</li>
+<li>方法: Pattern matching + counting<ul>
+<li>人工设计或自动生成模板</li>
+<li>文本模板或 HTML 表格</li>
+<li>输出 <term, label,="" pattern,="" source,="" weight=""> 元组</term,></li>
+</ul>
+</li>
+<li>挑战<ul>
+<li>边界检测: 短语边界、标签边界</li>
+<li>标签选择</li>
+</ul>
+</li>
+<li>合并元组<ul>
+<li>对于每个短语 T 与标签 L，计算 w(T, L)</li>
+</ul>
+</li>
+<li>方法:简单计数<ul>
+<li>对于每对(T, L)统计<t, l,="" p,="" s,="" w="">元组的数量</t,></li>
+<li>或者 TF-IDF</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>为语义类(semantic class)赋予类标签(label)<ul>
+<li>{Beijing, Shanghai, Dalian…} -&gt; cities, Chinese cities…</li>
+<li>方法: 投票(Voting)</li>
+</ul>
+</li>
+<li>构建层级</li>
+</ul>
+</li>
+</ul>
+<p><strong>通用关系</strong></p>
+<p>关系: 与实体相关的事实</p>
+<p>历史: MUC-7(1997) 提出，ACE、KBP 扩展</p>
+<p><strong>关系抽取方法</strong></p>
+<ul>
+<li>基于知识/规则的方法<ul>
+<li>专家制定规则、模板(可以基于词汇、句法结构)</li>
+</ul>
+</li>
+<li>机器学习方法<ul>
+<li>半监督学习：基于人工标注数据训练模型</li>
+<li>半监督学习：基于自举方法从种子样例中训练模型<ul>
+<li>自举方法(Bootstrapping): DIPRE(Brin 1998, 双重迭代模板关系抽取)</li>
+</ul>
+</li>
+<li>混合或交互系统<ul>
+<li>专家与机器学习算法交互(e.g., active learning)从而迭代优化/扩展规则和模板</li>
+<li>交互包括标注样例、修改规则等</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>属性抽取(Attribute Extraction)</strong></p>
+<ul>
+<li>基于无结构化文本</li>
+<li>基于 HTML 表格</li>
+<li>基于 Wikipedia Infobox</li>
+</ul>
+<h3 id="相关系统"><a href="#相关系统" class="headerlink" title="相关系统"></a>相关系统</h3><ul>
+<li>NeedleSeek<ul>
+<li>needleseek.msra.cn</li>
+<li>基于 Web 大规模数据挖掘开放域语义知识</li>
+<li>基于挖掘的语义知识回答/服务用户需求</li>
+<li>语义卡片(Semantic Card)<ul>
+<li>将输入的词或段誉映射为一个或多个概念</li>
+</ul>
+</li>
+<li>语义图(Semantic Map)<ul>
+<li>概念组织成语义类，并获取概念之间的语义关系</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>人立方系统<ul>
+<li>renlifang.msra.cn 中文</li>
+<li>entitycube.research.microsoft.com 英文</li>
+<li>侧重人物、机构之间的关系</li>
+</ul>
+</li>
+<li>谷歌知识图谱<ul>
+<li>实体关系网络</li>
+</ul>
+</li>
+</ul>
+<h2 id="情感分析与观点挖掘"><a href="#情感分析与观点挖掘" class="headerlink" title="情感分析与观点挖掘"></a>情感分析与观点挖掘</h2><ul>
+<li>应用<ul>
+<li>产品比较与推荐</li>
+<li>个人与机构声誉分析</li>
+<li>电视节目满意度分析</li>
+<li>互联网舆情分析<ul>
+<li>利用文本情感计算技术深入分析人们对社会现实和现象的群体性情绪、观点、思想、心理、意志和要求</li>
+</ul>
+</li>
+<li>反恐与维稳</li>
+</ul>
+</li>
+<li>原型系统与产品<ul>
+<li>英文: OpinionFinder, RapidMiner, TextMap, Bing 产品搜索, condersr.com, tweetfeel.com</li>
+<li>中文: 爱搜车众评, 雅虎人物搜索</li>
+</ul>
+</li>
+</ul>
+<h3 id="研究框架"><a href="#研究框架" class="headerlink" title="研究框架"></a>研究框架</h3><ul>
+<li>应用层：情感检索，情感摘要，情感问答</li>
+<li>核心层：情感要素抽取，情感倾向性分析，主客观分析/观点文本识别</li>
+<li>基础层：NLP 基本模块，情感资源收集与标注</li>
+<li>来源：产品评论，电影评论，新闻评论，博客，微博</li>
+</ul>
+<h3 id="情感分类"><a href="#情感分类" class="headerlink" title="情感分类"></a>情感分类</h3><ul>
+<li>将文本按照所表达的总体情感进行分类<ul>
+<li>例如正面(Positive), 负面(Negative), 中性(neutral)</li>
+</ul>
+</li>
+<li>基于话题的文本分类相似又不同<ul>
+<li>话题词汇很重要</li>
+<li>情感词汇更重要，如: great, excellent, horrible, bad, worst, …</li>
+</ul>
+</li>
+</ul>
+<p><strong>情感分析任务</strong></p>
+<ul>
+<li>主客观分析/观点文本识别<ul>
+<li>客观：反映关于世界的事实信息</li>
+<li>主观：反映个人情感、信念等</li>
+</ul>
+</li>
+<li>倾向性分析(可看作主客观分析的细粒度处理)<ul>
+<li>对包含观点的文本进行倾向性判断</li>
+<li>一般分为三类：褒义、贬义、中性(在一些问题不考虑中性)</li>
+</ul>
+</li>
+<li>情绪分析<ul>
+<li>愤怒、高兴、喜好、悲哀、吃惊等等</li>
+</ul>
+</li>
+<li>粒度<ul>
+<li>词、句子、文档</li>
+</ul>
+</li>
+</ul>
+<p><strong>情感资源</strong></p>
+<ul>
+<li>情感分析的基础</li>
+<li>英文资源较多<ul>
+<li>情感词典: WentiWordNet, Inquirer 等<ul>
+<li>包含词语、短语等</li>
+<li>倾向性词语、主观性词语</li>
+</ul>
+</li>
+<li>已标注语料库数量较多</li>
+<li>开源情感分析工具 OpinionFinder</li>
+</ul>
+</li>
+<li>中文资源较少，但逐年增多<ul>
+<li>知网 Hownet 提供了部分情感词汇</li>
+<li>近两年的评测提供了中文标注文本<ul>
+<li>NTCIR, COAE, NLP&amp;CC 等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>情感资源基本上跟领域、语言有关</li>
+<li>主客观分析与倾向性分析的资源也不一样</li>
+</ul>
+<h3 id="情感词汇资源构建"><a href="#情感词汇资源构建" class="headerlink" title="情感词汇资源构建"></a>情感词汇资源构建</h3><ul>
+<li>基于心理学的评价理论</li>
+<li>任务<ul>
+<li>确定词语的主观性(subjectivity)</li>
+<li>确定词语的倾向(orientation)</li>
+<li>确定词语态度的强度(strength)</li>
+</ul>
+</li>
+<li>连接词方法(Conjunction Method)<ul>
+<li>用 and 相连的形容词通常具有相同的倾向，而用 but 的则具有相反的倾向</li>
+<li>对形容词按照不同倾向聚类</li>
+</ul>
+</li>
+<li>PMI 方法(Pointwise Mutual Information 点互信息, Orientation, Subjectivity)<ul>
+<li>判别倾向性：具有相似倾向性的词语倾向于在文档中共同出现</li>
+<li>判别主观性：主观性形容词倾向于出现在其他主观性形容词周围</li>
+<li>可基于 AltaVista 搜索引擎的 NEAR 操作符返回的结果数进行 PMI 的计算</li>
+<li>预测词语的倾向性 SO(t)</li>
+</ul>
+</li>
+<li>WordNet 扩展方法<ul>
+<li>著名的英文词义关系计算资源，词义数据库，包含词义及其关系</li>
+<li>wordnet.princeton.edu</li>
+<li>WordNet 中基本单元为Synset(synonym set): (近似)同义集合<ul>
+<li>WordNet 的基本单元</li>
+<li>每个 synset 表示一个语义概念</li>
+<li>Example synset: {hit, strike, impinge on, run into, collide with}</li>
+</ul>
+</li>
+<li>每个词条包括多个 synsets, 注释，使用样例等信息</li>
+<li>Synsets 通过不同的词义关系相连</li>
+<li>使用词语之间的同义、反义关系</li>
+<li>假设：形容词通常与其同义词具有相同的倾向性，而与反义词具有相反的倾向性</li>
+<li>利用种子形容词集，能够获得 WordNet 中所有形容词的倾向性</li>
+</ul>
+</li>
+<li>释义方法(Gloss Use Method)<ul>
+<li>Orientation, Subjectivity, SentiWordNet</li>
+<li>假设<ul>
+<li>倾向性：具有相似倾向性的词语具有相似的释义</li>
+<li>主观性：具有相似倾向性的词语具有相似的释义，不具有倾向性的词语具有无倾向的释义</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="观点抽取"><a href="#观点抽取" class="headerlink" title="观点抽取"></a>观点抽取</h3><p>一个观点表示为一个五元组(目标对象, 目标对象特征, 观点的情感值, 观点持有者, 观点表达时间)</p>
+<p>观点抽取任务很困难，<strong>重点关注两个子任务</strong></p>
+<ul>
+<li>特征抽取与聚类(aspect extraction and grouping)<ul>
+<li>抽取对象的所有特征表达，并将同义特征表达聚类。每个特征类表示了关于该对象的独一无二的某个特征</li>
+</ul>
+</li>
+<li>特征情感分类(aspect sentiment classification)<ul>
+<li>确定观点针对每个特征的情感倾向：正面、负面、中性</li>
+</ul>
+</li>
+</ul>
+<p><strong>对象特征抽取</strong></p>
+<ul>
+<li>频繁特征：被许多评论提及的特征</li>
+<li>非频繁特征抽取：基于同一情感词被用来描述不同特征与对象</li>
+</ul>
+<h2 id="信息摘要"><a href="#信息摘要" class="headerlink" title="信息摘要"></a>信息摘要</h2><p>对海量数据内容进行<strong>提炼与总结</strong>，以<strong>简洁、直观</strong>的摘要来概括用户所关注的主要内容，方便用户快速了解与浏览海量内容</p>
+<h3 id="文档摘要基本技术"><a href="#文档摘要基本技术" class="headerlink" title="文档摘要基本技术"></a>文档摘要基本技术</h3><ul>
+<li>早期论文: Luhn. The Automatic Creation of Literature Abstracts(1958)</li>
+<li>研究 50 多年，有一定进展，但仍不能令人满意</li>
+<li>代表系统<ul>
+<li><strong>NewsInEssence</strong> by University of Michigan</li>
+<li><strong>NewsBlaster</strong> by Columnbia University</li>
+</ul>
+</li>
+<li>摘要任务多样化：单文档摘要，多文档摘要，查询相关的多文档摘要</li>
+<li>摘要方法分类<ul>
+<li><strong>抽取式</strong><ul>
+<li>从文档中抽取已有句子形成摘要</li>
+<li>实现简单，能保证句子的可读性</li>
+</ul>
+</li>
+<li><strong>生成式/混合式</strong><ul>
+<li>生成新的句子，或者对已有句子进行压缩、重构与融合</li>
+<li>难度更大，但更接近摘要的本质</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="抽取式文档摘要"><a href="#抽取式文档摘要" class="headerlink" title="抽取式文档摘要"></a>抽取式文档摘要</h3><p><strong>典型框架</strong></p>
+<p>文档集 -&gt; 文档理解 -&gt; <strong>句子重要性计算与排名(利用词语句子的各类特征，基于机器学习)</strong> -&gt; 句子选择 -&gt; 摘要句子排序 -&gt; 摘要</p>
+<p><strong>关键问题</strong></p>
+<p>如何衡量句子的重要性</p>
+<ul>
+<li>影响句子重要性的因素<ul>
+<li>句子长度</li>
+<li>句子位置</li>
+<li>句子中词语的 TFIDF</li>
+<li>句子是否包括线索词</li>
+<li>句子是否与标题相似</li>
+</ul>
+</li>
+</ul>
+<p><strong>不同方法</strong></p>
+<ul>
+<li>基于单一因素的摘要方法<ul>
+<li>只考虑句子位置</li>
+<li>Lead Baseline<ul>
+<li>抽取一篇文档中前几句话形成摘要</li>
+</ul>
+</li>
+<li>Coverage Baseline<ul>
+<li>轮流从不同文档中抽取第一、第二…第 K 句话形成摘要</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>基于启发式规则<ul>
+<li>基于经验性公式综合考虑少数几个因素</li>
+<li>例如: centroid-based method, 考虑了句子包含词语权重、句子位置、句子与首句相似度</li>
+</ul>
+</li>
+<li>基于有监督学习的方法<ul>
+<li>可考虑众多因素，由机器学习算法确定最优组合</li>
+<li>句子分类<ul>
+<li>二类分类：句子是否隶属于摘要</li>
+<li>SVM</li>
+</ul>
+</li>
+<li>序列标注<ul>
+<li>为每个句子打上标签</li>
+<li>可考虑相邻句子之间的关系</li>
+<li>HMM, CRF</li>
+</ul>
+</li>
+<li>句子回归<ul>
+<li>为每个句子预测一个反应重要性的分数</li>
+<li>SVR</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>基于图排序的方法<ul>
+<li>如 LexRank, TextRank</li>
+<li>只依赖于句子相似度</li>
+<li>基于 PageRank 算法或相似算法</li>
+<li>步骤<ul>
+<li>构建图 G = (V, E)，句子作为定点，句子之间有关系则构成边</li>
+<li>应用 PageRank 算法或相似算法获得每个顶点的权重</li>
+<li>基于句子权重选择句子形成摘要</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>摘要冗余去除<ul>
+<li>多文档摘要中不同文档中的句子可能有重复内容</li>
+<li>摘要很短，应该尽可能包括多样化内容</li>
+<li>选择与摘要中已有句子冗余度小的句子</li>
+<li>MMR 方法</li>
+</ul>
+</li>
+<li>基于整数线性规划(ILP)的方法<ul>
+<li>将摘要看做一个带约束的优化问题</li>
+<li>基于 ILP 进行求解，可采用现成的 ILP 求解工具<ul>
+<li>比如 IBM CPLEX Optimizer</li>
+</ul>
+</li>
+<li>同时进行句子抽取与冗余去除</li>
+</ul>
+</li>
+<li>摘要句子排序<ul>
+<li>句子顺序直接影响摘要可读性</li>
+<li>单文档摘要中句子顺序容易确定<ul>
+<li>依据句子在原文档中的顺序即可</li>
+</ul>
+</li>
+<li>多文档摘要中句子顺序较难确定<ul>
+<li>可综合考虑句子所在上下文信息进行排序</li>
+<li>先确定任何两句之间的先后顺序</li>
+<li>再确定多个句子之间的整体顺序</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>目前摘要总体性能不高，需要方法上的突破。</p>
+<h3 id="相关评测"><a href="#相关评测" class="headerlink" title="相关评测"></a>相关评测</h3><ul>
+<li>DUC<ul>
+<li>NIST 组织, 2000-2007</li>
+<li>主要任务(传统)：单文档、多文档、查询相关摘要</li>
+</ul>
+</li>
+<li>TAC Summarization Track<ul>
+<li>NIST 组织, 2008-2011, 2014</li>
+<li>主要任务(新型)<ul>
+<li>Update Summarization</li>
+<li>Opinion Summarization</li>
+<li>Guided Summarization</li>
+<li>AESOP(摘要自动评价)</li>
+<li>Biomedical Summarization</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>NTCIR-9~10: 1click(新型)</li>
+<li>TREC2013: Temporal Summarization Track(新型)</li>
+</ul>
+<h2 id="社交网络分析"><a href="#社交网络分析" class="headerlink" title="社交网络分析"></a>社交网络分析</h2><ul>
+<li>社会媒体的特性<ul>
+<li>用户生成内容多，富含观点</li>
+<li>群体智慧</li>
+<li>用户交互性强</li>
+<li>异构网络</li>
+</ul>
+</li>
+<li>社交媒体分析<ul>
+<li>社交网络分析<ul>
+<li>基于社交关系、结构进行挖掘</li>
+<li>例如：社区检测、连接预测、影响力分析</li>
+</ul>
+</li>
+<li>社交内容挖掘<ul>
+<li>基于文本等内容数据进行挖掘</li>
+<li>例如：摘要、关键词、情感分析</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>社交网络可以用矩阵表示</p>
+<h3 id="社会网络"><a href="#社会网络" class="headerlink" title="社会网络"></a>社会网络</h3><ul>
+<li>由相互关联的节点(个体或机构)组成的结构<ul>
+<li>不同关系：例如好友关系、亲属关系等</li>
+</ul>
+</li>
+<li>图表示<ul>
+<li>节点 = 成员</li>
+<li>边 = 关系</li>
+</ul>
+</li>
+<li>现实例子<ul>
+<li>好友网络(facebook, renren, wechat)</li>
+<li>媒体分享(Flickr, Youtube)</li>
+<li>社会标注(Del.icio.us)</li>
+</ul>
+</li>
+<li>相关任务<ul>
+<li>社交网络抽取(Social Network Extraction)<ul>
+<li>从数据源中抽取、构建社交网络</li>
+</ul>
+</li>
+<li><strong>网络中心性分析(Network Centrality Analysis)</strong><ul>
+<li>识别社交网络上最重要的节点(重要性的定义由目的、环境所定)</li>
+<li>输入：一个社交网络</li>
+<li>输出：最重要的节点列表</li>
+<li>方法：为节点计算分数或排序，反映节点的重要性/专业性/影响力</li>
+<li>课采用链接分析领域的不同算法<ul>
+<li>PageRank 算法及其变种</li>
+<li>HITS 算法确定权威源</li>
+</ul>
+</li>
+<li>可以采用<strong>网络中心性测度(Centrality measures)</strong>来评估节点重要性</li>
+<li>代表性测度<ul>
+<li>度数中心性 Degree Centrality -&gt; 入度中心性(indegree centrality, 有向图上的拓展)<ul>
+<li>有最多朋友的人最重要</li>
+</ul>
+</li>
+<li>中介中心性 Betweenness Centrality<ul>
+<li>有多少对节点为了以最短路径到达彼此必须经过给定节点？</li>
+</ul>
+</li>
+<li>亲近中心性 Closeness Centrality<ul>
+<li>一个节点的亲近中心性基于该节点与图中所有节点的平均最短路径计算得到</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>社区检测(Community Detection)</strong><ul>
+<li>一个社区由一个节点结合所表示，该集合中节点之间交互频繁</li>
+<li>多种方法<ul>
+<li>基于子图可达性(K-clique, K-club)</li>
+<li>基于节点聚类<ul>
+<li>节点相似性基于它们的交互模式的相似性而定义</li>
+<li>两个节点结构相似(structurally equivalent)，如果它们连接到相同的其他节点</li>
+<li>实际上使用向量相似性(cosine similary, Jaccard similarity, …)</li>
+<li>应用 K-means Clustering Algorithm</li>
+</ul>
+</li>
+<li>基于图分割<ul>
+<li>不同社区之间的交互应该不频繁</li>
+<li>图分割 Cut: 两个节点集之间的边的数量</li>
+<li>目标: 最小化 Cut<ul>
+<li>不足：经常获得包含一个节点的社区</li>
+<li>需要考虑社区大小</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>分类(Classification)<ul>
+<li>用户的行为倾向可表达为类别标签<ul>
+<li>是否点击了一个广告</li>
+<li>是否对特定的话题感兴趣</li>
+<li>喜欢/不喜欢一个产品</li>
+</ul>
+</li>
+<li>输入<ul>
+<li>一个社交网络</li>
+<li>部分节点的类别标签</li>
+</ul>
+</li>
+<li>输出<ul>
+<li>网络中其他节点的类别标签</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>链接预测(Link Prediction)<ul>
+<li>给定一个社交网络，预测哪些节点相互连接</li>
+<li>输出一个节点对列表</li>
+<li>例如: facebook 中的好友推荐</li>
+</ul>
+</li>
+<li>病毒式营销(Viral Marketing)<ul>
+<li>找出若干用户，为其提供优惠或折扣，从而影响网络上的其他用户，使得收益最大化</li>
+<li>找到能够覆盖网络的最小节点集合(可用贪心选择)</li>
+</ul>
+</li>
+<li>网络建模(Network Modeling)<ul>
+<li>发现网络的统计模式<ul>
+<li>Small-world effect(e.g., 6 degrees of separation)</li>
+<li>Power-law distribution(a.k.a. scale-free distribution)</li>
+<li>Community structure(high clustering coefficient)</li>
+</ul>
+</li>
+<li>对网络动力学进行建模</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="异构网络"><a href="#异构网络" class="headerlink" title="异构网络"></a>异构网络</h3><ul>
+<li>网络中具有不同类型/模态的节点对象<ul>
+<li>YouTube: Users, tags, videos, ads</li>
+<li>Del.icio.us: Users, tags, bookmarks</li>
+</ul>
+</li>
+<li>网络中节点之间具有不同类型/维度的交互<ul>
+<li>Facebook: Send email, leave a message, write a comment, tag photos</li>
+<li>Same users interacting at different sites: Facebook, YouTube, Twitter</li>
+</ul>
+</li>
+<li>多模网络 Multi-Mode Network<ul>
+<li>网络中包含多模态对象</li>
+</ul>
+</li>
+<li>多维网络 Multi-Dimensional Network<ul>
+<li>网络中包含节点间的异构链接</li>
+</ul>
+</li>
+</ul>
+<p>异构网络在现实中非常普遍，对异构网络的分析与挖掘更具挑战性，是当前数据挖掘领域研究的热点</p>
+<h2 id="信息推荐"><a href="#信息推荐" class="headerlink" title="信息推荐"></a>信息推荐</h2><h3 id="推荐技术"><a href="#推荐技术" class="headerlink" title="推荐技术"></a>推荐技术</h3><ul>
+<li>基于内容的过滤/推荐(Content-based Filtering/Recommendation)<ul>
+<li>基于用户的历史推荐物品</li>
+<li>基于内容特征描述来预测用户的偏好</li>
+</ul>
+</li>
+<li>协同过滤/推荐(Collaborative Filtering/Recommendation)<ul>
+<li>基于用户群体行为</li>
+<li>基于其他具有相似行为的用户为给定用户推荐物品</li>
+</ul>
+</li>
+<li>混合式</li>
+</ul>
+<h3 id="基于内容的推荐"><a href="#基于内容的推荐" class="headerlink" title="基于内容的推荐"></a>基于内容的推荐</h3><ul>
+<li>主要思想：为一个用户推荐与该用户之前感兴趣的物品相似的物品<ul>
+<li>电影推荐：推荐具有相同演员、导演、类型的电影</li>
+<li>新闻推荐：推荐具有相似话题的新闻</li>
+</ul>
+</li>
+<li>用户配置档案(User Profiling)是关键<ul>
+<li>用户画像</li>
+<li>基于用户的历史推荐物品</li>
+<li>从样例内容特征描述中基于机器学习与数据挖掘算法获得关于用户兴趣爱好的配置档案</li>
+</ul>
+</li>
+<li>物品表示(Item Representation)<ul>
+<li>物品一般存储在数据库表中</li>
+<li>结构化数据<ul>
+<li>一定数量的属性</li>
+<li>每个物品由同样的属性集所描述</li>
+<li>属性的取值范围一般明确</li>
+</ul>
+</li>
+<li>非结构化数据<ul>
+<li>自由文本，可转为结构化表达</li>
+<li>每个词可看做一个属性</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>用户配置档案(User Profile)<ul>
+<li>包含两类信息<ul>
+<li>用户兴趣模型，例如，一个能预测用户对某个物品感兴趣可能性的函数表达(可以机器学习建模)</li>
+<li>用户交互历史，例如，用户浏览的物品，用户购买的物品等</li>
+</ul>
+</li>
+<li>用户交互历史可用作训练数据，基于该训练数据采用机器学习算法创建用户兴趣模型</li>
+<li>可由用户人工创建<ul>
+<li>提供选项界面供用户构建</li>
+<li>简单数据库查询课找到满足用户条件的物品并推荐给用户</li>
+<li>不足<ul>
+<li>耗费用户精力</li>
+<li>不能及时反映兴趣爱好的变化</li>
+<li>不能对推荐物品进行排序</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>基于机器学习的用户建模<ul>
+<li>基于分类学习从用户历史中对用户兴趣建模<ul>
+<li>应用分类函数能够获得用户对某物品感兴趣的概率</li>
+</ul>
+</li>
+<li>多种分类学习算法可以应用<ul>
+<li>决策树：构建一颗决策树表示用户兴趣爱好</li>
+<li>最近邻：将所有训练样例存储于内存中，为新的物品找到 K 个最近邻的物品，从用户对这些最近邻物品的偏好计算用户对新物品的偏好</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="协同推荐"><a href="#协同推荐" class="headerlink" title="协同推荐"></a>协同推荐</h3><ul>
+<li>基于用户群体</li>
+<li>方法<ul>
+<li>对于给定的用户，找到相似的用户</li>
+<li>为给定用户推荐被相似用户高度评分的物品(未被给定用户评分)</li>
+</ul>
+</li>
+<li>优势<ul>
+<li>不需要分析内容</li>
+<li>能够捕捉微妙的线索、关系</li>
+</ul>
+</li>
+<li>三类主要的协同推荐<ul>
+<li>基于用户<ul>
+<li>思想：在过去对物品购买、评分一致的用户很可能再次一致</li>
+<li>使用相似用户的意见预测特定用户对于一个物品的意见</li>
+<li>用户相似性通过用户对其他物品的意见吻合程度来衡量<ul>
+<li>算法1：使用整个矩阵</li>
+<li>算法2：K 近邻</li>
+</ul>
+</li>
+<li>用户冷启动(cold-start)问题<ul>
+<li>不足以确定新用户的相似用户</li>
+</ul>
+</li>
+<li>数据稀疏(sparsity)问题<ul>
+<li>当物品数量很多时，用户通常只评价了极少一部分物品，同样难以找到相似用户</li>
+</ul>
+</li>
+<li>扩展性问题<ul>
+<li>当有百万用户和物品时，计算很慢</li>
+</ul>
+</li>
+<li>物品冷启动问题<ul>
+<li>不能为新物品预测用户评分，除非已有相似用户对该物品进行评分(注：基于内容的推荐中不存在该问题)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>基于物品<ul>
+<li>一个用户很可能对相似的物品具有相同的评分(类似基于内容的推荐)</li>
+<li>物品相似性通过其他用户对物品的评分意见吻合程度来衡量(与基于内容的推荐不同)</li>
+<li>相比于基于用户协同推荐的优势<ul>
+<li>更好地处理用户冷启动问题</li>
+<li>提高稳定性(物品相似性要比用户相似性更稳定)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>基于矩阵分解<ul>
+<li>将评分矩阵分解为两个矩阵(也可以是多个)，基于分解结果课计算获得用户对物品的评分(该评分在原始矩阵中不存在)</li>
+<li>求解方法<ul>
+<li>Alternating least squares</li>
+<li>Stochastic gradient descent</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>需要一个评分矩阵<ul>
+<li>矩阵每个元素表示一个用户针对一个物品的评分</li>
+</ul>
+</li>
+<li>显式评分：用户评分，是否购买等</li>
+<li>隐式评分：用户点击，页面浏览，浏览时间等</li>
+</ul>
+<h3 id="推荐结果的评估准则"><a href="#推荐结果的评估准则" class="headerlink" title="推荐结果的评估准则"></a>推荐结果的评估准则</h3><ul>
+<li>根据不同的推荐问题和具体需求而选择<ul>
+<li>Precision, Recall, MRR, Mean absolute error</li>
+</ul>
+</li>
+</ul>
+<h3 id="更多推荐技术"><a href="#更多推荐技术" class="headerlink" title="更多推荐技术"></a>更多推荐技术</h3><ul>
+<li>基于社交网络的推荐</li>
+<li>基于地理位置的推荐</li>
+<li>多模态内容综合推荐</li>
+<li>集合推荐/组合推荐</li>
+</ul>
+<h3 id="主要的开源工具"><a href="#主要的开源工具" class="headerlink" title="主要的开源工具"></a>主要的开源工具</h3><table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:right">Language</th>
+<th style="text-align:right">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">CofiRank</td>
+<td style="text-align:right">C++</td>
+<td style="text-align:right">collaborative filtering</td>
+</tr>
+<tr>
+<td style="text-align:left">Crab</td>
+<td style="text-align:right">Python</td>
+<td style="text-align:right">recommendation</td>
+</tr>
+<tr>
+<td style="text-align:left">EasyRec</td>
+<td style="text-align:right">Java</td>
+<td style="text-align:right">recommendation</td>
+</tr>
+<tr>
+<td style="text-align:left">GraphLab</td>
+<td style="text-align:right">C++</td>
+<td style="text-align:right">high performance computation</td>
+</tr>
+<tr>
+<td style="text-align:left">Lenskit</td>
+<td style="text-align:right">Java</td>
+<td style="text-align:right">recommendation</td>
+</tr>
+<tr>
+<td style="text-align:left">Mahout</td>
+<td style="text-align:right">Java</td>
+<td style="text-align:right">general ML</td>
+</tr>
+<tr>
+<td style="text-align:left">Python-recsys</td>
+<td style="text-align:right">Python</td>
+<td style="text-align:right">recommendation</td>
+</tr>
+<tr>
+<td style="text-align:left">RapidMiner</td>
+<td style="text-align:right">Java</td>
+<td style="text-align:right">ML, NLP &amp; data mining</td>
+</tr>
+<tr>
+<td style="text-align:left">SVDFeature</td>
+<td style="text-align:right">C++</td>
+<td style="text-align:right">matrix factorization</td>
+</tr>
+<tr>
+<td style="text-align:left">Waffles</td>
+<td style="text-align:right">C++</td>
+<td style="text-align:right">ML and data mining</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文是我学习数据分析时候的一些笔记和总结，因为时间比较长了，参考链接都遗失了，在这里感谢各位老司机在我学习过程中给我的帮助。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="笔记" scheme="http://wdxtub.com/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="数据分析" scheme="http://wdxtub.com/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/"/>
+    
+  </entry>
+  
+  <entry>
     <title>机器学习指南</title>
     <link href="http://wdxtub.com/2016/09/10/machine-learning-guide/"/>
     <id>http://wdxtub.com/2016/09/10/machine-learning-guide/</id>
     <published>2016-09-10T01:05:16.000Z</published>
-    <updated>2016-09-10T01:33:24.000Z</updated>
+    <updated>2016-09-10T02:40:31.000Z</updated>
     
-    <content type="html"><![CDATA[<p>这里是我学习机器学习时候的一些笔记和总结，文章比较长，但是应该是比较全面的。</p>
+    <content type="html"><![CDATA[<p>本文是我学习机器学习时候的一些笔记和总结，因为时间比较长了，参考链接都遗失了，在这里感谢各位老司机在我学习过程中给我的帮助。</p>
 <a id="more"></a>
 <hr>
+<h2 id="数学基础知识"><a href="#数学基础知识" class="headerlink" title="数学基础知识"></a>数学基础知识</h2><h3 id="线性代数-Linear-Algebra-："><a href="#线性代数-Linear-Algebra-：" class="headerlink" title="线性代数 (Linear Algebra)："></a>线性代数 (Linear Algebra)：</h3><p>这门学科对于Learning是必备的基础，对它的透彻掌握是必不可少的。</p>
+<p><strong>Introduction to Linear Algebra (3rd Ed.)  by Gilbert Strang</strong></p>
+<p>这本书是MIT的线性代数课使用的教材，也是被很多其它大学选用的经典教材。它的难度适中，讲解清晰，重要的是对许多核心的概念讨论得比较透彻。我个人觉得，学习线性代数，最重要的不是去熟练矩阵运算和解方程的方法——这些在实际工作中MATLAB可以代劳，关键的是要深入理解几个基础而又重要的概念：子空间(Subspace)，正交(Orthogonality)，特征值和特征向量(Eigenvalues and eigenvectors)，和线性变换(Linear transform)。从我的角度看来，一本线代教科书的质量，就在于它能否给这些根本概念以足够的重视，能否把它们的联系讲清楚。Strang的这本书在这方面是做得很好的。</p>
+<p>而且，这本书有个得天独厚的优势。书的作者长期在MIT讲授线性代数课(18.06)，<a href="http://ocw.mit.edu/OcwWeb/Mathematics/18-06Spring-2005/CourseHome/index.htm" target="_blank" rel="external">课程的video</a>在MIT的Open courseware网站上有提供。有时间的朋友可以一边看着名师授课的录像，一边对照课本学习或者复习。</p>
+<h3 id="概率和统计-Probability-and-Statistics"><a href="#概率和统计-Probability-and-Statistics" class="headerlink" title="概率和统计 (Probability and Statistics)"></a>概率和统计 (Probability and Statistics)</h3><p>Linear Algebra (线性代数) 和 Statistics (统计学) 是最重要和不可缺少的。这代表了Machine Learning中最主流的两大类方法的基础。一种是以研究函数和变换为重点的代数方法，比如Dimension reduction，feature extraction，Kernel等，一种是以研究统计模型和样本分布为重点的统计方法，比如Graphical model, Information theoretical models等。它们侧重虽有不同，但是常常是共同使用的，对于代数方法，往往需要统计上的解释，对于统计模型，其具体计算则需要代数的帮助。以代数和统计为出发点，继续往深处走，我们会发现需要更多的数学。</p>
+<p><strong>Applied Multivariate Statistical Analysis_(5th Ed.)  by Richard A. Johnson and Dean W. Wichern</strong></p>
+<p>这本书是我在刚接触向量统计的时候用于学习的，我在香港时做研究的基础就是从此打下了。实验室的一些同学也借用这本书学习向量统计。这本书没有特别追求数学上的深度，而是以通俗易懂的方式讲述主要的基本概念，读起来很舒服，内容也很实用。对于Linear regression, factor analysis, principal component analysis (PCA), and canonical component analysis (CCA)这些Learning中的基本方法也展开了初步的论述。</p>
+<p>之后就可以进一步深入学习贝叶斯统计和Graphical models。一本理想的书是</p>
+<p><strong>Introduction to Graphical Models (draft version).  by M. Jordan and C.Bishop.</strong></p>
+<p>这本书从基本的贝叶斯统计模型出发一直深入到复杂的统计网络的估计和推断，深入浅出，statistical learning的许多重要方面都在此书有清楚论述和详细讲解。</p>
+<p>Graph Theory（图论)，图，由于它在表述各种关系的强大能力以及优雅的理论，高效的算法，越来越受到Learning领域的欢迎。经典图论，在Learning中的一个最重要应用就是graphical models了，它被成功运用于分析统计网络的结构和规划统计推断的流程。Graphical model所取得的成功，图论可谓功不可没。在Vision里面，maxflow(graphcut)算法在图像分割，Stereo还有各种能量优化中也广受应用。另外一个重要的图论分支就是Algebraic graph theory (代数图论)，主要运用于图的谱分析，著名的应用包括Normalized Cut和Spectral Clustering。近年来在semi-supervised learning中受到特别关注。</p>
+<h3 id="分析-Analysis"><a href="#分析-Analysis" class="headerlink" title="分析 (Analysis)"></a>分析 (Analysis)</h3><p>微积分或者数学分析是很多学科的基础，值得推荐的教科书莫过于</p>
+<p><strong>Principles of Mathematical Analysis, by Walter Rudin</strong></p>
+<p>有点老，但是绝对经典，深入透彻。缺点就是比较艰深——这是Rudin的书的一贯风格，适合于有一定基础后回头去看。</p>
+<p>Learning研究的大部分问题是在连续的度量空间进行的，无论代数还是统计，在研究优化问题的时候，对一个映射的微分或者梯度的分析总是不可避免。而在统计学中，Marginalization和积分更是密不可分——不过，以解析形式把积分导出来的情况则不多见。</p>
+<p>在分析这个方向，接下来就是泛函分析(Functional Analysis)。</p>
+<p><strong>Introductory Functional Analysis with Applications, by Erwin Kreyszig.</strong></p>
+<p>适合作为泛函的基础教材，容易切入而不失全面。在分析这个方向，还有一个重要的学科是测度理论(Measure theory)，但是我看过的书里面目前还没有感觉有特别值得介绍的。</p>
+<p>Measure Theory(测度理论)，这是和实分析关系非常密切的学科。但是测度理论并不限于此。从某种意义上说，Real Analysis可以从Lebesgue Measure（勒贝格测度）推演，不过其实还有很多别的测度体系——概率本身就是一种测度。测度理论对于Learning的意义是根本的，现代统计学整个就是建立在测度理论的基础之上——虽然初级的概率论教科书一般不这样引入。在看一些统计方面的文章的时候，你可能会发现，它们会把统计的公式改用测度来表达，这样做有两个好处：所有的推导和结论不用分别给连续分布和离散分布各自写一遍了，这两种东西都可以用同一的测度形式表达：连续分布的积分基于Lebesgue测度，离散分布的求和基于计数测度，而且还能推广到那种既不连续又不离散的分布中去（这种东西不是数学家的游戏，而是已经在实用的东西，在Dirchlet Process或者Pitman-Yor Process里面会经常看到)。而且，即使是连续积分，如果不是在欧氏空间进行，而是在更一般的拓扑空间（比如微分流形或者变换群），那么传统的黎曼积分（就是大学一年级在微积分课学的那种）就不work了，你可能需要它们的一些推广，比如Haar Measure或者 Lebesgue-Stieltjes积分。</p>
+<h3 id="拓扑-Topology"><a href="#拓扑-Topology" class="headerlink" title="拓扑 (Topology)"></a>拓扑 (Topology)</h3><p>Topology（拓扑学)，这是学术中很基础的学科。它一般不直接提供方法，但是它的很多概念和定理是其它数学分支的基石。看很多别的数学的时候，你会经常接触这样一些概念：Open set / Closed set，set basis，Hausdauf, continuous function，metric space, Cauchy sequence, neighborhood, compactness, connectivity。</p>
+<p><strong>Topology (2nd Ed.)  by James Munkres</strong></p>
+<p>这本书是Munkres教授长期执教MIT拓扑课的心血所凝。对于一般拓扑学(General topology)有全面介绍，而对于代数拓扑(Algebraic topology)也有适度的探讨。此书不需要特别的数学知识就可以开始学习，由浅入深，从最基本的集合论概念（很多书不屑讲这个）到 Nagata-Smirnov Theorem和Tychonoff theorem等较深的定理（很多书避开了这个）都覆盖了。讲述方式思想性很强，对于很多定理，除了给出证明过程和引导你思考其背后的原理脉络，很多令人赞叹的亮点——我常读得忘却饥饿，不愿释手。很多习题很有水平。</p>
+<p>当然，我们研究learning也许不需要深究这些数学概念背后的公理体系，但是，打破原来定义的概念的局限在很多问题上是必须的——尤其是当你研究的东西它不是在欧氏空间里面的时候——正交矩阵，变换群，流形，概率分布的空间，都属于此。</p>
+<h3 id="流形理论-Manifold-theory"><a href="#流形理论-Manifold-theory" class="headerlink" title="流形理论 (Manifold theory)"></a>流形理论 (Manifold theory)</h3><p>对于拓扑和分析有一定把握时，方可开始学习流形理论，否则所学只能流于浮浅。我所使用的书是</p>
+<p><strong>Introduction to Smooth Manifolds.  by John M. Lee</strong></p>
+<p>虽然书名有introduction这个单词，但是实际上此书涉入很深，除了讲授了基本的manifold, tangent space, bundle, sub-manifold等，还探讨了诸如纲理论(Category theory)，德拉姆上同调(De Rham cohomology)和积分流形等一些比较高级的专题。对于李群和李代数也有相当多的讨论。行文通俗而又不失严谨，不过对某些记号方式需要熟悉一下。</p>
+<p>Differential Manifold (微分流形)，通俗地说它研究的是平滑的曲面。一个直接的印象是它是不是可以用来fitting一个surface什么的——当然这算是一种应用，但是这是非常初步的。本质上说，微分流形研究的是平滑的拓扑结构。一个空间构成微分流形的基本要素是局部平滑：从拓扑学来理解，就是它的任意局部都同胚于欧氏空间，从解析的角度来看，就是相容的局部坐标系统。当然，在全局上，它不要求和欧氏空间同胚。它除了可以用于刻画集合上的平滑曲面外，更重要的意义在于，它可以用于研究很多重要的集合。一个n-维线性空间的全部k-维子空间</p>
+<p>虽然李群论是建基于平滑流形的概念之上，不过，也可能从矩阵出发直接学习李群和李代数——这种方法对于急需使用李群论解决问题的朋友可能更加实用。而且，对于一个问题从不同角度看待也利于加深理解。下面一本书就是这个方向的典范：</p>
+<p><strong>Lie Groups, Lie Algebras, and Representations: An Elementary Introduction.  by Brian C. Hall</strong></p>
+<p>此书从开始即从矩阵切入，从代数而非几何角度引入矩阵李群的概念。并通过定义运算的方式建立 exponential mapping，并就此引入李代数。这种方式比起传统的通过“左不变向量场(Left-invariant vector field)“的方式定义李代数更容易为人所接受，也更容易揭示李代数的意义。最后，也有专门的论述把这种新的定义方式和传统方式联系起来。</p>
+<p>群论在 Learning 中用得较多的是它的一个重要方向 Lie group。定义在平滑流形上的群，并且其群运算是平滑的话，那么这就叫李群。因为 Learning 和编码不同，更多关注的是连续空间，因为 Lie group 在各种群中对于 Learning 特别重要。各种子空间，线性变换，非奇异矩阵都基于通常意义的矩阵乘法构成李群。在李群中的映射，变换，度量，划分等等都对于 Learning 中代数方法的研究有重要指导意义。</p>
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>主要是基本概念的辨析，都是最最基础和常规的</p>
 <h3 id="监督学习与非监督学习"><a href="#监督学习与非监督学习" class="headerlink" title="监督学习与非监督学习"></a>监督学习与非监督学习</h3><ul>
 <li>应用领域：企业数据</li>
 </ul>
-<p>监督学习需要标注数据（KNN, NB, SVM, DT, BP, RF, GBRT），这类算法必须知道预测什么，即目标变量的分类信息。对具有标记的训练样本进行学习，以尽可能对训练样本集外的数据进行分类预测。</p>
-<p>非监督学习（KMEANS, DL）数据没有类别信息，也不会给定目标值，对未标记的样本进行训练学习，比发现这些样本中的结构知识。将数据集合分成由类似的对象组成的多个类的过程被称为<strong>聚类</strong></p>
+<p>监督学习需要标注数据(KNN, NB, SVM, DT, BP, RF, GBRT)，这类算法必须知道预测什么，即目标变量的分类信息。对具有标记的训练样本进行学习，以尽可能对训练样本集外的数据进行分类预测。</p>
+<p>非监督学习(KMEANS, DL)数据没有类别信息，也不会给定目标值，对未标记的样本进行训练学习，比发现这些样本中的结构知识。将数据集合分成由类似的对象组成的多个类的过程被称为<strong>聚类</strong></p>
 <h3 id="半监督式学习"><a href="#半监督式学习" class="headerlink" title="半监督式学习"></a>半监督式学习</h3><ul>
 <li>应用领域：图像识别（存在大量非标识数据）</li>
 </ul>
-<p>在此学习方式下，输入数据部分被标识，部分没有被标识，这种学习模型可以用来进行预测，但是模型首先需要学习数据的内在结构以便合理的组织数据来进行预测。应用场景包括分类和回归，算法包括一些对常用监督式学习算法的延伸，这些算法首先试图对未标识数据进行建模，在此基础上再对标识的数据进行预测。如图论推理算法（Graph Inference）或者拉普拉斯支持向量机（Laplacian SVM.）等。</p>
+<p>在此学习方式下，输入数据部分被标识，部分没有被标识，这种学习模型可以用来进行预测，但是模型首先需要学习数据的内在结构以便合理的组织数据来进行预测。应用场景包括分类和回归，算法包括一些对常用监督式学习算法的延伸，这些算法首先试图对未标识数据进行建模，在此基础上再对标识的数据进行预测。如图论推理算法(Graph Inference)或者拉普拉斯支持向量机(Laplacian SVM)等。</p>
 <h3 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h3><ul>
 <li>应用领域：机器人控制、系统控制</li>
 </ul>
-<p>在这种学习模式下，输入数据作为对模型的反馈，不像监督模型那样，输入数据仅仅是作为一个检查模型对错的方式，在强化学习下，输入数据直接反馈到模型，模型必须对此立刻作出调整。常见的应用场景包括动态系统以及机器人控制等。常见算法包括Q-Learning以及时间差学习（Temporal difference learning）。</p>
+<p>在这种学习模式下，输入数据作为对模型的反馈，不像监督模型那样，输入数据仅仅是作为一个检查模型对错的方式，在强化学习下，输入数据直接反馈到模型，模型必须对此立刻作出调整。常见的应用场景包括动态系统以及机器人控制等。常见算法包括 Q-Learning 以及时间差学习(Temporal difference learning)。</p>
 <h3 id="离散数据与连续数据"><a href="#离散数据与连续数据" class="headerlink" title="离散数据与连续数据"></a>离散数据与连续数据</h3><p>离散数据（标称型）的目标变量结果只在有限目标集中取值，比方说真与假，一般用于<strong>分类</strong></p>
 <p>连续数据（数值型）目标变量主要用于<strong>回归</strong>分析，通过给定数据点的最优拟合曲线</p>
 <h3 id="生成方法"><a href="#生成方法" class="headerlink" title="生成方法"></a>生成方法</h3><ul>
 <li>例子：NB</li>
 </ul>
-<p>生成方法：由数据学习联合概率密度分布P(X,Y)，然后求出条件概率分布P(Y|X)作为预测的模型，即生成模型：P(Y|X)= P(X,Y)/ P(X)。基本思想是首先建立样本的联合概率概率密度模型P(X,Y)，然后再得到后验概率P(Y|X)，再利用它进行分类，就像上面说的那样。</p>
-<p>生成方法学习联合概率密度分布P(X,Y)，所以就可以从统计的角度表示数据的分布情况，能够反映同类数据本身的相似度。但它不关心到底划分各类的那个分类边界在哪。生成方法可以还原出联合概率分布P(Y|X)，而判别方法不能。生成方法的学习收敛速度更快，即当样本容量增加的时候，学到的模型可以更快的收敛于真实模型，当存在隐变量时，仍可以用生成方法学习。此时判别方法就不能用。</p>
+<p>生成方法：由数据学习联合概率密度分布 <code>P(X,Y)</code>，然后求出条件概率分布 <code>P(Y|X)</code> 作为预测的模型，即生成模型：<code>P(Y|X)= P(X,Y) / P(X)</code>。基本思想是首先建立样本的联合概率概率密度模型 <code>P(X,Y)</code>，然后再得到后验概率 <code>P(Y|X)</code>，再利用它进行分类，就像上面说的那样。</p>
+<p>生成方法学习联合概率密度分布 <code>P(X,Y)</code>，所以就可以从统计的角度表示数据的分布情况，能够反映同类数据本身的相似度。但它不关心到底划分各类的那个分类边界在哪。生成方法可以还原出联合概率分布 <code>P(Y|X)</code>，而判别方法不能。生成方法的学习收敛速度更快，即当样本容量增加的时候，学到的模型可以更快的收敛于真实模型，当存在隐变量时，仍可以用生成方法学习。此时判别方法就不能用。</p>
 <p><strong>由生成模型可以得到判别模型，但由判别模型得不到生成模型。</strong></p>
 <h3 id="判别方法"><a href="#判别方法" class="headerlink" title="判别方法"></a>判别方法</h3><ul>
 <li>例子：k 近邻，决策树</li>
 </ul>
-<p>由数据直接学习决策函数Y=f(X)或者条件概率分布P(Y|X)作为预测的模型，即判别模型。基本思想是有限样本条件下建立判别函数，不考虑样本的产生模型，直接研究预测模型。典型的判别模型包括k近邻，感知级，决策树，支持向量机等。</p>
-<p>判别方法直接学习的是决策函数Y=f(X)或者条件概率分布P(Y|X)。不能反映训练数据本身的特性。但它寻找不同类别之间的最优分类面，反映的是异类数据之间的差异。直接面对预测，往往学习的准确率更高。由于直接学习P(Y|X)或P(X)，可以对数据进行各种程度上的抽象、定义特征并使用特征，因此可以简化学习问题。</p>
+<p>由数据直接学习决策函数 <code>Y=f(X)</code> 或者条件概率分布 <code>P(Y|X)</code> 作为预测的模型，即判别模型。基本思想是有限样本条件下建立判别函数，不考虑样本的产生模型，直接研究预测模型。典型的判别模型包括k近邻，感知级，决策树，支持向量机等。</p>
+<p>判别方法直接学习的是决策函数 <code>Y=f(X)</code> 或者条件概率分布 <code>P(Y|X)</code>。不能反映训练数据本身的特性。但它寻找不同类别之间的最优分类面，反映的是异类数据之间的差异。直接面对预测，往往学习的准确率更高。由于直接学习 <code>P(Y|X)</code> 或 <code>P(X)</code>，可以对数据进行各种程度上的抽象、定义特征并使用特征，因此可以简化学习问题。</p>
 <h3 id="过拟合"><a href="#过拟合" class="headerlink" title="过拟合"></a>过拟合</h3><p>如果一味的去提高训练数据的预测能力，所选模型的复杂度往往会很高，这种现象称为过拟合。所表现的就是模型训练时候的误差很小，但在测试的时候误差很大。</p>
 <p>产生原因</p>
 <ul>
@@ -62,7 +2323,7 @@
 <p><strong>泛化能力是指模型对未知数据的预测能力</strong></p>
 <h3 id="线性分类器与非线性分类器"><a href="#线性分类器与非线性分类器" class="headerlink" title="线性分类器与非线性分类器"></a>线性分类器与非线性分类器</h3><ul>
 <li>如果模型是参数的线性函数，并且存在线性分类面，那么就是线性分类器，否则不是</li>
-<li>常见的线性分类器有：LR,贝叶斯分类，单层感知机、线性回归</li>
+<li>常见的线性分类器有：LR, 贝叶斯分类，单层感知机，线性回归</li>
 <li>常见的非线性分类器：决策树、RF、GBDT、多层感知机</li>
 <li>SVM两种都有(看线性核还是高斯核)</li>
 <li>线性分类器速度快、编程方便，但是可能拟合效果不会很好</li>
@@ -80,11 +2341,994 @@
 <p>对于维度极低的特征，你是选择线性还是非线性分类器？</p>
 </blockquote>
 <p>非线性分类器，因为低维空间可能很多特征都跑到一起了，导致线性不可分</p>
+<h3 id="极大似然估计"><a href="#极大似然估计" class="headerlink" title="极大似然估计"></a>极大似然估计</h3><p>极大似然估计，只是一种概率论在统计学中的应用，它是参数评估的方法之一。说的 已知某个随机样本满足某种概率分布，但是其中具体的参数不清楚，参数估计通过若干次实验，观察其结果，利用结果推出参数的大概值。极大似然估计是建立在这样的思想上的：已知某个参数能使这个样本出现的概率最大。我们当然不会再去选择其他其他小概率的样本，所以干脆就把这个参数作为估计的真实值。</p>
+<h3 id="后验概率"><a href="#后验概率" class="headerlink" title="后验概率"></a>后验概率</h3><p>后验概率是信息论的基本概念之一。在一个通信系统中，在收到某个消息之后，接收端所了解到的该消息发送的概率称为后验证概率。后验概率是指在得到”结果“的信息后重新修正的概率，如贝叶斯公式中的。是执果寻因的问题。后验概率和先验概率有着不可分割的联系，后验的计算要以先验概率为基础，其实说白了后验概率其实就是条件概率。</p>
+<h2 id="朴素贝叶斯-NB"><a href="#朴素贝叶斯-NB" class="headerlink" title="朴素贝叶斯(NB)"></a>朴素贝叶斯(NB)</h2><ul>
+<li>优点<ul>
+<li>对小规模的数据表现很好</li>
+<li>适合多分类任务</li>
+<li>适合增量式训练</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>对输入数据的表达形式很敏感</li>
+</ul>
+</li>
+<li>适用数据范围<ul>
+<li>标称型</li>
+</ul>
+</li>
+<li>算法类型<ul>
+<li>分类算法</li>
+</ul>
+</li>
+</ul>
+<p>朴素贝叶斯是贝叶斯理论的一部分，贝叶斯决策理论的核心思想，即选择具有高概率的决策。朴素贝叶斯之所以冠以朴素开头，是因为其在贝叶斯理论的基础上做出了两点假设：</p>
+<ol>
+<li>每个特征之间相互独立。</li>
+<li>每个特征同等重要。</li>
+</ol>
+<p>贝叶斯准则是构建在条件概率的基础之上的，其公式如下：</p>
+<p>$$P(H|X)=\frac{P(X|H)}{P(X)}$$</p>
+<p><code>P(H|X）</code>是根据 <code>X</code> 参数值判断其属于类别 <code>H</code> 的概率，称为后验概率。<code>P(H)</code> 是直接判断某个样本属于 <code>H</code> 的概率，称为先验概率。<code>P(X|H)</code> 是在类别 <code>H</code> 中观测到 <code>X</code> 的概率（后验概率），<code>P(X)</code> 是在数据库中观测到X的概率。可见贝叶斯准则是基于条件概率并且和观测到样本的先验概率和后验概率是分不开的。</p>
+<p>总结：对于分类而言，使用概率有事要比使用硬规则更为有效。贝叶斯概率及贝叶斯准则提供了一种利用已知值来估计未知概率的有效方法。可以通过特征之间的条件独立性假设，降低对数据量的需求。尽管条件独立性的假设并不正确，但是朴素贝叶斯仍然是一种有效的分类器。</p>
+<p>一些要注意的地方：</p>
+<ul>
+<li>给出的特征向量长度可能不同，所以需要归一化为统一长度的向量。比如说文本分类，如果特征是句子单词的话，则长度为整个词汇量的长度，对应位置是该单词出现的次数</li>
+<li>利用贝叶斯分类器对文档进行分类时，要计算多个概率的乘积以获得文档属于某个类别的概率。如果其中一个概率值为 0，那么最后乘积也为 0。为了降低这种影响，可以将所有词出现数字初始化为 1，并将分母初始化为 2。拉普拉斯平滑法将每个 k 值出现次数事先都加 1，通俗讲就是假设他们都出现过一次。</li>
+<li>另一个遇到的问题是下溢出，这是由于太多很小的数相乘造成的，这里取对数，就可以把乘法变为加法，并且对最后结果没有影响。</li>
+<li>遇到特征之间不独立问题，参考改进的贝叶斯网络，使用 DAG 来进行概率图的描述</li>
+</ul>
+<h2 id="线性回归-Linear-Regression"><a href="#线性回归-Linear-Regression" class="headerlink" title="线性回归(Linear Regression)"></a>线性回归(Linear Regression)</h2><ul>
+<li>优点<ul>
+<li>结果易于理解</li>
+<li>计算上不复杂。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>对非线性数据拟合不好。</li>
+</ul>
+</li>
+<li>适用数据类型<ul>
+<li>数值型</li>
+<li>标称型</li>
+</ul>
+</li>
+<li>算法类型<ul>
+<li>回归算法</li>
+</ul>
+</li>
+</ul>
+<p>在统计学中，线性回归(Linear Regression)是利用称为线性回归方程的最小平方函数对一个或多个自变量和因变量之间关系进行建模的一种回归分析。这种函数是一个或多个称为回归系数的模型参数的线性组合（自变量都是一次方）。只有一个自变量的情况称为简单回归，大于一个自变量情况的叫做多元回归。</p>
+<p>线性方程的模型函数的向量表示形式为： $h_\theta(x)=\theta^TX$</p>
+<p>通过训练数据集寻找向量系数的最优解，即为求解模型参数。其中求解模型系数的优化器方法可以用“最小二乘法”、“梯度下降”算法，来求解损失函数的最优解：</p>
+ $$J(\theta)=\frac{1}{2}\sum_{i=1}^m(h_\theta(x^{(i)}-y^{(i)})$$  
+ $$min_\theta \; J_\theta$$ 
+<h3 id="最小二乘法"><a href="#最小二乘法" class="headerlink" title="最小二乘法"></a>最小二乘法</h3><p>将训练特征表示为 <code>X</code> 矩阵，结果表示成 <code>y</code> 向量，仍然是线性回归模型，误差函数不变。那么 <code>θ</code> 可以直接由下面公式得出</p>
+<p>$$\theta=(X^TX)^{-1}X^Ty$$</p>
+<p>这里 <code>y</code> 是向量，此方法要求 <code>X</code> 是列满秩的，而且求矩阵的逆比较慢。</p>
+<p>而在 LWLR（局部加权线性回归）中，参数的计算表达式为:</p>
+<p>$$\theta=(X^TX)^{-1}X^TWy$$</p>
+<p>因为此时优化的是  $\sum_i w^{(i)}(y^{(i)}-\theta^Tx^{(i)})^2$ </p>
+<p>由此可见 LWLR 与 LR 不同，LWLR 是一个非参数模型，因为每次进行回归计算都要遍历训练样本至少一次。</p>
+<h3 id="岭回归（ridge-regression）"><a href="#岭回归（ridge-regression）" class="headerlink" title="岭回归（ridge regression）"></a>岭回归（ridge regression）</h3><p>岭回归是一种专用于共线性数据分析的有偏估计回归方法，实质上是一种改良的最小二乘估计法，通过放弃最小二乘法的无偏性，以损失部分信息、降低精度为代价，获得回归系数更为符合实际、更可靠的回归方法，对病态数据的耐受性远远强于最小二乘法。</p>
+<p>岭回归分析法是从根本上消除复共线性影响的统计方法。岭回归模型通过在相关矩阵中引入一个很小的岭参数 <code>K</code>（1&gt;K&gt;0），并将它加到主对角线元素上，从而降低参数的最小二乘估计中复共线特征向量的影响，减小复共线变量系数最小二乘估计的方法，以保证参数估计更接近真实情况。岭回归分析将所有的变量引入模型中，比逐步回归分析提供更多的信息。</p>
+<p>总结：与分类一样，回归也是预测目标值的过程。回归与分类的不同点在于，前者预测连续型的变量，而后者预测离散型的变量。回归是统计学中最有力的工具之一。在回归方程里，求得特征对应的最佳回归系统的方法是最小化误差的平方和。</p>
+<h2 id="k-近邻算法-kNN"><a href="#k-近邻算法-kNN" class="headerlink" title="k-近邻算法(kNN)"></a>k-近邻算法(kNN)</h2><ul>
+<li>优点<ul>
+<li>精度高</li>
+<li>对异常值不敏感</li>
+<li>无数据输入假定</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>计算复杂度高</li>
+<li>空间复杂度高</li>
+</ul>
+</li>
+<li>适用数据范围<ul>
+<li>数值型</li>
+<li>标称型</li>
+</ul>
+</li>
+<li>算法类型<ul>
+<li>分类算法。</li>
+</ul>
+</li>
+</ul>
+<p>存在一个样本数据集合，也称作训练样本集，并且样本集中每个数据都存在标签，即我们知道样本集中每一数据与所属分类的对应关系。输入没有标签的新数据后，将新数据的每个特征与样本集中对应的特征进行比较，然后算法提取样本集中前 k 个最相似的数据。最后，选择 k 个最相似数据中出现次数最多的分类，作为新数据的分类。</p>
+<p>为了避免不同的特征的数值不同所导致的影响不同，可能需要进行归一化，也就是把特征值转换成 [0,1] 值</p>
+<p>k-近邻算法是分类数据最简单最有效的算法，必须保存全部数据集，如果训练数据集很大，必须使用大量的存储空间。此外，由于必须对数据集中的每个数据计算距离值，实际使用可能非常耗时。<strong>k决策树</strong>是其优化版本，可以节省大量的计算开销。</p>
+<p>另一个却显示它无法给出任何数据的基础结构信息，因此我们也无法知晓平均实例样本和典型实例样本具有什么特征。使用<strong>概率测量方法</strong>可以解决这个问题。</p>
+<p>三要素</p>
+<ul>
+<li>k值的选择</li>
+<li>距离的度量（常见的距离度量有欧式距离，马氏距离等）</li>
+<li>分类决策规则 （多数表决规则）</li>
+</ul>
+<p><code>k</code> 值的选择</p>
+<ul>
+<li><code>k</code> 值越小表明模型越复杂，更加容易过拟合</li>
+<li>但是k值越大，模型越简单，如果 <code>k=N</code> 的时候就表明无论什么点都是训练集中类别最多的那个类</li>
+</ul>
+<p>所以一般 <code>k</code> 会取一个较小的值，然后用过交叉验证来确定。这里所谓的交叉验证就是将样本划分一部分出来为预测样本，比如 95% 训练，5% 预测，然后 <code>k</code> 分别取1，2，3，4，5之类的，进行预测，计算最后的分类误差，选择误差最小的k</p>
+<h3 id="KD树"><a href="#KD树" class="headerlink" title="KD树"></a>KD树</h3><p>KD 树是一个二叉树，表示对K维空间的一个划分，可以进行快速检索（那KNN计算的时候不需要对全样本进行距离的计算了）</p>
+<p>在k维的空间上循环找子区域的中位数进行划分的过程。假设现在有K维空间的数据集 <code>T={x1,x2,x3,…xn},xi={a1,a2,a3..ak}</code></p>
+<ol>
+<li>首先构造根节点，以坐标 <code>a1</code> 的中位数 <code>b</code> 为切分点，将根结点对应的矩形局域划分为两个区域，区域 1 中 <code>a1b</code></li>
+<li>构造叶子节点，分别以上面两个区域中 <code>a2</code> 的中位数作为切分点，再次将他们两两划分，作为深度1的叶子节点，（如果 a2 = 中位数 ，则 a2 的实例落在切分面）</li>
+<li>不断重复 2 的操作，深度为j的叶子节点划分的时候，索取的<code>ai</code> 的 <code>i=j%k+1</code>，直到两个子区域没有实例时停止</li>
+</ol>
+<p>KD树的搜索</p>
+<ol>
+<li>首先从根节点开始递归往下找到包含x的叶子节点，每一层都是找对应的xi</li>
+<li>将这个叶子节点认为是当前的“近似最近点”</li>
+<li>递归向上回退，如果以 <code>x</code> 圆心，以“近似最近点”为半径的球与根节点的另一半子区域边界相交，则说明另一半子区域中存在与 <code>x</code> 更近的点，则进入另一个子区域中查找该点并且更新”近似最近点“</li>
+<li>重复 3 的步骤，直到另一子区域与球体不相交或者退回根节点</li>
+<li>最后更新的”近似最近点“与 <code>x</code> 真正的最近点</li>
+</ol>
+<p><strong>KD树进行KNN查找</strong></p>
+<p>通过 KD 树的搜索找到与搜索目标最近的点，这样 KNN 的搜索就可以被限制在空间的局部区域上了，可以大大增加效率。</p>
+<p><strong>KD树搜索的复杂度</strong></p>
+<p>当实例随机分布的时候，搜索的复杂度为 log(N)，N 为实例的个数，KD 树更加适用于实例数量远大于空间维度的 KNN 搜索，如果实例的空间维度与实例个数差不多时，它的效率基于等于线性扫描。</p>
+<h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><p>决策树的主要优势在于数据形式非常容易理解。决策树很多任务都是为了数据中所蕴含的知识信息，因此决策树可以使用不熟悉的数据集合，并从中提取出一系列规则，机器学习算法最终将使用这些机器从数据集中创造的规则。</p>
+<ul>
+<li>优点<ul>
+<li>计算复杂度不高</li>
+<li>输出结果易于理解</li>
+<li>对中间值的缺失不敏感</li>
+<li>可以处理不相关特征数据</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>容易过拟合（后面出现了随机森林）</li>
+</ul>
+</li>
+<li>适用数据类型<ul>
+<li>数值型</li>
+<li>标称型</li>
+</ul>
+</li>
+<li>算法类型<ul>
+<li>分类算法。</li>
+</ul>
+</li>
+<li>数据要求<ul>
+<li>树的构造只适用于标称型的数据，因此数值型数据必须离散化。</li>
+</ul>
+</li>
+</ul>
+<p>在构造决策树时，我们需要解决的第一个问题就是，当前数据集上哪个特征在划分数据分类时起决定性作用。为了找到决定性的特征，划分出最好的结果，我们必须评估每个特征。完成测试之后，原始数据集就被划分为几个数据子集。这些数据子集会分布在第一个决策点的所有分支上。</p>
+<p>创建分支的伪代码如下：</p>
+<pre><code>检测数据集中的每个子项是否属于同一分类：
+   if so return 类标签；
+   else
+       寻找数据集的最好特征
+       划分数据集
+       创建分支结点
+           for 每个划分的子集
+               调用函数createBranch并增加返回结果到分支结点中
+           return 分支结点
+</code></pre><p>划分数据集的大原则是：将无序的数据变得更加有序。组织杂乱无章数据的一种方法就是使用信息论度量信息。<strong>信息增益(information gain)</strong>和<strong>熵(entropy)</strong></p>
+<p>信息熵的计算公式为：</p>
+ $$H=-\sum P(x_i)log_2P(x_i)$$ 
+<p>其中  $P(x_i)$ 表示选择该分类的概率。</p>
+<p>决策树分类器就像带有终止块的流程图，终止块表示分类结果。开始处理数据时，我们首先需要测量集合中数据的不一致性，也就是熵，然后寻找最优方案划分数据集，直到数据集中的所有数据属于同一分类。</p>
+<p>ID3 算法可以用于划分标称型数据集。构造决策树时，我们通常采用递归的方法将数据集转化为决策树。</p>
+<p>决策树可能会产生过多的数据集划分，从而产生过度匹配数据集的问题。我们可以通过裁剪决策树，合并相邻的无法产生大量信息增益的叶节点，消除过度匹配的问题。</p>
+<h3 id="ID3、C4-5-amp-CART"><a href="#ID3、C4-5-amp-CART" class="headerlink" title="ID3、C4.5&amp;CART"></a>ID3、C4.5&amp;CART</h3><p>其实不同的决策树学习算法只是它们选择特征的依据不同，决策树的生成过程都是一样的（根据当前环境对特征进行贪婪的选择）。</p>
+<p>ID3 算法的核心是在决策树各个节点上应用信息增益准则选择特征，每一次都选择使得信息增益最大的特征进行分裂，递归地构建决策树。</p>
+<p>ID3 算法以信息增益作为划分训练数据集的特征，有一个致命的缺点。选择取值比较多的特征往往会具有较大的信息增益，所以 ID3 偏向于选择取值较多的特征。</p>
+<p>针对 ID3 算法的不足，C4.5 算法根据信息增益比来选择特征，对这一问题进行了校正。</p>
+<p>CART 指的是分类回归树，它既可以用来分类，又可以被用来进行回归。CART 用作回归树时用平方误差最小化作为选择特征的准则，用作分类树时采用基尼指数最小化原则，进行特征选择，递归地生成二叉树。</p>
+<p>决策树的剪枝：我们知道，决策树在生成的过程中采用了贪婪的方法来选择特征，从而达到对训练数据进行更好地拟合（其实从极端角度来看，决策树对训练集的拟合可以达到零误差）。而决策树的剪枝是为了简化模型的复杂度，防止决策树的过拟合问题。具体的决策树剪枝策略可以参见李航的《统计学习方法》。 </p>
+<h2 id="Logistic-回归"><a href="#Logistic-回归" class="headerlink" title="Logistic 回归"></a>Logistic 回归</h2><ul>
+<li>优点<ul>
+<li>计算代价不高</li>
+<li>易于理解和实现</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>容易欠拟合</li>
+<li>分类精度可能不高</li>
+</ul>
+</li>
+<li>适用数据类型<ul>
+<li>数值型</li>
+<li>标称型</li>
+</ul>
+</li>
+<li>算法类别<ul>
+<li>分类算法</li>
+</ul>
+</li>
+<li>适用场景<ul>
+<li>二分类问题</li>
+</ul>
+</li>
+</ul>
+<p>Logistic 回归的目的是寻找一个非线性函数 Sigmoid 的最佳拟合参数，求解过程可以由最优化算法来完成。在最优化算法中，最常用的就是梯度上升算法，而梯度上升算法又可以简化为随机梯度上升算法。</p>
+<p>logistic函数表达式为：</p>
+ $$h_\theta(x)=g(\theta^Tx)=\frac{1}{1+e^{-\theta^Tx}}$$ 
+<p>Sigmoid 函数的定义为 </p>
+<p>$$g(z) = \frac{1}{1+e^{-z}}$$</p>
+<p>导数形式为</p>
+<p>$$g’(z)=g(z)(1-g(z))$$</p>
+<p>函数值域范围(0,1)。可以用来做分类器。Sigmoid函数的函数曲线如下：</p>
+<p><img src="/images/14734728090031.gif" alt=""></p>
+<p>逻辑回归模型分解如下：</p>
+<p>(1)首先将不同维度的属性值和对应的一组权重加和，公式如下： </p>
+ $$z=w_0+w_1x_1+w_2x_2+\dots+w_mx_m$$ 
+<p>其中 $x_1,x_2,\dots,x_m$是某样本数据的各个特征，维度为m</p>
+<p>这里就是一个线性回归。W权重值就是需要经过训练学习到的数值，具体W向量的求解，就需要用到极大似然估计和将似然估计函数代入到 优化算法来求解。最常用的最后化算法有 梯度上升算法。</p>
+<p>单个样本的后验概率为：</p>
+ $$p(y\;|\;x;\theta)=(h_\theta(x))^y(1-h_\theta(x))^{(1-y)}$$ 
+<p>整个样本的后验概率：</p>
+ $$L(\theta)=\sum_{i=1}^mp(y^{(i)}\;|\;x^{(i)},\theta)$$ 
+<p>其中 </p>
+ $$P(y=1\;|\;x, \theta)=h_\theta(x)$$ 
+ $$P(y=0\;|\;x, \theta)=1-h_\theta(x)$$ 
+<p>对整个样本的后验概率取对数得到：</p>
+ $$\ell(\theta)=logL(\theta)=\sum_{i=1}^my^{(i)}log\;h(x^{(i)})+(1-y^{(i)})log(1-h(x^{(i)}))$$ 
+<p>然后利用梯度下降来进行求解，得到最终的 $\theta$</p>
+<p>由上面可见：逻辑回归函数虽然是一个非线性的函数，但其实其去除Sigmoid映射函数之后，其他步骤都和线性回归一致。</p>
+<p>(2)然后将上述的线性目标函数 <code>z</code> 代入到 sigmoid 逻辑回归函数，可以得到值域为（0,0.5)和（0.5,1）两类值，等于 0.5 的怎么处理还以自己定。这样其实就得到了2类数据，也就体现了二分类的概念。</p>
+<p>总结：Logistic 回归的目的是寻找一个非线性函数Sigmoid的最佳拟合参数，参数的求解过程可以由最优化算法来完成。在最优化算法中，最常用的就是梯度上升算法，而梯度上升算法有可以简化为随机梯度上升算法。</p>
+<p>随机梯度上升算法与梯度上升算法的效果相当，但占用更少的计算资源。此外，随机梯度上升是一个在线算法，它可以在新数据到来时就完成参数更新，而不需要重新读取整个数据集来进行批处理运算。</p>
+<p>处理数据中的缺失值的技巧：</p>
+<ul>
+<li>使用可用特征的均值来填补缺失值</li>
+<li>使用特殊值来填补缺失值，如 -1</li>
+<li>忽略有缺失值的样本</li>
+<li>使用相似样本的均值填补缺失值</li>
+<li>使用另外的机器学习算法预测缺失值</li>
+</ul>
+<h3 id="关于-LR-的过拟合问题"><a href="#关于-LR-的过拟合问题" class="headerlink" title="关于 LR 的过拟合问题"></a>关于 LR 的过拟合问题</h3><p>如果我们有很多的特性，在训练集上拟合得很好，但是在预测集上却达不到这种效果</p>
+<ol>
+<li>减少 feature 个数（人工定义留多少个 feature、算法选取这些 feature）</li>
+<li>正则化（留下所有的 feature，但对于部分 feature 定义其 parameter 非常小）</li>
+</ol>
+<h3 id="关于LR的多分类-softmax"><a href="#关于LR的多分类-softmax" class="headerlink" title="关于LR的多分类 softmax"></a>关于LR的多分类 softmax</h3><p>softmax 假设离散型随机变量Y的取值集合是 {1,2,..,k},则多分类的LR为</p>
+ $$P(Y=a\;|\;x)=exp(w_ax)/(1-\sum_{i=1}^kw_ix)$$ 
+<p>这里会输出当前样本下属于哪一类的概率，并且满足全部概率加起来=1</p>
+<h3 id="关于-softmax-和-k-个-LR-的选择"><a href="#关于-softmax-和-k-个-LR-的选择" class="headerlink" title="关于 softmax 和 k 个 LR 的选择"></a>关于 softmax 和 k 个 LR 的选择</h3><p>如果类别之间是否互斥（比如音乐只能属于古典音乐、乡村音乐、摇滚月的一种）就用softmax</p>
+<p>否则类别之前有联系（比如一首歌曲可能有影视原声，也可能包含人声，或者是舞曲），这个时候使用k个LR更为合适</p>
+<h2 id="树回归"><a href="#树回归" class="headerlink" title="树回归"></a>树回归</h2><ul>
+<li>优点<ul>
+<li>可以对复杂和非线性的数据建模。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>结果不易理解。</li>
+</ul>
+</li>
+<li>适用数据类型<ul>
+<li>数值型</li>
+<li>标称型</li>
+</ul>
+</li>
+<li>算法类型<ul>
+<li>回归算法</li>
+</ul>
+</li>
+</ul>
+<p>简述：线性回归方法可以有效的拟合所有样本点(局部加权线性回归除外）。当数据拥有众多特征并且特征之间关系十分复杂时，构建全局模型的回归算法是比较困难的。此外，实际中很多问题为非线性的，例如常见的分段函数，不可能用全局线性模型类进行拟合。树回归将数据集切分成多份易建模的数据，然后利用线性回归进行建模和拟合。较为经典的树回归算法为 CART(classification and regreesion trees 分类回归树)。</p>
+<p>分类回归树(Classification And Regression Tree)是一个决策二叉树，在通过递归的方式建立，每个节点在分裂的时候都是希望通过最好的方式将剩余的样本划分成两类，这里的分类指标：</p>
+<ul>
+<li>分类树：基尼指数最小化(<code>gini_index</code>)</li>
+<li>回归树：平方误差最小化</li>
+</ul>
+<p>分类树：</p>
+<ol>
+<li>首先是根据当前特征计算他们的基尼增益</li>
+<li>选择基尼增益最小的特征作为划分特征</li>
+<li>从该特征中查找基尼指数最小的分类类别作为最优划分点</li>
+<li>将当前样本划分成两类，一类是划分特征的类别等于最优划分点，另一类就是不等于</li>
+<li>针对这两类递归进行上述的划分工作，直达所有叶子指向同一样本目标或者叶子个数小于一定的阈值</li>
+</ol>
+<p>GINI 用来度量分布不均匀性（或者说不纯），总体的类别越杂乱，GINI 指数就越大（跟熵的概念很相似）</p>
+<h3 id="解决决策树的过拟合"><a href="#解决决策树的过拟合" class="headerlink" title="解决决策树的过拟合"></a>解决决策树的过拟合</h3><ol>
+<li>剪枝<ol>
+<li>前置剪枝：在分裂节点的时候设计比较苛刻的条件，如不满足则直接停止分裂（这样干决策树无法到最优，也无法得到比较好的效果）</li>
+<li>后置剪枝：在树建立完之后，用单个节点代替子树，节点的分类采用子树中主要的分类（这种方法比较浪费前面的建立过程）</li>
+</ol>
+</li>
+<li>交叉验证</li>
+<li>随机森林</li>
+</ol>
+<h2 id="随机森林-RF"><a href="#随机森林-RF" class="headerlink" title="随机森林 RF"></a>随机森林 RF</h2><p><strong>优缺点</strong></p>
+<ol>
+<li>能够处理大量特征的分类，并且还不用做特征选择</li>
+<li>能够处理具有高维特征的输入样本，而且不需要降维</li>
+<li>在训练完成之后能给出哪些feature的比较重要</li>
+<li>在生成过程中，能够获取到内部生成误差的一种无偏估计</li>
+<li>对于缺省值问题也能够获得很好得结果</li>
+<li>训练速度很快，很容易并行</li>
+<li>实现相对来说较为简单</li>
+</ol>
+<p>随机森林就是通过集成学习的思想将多棵树集成的一种算法，它的基本单元是决策树，而它的本质属于机器学习的一大分支——集成学习(Ensemble Learning)方法。随机森林的名称中有两个关键词，一个是“随机”，一个就是“森林”。“森林”我们很好理解，一棵叫做树，那么成百上千棵就可以叫做森林了，这样的比喻还是很贴切的，其实这也是随机森林的主要思想–集成思想的体现。</p>
+<p>其实从直观角度来解释，每棵决策树都是一个分类器（假设现在针对的是分类问题），那么对于一个输入样本，N棵树会有N个分类结果。而随机森林集成了所有的分类投票结果，将投票次数最多的类别指定为最终的输出，这就是一种最简单的 Bagging 思想。</p>
+<p>bagging 的代价是不用单棵决策树来做预测，具体哪个变量起到重要作用变得未知，所以 bagging 改进了预测准确率但损失了解释性。</p>
+<p>一开始我们提到的随机森林中的“随机”就是指的这里的两个随机性。两个随机性的引入对随机森林的分类性能至关重要。由于它们的引入，使得随机森林不容易陷入过拟合，并且具有很好得抗噪能力（比如：对缺省值不敏感）。</p>
+<p>随机森林分类效果（错误率）与两个因素有关：</p>
+<ul>
+<li>森林中任意两棵树的相关性：相关性越大，错误率越大；</li>
+<li>森林中每棵树的分类能力：每棵树的分类能力越强，整个森林的错误率越低。</li>
+</ul>
+<p>减小特征选择个数m，树的相关性和分类能力也会相应的降低；增大m，两者也会随之增大。所以关键问题是如何选择最优的m（或者是范围），这也是随机森林唯一的一个参数。</p>
+<p>构建随机森林的关键问题就是如何选择最优的m，要解决这个问题主要依据计算袋外错误率 oob error（out-of-bag error）。</p>
+<p>随机森林有一个重要的优点就是，没有必要对它进行交叉验证或者用一个独立的测试集来获得误差的一个无偏估计。它可以在内部进行评估，也就是说在生成的过程中就可以对误差建立一个无偏估计。</p>
+<p>我们知道，在构建每棵树时，我们对训练集使用了不同的bootstrap sample（随机且有放回地抽取）。所以对于每棵树而言（假设对于第k棵树），大约有1/3的训练实例没有参与第k棵树的生成，它们称为第k棵树的 oob 样本。<br>而这样的采样特点就允许我们进行 oob 估计，它的计算方式如下：</p>
+<ol>
+<li>对每个样本，计算它作为 oob 样本的树对它的分类情况（约1/3的树）；</li>
+<li>然后以简单多数投票作为该样本的分类结果；</li>
+<li>最后用误分个数占样本总数的比率作为随机森林的 oob 误分率。</li>
+</ol>
+<p><strong>学习过程</strong></p>
+<ol>
+<li>现在有 N 个训练样本，每个样本的特征为 M 个，需要建 K 颗树</li>
+<li>从 N 个训练样本中有放回的取 N 个样本作为一组训练集（其余未取到的样本作为预测分类，评估其误差），每棵树的训练集都是不同的，而且里面包含重复的训练样本</li>
+<li>从 M 个特征中取 m 个特征左右子集特征(<code>m&lt;&lt;M</code>)，随机地从 M 个特征中选取 m 个特征子集，每次树进行分裂时，从这 m 个特征中选择最优的；</li>
+<li>对采样的数据使用完全分裂的方式来建立决策树，这样的决策树每个节点要么无法分裂，要么所有的样本都指向同一个分类，每棵树都尽最大程度的生长，并且没有剪枝过程。</li>
+<li>重复 2 的过程 K 次，即可建立森林</li>
+</ol>
+<p><strong>预测过程</strong></p>
+<ol>
+<li>将预测样本输入到K颗树分别进行预测</li>
+<li>如果是分类问题，直接使用投票的方式选择分类频次最高的类别</li>
+<li>如果是回归问题，使用分类之后的均值作为结果</li>
+</ol>
+<p><strong>参数问题</strong></p>
+<ol>
+<li>这里的一般取 <code>m=sqrt(M)</code></li>
+<li>关于树的个数 K，一般都需要成百上千，但是也有具体的样本有关（比如特征数量）</li>
+<li>树的最大深度，（太深可能可能导致过拟合）</li>
+<li>节点上的最小样本数、最小信息增益</li>
+</ol>
+<p><strong>学习算法</strong></p>
+<ol>
+<li>ID3 算法：处理离散值的量</li>
+<li>C45 算法：处理连续值的量</li>
+<li>Cart 算法：离散和连续 </li>
+</ol>
+<p>随机森林是一种集成学习+决策树的分类模型，它可以利用集成的思想（投票选择的策略）来提升单颗决策树的分类性能（通俗来讲就是“三个臭皮匠，顶一个诸葛亮”）。</p>
+<p>集集成学习和决策树于一身，随机森林算法具有众多的优点，其中最为重要的就是在随机森林算法中每棵树都尽最大程度的生长，并且没有剪枝过程。</p>
+<p>随机森林引入了两个随机性——随机选择样本（bootstrap sample）和随机选择特征进行训练。两个随机性的引入对随机森林的分类性能至关重要。由于它们的引入，使得随机森林不容易陷入过拟合，并且具有很好得抗噪能力（比如：对缺省值不敏感）</p>
+<h3 id="GDBT"><a href="#GDBT" class="headerlink" title="GDBT"></a>GDBT</h3><p>迭代决策树 GBDT(Gradient Boosting Decision Tree）也被称为是 MART(Multiple Additive Regression Tree)或者是 GBRT(Gradient Boosting Regression Tree)，也是一种基于集成思想的决策树模型，但是它和 Random Forest 有着本质上的区别。不得不提的是，GBDT 是目前竞赛中最为常用的一种机器学习算法，因为它不仅可以适用于多种场景，更难能可贵的是，GBDT 有着出众的准确率。这也是为什么很多人称 GBDT 为机器学习领域的“屠龙刀”。</p>
+<p>这么牛叉的算法，到底是怎么做到的呢？说到这里，就不得不说一下 GBDT 中的 “GB”（Gradient Boosting）。Gradient Boosting 的原理相当的复杂，但是看不懂它也不妨碍我们对 GBDT 的理解和认识</p>
+<p>Boosting，迭代，即通过迭代多棵树来共同决策。这怎么实现呢？难道是每棵树独立训练一遍，比如 A 这个人，第一棵树认为是 10 岁，第二棵树认为是 0 岁，第三棵树认为是 20 岁，我们就取平均值 10 岁做最终结论？当然不是！且不说这是投票方法并不是 GBDT，只要训练集不变，独立训练三次的三棵树必定完全相同，这样做完全没有意义。之前说过，GBDT 是把所有树的结论累加起来做最终结论的，所以可以想到每棵树的结论并不是年龄本身，而是年龄的一个累加量。GBDT 的核心就在于，每一棵树学的是之前所有树结论和的残差，这个残差就是一个加预测值后能得真实值的累加量。比如A的真实年龄是 18 岁，但第一棵树的预测年龄是 12 岁，差了 6 岁，即残差为 6 岁。那么在第二棵树里我们把 A 的年龄设为 6 岁去学习，如果第二棵树真的能把 A 分到 6 岁的叶子节点，那累加两棵树的结论就是 A 的真实年龄；如果第二棵树的结论是 5 岁，则 A 仍然存在 1 岁的残差，第三棵树里 A 的年龄就变成 1 岁，继续学。这就是 Gradient Boosting 在 GBDT 中的意义。</p>
+<h2 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h2><ul>
+<li>优点<ul>
+<li>泛化错误率低</li>
+<li>计算开销不大</li>
+<li>结果易解释</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>对参数调节和核函数的选择敏感</li>
+<li>原始分类器不加修改仅适用于处理二元分类问题</li>
+</ul>
+</li>
+<li>适用数据类型<ul>
+<li>数值型</li>
+<li>标称型</li>
+</ul>
+</li>
+<li>类别<ul>
+<li>分类算法</li>
+</ul>
+</li>
+<li>适用场景<ul>
+<li>解决二分类问题。</li>
+</ul>
+</li>
+</ul>
+<p>将数据集分隔开来的直线称为<strong>分隔超平面(separating hyperplane)</strong>。如果数据对象是 1024 维的，那么就需要一个1023维的某某对象来对数据进行分隔，这个对象就叫<strong>超平面(hyperplane)</strong>，也就是分类的决策边界。分布在超平面一侧的所有数据都属于某个类别，而分布在另一侧的所有数据则属于另一个类别。</p>
+<p>我们希望能找到离分隔超平面最近的点，确保它们离分隔面的距离尽可能远。这里点到分隔面的距离被称为<strong>间隔(margin)</strong>。我们希望间隔尽可能大，因为如果我们犯错或者在有限数据上训练分类器的话，我们希望分类器尽可能健壮。</p>
+<p><strong>支持向量(support vector)</strong>就是离分隔超平面最近的那些点。接下来要试着最大化支持向量到分隔面的距离。</p>
+<p>分隔超平面的形式可以写成 $w^T+b$。要计算点 A 到分隔超平面的距离，就必须给出点到分隔面的法线或垂线的长度，值为 $$\frac{|w^TA+b|}{||w||}$$。这里的常数 b 类似于 Logistic 回归中的截距 $w_0$。</p>
+<p>当计算数据点到分隔面的距离并确定分隔面的放置位置时，间隔是通过 $label\times(w^T+b)$来计算的。如果数据点处于正方向(+1)，$w^Tx+b$ 会是一个很大的正数，同时 $label\times(w^T+b)$也会是一个很大的正数；而处于负方向时(-1)，$label\times(w^T+b)$ 仍然会是一个很大的正数。</p>
+<p>现在的目标就是找出分类器定义中的 w 和 b。为此，我们必须找到具有最小间隔的数据点，而这些数据点也就是前面提到的支持向量。一旦找到具有最小间隔的数据点，我们就需要对该间隔最大化：</p>
+ $$arg max_{w,b}\{min_n(label·(w^Tx+b))·\frac{1}{||w||}\}$$ 
+<p>直接求解上述问题相当困难，所以需要将它转换成为另一种更容易求解的形式。</p>
+<p>先考察一下大括号中的部分。由于对乘积进行优化是一件很讨厌的事情，因此我们要做的是固定其中一个因子而最大化其他因子。如果令所有支持向量的 $label\times(w^T+b)$  都为 1，那么就可以通过求 <code>||w||</code> 的最大值来得到最终解。但是，并非所有数据点的 $label\times(w^T+b)$  都等于 1，只有那些离分割超平面最近的点得到的值才为 1。而离超平面越远的数据点，其 $label\times(w^T+b)$  的值也就越大。</p>
+<p>这里的约束条件就是 $label\times(w^T+b) \ge 1$ 。对于这类优化问题，有一个非常著名的求解方法，拉格朗日乘子法。通过引入拉格朗日乘子，我们就可以基于约束条件来表述原来的问题。由于这里的约束条件都是基于数据点的，因此我们就可以将超平面写成数据点的形式，优化函数就变成</p>
+ $$max_\alpha[\sum_{i=1}^m\alpha-\frac{1}{2}label^{(i)}·label^{(j)}·\alpha_i·\alpha_j\langle x^{(i)},x^{(j)}\rangle]$$ 
+<blockquote>
+<p>$label\times(w^T+b)$ 被称为点到分隔面的函数间隔，$\frac{|w^TA+b|}{||w||}$ 称为点到分隔面的几何间隔<br>尖括号表示两个向量的内积</p>
+</blockquote>
+<p>约束条件为</p>
+ $$\alpha \ge 0 \; and \; \sum_{i=1}^m \alpha_i·label^{(i)} = 0$$ 
+<p>考虑到数据不可能非常完美，就需要引入<strong>松弛变量(slack variable)</strong>来允许有些数据点可以处于分隔面错误的一侧。这样我们的优化目标就能保持仍然不变，但约束条件变成：</p>
+ $$C \ge\alpha \ge 0 \; and \; \sum_{i=1}^m \alpha_i·label^{(i)} = 0$$
+<p>这里的常数 C 用于控制“最大化间隔”和“保证大部分点的函数间隔小于1.0”这两个目标的权重。在优化算法的实现代码中，常数 C 是一个参数，因此我们就可以通过调节该参数得到不同的结果。一旦求出了所有的 α，那么分隔超平面就可以通过这些 α 来表达。这一结论十分直接，SVM 中的主要工作就是求解这些 α。</p>
+<h3 id="SMO-高效优化算法（Sequential-Minimal-Optimization，SMO）"><a href="#SMO-高效优化算法（Sequential-Minimal-Optimization，SMO）" class="headerlink" title="SMO 高效优化算法（Sequential Minimal Optimization，SMO）"></a>SMO 高效优化算法（Sequential Minimal Optimization，SMO）</h3><p><strong>Platt 的 SMO 算法</strong></p>
+<p>SMO 表示<strong>序列最小化(Sequential Minimal Optimization)</strong>。Platt 的 SMO 算法是将大优化问题分解为多个小优化问题来求解的。这些小优化问题往往很容易求解，并且对它们进行顺序求解的结果与将它们作为整体来求解的结果是完全一致的。</p>
+<p>SMO 算法的目标是求出一系列 α 和 b，一旦求出了这些 α，就很容易计算出权重向量 w 并得到分隔超平面。</p>
+<p>它选择凸二次规划的两个变量，其他的变量保持不变，然后根据这两个变量构建一个二次规划问题，这个二次规划关于这两个变量解会更加的接近原始二次规划的解，通过这样的子问题划分可以大大增加整个算法的计算速度，关于这两个变量：</p>
+<ol>
+<li>其中一个是严重违反KKT条件的一个变量</li>
+<li>另一个变量是根据自由约束确定，好像是求剩余变量的最大化来确定的。</li>
+</ol>
+<p>SMO 算法的工作原理是：每次循环中选择两个 α 进行优化处理。一旦找到一对合适的 α，那么就增大其中一个同时减小另一个。这里所谓的“合适”就是指两个 α 必须要符合一定的条件，条件之一就是这两个 α 必须要在间隔边界之外，第二个条件则是这两个 α 还没有进行过区间化处理或者不在边界上。</p>
+<p>Platt SMO 算法中的外循环确定要优化的最佳 α 对。而简化版会跳过这一部分，首先在数据集上遍历每一个 α，然后在剩下的 α 集合中随机选择另一个 α，从而构建 α 对。这一点相当重要，要同时改变，因为我们有一个约束条件：</p>
+ $$\alpha \ge 0 \; and \; \sum_{i=1}^m \alpha_i·label^{(i)} = 0$$
+<p>由于改变一个 α 可能会导致该约束条件失效，因此我们总是同时改变两个 α。</p>
+<p>伪代码：</p>
+<pre><code>创建一个 α 向量并将其初始化为 0 向量
+当迭代次数小于最大迭代次数时(外循环)
+    对数据集中的每个数据向量(内循环):
+        如果该数据向量可以被优化:
+            随机选择另外一个数据向量
+            同时优化这两个向量
+            如果两个向量都不能被优化，退出内循环
+    如果所有向量都没有被优化，增加迭代数量，继续下一次循环
+</code></pre><p><strong>完整的Platt SMO算法</strong></p>
+<p>在在选择第一个 α 值后，算法会通过一个内循环来选择第二个 α 值。在优化过程中，会通过<strong>最大化步长</strong>的方式来获得第二个 α 值。</p>
+<h3 id="在复杂数据上应用核函数"><a href="#在复杂数据上应用核函数" class="headerlink" title="在复杂数据上应用核函数"></a>在复杂数据上应用核函数</h3><p>核函数(kernel) 和 径向基函数(fadial basis function)</p>
+<h4 id="利用核函数将数据映射到高维空间"><a href="#利用核函数将数据映射到高维空间" class="headerlink" title="利用核函数将数据映射到高维空间"></a>利用核函数将数据映射到高维空间</h4><p>从某个特征空间到另一个特征空间的映射是通过核函数来实现的。可以把核函数想象成一个<strong>包装器(wrapper)</strong>或者是<strong>接口(interface)</strong>，它能把数据从某个很难处理的形式转换成另一种较易处理的形式。</p>
+<p>SVM 优化中一个特别好的地方是，所有的运算都可以写成<strong>内积(inner product)</strong>的形式。向量的内积指的是两个向量相乘，之后得到单个标量或者数值。我们可以把内积运算替换成核函数，而不必做简化处理。将内积替换成核函数的方式被称为<strong>核技巧(kernel trick)</strong>或者<strong>核变电(kernel substation)</strong>。</p>
+<h4 id="径向基核函数"><a href="#径向基核函数" class="headerlink" title="径向基核函数"></a>径向基核函数</h4><p>采用向量作为自变量的函数，基于向量距离运算输出一个标量。这个距离可以是从<0, 0="">向量或者其他向量开始计算的距离，我们使用径向基函数的高斯版本，公式如下：</0,></p>
+<p>$$k(x,y)=exp(\frac{-||x-y||^2}{2\sigma^2})$$</p>
+<p>上述高斯核函数将数据从其特征空间映射到更高维的空间，具体来说这里是映射到一个无穷维的空间。</p>
+<p>支持向量的数目存在一个最优值。SVM 的优点在于它能对数据进行高效分类。如果支持向量太少，就可能会得到一个很差的决策边界；如果支持向量太多，也就相当于每次都利用整个数据集进行分类，这种分类方法称为 k近邻。</p>
+<p>可以这么看 SVM 比 k 近邻好的地方在于，从很多数据中找到最有代表性的数据点来作为分类的依据，可以有效减少多余的计算。</p>
+<h3 id="SVM-多分类方法"><a href="#SVM-多分类方法" class="headerlink" title="SVM 多分类方法"></a>SVM 多分类方法</h3><p><strong>一对多</strong></p>
+<p>其中某个类为一类，其余 n-1 个类为另一个类，比如 A,B,C,D 四个类，第一次 A 为一个类，{B,C,D} 为一个类训练一个分类器，第二次 B 为一个类,{A,C,D} 为另一个类,按这方式共需要训练 4 个分类器，最后在测试的时候将测试样本经过这4个分类器f1(x), f2(x), f3(x) 和 f4(x),取其最大值为分类器(这种方式由于是 1 对 M 分类，会存在偏置，很不实用)</p>
+<p><strong>一对一(libsvm实现的方式)</strong></p>
+<p>任意两个类都训练一个分类器，那么n个类就需要 <code>n*(n-1)/2</code> 个svm分类器。</p>
+<p>还是以 A,B,C,D 为例,那么需要 {A,B},{A,C},{A,D},{B,C},{B,D},{C,D} 为目标共6个分类器，然后在预测的将测试样本通过这6个分类器之后进行投票选择最终结果。（这种方法虽好，但是需要 <code>n*(n-1)/2</code> 个分类器代价太大，不过有好像使用循环图来进行改进）</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>支持向量机的泛化错误率较低，也就是说它具有良好的学习能力，且学到的结果具有很好的推广性。这些优点使得向量机十分流行，有些人认为它是监督学习中最好的定式算法。</p>
+<p>支持向量机试图通过求解一个二次优化问题来最大化分类间隔。</p>
+<p>和方法或者说核技巧会将数据(有时是非线性数据)从一个低维空间映射到一个高维空间，可以将一个在低维空间中的非线性问题转换成高维空间下的线性问题来求解。和方法不止在 SVM 中适用，还可以用于其他算法中。而其中径向基函数是一个常用的度量两个向量距离的核函数。</p>
+<p>支持向量机是一个二元分类器。当用其解决多元问题时，则需要额外的方法对其进行扩展。SVM 的效果也对优化参数和所用核函数中的参数敏感。</p>
+<h2 id="Bagging-和-Boosting"><a href="#Bagging-和-Boosting" class="headerlink" title="Bagging 和 Boosting"></a>Bagging 和 Boosting</h2><p>使用机器学习方法解决问题时，有较多模型可供选择。 一般的思路是先根据数据的特点，快速尝试某种模型，选定某种模型后， 再进行模型参数的选择（当然时间允许的话，可以对模型和参数进行双向选择）</p>
+<p>因为不同的模型具有不同的特点， 所以有时也会将多个模型进行组合，以发挥”三个臭皮匠顶一个诸葛亮的作用”，这样的思路，反应在模型中，主要有两种思路：Bagging和Boosting</p>
+<h3 id="Bagging"><a href="#Bagging" class="headerlink" title="Bagging"></a>Bagging</h3><p>Bagging 可以看成是一种圆桌会议，或是投票选举的形式，其中的思想是：”群众的眼光是雪亮的”，可以训练多个模型，之后将这些模型进行加权组合，一般这类方法的效果，都会好于单个模型的效果。 在实践中，在特征一定的情况下，大家总是使用Bagging的思想去提升效果。例如kaggle上的问题解决，因为大家获得的数据都是一样的，特别是有些数据已经过预处理。</p>
+<p>基本的思路比较简单，就是：训练时，使用 replacement 的 sampling 方法， sampling 一部分训练数据k次并训练 k 个模型；预测时，使用 k 个模型，如果为分类，则让 k 个模型均进行分类并选择出现次数最多的类(每个类出现的次数占比可以视为置信度)；如为回归，则为各类器返回的结果的平均值。</p>
+<p>在该处，Bagging 算法可以认为每个分类器的权重都一样。</p>
+<h3 id="Boosting"><a href="#Boosting" class="headerlink" title="Boosting"></a>Boosting</h3><p>在 Bagging 方法中，我们假设每个训练样本的权重都是一致的； 而 Boosting 算法则更加关注错分的样本，越是容易错分的样本，约要花更多精力去关注。对应到数据中，就是该数据对模型的权重越大，后续的模型就越要拼命将这些经常分错的样本分正确。 最后训练出来的模型也有不同权重，所以 boosting 更像是会整，级别高，权威的医师的话语权就重些。</p>
+<p>Bagging 和 Boosting 都可以视为比较传统的集成学习思路。 现在常用的 Random Forest，GBDT，GBRank 其实都是更加精细化，效果更好的方法</p>
+<h2 id="AdaBoost"><a href="#AdaBoost" class="headerlink" title="AdaBoost"></a>AdaBoost</h2><ul>
+<li>优点<ul>
+<li>泛化错误率低</li>
+<li>易编码，可以应用在大部分分类器上</li>
+<li>无参数调整</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>对离群点敏感</li>
+</ul>
+</li>
+<li>适用数据类型<ul>
+<li>数值型</li>
+<li>标称型</li>
+</ul>
+</li>
+</ul>
+<p>boosting 是一种与 bagging 很类似的技术。不论是在 boosting 还是 bagging 当中，所使用的多个分类器的类型都是一致的。但是在前者当中，不同的分类器是通过串行训练而获得的，每个新分类器都根据已训练出的分类器的性能来进行训练。boosting 是通过集中关注被已有分类器错分的那些数据来获得新的分类器。</p>
+<p>由于 boosting 分类的结果是基于所有分类器的加权求和结果的，因此 boosting 与 bagging 不太一样。bagging 中的分类器权重是相等的，而 boosting 中的分类器权重并不相等，每个权重代表的是其对应分类器在上一轮迭代中的成功度。</p>
+<p>boosting 方法拥有多个版本，这里只关注最流行的 AdaBoost</p>
+<p>能否使用弱分类器和多个实例来构建一个强分类器？这是一个非常有趣的理论问题。这里的“弱”意味着分类器的性能比所及猜测要略好，但是也不会好太多。AdaBoost 算法即脱胎于上述理论问题。</p>
+<p>AdaBoost 是 adaptive boosting(自适应 boosting)的缩写，其运行过程如下：训练数据中的每个样本各有一个权重，这些权重构成了向量 D。一开始，这些权重都初始化成相等值。首先在训练数据上训练处一个弱分类器并计算该分类器的错误率，然后在同一数据集上再次训练弱分类器。在分类器的第二次训练当中，将会重新调整每个样本的权重，其中第一次分对的样本的权重将会降低，而第一次分错的样本的权重将会提高。</p>
+<p>为了从所有弱分类器中得到最终的分类结果，AdaBoost 为每个分类器都分配了一个权重值 α，这些 α 值是基于每个弱分类器的错误率进行计算的。错误率和 α 的公式为</p>
+<p>$$\epsilon=\frac{未正确分类的样本数目}{所有样本数目}$$</p>
+<p>$$\alpha=\frac{1}{2}ln(\frac{1-\epsilon}{\epsilon})$$</p>
+<p>计算出 α 值之后，可以对权重向量 D 进行更新，以使那些正确分类的样本的权重降低而错分样本的权重升高。D 的计算方法如下：</p>
+<p>正确情况：</p>
+ $$D_i^{(i+1)}=\frac{D_i^{(i)}e^{-\alpha}}{\sum D}$$
+<p>错误情况：</p>
+ $$D_i^{(i+1)}=\frac{D_i^{(i)}e^{\alpha}}{\sum D}$$
+<p>计算出 D 之后，AdaBoost 又开始进入下一轮迭代。AdaBoost 算法会不断地重复训练和调整权重的过程，直到训练错误率为 0 或者弱分类器的数目达到用户的指定值为止。</p>
+<p>构建弱分类器：<strong>单层决策树(decision stump, 决策树桩)</strong>是一种简单的决策树，仅基于单个特征来做决策。</p>
+<h2 id="KMeans"><a href="#KMeans" class="headerlink" title="KMeans"></a>KMeans</h2><ul>
+<li>优点<ul>
+<li>容易实现</li>
+<li>对处理大数据集，该算法是相对可伸缩的和高效率的，因为它的复杂度大约是 O(nkt)，其中 n 是所有对象的数目，k 是簇的数目,t 是迭代的次数。通常 k&lt;&lt;n。这个算法通常局部收敛</li>
+<li>算法尝试找出使平方误差函数值最小的 k 个划分。当簇是密集的、球状或团状的，且簇与簇之间区别明显时，聚类效果较好</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>可能收敛到局部最小值</li>
+<li>在大规模数据集上收敛较慢</li>
+<li>k-平均方法只有在簇的平均值被定义的情况下才能使用，且对有些分类属性的数据不适合</li>
+<li>要求用户必须事先给出要生成的簇的数目 k</li>
+<li>不适合于发现非凸面形状的簇，或者大小差别很大的簇</li>
+<li>对于”噪声”和孤立点数据敏感，少量的该类数据能够对平均值产生极大影响</li>
+</ul>
+</li>
+<li>使用数据类型<ul>
+<li>数值型</li>
+</ul>
+</li>
+<li>算法类型<ul>
+<li>聚类算法</li>
+</ul>
+</li>
+</ul>
+<p>K-Means的基本步骤：</p>
+<ol>
+<li>从数据对象中随机的初始化K个初始点作为质心。然后将数据集中的每个点分配到一个簇中，具体来讲每个点找到距其最近的质心，并将其分配给该质心所对应的簇。</li>
+<li>计算每个簇中样本点的均值，然后用均值更新掉该簇的质心。然后划分簇结点。</li>
+<li>迭代重复（2）过程，当簇对象不再发生变化时，或者误差在评测函数预估的范围时，停止迭代。</li>
+</ol>
+<p>选择批次距离尽可能远的K个点</p>
+<p>首先随机选取一个点作为初始点，然后选择距离与该点最远的那个点作为中心点，再选择距离与前两个点最远的点作为第三个中心点，以此类推，直至选取大k个</p>
+<p>选用层次聚类或者 Canopy 算法进行初始聚类</p>
+<p>聚类属于无监督学习，以往的回归、朴素贝叶斯、SVM 等都是有类别标签 y 的，也就是说样例中已经给出了样例的分类。而聚类的样本中却没有给定 y，只有特征 x，比如假设宇宙中的星星可以表示成三维空间中的点集(x,y,z)。聚类的目的是找到每个样本x潜在的类别y，并将同类别y的样本x放在一起。</p>
+<p>在聚类问题中，给我们的训练样本是 {x(1),…,x(m)}，每个 x(i)∈ R^n，没有了 y。</p>
+<p>下面累述一下 K-means 与 EM 的关系，首先回到初始问题，我们目的是将样本分成 k 个类，其实说白了就是求每个样例 x 的隐含类别 y，然后利用隐含类别将 x 归类。由于我们事先不知道类别 y，那么我们首先可以对每个样例假定一个 y吧，但是怎么知道假定的对不对呢？怎么评价假定的好不好呢？我们使用样本的极大似然估计来度量，这里是就是x和y的联合分布 P(x,y)了。如果找到的 y 能够使 P(x,y) 最大，那么我们找到的 y 就是样例 x 的最佳类别了，x 顺手就聚类了。但是我们第一次指定的 y 不一定会让 P(x,y) 最大，而且 P(x,y) 还依赖于其他未知参数，当然在给定 y 的情况下，我们可以调整其他参数让 P(x,y) 最大。但是调整完参数后，我们发现有更好的 y 可以指定，那么我们重新指定 y，然后再计算 P(x,y) 最大时的参数，反复迭代直至没有更好的 y 可以指定。</p>
+<p>这个过程有几个难点，第一怎么假定 y？是每个样例硬指派一个 y 还是不同的 y 有不同的概率，概率如何度量。第二如何估计P(x,y)，P(x,y) 还可能依赖很多其他参数，如何调整里面的参数让 P(x,y) 最大。</p>
+<p>这里只是指出 EM 的思想，E 步就是估计隐含类别 y 的期望值，M 步调整其他参数使得在给定类别 y 的情况下，极大似然估计 P(x,y) 能够达到极大值。然后在其他参数确定的情况下，重新估计 y，周而复始，直至收敛。</p>
+<p>上面的阐述有点费解，对应于K-$x^{(i)}$对应隐含变量也就是最佳类别 $c^{(i)}$。最开始可以随便指定一个 $c^{(i)}$ 给它，然后为了让 P(x,y) 最大（这里是要让 J 最小），我们求出在给定 c 情况下，J最小时的  $u_j$（前面提到的其他未知参数），然而此时发现，可以有更好的 $c^{(i)}$（质心与样例$x^{(i)}$ 距离最小的类别）指定给样例 $x^{(i)}$，那么 $c^{(i)}$ 得到重新调整，上述过程就开始重复了，直到没有更好的 $c^{(i)}$ 指定。</p>
+<p>这样从K-means里我们可以看出它其实就是EM的体现，E步是确定隐含类别变量 $c^{(i)}$，M步更新其他参数 <code>u</code> 来使J最小化。这里的隐含类别变量指定方法比较特殊，属于硬指定，从k个类别中硬选出一个给样例，而不是对每个类别赋予不同的概率。总体思想还是一个迭代优化过程，有目标函数，也有参数变量，只是多了个隐含变量，确定其他参数估计隐含变量，再确定隐含变量估计其他参数，直至目标函数最优。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>如果将样本看作观察值，潜在类别看作是隐藏变量，那么聚类问题也就是参数估计问题，只不过聚类问题中参数分为隐含类别变量和其他参数，这犹如在 x-y 坐标系中找一个曲线的极值，然而曲线函数不能直接求导，因此什么梯度下降方法就不适用了。但固定一个变量后，另外一个可以通过求导得到，因此可以使用坐标上升法，一次固定一个变量，对另外的求极值，最后逐步逼近极值。对应到EM上，E步估计隐含变量，M步估计其他参数，交替将极值推向最大。EM中还有“硬”指定和“软”指定的概念，“软”指定看似更为合理，但计算量要大，“硬”指定在某些场合如 K-means 中更为实用（要是保持一个样本点到其他所有中心的概率，就会很麻烦）。</p>
+<p>另外，EM 的收敛性证明方法确实很牛，能够利用 log 的凹函数性质，还能够想到利用创造下界，拉平函数下界，优化下界的方法来逐步逼近极大值。而且每一步迭代都能保证是单调的。最重要的是证明的数学公式非常精妙，硬是分子分母都乘以z的概率变成期望来套上Jensen不等式，前人都是怎么想到的。</p>
+<h2 id="PCA-主成分分析"><a href="#PCA-主成分分析" class="headerlink" title="PCA 主成分分析"></a>PCA 主成分分析</h2><ul>
+<li>优点<ul>
+<li>降低数据的复杂性</li>
+<li>识别最重要的多个特征。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>不一定需要</li>
+<li>且可能损失有用信息。</li>
+</ul>
+</li>
+<li>适用适用类型<ul>
+<li>数值型</li>
+</ul>
+</li>
+<li>技术类型<ul>
+<li>降维技术</li>
+</ul>
+</li>
+</ul>
+<p>按照一定的数学变换方法，把给定的一组相关变量（维度）通过线性变换转成另一组不相关的变量，这些新的变量按照方差依次递减的顺序排列。在数学变换中保持变量的<code>总方差</code>不变，使<code>第一变量</code>具有<code>最大的方差</code>，称为<code>第一主成分</code>，<code>第二变量</code>的<code>方差次大</code>，并且和第一变量不相关，称为第二主成分。依次类推，I个变量就有I个主成分。</p>
+<p><strong>通过低维表征的向量和特征向量矩阵，可以基本重构出所对应的原始高维向量</strong></p>
+<h3 id="总结与讨论"><a href="#总结与讨论" class="headerlink" title="总结与讨论"></a>总结与讨论</h3><p>PCA技术的一大好处是对数据进行降维的处理。我们可以对新求出的“主元”向量的重要性进行排序，根据需要取前面最重要的部分，将后面的维数省去，可以达到降维从而简化模型或是对数据进行压缩的效果。同时最大程度的保持了原有数据的信息。</p>
+<p>PCA技术的一个很大的优点是，它是完全无参数限制的。在PCA的计算过程中完全不需要人为的设定参数或是根据任何经验模型对计算进行干预，最后的结果只与数据相关，与用户是独立的。</p>
+<p>但是，这一点同时也可以看作是缺点。如果用户对观测对象有一定的先验知识，掌握了数据的一些特征，却无法通过参数化等方法对处理过程进行干预，可能会得不到预期的效果，效率也不高。</p>
+<h2 id="SVD-singular-value-decomposition-奇异值分解"><a href="#SVD-singular-value-decomposition-奇异值分解" class="headerlink" title="SVD(singular value decomposition) 奇异值分解"></a>SVD(singular value decomposition) 奇异值分解</h2><ul>
+<li>优点<ul>
+<li>简化数据</li>
+<li>去除噪声</li>
+<li>提高算法的结果。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>数据转换可能难以理解。</li>
+</ul>
+</li>
+<li>适用数据类型<ul>
+<li>数值型</li>
+</ul>
+</li>
+<li>SVD是矩阵分解的一种类型。</li>
+</ul>
+<p>总结：SVD是一种强大的降维工具，我们可以利用SVD来逼近矩阵并从中提取重要特征。通过保留矩阵 80%~90% 的能量，就可以得到重要的特征并去掉噪声。SVD已经运用到多个应用中，其中一个成功的应用案例就是推荐引擎。推荐引擎将物品推荐给用户，协同过滤则是一种基于用户喜好和行为数据的推荐和实现方法。协同过滤的核心是相似度计算方法，有很多相似度计算方法都可以用于计算物品或用户之间的相似度。通过在低维空间下计算相似度，SVD提高了推荐引擎的效果。</p>
+<p>SVD将矩阵分解为三个矩阵的乘积，公式如下所示：</p>
+ $$Data_{m\times n}=U_{m\times m}\Sigma_{m\times n}V_{n\times n}^T$$
+<p>中间的矩阵sigma为对角矩阵，对角元素的值为Data矩阵的奇异值(注意奇异值和特征值是不同的)，且已经从大到小排列好了。即使去掉特征值小的那些特征，依然可以很好的重构出原始矩阵。</p>
+<p>如果 m 代表商品的个数，n 代表用户的个数，则 U 矩阵的每一行代表商品的属性，现在通过降维 U 矩阵（取深色部分）后，每一个商品的属性可以用更低的维度表示（假设为 k 维）。这样当新来一个用户的商品推荐向量 X，则可以根据公式  $X'U_1\Sigma_1^{-1}$ 得到一个 k 维的向量，然后在 V’ 中寻找最相似的那一个用户（相似度测量可用余弦公式等），根据这个用户的评分来推荐（主要是推荐新用户未打分的那些商品）。</p>
+<p>SVD++ 可以说是SVD模型的加强版，除了打分关系，SVD++还可以对隐含的回馈(implicit feedback) 进行建模。</p>
+<p>这种隐含的回馈可以是打分动作（谁对某个商品打过分），或者是浏览记录等。 只要有类似的隐含回馈，客观上也表示了 user 对某个 item 的偏好。 毕竟，user 不会无缘无故地浏览一个 item，肯定有什么原因， 比如 user 喜欢紫色，恰恰这个 item 也是紫色的，那通过隐含回馈就可以对 user 对紫色的偏好建模出来。</p>
+<p>现实中，隐含回馈的原因比较复杂，专门给一部分参数空间去建模，肯定对用户的建模有一些帮助。</p>
+<p>除了在 SVD 中定义的向量外，每个 item 对应一个向量 yi ，来通过 user 隐含回馈过的 item 的集合来刻画用户的偏好。</p>
+<h2 id="特征工程"><a href="#特征工程" class="headerlink" title="特征工程"></a>特征工程</h2><p>特征工程大概包括两个部分：特征提取和特征选择。</p>
+<p>一般来说，领域内的知识主要是应用在特征提取。举个例子的话，比如说基于内容的购物推荐，性别就是一个很重要的领域知识，男性和女性关注的物品差别就比较大，推荐也应该体现出这种差别，那么这个特征就是这个问题一个重要特征，应该重点从已知数据提取，甚至专门为它再构建一个机器学习问题。</p>
+<p>一般简单且常见的都是卡方检验，互信息和信息增益这三种</p>
+<p>关于特征工程(Feature Engineering)，已经是很古老很常见的话题了，坊间常说：“数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限而已”。由此可见，特征工程在机器学习中占有相当重要的地位。在实际应用当中，可以说特征工程是机器学习成功的关键。纵观 Kaggle、KDD 等国内外大大小小的比赛，每个竞赛的冠军其实并没有用到很高深的算法，大多数都是在特征工程这个环节做出了出色的工作，然后使用一些常见的算法，比如LR，就能得到出色的性能。遗憾的是，在很多的书籍中并没有直接提到 Feature Engineering，更多的是 Feature selection。这也并不，很多ML书籍都是以讲解算法为主，他们的目的是从理论到实践来理解算法，所以用到的数据要么是使用代码生成的，要么是已经处理好的数据，并没有提到特征工程。在这篇文章，我打算自我总结下特征工程，让自己对特征工程有个全面的认识。在这我要说明一下，我并不是说那些书写的不好，其实都很有不错，主要是因为它们的目的是理解算法，所以直接给出数据相对而言对于学习和理解算法效果更佳。</p>
+<p>特征工程是利用数据领域的相关知识来创建能够使机器学习算法达到最佳性能的特征的过程。</p>
+<p>简而言之，特征工程就是一个把原始数据转变成特征的过程，这些特征可以很好的描述这些数据，并且利用它们建立的模型在未知数据上的表现性能可以达到最优（或者接近最佳性能）。从数学的角度来看，特征工程就是人工地去设计输入变量X。</p>
+<p>（1）特征越好，灵活性越强</p>
+<p>只要特征选得好，即使是一般的模型（或算法）也能获得很好的性能，因为大多数模型（或算法）在好的数据特征下表现的性能都还不错。好特征的灵活性在于它允许你选择不复杂的模型，同时运行速度也更快，也更容易理解和维护。</p>
+<p>（2）特征越好，构建的模型越简单</p>
+<p>有了好的特征，即便你的参数不是最优的，你的模型性能也能仍然会表现的很nice，所以你就不需要花太多的时间去寻找最有参数，这大大的降低了模型的复杂度，使模型趋于简单。</p>
+<p>（3）特征越好，模型的性能越出色</p>
+<p>显然，这一点是毫无争议的，我们进行特征工程的最终目的就是提升模型的性能。</p>
+<h3 id="特征选择-Feature-Selection"><a href="#特征选择-Feature-Selection" class="headerlink" title="特征选择 Feature Selection"></a>特征选择 Feature Selection</h3><p>首先，从特征开始说起，假设你现在有一个标准的Excel表格数据，它的每一行表示的是一个观测样本数据，表格数据中的每一列就是一个特征。在这些特征中，有的特征携带的信息量丰富，有的（或许很少）则属于无关数据(irrelevant data)，我们可以通过特征项和类别项之间的相关性（特征重要性）来衡量。比如，在实际应用中，常用的方法就是使用一些评价指标单独地计算出单个特征跟类别变量之间的关系。如Pearson相关系数，Gini-index（基尼指数），IG（信息增益）等，下面举Pearson指数为例，它的计算方式如下：</p>
+ $$r_{xy}^2=(\frac{con(x,y)}{\sqrt{var(x)var(y)}})$$
+<p>其中，x 属于 X，X 表一个特征的多个观测值，y 表示这个特征观测值对应的类别列表。</p>
+<p>Pearson 相关系数的取值在 0 到 1 之间，如果你使用这个评价指标来计算所有特征和类别标号的相关性，那么得到这些相关性之后，你可以将它们从高到低进行排名，然后选择一个子集作为特征子集（比如top 10%），接着用这些特征进行训练，看看性能如何。此外，你还可以画出不同子集的一个精度图，根据绘制的图形来找出性能最好的一组特征。</p>
+<p>这就是特征工程的子问题之一——特征选择，它的目的是从特征集合中挑选一组最具统计意义的特征子集，从而达到降维的效果。</p>
+<p>做特征选择的原因是因为这些特征对于目标类别的作用并不是相等的，一些无关的数据需要删掉。做特征选择的方法有多种，上面提到的这种特征子集选择的方法属于 filter（刷选器）方法，它主要侧重于单个特征跟目标变量的相关性。优点是计算时间上较高效,对于过拟合问题也具有较高的鲁棒性。缺点就是倾向于选择冗余的特征,因为他们不考虑特征之间的相关性,有可能某一个特征的分类能力很差，但是它和某些其它特征组合起来会得到不错的效果。另外做特征子集选取的方法还有 wrapper（封装器）和 Embeded(集成方法)。wrapper 方法实质上是一个分类器，封装器用选取的特征子集对样本集进行分类，分类的精度作为衡量特征子集好坏的标准,经过比较选出最好的特征子集。常用的有逐步回归(Stepwise regression)、向前选择(Forward selection)和向后选择(Backward selection)。它的优点是考虑了特征与特征之间的关联性，缺点是：当观测数据较少时容易过拟合，而当特征数量较多时,计算时间又会增长。对于 Embeded 集成方法，它是学习器自身自主选择特征，如使用 Regularization 做特征选择，或者使用决策树思想，细节这里就不做介绍了。这里还提一下，在做实验的时候，我们有时候会用 Random Forest 和 Gradient boosting 做特征选择，本质上都是基于决策树来做的特征选择，只是细节上有些区别。</p>
+<h3 id="特征提取"><a href="#特征提取" class="headerlink" title="特征提取"></a>特征提取</h3><p>原则上来讲，特征提取应该在特征选择之前。特征提取的对象是原始数据(raw data)，它的目的是自动地构建新的特征，将原始特征转换为一组具有明显物理意义(Gabor、几何特征[角点、不变量]、纹理[LBP HOG])或者统计意义或核的特征。比如通过变换特征取值来减少原始数据中某个特征的取值个数等。对于表格数据，你可以在你设计的特征矩阵上使用主要成分分析(Principal Component Analysis，PCA)来进行特征提取从而创建新的特征。对于图像数据，可能还包括了线或边缘检测。</p>
+<p>常用的方法有：</p>
+<ul>
+<li>PCA (Principal component analysis，主成分分析)</li>
+<li>ICA (Independent component analysis，独立成分分析)</li>
+<li>LDA （Linear Discriminant Analysis，线性判别分析）</li>
+</ul>
+<p>对于图像识别中，还有SIFT方法。</p>
+<p>用中文来说就是：特征工程是一个超集，它包括特征提取、特征构建和特征选择这三个子模块。在实践当中，每一个子模块都非常重要，忽略不得。根据答主的经验，他将这三个子模块的重要性进行了一个排名，即：特征构建&gt;特征提取&gt;特征选择。</p>
+<p>事实上，真的是这样，如果特征构建做的不好，那么它会直接影响特征提取，进而影响了特征选择，最终影响模型的性能。</p>
+<h2 id="深度学习"><a href="#深度学习" class="headerlink" title="深度学习"></a>深度学习</h2><p>我们先说什么是深度学习。其实从整体上来讲，Deep Learning 就是曾经的多层神经网络，整体的思想认为每一个层次都可以被作为一个独立的特征抽象存在，所以最广泛地被用作特征工程上，而 GPU 的存在更是解决了几十年前的 ANN 的训练效率问题。那么简单来说，Deep Learning 可以对抽取出的特征进行非线性组合形成更有效的特征表示。确实，从这一点来说，Deep Learning 确实从理论上很好的解决了机器学习领域很麻烦的“特征抽取”问题，但是在实际的工业界，“特征工程”到底有多复杂？我们看看 Deep Learning 表现最好的 IR 领域吧，曾经是怎么做的呢？据了解微软有个小 Team 专门做的事儿就是从图片上找各种各样的特征，因为算法本身其实已经被锁死在 Random Forest上了，往往特征的微调就能带来算法效果的极大提升，那么 Deep Learning 的出现当然可以很好地取代这项工作(实际效果确实无法得知)，那么总结下Deep Learning的好处：从海量的特征中通过特征工程抽取出有效的特征组合。</p>
+<p>但是刨除掉语音和图像领域，转向离我们更近的工作，无论是推荐系统还是数据挖掘，特征是怎么出来的呢？对于一个电影，对于一个用户，满打满算一共就那么多特征，这个时候 Deep Learning 根本无从发挥。那么再退一步说，就算把 User 对于 Item 的标定作为 Item 的特征，由于在实际中大部分的缺失值存在，那么如果你希望用 Deep Learning 来对该矩阵做特征重组，第一件事情就是如何填充缺失值，而这恰恰是比特征工程更困难的事情。</p>
+<h2 id="大数据"><a href="#大数据" class="headerlink" title="大数据"></a>大数据</h2><p>大数据其实意味着大样本量，那么大样本量带来的是高置信度以及广覆盖度。例如从 FM 来说，大数据量意味着更全面地了解一个用户的听歌品位，从金融互联网的信用风险评估来说，大数据量意味着不仅仅从消费记录而包含了社交网络信息去对用户做更全面的评价，从用户画像来说意味着建立全面的兴趣图谱和知识图谱，这些都是大数据带给我们的实际意义。说得学术一些，我们不妨认为大数据是频率学派对于贝叶斯学派一次强有力的逆袭。那么既然说到这个份上了，我们不妨思考一下，我们是不是有希望在回归贝叶斯学派，利用先验信息+小数据完成对大数据的反击呢？</p>
+<p>另外，既然我们已经说到了大数据的广覆盖度，就针对这个再额外说一下吧。诚然，大数据能够全面地覆盖到所有信息，但是从实际的工业界来看，考虑到实际的计算能力以及效果，大多数公司都会对大数据做“去噪”，那么在去噪的过程中去除的不仅仅是噪音，也包括“异常点”，而这些“异常点”，恰恰把大数据的广覆盖度给降低了，于是利用大数据反而比小数据更容易产生趋同的现象。尤其对于推荐系统来说，这些“异常点”的观察其实才是“个性化”的极致。</p>
+<h2 id="用户画像"><a href="#用户画像" class="headerlink" title="用户画像"></a>用户画像</h2><p>任何系统不要脱离产品而存在。先吐个槽，之前在某个公司面试，某个公司上来就问我，你觉得我们的用户画像应该怎么做？这个问题是非常业余的(这个问题就像是有人问我我们网站有性能问题，你说咋办；好吧，这个问题也是这个公司问我的)，任何数据系统都是强产品关联的，这也是太多公司去做数据系统的误区，在这里我还是用户画像为例。 用户画像到底是什么，其实说简单了他就是一个用户宽表，如果偏要我说需要注意的，就是在选择数据库的时候一定要选择列容易扩充的数据库。如果要说具体需要哪些字段，我还真的没法说，我只能把他归类成用户元属性数据，行为统计数据，潜在挖掘数据，至此而已。因为数据系统从来不是一个事先规划好的系统，而是需要随着业务增长来逐渐填充的系统，这也是数据平台难做的原因。 所以我真心无法理解有一些不太大的公司成立了一个部门，这个部门专门做用户画像(例如PPTV)。</p>
+<h2 id="实体识别"><a href="#实体识别" class="headerlink" title="实体识别"></a>实体识别</h2><p>命名实体识别(Named EntitiesRecognition, NER)是自然语言处理(Natural LanguageProcessing, NLP)的一个基础任务。其目的是识别语料中人名、地名、组织机构名等命名实体。由于这些命名实体数量不断增加，通常不可能在词典中穷尽列出，且其构成方法具有各自的一些规律性，因而,通常把对这些词的识别从词汇形态处理(如汉语切分)任务中独立处理，称为命名实体识别。命名实体识别技术是信息抽取、信息检索、机器翻译、问答系统等多种自然语言处理技术必不可少的组成部分。</p>
+<p>命名实体是命名实体识别的研究主体，一般包括3大类(实体类、时间类和数字类)和7小类(人名、地名、机构名、时间、日期、货币和百分比)命名实体。评判一个命名实体是否被正确识别包括两个方面：实体的边界是否正确；实体的类型是否标注正确。主要错误类型包括文本正确，类型可能错误；反之，文本边界错误,而其包含的主要实体词和词类标记可能正确。</p>
+<p>命名实体识别的主要技术方法分为：基于规则和词典的方法、基于统计的方法、二者混合的方法等。</p>
+<p>1.基于规则和词典的方法</p>
+<p>基于规则的方法多采用语言学专家手工构造规则模板,选用特征包括统计信息、标点符号、关键字、指示词和方向词、位置词(如尾字)、中心词等方法，以模式和字符串相匹配为主要手段，这类系统大多依赖于知识库和词典的建立。基于规则和词典的方法是命名实体识别中最早使用的方法，一般而言，当提取的规则能比较精确地反映语言现象时，基于规则的方法性能要优于基于统计的方法。但是这些规则往往依赖于具体语言、领域和文本风格，编制过程耗时且难以涵盖所有的语言现象，特别容易产生错误，系统可移植性不好，对于不同的系统需要语言学专家重新书写规则。基于规则的方法的另外一个缺点是代价太大，存在系统建设周期长、移植性差而且需要建立不同领域知识库作为辅助以提高系统识别能力等问题。</p>
+<p>2.基于统计的方法</p>
+<p>基于统计机器学习的方法主要包括：隐马尔可夫模型(HiddenMarkovMode,HMM)、最大熵(MaxmiumEntropy,ME)、支持向量机(Support VectorMachine,SVM)、条件随机场(ConditionalRandom Fields,CRF)等。</p>
+<p>在这4种学习方法中，最大熵模型结构紧凑，具有较好的通用性，主要缺点是训练时间复杂性非常高，有时甚至导致训练代价难以承受，另外由于需要明确的归一化计算，导致开销比较大。而条件随机场为命名实体识别提供了一个特征灵活、全局最优的标注框架，但同时存在收敛速度慢、训练时间长的问题。一般说来，最大熵和支持向量机在正确率上要比隐马尔可夫模型高一些，但是隐马尔可夫模型在训练和识别时的速度要快一些，主要是由于在利用Viterbi算法求解命名实体类别序列的效率较高。隐马尔可夫模型更适用于一些对实时性有要求以及像信息检索这样需要处理大量文本的应用,如短文本命名实体识别。</p>
+<p>基于统计的方法对特征选取的要求较高，需要从文本中选择对该项任务有影响的各种特征，并将这些特征加入到特征向量中。依据特定命名实体识别所面临的主要困难和所表现出的特性，考虑选择能有效反映该类实体特性的特征集合。主要做法是通过对训练语料所包含的语言信息进行统计和分析，从训练语料中挖掘出特征。有关特征可以分为具体的单词特征、上下文特征、词典及词性特征、停用词特征、核心词特征以及语义特征等。</p>
+<p>基于统计的方法对语料库的依赖也比较大，而可以用来建设和评估命名实体识别系统的大规模通用语料库又比较少。</p>
+<p>3.混合方法</p>
+<p>自然语言处理并不完全是一个随机过程,单独使用基于统计的方法使状态搜索空间非常庞大，必须借助规则知识提前进行过滤修剪处理。目前几乎没有单纯使用统计模型而不使用规则知识的命名实体识别系统，在很多情况下是使用混合方法：</p>
+<ol>
+<li>统计学习方法之间或内部层叠融合。</li>
+<li>规则、词典和机器学习方法之间的融合，其核心是融合方法技术。在基于统计的学习方法中引入部分规则，将机器学习和人工知识结合起来。</li>
+<li>将各类模型、算法结合起来，将前一级模型的结果作为下一级的训练数据，并用这些训练数据对模型进行训练，得到下一级模型。</li>
+</ol>
+<p>这种方法在具体实现过程中需要考虑怎样高效地将两种方法结合起来，采用什么样的融合技术。由于命名实体识别在很大程度上依赖于分类技术,在分类方面可以采用的融合技术主要包括如Voting, XVoting, GradingVa, l Grading等。</p>
+<h2 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h2><p>正则化是针对过拟合而提出的，以为在求解模型最优的是一般优化最小的经验风险，现在在该经验风险上加入模型复杂度这一项（正则化项是模型参数向量的范数），并使用一个rate比率来权衡模型复杂度与以往经验风险的权重，如果模型复杂度越高，结构化的经验风险会越大，现在的目标就变为了结构经验风险的最优化，可以防止模型训练过度复杂，有效的降低过拟合的风险。</p>
+<p>奥卡姆剃刀原理，能够很好的解释已知数据并且十分简单才是最好的模型。</p>
+<p>作用是：</p>
+<ol>
+<li>数值上更容易求解；</li>
+<li>特征数目太大时更稳定；</li>
+<li>控制模型的复杂度，光滑性。复杂性越小且越光滑的目标函数泛化能力越强。而加入规则项能使目标函数复杂度减小，且更光滑。</li>
+<li>减小参数空间；参数空间越小，复杂度越低。</li>
+<li>系数越小，模型越简单，而模型越简单则泛化能力越强（Ng宏观上给出的解释）。</li>
+<li>可以看成是权值的高斯先验。</li>
+</ol>
+<h3 id="L1和L2正则的区别，如何选择L1和L2正则"><a href="#L1和L2正则的区别，如何选择L1和L2正则" class="headerlink" title="L1和L2正则的区别，如何选择L1和L2正则"></a>L1和L2正则的区别，如何选择L1和L2正则</h3><blockquote>
+<p>他们都是可以防止过拟合，降低模型复杂度</p>
+</blockquote>
+<ul>
+<li>L1 是在 loss function 后面加上模型参数的1范数（也就是|xi|）</li>
+<li>L2 是在 loss function 后面加上模型参数的2范数（也就是<code>sigma(xi^2)</code>），注意L2范数的定义是 <code>sqrt(sigma(xi^2))</code>，在正则项上没有添加 sqrt 根号是为了更加容易优化</li>
+<li>L1 会产生稀疏的特征</li>
+<li>L2 会产生更多地特征但是都会接近于0</li>
+</ul>
+<p>L1 会趋向于产生少量的特征，而其他的特征都是 0，而 L2 会选择更多的特征，这些特征都会接近于 0。L1 在特征选择时候非常有用，而L2就只是一种规则化而已。</p>
+<h2 id="过拟合-1"><a href="#过拟合-1" class="headerlink" title="过拟合"></a>过拟合</h2><p>一个假设在训练数据上能够获得比其他假设更好的拟合，但是在训练数据外的数据集上却不能很好的拟合数据。此时我们就叫这个假设出现了 overfit 的现象。</p>
+<p>过拟合产生的原因：</p>
+<p>出现这种现象的主要原因是训练数据中存在噪音或者训练数据太少。</p>
+<p>预防或克服措施：</p>
+<ol>
+<li>增大数据量</li>
+<li>减少 feature 个数（人工定义留多少个 feature 或者算法选取这些 feature）</li>
+<li>正则化（留下所有的 feature，但对于部分 feature 定义其 parameter 非常小）</li>
+<li>交叉验证</li>
+</ol>
+<h2 id="对偶问题"><a href="#对偶问题" class="headerlink" title="对偶问题"></a>对偶问题</h2><p>对偶性是优化问题中一个非常重要的性质，它能够神奇地将许多非凸的优化问题转化成凸的问题</p>
+<p>很多凸优化问题都是通过解对偶问题来求解的，线性规划只是其中一个特例而已。在求解一个规划问题（不限于线性规划）的时候，我们常常需要知道这个问题有没有可行解（有时候约束条件很复杂，不要说最优解，找到可行解都很难），或者是估计一下目前的解离最优解还有多远（大型问题多用迭代解法，如果能大致估计当前的解的质量，就对算法什么时候运行结束有一个大致的把握，如果得到了可接受的近似解也可以提前停止），以及判断原问题的最优解是否无界（万一出现这种情况迭代就停不下来了）。</p>
+<p>而对偶问题就是回答这些问题的利器：弱对偶定理给原问题的最优解定了一个界，强对偶定理给出了原问题最优解的一个判定条件。同时，还有很多别的优良性质：例如可以化难为易（把难以求解的约束条件扔到目标函数的位置上去），如果问题的形式合适还可以通过把约束变量和对偶变量互换来把大规模问题转换成小规模问题。线性规划的对偶问题也只是其中的一个特例而已。并且，假如原问题是可行的，还可以给对偶问题找到一个直观解释（经济学中的影子价格）。</p>
+<p>举个例子：</p>
+ $$min_{x,y} \; px+qy\;\; s.t. x+y \ge 2,x \ge 0,y \ge 0$$
+<p>我们令 $a+b = p, a+c=q$ 于是 $px+qy=a(x+y)+bx+cy \ge 2a,a \ge 0, b\ge0, c\ge0$</p>
+<p>2a 为元问题的下界，于是我们可以求下面这个问题：</p>
+ $$max_{a,b,c}\;2a\;\; s.t.\;a+b=p,a+c=q,a\ge0,b\ge0,c\ge0$$
+<p>后一个问题的解正是前一个问题的解，这后面那个问题就叫做原问题的对偶问题。</p>
+<h2 id="凸优化"><a href="#凸优化" class="headerlink" title="凸优化"></a>凸优化</h2><p>在机器学习中往往是最终要求解某个函数的最优值，但是一般情况下，任意一个函数的最优值求解比较困难，但是对于凸函数来说就可以有效的求解出全局最优值。</p>
+<p><strong>凸集</strong></p>
+<p>一个集合 C 是，当前仅当任意 x,y 属于 C 且 0&lt;=theta&lt;=1，都有 $\theta x+(1-\theta)y$ 属于C</p>
+<p>用通俗的话来说C集合线段上的任意两点也在C集合中</p>
+<p><strong>凸函数</strong></p>
+<p>一个函数 f 其定义域(D(f))是凸集，并且对任意 x,y 属于 D(f) 和 0&lt;=theta&lt;=1 都有<br>$f(\theta x+(1-\theta)y)&lt;=\theta f(x)+(1-\theta)f(y)$ —这个叫做jensen不等式</p>
+<p>用通俗的话来说就是曲线上任意两点的割线都在曲线的上方</p>
+<p><strong>常见的凸函数有</strong></p>
+<ul>
+<li>指数函数 $f(x)=a^x$ a&gt;1</li>
+<li>负对数函数  $-log_a x$ a&gt;1,x&gt;0</li>
+<li>开口向上的二次函数等</li>
+</ul>
+<p><strong>凸函数的判定</strong></p>
+<ol>
+<li>如果 f 是一阶可导，对于任意数据域内的 x,y 满足 f(y)&gt;=f(x)+f’(x)(y-x)</li>
+<li>如果f是二阶可导</li>
+</ol>
+<p><strong>凸优化应用举例</strong></p>
+<ul>
+<li>SVM：其中由 max|w| 转向 <code>min(1/2*|w|^2)</code></li>
+<li>最小二乘法？</li>
+<li>LR的损失函数 <code>sigma(yi*log(hw(x))+(1-yi)*(log(1-hw(x))))</code></li>
+</ul>
+<h2 id="特征向量"><a href="#特征向量" class="headerlink" title="特征向量"></a>特征向量</h2><h3 id="归一化方法"><a href="#归一化方法" class="headerlink" title="归一化方法"></a>归一化方法</h3><ol>
+<li>线性函数转换，表达式如下：<code>y=(x-MinValue)/(MaxValue-MinValue)</code></li>
+<li>对数函数转换，表达式如下：<code>y=log10 (x)</code></li>
+<li>反余切函数转换 ，表达式如下：<code>y=arctan(x)*2/PI</code></li>
+<li>减去均值，乘以方差：<code>y=(x-means)/ variance</code></li>
+</ol>
+<h3 id="异常值处理"><a href="#异常值处理" class="headerlink" title="异常值处理"></a>异常值处理</h3><p>用均值或者其他统计量代替</p>
+<h2 id="ROC、AUC"><a href="#ROC、AUC" class="headerlink" title="ROC、AUC"></a>ROC、AUC</h2><p>ROC和AUC通常是用来评价一个二值分类器的好坏</p>
+<h3 id="ROC"><a href="#ROC" class="headerlink" title="ROC"></a>ROC</h3><p>曲线坐标上：</p>
+<ul>
+<li>X 轴是 FPR（表示假阳率-预测结果为 positive，但是实际结果为 negitive，FP/(N)）</li>
+<li>Y 轴式 TPR（表示真阳率-预测结果为 positive，而且的确真实结果也为 positive 的, TP/P）</li>
+</ul>
+<p>那么平面的上点(X,Y)：</p>
+<ul>
+<li>(0,1)表示所有的 positive 的样本都预测出来了，分类效果最好</li>
+<li>(0,0)表示预测的结果全部为 negitive</li>
+<li>(1,0)表示预测的错过全部分错了，分类效果最差</li>
+<li>(1,1)表示预测的结果全部为 positive</li>
+</ul>
+<p>针对落在 x=y 上点，表示是采用随机猜测出来的结果</p>
+<h3 id="ROC-曲线建立"><a href="#ROC-曲线建立" class="headerlink" title="ROC 曲线建立"></a>ROC 曲线建立</h3><p>一般默认预测完成之后会有一个概率输出 p，这个概率越高，表示它对 positive 的概率越大。</p>
+<p>现在假设我们有一个 threshold，如果 p&gt;threshold，那么该预测结果为 positive，否则为 negative，按照这个思路，我们多设置几个 threshold,那么我们就可以得到多组 positive 和 negative 的结果了，也就是我们可以得到多组 FPR 和 TPR 值将这些 (FPR,TPR) 点投射到坐标上再用线连接起来就是 ROC 曲线了</p>
+<p>当threshold取1和0时，分别得到的就是(0,0)和(1,1)这两个点。（threshold=1，预测的样本全部为负样本，threshold=0，预测的样本全部为正样本）</p>
+<h3 id="AUC"><a href="#AUC" class="headerlink" title="AUC"></a>AUC</h3><p>AUC(Area Under Curve) 被定义为 ROC 曲线下的面积，显然这个面积不会大于1（一般情况下 ROC 会在 x=y 的上方，所以0.5&lt;AUC&lt;1）.</p>
+<p>AUC越大说明分类效果越好</p>
+<h3 id="为什么要使用ROC和AUC"><a href="#为什么要使用ROC和AUC" class="headerlink" title="为什么要使用ROC和AUC"></a>为什么要使用ROC和AUC</h3><p>因为当测试集中的正负样本发生变化时，ROC 曲线能基本保持不变，但是 precision 和 recall 可能就会有较大的波动。</p>
+<h2 id="熵"><a href="#熵" class="headerlink" title="熵"></a>熵</h2><p>在信息论中，熵表示的是不确定性的量度。信息论的创始人香农在其著作《通信的数学理论》中提出了建立在概率统计模型上的信息度量。他把信息定义为”用来消除不确定性的东西“。熵的定义为信息的期望值。</p>
+<p>在信息论和概率统计中，熵是表示随机变量不确定性的度量。设X是一个取有限个值的离散随机变量，其概率分布为：</p>
+ $$P(X=x_i)=p_i, i=1,2, ... , n$$
+<p>则随机变量X的熵定义为：<br> $$H(X)= - \sum p_ilogp_i, i=1,2, ... , n$$</p>
+<p>熵只依赖 X 的分布，和 X 的取值没有关系，熵是用来度量不确定性，当熵越大，概率说  $X=x_i$ 的不确定性越大，反之越小，在机器学期中分类中说，熵越大即这个类别的不确定性更大，反之越小。</p>
+<p>当 p=0 或 p=1 时，H(p)=0，随机变量完全没有不确定性，当p=0.5时，H(p)=1,此时随机变量的不确定性最大。</p>
+<p>条件熵(conditional entropy)：表示在一直随机变量X的条件下随机变量Y的不确定性度量。</p>
+<p>设随机变量(X, Y)，其联合概率分布为  $P(X, Y) = p_{ij}(i=1,2, ... , n; j=1,2, ... , m)$，随机变量 X 给定的条件下随机变量Y的条件熵 H(Y|X)，定义为 X 给定条件下 Y 的条件概率分布的熵对 X 的数学期望：</p>
+ $$H(Y|X)=\sum p_iH(Y|X=x_i)$$
+<p>这里， $p_i=P(X=x_i), i=1,2, ... , n$</p>
+<p>熵指的是体系的混乱程度，它在控制论，概率论，数论，天体物理，生命科学等领域都有重要的应用，在不同的学科中也有引申出更为具体的定义，是各个领域十分重要的参量。熵由鲁道夫.克劳修斯提出，并应用在热力学中。后来在，克劳德.埃尔伍德.香农 第一次将熵的概念引入到信息论中来。</p>
+<h3 id="信息增益（information-gain）"><a href="#信息增益（information-gain）" class="headerlink" title="信息增益（information gain）"></a>信息增益（information gain）</h3><p>信息增益表示得知特征X的信息而使得类Y的信息的不确定性减少的程度。</p>
+<p>特征 A 对训练数据集 D 的信息增益 g(D, A)，定义为集合 D 的经验熵 H(D)与特征 A 给定条件下 D 的经验条件熵 H(D|A)之差，即</p>
+<p>g(D, A)=H(D)-H(D|A)</p>
+<p>信息增益大的特征具有更强的分类能力。</p>
+<h3 id="信息增益比（information-gain-ratio）"><a href="#信息增益比（information-gain-ratio）" class="headerlink" title="信息增益比（information gain ratio）"></a>信息增益比（information gain ratio）</h3><p>信息增益比  $g_R(D, A)$定义为其信息增益 g(D, A) 与训练数据集 D 关于特征 A 的值的熵  $H_A(D)$之比，即</p>
+ $g_R(D, A)=g(D, A)/H_A(D)$
+<p>其中， $H_A(D)=-\sum \frac{|D_i|}{|D|}log_2\frac{|D_i|}{|D|}$, n 是特征 A 取值的个数。</p>
+<h3 id="基尼指数（gini-index）"><a href="#基尼指数（gini-index）" class="headerlink" title="基尼指数（gini index）"></a>基尼指数（gini index）</h3><p>分类问题中，假设有 K 个类，样本属于第 k 类的概率为 $p_k$，则概率分布的基尼指数定义为：</p>
+ $$Gini(p)=\sum p_k(1-p_k)=1-\sum p_k^2$$
+<p>对于二分类问题，若样本点属于第 1 个类的概率是 p，则概率分布的基尼指数为：</p>
+<p>Gini(p)=2p(1-p)</p>
+<p>对于给定的样本集合D，其基尼指数为：</p>
+ $$Gini(D)=1-\sum(\frac{|C_k|}{|D|})^2$$
+<p>这里， $C_k$是 D 中属于第 k 类的样本子集，k 是类的个数。</p>
+<p>如果样本集合 D 根据特征 A 是否取到某一可能值 a 被分割成 D1 和 D2 两部分，则在特征 A 的条件下，集合 D 的基尼指数定义为：</p>
+ $$Gini(D,A)=\frac{|D_1|}{|D|}Gini(D_1)+\frac{|D_2|}{|D|}Gini(D_2)$$
+<p>基尼指数 Gini(D) 表示集合 D 的不确定性，基尼指数越大，样本集合的不确定性也就越大，这一点与熵相似。</p>
+<h2 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h2><h3 id="Basis-基础"><a href="#Basis-基础" class="headerlink" title="Basis(基础)"></a>Basis(基础)</h3><ul>
+<li>MSE(Mean Square Error 均方误差)</li>
+<li>LMS(LeastMean Square 最小均方)</li>
+<li>LSM(Least Square Methods 最小二乘法)</li>
+<li>MLE(MaximumLikelihood Estimation最大似然估计)</li>
+<li>QP(Quadratic Programming 二次规划)</li>
+<li>CP(Conditional Probability条件概率)</li>
+<li>JP(Joint Probability 联合概率)</li>
+<li>MP(Marginal Probability边缘概率)</li>
+<li>Bayesian Formula(贝叶斯公式)</li>
+<li>L1 /L2 Regularization(L1/L2正则，以及更多的，现在比较火的L2.5正则等)</li>
+<li>GD(GradientDescent 梯度下降)</li>
+<li>SGD(Stochastic Gradient Descent 随机梯度下降)</li>
+<li>Eigenvalue(特征值)</li>
+<li>Eigenvector(特征向量)</li>
+<li>QR-decomposition(QR分解)</li>
+<li>Quantile (分位数)</li>
+<li>Covariance(协方差矩阵)。</li>
+</ul>
+<h3 id="Common-Distribution-常见分布"><a href="#Common-Distribution-常见分布" class="headerlink" title="Common Distribution(常见分布)"></a>Common Distribution(常见分布)</h3><ul>
+<li>Discrete Distribution(离散型分布)<ul>
+<li>BernoulliDistribution/Binomial(贝努利分布/二项分布)</li>
+<li>Negative BinomialDistribution(负二项分布)</li>
+<li>MultinomialDistribution(多项式分布)</li>
+<li>Geometric Distribution(几何分布)</li>
+<li>HypergeometricDistribution(超几何分布)</li>
+<li>Poisson Distribution (泊松分布)</li>
+</ul>
+</li>
+<li>Continuous Distribution (连续型分布)<ul>
+<li>UniformDistribution(均匀分布)</li>
+<li>Normal Distribution /Guassian Distribution(正态分布/高斯分布)</li>
+<li>ExponentialDistribution(指数分布)</li>
+<li>Lognormal Distribution(对数正态分布)</li>
+<li>GammaDistribution(Gamma分布)</li>
+<li>Beta Distribution(Beta分布)</li>
+<li>Dirichlet Distribution(狄利克雷分布)</li>
+<li>Rayleigh Distribution(瑞利分布)</li>
+<li>Cauchy Distribution(柯西分布)</li>
+<li>Weibull Distribution (韦伯分布)</li>
+</ul>
+</li>
+<li>Three Sampling Distribution(三大抽样分布)<ul>
+<li>Chi-squareDistribution(卡方分布)</li>
+<li>t-distribution(t-distribution)</li>
+<li>F-distribution(F-分布)</li>
+</ul>
+</li>
+</ul>
+<h3 id="Data-Pre-processing-数据预处理"><a href="#Data-Pre-processing-数据预处理" class="headerlink" title="Data Pre-processing(数据预处理)"></a>Data Pre-processing(数据预处理)</h3><ul>
+<li>Missing Value Imputation(缺失值填充)</li>
+<li>Discretization(离散化)</li>
+<li>Mapping(映射)</li>
+<li>Normalization(归一化/标准化)。</li>
+</ul>
+<h3 id="Sampling-采样"><a href="#Sampling-采样" class="headerlink" title="Sampling(采样)"></a>Sampling(采样)</h3><ul>
+<li>Simple Random Sampling(简单随机采样)</li>
+<li>OfflineSampling(离线等可能K采样)</li>
+<li>Online Sampling(在线等可能K采样)</li>
+<li>Ratio-based Sampling(等比例随机采样)</li>
+<li>Acceptance-RejectionSampling(接受-拒绝采样)</li>
+<li>Importance Sampling(重要性采样)</li>
+<li>MCMC(MarkovChain Monte Carlo 马尔科夫蒙特卡罗采样算法：Metropolis-Hasting&amp; Gibbs)</li>
+</ul>
+<h3 id="Clustering-聚类"><a href="#Clustering-聚类" class="headerlink" title="Clustering(聚类)"></a>Clustering(聚类)</h3><ul>
+<li>K-Means</li>
+<li>K-Mediods</li>
+<li>二分K-Means</li>
+<li>FK-Means</li>
+<li>Canopy</li>
+<li>Spectral-KMeans(谱聚类)</li>
+<li>GMM-EM(混合高斯模型-期望最大化算法解决)</li>
+<li>K-Pototypes</li>
+<li>CLARANS(基于划分)</li>
+<li>BIRCH(基于层次)</li>
+<li>CURE(基于层次)</li>
+<li>DBSCAN(基于密度)</li>
+<li>CLIQUE(基于密度和基于网格)</li>
+</ul>
+<h3 id="Classification-amp-Regression-分类-amp-回归"><a href="#Classification-amp-Regression-分类-amp-回归" class="headerlink" title="Classification&amp;Regression(分类&amp;回归)"></a>Classification&amp;Regression(分类&amp;回归)</h3><ul>
+<li>LR(Linear Regression 线性回归)</li>
+<li>LR(LogisticRegression逻辑回归)</li>
+<li>SR(Softmax Regression 多分类逻辑回归)</li>
+<li>GLM(GeneralizedLinear Model 广义线性模型)</li>
+<li>RR(Ridge Regression 岭回归/L2正则最小二乘回归)</li>
+<li>LASSO(Least Absolute Shrinkage andSelectionator Operator L1正则最小二乘回归)，</li>
+<li>RF(随机森林)</li>
+<li>DT(DecisionTree决策树)</li>
+<li>GBDT(Gradient BoostingDecision Tree 梯度下降决策树)</li>
+<li>CART(ClassificationAnd Regression Tree 分类回归树)</li>
+<li>KNN(K-Nearest Neighbor K近邻)</li>
+<li>SVM(Support VectorMachine)</li>
+<li>KF(Kernel Function 核函数)<ul>
+<li>PolynomialKernel Function 多项式核函数</li>
+<li>Guassian KernelFunction 高斯核函数/Radial BasisFunction RBF径向基函数</li>
+<li>String KernelFunction 字符串核函数</li>
+</ul>
+</li>
+<li>NB(Naive Bayes 朴素贝叶斯)</li>
+<li>BN(Bayesian Network/Bayesian Belief Network/ Belief Network 贝叶斯网络/贝叶斯信度网络/信念网络)</li>
+<li>LDA(Linear Discriminant Analysis/FisherLinear Discriminant 线性判别分析/Fisher线性判别)</li>
+<li>EL(Ensemble Learning集成学习)<ul>
+<li>Boosting</li>
+<li>Bagging</li>
+<li>Stacking</li>
+</ul>
+</li>
+<li>AdaBoost(Adaptive Boosting 自适应增强)</li>
+<li>MEM(MaximumEntropy Model最大熵模型)</li>
+</ul>
+<h3 id="Effectiveness-Evaluation-分类效果评估"><a href="#Effectiveness-Evaluation-分类效果评估" class="headerlink" title="Effectiveness Evaluation(分类效果评估)"></a>Effectiveness Evaluation(分类效果评估)</h3><ul>
+<li>Confusion Matrix(混淆矩阵)</li>
+<li>Precision(精确度)</li>
+<li>Recall(召回率)</li>
+<li>Accuracy(准确率)</li>
+<li>F-score(F得分)</li>
+<li>ROC Curve(ROC曲线)</li>
+<li>AUC(AUC面积)</li>
+<li>LiftCurve(Lift曲线) </li>
+<li>KS Curve(KS曲线)。</li>
+</ul>
+<h3 id="PGM-Probabilistic-Graphical-Models概率图模型"><a href="#PGM-Probabilistic-Graphical-Models概率图模型" class="headerlink" title="PGM(Probabilistic Graphical Models概率图模型)"></a>PGM(Probabilistic Graphical Models概率图模型)</h3><ul>
+<li>BN(Bayesian Network/Bayesian Belief Network/ BeliefNetwork 贝叶斯网络/贝叶斯信度网络/信念网络)</li>
+<li>MC(Markov Chain 马尔科夫链)</li>
+<li>HMM(HiddenMarkov Model 马尔科夫模型)</li>
+<li>MEMM(Maximum Entropy Markov Model 最大熵马尔科夫模型)</li>
+<li>CRF(ConditionalRandom Field 条件随机场)</li>
+<li>MRF(MarkovRandom Field 马尔科夫随机场)</li>
+</ul>
+<h3 id="NN-Neural-Network神经网络"><a href="#NN-Neural-Network神经网络" class="headerlink" title="NN(Neural Network神经网络)"></a>NN(Neural Network神经网络)</h3><ul>
+<li>ANN(Artificial Neural Network 人工神经网络)</li>
+<li>BP(Error BackPropagation 误差反向传播)</li>
+</ul>
+<h3 id="Deep-Learning-深度学习"><a href="#Deep-Learning-深度学习" class="headerlink" title="Deep Learning(深度学习)"></a>Deep Learning(深度学习)</h3><ul>
+<li>Auto-encoder(自动编码器)</li>
+<li>SAE(Stacked Auto-encoders堆叠自动编码器)<ul>
+<li>Sparse Auto-encoders稀疏自动编码器</li>
+<li>Denoising Auto-encoders去噪自动编码器</li>
+<li>Contractive Auto-encoders 收缩自动编码器</li>
+</ul>
+</li>
+<li>RBM(RestrictedBoltzmann Machine 受限玻尔兹曼机)</li>
+<li>DBN(Deep Belief Network 深度信念网络)</li>
+<li>CNN(ConvolutionalNeural Network 卷积神经网络)</li>
+<li>Word2Vec(词向量学习模型)。</li>
+</ul>
+<h3 id="DimensionalityReduction-降维"><a href="#DimensionalityReduction-降维" class="headerlink" title="DimensionalityReduction(降维)"></a>DimensionalityReduction(降维)</h3><ul>
+<li>LDA LinearDiscriminant Analysis/Fisher Linear Discriminant 线性判别分析/Fisher线性判别</li>
+<li>PCA(Principal Component Analysis 主成分分析)</li>
+<li>ICA(IndependentComponent Analysis 独立成分分析)</li>
+<li>SVD(Singular Value Decomposition 奇异值分解)</li>
+<li>FA(FactorAnalysis 因子分析法)</li>
+</ul>
+<h3 id="Text-Mining-文本挖掘"><a href="#Text-Mining-文本挖掘" class="headerlink" title="Text Mining(文本挖掘)"></a>Text Mining(文本挖掘)</h3><ul>
+<li>VSM(Vector Space Model向量空间模型)</li>
+<li>Word2Vec(词向量学习模型)</li>
+<li>TF(Term Frequency词频)</li>
+<li>TF-IDF(Term Frequency-Inverse DocumentFrequency 词频-逆向文档频率)</li>
+<li>MI(MutualInformation 互信息)</li>
+<li>ECE(Expected Cross Entropy 期望交叉熵)</li>
+<li>QEMI(二次信息熵)</li>
+<li>IG(InformationGain 信息增益)</li>
+<li>IGR(Information Gain Ratio 信息增益率)</li>
+<li>Gini(基尼系数)</li>
+<li>x2 Statistic(x2统计量)</li>
+<li>TEW(TextEvidence Weight文本证据权)</li>
+<li>OR(Odds Ratio 优势率)</li>
+<li>N-Gram Model</li>
+<li>LSA(Latent Semantic Analysis 潜在语义分析)</li>
+<li>PLSA(ProbabilisticLatent Semantic Analysis 基于概率的潜在语义分析)</li>
+<li>LDA(Latent DirichletAllocation 潜在狄利克雷模型)</li>
+</ul>
+<h3 id="Association-Mining-关联挖掘"><a href="#Association-Mining-关联挖掘" class="headerlink" title="Association Mining(关联挖掘)"></a>Association Mining(关联挖掘)</h3><ul>
+<li>Apriori</li>
+<li>FP-growth(Frequency Pattern Tree Growth 频繁模式树生长算法)</li>
+<li>AprioriAll</li>
+<li>Spade</li>
+</ul>
+<h3 id="Recommendation-Engine-推荐引擎"><a href="#Recommendation-Engine-推荐引擎" class="headerlink" title="Recommendation Engine(推荐引擎)"></a>Recommendation Engine(推荐引擎)</h3><ul>
+<li>DBR(Demographic-based Recommendation 基于人口统计学的推荐)</li>
+<li>CBR(Context-basedRecommendation 基于内容的推荐)</li>
+<li>CF(Collaborative Filtering协同过滤)</li>
+<li>UCF(User-basedCollaborative Filtering Recommendation 基于用户的协同过滤推荐)</li>
+<li>ICF(Item-basedCollaborative Filtering Recommendation 基于项目的协同过滤推荐)</li>
+</ul>
+<h3 id="Similarity-Measure-amp-Distance-Measure-相似性与距离度量"><a href="#Similarity-Measure-amp-Distance-Measure-相似性与距离度量" class="headerlink" title="Similarity Measure&amp;Distance Measure(相似性与距离度量)"></a>Similarity Measure&amp;Distance Measure(相似性与距离度量)</h3><ul>
+<li>Euclidean Distance(欧式距离)</li>
+<li>ManhattanDistance(曼哈顿距离)</li>
+<li>Chebyshev Distance(切比雪夫距离)</li>
+<li>MinkowskiDistance(闵可夫斯基距离)</li>
+<li>Standardized Euclidean Distance(标准化欧氏距离)</li>
+<li>MahalanobisDistance(马氏距离)</li>
+<li>Cos(Cosine 余弦)</li>
+<li>HammingDistance/Edit Distance(汉明距离/编辑距离)</li>
+<li>JaccardDistance(杰卡德距离)</li>
+<li>Correlation Coefficient Distance(相关系数距离)</li>
+<li>InformationEntropy(信息熵)</li>
+<li>KL(Kullback-Leibler Divergence KL散度/Relative Entropy 相对熵)</li>
+</ul>
+<h3 id="Optimization-最优化"><a href="#Optimization-最优化" class="headerlink" title="Optimization(最优化)"></a>Optimization(最优化)</h3><ul>
+<li>Non-constrainedOptimization(无约束优化)<ul>
+<li>Cyclic VariableMethods(变量轮换法)</li>
+<li>Pattern Search Methods(模式搜索法)</li>
+<li>VariableSimplex Methods(可变单纯形法)</li>
+<li>Gradient Descent Methods(梯度下降法)</li>
+<li>Newton Methods(牛顿法)</li>
+<li>Quasi-NewtonMethods(拟牛顿法)</li>
+<li>Conjugate Gradient Methods(共轭梯度法)</li>
+</ul>
+</li>
+<li>ConstrainedOptimization(有约束优化)<ul>
+<li>Approximation Programming Methods(近似规划法)</li>
+<li>FeasibleDirection Methods(可行方向法)</li>
+<li>Penalty Function Methods(罚函数法)</li>
+<li>Multiplier Methods(乘子法)。</li>
+</ul>
+</li>
+<li>Heuristic Algorithm(启发式算法)</li>
+<li>SA(SimulatedAnnealing，模拟退火算法)</li>
+<li>GA(genetic algorithm遗传算法)</li>
+</ul>
+<h3 id="Feature-Selection-特征选择算法"><a href="#Feature-Selection-特征选择算法" class="headerlink" title="Feature Selection(特征选择算法)"></a>Feature Selection(特征选择算法)</h3><ul>
+<li>Mutual Information(互信息)</li>
+<li>Document Frequence(文档频率)</li>
+<li>Information Gain(信息增益)</li>
+<li>Chi-squared Test(卡方检验)</li>
+<li>Gini(基尼系数)。</li>
+</ul>
+<h3 id="Outlier-Detection-异常点检测算法"><a href="#Outlier-Detection-异常点检测算法" class="headerlink" title="Outlier Detection(异常点检测算法)"></a>Outlier Detection(异常点检测算法)</h3><ul>
+<li>Statistic-based(基于统计)</li>
+<li>Distance-based(基于距离)</li>
+<li>Density-based(基于密度)</li>
+<li>Clustering-based(基于聚类)</li>
+</ul>
+<h3 id="Learning-to-Rank-基于学习的排序"><a href="#Learning-to-Rank-基于学习的排序" class="headerlink" title="Learning to Rank(基于学习的排序)"></a>Learning to Rank(基于学习的排序)</h3><ul>
+<li>Pointwise：McRank；</li>
+<li>Pairwise：RankingSVM，RankNet，Frank，RankBoost；</li>
+<li>Listwise：AdaRank，SoftRank，LamdaMART；</li>
+</ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;这里是我学习机器学习时候的一些笔记和总结，文章比较长，但是应该是比较全面的。&lt;/p&gt;
+      &lt;p&gt;本文是我学习机器学习时候的一些笔记和总结，因为时间比较长了，参考链接都遗失了，在这里感谢各位老司机在我学习过程中给我的帮助。&lt;/p&gt;
     
     </summary>
     
@@ -1641,144 +4885,6 @@
       <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
     
       <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Logstash 连接 Kafka 指南</title>
-    <link href="http://wdxtub.com/2016/08/18/logstash-kafka-guide/"/>
-    <id>http://wdxtub.com/2016/08/18/logstash-kafka-guide/</id>
-    <published>2016-08-18T12:00:31.000Z</published>
-    <updated>2016-08-18T12:01:08.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>虽然我对 Logstash 颇有微词，但是与系统自带的 rsyslog 相比还是好用很多的，本文介绍如何快速连接 Logstash 与 Kafka。</p>
-<a id="more"></a>
-<hr>
-<h2 id="总体思路"><a href="#总体思路" class="headerlink" title="总体思路"></a>总体思路</h2><p>还是之前的场景，我需要把各个业务的线上服务器日志接入到统一的日志处理平台中。具体会用 Kafka 做中间件，所以需要解决的就是如何把日志传到 Kafka。原先的考虑是利用系统自带的 rsyslog，这样我只需要自动配置一下 rsyslog 的处理发送规则就可以了，免去了安装和维护的麻烦。但是系统自带的 rsyslog 版本太低，所以到头来还是要更新维护，那就不如直接用更强大且更好用的 Logstash 了。</p>
-<p>需要注意的有两点：</p>
-<ul>
-<li>不要即时推送日志，以免增加服务器负担</li>
-<li>能够妥善处理 logrotate 的情况</li>
-</ul>
-<p>幸运的是，这 Logstash 都考虑到了，我们只需要简单配置一下即可。</p>
-<h2 id="安装-Java"><a href="#安装-Java" class="headerlink" title="安装 Java"></a>安装 Java</h2><p>因为大部分线上服务器跑的是 Ruby，所以需要先安装一下 Java</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sudo add-apt-repository -y ppa:webupd8team/java</div><div class="line">sudo apt-get update</div><div class="line">sudo apt-get -y install oracle-java8-installer</div></pre></td></tr></table></figure>
-<h2 id="安装-Logstash"><a href="#安装-Logstash" class="headerlink" title="安装 Logstash"></a>安装 Logstash</h2><p>在 <a href="http://wdxtub.com/2016/07/26/elk-guide/">ELK 指南</a>中介绍了用 <code>apt-get</code> 进行安装的方法，这里介绍如何手动下载安装</p>
-<ul>
-<li>下载到服务器 <code>wget https://download.elastic.co/logstash/logstash/logstash-all-plugins-2.3.4.tar.gz</code></li>
-<li>解压 <code>tar -xvzf logstash-all-plugins-2.3.4.tar.gz</code></li>
-<li>进入 Logstash 文件夹并创建配置文件夹（个人习惯） <code>cd logstash-2.3.4; mkdir confs</code></li>
-</ul>
-<p>之后所有的配置文件均可放在 <code>confs</code> 文件夹中。</p>
-<h2 id="配置-Logstash-到-Kafka"><a href="#配置-Logstash-到-Kafka" class="headerlink" title="配置 Logstash 到 Kafka"></a>配置 Logstash 到 Kafka</h2><p>这里 Logstash 相当于 producer</p>
-<h3 id="Input-读取文件"><a href="#Input-读取文件" class="headerlink" title="Input 读取文件"></a>Input 读取文件</h3><p>Logstash 使用一个名叫 FileWatch 的 Ruby Gem 库来监听文件变化。这个库支持 glob 展开文件路径，而且会记录一个叫 <code>.sincedb</code> 的数据库文件来跟踪被监听的日志文件的当前读取位置。通过记录下来的 <code>inode</code>, <code>major number</code>, <code>minor number</code> 和 <code>pos</code> 就可以保证不漏过每一条日志。一个可能的配置文件是这样的</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">input &#123;</div><div class="line">  file &#123;</div><div class="line">    path =&gt; [&quot;/data/home/service/project/current/log/logstash_production.log&quot;, &quot;/data/home/service/project/current/log/logstash_production.log.1&quot;]</div><div class="line">    codec =&gt; &quot;json&quot;</div><div class="line">    add_field =&gt; &#123; &quot;topic&quot; =&gt; &quot;djiservice&quot;&#125;</div><div class="line">    stat_interval =&gt; 1800</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这里说一下 File rotation 的情况，为了处理被 rotate 的情况，最好把 rotate 之后的文件名也加到 path 中（如上面所示），这里注意，如果 <code>start_position</code> 被设为 <code>beginning</code>，被 rotate 的文件因为会被认为是新文件，而重新导入。如果用默认值 <code>end</code>，那么在最后一次读之后到被 rotate 结束前生成的日志不会被采集。</p>
-<p>其他一些配置的设定原因</p>
-<ul>
-<li><code>add_field</code> 添加一个 topic 字段，用作之后导入 elasticsearch 的索引标识</li>
-<li><code>stat_interval</code> 单位是秒，这里 30 分钟进行一次检测，不过测试的时候需要去掉这个配置</li>
-<li><code>codec</code> 因为已经处理成 logstash 兼容格式，就直接以 json 解析</li>
-</ul>
-<h3 id="Filter-内容定制"><a href="#Filter-内容定制" class="headerlink" title="Filter 内容定制"></a>Filter 内容定制</h3><p>Filter 主要是对数据进行一些处理，比如说我用的是：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">filter &#123;</div><div class="line">  mutate &#123;</div><div class="line">    remove_field =&gt; [&quot;format&quot;]</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  geoip &#123;</div><div class="line">    source =&gt; &quot;ip&quot;</div><div class="line">    fields =&gt; [&quot;location&quot;, &quot;city_name&quot;, &quot;country_name&quot;, &quot;country_code2&quot;,&quot;country_code3&quot;, &quot;region_name&quot;, &quot;continent_code&quot;]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这里做的操作一是移除无效的域，二是把 ip 转换为地理位置，方便后期的处理。</p>
-<h3 id="Output-输出到-Kafka"><a href="#Output-输出到-Kafka" class="headerlink" title="Output 输出到 Kafka"></a>Output 输出到 Kafka</h3><p>因为 Logstash 自带 Kafka 插件，直接配置上即可，比如：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">output &#123;</div><div class="line">  kafka &#123;</div><div class="line">    topic_id =&gt; &quot;test&quot;</div><div class="line">    bootstrap_servers =&gt; &quot;kafka_url:port&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>下面是基本的配置及其设定原因</p>
-<ul>
-<li><code>topic_id</code> 指定 topic 来进行发送</li>
-<li><code>bootstrap_servers</code> 这里是 Kafka 的接入地址</li>
-</ul>
-<p>其他一些需要注意的配置</p>
-<ul>
-<li><code>acks</code> 可以选的值为 <code>0</code>, <code>1</code>, <code>all</code>，这里解释一下，0 表示不需要 server 返回就认为请求已完成；1 表示需要 leader 返回才认为请求完成；all 表示需要所有的服务器返回才认为请求完成</li>
-<li><code>batch_size</code> 单位是字节，如果是发送到同一分区，会攒够这个大小才发送一次请求</li>
-<li><code>block_on_buffer_full</code> 这个设置在缓冲区慢了之后阻塞还是直接报错</li>
-<li><code>buffer_memory</code> 发送给服务器之前的缓冲区大小，单位是字节</li>
-<li><code>client_id</code> 可以在这里设定有意义的名字，就不一定要用 ip 和 端口来区分</li>
-<li><code>compression_type</code> 压缩方式，默认是 <code>none</code>，其他可选的是 <code>gzip</code> 和 <code>snappy</code></li>
-</ul>
-<h2 id="利用-Logstash-从-Kafka-导出数据到-Elasticsearch"><a href="#利用-Logstash-从-Kafka-导出数据到-Elasticsearch" class="headerlink" title="利用 Logstash 从 Kafka 导出数据到 Elasticsearch"></a>利用 Logstash 从 Kafka 导出数据到 Elasticsearch</h2><p>这一步就比较简单了，先从 Kafka 中读取，然后写入到 elasticsearch，这里 Logstash 作为 consumer</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">output &#123;</div><div class="line">  input &#123;</div><div class="line">    kafka &#123;</div><div class="line">      zk_connect =&gt; &quot;localhost:2181&quot;</div><div class="line">      topic_id =&gt; &quot;log&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  stdout &#123;</div><div class="line">     codec =&gt; rubydebug</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  elasticsearch &#123;</div><div class="line">    hosts =&gt; [&quot;url:port&quot;]</div><div class="line">    user =&gt; &quot;name&quot;</div><div class="line">    password =&gt; &quot;password&quot;</div><div class="line">    index =&gt; &quot;%&#123;service&#125;-%&#123;+YYYY-MM-dd&#125;&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这样可以按照配置的服务名称和日期来切割。</p>
-<p>至此，我们完成了从 Logstash 到 Kafka 再到 Elasticsearch 的连接，下一步就可以用 kibana 来展示日志的监控分析结果了。</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="https://www.elastic.co/downloads/logstash" target="_blank" rel="external">Logstash 下载</a></li>
-<li><a href="https://www.elastic.co/guide/en/logstash/current/configuration-file-structure.html" target="_blank" rel="external">配置文件格式</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;虽然我对 Logstash 颇有微词，但是与系统自带的 rsyslog 相比还是好用很多的，本文介绍如何快速连接 Logstash 与 Kafka。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-    
-      <category term="日志" scheme="http://wdxtub.com/tags/%E6%97%A5%E5%BF%97/"/>
-    
-      <category term="Kafka" scheme="http://wdxtub.com/tags/Kafka/"/>
-    
-      <category term="Logstash" scheme="http://wdxtub.com/tags/Logstash/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Rsyslog 连接 Kafka 指南</title>
-    <link href="http://wdxtub.com/2016/08/17/rsyslog-kafka-guide/"/>
-    <id>http://wdxtub.com/2016/08/17/rsyslog-kafka-guide/</id>
-    <published>2016-08-17T13:04:14.000Z</published>
-    <updated>2016-08-17T13:07:38.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。</p>
-<a id="more"></a>
-<hr>
-<p>Kafka 集群的配置可以在<a href="http://wdxtub.com/2016/08/15/kafka-guide/">这里</a>查阅，这里不再赘述，认为大家已经有一个可以正常运行的 Kafka 集群，并且创建了一个名为 test 的 topic</p>
-<h2 id="Nginx-配置"><a href="#Nginx-配置" class="headerlink" title="Nginx 配置"></a>Nginx 配置</h2><p>因为 Kafka 集群的通讯是走内网 ip，而外网访问的端口因为安全考虑只开了少数几个（这里是 8080），所以我们用 Nginx 反向代理来连通内外网</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">upstream mq_pool&#123;</div><div class="line">server ip1:13647 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">server localhost:13647 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server&#123;</div><div class="line">listen 8080;</div><div class="line">allow all;</div><div class="line">proxy_pass mq_pool;</div><div class="line">proxy_connect_timeout 24h;</div><div class="line">proxy_timeout 24h;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这个配置的意思大概是把所有 8080 端口的消息转发到 <code>mq_pool</code> 的两台机器上（负载均衡），其他的就是常规配置。</p>
-<h2 id="Kafka-server-配置"><a href="#Kafka-server-配置" class="headerlink" title="Kafka server 配置"></a>Kafka server 配置</h2><p>用 Nginx 反向代理之后，可以认为完全是内网环境，所以 Kafka 设置中的<code>advertised.listeners</code> 是唯一能设定外网访问的地方，所以要设置为<strong>外网可以访问的地址（也就是 Nginx 中配置的地址和端口）</strong></p>
-<p>然后需要注意的是修改 config 文件夹中的 producer 和 consumer 的配置，把集群的信息统一配置好</p>
-<p>如果在测试 producer/consumer 的时候出现 <code>WARN Error while fetching metadata with correlation id</code> 错误，一般重新开启 producer/ consumer 即可（可能需要多试几次）</p>
-<h2 id="Python-测试"><a href="#Python-测试" class="headerlink" title="Python 测试"></a>Python 测试</h2><p>为了检测外网访问，我们可以用 python 进行测试，先安装一个 <a href="https://github.com/dpkp/kafka-python" target="_blank" rel="external">Kafka 客户端</a></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">pip install kafka-python</div></pre></td></tr></table></figure>
-<p>然后在 python 中执行</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="keyword">from</span> kafka <span class="keyword">import</span> KafkaProducer</div><div class="line">producer = KafkaProducer(bootstrap_servers=<span class="string">'url:port'</span>)</div><div class="line">producer.send(<span class="string">'test'</span>, <span class="string">'hello from python'</span>)</div></pre></td></tr></table></figure>
-<p>如果一切正常，应该可以在 Kafka 的 consumer 中见到这条消息。</p>
-<h2 id="Rsyslog-配置"><a href="#Rsyslog-配置" class="headerlink" title="Rsyslog 配置"></a>Rsyslog 配置</h2><p>一般来说默认的 rsyslog 版本较低，如果想要连接 kafka，我们需要先升级到最新版本。这里可以用 <code>rsyslogd -N1</code> 来查看目前机器上的版本。</p>
-<p>执行下面的命令升级</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sudo add-apt-repository ppa:adiscon/v8-stable </div><div class="line">sudo apt-get update</div><div class="line">sudo apt-get install rsyslog</div><div class="line"><span class="comment"># 安装 kafka 插件</span></div><div class="line">sudo apt-get install rsyslog-kafka rsyslog-imptcp</div></pre></td></tr></table></figure>
-<p>如果一切正常，我们就可以来配置 rsyslog 了，打开 <code>/etc/rsyslog.d/</code> 文件夹，创建一个配置文件 </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">module(load=&quot;omkafka&quot;)</div><div class="line">module(load=&quot;imfile&quot;)</div><div class="line"></div><div class="line">ruleset(name=&quot;kafka&quot;) &#123;</div><div class="line">  action (</div><div class="line">    type=&quot;omkafka&quot;</div><div class="line">    topic=&quot;test&quot;</div><div class="line">    broker=&quot;broker.ip:port&quot;</div><div class="line">    template=&quot;json&quot;</div><div class="line">  )</div><div class="line">&#125;</div><div class="line"></div><div class="line">input(type=&quot;imfile&quot; Tag=&quot;wdxtub&quot; File=&quot;/data/log/logstash_production.log&quot; Ruleset=&quot;kafka&quot;)</div></pre></td></tr></table></figure>
-<p>然后我们重启服务 <code>sudo service rsyslog restart</code> 应该就可以在 kafka 自带的 consumer 中看到日志了。</p>
-<p><code>bin/kafka-console-consumer.sh --zookeeper bi03:2181,bi02:2181 --from-beginning --topic test</code></p>
-<p>至此，配置完成。</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="http://www.jianshu.com/p/1b7fdb1cff3c" target="_blank" rel="external">日志收集之rsyslog to kafka</a></li>
-<li><a href="http://www.rsyslog.com/tag/omkafka/" target="_blank" rel="external">Tag Archives: omkafka</a></li>
-<li><a href="http://www.rsyslog.com/doc/master/configuration/modules/omkafka.html" target="_blank" rel="external">omkafka: write to Apache Kafka</a></li>
-<li><a href="http://youfu.xyz/2016/04/27/rsyslog-json-kafka/" target="_blank" rel="external">rsyslog存储json日志到kafka</a></li>
-<li><a href="https://dzone.com/articles/recipe-rsyslog-kafka-logstash-1" target="_blank" rel="external">Recipe: rsyslog + Kafka + Logstash</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-    
-      <category term="日志" scheme="http://wdxtub.com/tags/%E6%97%A5%E5%BF%97/"/>
-    
-      <category term="Kafka" scheme="http://wdxtub.com/tags/Kafka/"/>
-    
-      <category term="rsyslog" scheme="http://wdxtub.com/tags/rsyslog/"/>
     
   </entry>
   
