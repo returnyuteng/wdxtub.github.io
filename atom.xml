@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2016-09-09T17:06:56.000Z</updated>
+  <updated>2016-09-10T01:33:24.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -14,6 +14,90 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>机器学习指南</title>
+    <link href="http://wdxtub.com/2016/09/10/machine-learning-guide/"/>
+    <id>http://wdxtub.com/2016/09/10/machine-learning-guide/</id>
+    <published>2016-09-10T01:05:16.000Z</published>
+    <updated>2016-09-10T01:33:24.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>这里是我学习机器学习时候的一些笔记和总结，文章比较长，但是应该是比较全面的。</p>
+<a id="more"></a>
+<hr>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>主要是基本概念的辨析，都是最最基础和常规的</p>
+<h3 id="监督学习与非监督学习"><a href="#监督学习与非监督学习" class="headerlink" title="监督学习与非监督学习"></a>监督学习与非监督学习</h3><ul>
+<li>应用领域：企业数据</li>
+</ul>
+<p>监督学习需要标注数据（KNN, NB, SVM, DT, BP, RF, GBRT），这类算法必须知道预测什么，即目标变量的分类信息。对具有标记的训练样本进行学习，以尽可能对训练样本集外的数据进行分类预测。</p>
+<p>非监督学习（KMEANS, DL）数据没有类别信息，也不会给定目标值，对未标记的样本进行训练学习，比发现这些样本中的结构知识。将数据集合分成由类似的对象组成的多个类的过程被称为<strong>聚类</strong></p>
+<h3 id="半监督式学习"><a href="#半监督式学习" class="headerlink" title="半监督式学习"></a>半监督式学习</h3><ul>
+<li>应用领域：图像识别（存在大量非标识数据）</li>
+</ul>
+<p>在此学习方式下，输入数据部分被标识，部分没有被标识，这种学习模型可以用来进行预测，但是模型首先需要学习数据的内在结构以便合理的组织数据来进行预测。应用场景包括分类和回归，算法包括一些对常用监督式学习算法的延伸，这些算法首先试图对未标识数据进行建模，在此基础上再对标识的数据进行预测。如图论推理算法（Graph Inference）或者拉普拉斯支持向量机（Laplacian SVM.）等。</p>
+<h3 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h3><ul>
+<li>应用领域：机器人控制、系统控制</li>
+</ul>
+<p>在这种学习模式下，输入数据作为对模型的反馈，不像监督模型那样，输入数据仅仅是作为一个检查模型对错的方式，在强化学习下，输入数据直接反馈到模型，模型必须对此立刻作出调整。常见的应用场景包括动态系统以及机器人控制等。常见算法包括Q-Learning以及时间差学习（Temporal difference learning）。</p>
+<h3 id="离散数据与连续数据"><a href="#离散数据与连续数据" class="headerlink" title="离散数据与连续数据"></a>离散数据与连续数据</h3><p>离散数据（标称型）的目标变量结果只在有限目标集中取值，比方说真与假，一般用于<strong>分类</strong></p>
+<p>连续数据（数值型）目标变量主要用于<strong>回归</strong>分析，通过给定数据点的最优拟合曲线</p>
+<h3 id="生成方法"><a href="#生成方法" class="headerlink" title="生成方法"></a>生成方法</h3><ul>
+<li>例子：NB</li>
+</ul>
+<p>生成方法：由数据学习联合概率密度分布P(X,Y)，然后求出条件概率分布P(Y|X)作为预测的模型，即生成模型：P(Y|X)= P(X,Y)/ P(X)。基本思想是首先建立样本的联合概率概率密度模型P(X,Y)，然后再得到后验概率P(Y|X)，再利用它进行分类，就像上面说的那样。</p>
+<p>生成方法学习联合概率密度分布P(X,Y)，所以就可以从统计的角度表示数据的分布情况，能够反映同类数据本身的相似度。但它不关心到底划分各类的那个分类边界在哪。生成方法可以还原出联合概率分布P(Y|X)，而判别方法不能。生成方法的学习收敛速度更快，即当样本容量增加的时候，学到的模型可以更快的收敛于真实模型，当存在隐变量时，仍可以用生成方法学习。此时判别方法就不能用。</p>
+<p><strong>由生成模型可以得到判别模型，但由判别模型得不到生成模型。</strong></p>
+<h3 id="判别方法"><a href="#判别方法" class="headerlink" title="判别方法"></a>判别方法</h3><ul>
+<li>例子：k 近邻，决策树</li>
+</ul>
+<p>由数据直接学习决策函数Y=f(X)或者条件概率分布P(Y|X)作为预测的模型，即判别模型。基本思想是有限样本条件下建立判别函数，不考虑样本的产生模型，直接研究预测模型。典型的判别模型包括k近邻，感知级，决策树，支持向量机等。</p>
+<p>判别方法直接学习的是决策函数Y=f(X)或者条件概率分布P(Y|X)。不能反映训练数据本身的特性。但它寻找不同类别之间的最优分类面，反映的是异类数据之间的差异。直接面对预测，往往学习的准确率更高。由于直接学习P(Y|X)或P(X)，可以对数据进行各种程度上的抽象、定义特征并使用特征，因此可以简化学习问题。</p>
+<h3 id="过拟合"><a href="#过拟合" class="headerlink" title="过拟合"></a>过拟合</h3><p>如果一味的去提高训练数据的预测能力，所选模型的复杂度往往会很高，这种现象称为过拟合。所表现的就是模型训练时候的误差很小，但在测试的时候误差很大。</p>
+<p>产生原因</p>
+<ul>
+<li>因为参数太多，导致模型复杂度上升，容易过拟合</li>
+<li>权值学习迭代次数足够多(Overtraining),拟合了训练数据中的噪声和训练样例中没有代表性的特征</li>
+<li>解决方法：交叉验证法、减少特征、正则化、权值衰减、验证数据</li>
+</ul>
+<p><strong>泛化能力是指模型对未知数据的预测能力</strong></p>
+<h3 id="线性分类器与非线性分类器"><a href="#线性分类器与非线性分类器" class="headerlink" title="线性分类器与非线性分类器"></a>线性分类器与非线性分类器</h3><ul>
+<li>如果模型是参数的线性函数，并且存在线性分类面，那么就是线性分类器，否则不是</li>
+<li>常见的线性分类器有：LR,贝叶斯分类，单层感知机、线性回归</li>
+<li>常见的非线性分类器：决策树、RF、GBDT、多层感知机</li>
+<li>SVM两种都有(看线性核还是高斯核)</li>
+<li>线性分类器速度快、编程方便，但是可能拟合效果不会很好</li>
+<li>非线性分类器编程复杂，但是效果拟合能力强</li>
+</ul>
+<blockquote>
+<p>特征比数据量还大时，选择什么样的分类器？</p>
+</blockquote>
+<p>线性分类器，因为维度高的时候，数据一般在维度空间里面会比较稀疏，很有可能线性可分</p>
+<blockquote>
+<p>对于维度很高的特征，你是选择线性还是非线性分类器？</p>
+</blockquote>
+<p>线性分类器，因为维度高的时候，数据一般在维度空间里面会比较稀疏，很有可能线性可分</p>
+<blockquote>
+<p>对于维度极低的特征，你是选择线性还是非线性分类器？</p>
+</blockquote>
+<p>非线性分类器，因为低维空间可能很多特征都跑到一起了，导致线性不可分</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这里是我学习机器学习时候的一些笔记和总结，文章比较长，但是应该是比较全面的。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="总结" scheme="http://wdxtub.com/tags/%E6%80%BB%E7%BB%93/"/>
+    
+      <category term="机器学习" scheme="http://wdxtub.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="知识点" scheme="http://wdxtub.com/tags/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+  </entry>
   
   <entry>
     <title>第十三周 - 上海三月</title>
@@ -47,9 +131,9 @@
       <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
     
     
-      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
-    
       <category term="朋友" scheme="http://wdxtub.com/tags/%E6%9C%8B%E5%8F%8B/"/>
+    
+      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
     
       <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
     
@@ -1636,9 +1720,9 @@
     
       <category term="日志" scheme="http://wdxtub.com/tags/%E6%97%A5%E5%BF%97/"/>
     
-      <category term="Logstash" scheme="http://wdxtub.com/tags/Logstash/"/>
-    
       <category term="Kafka" scheme="http://wdxtub.com/tags/Kafka/"/>
+    
+      <category term="Logstash" scheme="http://wdxtub.com/tags/Logstash/"/>
     
   </entry>
   
@@ -1695,55 +1779,6 @@
       <category term="Kafka" scheme="http://wdxtub.com/tags/Kafka/"/>
     
       <category term="rsyslog" scheme="http://wdxtub.com/tags/rsyslog/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Coding.net 静态博客托管指南</title>
-    <link href="http://wdxtub.com/2016/08/17/add-coding-platform/"/>
-    <id>http://wdxtub.com/2016/08/17/add-coding-platform/</id>
-    <published>2016-08-17T11:47:31.000Z</published>
-    <updated>2016-08-17T14:43:07.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>因为众所周知的原因，Github 在国内的访问体验并不好。为了节省国内用户的时间，我决定把博客同时托管于 Github 和 Coding 两个平台。本文是具体的操作指南。</p>
-<a id="more"></a>
-<hr>
-<h2 id="Coding-平台操作"><a href="#Coding-平台操作" class="headerlink" title="Coding 平台操作"></a>Coding 平台操作</h2><p>首先去<a href="https://coding.net" target="_blank" rel="external">官网</a>注册，然后在账户设置中添加 <code>SSH 公钥</code>，具体的步骤为（Mac 下，且已部署到 github）：</p>
-<ul>
-<li>输入命令 <code>cat ~/.ssh/id_rsa.pub</code></li>
-<li>然后把输出的以 <code>ssh-rsa</code> 开头的字符串粘贴到网页中</li>
-<li>接着测试一下 <code>ssh -T git@git.coding.net</code></li>
-<li>成功的话应该出现 <code>Hello wdxtub! You&#39;ve connected to Coding.net via SSH successfully!</code></li>
-</ul>
-<h2 id="Hexo-配置文件修改"><a href="#Hexo-配置文件修改" class="headerlink" title="Hexo 配置文件修改"></a>Hexo 配置文件修改</h2><p>然后我们需要修改 hexo 的配置文件，主要是部署的部分，增加一行</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># Deployment</span></div><div class="line"><span class="comment">## Docs: http://hexo.io/docs/deployment.html</span></div><div class="line"><span class="attr">deploy:</span></div><div class="line"><span class="attr">  type:</span> git</div><div class="line"><span class="attr">  repository:</span></div><div class="line"><span class="attr">    github:</span> git@github.com:wdxtub/wdxtub.github.io.git</div><div class="line">    <span class="comment"># 增加这一行</span></div><div class="line"><span class="attr">    coding:</span> git@git.coding.net:wdxtub/wdxtub.git</div><div class="line"><span class="attr">  branch:</span> master</div></pre></td></tr></table></figure>
-<p>然后 <code>hexo g -d</code> 部署即可，如果出现问题，可以删除 <code>.deploy_git</code> 文件夹后再尝试一次</p>
-<h2 id="配置域名解析"><a href="#配置域名解析" class="headerlink" title="配置域名解析"></a>配置域名解析</h2><p>我的域名是在万网买的，所以直接在阿里云后台进行修改，这里海外走 github，默认走 coding（也就是国内）</p>
-<p><img src="/images/14714441200850.jpg" alt=""></p>
-<p>稍等一会儿，我们来测试一下，先是连接 VPN 的时候</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># dawang at wdxtub.local in ~/Documents/Blog [22:37:43]</span></div><div class="line">$ traceroute wdxtub.com</div><div class="line">traceroute to prod.github.map.fastlylb.net (151.101.100.133), 64 hops max, 52 byte packets</div><div class="line"><span class="comment"># dawang at wdxtub.local in ~/Documents/Blog [22:41:52]</span></div><div class="line">$ ping wdxtub.com</div><div class="line">--- prod.github.map.fastlylb.net ping statistics ---</div><div class="line">13 packets transmitted, 13 packets received, 0.0% packet loss</div><div class="line">round-trip min/avg/max/stddev = 48.754/53.315/66.105/4.174 ms</div></pre></td></tr></table></figure>
-<p>然后是断开 VPN 的时候 </p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># dawang at wdxtub.local in ~/Documents/Blog [22:39:35]</span></div><div class="line">$ traceroute wdxtub.com</div><div class="line">traceroute: Warning: wdxtub.com has multiple addresses; using 103.218.243.203</div><div class="line">traceroute to pages.coding.net (103.218.243.203), 64 hops max, 52 byte packets</div><div class="line"><span class="comment"># dawang at wdxtub.local in ~/Documents/Blog [22:39:59]</span></div><div class="line">$ ping wdxtub.com</div><div class="line">--- pages.coding.net ping statistics ---</div><div class="line">14 packets transmitted, 14 packets received, 0.0% packet loss</div><div class="line">round-trip min/avg/max/stddev = 17.390/23.946/37.623/5.742 ms</div></pre></td></tr></table></figure>
-<p>可以看到国内的访问应该有了大幅度的速度提升。</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="http://www.jeyzhang.com/blog-on-gitcafe-with-dns-settings.html" target="_blank" rel="external">如何将博客托管至Coding及相应的DNS设置</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;因为众所周知的原因，Github 在国内的访问体验并不好。为了节省国内用户的时间，我决定把博客同时托管于 Github 和 Coding 两个平台。本文是具体的操作指南。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-    
-      <category term="博客" scheme="http://wdxtub.com/tags/%E5%8D%9A%E5%AE%A2/"/>
-    
-      <category term="访问" scheme="http://wdxtub.com/tags/%E8%AE%BF%E9%97%AE/"/>
-    
-      <category term="托管" scheme="http://wdxtub.com/tags/%E6%89%98%E7%AE%A1/"/>
     
   </entry>
   
