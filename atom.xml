@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2016-09-11T01:08:43.000Z</updated>
+  <updated>2016-09-12T14:11:00.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -14,6 +14,66 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Mac CLI 指南</title>
+    <link href="http://wdxtub.com/2016/09/12/mac-cli-guide/"/>
+    <id>http://wdxtub.com/2016/09/12/mac-cli-guide/</id>
+    <published>2016-09-12T13:22:47.000Z</published>
+    <updated>2016-09-12T14:11:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>终于，Mac 上有了一款能用命令行自由操作各种软件获取各种系统信息的工具 —— Mac CLI，废话不多说，赶紧来看看它的强大威力（但是并不推荐）。</p>
+<a id="more"></a>
+<hr>
+<h2 id="安装与删除"><a href="#安装与删除" class="headerlink" title="安装与删除"></a>安装与删除</h2><p>安装方式非常简单，一行即可 <code>sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/guarinogabriel/mac-cli/master/mac-cli/tools/install)&quot;</code>。安装完成之后需要各种配置一下，可以根据个人需要进行选择，我主要挑选了常用的工具类插件，诸如 MySQL 之类的都没有装（因为不需要）</p>
+<p>删除的话也是一句 <code>sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/guarinogabriel/mac-cli/master/mac-cli/tools/uninstall)&quot;</code></p>
+<p>不过之前安装的各种小插件如果有强迫症可能也需要删除</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">pip uninstall glances</div><div class="line">npm uninstall --global fast-cli</div><div class="line">brew uninstall pv</div></pre></td></tr></table></figure>
+<p>其他就看心情随意啦</p>
+<h2 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h2><p>这类工具的使用都是非常简单的（但是功能多了反而有些繁琐），输入 <code>mac list</code> 就可以查看各种命令，非常长，给大家感受一下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># dawang @ wdxtub in ~/Documents/Blog [16-09-12 21:29:11]</span></div><div class="line">$ mac list</div><div class="line"></div><div class="line"> mac CLI – OS X <span class="built_in">command</span> line tools <span class="keyword">for</span> developers</div><div class="line">====================================================</div><div class="line"></div><div class="line">General Utilities:</div><div class="line">mac update: Install OS X software updates, update installed Ruby gems, Homebrew, npm and their installed packages</div><div class="line">mac lock: Lock</div><div class="line">mac restart: Restart OS X</div><div class="line">mac sleep: Sleep mode</div><div class="line">mac shutdown: Shutdown</div><div class="line">mac time: Show clock at top right position <span class="keyword">in</span> Terminal/iTerm</div><div class="line">mac uptime: Get the time since last restart</div><div class="line">mac volume: Get the volume from the terminal</div><div class="line">mac volume X: Set the volume from the terminal - X = Level (0-100)</div><div class="line">mac volume:mute: Mute volume</div><div class="line">mac volume:unmute: Unmute volume</div><div class="line">mac volume:ismute: Check <span class="keyword">if</span> the volume is muted or not</div><div class="line">mac screensaver: Start screensaver</div><div class="line">mac folders:list: List folders <span class="keyword">in</span> current directory with their current size</div><div class="line">mac folder:size: Calculate current folder size</div><div class="line">mac folders:remove-empty: Remove empty subdirectories</div><div class="line">mac apps:close-all: Close all opened apps</div><div class="line">mac apps:app-store: Get list of installed apps from App Store</div><div class="line">mac eject-all: Eject all mounted volumes and disks</div><div class="line">mac battery: Get battery information</div><div class="line">mac info: Get OS X version information</div><div class="line">mac find:text X: Find exact phrase recursively inside directory - X = Text string</div><div class="line">mac find:biggest-files : Find biggest files inside directory</div><div class="line">mac find:biggest-directories : Find biggest directories inside directory</div><div class="line">mac zip:extract X: Extract Zip file to current folder - X = Zip file to extract</div><div class="line">mac gzip:compress X: Compress current file using Gzip - X = File to compress</div><div class="line">mac gzip:extract X: Extract Gzip file to current folder - X = Gzip file to extract</div><div class="line">mac tar:compress X: Compress X file/directory using tar with progress indicator - X = File or directory</div><div class="line">mac tar:extract X: Extract tar file to current folder - X = Tar file to extract</div><div class="line"></div><div class="line"></div><div class="line">Search Utilities:</div><div class="line">mac find:recent X: Find files modified <span class="keyword">in</span> the last N minutes - X = number of minutes</div><div class="line">mac search:replace X: Search and replace string <span class="keyword">in</span> file - X = File to perform the search and replace operation</div><div class="line"></div><div class="line"></div><div class="line">Network Utilities:</div><div class="line">mac speedtest: Internet connection speed <span class="built_in">test</span></div><div class="line">mac speedtest:infinite: Run internet speed <span class="built_in">test</span> each 5 minutes</div><div class="line">mac ports: List of used ports</div><div class="line">mac ip:<span class="built_in">local</span>: Get <span class="built_in">local</span> IP address</div><div class="line">mac ip:public: Get public IP address</div><div class="line">mac dhcp:renew: Renew DHCP Lease</div><div class="line">mac dns:clear: Clear DNS Cache</div><div class="line"></div><div class="line"><span class="comment"># 省略</span></div><div class="line">LAMP Utilities:</div><div class="line"></div><div class="line">SSH Utilities:</div><div class="line">mac ssh:download-file X: Download file from remote server through SSH - X = Path of the remote file to download</div><div class="line">mac ssh:download-folder X: Download entire folder from remote server through SSH - X = Path of the remote folder to download</div><div class="line">mac ssh:download-database X: Download database from remote server through SSH - X = Name of the database to download</div><div class="line">mac ssh:sync:<span class="built_in">local</span> X: Sync <span class="built_in">local</span> folder with remote folder using rsync through SSH (download remote folder to <span class="built_in">local</span> folder)</div><div class="line">mac ssh:sync:remote X: Path of the remote folder to sync from <span class="built_in">local</span> folder (upload <span class="built_in">local</span> folder to remote folder)</div><div class="line">mac ssh:upload X: Upload file to remote server through SSH - X = Path of the file to upload to the remote server</div><div class="line">mac ssh:public-key X: Get public SSH key <span class="keyword">for</span> <span class="built_in">local</span> machine</div><div class="line"></div><div class="line"></div><div class="line">Web Development Utilities:</div><div class="line">mac dev:monitor X: Monitor file changes (<span class="keyword">for</span> example: <span class="built_in">log</span> file) - X = File to monitor</div><div class="line">mac dev:optimize-images: Optimize all images <span class="keyword">in</span> current directory and subdirectories</div><div class="line">mac dev:css:convert-to-scss: Convert CSS file to SCSS</div><div class="line"></div><div class="line"></div><div class="line">Performance and maintenance Utilities:</div><div class="line">mac system: Show system information to review mac performance</div><div class="line">mac temp: Show temperature, fan and battery statistics</div><div class="line">mac memory: See memory usage sorted by memory consumption</div><div class="line">mac trash:empty: Empty trash</div><div class="line">mac trash:size: Calculate trash size</div><div class="line">mac desktop:cleanup: Remove all files and directories from the Desktop directory</div><div class="line">mac downloads:cleanup: Remove all files and directories from the Downloads directory</div><div class="line"></div><div class="line"></div><div class="line">iTerm / Terminal Utilities:</div><div class="line">mac iterm:tab-title: Set title to current iTerm tab</div><div class="line"></div><div class="line"></div><div class="line">Git Utilities:</div><div class="line">mac git:config: Display <span class="built_in">local</span> Git configuration</div><div class="line">mac git:open: Open current repository on Github</div><div class="line">mac git:create:branch: Create branch based on current branch</div><div class="line">mac git:branches:date: Get last update date <span class="keyword">for</span> all branches <span class="keyword">in</span> current project</div><div class="line">mac git:undo-commit: Undo latest commit</div><div class="line">mac git:<span class="built_in">log</span>: See latest commits IDs and titles <span class="keyword">for</span> current branch</div><div class="line">mac git:branch: See all branches</div><div class="line">mac git:branch:rename: Rename Git branch</div><div class="line">mac git:branch:remove-local: Remove <span class="built_in">local</span> Git branch</div><div class="line">mac git:branch:remove-remote: Remove <span class="built_in">local</span> and remote Git branch</div><div class="line">mac git:removeecho mac git:branch: See all branches : Remove Git from current project</div><div class="line">mac git:config: Check Git settings</div><div class="line">mac git:add-removed: Add removed files to staged files</div><div class="line">mac git:size: Get size <span class="keyword">for</span> current Git repository</div><div class="line"></div><div class="line"></div><div class="line">Web Utilities:</div><div class="line">mac web:download-images: Download all images from website to current directory</div><div class="line"></div><div class="line"></div><div class="line">Homebrew Utilities:</div><div class="line">mac brew:update: Upgrade Homebrew, installed Homebrew packages, and cleanup</div><div class="line"></div><div class="line"></div><div class="line">Xcode Utilities:</div><div class="line">mac xcode:cleanup: Cleanup XCode files to free up hard disk space</div><div class="line"></div><div class="line"></div><div class="line">Image Utilities:</div><div class="line">mac image:generate:mobile-app-icons X Y: Generate mobile app icons - X = Path of the original image file, Y= Path of the output file path</div><div class="line"></div><div class="line"><span class="comment"># 省略</span></div><div class="line">Magento Utilities:</div></pre></td></tr></table></figure>
+<p>有这么多命令，而且现在还支持插件，完全可以根据自己的需要来自定义了，不懂的话直接 <code>mac help</code> 即可，非常方便。不过考虑到我的内存有限，还是挑一些我个人觉得比较常用的分享给大家，其他比较鸡肋的就不介绍了（比方说显示个时间什么的，就有点蛋疼了）</p>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><ul>
+<li><code>mac update</code> 更新各类软件，包括 ruby gems, homebrew, npm 和对应的包，不过基本需要翻墙</li>
+<li><code>mac lock</code> 锁屏，有动画效果</li>
+<li><code>mac restart</code> 重启</li>
+<li><code>mac sleep</code> 睡眠</li>
+<li><code>mac shutdown</code> 关机</li>
+<li><code>mac hidden:show</code> 显示隐藏文件</li>
+<li><code>mac hidden:hide</code> 关闭显示隐藏文件</li>
+<li><code>mac zip:extract filename</code> zip 解压</li>
+<li><code>mac gzip:compress [file|folder]</code> gzip 压缩文件/文件夹</li>
+<li><code>mac gzip:extract filename</code> gzip 解压</li>
+<li><code>mac tar:compress [file|folder]</code> tar 压缩文件/文件夹</li>
+<li><code>mac tar:extract filename</code> tar 解压</li>
+<li><code>mac speedtest</code> 测试网速</li>
+<li><code>mac ports</code> 显示被占用的端口（其实就是 <code>sudo lsof -iTCP -sTCP:LISTEN -P</code>）</li>
+<li><code>mac ip:local</code> 显示内网 ip（其实就是 <code>ipconfig getifaddr en0</code>）</li>
+<li><code>mac ip:public</code> 显示外网 ip（其实就是 <code>wget http://ipinfo.io/ip -qO -</code>）</li>
+</ul>
+<p>总体来说，基本可以认为是把各个常用的命令封装了一次，用统一的接口暴露出来，但是因为我的需求没这么多，其实直接用 zsh 的 alias 就足够了（所以最终我还是删掉了它）</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>经过短暂的使用，感觉这个工具和我的风格不太符合，比方说明明我用 <code>date</code> 命令就可以获取到当前的时间，为什么还要用 <code>mac time</code> 来呢？明明可以直接 <code>ls -lh</code> 来查看文件大小，为什么要用 <code>mac folders:list</code> 呢？明明可以直接 <code>du -h -d 1</code> 来查看当前文件夹里所有内容的大小，为什么要用 <code>mac folder:size</code> 呢？总有种脱裤子放屁的感觉。</p>
+<p>还是更喜欢或许是『莫须有』的对自己电脑的『掌控力』，那么如果觉得这些命令太长太难记，完全可以自己实现一套嘛。我还是喜欢简单一点的语法，命令里有冒号简直是『大逆不道』。</p>
+<p>当然，如果是新手，但是又想通过一系列风格统一的命令来（自动化）管理电脑的话，这个还是还可以考虑的。不过相信懂得越多，就越不需要这类看起来很有用的『工具』了吧。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://github.com/guarinogabriel/mac-cli/" target="_blank" rel="external">guarinogabriel/Mac-CLI</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;终于，Mac 上有了一款能用命令行自由操作各种软件获取各种系统信息的工具 —— Mac CLI，废话不多说，赶紧来看看它的强大威力（但是并不推荐）。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="Mac" scheme="http://wdxtub.com/tags/Mac/"/>
+    
+      <category term="工具" scheme="http://wdxtub.com/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+  </entry>
   
   <entry>
     <title>祝我生日快乐 - 2016</title>
@@ -1679,62 +1739,6 @@
       <category term="Logstash" scheme="http://wdxtub.com/tags/Logstash/"/>
     
       <category term="Kafka" scheme="http://wdxtub.com/tags/Kafka/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Rsyslog 连接 Kafka 指南</title>
-    <link href="http://wdxtub.com/2016/08/17/rsyslog-kafka-guide/"/>
-    <id>http://wdxtub.com/2016/08/17/rsyslog-kafka-guide/</id>
-    <published>2016-08-17T13:04:14.000Z</published>
-    <updated>2016-08-17T13:07:38.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。</p>
-<a id="more"></a>
-<hr>
-<p>Kafka 集群的配置可以在<a href="http://wdxtub.com/2016/08/15/kafka-guide/">这里</a>查阅，这里不再赘述，认为大家已经有一个可以正常运行的 Kafka 集群，并且创建了一个名为 test 的 topic</p>
-<h2 id="Nginx-配置"><a href="#Nginx-配置" class="headerlink" title="Nginx 配置"></a>Nginx 配置</h2><p>因为 Kafka 集群的通讯是走内网 ip，而外网访问的端口因为安全考虑只开了少数几个（这里是 8080），所以我们用 Nginx 反向代理来连通内外网</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">upstream mq_pool&#123;</div><div class="line">server ip1:13647 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">server localhost:13647 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server&#123;</div><div class="line">listen 8080;</div><div class="line">allow all;</div><div class="line">proxy_pass mq_pool;</div><div class="line">proxy_connect_timeout 24h;</div><div class="line">proxy_timeout 24h;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这个配置的意思大概是把所有 8080 端口的消息转发到 <code>mq_pool</code> 的两台机器上（负载均衡），其他的就是常规配置。</p>
-<h2 id="Kafka-server-配置"><a href="#Kafka-server-配置" class="headerlink" title="Kafka server 配置"></a>Kafka server 配置</h2><p>用 Nginx 反向代理之后，可以认为完全是内网环境，所以 Kafka 设置中的<code>advertised.listeners</code> 是唯一能设定外网访问的地方，所以要设置为<strong>外网可以访问的地址（也就是 Nginx 中配置的地址和端口）</strong></p>
-<p>然后需要注意的是修改 config 文件夹中的 producer 和 consumer 的配置，把集群的信息统一配置好</p>
-<p>如果在测试 producer/consumer 的时候出现 <code>WARN Error while fetching metadata with correlation id</code> 错误，一般重新开启 producer/ consumer 即可（可能需要多试几次）</p>
-<h2 id="Python-测试"><a href="#Python-测试" class="headerlink" title="Python 测试"></a>Python 测试</h2><p>为了检测外网访问，我们可以用 python 进行测试，先安装一个 <a href="https://github.com/dpkp/kafka-python" target="_blank" rel="external">Kafka 客户端</a></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">pip install kafka-python</div></pre></td></tr></table></figure>
-<p>然后在 python 中执行</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="keyword">from</span> kafka <span class="keyword">import</span> KafkaProducer</div><div class="line">producer = KafkaProducer(bootstrap_servers=<span class="string">'url:port'</span>)</div><div class="line">producer.send(<span class="string">'test'</span>, <span class="string">'hello from python'</span>)</div></pre></td></tr></table></figure>
-<p>如果一切正常，应该可以在 Kafka 的 consumer 中见到这条消息。</p>
-<h2 id="Rsyslog-配置"><a href="#Rsyslog-配置" class="headerlink" title="Rsyslog 配置"></a>Rsyslog 配置</h2><p>一般来说默认的 rsyslog 版本较低，如果想要连接 kafka，我们需要先升级到最新版本。这里可以用 <code>rsyslogd -N1</code> 来查看目前机器上的版本。</p>
-<p>执行下面的命令升级</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sudo add-apt-repository ppa:adiscon/v8-stable </div><div class="line">sudo apt-get update</div><div class="line">sudo apt-get install rsyslog</div><div class="line"><span class="comment"># 安装 kafka 插件</span></div><div class="line">sudo apt-get install rsyslog-kafka rsyslog-imptcp</div></pre></td></tr></table></figure>
-<p>如果一切正常，我们就可以来配置 rsyslog 了，打开 <code>/etc/rsyslog.d/</code> 文件夹，创建一个配置文件 </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">module(load=&quot;omkafka&quot;)</div><div class="line">module(load=&quot;imfile&quot;)</div><div class="line"></div><div class="line">ruleset(name=&quot;kafka&quot;) &#123;</div><div class="line">  action (</div><div class="line">    type=&quot;omkafka&quot;</div><div class="line">    topic=&quot;test&quot;</div><div class="line">    broker=&quot;broker.ip:port&quot;</div><div class="line">    template=&quot;json&quot;</div><div class="line">  )</div><div class="line">&#125;</div><div class="line"></div><div class="line">input(type=&quot;imfile&quot; Tag=&quot;wdxtub&quot; File=&quot;/data/log/logstash_production.log&quot; Ruleset=&quot;kafka&quot;)</div></pre></td></tr></table></figure>
-<p>然后我们重启服务 <code>sudo service rsyslog restart</code> 应该就可以在 kafka 自带的 consumer 中看到日志了。</p>
-<p><code>bin/kafka-console-consumer.sh --zookeeper bi03:2181,bi02:2181 --from-beginning --topic test</code></p>
-<p>至此，配置完成。</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="http://www.jianshu.com/p/1b7fdb1cff3c" target="_blank" rel="external">日志收集之rsyslog to kafka</a></li>
-<li><a href="http://www.rsyslog.com/tag/omkafka/" target="_blank" rel="external">Tag Archives: omkafka</a></li>
-<li><a href="http://www.rsyslog.com/doc/master/configuration/modules/omkafka.html" target="_blank" rel="external">omkafka: write to Apache Kafka</a></li>
-<li><a href="http://youfu.xyz/2016/04/27/rsyslog-json-kafka/" target="_blank" rel="external">rsyslog存储json日志到kafka</a></li>
-<li><a href="https://dzone.com/articles/recipe-rsyslog-kafka-logstash-1" target="_blank" rel="external">Recipe: rsyslog + Kafka + Logstash</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-    
-      <category term="日志" scheme="http://wdxtub.com/tags/%E6%97%A5%E5%BF%97/"/>
-    
-      <category term="Kafka" scheme="http://wdxtub.com/tags/Kafka/"/>
-    
-      <category term="rsyslog" scheme="http://wdxtub.com/tags/rsyslog/"/>
     
   </entry>
   
