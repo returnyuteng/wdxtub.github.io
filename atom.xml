@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2016-09-12T14:11:00.000Z</updated>
+  <updated>2016-09-13T11:32:35.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -20,11 +20,15 @@
     <link href="http://wdxtub.com/2016/09/12/mac-cli-guide/"/>
     <id>http://wdxtub.com/2016/09/12/mac-cli-guide/</id>
     <published>2016-09-12T13:22:47.000Z</published>
-    <updated>2016-09-12T14:11:00.000Z</updated>
+    <updated>2016-09-13T11:32:35.000Z</updated>
     
     <content type="html"><![CDATA[<p>终于，Mac 上有了一款能用命令行自由操作各种软件获取各种系统信息的工具 —— Mac CLI，废话不多说，赶紧来看看它的强大威力（但是并不推荐）。</p>
 <a id="more"></a>
 <hr>
+<p>更新记录</p>
+<ul>
+<li>2016.09.12: 初稿</li>
+</ul>
 <h2 id="安装与删除"><a href="#安装与删除" class="headerlink" title="安装与删除"></a>安装与删除</h2><p>安装方式非常简单，一行即可 <code>sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/guarinogabriel/mac-cli/master/mac-cli/tools/install)&quot;</code>。安装完成之后需要各种配置一下，可以根据个人需要进行选择，我主要挑选了常用的工具类插件，诸如 MySQL 之类的都没有装（因为不需要）</p>
 <p>删除的话也是一句 <code>sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/guarinogabriel/mac-cli/master/mac-cli/tools/uninstall)&quot;</code></p>
 <p>不过之前安装的各种小插件如果有强迫症可能也需要删除</p>
@@ -329,11 +333,15 @@
     <link href="http://wdxtub.com/2016/09/08/nginx-guide/"/>
     <id>http://wdxtub.com/2016/09/08/nginx-guide/</id>
     <published>2016-09-08T12:54:54.000Z</published>
-    <updated>2016-09-08T12:56:26.000Z</updated>
+    <updated>2016-09-13T11:32:35.000Z</updated>
     
     <content type="html"><![CDATA[<p>最近需要把负责的项目部署到云端，采用了现在业界流行的 Nginx 反向代理方案，这样后端的 Go 程序只需要专注于业务逻辑和功能。本文记录具体的部署方案。</p>
 <a id="more"></a>
 <hr>
+<p>更新记录</p>
+<ul>
+<li>2016.09.08: 初稿</li>
+</ul>
 <h2 id="手动安装"><a href="#手动安装" class="headerlink" title="手动安装"></a>手动安装</h2><p>虽然云端环境是 Ubuntu 14.04，不过为了后面维护的方便，决定不采用 <code>apt-get</code> 而是手动进行安装。整个过程我已经配置成为了一个脚本，接下来通过讲解脚本来介绍具体安装的过程</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 运行之前需要切换到 root 用户</span></div><div class="line">serviceDir=/data/home/username</div><div class="line"></div><div class="line"><span class="comment"># 安装配置依赖，这里直接用 apt-get</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing make g++"</span></div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">apt-get install make</div><div class="line">apt-get install g++</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(1/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 安装 openssl，其中 openssl-1.0.2 是长期支持版本，所以我采用这个版本</span></div><div class="line"><span class="comment"># 更多信息请访问 https://www.openssl.org/source/</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing openssl"</span> </div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">wget https://www.openssl.org/<span class="built_in">source</span>/openssl-1.0.2h.tar.gz</div><div class="line">tar -xzvf openssl-1.0.2h.tar.gz</div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/openssl-1.0.2h</div><div class="line">./config</div><div class="line">make</div><div class="line">make install</div><div class="line">ldconfig</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(2/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 安装 Pcre，为了保证兼容我们这里使用较老的版本</span></div><div class="line"><span class="comment"># 源用的是 stanford 的（因为 pcre.org 我这里打不开）</span></div><div class="line"><span class="comment"># 源：http://ftp.cs.stanford.edu/pub/exim/pcre/</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing pcre"</span></div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">wget http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.37.tar.gz</div><div class="line">tar -xzvf pcre-8.37.tar.gz</div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/pcre-8.37</div><div class="line">./configure</div><div class="line">make</div><div class="line">make install</div><div class="line">ldconfig</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(3/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 安装 zlib，用的就是最新的 1.2.8</span></div><div class="line"><span class="comment"># 源 http://zlib.net/zlib-1.2.8.tar.gz</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing zlib"</span></div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">wget http://zlib.net/zlib-1.2.8.tar.gz</div><div class="line">tar -xzvf zlib-1.2.8.tar.gz</div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/zlib-1.2.8</div><div class="line">./configure</div><div class="line">make</div><div class="line">make install</div><div class="line">ldconfig</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(4/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 安装 Nginx</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing Nginx"</span></div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">wget https://nginx.org/download/nginx-1.10.1.tar.gz</div><div class="line">tar -xzvf nginx-1.10.1.tar.gz</div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/nginx-1.10.1</div><div class="line">./configure --prefix=<span class="variable">$serviceDir</span>/nginx-server --with-openssl=<span class="variable">$serviceDir</span>/openssl-1.0.2h --with-http_ssl_module --with-http_stub_status_module --with-stream</div><div class="line">make</div><div class="line">make install</div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/nginx-server/conf</div><div class="line">rm -rf nginx.conf</div><div class="line"><span class="comment"># 这里用的是已经配置好的配置文件</span></div><div class="line">wget http://xssz.oss-cn-shenzhen.aliyuncs.com/server_software/nginx.conf</div><div class="line">ln <span class="_">-s</span> <span class="variable">$serviceDir</span>/nginx-server/sbin/nginx /usr/<span class="built_in">local</span>/bin/nginx</div><div class="line">mkdir <span class="variable">$serviceDir</span>/nginx-server/run</div><div class="line">mkdir <span class="variable">$serviceDir</span>/nginx-config</div><div class="line">ln <span class="_">-s</span> <span class="variable">$serviceDir</span>/nginx-server/sbin/nginx /usr/<span class="built_in">local</span>/bin/nginx</div><div class="line">nginx -c <span class="variable">$serviceDir</span>/nginx-server/conf/nginx.conf</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(5/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 安装守护</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Config daemon"</span></div><div class="line"><span class="built_in">echo</span> <span class="variable">$serviceDir</span><span class="string">'/nginx-server/sbin/nginx -c '</span><span class="variable">$serviceDir</span><span class="string">'/nginx-server/conf/nginx.conf'</span> &gt; /etc/rc.local</div><div class="line"><span class="built_in">echo</span> <span class="string">'exit 0'</span> &gt;&gt; /etc/rc.local</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(6/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 清理工作，把所有的安装包保存到 software 文件夹中</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Clean up all the mess"</span></div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">mkdir <span class="variable">$serviceDir</span>/software</div><div class="line">mv *.gz <span class="variable">$serviceDir</span>/software</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(7/7)"</span></div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">"All Done. You can now continue your work."</span></div></pre></td></tr></table></figure>
 <p>注释应该已经写得比较清楚了，这里就不再赘述</p>
@@ -381,11 +389,15 @@
     <link href="http://wdxtub.com/2016/09/07/geohash-guide/"/>
     <id>http://wdxtub.com/2016/09/07/geohash-guide/</id>
     <published>2016-09-07T12:17:34.000Z</published>
-    <updated>2016-09-07T12:19:14.000Z</updated>
+    <updated>2016-09-13T11:32:35.000Z</updated>
     
     <content type="html"><![CDATA[<p>做任何跟地理位置相关的服务，位置如何表示及存储是绝对绕不开的问题之一。位置的表示倒是可以用经纬度，但是索引和检索的时候，经纬度这种二维表示法就比较麻烦了，这时我们就可以利用 GeoHash 进行『降维攻击』来解决这个问题了。</p>
 <a id="more"></a>
 <hr>
+<p>更新记录</p>
+<ul>
+<li>2016.09.07: 初稿</li>
+</ul>
 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>前几年 LBS 的特性像一股龙卷风一样席卷了整个 App 圈，任何应用都迫不及待地加入了基于地理位置的相关特性。这之中一个非常火的功能就是——查看附近的人/地点/事情，比方说查看附近的餐馆、景点、朋友等等。那么问题就来了，怎么判断是不是附近呢？怎么样定义这个『附近』呢？</p>
 <p>就用『附近的人』这个功能来举例，假如我要找自己身边的人，最简单粗暴的办法就是把我跟所有人的距离算一次，然后选一个阈值，在这个阈值范围内的，认为是『附近』。但是问题来了，如果我们的数据库中有一亿人，那不是每次都要计算一亿次？我们得想个办法减少计算量。</p>
 <p>因为知道自己的经纬度，所以可以知道自己在哪里，比方说深圳市南山区，那么我只需要计算同在南山区的人即可，考虑到我可能在边界上，那么多加周边的几个区进行计算即可。这样一来就可以过滤掉大部分的无用计算了。</p>
@@ -1474,11 +1486,15 @@
     <link href="http://wdxtub.com/2016/08/23/git-guide/"/>
     <id>http://wdxtub.com/2016/08/23/git-guide/</id>
     <published>2016-08-23T14:37:08.000Z</published>
-    <updated>2016-08-23T14:39:01.000Z</updated>
+    <updated>2016-09-13T11:32:35.000Z</updated>
     
     <content type="html"><![CDATA[<p>虽然网上 Git 相关指南已经够多了，不过没有自己整理过一次，用得时候还是经常忘，所以这里按照自己的思路来写一篇，跟大家分享一下。</p>
 <a id="more"></a>
 <hr>
+<p>更新记录</p>
+<ul>
+<li>2016.08.23: 初稿</li>
+</ul>
 <p>本指南会按照自己工作的经验来进行相关命令的选择，力求贴近实战。慢慢更新中</p>
 <h2 id="检出仓库"><a href="#检出仓库" class="headerlink" title="检出仓库"></a>检出仓库</h2><p>一般来说，刚到公司，参与某个项目，第一件事情就是看代码，在开了项目的 Git 权限之后，我们要做的第一步就是把代码克隆到本地，命令为：</p>
 <p><code>git clone username@host:/path/to/repository</code></p>
@@ -1665,11 +1681,15 @@
     <link href="http://wdxtub.com/2016/08/18/logstash-kafka-guide/"/>
     <id>http://wdxtub.com/2016/08/18/logstash-kafka-guide/</id>
     <published>2016-08-18T12:00:31.000Z</published>
-    <updated>2016-08-18T12:01:08.000Z</updated>
+    <updated>2016-09-13T11:32:35.000Z</updated>
     
     <content type="html"><![CDATA[<p>虽然我对 Logstash 颇有微词，但是与系统自带的 rsyslog 相比还是好用很多的，本文介绍如何快速连接 Logstash 与 Kafka。</p>
 <a id="more"></a>
 <hr>
+<p>更新记录</p>
+<ul>
+<li>2016.08.18: 初稿</li>
+</ul>
 <h2 id="总体思路"><a href="#总体思路" class="headerlink" title="总体思路"></a>总体思路</h2><p>还是之前的场景，我需要把各个业务的线上服务器日志接入到统一的日志处理平台中。具体会用 Kafka 做中间件，所以需要解决的就是如何把日志传到 Kafka。原先的考虑是利用系统自带的 rsyslog，这样我只需要自动配置一下 rsyslog 的处理发送规则就可以了，免去了安装和维护的麻烦。但是系统自带的 rsyslog 版本太低，所以到头来还是要更新维护，那就不如直接用更强大且更好用的 Logstash 了。</p>
 <p>需要注意的有两点：</p>
 <ul>

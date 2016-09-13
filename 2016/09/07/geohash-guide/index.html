@@ -96,7 +96,7 @@
 <meta property="og:image" content="http://wdxtub.com/images/14732507430572.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14732507303613.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14732507181227.jpg">
-<meta property="og:updated_time" content="2016-09-07T12:19:14.000Z">
+<meta property="og:updated_time" content="2016-09-13T11:32:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GeoHash 指南">
 <meta name="twitter:description" content="做任何跟地理位置相关的服务，位置如何表示及存储是绝对绕不开的问题之一。位置的表示倒是可以用经纬度，但是索引和检索的时候，经纬度这种二维表示法就比较麻烦了，这时我们就可以利用 GeoHash 进行『降维攻击』来解决这个问题了。">
@@ -342,6 +342,10 @@
         <p>做任何跟地理位置相关的服务，位置如何表示及存储是绝对绕不开的问题之一。位置的表示倒是可以用经纬度，但是索引和检索的时候，经纬度这种二维表示法就比较麻烦了，这时我们就可以利用 GeoHash 进行『降维攻击』来解决这个问题了。</p>
 <a id="more"></a>
 <hr>
+<p>更新记录</p>
+<ul>
+<li>2016.09.07: 初稿</li>
+</ul>
 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>前几年 LBS 的特性像一股龙卷风一样席卷了整个 App 圈，任何应用都迫不及待地加入了基于地理位置的相关特性。这之中一个非常火的功能就是——查看附近的人/地点/事情，比方说查看附近的餐馆、景点、朋友等等。那么问题就来了，怎么判断是不是附近呢？怎么样定义这个『附近』呢？</p>
 <p>就用『附近的人』这个功能来举例，假如我要找自己身边的人，最简单粗暴的办法就是把我跟所有人的距离算一次，然后选一个阈值，在这个阈值范围内的，认为是『附近』。但是问题来了，如果我们的数据库中有一亿人，那不是每次都要计算一亿次？我们得想个办法减少计算量。</p>
 <p>因为知道自己的经纬度，所以可以知道自己在哪里，比方说深圳市南山区，那么我只需要计算同在南山区的人即可，考虑到我可能在边界上，那么多加周边的几个区进行计算即可。这样一来就可以过滤掉大部分的无用计算了。</p>

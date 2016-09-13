@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/07/05/redis-guide/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="Redis 是 C 实现的基于内存并可持久的键值对数据库，在分布式服务中常常被用作缓存。除此之外还可以利用其特点做许多有趣的应用，所以我们不仅需要会用，更需要理解其工作机制。">
-<meta property="og:updated_time" content="2016-07-05T14:02:55.000Z">
+<meta property="og:updated_time" content="2016-09-13T11:32:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis 指南">
 <meta name="twitter:description" content="Redis 是 C 实现的基于内存并可持久的键值对数据库，在分布式服务中常常被用作缓存。除此之外还可以利用其特点做许多有趣的应用，所以我们不仅需要会用，更需要理解其工作机制。">
@@ -337,17 +337,30 @@
         <p>Redis 是 C 实现的基于内存并可持久的键值对数据库，在分布式服务中常常被用作缓存。除此之外还可以利用其特点做许多有趣的应用，所以我们不仅需要会用，更需要理解其工作机制。</p>
 <a id="more"></a>
 <hr>
+<p>更新记录</p>
+<ul>
+<li>2016.09.13: 添加配置部分更详细的说明及实战应用部分</li>
+<li>2016.07.05: 初稿</li>
+</ul>
 <p>Redis 的具体介绍在官方网站和维基百科都有，这里我们只要记住几个关键词既可：开源、C 语言、网络交互、基于内存、可持久化、键值对、数据库。作者是 Salvatore Sanfilippo，他的博客和 github 主页都放到文末的参考链接里，有兴趣的同学可以去看看。</p>
 <p>根据 Redis 主页上的介绍，许多公司都在使用 Redis，比较著名的有 Twitter GitHub Weibo Pinterest Snapchat Craigslist Digg StackOverflow Flickr 等等，想要了解更多的话，可以参考 <a href="http://techstacks.io/tech/redis" target="_blank" rel="external">Who uses Redis?</a></p>
 <p>也有另一种叫法，称为数据结构服务器，因为保存的 value 可以是字符串(string)、字典(map)、列表(list)、集合(sets)或有序集合(sorted set)。那么键值对存储这么多，到底 Redis 有什么不同之处呢？一是原子性操作，二是在内存中运行。</p>
 <p>Redis 脚本使用 Lua 解释器来执行脚本。 Reids 2.6 版本通过内嵌支持 Lua 环境。执行脚本的常用命令为 EVAL。基本语法为 <code>127.0.0.1:6379&gt; EVAL script numkeys key [key ...] arg [arg ...]</code></p>
 <h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>在 Mac 下的安装非常简单，只需要 <code>brew install redis</code> 即可，如果需要开机启动，按照安装完成后的提示输出一条命令即可。然后我们输入 <code>redis-server</code> 应该就能看到如下信息</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">dawang:~ dawang$ redis-server</div><div class="line">62799:C 29 Jun 09:48:45.735 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf</div><div class="line">62799:M 29 Jun 09:48:45.737 * Increased maximum number of open files to 10032 (it was originally set to 4864).</div><div class="line">                _._</div><div class="line">           _.-``__ &apos;&apos;-._</div><div class="line">      _.-``    `.  `_.  &apos;&apos;-._           Redis 3.2.0 (00000000/0) 64 bit</div><div class="line">  .-`` .-```.  ```\/    _.,_ &apos;&apos;-._</div><div class="line"> (    &apos;      ,       .-`  | `,    )     Running in standalone mode</div><div class="line"> |`-._`-...-` __...-.``-._|&apos;` _.-&apos;|     Port: 6379</div><div class="line"> |    `-._   `._    /     _.-&apos;    |     PID: 62799</div><div class="line">  `-._    `-._  `-./  _.-&apos;    _.-&apos;</div><div class="line"> |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|</div><div class="line"> |    `-._`-._        _.-&apos;_.-&apos;    |           http://redis.io</div><div class="line">  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;</div><div class="line"> |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|</div><div class="line"> |    `-._`-._        _.-&apos;_.-&apos;    |</div><div class="line">  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;</div><div class="line">      `-._    `-.__.-&apos;    _.-&apos;</div><div class="line">          `-._        _.-&apos;</div><div class="line">              `-.__.-&apos;</div><div class="line"></div><div class="line">62799:M 29 Jun 09:48:45.738 # Server started, Redis version 3.2.0</div><div class="line">62799:M 29 Jun 09:48:45.738 * The server is now ready to accept connections on port 6379</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">dawang:~ dawang$ redis-server</div><div class="line">62799:C 29 Jun 09:48:45.735 <span class="comment"># Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf</span></div><div class="line">62799:M 29 Jun 09:48:45.737 * Increased maximum number of open files to 10032 (it was originally <span class="built_in">set</span> to 4864).</div><div class="line">                _._</div><div class="line">           _.-``__ <span class="string">''</span>-._</div><div class="line">      _.-``    `.  `_.  <span class="string">''</span>-._           Redis 3.2.0 (00000000/0) 64 bit</div><div class="line">  .-`` .-```.  ```\/    _.,_ <span class="string">''</span>-._</div><div class="line"> (    <span class="string">'      ,       .-`  | `,    )     Running in standalone mode</span></div><div class="line"> |`-._`-...-` __...-.``-._|'` _.-<span class="string">'|     Port: 6379</span></div><div class="line"> |    `-._   `._    /     _.-'    |     PID: 62799</div><div class="line">  `-._    `-._  `-./  _.-<span class="string">'    _.-'</span></div><div class="line"> |`-._`-._    `-.__.-<span class="string">'    _.-'</span>_.-<span class="string">'|</span></div><div class="line"> |    `-._`-._        _.-'_.-<span class="string">'    |           http://redis.io</span></div><div class="line">  `-._    `-._`-.__.-'_.-<span class="string">'    _.-'</span></div><div class="line"> |`-._`-._    `-.__.-<span class="string">'    _.-'</span>_.-<span class="string">'|</span></div><div class="line"> |    `-._`-._        _.-'_.-<span class="string">'    |</span></div><div class="line">  `-._    `-._`-.__.-'_.-<span class="string">'    _.-'</span></div><div class="line">      `-._    `-.__.-<span class="string">'    _.-'</span></div><div class="line">          `-._        _.-<span class="string">'</span></div><div class="line">              `-.__.-'</div><div class="line"></div><div class="line">62799:M 29 Jun 09:48:45.738 <span class="comment"># Server started, Redis version 3.2.0</span></div><div class="line">62799:M 29 Jun 09:48:45.738 * The server is now ready to accept connections on port 6379</div></pre></td></tr></table></figure>
 <p>我们看到目前 Redis 运行在 standalone 模式（相对于分布式），对应的端口是 6379。至于为什么是 6379，这背后是有故事的，原文在<a href="http://oldblog.antirez.com/post/redis-as-LRU-cache.html" target="_blank" rel="external">这里（打开之后搜索6379）</a>，我简要翻译一下：</p>
 <p>6379 是 MERZ 这个单词在九宫格输入时的按键顺序，那么问题来了，MERZ 又是什么鬼？简单来说来自于一个意大利 showgirl，名字叫做 <a href="http://it.wikipedia.org/wiki/Alessia_Merz" target="_blank" rel="external">Alessia Merz</a>，图片这里就不放了。作者日常生活中会创造一些『俚语』，merz 这个词已经用了十年，意思也一直在变化。起初他们 merz 来表示很蠢的事情，比方说『Hey, that’s merz!』，之后意思有些变化，指的是那些有一定技术含量但没什么意义而且还很蠢(stupid)的事儿，或者是那些需要大量技能和耐心才能完成但仍旧很蠢(stupid)的事儿（看出来了吗，核心是 Stupid）。作者举了两个例子，比方说用一台 GPS 和一辆破车大半夜为制作 3D 地图采样，或者在明知道自己不会去买彩票的情况下还是研究大量的彩票信息来找到其『不随机』的证据。总结一下就是有 hack value 的事情，或者是那些为了 hack value 而去做事的人。于是自然而然的，merz 在拨号键盘上对应的数字就成为了 Redis 的端口号。</p>
+<p>在 Linux 下除了使用包管理器来安装外，也可以手动安装，这样比较容易进行管理，<a href="https://github.com/wdxtub/wdxtools/blob/master/linux-script/ubuntu-redis-install.sh" target="_blank" rel="external">这里</a>是我自己在使用的安装脚本。编译完成后可以使用 <code>src/redis-server</code> 和 <code>src/redis-cli</code> 进行启动和交互。</p>
 <p>除了前面使用过的 <code>redis-server</code> 命令，我们还可以使用 <code>redis-cli</code> 命令来启动 redis 客户端，比如：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">dawang:~ dawang$ redis-cli</div><div class="line">127.0.0.1:6379&gt; <span class="built_in">set</span> name <span class="string">'wdxtub'</span></div><div class="line">OK</div><div class="line">127.0.0.1:6379&gt; get name</div><div class="line"><span class="string">"wdxtub"</span></div></pre></td></tr></table></figure>
 <p>如果需要在远程 Redis 上执行命令，也可以用 <code>redis-cli</code> 命令，具体的方式为 <code>redis-cli -h host -p port -a password</code></p>
+<p>其他一些工具为（在 <code>src</code> 文件夹中使用 <code>find . -type f -executable</code>）：</p>
+<ul>
+<li><code>./redis-check-aof</code> 检查并修复 AOF 文件</li>
+<li><code>./redis-sentinel</code> Redis 集群管理</li>
+<li><code>./redis-benchmark</code> 性能测试</li>
+<li><code>./redis-check-rdb</code> 检查并修复 RDB 文件</li>
+</ul>
 <h3 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h3><p>基本命令有 5 个，可以覆盖日常使用的大部分场景，比方说心跳检测、切换数据库之类的：</p>
 <ul>
 <li><code>AUTH password</code>: 验证密码</li>
@@ -364,21 +377,49 @@
 <ol>
 <li>Redis 默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程<code>daemonize no</code></li>
 <li>当 Redis 以守护进程方式运行时，Redis 默认会把 pid 写入 <code>/var/run/redis.pid</code> 文件，可以通过 <code>pidfile</code> 指定 <code>pidfile /var/run/redis.pid</code></li>
-<li>指定 Redis 监听端口，默认端口为 6379 <code>port 6379</code></li>
+<li>指定 Redis 监听端口，默认端口为 6379 <code>port 6379</code>，如果端口设置为 0 的话，redis 便不监听端口了。此时可以通过 unix socket 方式来和外部通信，比如 <code>/unixsocket /tmp/redis.sock</code>, <code>unixsocketperm 755</code></li>
 <li>绑定的主机地址 <code>bind 127.0.0.1</code></li>
 <li>当客户端闲置多长时间后关闭连接，如果指定为 0，表示关闭该功能 <code>timeout 300</code></li>
+<li>TCP 连接保活策略，可以通过 tcp-keepalive 配置项来进行设置，单位为秒，假如设置为 60 秒，则 server 端会每 60 秒向连接空闲的客户端发起一次ACK请求，以检查客户端是否已经挂掉，对于无响应的客户端则会关闭其连接。所以关闭一个连接最长需要120秒的时间。如果设置为0，则不会进行保活检测：<code>tcp-keepalive 0</code></li>
 <li>指定日志记录级别，Redis 总共支持四个级别：debug、verbose、notice、warning，默认为 verbose, <code>loglevel verbose</code></li>
 <li>日志记录方式，默认为标准输出，如果配置 Redis 为守护进程方式运行，而这里又配置为日志记录方式为标准输出，则日志将会发送给 /dev/null, <code>logfile stdout</code></li>
-<li>设置数据库的数量，默认数据库为 0，可以使用 <code>SELECT &lt;dbid&gt;</code> 命令在连接上指定数据库 id, <code>databases 16</code></li>
-<li>指定在多长时间内，有多少次更新操作，就将数据同步到数据文件，可以多个条件配合 <code>save &lt;seconds&gt; &lt;changes&gt;</code> Redis默认配置文件中提供了三个条件：<code>save 900 1</code>, <code>save 300 10</code>, <code>save 60 10000</code>, 分别表示 900 秒（15 分钟）内有 1 个更改，300 秒（5 分钟）内有 10 个更改以及 60 秒内有 10000 个更改。</li>
+<li>设置数据库的数量，默认数据库为 0，可以使用 <code>SELECT &lt;dbid&gt;</code> 命令在连接上指定数据库 id, <code>databases 16</code>，这16个数据库的编号将是0到15。默认的数据库是编号为0的数据库。用户可以使用select <dbid>来选择相应的数据库。</dbid></li>
+<li>指定在多长时间内，有多少次更新操作，就将数据同步到数据文件（快照），可以多个条件配合 <code>save &lt;seconds&gt; &lt;changes&gt;</code> Redis默认配置文件中提供了三个条件：<code>save 900 1</code>, <code>save 300 10</code>, <code>save 60 10000</code>, 分别表示 900 秒（15 分钟）内有 1 个更改，300 秒（5 分钟）内有 10 个更改以及 60 秒内有 10000 个更改。</li>
+<li>如果你想禁用RDB持久化的策略，只要不设置任何save指令就可以，或者给save传入一个空字符串参数也可以达到相同效果 <code>save &quot;&quot;</code></li>
+<li>如果用户开启了RDB快照功能，那么在redis持久化数据到磁盘时如果出现失败，默认情况下，redis会停止接受所有的写请求。这样做的好处在于可以让用户很明确的知道内存中的数据和磁盘上的数据已经存在不一致了。如果redis不顾这种不一致，一意孤行的继续接收写请求，就可能会引起一些灾难性的后果。如果下一次RDB持久化成功，redis会自动恢复接受写请求。</li>
+<li>如果你不在乎这种数据不一致或者有其他的手段发现和控制这种不一致的话，你完全可以关闭这个功能，以便在快照写入失败时，也能确保 redis 继续接受新的写请求: <code>stop-writes-on-bgsave-error yes</code></li>
 <li>指定存储至本地数据库时是否压缩数据，默认为 yes，Redis 采用 LZF 压缩，如果为了节省 CPU 时间，可以关闭该选项，但会导致数据库文件变的巨大 <code>rdbcompression yes</code></li>
-<li>指定本地数据库文件名，默认值为 dump.rdb, <code>dbfilename dump.rdb</code></li>
-<li>指定本地数据库存放目录 <code>dir ./</code></li>
-<li>设置当本机为 slave 服务时，设置 master 服务的IP地址及端口，在 Redis 启动时，它会自动从 master 进行数据同步 <code>slaveof &lt;masterip&gt; &lt;masterport&gt;</code></li>
+<li>在存储快照后，我们还可以让 redis 使用 CRC64 算法来进行数据校验，但是这样做会增加大约 10% 的性能消耗，如果你希望获取到最大的性能提升，可以关闭此功能 <code>rdbchecksum yes</code></li>
+<li>设置快照文件的名称，默认值为 dump.rdb, <code>dbfilename dump.rdb</code></li>
+<li>设置快照文件的存放位置 <code>dir ./</code></li>
+<li>通过 slaveof 配置项可以控制某一个redis作为另一个redis的从服务器，通过指定IP和端口来定位到主redis的位置。一般情况下，我们会建议用户为从redis设置一个不同频率的快照持久化的周期，或者为从redis配置一个不同的服务端口等等。设置当本机为 slave 服务时，设置 master 服务的IP地址及端口，在 Redis 启动时，它会自动从 master 进行数据同步 <code>slaveof &lt;masterip&gt; &lt;masterport&gt;</code></li>
 <li>当 master 服务设置了密码保护时，slave 服务连接 master 的密码 <code>masterauth &lt;master-password&gt;</code></li>
 <li>设置 Redis 连接密码，如果配置了连接密码，客户端在连接 Redis 时需要通过 <code>AUTH &lt;password&gt;</code> 命令提供密码，默认关闭 <code>requirepass foobared</code></li>
+<li>当从 redis 失去了与主 redis 的连接，或者主从同步正在进行中时，redis 该如何处理外部发来的访问请求呢？这里，从 redis 可以有两种选择：如果 slave-serve-stale-data设置为yes（默认），则从 redis 仍会继续响应客户端的读写请求。如果slave-serve-stale-data设置为no，则从 redis 会对客户端的请求返回“SYNC with master in progress”，当然也有例外，当客户端发来 INFO 请求和 SLAVEOF 请求，从 redis 还是会进行处理。</li>
+<li>你可以控制一个从 redis 是否可以接受写请求。将数据直接写入从 redis，一般只适用于那些生命周期非常短的数据，因为在主从同步时，这些临时数据就会被清理掉。自从 redis2.6 版本之后，默认从 redis 为只读 <code>slave-read-only yes</code></li>
+<li>只读的从 redis 并不适合直接暴露给不可信的客户端。为了尽量降低风险，可以使用 rename-command 指令来将一些可能有破坏力的命令重命名，避免外部直接调用 <code>rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52</code></li>
+<li>我们甚至可以禁用掉CONFIG命令，那就是把CONFIG的名字改成一个空字符串 <code>rename-command CONFIG &quot;&quot;</code> 但需要注意的是，如果你使用AOF方式进行数据持久化，或者需要与从redis进行通信，那么更改指令的名字可能会引起一些问题。</li>
+<li>从 redis 会周期性的向主 redis 发出 PING 包。默认是10秒 <code>repl-ping-slave-period 10</code></li>
+<li>在主从同步时，可能在这些情况下会有超时发生：1.以从redis的角度来看，当有大规模IO传输时。2.以从redis的角度来看，当数据传输或PING时，主redis超时。3.以主redis的角度来看，在回复从redis的PING时，从redis超时。用户可以设置上述超时的时限，不过要确保这个时限比 <code>repl-ping-slave-period</code>的值要大，否则每次主 redis 都会认为从 redis 超时 <code>repl-timeout 60</code></li>
+<li>我们可以控制在主从同步时是否禁用 <code>TCP_NODELAY</code>。如果开启 <code>TCP_NODELAY</code>，那么主 redis 会使用更少的 TCP 包和更少的带宽来向从 redis 传输数据。但是这可能会增加一些同步的延迟，大概会达到40毫秒左右。如果你关闭了 <code>TCP_NODELAY</code>，那么数据同步的延迟时间会降低，但是会消耗更多的带宽 <code>repl-disable-tcp-nodelay no</code></li>
+<li>我们还可以设置同步队列长度。队列长度（backlog)是主 redis 中的一个缓冲区，在与从 redis 断开连接期间，主 redis 会用这个缓冲区来缓存应该发给从 redis 的数据。这样的话，当从 redis 重新连接上之后，就不必重新全量同步数据，只需要同步这部分增量数据即可 <code>repl-backlog-size 1mb</code></li>
+<li>如果主 redis 等了一段时间之后，还是无法连接到从 redis，那么缓冲队列中的数据将被清理掉。我们可以设置主 redis 要等待的时间长度。如果设置为 0，则表示永远不清理。默认是 1 个小时 <code>repl-backlog-ttl 3600</code></li>
+<li>我们可以给众多的从redis设置优先级，在主redis持续工作不正常的情况，优先级高的从redis将会升级为主redis。而编号越小，优先级越高。比如一个主redis有三个从redis，优先级编号分别为10、100、25，那么编号为10的从redis将会被首先选中升级为主redis。当优先级被设置为0时，这个从redis将永远也不会被选中。默认的优先级为100 <code>slave-priority 100</code></li>
+<li>假如主 redis 发现有超过 M 个从 redis 的连接延时大于 N 秒，那么主 redis 就停止接受外来的写请求。这是因为从 redis 一般会每秒钟都向主 redis 发出 PING，而主 redis 会记录每一个从 redis 最近一次发来 PING 的时间点，所以主 redis 能够了解每一个从 redis 的运行情况 <code>min-slaves-to-write 3</code>，<code>min-slaves-max-lag 10</code></li>
 <li>设置同一时间最大客户端连接数，默认无限制，Redis 可以同时打开的客户端连接数为Redis 进程可以打开的最大文件描述符数，如果设置 maxclients 0，表示不作限制。当客户端连接数到达限制时，Redis 会关闭新的连接并向客户端返回 max number of clients reached 错误信息 <code>maxclients 128</code></li>
 <li>指定 Redis 最大内存限制，Redis 在启动时会把数据加载到内存中，达到最大内存后，Redis 会先尝试清除已到期或即将到期的 Key，当此方法处理后，仍然到达最大内存设置，将无法再进行写入操作，但仍然可以进行读取操作。Redis 新的 vm 机制，会把 Key 存放内存，Value 会存放在 swap 区, <code>maxmemory &lt;bytes&gt;</code></li>
+<li>需要注意的一点是，如果你的redis是主redis（说明你的redis有从redis），那么在设置内存使用上限时，需要在系统中留出一些内存空间给同步队列缓存，只有在你设置的是“不移除”的情况下，才不用考虑这个因素。</li>
+<li>对于内存移除规则来说，redis提供了多达6种的移除规则。他们是：<ul>
+<li>volatile-lru：使用LRU算法移除过期集合中的key</li>
+<li>allkeys-lru：使用LRU算法移除key</li>
+<li>volatile-random：在过期集合中移除随机的key</li>
+<li>allkeys-random：移除随机的key</li>
+<li>volatile-ttl：移除那些TTL值最小的key，即那些最近才过期的key。</li>
+<li>noeviction：不进行移除。针对写操作，只是返回错误信息。</li>
+<li>无论使用上述哪一种移除规则，如果没有合适的key可以移除的话，redis都会针对写请求返回错误信息。</li>
+</ul>
+</li>
+<li>LRU算法和最小TTL算法都并非是精确的算法，而是估算值。所以你可以设置样本的大小。假如redis默认会检查三个key并选择其中LRU的那个，那么你可以改变这个key样本的数量 <code>maxmemory-samples 3</code></li>
 <li>指定是否在每次更新操作后进行日志记录，Redis 在默认情况下是异步的把数据写入磁盘，如果不开启，可能会在断电时导致一段时间内的数据丢失。因为 redis 本身同步数据文件是按上面 save 条件来同步的，所以有的数据会在一段时间内只存在于内存中。默认为 no, <code>appendonly no</code></li>
 <li>指定更新日志文件名，默认为 appendonly.aof, <code>appendfilename appendonly.aof</code></li>
 <li>指定更新日志条件，共有3个可选值： <ul>
@@ -397,11 +438,12 @@
 <li>指定在超过一定的数量或者最大的元素超过某一临界值时，采用一种特殊的哈希算法, <code>hash-max-zipmap-entries 64</code>, <code>hash-max-zipmap-value 512</code></li>
 <li>指定是否激活重置哈希，默认为开启（后面在介绍Redis的哈希算法时具体介绍）<code>activerehashing yes</code></li>
 <li>指定包含其它的配置文件，可以在同一主机上多个 Redis 实例之间使用同一份配置文件，而同时各个实例又拥有自己的特定配置文件 <code>include /path/to/local.conf</code></li>
+<li>lua脚本的最大运行时间是需要被严格限制的，要注意单位是毫秒 <code>lua-time-limit 5000</code>。如果此值设置为0或负数，则既不会有报错也不会有时间限制</li>
 </ol>
 <h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>Redis 中的 value 支持五种数据类型: strings, lists, sets, sorted sets, hashes。关于 key 的设计，有几点需要注意：</p>
 <ol>
 <li>key 不要太长，尽量不要超过 1024 字节，这不仅消耗内存，而且会降低查找的效率；</li>
-<li>key 也不要太短，太短的话，key 的可读性会降低；</li>
+<li>key 也不要太短，否则可读性会降低；</li>
 <li>在一个项目中，key 最好使用统一的命名模式，例如 <code>user:10000:passwd</code></li>
 </ol>
 <p>另外本文只是一个基本的指南，不会涵盖太多的命令，具体请参考 Redis 的官方文档。</p>
@@ -519,6 +561,19 @@
 <p>最简单的分区方式是按范围分区，就是映射一定范围的对象到特定的 Redis 实例。比如，ID 从 0 到 10000 的用户会保存到实例 R0，ID 从 10001 到 20000 的用户会保存到 R1，以此类推。这种方式的不足之处是要有一个区间范围到实例的映射表，同时还需要各种对象的映射表，通常对 Redis 来说并非是好的方法。</p>
 <p><strong>哈希分区</strong></p>
 <p>另外一种分区方法是 hash 分区。这对任何 key 都适用，也无需是 <code>object_name:</code> 这种形式，只需要确定统一的哈希函数，然后通过取模确定应该保存在哪个分区即可。</p>
+<h2 id="实战应用"><a href="#实战应用" class="headerlink" title="实战应用"></a>实战应用</h2><p>最近需要自己设计系统架构，一个核心思路是利用已有机制降低设计复杂度，这样可以避免很多无谓的『坑』，尽量少自己去造轮子，而是用经过实践检验的工具。</p>
+<p>而且一开始就要考虑得稍微长远一些，从扩展性到 key 设计都是，还要善待 redis 中的数据，不用了就自己清理，而不是过分依赖 redis 本身。简单的原则如下</p>
+<ul>
+<li>由于Redis单线程（严格意义上不是单线程，但认为对request的处理是单线程的）的模型，对大数据结构的使用一定要慎重</li>
+<li>每个实例的内存容量也应该有一定的限制，不然故障恢复的时候会很痛苦</li>
+<li>集群的解决方案基本目前公认就是 codis 了，不过看目前的数据量，走单点和 1 个备份应该是行得通的，具体要看看压力测试的结果</li>
+<li>业务中最重要的是 KV, SQL 和事务，不要为了所谓的『架构合理』增加太多理解难度</li>
+</ul>
+<h3 id="Key-过期机制"><a href="#Key-过期机制" class="headerlink" title="Key 过期机制"></a>Key 过期机制</h3><p>现在项目中的每条记录都有一定的存活时间，原本的机制是在 MySQL 的每条记录中增加一个 status 字段，定时跑一个程序根据时间戳来进行检查。但是怎么想都感觉有点折腾，难道不能依赖数据库的已有机制吗？</p>
+<p>能的！使用 Key 的过期机制，每个 Key 过期之后自动失效，就不用增加额外复杂度了。如果需要刷新，直接对该 key 执行 <code>EXPIRE</code> 操作，即可。</p>
+<p>即使如此，我们也需要善待数据，注意清理，尽量使用小对象，不能过分依赖这个机制解决所有问题。</p>
+<h3 id="Google-的应用"><a href="#Google-的应用" class="headerlink" title="Google 的应用"></a>Google 的应用</h3><p>来自<a href="http://mp.weixin.qq.com/s?__biz=MzAwMDU1MTE1OQ==&amp;mid=208733458&amp;idx=1&amp;sn=691bfde670fb2dd649685723f7358fea" target="_blank" rel="external">Codis作者黄东旭细说分布式Redis架构设计和踩过的那些坑们</a></p>
+<p>Google在他们的广告业务中遇到这个问题，既需要高性能，又需要分布式事务，还必须保证一致性:)，Google在此之前是通过一个大规模的MySQL集群通过sharding苦苦支撑，这个架构的可运维/扩展性实在太差。这要是在一般公司，估计也就忍了，但是Google可不是一般公司，用原子钟搞定Spanner，然后再Spanner上构建了SQL查询层F1。我在第一次看到这个系统的时候，感觉简直惊艳，应该是第一个可以真正称为NewSQL的公开设计的系统。所以，BigTable(KV)+F1(SQL)+Spanner(高性能分布式事务支持)，同时Spanner还有一个非常重要的特性是跨数据中心的复制和一致性保证（通过Paxos实现），多数据中心，刚好补全了整个Google的基础设施的数据库栈，使得Google对于几乎任何类型的业务系统开发都非常方便。我想，这就是未来的方向吧，一个可扩展的KV数据库（作为缓存和简单对象存储），一个高性能支持分布式事务和SQL查询接口的分布式关系型数据库，提供表支持。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>相比于在学校必须手写自己的缓存，使用 Redis（或是 memcache）简直太爽了，工作一段时间了，越发觉得技术的门槛其实越来越低，如何打造高效团队，如何把架构设计得更加合理，才是真正体现差距的地方。</p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="http://redis.io/" target="_blank" rel="external">Redis 官方网站</a></li>
@@ -528,6 +583,14 @@
 <li><a href="http://antirez.com/latest/0" target="_blank" rel="external">Redis 作者博客</a></li>
 <li><a href="https://github.com/antirez" target="_blank" rel="external">Redis 作者 Github 主页</a></li>
 <li><a href="https://zh.wikipedia.org/wiki/%E7%B4%8D%E6%A0%BC%E7%AE%97%E6%B3%95" target="_blank" rel="external">Nagle 算法</a></li>
+<li><a href="http://www.cnblogs.com/mrxigua/p/3357138.html" target="_blank" rel="external">Redis实战经验及使用场景</a></li>
+<li><a href="http://www.cnblogs.com/iforever/p/4061095.html" target="_blank" rel="external">看看社交软件如何实现查看附近的人</a></li>
+<li><a href="https://matt.sh/redis-geo" target="_blank" rel="external">Redis Commands: Geography Edition</a></li>
+<li><a href="http://www.wubiao.info/401" target="_blank" rel="external">微信、陌陌 架构方案分析</a></li>
+<li><a href="http://www.hslk.com.cn/%E6%8A%80%E6%9C%AF/lbs-%E5%88%9D%E8%AF%95.html" target="_blank" rel="external">LBS 初试</a></li>
+<li><a href="http://redisdoc.com/key/expire.html" target="_blank" rel="external">Redis - EXPIRE</a></li>
+<li><a href="http://www.redis.cn/commands/expire.html" target="_blank" rel="external">EXPIRE key seconds</a></li>
+<li><a href="https://www.compose.com/articles/a-quick-guide-to-redis-3-2s-geo-support/" target="_blank" rel="external">A Quick Guide to Redis 3.2’s Geo Support</a></li>
 </ul>
 
       
@@ -805,7 +868,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本使用"><span class="nav-number">1.</span> <span class="nav-text">基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接"><span class="nav-number">1.2.</span> <span class="nav-text">连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态"><span class="nav-number">1.3.</span> <span class="nav-text">状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">1.4.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据结构"><span class="nav-number">2.</span> <span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Strings"><span class="nav-number">2.1.</span> <span class="nav-text">Strings</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lists"><span class="nav-number">2.2.</span> <span class="nav-text">Lists</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sets"><span class="nav-number">2.3.</span> <span class="nav-text">Sets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sorted-Sets"><span class="nav-number">2.4.</span> <span class="nav-text">Sorted Sets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hashes"><span class="nav-number">2.5.</span> <span class="nav-text">Hashes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HyperLogLog"><span class="nav-number">2.6.</span> <span class="nav-text">HyperLogLog</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持久化"><span class="nav-number">3.</span> <span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RDB"><span class="nav-number">3.1.</span> <span class="nav-text">RDB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF"><span class="nav-number">3.2.</span> <span class="nav-text">AOF</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#增强功能"><span class="nav-number">4.</span> <span class="nav-text">增强功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主从同步"><span class="nav-number">4.1.</span> <span class="nav-text">主从同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务处理"><span class="nav-number">4.2.</span> <span class="nav-text">事务处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发布订阅"><span class="nav-number">4.3.</span> <span class="nav-text">发布订阅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试"><span class="nav-number">4.4.</span> <span class="nav-text">性能测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接与管道"><span class="nav-number">4.5.</span> <span class="nav-text">连接与管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区"><span class="nav-number">4.6.</span> <span class="nav-text">分区</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本使用"><span class="nav-number">1.</span> <span class="nav-text">基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接"><span class="nav-number">1.2.</span> <span class="nav-text">连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态"><span class="nav-number">1.3.</span> <span class="nav-text">状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">1.4.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据结构"><span class="nav-number">2.</span> <span class="nav-text">数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Strings"><span class="nav-number">2.1.</span> <span class="nav-text">Strings</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lists"><span class="nav-number">2.2.</span> <span class="nav-text">Lists</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sets"><span class="nav-number">2.3.</span> <span class="nav-text">Sets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sorted-Sets"><span class="nav-number">2.4.</span> <span class="nav-text">Sorted Sets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hashes"><span class="nav-number">2.5.</span> <span class="nav-text">Hashes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HyperLogLog"><span class="nav-number">2.6.</span> <span class="nav-text">HyperLogLog</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持久化"><span class="nav-number">3.</span> <span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RDB"><span class="nav-number">3.1.</span> <span class="nav-text">RDB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF"><span class="nav-number">3.2.</span> <span class="nav-text">AOF</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#增强功能"><span class="nav-number">4.</span> <span class="nav-text">增强功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主从同步"><span class="nav-number">4.1.</span> <span class="nav-text">主从同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务处理"><span class="nav-number">4.2.</span> <span class="nav-text">事务处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发布订阅"><span class="nav-number">4.3.</span> <span class="nav-text">发布订阅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试"><span class="nav-number">4.4.</span> <span class="nav-text">性能测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接与管道"><span class="nav-number">4.5.</span> <span class="nav-text">连接与管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区"><span class="nav-number">4.6.</span> <span class="nav-text">分区</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实战应用"><span class="nav-number">5.</span> <span class="nav-text">实战应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Key-过期机制"><span class="nav-number">5.1.</span> <span class="nav-text">Key 过期机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Google-的应用"><span class="nav-number">5.2.</span> <span class="nav-text">Google 的应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>

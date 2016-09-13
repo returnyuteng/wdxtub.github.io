@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/07/06/ror-deploy-guide/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="开发是一回事，部署又是另一回事，往往部署要处理的东西比开发还要多，所以一套顺手的工具非常重要。现在虽然目前还做不到自动部署，但是一系列自动化工具也极大简化了繁琐的部署流程。这篇文章主要介绍如何使用 Mina+Puma+Nginx 部署一个 Ruby On Rails 的 Web 应用。">
-<meta property="og:updated_time" content="2016-07-06T14:31:05.000Z">
+<meta property="og:updated_time" content="2016-09-13T11:32:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ruby On Rails 部署指南">
 <meta name="twitter:description" content="开发是一回事，部署又是另一回事，往往部署要处理的东西比开发还要多，所以一套顺手的工具非常重要。现在虽然目前还做不到自动部署，但是一系列自动化工具也极大简化了繁琐的部署流程。这篇文章主要介绍如何使用 Mina+Puma+Nginx 部署一个 Ruby On Rails 的 Web 应用。">
@@ -337,6 +337,10 @@
         <p>开发是一回事，部署又是另一回事，往往部署要处理的东西比开发还要多，所以一套顺手的工具非常重要。现在虽然目前还做不到自动部署，但是一系列自动化工具也极大简化了繁琐的部署流程。这篇文章主要介绍如何使用 Mina+Puma+Nginx 部署一个 Ruby On Rails 的 Web 应用。</p>
 <a id="more"></a>
 <hr>
+<p>更新记录</p>
+<ul>
+<li>2016.07.06: 初稿</li>
+</ul>
 <h2 id="Mina"><a href="#Mina" class="headerlink" title="Mina"></a>Mina</h2><p>Mina 是一个非常快的部署器，也是一个服务端自动化工具。至于为什么效率这么高，因为直接生成的是 bash 脚本，然后在远端服务器执行。和 Vlad 与 Capistrano 不同的是，Mina 不会每条指令都开一个新的 SSH 连接，而是每次部署只创建一个 SSH 连接，尽可能减少了 SSH 连接的开销。</p>
 <p>安装非常简单 <code>gem install mina</code> 即可。其实使用也很简单，这里简单介绍一下：</p>
 <p>首先，在项目中用命令 <code>mina init</code> 进行初始化，然后我们会得到 <code>config/deploy.rb</code> 文件。这是一个自带 task 的 Rake 文件，具体怎么写 task 可以参考<a href="https://github.com/mina-deploy/mina/blob/master/docs/writing_your_own_tasks.md" target="_blank" rel="external">这里</a>，一个简单的配置可以像这样：</p>

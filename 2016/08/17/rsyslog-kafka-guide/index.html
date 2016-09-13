@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/08/17/rsyslog-kafka-guide/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。">
-<meta property="og:updated_time" content="2016-08-17T13:07:38.000Z">
+<meta property="og:updated_time" content="2016-09-13T11:32:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rsyslog 连接 Kafka 指南">
 <meta name="twitter:description" content="从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。">
@@ -337,6 +337,10 @@
         <p>从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。</p>
 <a id="more"></a>
 <hr>
+<p>更新记录</p>
+<ul>
+<li>2016.08.17: 初稿</li>
+</ul>
 <p>Kafka 集群的配置可以在<a href="http://wdxtub.com/2016/08/15/kafka-guide/">这里</a>查阅，这里不再赘述，认为大家已经有一个可以正常运行的 Kafka 集群，并且创建了一个名为 test 的 topic</p>
 <h2 id="Nginx-配置"><a href="#Nginx-配置" class="headerlink" title="Nginx 配置"></a>Nginx 配置</h2><p>因为 Kafka 集群的通讯是走内网 ip，而外网访问的端口因为安全考虑只开了少数几个（这里是 8080），所以我们用 Nginx 反向代理来连通内外网</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">upstream mq_pool&#123;</div><div class="line">server ip1:13647 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">server localhost:13647 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server&#123;</div><div class="line">listen 8080;</div><div class="line">allow all;</div><div class="line">proxy_pass mq_pool;</div><div class="line">proxy_connect_timeout 24h;</div><div class="line">proxy_timeout 24h;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
