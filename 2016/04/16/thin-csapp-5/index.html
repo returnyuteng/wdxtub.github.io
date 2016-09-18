@@ -107,7 +107,7 @@
 <meta property="og:image" content="http://wdxtub.com/images/14614185201475.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14614222627451.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14614229485048.jpg">
-<meta property="og:updated_time" content="2016-08-10T23:24:57.000Z">
+<meta property="og:updated_time" content="2016-09-18T14:44:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【读薄 CSAPP】伍 异常控制流">
 <meta name="twitter:description" content="异常控制流可能是很多人知道却说不清楚具体发生了什么的『著名』概念，什么是异常？系统又是怎么处理这个看起来『不一样』的机制的呢？信号在这里扮演了什么角色？这一讲我们就来讲讲异常与信号到底是怎么回事儿。">
@@ -573,7 +573,7 @@
 <li>每个图由一个入度为 0 的节点作为起始</li>
 </ul>
 <p>对于进程图来说，只要满足拓扑排序，就是可能的输出。我们还是用刚才的例子来简单示意一下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">pid_t</span> pid;</div><div class="line">    <span class="keyword">int</span> x = <span class="number">1</span>;</div><div class="line">    </div><div class="line">    pid = Fork();</div><div class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>) </div><div class="line">    &#123;   <span class="comment">// Child</span></div><div class="line">        <span class="built_in">printf</span>(<span class="string">"child! x = %d\n"</span>, ++x);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// Parent</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"parent! x = %d\n"</span>, --x);</div><div class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">pid_t</span> pid;</div><div class="line">    <span class="keyword">int</span> x = <span class="number">1</span>;</div><div class="line">    </div><div class="line">    pid = Fork();</div><div class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>) </div><div class="line">    &#123;   <span class="comment">// Child</span></div><div class="line">        <span class="built_in">printf</span>(<span class="string">"child! x = %d\n"</span>, --x);</div><div class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// Parent</span></div><div class="line">    <span class="built_in">printf</span>(<span class="string">"parent! x = %d\n"</span>, x);</div><div class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>对应的进程图为</p>
 <p><img src="/images/14625029984869.jpg" alt=""></p>
 <h3 id="回收子进程"><a href="#回收子进程" class="headerlink" title="回收子进程"></a>回收子进程</h3><p>即使主进程已经终止，子进程也还在消耗系统资源，我们称之为『僵尸』。为了『打僵尸』，就可以采用『收割』(Reaping) 的方法。父进程利用 <code>wait</code> 或 <code>waitpid</code> 回收已终止的子进程，然后给系统提供相关信息，kernel 就会把 zombie child process 给删除。</p>
@@ -916,7 +916,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">617</span>
+              <span class="site-state-item-count">618</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
