@@ -1,0 +1,918 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux,服务器,运维," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="服务器有时候像一个爱哭爱闹的小宝宝，能听到它在哭，但如果不够熟悉的话，一时半会儿还真不知道到底是为啥而哭。本文结合自己工作中的一些经验，给出一些检查服务器运行状况的通用技巧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 服务器检查指南">
+<meta property="og:url" content="http://wdxtub.com/2016/09/28/linux-server-check-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="服务器有时候像一个爱哭爱闹的小宝宝，能听到它在哭，但如果不够熟悉的话，一时半会儿还真不知道到底是为啥而哭。本文结合自己工作中的一些经验，给出一些检查服务器运行状况的通用技巧。">
+<meta property="og:image" content="http://wdxtub.com/images/14750633917258.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14750634259927.jpg">
+<meta property="og:updated_time" content="2016-09-28T11:50:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux 服务器检查指南">
+<meta name="twitter:description" content="服务器有时候像一个爱哭爱闹的小宝宝，能听到它在哭，但如果不够熟悉的话，一时半会儿还真不知道到底是为啥而哭。本文结合自己工作中的一些经验，给出一些检查服务器运行状况的通用技巧。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14750633917258.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Linux 服务器检查指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tech">
+          <a href="/2009/09/11/tech-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/1990/09/11/life-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/1997/09/11/booklist-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux 服务器检查指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-28T19:48:04+08:00" content="2016-09-28">
+              2016-09-28
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/28/linux-server-check-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/28/linux-server-check-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>服务器有时候像一个爱哭爱闹的小宝宝，能听到它在哭，但如果不够熟悉的话，一时半会儿还真不知道到底是为啥而哭。本文结合自己工作中的一些经验，给出一些检查服务器运行状况的通用技巧。</p>
+<a id="more"></a>
+<hr>
+<p>注，章节名称源自英雄联盟中盲僧李青的技能。</p>
+<p>更新历史：</p>
+<ul>
+<li>2016.09.28: 完成初稿</li>
+</ul>
+<h3 id="htop"><a href="#htop" class="headerlink" title="htop"></a>htop</h3><p>最基本的招式就是 <code>htop</code> 了，基本囊括了各种信息（一般系统默认是 <code>top</code>）</p>
+<p><img src="/images/14750633917258.jpg" alt=""></p>
+<p>观察一段时间大概能对服务器的基本状态有一个认知，可以比较直观找出占用 CPU 和内存的应用。这里简单说明一下如何利用这些数据。</p>
+<p>右上角的信息也可以通过 <code>uptime</code> 进行查看，比如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ uptime</div><div class="line">06:49:47 up 49 days,  2:29,  1 user,  load average: 0.21, 0.13, 0.19</div></pre></td></tr></table></figure>
+<p>最后的三个数字表示 1 分钟、5 分钟和 15 分钟的平均负载，一般来说 0.7 是一个警戒线（对于单核来说）。从图中我们可以看到该服务器有 4 个核心，所以负载的数值超过 1 都是很正常的。</p>
+<h3 id="free"><a href="#free" class="headerlink" title="free"></a>free</h3><p>我们可以使用 <code>free -m</code> 来以 mb 为单位查看内存使用情况，如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ free -m</div><div class="line">             total       used       free     shared    buffers     cached</div><div class="line">Mem:         16047      15871        176          0        217       9436</div><div class="line">-/+ buffers/cache:       6217       9830</div><div class="line">Swap:            0          0          0</div></pre></td></tr></table></figure>
+<p>虽然看起来 free 部分内存很少，但是第二行表示大部分内存是被缓存占用的，是 Linux 尽量利用内存的正常现象。这里只要注意 swap 的数值为 0 即可，否则频繁使用交换区充当内存，会明显降低系统性能。</p>
+<h2 id="金钟罩-铁布衫"><a href="#金钟罩-铁布衫" class="headerlink" title="金钟罩/铁布衫"></a>金钟罩/铁布衫</h2><h3 id="dmesg"><a href="#dmesg" class="headerlink" title="dmesg"></a>dmesg</h3><p><code>dmesg</code> 输出系统日志，不过比较杂也比较难看懂</p>
+<h3 id="vmstat"><a href="#vmstat" class="headerlink" title="vmstat"></a>vmstat</h3><p><code>vmstat 1</code> 每行会输出一些系统核心指标（后面的数字表示每隔 1 秒输出一次）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ vmstat 1</div><div class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</div><div class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   <span class="keyword">in</span>   cs us sy id wa st</div><div class="line"> 1  0      0 341460 220212 9530820    0    0    10   436    1    1  8  1 86  5  0</div><div class="line"> 0  0      0 341452 220212 9530820    0    0     0 10412  580  681  0  0 99  0  0</div><div class="line"> 0  0      0 341420 220212 9530820    0    0     0     0  371  693  0  0 100  0  0</div><div class="line"> 0  0      0 341420 220212 9530820    0    0     0     0  389  737  0  0 100  0  0</div><div class="line"> 1  0      0 339320 220212 9532844    0    0     0  9020 9561 8007 15  4 70 11  0</div><div class="line"> 0  0      0 335616 220212 9536784    0    0     0     0 1149 1295  6  1 93  0  0</div><div class="line"> 0  0      0 339984 220212 9532188    0    0     0  5428  581  832  0  0 100  0  0</div></pre></td></tr></table></figure>
+<p>具体介绍一下几个特别需要关注的指标：</p>
+<ul>
+<li><code>r</code> 值，在等待 CPU 资源的进程数（不包含等待 IO 的进程），如果这个数值大于 CPU 的核心数目，就说明 CPU 资源已饱和</li>
+<li><code>free</code> 值，可用的内存大小（单位: KB）</li>
+<li><code>si</code> 与 <code>so</code> 值，交换区写入和读取的数量，如果不为 0，则说明系统在使用 swap 空间，物理内存不足</li>
+<li><code>us</code>, <code>sy</code>, <code>id</code>, <code>wa</code>, <code>st</code> 值，表示用户时间(user)，系统时间(system)，空闲时间(idle)，IO 等待时间(wait)和被偷走的时间(stolen，一般被其他虚拟机消耗)</li>
+</ul>
+<p>如果用户时间和系统时间相加比较大，则 CPU 忙于执行指令，如果 IO 等待时间很长，那么系统的瓶颈在磁盘 IO。</p>
+<h3 id="pidstat"><a href="#pidstat" class="headerlink" title="pidstat"></a>pidstat</h3><p>需要先安装 <code>sudo apt install sysstat</code>，然后使用 <code>pidstat 1</code> 可以查看进程的 CPU 占用率</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ pidstat 3</div><div class="line">Linux 3.13.0-91-generic      09/26/2016      _x86_64_        (4 CPU)</div><div class="line"></div><div class="line">07:16:38 AM   UID       PID    %usr %system  %guest    %CPU   CPU  Command</div><div class="line">07:16:41 AM     0         7    0.00    0.33    0.00    0.33     2  rcu_sched</div><div class="line"></div><div class="line">07:16:41 AM   UID       PID    %usr %system  %guest    %CPU   CPU  Command</div><div class="line">07:16:44 AM  1001     20573    0.00    0.33    0.00    0.33     2  pidstat</div><div class="line"></div><div class="line">07:16:44 AM   UID       PID    %usr %system  %guest    %CPU   CPU  Command</div><div class="line">07:16:47 AM     0        10    0.00    0.33    0.00    0.33     1  rcuos/2</div><div class="line">07:16:47 AM     0       386    0.00    0.33    0.00    0.33     1  jbd2/dm-0-8</div><div class="line">07:16:47 AM  1001     13003    0.00    0.67    0.00    0.67     0  nginx</div><div class="line">07:16:47 AM  1001     13004    0.00    0.67    0.00    0.67     1  nginx</div><div class="line">07:16:47 AM  1001     13005    0.67    0.67    0.00    1.33     2  nginx</div><div class="line">07:16:47 AM  1001     13006    0.67    0.00    0.00    0.67     3  nginx</div><div class="line">07:16:47 AM  1001     22179    0.33    0.00    0.00    0.33     1  node</div><div class="line"></div><div class="line">07:16:47 AM   UID       PID    %usr %system  %guest    %CPU   CPU  Command</div><div class="line">07:16:50 AM  1001     19021    0.33    0.33    0.00    0.67     1  sshd</div><div class="line">07:16:50 AM  1001     20573    0.00    0.33    0.00    0.33     2  pidstat</div><div class="line"></div><div class="line">07:16:50 AM   UID       PID    %usr %system  %guest    %CPU   CPU  Command</div><div class="line">07:16:53 AM     0         8    0.00    0.33    0.00    0.33     2  rcuos/0</div><div class="line">07:16:53 AM     0       386    0.00    0.33    0.00    0.33     1  jbd2/dm-0-8</div><div class="line">07:16:53 AM  1001      3408   76.33    8.33    0.00   84.67     3  java</div><div class="line">07:16:53 AM  1001     13003    0.00    0.67    0.00    0.67     0  nginx</div><div class="line">07:16:53 AM  1001     13005    0.67    0.67    0.00    1.33     2  nginx</div><div class="line">07:16:53 AM  1001     13006    0.33    0.33    0.00    0.67     3  nginx</div><div class="line">07:16:53 AM  1001     22179    0.00    0.33    0.00    0.33     0  node</div><div class="line"></div><div class="line">07:16:53 AM   UID       PID    %usr %system  %guest    %CPU   CPU  Command</div><div class="line">07:16:56 AM  1001      3408    1.00    0.00    0.00    1.00     3  java</div><div class="line">07:16:56 AM  1001     20573    0.00    0.33    0.00    0.33     2  pidstat</div><div class="line">^C</div><div class="line"></div><div class="line">Average:      UID       PID    %usr %system  %guest    %CPU   CPU  Command</div><div class="line">Average:        0         7    0.00    0.06    0.00    0.06     -  rcu_sched</div><div class="line">Average:        0         8    0.00    0.06    0.00    0.06     -  rcuos/0</div><div class="line">Average:        0        10    0.00    0.06    0.00    0.06     -  rcuos/2</div><div class="line">Average:        0       386    0.00    0.11    0.00    0.11     -  jbd2/dm-0-8</div><div class="line">Average:     1001      3408   12.89    1.39    0.00   14.28     -  java</div><div class="line">Average:     1001     13003    0.00    0.22    0.00    0.22     -  nginx</div><div class="line">Average:     1001     13004    0.00    0.11    0.00    0.11     -  nginx</div><div class="line">Average:     1001     13005    0.22    0.22    0.00    0.44     -  nginx</div><div class="line">Average:     1001     13006    0.17    0.06    0.00    0.22     -  nginx</div><div class="line">Average:     1001     19021    0.06    0.06    0.00    0.11     -  sshd</div><div class="line">Average:     1001     20573    0.00    0.17    0.00    0.17     -  pidstat</div><div class="line">Average:     1001     22179    0.06    0.06    0.00    0.11     -  node</div></pre></td></tr></table></figure>
+<p>这个命令的好处是不会覆盖之前的数据，我们能够方便地观察系统动态。</p>
+<h3 id="iostat"><a href="#iostat" class="headerlink" title="iostat"></a>iostat</h3><p>可以使用 <code>iostat -xz 1</code> 来查看机器磁盘 IO 情况，如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ iostat -xz 1</div><div class="line">Linux 3.13.0-91-generic       09/26/2016      _x86_64_        (4 CPU)</div><div class="line"></div><div class="line">avg-cpu:  %user   %nice %system %iowait  %steal   %idle</div><div class="line">           8.01    0.00    0.71    5.04    0.02   86.22</div><div class="line"></div><div class="line">Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util</div><div class="line">xvda              0.00     0.20    0.07    0.34     1.70     3.60    26.23     0.00    1.43    1.06    1.50   0.24   0.01</div><div class="line">xvdb              0.00   158.04    1.76   47.14    28.13  1289.27    53.89     0.16    3.21    3.49    3.20   0.71   3.49</div><div class="line">dm-0              0.00     0.00    2.48  228.71    37.46  1732.41    15.31     0.06    0.24    7.13    0.17   0.56  12.89</div><div class="line">xvdf              0.00     1.19    0.72   22.34     9.33   443.14    39.24     0.58   24.94   15.99   25.23   4.28   9.87</div><div class="line"></div><div class="line">avg-cpu:  %user   %nice %system %iowait  %steal   %idle</div><div class="line">           0.00    0.00    0.00    0.00    0.00  100.00</div><div class="line"></div><div class="line">Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util</div><div class="line">xvdb              0.00   143.00    0.00    6.00     0.00   596.00   198.67     0.00    0.00    0.00    0.00   0.00   0.00</div><div class="line">dm-0              0.00     0.00    0.00  149.00     0.00   596.00     8.00     0.00    0.00    0.00    0.00   0.00   0.00</div><div class="line"></div><div class="line">avg-cpu:  %user   %nice %system %iowait  %steal   %idle</div><div class="line">           0.25    0.00    0.00    0.00    0.00   99.75</div></pre></td></tr></table></figure>
+<ul>
+<li><code>r/s</code>, <code>w/s</code>, <code>rkB/s</code>, <code>wkB/s</code> 表示每秒的读写次数和每秒读写的数据量，如果过大会引起性能问题</li>
+<li><code>await</code> 是 IO 操作的平均等待时间，如果数据异常增大，可能是硬件出了问题</li>
+<li><code>avgqu-sz</code> 是向设备发出的平均请求数量，大于 1 一般是硬件设备已饱和的表现</li>
+<li><code>%util</code> 是设备利用率，如果超过 60 就可能会影响 IO 性能</li>
+</ul>
+<h2 id="天雷破-摧筋断骨"><a href="#天雷破-摧筋断骨" class="headerlink" title="天雷破/摧筋断骨"></a>天雷破/摧筋断骨</h2><h3 id="sar"><a href="#sar" class="headerlink" title="sar"></a>sar</h3><p><code>sar -n DEV 1</code> 用来查看网络设备的吞利率，如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub@spro-usa-elasticsearch01:~$ sar -n DEV 1</div><div class="line">Linux 3.13.0-91-generic (spro-usa-elasticsearch01)      09/26/2016      _x86_64_        (4 CPU)</div><div class="line"></div><div class="line">07:49:06 AM     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil</div><div class="line">07:49:07 AM      eth0      2.00      0.00      0.13      0.00      0.00      0.00      0.00      0.00</div><div class="line">07:49:07 AM        lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00</div><div class="line"></div><div class="line">07:49:10 AM     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil</div><div class="line">07:49:11 AM      eth0    289.00    214.00    202.80     60.45      0.00      0.00      0.00      0.12</div><div class="line">07:49:11 AM        lo    206.00    206.00    180.29    180.29      0.00      0.00      0.00      0.00</div><div class="line"></div><div class="line">07:49:15 AM     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil</div><div class="line">07:49:16 AM      eth0   2364.00   1723.00   1488.95    459.65      0.00      0.00      0.00      0.87</div><div class="line">07:49:16 AM        lo   1771.00   1771.00   1101.98   1101.98      0.00      0.00      0.00      0.00</div><div class="line"></div><div class="line">Average:        IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil</div><div class="line">Average:         eth0    275.37    204.90    176.24     93.42      0.00      0.00      0.00      0.10</div><div class="line">Average:           lo    204.82    204.82    137.94    137.94      0.00      0.00      0.00      0.00</div></pre></td></tr></table></figure>
+<p>可以看到网络流量的波动特别大，但是远没有到达瓶颈，所以可能是其他的问题，需要继续排查。</p>
+<p><code>sar -n TCP,ETCP 1</code> 用来查看 TCP 连接的状态，如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub@spro-usa-elasticsearch01:~$ sar -n TCP,ETCP 1</div><div class="line">Linux 3.13.0-91-generic (spro-usa-elasticsearch01)      09/26/2016      _x86_64_        (4 CPU)</div><div class="line"></div><div class="line">07:52:50 AM  active/s passive/s    iseg/s    oseg/s</div><div class="line">07:52:51 AM      0.00      0.00      2.00      0.00</div><div class="line"></div><div class="line">07:52:50 AM  atmptf/s  estres/s retrans/s isegerr/s   orsts/s</div><div class="line">07:52:51 AM      0.00      0.00      0.00      0.00      0.00</div><div class="line"></div><div class="line">07:52:54 AM  active/s passive/s    iseg/s    oseg/s</div><div class="line">07:52:55 AM    176.00    339.00   4046.00   3443.00</div><div class="line"></div><div class="line">07:52:54 AM  atmptf/s  estres/s retrans/s isegerr/s   orsts/s</div><div class="line">07:52:55 AM      0.00      0.00      0.00      0.00      0.00</div><div class="line"></div><div class="line">07:52:57 AM  active/s passive/s    iseg/s    oseg/s</div><div class="line">07:52:58 AM      4.00      4.00     32.00     32.00</div><div class="line"></div><div class="line">07:52:57 AM  atmptf/s  estres/s retrans/s isegerr/s   orsts/s</div><div class="line">07:52:58 AM      0.00      0.00      0.00      0.00      0.00</div><div class="line"></div><div class="line">Average:     active/s passive/s    iseg/s    oseg/s</div><div class="line">Average:        21.48     41.25    495.45    422.05</div><div class="line"></div><div class="line">Average:     atmptf/s  estres/s retrans/s isegerr/s   orsts/s</div><div class="line">Average:         0.00      0.00      0.00      0.00      0.00</div></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>active/s</code> 是每秒本地发起的 TCP 连接数目，即 <code>connect</code></li>
+<li><code>passive/s</code> 是每秒远程发起的 TCP 连接数目，即 <code>accept</code></li>
+<li><code>retrans/s</code> 每秒 TCP 重传数量</li>
+</ul>
+<h2 id="猛龙摆尾"><a href="#猛龙摆尾" class="headerlink" title="猛龙摆尾"></a>猛龙摆尾</h2><p>虽然现在各种框架和服务器基本已经帮我们处理好了 JVM 相关事宜，不过有些时候出了比较奇怪的问题，还是需要深入到 JVM 内部才能找到问题根源（最近我就经历了这样一次排查），下面是相关的一些命令指南。</p>
+<h3 id="jps"><a href="#jps" class="headerlink" title="jps"></a>jps</h3><p>输出 JVM 中运行的进程状态信息，比如 <code>jps -m -l</code>，会输出传入 main 方法的参数和类的全名，如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub@:~$ jps -m <span class="_">-l</span></div><div class="line">21843 org.elasticsearch.bootstrap.Elasticsearch start</div><div class="line">23012 sun.tools.jps.Jps -m <span class="_">-l</span></div></pre></td></tr></table></figure>
+<h3 id="jstack"><a href="#jstack" class="headerlink" title="jstack"></a>jstack</h3><p>用来查看某个 Java 进程内的线程堆栈信息。比较常用的还是 <code>-m</code> 和 <code>-l</code> 选项，其中 <code>-m</code> 会输出 Java 及 C/C++ 的堆栈信息，而 <code>-l</code> 是会打印出额外的锁信息。</p>
+<p>我们可以 <code>htop</code> 查看进程信息，随手找一个 Java 应用，比方说 elasticsearch，对应的 pid 是 32346(不同机器不一样)。当然，也可以使用命令 <code>ps -ef | grep elasticsearch | grep -v grep</code>。</p>
+<p>然后我们可以看看这个进程内最吃 CPU 的线程，可以用的命令比较多，比如：<code>ps -Lfp 32346</code>, <code>ps -mp 32346 -o THREAD,tid,time | sort</code> 或 <code>top -Hp 32346</code></p>
+<p>我们这里使用 <code>ps -mp 32346 -o THREAD,tid,time | sort</code>，排序之后的结果是</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub    0.4  19    - futex_    -      -   571 00:05:31</div><div class="line">wdxtub    0.6  19    - futex_    -      - 32374 00:08:57</div><div class="line">wdxtub    0.7  19    - futex_    -      - 32452 00:10:48</div><div class="line">wdxtub    0.7  19    - futex_    -      - 32642 00:11:01</div><div class="line">wdxtub    0.8  19    - futex_    -      - 18940 00:07:26</div><div class="line">wdxtub    0.8  19    - futex_    -      - 32412 00:11:27</div><div class="line">wdxtub    0.8  19    - futex_    -      -   471 00:11:31</div><div class="line">wdxtub    0.8  19    - futex_    -      -   472 00:11:15</div><div class="line">wdxtub    0.9  19    - futex_    -      - 32650 00:13:03</div><div class="line">wdxtub   28.5   -    - -         -      -     - 06:36:47</div><div class="line">USER     %CPU PRI SCNT WCHAN  USER SYSTEM   TID     TIME</div></pre></td></tr></table></figure>
+<p>我们这里记录下最耗费时间的线程，编号为 32650，转换成十六进制为 <code>0x7f8a</code>，然后就可以查看最耗费时间的代码了，</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ jstack 32346 | grep 7f8a</div><div class="line"><span class="string">"elasticsearch[node-2][refresh][T#2]"</span> <span class="comment">#279 daemon prio=5 os_prio=0 tid=0x00007fd39447a000 nid=0x7f8a waiting on condition [0x00007fd147d2c000]</span></div></pre></td></tr></table></figure>
+<p>可以看到这里是在等待某个条件，不过因为 elasticsearch 的代码无法直接看到，这里就不能找找具体的原因了。</p>
+<h3 id="jmap-与-jhat"><a href="#jmap-与-jhat" class="headerlink" title="jmap 与 jhat"></a>jmap 与 jhat</h3><p><code>jmap</code> 是 Java Memory Map，用来查看堆内存使用状况，而 <code>jhat</code> 是 Java Heap Analysis Tool，正好就是用来分析堆内存。这里我们尝试几个命令来看看效果：</p>
+<p><code>jmap -heap pid</code> 查看堆内存使用情况，包括使用的GC算法、堆配置参数和各代中堆内存使用情况，一个例子如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ jmap -heap 8183    </div><div class="line">Attaching to process ID 8183, please wait...</div><div class="line">Debugger attached successfully.</div><div class="line">Server compiler detected.</div><div class="line">JVM version is 25.102-b14</div><div class="line"></div><div class="line">using thread-local object allocation.</div><div class="line">Parallel GC with 4 thread(s)</div><div class="line"></div><div class="line">Heap Configuration:</div><div class="line">   M<span class="keyword">in</span>HeapFreeRatio         = 0</div><div class="line">   MaxHeapFreeRatio         = 100</div><div class="line">   MaxHeapSize              = 1073741824 (1024.0MB)</div><div class="line">   NewSize                  = 357564416 (341.0MB)</div><div class="line">   MaxNewSize               = 357564416 (341.0MB)</div><div class="line">   OldSize                  = 716177408 (683.0MB)</div><div class="line">   NewRatio                 = 2</div><div class="line">   SurvivorRatio            = 8</div><div class="line">   MetaspaceSize            = 21807104 (20.796875MB)</div><div class="line">   CompressedClassSpaceSize = 1073741824 (1024.0MB)</div><div class="line">   MaxMetaspaceSize         = 17592186044415 MB</div><div class="line">   G1HeapRegionSize         = 0 (0.0MB)</div><div class="line"></div><div class="line">Heap Usage:</div><div class="line">PS Young Generation</div><div class="line">Eden Space:</div><div class="line">   capacity = 335544320 (320.0MB)</div><div class="line">   used     = 334734664 (319.2278518676758MB)</div><div class="line">   free     = 809656 (0.7721481323242188MB)</div><div class="line">   99.75870370864868% used</div><div class="line">From Space:</div><div class="line">   capacity = 11010048 (10.5MB)</div><div class="line">   used     = 8929984 (8.51629638671875MB)</div><div class="line">   free     = 2080064 (1.98370361328125MB)</div><div class="line">   81.10758463541667% used</div><div class="line">To Space:</div><div class="line">   capacity = 11010048 (10.5MB)</div><div class="line">   used     = 0 (0.0MB)</div><div class="line">   free     = 11010048 (10.5MB)</div><div class="line">   0.0% used</div><div class="line">PS Old Generation</div><div class="line">   capacity = 716177408 (683.0MB)</div><div class="line">   used     = 439459664 (419.1013946533203MB)</div><div class="line">   free     = 276717744 (263.8986053466797MB)</div><div class="line">   61.361844019519815% used</div><div class="line"></div><div class="line">20959 interned Strings occupying 2601056 bytes.</div></pre></td></tr></table></figure>
+<p>使用 <code>jmap -histo[:live] pid</code> 查看堆内存中的对象数目、大小统计直方图，如果带上 live 则只统计活对象，如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ jmap -histo:live 8183</div><div class="line"> num     <span class="comment">#instances         #bytes  class name</span></div><div class="line">----------------------------------------------</div><div class="line">   1:         25679       47998512  [B</div><div class="line">   2:         66216       15910168  [C</div><div class="line">   3:          8707        2980024  [I</div><div class="line">   4:         62197        1492728  java.lang.String</div><div class="line">   5:         28749         919968  java.util.HashMap<span class="variable">$Node</span></div><div class="line">   6:         17168         824064  org.apache.tomcat.util.buf.ByteChunk</div><div class="line">   7:         15363         737424  org.apache.tomcat.util.buf.CharChunk</div><div class="line">   8:         14563         699024  org.apache.tomcat.util.buf.MessageBytes</div><div class="line">   9:          6009         677840  java.lang.Class</div><div class="line">  10:          9152         608784  [Ljava.lang.Object;</div><div class="line">  11:          1976         497128  [Ljava.util.HashMap<span class="variable">$Node</span>;</div><div class="line">  12:         15396         492672  java.util.concurrent.ConcurrentHashMap<span class="variable">$Node</span></div><div class="line">  13:          6690         380824  [Ljava.lang.String;</div><div class="line">  14:          4270         375760  java.lang.reflect.Method</div><div class="line">  15:           448         206128  [Ljava.util.concurrent.ConcurrentHashMap<span class="variable">$Node</span>;</div><div class="line">  16:         11699         187184  java.lang.Object</div><div class="line">  17:          2687         171968  java.net.URL</div><div class="line">  18:          2887         138576  java.util.HashMap</div><div class="line">  19:          4154         132928  java.util.Hashtable<span class="variable">$Entry</span></div><div class="line">  20:          5077         121848  org.apache.tomcat.util.http.MimeHeaderField</div><div class="line">  21:          2923         116920  java.util.LinkedHashMap<span class="variable">$Entry</span></div><div class="line">  22:          2492          99680  org.apache.catalina.loader.ResourceEntry</div><div class="line">  23:           678          97632  java.text.DecimalFormat</div><div class="line">  24:          1420          90880  java.util.concurrent.ConcurrentHashMap</div><div class="line">  25:          3703          88872  java.util.ArrayList</div><div class="line">  26:          1795          86160  java.nio.HeapByteBuffer</div><div class="line">  27:          2017          80680  java.lang.ref.SoftReference</div><div class="line">  28:           691          77392  java.util.GregorianCalendar</div><div class="line">  29:          1372          76832  java.util.LinkedHashMap</div><div class="line">  30:          2246          71872  java.lang.ref.WeakReference</div></pre></td></tr></table></figure>
+<p>其中 class name 有一些缩写，具体的意思是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">B  byte</div><div class="line">C  char</div><div class="line">D  double</div><div class="line">F  float</div><div class="line">I  int</div><div class="line">J  long</div><div class="line">Z  boolean</div><div class="line">[  数组，如[I表示int[]</div><div class="line">[L+类名 其他对象</div></pre></td></tr></table></figure>
+<p>当然，我们也可以把内存 dump 到文件中，再用 jhat 查看，比如 <code>jmap -dump:format=b,file=dumpFileName 8183</code>，dump 出来的文件可以使用 jhat 查看，如果 dump 文件太大，就可以加上 <code>-J-Xmx512m</code> 指定最大内存，比如 <code>jhat -J-Xmx512m -port 9998 /tmp/dump.dat</code>，然后就可以输入 <code>主机地址:9998</code> 来查看了</p>
+<h3 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h3><p>这个命令主要用来统计 JVM 信息，必须要指定的是虚拟机 ID，一般就是进程号，比方说 <code>jstat -gc 8183 500 5</code> 就是指 500ms 采样一次，采样数字为 5，比如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ jstat -gc 8183 500 5</div><div class="line"> S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT   </div><div class="line">10752.0 10752.0 8881.2  0.0   327680.0  2318.5   699392.0   79410.9   36992.0 35946.6 3968.0 3721.2   5567   54.352   6      0.711   55.063</div><div class="line">10752.0 10752.0 8881.2  0.0   327680.0  5282.0   699392.0   79410.9   36992.0 35946.6 3968.0 3721.2   5567   54.352   6      0.711   55.063</div><div class="line">10752.0 10752.0 8881.2  0.0   327680.0  7929.1   699392.0   79410.9   36992.0 35946.6 3968.0 3721.2   5567   54.352   6      0.711   55.063</div><div class="line">10752.0 10752.0 8881.2  0.0   327680.0  9310.1   699392.0   79410.9   36992.0 35946.6 3968.0 3721.2   5567   54.352   6      0.711   55.063</div><div class="line">10752.0 10752.0 8881.2  0.0   327680.0 11648.8   699392.0   79410.9   36992.0 35946.6 3968.0 3721.2   5567   54.352   6      0.711   55.063</div></pre></td></tr></table></figure>
+<p>这里需要先讲解一下 JVM 堆内存的设计</p>
+<p><img src="/images/14750634259927.jpg" alt=""></p>
+<p>简单来说，JVM 的堆分成三代：年轻代、年老代和永久代，年轻代里又分为 Eden 区以及 Suvivor 的 From 和 To 区，在 Survivor 区的对象如果经过多次 GC 还存活的话，会转移到年老区。参考链接中有一个具体的<a href="http://www.idouba.net/a-simple-example-demo-jvm-allocation-and-gc/" target="_blank" rel="external">例子</a>，感兴趣的同学可以前往查看。</p>
+<p>简单来说，年轻代使用复制算法和标记-清除垃圾收集算法，永久代使用标记-整理算法进行垃圾回收算法，而年老代使用标记-整理垃圾回收算法，这里需要注意的是对年老代的的垃圾回收会停止所有事情(Stop The World)，如果应用需要高实时，那么就要尽量避免年老代的垃圾回收（也就是 Full GC 了），否则可能整个服务器十多分钟没有响应。</p>
+<p>具体调优的经验和规则可以参考<a href="http://alexchan.iteye.com/blog/1980072" target="_blank" rel="external">这里</a>，本文不深入了。</p>
+<p>现在可以来介绍前面各个字段的意思了：</p>
+<ul>
+<li>S0C、S1C、S0U、S1U：Survivor 0/1 区容量(Capacity)和使用量(Used)</li>
+<li>EC、EU：Eden 区容量和使用量</li>
+<li>OC、OU：年老代容量和使用量</li>
+<li>PC、PU：永久代容量和使用量</li>
+<li>YGC、YGT：年轻代 GC 次数和 GC 耗时</li>
+<li>FGC、FGCT：Full GC 次数和 Full GC 耗时</li>
+<li>GCT：GC 总耗时</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>工作以来除了开发工作，也承担了一部分运维的责任，所以 DevOps 最大的推动力其实就是『不够人』。服务器出现异常，一般来说是由于多种因素共同作用引起的，这就需要我们能够以全局的视角，顺藤摸瓜，各个击破，找到问题最终的根源，才能治标治本。</p>
+<p>本文也会不断更新，争取能做一套自动化检测工具，减少排查难度。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://www.infoq.com/cn/news/2015/12/linux-performance" target="_blank" rel="external">用十条命令在一分钟内检查Linux服务器性能</a></li>
+<li><a href="https://my.oschina.net/feichexia/blog/196575" target="_blank" rel="external">JVM性能调优监控工具</a></li>
+<li><a href="https://my.oschina.net/secisland/blog/672715" target="_blank" rel="external">Elasticsearch 2.3.0 老版本升级指南</a></li>
+<li><a href="http://www.idouba.net/a-simple-example-demo-jvm-allocation-and-gc/" target="_blank" rel="external">最简单例子图解JVM内存分配和回收</a></li>
+<li><a href="http://blog.csdn.net/u012152619/article/details/46981643" target="_blank" rel="external">JVM垃圾回收机制</a></li>
+<li><a href="http://www.cnblogs.com/redcreen/archive/2011/05/04/2037057.html" target="_blank" rel="external">JVM参数设置、分析</a></li>
+<li><a href="http://alexchan.iteye.com/blog/1980072" target="_blank" rel="external">JVM-GC调优的经验和规则</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+            <a href="/tags/服务器/" rel="tag">#服务器</a>
+          
+            <a href="/tags/运维/" rel="tag">#运维</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/26/web-dev-first-step/" rel="next" title="【Web 之旅】I Web 快速入门">
+                <i class="fa fa-chevron-left"></i> 【Web 之旅】I Web 快速入门
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/28/elasticsearch-cluster-guide/" rel="prev" title="Elasticsearch 集群指南">
+                Elasticsearch 集群指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/28/linux-server-check-guide/"
+           data-title="Linux 服务器检查指南" data-url="http://wdxtub.com/2016/09/28/linux-server-check-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">627</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">860</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.lofter.com/" title="我的 Lofter" target="_blank">我的 Lofter</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#htop"><span class="nav-number">1.</span> <span class="nav-text">htop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#free"><span class="nav-number">2.</span> <span class="nav-text">free</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#金钟罩-铁布衫"><span class="nav-number"></span> <span class="nav-text">金钟罩/铁布衫</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dmesg"><span class="nav-number">1.</span> <span class="nav-text">dmesg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vmstat"><span class="nav-number">2.</span> <span class="nav-text">vmstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pidstat"><span class="nav-number">3.</span> <span class="nav-text">pidstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iostat"><span class="nav-number">4.</span> <span class="nav-text">iostat</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#天雷破-摧筋断骨"><span class="nav-number"></span> <span class="nav-text">天雷破/摧筋断骨</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sar"><span class="nav-number">1.</span> <span class="nav-text">sar</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#猛龙摆尾"><span class="nav-number"></span> <span class="nav-text">猛龙摆尾</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jps"><span class="nav-number">1.</span> <span class="nav-text">jps</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jstack"><span class="nav-number">2.</span> <span class="nav-text">jstack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jmap-与-jhat"><span class="nav-number">3.</span> <span class="nav-text">jmap 与 jhat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jstat"><span class="nav-number">4.</span> <span class="nav-text">jstat</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number"></span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number"></span> <span class="nav-text">参考链接</span></a></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementById('footer')
+      || document.getElementById('footer')).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src=""></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
+</body>
+</html>

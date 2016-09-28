@@ -1,0 +1,918 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="技巧,Elasticsearch,集群," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Elasticsearch 集群的设置虽然比较简单，但是具体使用其实有很多需要注意的地方。本文结合工作中的实战经验，分享一下 Elasticsearch 集群的相关技巧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elasticsearch 集群指南">
+<meta property="og:url" content="http://wdxtub.com/2016/09/28/elasticsearch-cluster-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="Elasticsearch 集群的设置虽然比较简单，但是具体使用其实有很多需要注意的地方。本文结合工作中的实战经验，分享一下 Elasticsearch 集群的相关技巧。">
+<meta property="og:updated_time" content="2016-09-28T13:04:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Elasticsearch 集群指南">
+<meta name="twitter:description" content="Elasticsearch 集群的设置虽然比较简单，但是具体使用其实有很多需要注意的地方。本文结合工作中的实战经验，分享一下 Elasticsearch 集群的相关技巧。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Elasticsearch 集群指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tech">
+          <a href="/2009/09/11/tech-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/1990/09/11/life-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/1997/09/11/booklist-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            致谢
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Elasticsearch 集群指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-28T21:03:57+08:00" content="2016-09-28">
+              2016-09-28
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/28/elasticsearch-cluster-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/28/elasticsearch-cluster-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Elasticsearch 集群的设置虽然比较简单，但是具体使用其实有很多需要注意的地方。本文结合工作中的实战经验，分享一下 Elasticsearch 集群的相关技巧。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2016.09.28: 初稿完成，Elasticsearch 版本 2.4.0</li>
+</ul>
+<p>如果是第一次接触 Elasticsearch，不妨先看看我之前写的 <a href="http://wdxtub.com/2016/07/24/elastic-search-guide/">Elasticsearch 入门指南</a>，本文主要是介绍 Elasticsearch 集群相关的内容。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>虽然 Elasticsearch 的安装比较简单，不过我还是写了一个安装脚本，可以在<a href="https://github.com/wdxtub/wdxtools/tree/master/linux-script" target="_blank" rel="external">这里</a>查看，具体来说其实就两步，下载和解压，如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.4.0/elasticsearch-2.4.0.tar.gz</div><div class="line">tar -xvzf elasticsearch-2.4.0.tar.gz</div></pre></td></tr></table></figure>
+<p>分别在集群中每台机器中完成安装即可，具体的启动也非常简单，如果要在前台，直接 <code>./bin/elasticsearch</code> 即可，如果要放到后台，则使用 <code>nohup ./bin/elasticsearch &amp;</code>。</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>配置文件位于 <code>config</code> 文件夹中，其中 <code>elasticsearch.yml</code> 是 elasticsearch 的配置，而 <code>logging.yml</code> 是输出日志相关的设置。配置文件的内容有很多，不过因为默认值基本都够用了，所以我们只需要配置很少的内容。假设现在有两个节点，内部 IP 地址分别为 <code>A: 10.1.1.0</code> 和 <code>B: 10.1.1.1</code>，那么配置为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 节点 A</div><div class="line">cluster.name: wdxtubes</div><div class="line">node.name: &quot;es01&quot;</div><div class="line">bootstrap.mlockall: true</div><div class="line">network.host: 10.1.1.0</div><div class="line">network.publish_host: 10.1.1.0</div><div class="line">discovery.zen.ping.unicast.hosts: [&quot;10.1.1.1&quot;]</div><div class="line">discovery.zen.fd.ping_timeout: 120s</div><div class="line">discovery.zen.fd.ping_retries: 6</div><div class="line">discovery.zen.fd.ping_interval: 30s</div><div class="line"></div><div class="line"></div><div class="line"># 节点 B</div><div class="line">cluster.name: wdxtubes</div><div class="line">node.name: &quot;es02&quot;</div><div class="line">bootstrap.mlockall: true</div><div class="line">network.host: 10.1.1.1</div><div class="line">network.publish_host: 10.1.1.1</div><div class="line">discovery.zen.ping.unicast.hosts: [&quot;10.1.1.0&quot;]</div><div class="line">discovery.zen.fd.ping_timeout: 120s</div><div class="line">discovery.zen.fd.ping_retries: 6</div><div class="line">discovery.zen.fd.ping_interval: 30s</div></pre></td></tr></table></figure>
+<p>这里需要注意的是我们采用单播的方式来进行集群中机器的查找，因为 elasticsearch 已经尽量帮我们做好了集群相关的工作，只要保证 <code>cluster.name</code> 一致，就可以自动发现。另外，我们调大了超时的间隔和互相 ping 发送的频率以及重试次数，防止某台机器在 Full GC 的时候因未能及时响应而造成的连锁反应（后面会详细说明）</p>
+<p>多说一句，机器配置的时候，最好确保两台机器可以互相 ping 通，并开放所有端口的内部访问（如果是用云主机的话，尤其需要注意这一点）</p>
+<p>如果需要扩展的话，只需要保证 <code>cluster.name</code> 一致即可，比如说现在新加入一台 <code>C: 10.1.1.2</code>，那么配置可以这么写</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 节点 C</div><div class="line">cluster.name: wdxtubes</div><div class="line">node.name: &quot;es03&quot;</div><div class="line">bootstrap.mlockall: true</div><div class="line">network.host: 10.1.1.2</div><div class="line">network.publish_host: 10.1.1.2</div><div class="line">discovery.zen.ping.unicast.hosts: [&quot;10.1.1.0&quot;]</div><div class="line">discovery.zen.fd.ping_timeout: 120s</div><div class="line">discovery.zen.fd.ping_retries: 6</div><div class="line">discovery.zen.fd.ping_interval: 30s</div></pre></td></tr></table></figure>
+<p>这里 <code>discovery.zen.ping.unicast.hosts</code> 中只需要填写原有集群中任意一台机器的地址即可。</p>
+<p>然后我们可以在集群中的机器上使用 <code>curl http://10.1.1.0:9200/_cluster/health</code> 来查看集群状态。比如：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"cluster_name"</span>:<span class="string">"wdxtub-es"</span>,</div><div class="line">    <span class="attr">"status"</span>:<span class="string">"green"</span>,</div><div class="line">    <span class="attr">"timed_out"</span>:<span class="literal">false</span>,</div><div class="line">    <span class="attr">"number_of_nodes"</span>:<span class="number">2</span>,</div><div class="line">    <span class="attr">"number_of_data_nodes"</span>:<span class="number">2</span>,</div><div class="line">    <span class="attr">"active_primary_shards"</span>:<span class="number">821</span>,</div><div class="line">    <span class="attr">"active_shards"</span>:<span class="number">1642</span>,</div><div class="line">    <span class="attr">"relocating_shards"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"initializing_shards"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"unassigned_shards"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"delayed_unassigned_shards"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"number_of_pending_tasks"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"number_of_in_flight_fetch"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"task_max_waiting_in_queue_millis"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"active_shards_percent_as_number"</span>:<span class="number">100.0</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果状态是 green，那就没有问题啦。下面我们会结合不同的实例进行介绍</p>
+<h2 id="重启"><a href="#重启" class="headerlink" title="重启"></a>重启</h2><p>Elasticsearch 的重启是一个非常需要按规矩操作的过程，否则会带来一系列的意想不到的问题，所以一定要按照官方建议的步骤来进行。</p>
+<p>首先，因为 Elasticsearch 自带的高可用机制，一旦一个节点下线，就会在集群内部进行数据的重分配，会带来很多不必要的开销，所以需要先关闭，关闭方法是给集群发送一个请求，这个请求可以动态修改集群的设置：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">PUT /_cluster/settings</div><div class="line">&#123;</div><div class="line">  &quot;persistent&quot;: &#123;</div><div class="line">    &quot;cluster.routing.allocation.enable&quot;: &quot;none&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>而在重启之后需要进行数据恢复，如果停止索引并发送一个同步刷新请求，这个过程就会快很多，需要注意的是，如果此时有任何正在进行的索引操作，这个 flush 操作会失败，因此必要时我们可以重试多次，这是安全的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">POST /_flush/synced</div></pre></td></tr></table></figure>
+<p>现在我们可以停止集群中的各个节点，完成重启或升级的操作。具体单台机器的操作可以看<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/rolling-upgrades.html#upgrade-node" target="_blank" rel="external">这里</a></p>
+<p>完成之后，我们最好先启动那些 <code>node.master</code> 设置为 true 的节点（这也是默认设置），等到集群选举出了 master 节点，就可以继续添加数据节点了（即那些 <code>node.master</code> 为 false 且 <code>node.data</code> 为 true 的），这里我们可以用以下方式进行监控</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">GET _cat/health</div><div class="line"></div><div class="line">GET _cat/nodes</div></pre></td></tr></table></figure>
+<p>每个节点加入集群之后，就会开始恢复本地保存的首要分片，一开始 <code>_cat/health</code> 查询的结果是 red，之后会变成 yellow，也就意味着所有的首要分片已经恢复了，但是其他的复制分片还没有恢复，因为我们一开始已经设置不恢复复制分片。</p>
+<p>最后一步，我们需要重新开启集群的数据重分配，以保证集群的高可用性，操作也很简单：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">PUT /_cluster/settings</div><div class="line">&#123;</div><div class="line">  &quot;persistent&quot;: &#123;</div><div class="line">    &quot;cluster.routing.allocation.enable&quot;: &quot;all&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当使用 <code>_cat/health</code> 的结果为 green 时，则重启和恢复顺利完成。</p>
+<h2 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h2><p>无论是 Elasticsearch 官方还是社区，有很多插件可以完成监控的任务，但是本文只介绍默认的 API，主要是 <code>_cat</code> 和 <code>_cluster</code> 这两个接口，具体的文档可以在 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/cat.html" target="_blank" rel="external">cat API</a> 和 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster.html" target="_blank" rel="external">cluster API</a> 中查看，这里简要介绍一下。</p>
+<p>对于 <code>_cat</code> 接口，在请求后面加上 <code>?v</code> 就会输出详细信息，例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ curl 10.1.1.10:9200/_cat/master?v</div><div class="line">id                     host      ip        node   </div><div class="line">AoVFmiU4Q2SAHNVcMGPsWQ 10.1.1.11 10.1.1.11 node-2</div></pre></td></tr></table></figure>
+<p>如果对于字段的名字有疑问，可以使用 <code>?help</code>，例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ curl 10.1.1.10:9200/_cat/master?<span class="built_in">help</span></div><div class="line">id   |   | node id    </div><div class="line">host | h | host name  </div><div class="line">ip   |   | ip address </div><div class="line">node | n | node name</div></pre></td></tr></table></figure>
+<p>如果只想要查看指定字段，可以利用 <code>?h=</code> 来进行指定，例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ curl 10.1.1.10:9200/_cat/nodes?h=ip,port,heapPercent,name</div><div class="line">10.1.1.11 9300 64 node-2 </div><div class="line">10.1.1.10 9300 71 node-1</div></pre></td></tr></table></figure>
+<p>对于带数字的输出，可以利用管道来进行排序，比如下面的命令就可以按照索引大小来进行排序（这里的 <code>-rnk8</code> 指的是按照第八列排序）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ curl 10.1.1.10:9200/_cat/indices?bytes=b | sort -rnk8</div><div class="line">green open slog-2016-09-11   5 1 9729152      0 11128793222 5564396611 </div><div class="line">green open slog-2016-09-12   5 1 8355880      0  9539380440 4769690220 </div><div class="line">green open slog-2016-09-25   5 1 6720954      0  7415719218 3707859609 </div><div class="line">green open slog-2016-09-19   5 1 5840177      0  6575155002 3287577501 </div><div class="line">green open slog-2016-09-10   5 1 5858916      0  6504251544 3252125772</div></pre></td></tr></table></figure>
+<p>其他比较常用的命令如下所示，具体的可以参阅文档，这里不再赘述：</p>
+<ul>
+<li><code>_cat/count</code> 文档总数</li>
+<li><code>_cat/count/[index_name]</code> 某个索引的文档总数</li>
+<li><code>_cat/fielddata?v</code> 显示每个节点的字段的堆内存使用量</li>
+<li><code>_cat/health?v</code> 节点的健康状况<ul>
+<li>可以使用下面的命令来自动检查集群状况</li>
+<li><code>while true; do curl localhost:9200/_cat/health; sleep 120; done</code></li>
+</ul>
+</li>
+<li><code>_cat/indices?v</code> 查看每个索引的详细信息，配合管道命令可以有很多应用，比如<ul>
+<li>找出所有状态为 yellow 的索引 <code>curl localhost:9200/_cat/indices | grep ^yell</code></li>
+<li>排序 <code>curl &#39;localhost:9200/_cat/indices?bytes=b&#39; | sort -rnk8</code></li>
+<li>指定列及内存使用状况 <code>curl &#39;localhost:9200/_cat/indices?v&amp;h=i,tm&#39;</code></li>
+</ul>
+</li>
+<li><code>_cat/nodes</code> 展示集群的拓扑结构</li>
+<li><code>_cat/pending_tasks?v</code> 显示正在排队的任务</li>
+<li><code>_cat/recovery?v</code> 显示分片恢复的过程</li>
+<li><code>_cat/thread_pool?v</code> 显示线程池相关信息，有很多信息，可以根据需要进行查询</li>
+<li><code>_cat/shards?v</code> 显示分片的相关信息</li>
+<li><code>_cat/shards/[index-name]</code> 显示指定索引的分片信息  </li>
+</ul>
+<p><code>_cluster</code> 的接口的用法和 <code>_cat</code> 类似，这里就不再赘述了。</p>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><h3 id="合理计划服务器"><a href="#合理计划服务器" class="headerlink" title="合理计划服务器"></a>合理计划服务器</h3><p>在 Elasticsearch 的配置文件中，可以根据两个配置(<code>node.master</code> 和 <code>node.data</code>)选项来分配不同节点的角色，以达到提高服务器性能的目的。</p>
+<ul>
+<li><code>node.master: false; node.data: true</code> - 该节点只作为数据节点，用于存储和查询，资源消耗会较低</li>
+<li><code>node.master: true; node.data: false</code> - 该节点只作为 master 节点，不存储数据，主要负责协调索引请求和查询请求</li>
+<li><code>node.master: false; node.data: falst</code> - 该节点不作为 master 节点，也不存储数据，主要用于查询时的负载均衡（做结果汇总等工作）</li>
+</ul>
+<p>另外，一台服务器最好只部署一个节点以维持服务器稳定，毕竟资源是有限的，多开也没啥</p>
+<h3 id="数据节点就是数据节点"><a href="#数据节点就是数据节点" class="headerlink" title="数据节点就是数据节点"></a>数据节点就是数据节点</h3><p>如果有配置数据节点，那么可以关闭其 http 功能，让它专注于索引的操作。插件之类的也最好安装到非数据节点服务器上，这样是一个兼顾数据安全和服务器性能的考虑。具体的配置项是 <code>http.enabled: false</code></p>
+<h3 id="线程池配置"><a href="#线程池配置" class="headerlink" title="线程池配置"></a>线程池配置</h3><p>针对 Elasticsearch 的不同操作，可以配置不同大小的线程池，这个需要根据业务需求确定最佳值，场景的操作有：index, search, suggest, get, bulk, percolate, snapshot, snapshot_data, warmer, refresh。</p>
+<p>这里以 index(创建/更新/删除索引数据)和 search(搜索操作)为例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">threadpool:</div><div class="line">     index:</div><div class="line">         type: fixed</div><div class="line">         size: 24（逻辑核心数*3）</div><div class="line">         queue_ size: 1000</div><div class="line"> </div><div class="line">     search:</div><div class="line">         type: fixed</div><div class="line">         size: 24（逻辑核心数*3）</div><div class="line">         queue_ size: 1000</div></pre></td></tr></table></figure>
+<h3 id="分片与副本"><a href="#分片与副本" class="headerlink" title="分片与副本"></a>分片与副本</h3><p>默认的参数是 5 个分片(shard)和 1 个副本(replica)，碎片数目越多，索引速度越快；副本数目越多，搜索能力及可用性更高。分片的数目是在一开始就设定好的，但是副本的数目是可以后期修改的。</p>
+<p>而在恢复数据的时候，可以先减少分片刷新索引的时间间隔，如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">curl -XPUT <span class="string">'http://10.1.1.0:9200/_settings'</span> <span class="_">-d</span> <span class="string">'&#123; </span></div><div class="line">    "index" : &#123; </div><div class="line">        "refresh_interval" : "-1" </div><div class="line">    &#125; </div><div class="line">&#125;'</div></pre></td></tr></table></figure>
+<p>完成插入之后再恢复</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">curl -XPUT <span class="string">'http://10.1.1.0:9200/_settings'</span> <span class="_">-d</span> <span class="string">'&#123; </span></div><div class="line">    "index" : &#123; </div><div class="line">        "refresh_interval" : "1s" </div><div class="line">    &#125; </div><div class="line">&#125;'</div></pre></td></tr></table></figure>
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p>查询中最重要的思路就是 routing，尽量减少慢查询的次数。而当索引越来越大的时候，每个分片也会增大，查询速度就会变慢。一个可行的解决思路就是分索引，比方说不同类型的数据利用不同的 routing 进行分离。</p>
+<p>还有一个从业务出发的思路，就是不索引不需要的字段，这样就可以减小集群所需资源的量。</p>
+<h3 id="JVM-设置"><a href="#JVM-设置" class="headerlink" title="JVM 设置"></a>JVM 设置</h3><p>关于 JVM 的设置我还在摸索中，不过有几个技巧：</p>
+<ul>
+<li>JVM 的堆大小不要超过 32G，来源 <a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html#compressed_oops" target="_blank" rel="external">Don’t Cross 32 GB!</a></li>
+<li>使用 <code>bootstrap.mlockall: true</code>，启动时就锁定内存</li>
+<li>用较小的 heapsize 配合 SSD</li>
+</ul>
+<h2 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h2><p>这里以一个实例来介绍我是如何在生产环境中排查和修复 Elasticsearch 集群忽然响应时间剧增的问题的。</p>
+<p>情况是这样的，随着接入 Elasticsearch 的数据量增大，忽然有一个周末出问题了 - ES 集群的查询和插入都变得巨慢无比。监控报警都把邮箱和手机发爆炸了。</p>
+<p>那么问题来了，究竟是哪里出了乱子？</p>
+<p>因为发送数据的客户端和服务器近期并没有特别大的改动，我检查了 Kafka 队列也一切正常，于是可以锁定问题出在 Elasticsearch 身上。</p>
+<p>第一反应就是先去看 Elasticsearch 的日志，发现根据日志显示，一致在不停的垃圾回收。因此对症下药，把 JVM 的堆内存改大。但是在集群重启之后仍然会出现性能急剧下降的状况，于是继续检查日志，发现是因为 JVM 进行 Full GC 的时间过长，导致 ES 集群认为拓扑结构改变，开始迁移数据所导致。而迁移数据本身又会导致 Full GC，让情况更糟的是，在 Full GC 结束之后，集群的拓扑结构又再次改变，于是就陷入了这样的死循环。</p>
+<p>破局的方法其实非常简单粗暴，把检测集群拓扑的时间间隔和超时次数加大一点，留足够的时间给 JVM 进行 Full GC 即可。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>经历了一次事故排查之后，我对 Elasticsearch 集群的相关认识也达到了比较深的程度，虽然在黑暗中探索的那两天很痛苦，不过总算是走出来了，于是赶紧把经验分享出来，这样大家可以少走弯路。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://my.oschina.net/shyloveliyi/blog/653751" target="_blank" rel="external">elasticsearch2.3.1 集群安装</a></li>
+<li><a href="http://zhousheng29.iteye.com/blog/2101905" target="_blank" rel="external">ElasticSearch优化的一些方法</a></li>
+<li><a href="http://chuansong.me/n/1610745" target="_blank" rel="external">亿级规模的Elasticsearch优化实战</a></li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/restart-upgrade.html" target="_blank" rel="external">Full cluster restart upgrade</a></li>
+<li><a href="https://www.loggly.com/blog/nine-tips-configuring-elasticsearch-for-high-performance/" target="_blank" rel="external">9 Tips on ElasticSearch Configuration for High Performance</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>感觉如何？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/技巧/" rel="tag">#技巧</a>
+          
+            <a href="/tags/Elasticsearch/" rel="tag">#Elasticsearch</a>
+          
+            <a href="/tags/集群/" rel="tag">#集群</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/28/linux-server-check-guide/" rel="next" title="Linux 服务器检查指南">
+                <i class="fa fa-chevron-left"></i> Linux 服务器检查指南
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/28/elasticsearch-cluster-guide/"
+           data-title="Elasticsearch 集群指南" data-url="http://wdxtub.com/2016/09/28/elasticsearch-cluster-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">一个逗比的碎碎念</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">627</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">860</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.lofter.com/" title="我的 Lofter" target="_blank">我的 Lofter</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重启"><span class="nav-number">3.</span> <span class="nav-text">重启</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控"><span class="nav-number">4.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">5.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#合理计划服务器"><span class="nav-number">5.1.</span> <span class="nav-text">合理计划服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据节点就是数据节点"><span class="nav-number">5.2.</span> <span class="nav-text">数据节点就是数据节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池配置"><span class="nav-number">5.3.</span> <span class="nav-text">线程池配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片与副本"><span class="nav-number">5.4.</span> <span class="nav-text">分片与副本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询"><span class="nav-number">5.5.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-设置"><span class="nav-number">5.6.</span> <span class="nav-text">JVM 设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#排查"><span class="nav-number">6.</span> <span class="nav-text">排查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementById('footer')
+      || document.getElementById('footer')).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src=""></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+  
+
+</body>
+</html>
