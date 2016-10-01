@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2016-09-30T15:01:50.000Z</updated>
+  <updated>2016-10-01T03:08:03.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -14,6 +14,162 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>数据平台技术指南</title>
+    <link href="http://wdxtub.com/2016/10/01/data-platform-tech-guide/"/>
+    <id>http://wdxtub.com/2016/10/01/data-platform-tech-guide/</id>
+    <published>2016-09-30T23:15:22.000Z</published>
+    <updated>2016-10-01T03:08:03.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近大部分精力花在为公司搭建统一的数据平台上，从技术选型到最终落地像打通隧道一样艰难和痛快，本文主要介绍数据平台的技术相关实践与思考。具体的设计思路可以参考我的另一篇文章 - <a href="http://wdxtub.com/2016/10/01/data-platform-design-guide/">数据平台设计指南</a></p>
+<a id="more"></a>
+<hr>
+<p>本文更新中，目前只有提纲</p>
+<p>注：本文不涉及数据平台的设计思路，感兴趣请参考 <a href="http://wdxtub.com/2016/10/01/data-platform-design-guide/">数据平台设计指南</a></p>
+<h2 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h2><ul>
+<li>日志管理和数据中心两个项目合并</li>
+<li>简要发展历史</li>
+</ul>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><ul>
+<li>架构图</li>
+<li>全球服务的设计（这一部分需要仔细探讨）：全球部署</li>
+<li>通用解决方案</li>
+</ul>
+<p>三大块：</p>
+<ol>
+<li>日志收集与分析</li>
+<li>数据上报与接入</li>
+<li>数据统计与分析</li>
+</ol>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><p>这里介绍具体实现</p>
+<h3 id="采集与预处理"><a href="#采集与预处理" class="headerlink" title="采集与预处理"></a>采集与预处理</h3><ul>
+<li>系统接入</li>
+<li>多机房同步</li>
+<li>数据量限制</li>
+<li>数据量评估</li>
+</ul>
+<h3 id="清洗与分类"><a href="#清洗与分类" class="headerlink" title="清洗与分类"></a>清洗与分类</h3><ul>
+<li>服务区分</li>
+<li>日志过滤</li>
+<li>日志切换 S3 OSS</li>
+<li>定期任务（清理、周、月、三月）</li>
+</ul>
+<h3 id="存储与查询"><a href="#存储与查询" class="headerlink" title="存储与查询"></a>存储与查询</h3><ul>
+<li>elasticsaerch</li>
+<li>二八原则，结构化存储(20%)与分布式存储(80%, S3, OSS)</li>
+</ul>
+<h3 id="展示与应用"><a href="#展示与应用" class="headerlink" title="展示与应用"></a>展示与应用</h3><ul>
+<li>日志挖掘、数据挖掘</li>
+<li>Dashborad</li>
+<li>商务智能</li>
+<li>Spark Hadoop 分布式计算</li>
+</ul>
+<h2 id="ETL"><a href="#ETL" class="headerlink" title="ETL"></a>ETL</h2><ul>
+<li>过程优化</li>
+<li>老数据的导入</li>
+<li>固定的流程</li>
+</ul>
+<h3 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h3><p>提取日志中真正有价值的东西</p>
+<ul>
+<li>日志的分词问题，string 字段腰子啊 logstash 阶段就要设置为 <code>not_index</code></li>
+<li>日志的选择传输问题，量太大，不可能所有都保存在 ES 中</li>
+<li>日志如何写，如何利用，是一个大问题，可以专门写一本书</li>
+</ul>
+<h3 id="数据上报"><a href="#数据上报" class="headerlink" title="数据上报"></a>数据上报</h3><ul>
+<li>不同数据源如何对齐，需要仔细设置</li>
+<li>写日志的时候就要考虑未来的处理和应用，尤其是和已有数据源的对齐</li>
+<li>维护埋点，公共字段</li>
+<li>字段同名但类型不同导致的索引冲突问题</li>
+<li>设计埋点及统计字段时一定要基于具体的统计需求，不能为了打点而打点，字段是什么，后面要如何使用，不同的字段如何联系与互动，都需要事先想好</li>
+<li>专注于核心指标，不同指标的优先级是什么</li>
+<li>界面、事件和事件参数独立，但必须有公共的统计参数（最好两个一上，冗余保证后续数据清洗及验证的准确性）</li>
+<li>重点是从目的出发，先想好需要用什么数据来获知什么样的趋势，再去设计对应的埋点。过多的数据很可能带来的是混淆而不是帮助。</li>
+<li>增加上报的信息量（同样大小的前提下），减少上报压力</li>
+</ul>
+<h2 id="监控管理"><a href="#监控管理" class="headerlink" title="监控管理"></a>监控管理</h2><p>服务质量</p>
+<h3 id="监控运维"><a href="#监控运维" class="headerlink" title="监控运维"></a>监控运维</h3><p>快速反应，警报服务</p>
+<h3 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h3><p>针对开发者的接口与文档试运行时主要暴露的问题有：</p>
+<h2 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h2><ul>
+<li>集群安全</li>
+<li>白名单</li>
+<li>验证</li>
+</ul>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><ul>
+<li>法律问题</li>
+<li>集群的配置问题，扩展性，维护</li>
+<li>GC 超时</li>
+<li>dirty hack</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近大部分精力花在为公司搭建统一的数据平台上，从技术选型到最终落地像打通隧道一样艰难和痛快，本文主要介绍数据平台的技术相关实践与思考。具体的设计思路可以参考我的另一篇文章 - &lt;a href=&quot;http://wdxtub.com/2016/10/01/data-platform-design-guide/&quot;&gt;数据平台设计指南&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="技术" scheme="http://wdxtub.com/tags/%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="数据" scheme="http://wdxtub.com/tags/%E6%95%B0%E6%8D%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>数据平台设计指南</title>
+    <link href="http://wdxtub.com/2016/10/01/data-platform-design-guide/"/>
+    <id>http://wdxtub.com/2016/10/01/data-platform-design-guide/</id>
+    <published>2016-09-30T23:11:20.000Z</published>
+    <updated>2016-10-01T03:03:55.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近大部分精力花在为公司搭建统一的数据平台上，在不断地踩坑中慢慢摸索出了一套行之有效的方法，本文主要介绍数据平台的流程设计与相关思考，具体的技术实现可以参考我的另一篇文章 - <a href="http://wdxtub.com/2016/10/01/data-platform-tech-guide/">数据平台技术指南</a></p>
+<a id="more"></a>
+<hr>
+<h2 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h2><p>市场、运营、研发还是内部管理每天都会产生各种各样的数据及报表，一是用于监控各项事宜的运作情况，二是给决策提供更多有价值的信息。随着公司的快速发展与业务的不断扩大，产生和消费的数据也越来越多，传统手工以及简单的电子化统计已经不能满足各个部门的需求。我们来看看下面这三个问题：</p>
+<ol>
+<li>从前收集数据和制作报表只需要半天，但是现在随着需要统计的内容增多，可能需要三天，也就是说数据最重要的时效性大打折扣</li>
+<li>很多时候依靠单一部门的数据无法完成复杂的分析，但由于不同部门间天生较高的沟通成本，除了需要专人对接外，还需要走一定的流程，就把原本简单的工作变得复杂了，甚至因为各种推诿最终不了了之</li>
+<li>不同部门的业务统计很多需求是一致或者类似的，只是统计的数据维度不同，这也意味着很多没有意义的重复劳动</li>
+</ol>
+<p>为了解决上面提到的三个问题，一个统一的内部数据平台便应运而生。在此基础上，我们还从另外两个维度扩展了数据平台，一是更基础的服务监控，二是更高级的智能分析。更让我骄傲的是，整个项目的核心开发者只有三人，其中前端一人，后台及服务器两人（在此感谢曾为此项目付出过的其他同事）。</p>
+<p>从白手起家到接入来自公司不同部门的十多项业务，从最初简单的原型到现在初具规模的系统，每次重构与架构调整，都是大家一起摸着石头过河淌出来的。虽然还有许多堆积的需求（缺人力呀），但只要地基打得好，就不怕盖高楼。</p>
+<p>注：本文不涉及具体的技术实践，感兴趣请参考 <a href="http://wdxtub.com/2016/10/01/data-platform-tech-guide/">数据平台技术指南</a></p>
+<h2 id="方向"><a href="#方向" class="headerlink" title="方向"></a>方向</h2><p>在这个『大数据』与『云计算』概念满天飞的年代，我对于数据平台的思考应该是偏谨慎的。这是屁股决定脑袋的一个非常清晰的例子，创业公司最需要的就是给投资人描绘一个愿景，那么就需要带上各种时髦的词汇；而对于我在做的数据平台来说，最重要的是提供有价值的服务，真正能帮助各个部门节约时间、综合信息、提高决策效率的服务。正因如此，我没有给数据平台制定一个看得见摸不着的目标，而是打算分两步走：</p>
+<p><strong>第一步：取代</strong>。深入各个部门的业务流程与实践，了解第一手的需求。这里的取代，指的是利用数据平台自动化处理数据生成报表，把他们从繁重的人工统计中解放出来（用 Excel 仍然需要大量需要人工参与的中间过程）。只要各个部门把数据接入并打通数据流，我们就可以根据需求制作相应的页面（这里主要指长期且能够流程化处理的需求）。当他们需要具体数据与报表时，只需要登录网站查看即可。如果需要做一些临时分析，也可以把数据导出为 Excel 表格自行处理。</p>
+<p><strong>第二步：超越</strong>。在接入了不同部门的数据后，数据平台实际上拥有了综合不同数据源进行协同统计的可能，相当于把原先部门范围的数据辐射到了公司范围，各个部门都可以方便地利用更加全面的信息进行业务判断。所谓超越，指数据平台应该能完成原先 Excel 不能做（或者是难以做好）的深入分析。通过挖掘隐藏在数据背后的规律，给各个部门提供更加简单轻松的数据服务。</p>
+<p>我给这个方案起了个名字，叫做『数据自治自洽』，本质是给公司和用户带来有价值的数据产品，用来给公司的各项业务提供数据支持。作为公司平台化和数据化的重要一环，数据平台的意义不仅在于数据本身，而是通过信息共享与集体智慧形成某种意义上的『群脑』，最终转化成为更有意义的产品和服务。</p>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><p>其实数据平台的流程化简之后都差不多，难点不在于思路而在于具体实现。这里简要介绍一下各个步骤中的设计要点，具体的实现可在 <a href="http://wdxtub.com/2016/10/01/data-platform-tech-guide/">数据平台技术指南</a> 查看</p>
+<h3 id="采集与预处理"><a href="#采集与预处理" class="headerlink" title="采集与预处理"></a>采集与预处理</h3><p>数据采集也许是最被低估的一个步骤。做过数据挖掘和模型分析的朋友应该都知道『Garbage in, Garbage out』这个简单的道理，数据模型可谓是数据平台的灵魂，而数据采集的方法和策略是数据模型的基础，一定要谨慎。如果要用一句话总结数据收集的思路，那就是：</p>
+<p><strong>从用数据的角度出发收集数据，而不是反过来</strong></p>
+<p>具体的思路就有很多的扩展了，主要三点：细粒度、围绕业务、概念层级一致。</p>
+<h3 id="清洗与分类"><a href="#清洗与分类" class="headerlink" title="清洗与分类"></a>清洗与分类</h3><p>这部分的内容需要大量的跨部门沟通，比如不同业务系统的日志信息筛选过滤，一是能够有效减少无意义的存储（日志中会有大量重复信息），二是为后续的存储与查询打下良好的基础。</p>
+<p>我们目前是按照业务来进行划分的，不同的业务有不同的工作流，优点在于比较灵活，缺点在于没有把通用的部分抽出来（主要问题是目前公共的部分并不多）。</p>
+<p>在这一步我们需要进行概念统一，比方说外部代号与内部代号的映射，这样在之后的统计分析中，我们能够以比较简洁的代码和模型去处理，而不用再去纠结格式与编号问题（与网络分层模型的思路一致）</p>
+<h3 id="存储与查询"><a href="#存储与查询" class="headerlink" title="存储与查询"></a>存储与查询</h3><p>这一步唯一需要统一的就是『存储是为了查询』。存的时候随意存，查的时候肯定就没办法随意。我见过很多把 NoSQL 数据库当做 MySQL 来用的做法，那不就是自找苦吃嘛。</p>
+<p>提一下『数据自治自洽』这个概念，自治指的是数据流的通畅以及自动根据多个系统的信息综合验证补全修复非正常数据，自洽指的是通过不同数据源得出的结论是说得通可以互相验证的。</p>
+<p>这一阶段技术细节比较多，本文不再深入。</p>
+<h3 id="展示与应用"><a href="#展示与应用" class="headerlink" title="展示与应用"></a>展示与应用</h3><p>展示与应用是数据平台价值的外现，也是各个部门实际能够体验感知的部分。根据前面提出的『取代-超越』两步走思路，注定是一个比较耗费人力且业务导向的工作。</p>
+<p>这就涉及到数据可视化和数据挖掘的内容了，等我多看些书，请教下相关领域老司机，经过一段时间再找各个部门反馈一下再来更新后续内容。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>能够从零开始参与公司数据平台的设计和建设，感觉自己非常幸运，同时也责任重大。而在具体实践中能够一点一点把自己在学校里所学的东西真正用起来，才算是真正完成了从书本到实践的最终转变。说『数据』的公司很多，但是真正用好『数据』的公司却不多，在我看来，数据平台的设计和开发，与其说是一个项目，不如说是火种。到底能不能燎原，就要看具体能推进到什么程度了。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近大部分精力花在为公司搭建统一的数据平台上，在不断地踩坑中慢慢摸索出了一套行之有效的方法，本文主要介绍数据平台的流程设计与相关思考，具体的技术实现可以参考我的另一篇文章 - &lt;a href=&quot;http://wdxtub.com/2016/10/01/data-platform-tech-guide/&quot;&gt;数据平台技术指南&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="设计" scheme="http://wdxtub.com/tags/%E8%AE%BE%E8%AE%A1/"/>
+    
+      <category term="数据" scheme="http://wdxtub.com/tags/%E6%95%B0%E6%8D%AE/"/>
+    
+  </entry>
   
   <entry>
     <title>第十六周 - 林中鸟</title>
@@ -1659,387 +1815,6 @@
       <category term="技能树" scheme="http://wdxtub.com/tags/%E6%8A%80%E8%83%BD%E6%A0%91/"/>
     
       <category term="研发" scheme="http://wdxtub.com/tags/%E7%A0%94%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Nginx 指南</title>
-    <link href="http://wdxtub.com/2016/09/08/nginx-guide/"/>
-    <id>http://wdxtub.com/2016/09/08/nginx-guide/</id>
-    <published>2016-09-08T12:54:54.000Z</published>
-    <updated>2016-09-13T11:32:35.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>最近需要把负责的项目部署到云端，采用了现在业界流行的 Nginx 反向代理方案，这样后端的 Go 程序只需要专注于业务逻辑和功能。本文记录具体的部署方案。</p>
-<a id="more"></a>
-<hr>
-<p>更新记录</p>
-<ul>
-<li>2016.09.08: 初稿</li>
-</ul>
-<h2 id="手动安装"><a href="#手动安装" class="headerlink" title="手动安装"></a>手动安装</h2><p>虽然云端环境是 Ubuntu 14.04，不过为了后面维护的方便，决定不采用 <code>apt-get</code> 而是手动进行安装。整个过程我已经配置成为了一个脚本，接下来通过讲解脚本来介绍具体安装的过程</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 运行之前需要切换到 root 用户</span></div><div class="line">serviceDir=/data/home/username</div><div class="line"></div><div class="line"><span class="comment"># 安装配置依赖，这里直接用 apt-get</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing make g++"</span></div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">apt-get install make</div><div class="line">apt-get install g++</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(1/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 安装 openssl，其中 openssl-1.0.2 是长期支持版本，所以我采用这个版本</span></div><div class="line"><span class="comment"># 更多信息请访问 https://www.openssl.org/source/</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing openssl"</span> </div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">wget https://www.openssl.org/<span class="built_in">source</span>/openssl-1.0.2h.tar.gz</div><div class="line">tar -xzvf openssl-1.0.2h.tar.gz</div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/openssl-1.0.2h</div><div class="line">./config</div><div class="line">make</div><div class="line">make install</div><div class="line">ldconfig</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(2/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 安装 Pcre，为了保证兼容我们这里使用较老的版本</span></div><div class="line"><span class="comment"># 源用的是 stanford 的（因为 pcre.org 我这里打不开）</span></div><div class="line"><span class="comment"># 源：http://ftp.cs.stanford.edu/pub/exim/pcre/</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing pcre"</span></div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">wget http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.37.tar.gz</div><div class="line">tar -xzvf pcre-8.37.tar.gz</div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/pcre-8.37</div><div class="line">./configure</div><div class="line">make</div><div class="line">make install</div><div class="line">ldconfig</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(3/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 安装 zlib，用的就是最新的 1.2.8</span></div><div class="line"><span class="comment"># 源 http://zlib.net/zlib-1.2.8.tar.gz</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing zlib"</span></div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">wget http://zlib.net/zlib-1.2.8.tar.gz</div><div class="line">tar -xzvf zlib-1.2.8.tar.gz</div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/zlib-1.2.8</div><div class="line">./configure</div><div class="line">make</div><div class="line">make install</div><div class="line">ldconfig</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(4/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 安装 Nginx</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Installing Nginx"</span></div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">wget https://nginx.org/download/nginx-1.10.1.tar.gz</div><div class="line">tar -xzvf nginx-1.10.1.tar.gz</div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/nginx-1.10.1</div><div class="line">./configure --prefix=<span class="variable">$serviceDir</span>/nginx-server --with-openssl=<span class="variable">$serviceDir</span>/openssl-1.0.2h --with-http_ssl_module --with-http_stub_status_module --with-stream</div><div class="line">make</div><div class="line">make install</div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span>/nginx-server/conf</div><div class="line">rm -rf nginx.conf</div><div class="line"><span class="comment"># 这里用的是已经配置好的配置文件</span></div><div class="line">wget http://xssz.oss-cn-shenzhen.aliyuncs.com/server_software/nginx.conf</div><div class="line">ln <span class="_">-s</span> <span class="variable">$serviceDir</span>/nginx-server/sbin/nginx /usr/<span class="built_in">local</span>/bin/nginx</div><div class="line">mkdir <span class="variable">$serviceDir</span>/nginx-server/run</div><div class="line">mkdir <span class="variable">$serviceDir</span>/nginx-config</div><div class="line">ln <span class="_">-s</span> <span class="variable">$serviceDir</span>/nginx-server/sbin/nginx /usr/<span class="built_in">local</span>/bin/nginx</div><div class="line">nginx -c <span class="variable">$serviceDir</span>/nginx-server/conf/nginx.conf</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(5/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 安装守护</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Config daemon"</span></div><div class="line"><span class="built_in">echo</span> <span class="variable">$serviceDir</span><span class="string">'/nginx-server/sbin/nginx -c '</span><span class="variable">$serviceDir</span><span class="string">'/nginx-server/conf/nginx.conf'</span> &gt; /etc/rc.local</div><div class="line"><span class="built_in">echo</span> <span class="string">'exit 0'</span> &gt;&gt; /etc/rc.local</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(6/7)"</span></div><div class="line"></div><div class="line"><span class="comment"># 清理工作，把所有的安装包保存到 software 文件夹中</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Clean up all the mess"</span></div><div class="line"><span class="built_in">cd</span> <span class="variable">$serviceDir</span></div><div class="line">mkdir <span class="variable">$serviceDir</span>/software</div><div class="line">mv *.gz <span class="variable">$serviceDir</span>/software</div><div class="line"><span class="built_in">echo</span> <span class="string">"[INFO] Done(7/7)"</span></div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">"All Done. You can now continue your work."</span></div></pre></td></tr></table></figure>
-<p>注释应该已经写得比较清楚了，这里就不再赘述</p>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>配置的部分，基本上根据默认的指引就可以完成基本的配置。这里介绍一下我从老司机那里学来的方法，把公共部分和自定义部分分离，看起来更加清晰。</p>
-<p>首先，因为是手动安装的 nginx 的，默认的 nginx 配置在 <code>~/nginx-server/conf/nginx.conf</code> 中，我们来看看里面的条目：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">user www-data;</div><div class="line">worker_processes 1;</div><div class="line">worker_rlimit_nofile 262140;</div><div class="line">worker_cpu_affinity 1;</div><div class="line">error_log logs/error.log;</div><div class="line">pid run/nginx.pid;</div><div class="line"></div><div class="line">events</div><div class="line">&#123;</div><div class="line">    use epoll;</div><div class="line">    worker_connections 65535;</div><div class="line">&#125;</div><div class="line"></div><div class="line">http</div><div class="line">&#123;</div><div class="line">    include mime.types;</div><div class="line">    default_type application/octet-stream;</div><div class="line">    </div><div class="line">    sendfile on;</div><div class="line">    #aio on;</div><div class="line">    directio 512;</div><div class="line">    output_buffers 1 128k;</div><div class="line">    log_not_found off;</div><div class="line">    keepalive_timeout 65;</div><div class="line">    server_tokens off;</div><div class="line">    </div><div class="line">    gzip on;</div><div class="line">    gzip_comp_level 6;</div><div class="line">    gzip_min_length 1k;</div><div class="line">    gzip_buffers 4 8k;</div><div class="line">    gzip_disable &quot;MSIE [1-6]\.(?!.*SV1)&quot;;</div><div class="line">    gzip_types text/plain application/x-javascript text/css application/xml text/javascript application/javascript application/json;</div><div class="line">    </div><div class="line">    log_format main &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; $status $body_bytes_sent &quot;$http_referer&quot; &quot;$http_user_agent&quot; &quot;$request_time&quot; &quot;$upstream_response_time&quot;&apos;;</div><div class="line">    access_log logs/$&#123;server_name&#125;.access.log main;</div><div class="line">    fastcgi_intercept_errors on;</div><div class="line">    error_page 500 502 503 504 /50x.html;</div><div class="line">    </div><div class="line">    server_names_hash_max_size 4096;</div><div class="line">    </div><div class="line">    server</div><div class="line">    &#123;</div><div class="line">        listen 80 default;</div><div class="line">        server_name _;</div><div class="line">        access_log off;</div><div class="line">        </div><div class="line">        location /</div><div class="line">        &#123;</div><div class="line">            return 403;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    include /data/home/user/nginx-config/*.http;</div><div class="line">&#125;</div><div class="line"></div><div class="line">stream&#123;</div><div class="line">    include /data/home/user/nginx-config/*.tcp;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>前面的都不重要，重要的是最后两句 <code>include</code> 语句，这里我们就把需要自己配置的部分抽取了出来，放到了文件夹 <code>nginx-config</code> 中。</p>
-<p>接着，只要我们在 <code>nginx-config</code> 文件夹中，针对不同的域名和应用进行配置即可，比方说我的 Go 应用跑在本机的 12345 端口上，那么可以这么配置：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">upstream http_pool&#123;</div><div class="line">    server 127.0.0.1:12345 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server&#123;</div><div class="line">    server_name test.xxx.com;</div><div class="line">    listen 80;</div><div class="line">    ssl off;</div><div class="line">    </div><div class="line">    gzip on;</div><div class="line">    gzip_min_length 1k;</div><div class="line">    gzip_buffers 16 64k;</div><div class="line">    gzip_comp_level 9;</div><div class="line">    gzip_types text/plain text/css application/json application/x-javascript application/xml application/xml+rss text/javascript application/atom+xml;</div><div class="line">    gzip_vary on;</div><div class="line">    </div><div class="line">    location /</div><div class="line">    &#123;</div><div class="line">        proxy_next_upstream http_404 http_502 http_504 http_500 error timeout invalid_header;</div><div class="line">        proxy_pass http://http_pool;</div><div class="line">        proxy_set_header X-Forwarded-For $remote_addr;</div><div class="line">        proxy_set_header Host $http_host;</div><div class="line">        client_max_body_size 5000k;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这样我们就完成了从 test.xxx.com 到 127.0.0.1:12345 的代理了。注意，上面的配置文件有很多地方需要优化，这里只是一个简单的示例。关于具体怎么优化还有很多需要做的，会在之后慢慢更新。</p>
-<p>关于 Nginx 的进阶配置，参考链接中的三篇系列文章写得非常好，这里我就简单带过，需要的同学可以前往继续研究。</p>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>Nginx 的使用我比较常用的其实在 <code>nginx -h</code> 中已经有介绍，一般来说我就用一个命令 <code>nginx -s [stop|quit|reopen|reload]</code>，其实也就是 <code>sudo nginx -s reload</code></p>
-<p>另外有一个需要注意的地方就是，在 nginx 中配置的 80(http) 和 8080(tcp) 端口不能被占用，不然会一直冲突。另外需要注意配置路径的时候不要弄错了。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Nginx 是我一直以来不太熟悉的，借着这次机会能从安装到部署实战一下，还有老司机指导，感觉还是很不错的。相比于 Apache 这种重量级选手，Nginx 的灵活轻便让我非常钟意，就像 Go 一样。</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="https://www.openssl.org/" target="_blank" rel="external">OpenSSL</a></li>
-<li><a href="http://ftp.cs.stanford.edu/pub/exim/pcre/" target="_blank" rel="external">PCRE 源</a></li>
-<li><a href="http://www.zlib.net/" target="_blank" rel="external">Zlib</a></li>
-<li><a href="https://nginx.org/en/download.html" target="_blank" rel="external">Nginx</a></li>
-<li><a href="https://www.zybuluo.com/phper/note/89391" target="_blank" rel="external">nginx的配置、虚拟主机、负载均衡和反向代理（1）</a></li>
-<li><a href="https://www.zybuluo.com/phper/note/90310" target="_blank" rel="external">nginx的配置、虚拟主机、负载均衡和反向代理（2）</a></li>
-<li><a href="https://www.zybuluo.com/phper/note/133244" target="_blank" rel="external">nginx的配置、虚拟主机、负载均衡和反向代理（3）</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;最近需要把负责的项目部署到云端，采用了现在业界流行的 Nginx 反向代理方案，这样后端的 Go 程序只需要专注于业务逻辑和功能。本文记录具体的部署方案。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-    
-      <category term="服务器" scheme="http://wdxtub.com/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-    
-      <category term="反向代理" scheme="http://wdxtub.com/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/"/>
-    
-      <category term="Nginx" scheme="http://wdxtub.com/tags/Nginx/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>GeoHash 指南</title>
-    <link href="http://wdxtub.com/2016/09/07/geohash-guide/"/>
-    <id>http://wdxtub.com/2016/09/07/geohash-guide/</id>
-    <published>2016-09-07T12:17:34.000Z</published>
-    <updated>2016-09-13T11:32:35.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>做任何跟地理位置相关的服务，位置如何表示及存储是绝对绕不开的问题之一。位置的表示倒是可以用经纬度，但是索引和检索的时候，经纬度这种二维表示法就比较麻烦了，这时我们就可以利用 GeoHash 进行『降维攻击』来解决这个问题了。</p>
-<a id="more"></a>
-<hr>
-<p>更新记录</p>
-<ul>
-<li>2016.09.07: 初稿</li>
-</ul>
-<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>前几年 LBS 的特性像一股龙卷风一样席卷了整个 App 圈，任何应用都迫不及待地加入了基于地理位置的相关特性。这之中一个非常火的功能就是——查看附近的人/地点/事情，比方说查看附近的餐馆、景点、朋友等等。那么问题就来了，怎么判断是不是附近呢？怎么样定义这个『附近』呢？</p>
-<p>就用『附近的人』这个功能来举例，假如我要找自己身边的人，最简单粗暴的办法就是把我跟所有人的距离算一次，然后选一个阈值，在这个阈值范围内的，认为是『附近』。但是问题来了，如果我们的数据库中有一亿人，那不是每次都要计算一亿次？我们得想个办法减少计算量。</p>
-<p>因为知道自己的经纬度，所以可以知道自己在哪里，比方说深圳市南山区，那么我只需要计算同在南山区的人即可，考虑到我可能在边界上，那么多加周边的几个区进行计算即可。这样一来就可以过滤掉大部分的无用计算了。</p>
-<p>这种方式有一个问题，就是需要很多额外的信息，比方说我得知道南山区，不同国家不同地区各种区域划分，而且有时候区域还会变化（比方说萝岗和南沙并入广州），这样就引入了许多不必要的复杂度。不过即使如此，这种利用特定区域划分来减少计算范围的方法，非常有借鉴意义，类似于搜素剪枝，也就是索引。</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>因为要使用索引的思想，那么就需要确定拿来建立索引的字段，可是经纬度这种二维的数据很难通过一维索引来高效检索，于是我们可以利用 GeoHash 来进行转换。</p>
-<p>不过在此之前，我们先来看看另一个概念 —— <a href="https://zh.wikipedia.org/wiki/Trie" target="_blank" rel="external">字典树 Trie</a>。</p>
-<blockquote>
-<p>在计算机科学中，trie，又称前缀树或字典树，是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和部分内部节点所对应的键才有相关的值。</p>
-</blockquote>
-<p>这里我们需要在意的就是一点，相同父节点数目越多的子节点，从词的角度上相似度越高。接下来的 GeoHash 算法就部分满足这种特性。</p>
-<p>在介绍具体的算法之前，我们先从较高层级来理解 GeoHash:</p>
-<ul>
-<li>GeoHash 可以把经纬度转换成一个字符串，把二维变成一维</li>
-<li>每个 GeoHash 出来的字符串表示的是一个矩形区域，虽然不够精确，但是一定程度上反而能够保护隐私。Hash 值越长，表示的区域越小</li>
-<li>越往左的编码表示的范围越大，可以利用这个特性来缩小或扩大检索范围</li>
-</ul>
-<p>比方说，北京城区的 GeoHash 大概是这样的（本文部分图片来源<a href="http://www.cnblogs.com/LBSer" target="_blank" rel="external">这里</a>，感谢作者制图）：</p>
-<p><img src="/images/14732507518837.jpg" alt=""></p>
-<p>可以看到，每个格子都有一个编号，具体编号的顺序也有具体的算法，比较常用的是 Peano 曲线、Hilbert 曲线和 Z-order 曲线。</p>
-<p><img src="/images/14732507430572.jpg" alt=""></p>
-<p>至于选择哪种算法，在地理位置相关的应用中，主要考虑的是实现的难度和区域的突变特性。这里以 Peano 填充曲线来做例子，具体的编码方式是从左下角开始的，然后逐步进行递归细化。</p>
-<p><img src="/images/14732507303613.jpg" alt=""></p>
-<p>Peano 曲线的主要问题是突变性，比方说从 0111 到 1000，虽然数值只变了 1，但是具体的区域就是一上一下两个极端（观察上面图片 Hilbert 曲线的变化幅度就小很多）。</p>
-<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>了解了基本概念，现在我们可以来看看到底怎么把经纬度转换成 GeoHash 字符串了。主要分三个步骤：</p>
-<ol>
-<li>分别计算经纬度，转换成二进制字符串</li>
-<li>合并字符串并分组</li>
-<li>根据编码表转换为 Base32 字符串</li>
-</ol>
-<p>这里就以广州的坐标为例（北纬 23.1291，东经 113.2644），看看如何转换为 GeoHash 字符串。这里多说一句，纬度的范围是 [-90, 90]，经度的范围是 [-180, 180]，其中负数代表南纬和西经。</p>
-<p>先来处理纬度 23.1291，下面的表格中左值和右值分别代表区间的范围，中值用作二分法，这里如果落在左值和中值之间，则对应位为 0，反之为 1：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">左值</th>
-<th style="text-align:center">中值</th>
-<th style="text-align:center">右值</th>
-<th style="text-align:center">位</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">-90</td>
-<td style="text-align:center">0</td>
-<td style="text-align:center">90</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:center">0</td>
-<td style="text-align:center">45</td>
-<td style="text-align:center">90</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">0</td>
-<td style="text-align:center">22.5</td>
-<td style="text-align:center">45</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:center">22.5</td>
-<td style="text-align:center">33.75</td>
-<td style="text-align:center">45</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">22.5</td>
-<td style="text-align:center">28.125</td>
-<td style="text-align:center">33.75</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">22.5</td>
-<td style="text-align:center">25.3125</td>
-<td style="text-align:center">28.125</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">22.5</td>
-<td style="text-align:center">23.90625</td>
-<td style="text-align:center">25.3125</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">22.5</td>
-<td style="text-align:center">23.203125</td>
-<td style="text-align:center">23.90625</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">22.5</td>
-<td style="text-align:center">22.8515625</td>
-<td style="text-align:center">23.203125</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:center">22.8515625</td>
-<td style="text-align:center">23.02734375</td>
-<td style="text-align:center">23.203125</td>
-<td style="text-align:center">1</td>
-</tr>
-</tbody>
-</table>
-<p>然后再来算经度 113.2644，同样的道理：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">左值</th>
-<th style="text-align:center">中值</th>
-<th style="text-align:center">右值</th>
-<th style="text-align:center">位</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">-180</td>
-<td style="text-align:center">0</td>
-<td style="text-align:center">180</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:center">0</td>
-<td style="text-align:center">90</td>
-<td style="text-align:center">180</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:center">90</td>
-<td style="text-align:center">135</td>
-<td style="text-align:center">180</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">90</td>
-<td style="text-align:center">112.5</td>
-<td style="text-align:center">135</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:center">112.5</td>
-<td style="text-align:center">123.75</td>
-<td style="text-align:center">135</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">112.5</td>
-<td style="text-align:center">118.125</td>
-<td style="text-align:center">123.75</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">112.5</td>
-<td style="text-align:center">115.3125</td>
-<td style="text-align:center">118.125</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">112.5</td>
-<td style="text-align:center">113.90625</td>
-<td style="text-align:center">115.3125</td>
-<td style="text-align:center">0</td>
-</tr>
-<tr>
-<td style="text-align:center">112.5</td>
-<td style="text-align:center">113.203125</td>
-<td style="text-align:center">113.90625</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:center">113.203125</td>
-<td style="text-align:center">113.5546875</td>
-<td style="text-align:center">113.90625</td>
-<td style="text-align:center">0</td>
-</tr>
-</tbody>
-</table>
-<p>组合一下，纬度的编码是 <code>10100 00011</code>，经度的编码是 <code>11010 00010</code>。我们需要把这两个字符串组合起来，<strong>奇数位放经度，偶数位放纬度</strong>（这里要注意，网上很多文章这里没有写对），组合起来就是 <code>11100 11000 00000 01101</code>，也就是 <code>28 24 0 13</code>，对照 Base32 编码</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Decimal</th>
-<th style="text-align:center">Base 32</th>
-<th style="text-align:center">Decimal</th>
-<th style="text-align:center">Base 32</th>
-<th style="text-align:center">Decimal</th>
-<th style="text-align:center">Base 32</th>
-<th style="text-align:center">Decimal</th>
-<th style="text-align:center">Base 32</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">0</td>
-<td style="text-align:center">0</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">3</td>
-<td style="text-align:center">3</td>
-</tr>
-<tr>
-<td style="text-align:center">4</td>
-<td style="text-align:center">4</td>
-<td style="text-align:center">5</td>
-<td style="text-align:center">5</td>
-<td style="text-align:center">6</td>
-<td style="text-align:center">6</td>
-<td style="text-align:center">7</td>
-<td style="text-align:center">7</td>
-</tr>
-<tr>
-<td style="text-align:center">8</td>
-<td style="text-align:center">8</td>
-<td style="text-align:center">9</td>
-<td style="text-align:center">9</td>
-<td style="text-align:center">10</td>
-<td style="text-align:center">b</td>
-<td style="text-align:center">11</td>
-<td style="text-align:center">c</td>
-</tr>
-<tr>
-<td style="text-align:center">12</td>
-<td style="text-align:center">d</td>
-<td style="text-align:center">13</td>
-<td style="text-align:center">e</td>
-<td style="text-align:center">14</td>
-<td style="text-align:center">f</td>
-<td style="text-align:center">15</td>
-<td style="text-align:center">g</td>
-</tr>
-<tr>
-<td style="text-align:center">16</td>
-<td style="text-align:center">h</td>
-<td style="text-align:center">17</td>
-<td style="text-align:center">j</td>
-<td style="text-align:center">18</td>
-<td style="text-align:center">k</td>
-<td style="text-align:center">19</td>
-<td style="text-align:center">m</td>
-</tr>
-<tr>
-<td style="text-align:center">20</td>
-<td style="text-align:center">n</td>
-<td style="text-align:center">21</td>
-<td style="text-align:center">p</td>
-<td style="text-align:center">22</td>
-<td style="text-align:center">q</td>
-<td style="text-align:center">23</td>
-<td style="text-align:center">r</td>
-</tr>
-<tr>
-<td style="text-align:center">24</td>
-<td style="text-align:center">s</td>
-<td style="text-align:center">25</td>
-<td style="text-align:center">t</td>
-<td style="text-align:center">26</td>
-<td style="text-align:center">u</td>
-<td style="text-align:center">27</td>
-<td style="text-align:center">v</td>
-</tr>
-<tr>
-<td style="text-align:center">28</td>
-<td style="text-align:center">w</td>
-<td style="text-align:center">29</td>
-<td style="text-align:center">x</td>
-<td style="text-align:center">30</td>
-<td style="text-align:center">y</td>
-<td style="text-align:center">31</td>
-<td style="text-align:center">z</td>
-</tr>
-</tbody>
-</table>
-<p>可以得到广州的坐标（北纬 23.1291，东经 113.2644）经过 GeoHash 之后的前四位是 <code>ws0e</code>，我们在 GeoHash 的<a href="http://geohash.org/ws0e96s8g" target="_blank" rel="external">官方网站</a> 检验一下：</p>
-<p><img src="/images/14732507181227.jpg" alt=""></p>
-<p>可以看到前四位确实是 <code>ws0e</code>，我们手算的结果是正确的！不过因为计算精度的问题，这里只算了前四位，实际上是可以根据我们的需要来进行更多位数的计算的，网页中的编码长度是 9 位，精度基本达到 2 米的数量级（8 位的话则是 19 米，7 位是 76 米，6 位是 610 米）。如果是要做『附近』功能的话，至少要到 6 位的精度。</p>
-<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>了解了具体的 GeoHash 算法之后，我们可以来看看具体在实际应用中可能遇到的各种问题：</p>
-<ul>
-<li>GeoHash 编码对应的是矩形区域，在边界处需要处理临近区域，但是具体区域的编码并不完全跟 hash 之后的字符串一致（参考前面 0111 和 1000的例子）。为此，我们需要使用周围八个区域的 GeoHash 编码，通过有限扩大搜索范围的方法来解决这个问题</li>
-<li>如果是用传统关系型数据库，可以直接利用 GeoHash 的前缀进行检索，比方说 <code>select * from locations where geohash like &#39;ws03%&#39;</code></li>
-<li>如果需要兼顾速度与精确度，那么同时保存经纬度和 GeoHash 即可，利用 GeoHash 来缩小范围，再利用经纬度进行精确计算</li>
-<li>计算周围 8 个矩形区域，利用原始的 GeoHash 字符串显然是不行的（考虑分别处于赤道两边且很相近的两个点）对于经度一个维度来说，无论切分几次，它的左邻和右邻都只会和它相差1。画一下就知道它是一棵有序的01满二叉树。根据当前矩形的经度串，很容易就获得了它的两个东西邻接经度串。同理，可以根据其纬度串获取南北邻接纬度串。连同当前矩形的经度串和纬度串，就能组合得到周边的8个矩形的二进制串了。Base32 编码后的到 geohash 值，即是所需要的8个索引了（此段<a href="http://evthoriz.com/2015/07/02/Geohash%20%E7%AE%97%E6%B3%95%E7%9A%84%E8%BE%B9%E7%95%8C%E9%97%AE%E9%A2%98/" target="_blank" rel="external">来源</a>）</li>
-<li>Base32 是一种简单的加密算法，详情请参考后文链接</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文我们见到了解了 GeoHash 的相关概念和应用，具体的使用过程中还需要根据具体需求来进行调整（比方说不同的曲线填充算法），但是要保证具体实现的一致性。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><a href="https://en.wikipedia.org/wiki/Geohash" target="_blank" rel="external">Geohash - From Wikipedia, the free encyclopedia</a></li>
-<li><a href="http://geohash.org/ws0e96s8g" target="_blank" rel="external">geohash.org</a></li>
-<li><a href="http://charlee.li/geohash-intro.html" target="_blank" rel="external">geohash：用字符串实现附近地点搜索</a></li>
-<li><a href="http://www.cnblogs.com/LBSer/p/3310455.html" target="_blank" rel="external">GeoHash核心原理解析</a></li>
-<li><a href="https://github.com/mmcloughlin/geohash" target="_blank" rel="external">mmcloughlin/geohash(包含其他几个实现，可以对比下速度)</a></li>
-<li><a href="https://github.com/wdxtub/geohash" target="_blank" rel="external">wdxtub/geohash(我自己在项目中使用的)</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Base32" target="_blank" rel="external">Base32 - From Wikipedia, the free encyclopedia</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;做任何跟地理位置相关的服务，位置如何表示及存储是绝对绕不开的问题之一。位置的表示倒是可以用经纬度，但是索引和检索的时候，经纬度这种二维表示法就比较麻烦了，这时我们就可以利用 GeoHash 进行『降维攻击』来解决这个问题了。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-    
-      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
-    
-      <category term="位置" scheme="http://wdxtub.com/tags/%E4%BD%8D%E7%BD%AE/"/>
     
   </entry>
   
