@@ -92,10 +92,12 @@
 <meta property="og:url" content="http://wdxtub.com/2016/10/01/data-platform-tech-guide/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="最近大部分精力花在为公司搭建统一的数据平台上，从技术选型到最终落地像打通隧道一样艰难和痛快，本文主要介绍数据平台的技术相关实践与思考。具体的设计思路可以参考我的另一篇文章 - 数据平台设计指南">
-<meta property="og:updated_time" content="2016-10-01T03:08:03.000Z">
+<meta property="og:image" content="http://wdxtub.com/images/14753730024863.jpg">
+<meta property="og:updated_time" content="2016-10-02T03:55:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据平台技术指南">
 <meta name="twitter:description" content="最近大部分精力花在为公司搭建统一的数据平台上，从技术选型到最终落地像打通隧道一样艰难和痛快，本文主要介绍数据平台的技术相关实践与思考。具体的设计思路可以参考我的另一篇文章 - 数据平台设计指南">
+<meta name="twitter:image" content="http://wdxtub.com/images/14753730024863.jpg">
 
 
 
@@ -337,81 +339,95 @@
         <p>最近大部分精力花在为公司搭建统一的数据平台上，从技术选型到最终落地像打通隧道一样艰难和痛快，本文主要介绍数据平台的技术相关实践与思考。具体的设计思路可以参考我的另一篇文章 - <a href="http://wdxtub.com/2016/10/01/data-platform-design-guide/">数据平台设计指南</a></p>
 <a id="more"></a>
 <hr>
-<p>本文更新中，目前只有提纲</p>
+<p>更新历史</p>
+<ul>
+<li>2016.10.2: 完成初稿</li>
+</ul>
+<p>数据平台的解决方案有很多，从数据仓库到现在最火的 Hadoop/Spark，随着开源运动的蓬勃发展，几乎各个组件都有足够多的项目供开发者选择。虽然不需要自己做轮子了，但是如何选择合适的轮子拼成最高效的车子，仍然需要技术团队谨慎选择。</p>
+<p>尤其是不同的团队不同的风格不同的业务需求，不太存在一劳永逸的做法，无论是架构还是功能，都应该保证螺旋上升的趋势，以应对各种突发情况。</p>
 <p>注：本文不涉及数据平台的设计思路，感兴趣请参考 <a href="http://wdxtub.com/2016/10/01/data-platform-design-guide/">数据平台设计指南</a></p>
-<h2 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h2><ul>
-<li>日志管理和数据中心两个项目合并</li>
-<li>简要发展历史</li>
+<h2 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h2><p>为了方便后文的叙述，先简要介绍一下背景。数据平台项目原先只是我们部门内部的一个项目，和我之前接手的日志项目基本处于并行的状态。数据平台项目和日志项目唯一的连接点在于数据的存储，共用一个 Elasticsearch 集群。</p>
+<p>日志这边最初的架构是利用 Rsyslog + Logstash 直接把日志汇总到 Elasticsearch(后面用 ES 表示) 中。而数据平台的后端原先是基于 Ruby On Rails(后面用 RoR 表示) 的，功能也比较简单，一方面是利用 ES 的聚合来进行基本的日志数据收集，另一方面是从第三方的统计服务中（比如 Google Analysis）拉取数据，给前端进行展示。</p>
+<p>在已有系统的基础上进行改动和完全从头开始搭建是两种完全不同的思路。虽然说从零开始几乎不受任何束缚，但实际情况中基本不太可能立马推倒重来，毕竟已有系统虽然比较简陋，至少还在服役中。于是只能一个模块一个模块进行调整，一是保证服务稳定，二是在人力不够的条件下，防止步子太大出问题。</p>
+<p>所以在重构一开始，我给自己的设计定下的目标是：</p>
+<ul>
+<li>尽量小的改动（影响面越小，可能出的问题就越少）</li>
+<li>尽量就近服务（因为要提供全球范围内的服务，需要尽量优化线路）</li>
+<li>减少跨机房数据同步量（尤其是跨海传输，带宽和稳定性所带来的额外成本很令人头疼）</li>
 </ul>
-<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><ul>
-<li>架构图</li>
-<li>全球服务的设计（这一部分需要仔细探讨）：全球部署</li>
-<li>通用解决方案</li>
+<p>在经历了一系列技术测试之后（详情见最后的链接），由我确定了日志部分的架构，而数据平台部分的架构由我的同事确定，后台部分最终选择的技术是：</p>
+<p><strong>ELK Stack + Kafka + Spring MVC</strong></p>
+<p>细节与原因如下：</p>
+<ul>
+<li>ELK Stack 在业界的实践中已被证明是比较靠谱的日志解决方案，加上原来的日志系统就已经采用了 ELK 方案，改动的成本较低</li>
+<li>用 Logstash 取代了原先采用的系统级的 Rsyslog 用来传输日志，方便管理和配置（Logstash 的配置还是非常好写的）</li>
+<li>加入了 Kafka 用作消息队列，把 Logstash 与 Elasticsearch 解耦，所有日志会先经过 Kafka，再由 Kafka 导入 Elasticsearch</li>
+<li>出于性能考虑和其他一些因素的考虑，用基于 Java 的 Spring MVC 取代 Ruby on Rails，虽然 RoR 的开发效率很高，但是我和另一个核心开发人员都不熟悉 Ruby，所以转为 Java（至少好招人）</li>
 </ul>
-<p>三大块：</p>
+<p>总体来说，整个架构的调整需要考虑的因素很多，除了开发团队的技术栈外，更多是投入和产出的权衡。很多时候能争取到的资源非常有限，就需要想办法巧妇做少米之炊了。</p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>虽然前面提到的技术不多，但因为全球部署和全球服务的缘故，架构图还是有一些复杂的。理论上完美的方案，实际落地的时候会出现各种各样的因为物理因素导致的问题。这也是为什么要一个一个地区和市场去推进，不然不断涌现的各种问题，在人力不足的时候会把团队拖入『死亡进军』的状况。架构图做了一定化简（只有中、美两机房），具体如下：</p>
+<p><img src="/images/14753730024863.jpg" alt=""></p>
+<p>围绕着以 ES 集群为存储核心，整个系统主要分三大块：</p>
 <ol>
 <li>日志收集与分析</li>
-<li>数据上报与接入</li>
-<li>数据统计与分析</li>
+<li>埋点上报与数据接入</li>
+<li>数据与日志统计与分析</li>
 </ol>
-<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><p>这里介绍具体实现</p>
+<p>因为采用了不同地区的不同服务提供商，还需要兼顾数据同步的问题，整个系统经过不断演化，最终达到了如上图所示的比较稳定的结构。不过由于我手头上的事情实在太多，具体的数据量、用户量、消息量评估只完成了最基本的部分。目前的重心主要还是在系统的完善与功能添加中，很多技术债是在人力不足的情况下不得不背的，对于我和另外一个同事这样的强迫症来说，只能尽量多做一点是一点了。</p>
+<p>最后再强调一次，数据是拿来用的，一定要跟各个部门深入沟通好需求，并在不断磨合中找到让大家都最舒服的合作方式。很多技术和架构选择都是非常业务相关的，这里就不多提了。后面主要讨论的会是『如何让整一个系统流畅运行起来』这个问题</p>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><p>这一部分主要是介绍 <a href="http://wdxtub.com/2016/10/01/data-platform-design-guide/">数据平台设计指南</a> 中提到的四个主要流程的具体实现和相关思路。</p>
 <h3 id="采集与预处理"><a href="#采集与预处理" class="headerlink" title="采集与预处理"></a>采集与预处理</h3><ul>
-<li>系统接入</li>
-<li>多机房同步</li>
-<li>数据量限制</li>
-<li>数据量评估</li>
-</ul>
-<h3 id="清洗与分类"><a href="#清洗与分类" class="headerlink" title="清洗与分类"></a>清洗与分类</h3><ul>
-<li>服务区分</li>
-<li>日志过滤</li>
-<li>日志切换 S3 OSS</li>
-<li>定期任务（清理、周、月、三月）</li>
-</ul>
-<h3 id="存储与查询"><a href="#存储与查询" class="headerlink" title="存储与查询"></a>存储与查询</h3><ul>
-<li>elasticsaerch</li>
-<li>二八原则，结构化存储(20%)与分布式存储(80%, S3, OSS)</li>
-</ul>
-<h3 id="展示与应用"><a href="#展示与应用" class="headerlink" title="展示与应用"></a>展示与应用</h3><ul>
-<li>日志挖掘、数据挖掘</li>
-<li>Dashborad</li>
-<li>商务智能</li>
-<li>Spark Hadoop 分布式计算</li>
-</ul>
-<h2 id="ETL"><a href="#ETL" class="headerlink" title="ETL"></a>ETL</h2><ul>
-<li>过程优化</li>
-<li>老数据的导入</li>
-<li>固定的流程</li>
-</ul>
-<h3 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h3><p>提取日志中真正有价值的东西</p>
-<ul>
-<li>日志的分词问题，string 字段腰子啊 logstash 阶段就要设置为 <code>not_index</code></li>
-<li>日志的选择传输问题，量太大，不可能所有都保存在 ES 中</li>
-<li>日志如何写，如何利用，是一个大问题，可以专门写一本书</li>
-</ul>
-<h3 id="数据上报"><a href="#数据上报" class="headerlink" title="数据上报"></a>数据上报</h3><ul>
-<li>不同数据源如何对齐，需要仔细设置</li>
+<li>日志的收集要跟不同团队的开发人员对接，了解真正有价值的参数，减少带宽与存储的消耗（毕竟日志中会有大量的冗余）</li>
+<li>提取日志中真正有价值的东西</li>
+<li>分词问题，string 字段要在 logstash 阶段就要设置为 <code>not_index</code></li>
+<li>数据上报系统采用 ID 与密钥配对方式进行有效性校验，并且利用另外的数据库做权限控制，具体需要做到的粒度可以根据需求进行控制</li>
+<li>做多机房同步的时候尽量利用云服务本身提供的服务，自己做数据同步很辛苦，得不偿失</li>
+<li>不同的服务要有流量和数据量控制，保证不因为单个系统的不稳定而拖挂整个系统</li>
+<li>不同数据源如何对齐，公共字段需要仔细设置</li>
 <li>写日志的时候就要考虑未来的处理和应用，尤其是和已有数据源的对齐</li>
-<li>维护埋点，公共字段</li>
 <li>字段同名但类型不同导致的索引冲突问题</li>
 <li>设计埋点及统计字段时一定要基于具体的统计需求，不能为了打点而打点，字段是什么，后面要如何使用，不同的字段如何联系与互动，都需要事先想好</li>
 <li>专注于核心指标，不同指标的优先级是什么</li>
 <li>界面、事件和事件参数独立，但必须有公共的统计参数（最好两个一上，冗余保证后续数据清洗及验证的准确性）</li>
-<li>重点是从目的出发，先想好需要用什么数据来获知什么样的趋势，再去设计对应的埋点。过多的数据很可能带来的是混淆而不是帮助。</li>
-<li>增加上报的信息量（同样大小的前提下），减少上报压力</li>
+<li>维护埋点，增加上报的信息量（同样大小的前提下），减少上报压力</li>
 </ul>
-<h2 id="监控管理"><a href="#监控管理" class="headerlink" title="监控管理"></a>监控管理</h2><p>服务质量</p>
-<h3 id="监控运维"><a href="#监控运维" class="headerlink" title="监控运维"></a>监控运维</h3><p>快速反应，警报服务</p>
-<h3 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h3><p>针对开发者的接口与文档试运行时主要暴露的问题有：</p>
-<h2 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h2><ul>
-<li>集群安全</li>
-<li>白名单</li>
-<li>验证</li>
+<p>整个 ETL 过程需要建立固定的流程，为开发者准备好对应的接口、文档及测试系统。对于老数据的导入也需要有自动化可重复的工具链。而对于需要内网才能访问的系统，可以考虑在内网假设服务，然后走数据上报的流程进行数据汇总。</p>
+<h3 id="清洗与分类"><a href="#清洗与分类" class="headerlink" title="清洗与分类"></a>清洗与分类</h3><p>这一层主要是进行分发与过滤，利用 Logstash 和 Kafka 的诸多特性，不需要写很多代码就可以完成。一些考虑有：</p>
+<ul>
+<li>根据服务区分 Kafka 中不同的 topic，来进行隔离，虽然是同一管道，但是也要尽量避免相互影响</li>
+<li>日志中可能有的非法字符以及过长的日志需要进行过滤，不然进入 ES 可能会导致问题</li>
+<li>需要有定期任务机制，清理不需要的数据，保存到 S3 这种比较便宜的存储中</li>
+<li>贯彻二八原则，20% 最有价值的数据进行结构化存储，剩下的以文本形式保存在云存储中，除非必要时，一般不需要动</li>
 </ul>
-<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><ul>
-<li>法律问题</li>
-<li>集群的配置问题，扩展性，维护</li>
-<li>GC 超时</li>
-<li>dirty hack</li>
+<p>因为不需要跟外部系统交互，这部分其实需要做的东西不算太多，但是作为最重要的中转站，需要保证高可用性，这就需要对各个组件有一定深入了解了。</p>
+<h3 id="存储与查询"><a href="#存储与查询" class="headerlink" title="存储与查询"></a>存储与查询</h3><p>基于 Luence 的 ES 集群在处理中文的时候可能有坑，不过目前 IK 分词基本可以满足需求。其他需要注意的有</p>
+<ul>
+<li>ES 集群的监控一定要做，要好好做，可以采用业界流行的方案，也需要了解 ES 的基本 API 和相关设置。 </li>
+<li>如果可能的话，尽量多配几台机器，可以由专门的机器做不负责存储只负责调度的主节点以及只负责存储及查询的数据节点，具体需要根据需求进行调整</li>
+<li>很多暴露出来的问题，回归到最初都是因为存的时候太随意导致的，还是那句话，即使是类似 NoSQL 的存储，好的设计仍然无比重要</li>
+<li>监控部分需要和运维密切配合，以达到快速反应，保证服务质量的目的</li>
+<li>安全是非常重要的话题，内部系统的好处在于可以用白名单与二次验证的机制保证数据安全，具体的备份策略也需要仔细斟酌，找到一个平衡</li>
+</ul>
+<h3 id="展示与应用"><a href="#展示与应用" class="headerlink" title="展示与应用"></a>展示与应用</h3><p>这部分主要是前端展现与后端数据挖掘，这两部分涉及的话题太多，这里就不展开了，简单说一下。</p>
+<ul>
+<li>数据可视化的核心在于目标明确，而这个目标怎么找到，一定是和相关业务部门沟通出来的，不能是开发人员拍脑袋</li>
+<li>需要结合不同部门之前的业务实践，走之前提到了『取代-超越』两步战略</li>
+<li>随着数据量的增大，可以结合 Spark/Hadoop 等分布式计算框架来进行数据挖掘，当然，这是比较后面的工作了，可能需要专门找人来负责</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在数据平台的建设中，总是会有各种各样的小问题，我的感受是临时的补丁不是不能打，但是一定要及时找出问题的根源，从系统的层面解决掉，不然补丁好修复，但是补丁的补丁，甚至补丁的补丁的补丁一多，很容易造成几乎无解的局面。</p>
+<p>而对于系统中使用的相关技术，也一定要在『会用』的接触上深入理解其工作原理和运行机制，不需要深入到代码级别，但至少要能在出了问题之后第一时间有基本的排查思路，不然依靠 google 和 stackoverflow 编程，只会给同事带来巨大的困扰。</p>
+<p>当然，本文只是目前我的一些想法，会随着系统的开发不断更新内容。如果大家有做过相关系统的经验，欢迎共同讨论，如果在深圳的话，可以约出来吃个饭聊一聊嘛。</p>
+<h2 id="相关文档"><a href="#相关文档" class="headerlink" title="相关文档"></a>相关文档</h2><ul>
+<li><a href="http://wdxtub.com/2016/08/15/kafka-guide/">Kafka 指南</a></li>
+<li><a href="http://wdxtub.com/2016/07/26/elk-guide/">ELK 指南</a></li>
+<li><a href="http://wdxtub.com/2016/09/28/elasticsearch-cluster-guide/">Elasticsearch 集群指南</a></li>
+<li><a href="http://wdxtub.com/2016/07/24/elastic-search-guide/">Elasticsearch 入门指南</a></li>
+<li><a href="http://wdxtub.com/2016/07/24/logstash-guide/">Logstash 入门指南</a></li>
+<li><a href="http://wdxtub.com/2016/08/18/logstash-kafka-guide/">Logstash 连接 Kafka 指南</a></li>
+<li><a href="http://wdxtub.com/2016/08/17/rsyslog-kafka-guide/">Rsyslog 连接 Kafka 指南</a></li>
+<li><a href="http://wdxtub.com/2016/08/12/rsyslog-logstash-guide/">Rsyslog + Logstash 日志传输指南</a></li>
+<li><a href="http://wdxtub.com/2016/09/28/linux-server-check-guide/">Linux 服务器检查指南</a></li>
+<li><a href="http://wdxtub.com/2016/07/26/crontab-guide/">Crontab 指南</a></li>
 </ul>
 
       
@@ -683,7 +699,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#技术选型"><span class="nav-number">1.</span> <span class="nav-text">技术选型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程"><span class="nav-number">3.</span> <span class="nav-text">流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#采集与预处理"><span class="nav-number">3.1.</span> <span class="nav-text">采集与预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清洗与分类"><span class="nav-number">3.2.</span> <span class="nav-text">清洗与分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储与查询"><span class="nav-number">3.3.</span> <span class="nav-text">存储与查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#展示与应用"><span class="nav-number">3.4.</span> <span class="nav-text">展示与应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ETL"><span class="nav-number">4.</span> <span class="nav-text">ETL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#日志"><span class="nav-number">4.1.</span> <span class="nav-text">日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据上报"><span class="nav-number">4.2.</span> <span class="nav-text">数据上报</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控管理"><span class="nav-number">5.</span> <span class="nav-text">监控管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#监控运维"><span class="nav-number">5.1.</span> <span class="nav-text">监控运维</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#权限管理"><span class="nav-number">5.2.</span> <span class="nav-text">权限管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全"><span class="nav-number">6.</span> <span class="nav-text">安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">7.</span> <span class="nav-text">常见问题</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#技术选型"><span class="nav-number">1.</span> <span class="nav-text">技术选型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程"><span class="nav-number">3.</span> <span class="nav-text">流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#采集与预处理"><span class="nav-number">3.1.</span> <span class="nav-text">采集与预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清洗与分类"><span class="nav-number">3.2.</span> <span class="nav-text">清洗与分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储与查询"><span class="nav-number">3.3.</span> <span class="nav-text">存储与查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#展示与应用"><span class="nav-number">3.4.</span> <span class="nav-text">展示与应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关文档"><span class="nav-number">5.</span> <span class="nav-text">相关文档</span></a></li></ol></div>
             
           </div>
         </section>
