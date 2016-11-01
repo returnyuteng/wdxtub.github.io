@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/09/28/elasticsearch-cluster-guide/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="Elasticsearch 集群的设置虽然比较简单，但是具体使用其实有很多需要注意的地方。本文结合工作中的实战经验，分享一下 Elasticsearch 集群的相关技巧。">
-<meta property="og:updated_time" content="2016-09-28T13:04:50.000Z">
+<meta property="og:updated_time" content="2016-11-01T14:04:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elasticsearch 集群指南">
 <meta name="twitter:description" content="Elasticsearch 集群的设置虽然比较简单，但是具体使用其实有很多需要注意的地方。本文结合工作中的实战经验，分享一下 Elasticsearch 集群的相关技巧。">
@@ -364,6 +364,7 @@
 <hr>
 <p>更新历史</p>
 <ul>
+<li>2016.11.01: 更新导入数据过慢的解决方案</li>
 <li>2016.09.28: 初稿完成，Elasticsearch 版本 2.4.0</li>
 </ul>
 <p>如果是第一次接触 Elasticsearch，不妨先看看我之前写的 <a href="http://wdxtub.com/2016/07/24/elastic-search-guide/">Elasticsearch 入门指南</a>，本文主要是介绍 Elasticsearch 集群相关的内容。</p>
@@ -449,12 +450,16 @@
 <li>使用 <code>bootstrap.mlockall: true</code>，启动时就锁定内存</li>
 <li>用较小的 heapsize 配合 SSD</li>
 </ul>
-<h2 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h2><p>这里以一个实例来介绍我是如何在生产环境中排查和修复 Elasticsearch 集群忽然响应时间剧增的问题的。</p>
+<h2 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h2><h3 id="Full-GC-问题"><a href="#Full-GC-问题" class="headerlink" title="Full GC 问题"></a>Full GC 问题</h3><p>这里以一个实例来介绍我是如何在生产环境中排查和修复 Elasticsearch 集群忽然响应时间剧增的问题的。</p>
 <p>情况是这样的，随着接入 Elasticsearch 的数据量增大，忽然有一个周末出问题了 - ES 集群的查询和插入都变得巨慢无比。监控报警都把邮箱和手机发爆炸了。</p>
 <p>那么问题来了，究竟是哪里出了乱子？</p>
 <p>因为发送数据的客户端和服务器近期并没有特别大的改动，我检查了 Kafka 队列也一切正常，于是可以锁定问题出在 Elasticsearch 身上。</p>
 <p>第一反应就是先去看 Elasticsearch 的日志，发现根据日志显示，一致在不停的垃圾回收。因此对症下药，把 JVM 的堆内存改大。但是在集群重启之后仍然会出现性能急剧下降的状况，于是继续检查日志，发现是因为 JVM 进行 Full GC 的时间过长，导致 ES 集群认为拓扑结构改变，开始迁移数据所导致。而迁移数据本身又会导致 Full GC，让情况更糟的是，在 Full GC 结束之后，集群的拓扑结构又再次改变，于是就陷入了这样的死循环。</p>
 <p>破局的方法其实非常简单粗暴，把检测集群拓扑的时间间隔和超时次数加大一点，留足够的时间给 JVM 进行 Full GC 即可。</p>
+<h3 id="导入数据过慢问题"><a href="#导入数据过慢问题" class="headerlink" title="导入数据过慢问题"></a>导入数据过慢问题</h3><p>最近在从 MySQL 数据库中导入大量数据到 Elasticsearch 的时候，出现写入极其缓慢，甚至在使用了 bulk（批量）接口之后也没有改善的问题。奇怪的是，从 MySQL 的表 A 和表 B 中导入甚至会有几十倍的速度差距，这是为什么呢？</p>
+<p>经过一步一步排查，基本上 ES 的文档和可以配置的参数都调整过之后并没有改善，于是开始从数据源入手，最后发现表 A 和 表 B 的数据顺序是不太一样的。表 A 中基本是顺序递增的数据，主键（自增长 ID）基本对应于时间顺序；而表 B 中则基本是随机插入的，所以按照数据库中的 ID 进行顺序导出，就会发现相邻记录对应的日期可能相差很大，而正好我们在 ES 中又是根据日期来进行索引的切割的，导致每次都需要在不同的索引中进行切换，速度自然上不去。</p>
+<p>所以我们把从 MySQL 数据库中选择数据的语句利用 timestamp 作为 order by 的标准，导入速度就很快了。</p>
+<p>这里有一点需要注意每次除了 ID 之外，还需要记录 timestamp 的值，这样才能保证是顺序导入的 <code>where id &gt; xxx and timestamp &gt; xxx</code>，其中 timestamp 每次需要归 0。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>经历了一次事故排查之后，我对 Elasticsearch 集群的相关认识也达到了比较深的程度，虽然在黑暗中探索的那两天很痛苦，不过总算是走出来了，于是赶紧把经验分享出来，这样大家可以少走弯路。</p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="https://my.oschina.net/shyloveliyi/blog/653751" target="_blank" rel="external">elasticsearch2.3.1 集群安装</a></li>
@@ -739,7 +744,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重启"><span class="nav-number">3.</span> <span class="nav-text">重启</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控"><span class="nav-number">4.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">5.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#合理计划服务器"><span class="nav-number">5.1.</span> <span class="nav-text">合理计划服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据节点就是数据节点"><span class="nav-number">5.2.</span> <span class="nav-text">数据节点就是数据节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池配置"><span class="nav-number">5.3.</span> <span class="nav-text">线程池配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片与副本"><span class="nav-number">5.4.</span> <span class="nav-text">分片与副本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询"><span class="nav-number">5.5.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-设置"><span class="nav-number">5.6.</span> <span class="nav-text">JVM 设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#排查"><span class="nav-number">6.</span> <span class="nav-text">排查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重启"><span class="nav-number">3.</span> <span class="nav-text">重启</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控"><span class="nav-number">4.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">5.</span> <span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#合理计划服务器"><span class="nav-number">5.1.</span> <span class="nav-text">合理计划服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据节点就是数据节点"><span class="nav-number">5.2.</span> <span class="nav-text">数据节点就是数据节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池配置"><span class="nav-number">5.3.</span> <span class="nav-text">线程池配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片与副本"><span class="nav-number">5.4.</span> <span class="nav-text">分片与副本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询"><span class="nav-number">5.5.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-设置"><span class="nav-number">5.6.</span> <span class="nav-text">JVM 设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#排查"><span class="nav-number">6.</span> <span class="nav-text">排查</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Full-GC-问题"><span class="nav-number">6.1.</span> <span class="nav-text">Full GC 问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入数据过慢问题"><span class="nav-number">6.2.</span> <span class="nav-text">导入数据过慢问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
