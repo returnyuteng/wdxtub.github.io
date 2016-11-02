@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2016-11-01T14:03:09.000Z</updated>
+  <updated>2016-11-02T14:14:15.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -14,6 +14,112 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【Go 之旅】II Go 编码风格指南</title>
+    <link href="http://wdxtub.com/2016/11/02/go-style-guide/"/>
+    <id>http://wdxtub.com/2016/11/02/go-style-guide/</id>
+    <published>2016-11-02T14:09:10.000Z</published>
+    <updated>2016-11-02T14:14:15.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文结合 Effective Go 与自己做项目的一些实践经验，来聊聊 Go 的编码风格指南。</p>
+<a id="more"></a>
+<hr>
+<h2 id="编码规范"><a href="#编码规范" class="headerlink" title="编码规范"></a>编码规范</h2><p>虽然 Go 自带的 <code>fmt</code> 工具已经解决了大部分排版的问题，但是在命名规范上仍旧有一些要求。另外，Go 的哲学与传统的面向对象的编程语言也有不一致的地方（如 Java），需要进行理解和适应。</p>
+<p>之所以要强调编程规范，不仅仅是想要通过一个统一的约定减少代码的理解成本，更是通过引导来帮助大家接受 Go 的特性和风格，而不是简单用 Java 或者 C++ 的思路来写 Go（不然为什么不去写 Java/C++ 呢）</p>
+<h3 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h3><p><strong>包名应为小写单词</strong></p>
+<p>不应有下划线或者混合大小写。正确示例 <code>controllers</code>, <code>models</code>, <code>routers</code>, <code>views</code></p>
+<p><strong>全局变量即参数采用驼峰式命名</strong></p>
+<ul>
+<li>全局变量：驼峰式，首字母大写（如果不可导出，则首字母小写）</li>
+<li>参数传递：驼峰式，首字母小写</li>
+</ul>
+<p><strong>局部变量采用下划线形式</strong></p>
+<p>例如</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *SettingsController)</span> <span class="title">Post</span><span class="params">()</span></span> &#123;</div><div class="line">	_ftype := c.GetString(<span class="string">"formtype"</span>)</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>采用全部大写或者全部小写来表示缩写单词</strong></p>
+<p>比如对于url这个单词，不要使用</p>
+<p>UrlPony<br>而要使用</p>
+<p>urlPony 或者 URLPony  </p>
+<p><strong>单个函数的接口名以 <code>er</code> 为后缀</strong></p>
+<p>如 <code>Reader</code>, <code>Writer</code>，其具体的实现则去掉 <code>er</code>，如</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</div><div class="line">    Read(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>两个函数的接口名综合两个函数名</strong>，如</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="keyword">type</span> WriteFlusher <span class="keyword">interface</span> &#123;</div><div class="line">    Write([]<span class="keyword">byte</span>) (<span class="keyword">int</span>, error)</div><div class="line">    Flush() error</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>三个以上函数的接口名类似于结构体名</strong>，如</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="keyword">type</span> Car <span class="keyword">interface</span> &#123;</div><div class="line">    Start([]<span class="keyword">byte</span>) </div><div class="line">    Stop() error</div><div class="line">    Recover()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>结构体方法参数名</strong></p>
+<p>统一采用单字母 <code>p</code> 而不是 <code>this</code>, <code>me</code> 或者 <code>self</code>，如</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="keyword">type</span> T <span class="keyword">struct</span>&#123;&#125; </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *T)</span><span class="title">Get</span><span class="params">()</span></span>&#123;&#125;</div></pre></td></tr></table></figure>
+<h3 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h3><p><strong><code>if</code> 接受初始化语句</strong></p>
+<p>约定如下方式建立局部变量</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> err := file.Chmod(<span class="number">0664</span>); err != <span class="literal">nil</span> &#123;</div><div class="line">    <span class="keyword">return</span> err</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong><code>for</code> 采用短声明建立局部变量</strong></p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line">sum := <span class="number">0</span></div><div class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</div><div class="line">    sum += i</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong><code>range</code> 如果只需要第一项（key），就丢弃第二个</strong></p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span> key := <span class="keyword">range</span> m &#123;</div><div class="line">    <span class="keyword">if</span> key.expired() &#123;</div><div class="line">        <span class="built_in">delete</span>(m, key)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong><code>range</code> 如果只需要第二项，则把第一项置为下划线</strong></p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line">sum := <span class="number">0</span></div><div class="line"><span class="keyword">for</span> _, value := <span class="keyword">range</span> array &#123;</div><div class="line">    sum += value</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>一旦有错误发生，马上返回</strong></p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line">f, err := os.Open(name)</div><div class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">    <span class="keyword">return</span> err</div><div class="line">&#125;</div><div class="line">d, err := f.Stat()</div><div class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">    f.Close()</div><div class="line">    <span class="keyword">return</span> err</div><div class="line">&#125;</div><div class="line">codeUsing(f, d)</div></pre></td></tr></table></figure>
+<p><strong>不要滥用 <code>panic</code></strong></p>
+<p>不要使用 <code>panic</code> 来做正常的错误处理，应当使用 <code>error</code> 和 多个返回值来进行。</p>
+<p><strong>错误消息全小写</strong></p>
+<p>错误处理中的字符串应该都是小写，这样在诸如 <code>log.Print(&quot;Reading %s: %v&quot;, filename, err)</code> 不会出现奇怪的大写。</p>
+<p><strong>不要忽略错误</strong></p>
+<p>如果一个函数的返回值包括 <code>err</code>，那么不要使用 <code>_</code> 来忽略它，而应该去检查函数是否执行成功，如果不成功则执行对应的错误处理并返回，只有在确实不希望出现的情况下才使用 <code>panic</code></p>
+<p><strong>无论是参数列表还是返回值，最好加上名称，方便理解</strong>（尤其是在有同类型的多个参数的时候）</p>
+<p>比如 <code>func (f *Foo) Location() (float64, float64, error)</code> 就不如</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Location returns f's latitude and longitude.</span></div><div class="line"><span class="comment">// Negative values mean south and west, respectively.</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f *Foo)</span> <span class="title">Location</span><span class="params">()</span> <span class="params">(lat, long <span class="keyword">float64</span>, err error)</span></span></div></pre></td></tr></table></figure>
+<p>来得清晰</p>
+<h3 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h3><ul>
+<li>对于少量数据，不要传递指针</li>
+<li>对于大量数据的struct可以考虑使用指针</li>
+<li>传入参数是map，slice，chan不要传递指针<ul>
+<li>因为map，slice，chan是引用类型，不需要传递指针的指针</li>
+</ul>
+</li>
+</ul>
+<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><p><strong>每个包都应该有一个包注释，位于 package 之前。</strong>如果同一个包有多个文件，只需要在一个文件中编写即可，如：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Package models 包含应用所需的数据结构及对应的方法</span></div><div class="line"><span class="keyword">package</span> models</div></pre></td></tr></table></figure>
+<p><strong>每个以大写字母开头（即可以导出）的方法应该有注释，且已该函数名开头。</strong>如：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Get 会响应对应路由转发过来的 get 请求</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *CrewController)</span> <span class="title">Get</span><span class="params">()</span></span> &#123;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="常见技巧"><a href="#常见技巧" class="headerlink" title="常见技巧"></a>常见技巧</h2><h3 id="声明切片"><a href="#声明切片" class="headerlink" title="声明切片"></a>声明切片</h3><p>使用 <code>var t []string</code> 而不是 <code>t := []string{}</code> 来声明一个切片，这样如果切片从来没有使用的话，就不会对其分配内存</p>
+<h3 id="延期执行"><a href="#延期执行" class="headerlink" title="延期执行"></a>延期执行</h3><p>Go的defer语句用来调度一个函数调用（被延期的函数），使其在执行defer的函数即将返回之前才被运行。这是一种不寻常但又很有效的方法，用于处理类似于不管函数通过哪个执行路径返回，资源都必须要被释放的情况。典型的例子是对一个互斥解锁，或者关闭一个文件。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Contents returns the file's contents as a string.</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Contents</span><span class="params">(filename <span class="keyword">string</span>)</span> <span class="params">(<span class="keyword">string</span>, error)</span></span> &#123;</div><div class="line">    f, err := os.Open(filename)</div><div class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">""</span>, err</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">defer</span> f.Close()  <span class="comment">// f.Close will run when we're finished.</span></div><div class="line"></div><div class="line">    <span class="keyword">var</span> result []<span class="keyword">byte</span></div><div class="line">    buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">100</span>)</div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        n, err := f.Read(buf[<span class="number">0</span>:])</div><div class="line">        result = <span class="built_in">append</span>(result, buf[<span class="number">0</span>:n]...) <span class="comment">// append is discussed later.</span></div><div class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">            <span class="keyword">if</span> err == io.EOF &#123;</div><div class="line">                <span class="keyword">break</span></div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> <span class="string">""</span>, err  <span class="comment">// f will be closed if we return here.</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">string</span>(result), <span class="literal">nil</span> <span class="comment">// f will be closed if we return here.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>对类似 <code>Close</code> 这样的函数调用进行延期，有两个好处。首先，其确保了你不会忘记关闭文件，如果你之后修改了函数增加一个新的返回路径，会很容易犯这样的错。其次，这意味着关闭操作紧挨着打开操作，这比将其放在函数结尾更加清晰。</p>
+<p>被延期执行的函数，它的参数（包括接收者，如果函数是一个方法）是在 <code>defer</code> 执行的时候被求值的，而不是在调用执行的时候。这样除了不用担心变量随着函数的执行值会改变，这还意味着单个被延期执行的调用点可以延期多个函数执行。这里有一个简单的例子。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</div><div class="line">    <span class="keyword">defer</span> fmt.Printf(<span class="string">"%d "</span>, i)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>被延期的函数按照 LIFO 的顺序执行，所以这段代码会导致在函数返回时打印出 <code>4 3 2 1 0</code>。</p>
+<h2 id="重点理解"><a href="#重点理解" class="headerlink" title="重点理解"></a>重点理解</h2><ul>
+<li><a href="http://www.kancloud.cn/kancloud/effective/72207" target="_blank" rel="external">数据 - new 与 make</a></li>
+<li><a href="http://www.kancloud.cn/kancloud/effective/72210" target="_blank" rel="external">接口与方法</a></li>
+<li><a href="http://www.kancloud.cn/kancloud/effective/72212" target="_blank" rel="external">内嵌 Embedding</a></li>
+<li><a href="http://www.kancloud.cn/kancloud/effective/72213" target="_blank" rel="external">并发 - Goroutines 与 Channels</a></li>
+<li><a href="http://www.kancloud.cn/kancloud/effective/72214" target="_blank" rel="external">错误处理</a></li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://www.hellogcc.org/effective_go.html" target="_blank" rel="external">Effective Go 中文版</a></li>
+<li><a href="https://golang.org/doc/effective_go.html" target="_blank" rel="external">Effective Go</a></li>
+<li><a href="https://github.com/golang/go/wiki/CodeReviewComments" target="_blank" rel="external">Go Code Review Comments</a></li>
+<li><a href="http://kiritor.github.io/2015/06/05/GolangPrjManager/" target="_blank" rel="external">Golang工程管理</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文结合 Effective Go 与自己做项目的一些实践经验，来聊聊 Go 的编码风格指南。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="编码" scheme="http://wdxtub.com/tags/%E7%BC%96%E7%A0%81/"/>
+    
+      <category term="Go" scheme="http://wdxtub.com/tags/Go/"/>
+    
+  </entry>
   
   <entry>
     <title>惜别</title>
@@ -2182,242 +2288,6 @@
       <category term="服务器" scheme="http://wdxtub.com/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
     
       <category term="运维" scheme="http://wdxtub.com/tags/%E8%BF%90%E7%BB%B4/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【Web 之旅】I Web 快速入门</title>
-    <link href="http://wdxtub.com/2016/09/26/web-dev-first-step/"/>
-    <id>http://wdxtub.com/2016/09/26/web-dev-first-step/</id>
-    <published>2016-09-25T23:49:11.000Z</published>
-    <updated>2016-09-27T23:22:10.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>虽然我是原生应用的坚定粉，但是随着微信小程序的出现，还是得了解一下 Web 应用的开发。本文结合 CMU 15417 Web Application Development 这门课，大致梳理一下入门 Web 开发的必备知识及思维方式上需要转变的地方。</p>
-<a id="more"></a>
-<hr>
-<p>更新记录</p>
-<ul>
-<li>2016.09.27 更新『优秀学习资源』和一些链接</li>
-<li>2016.09.26 更新『Web 发展历程』与『Web 技术演进』</li>
-<li>2016.09.25 完成『Web 之难』与『一次点击背后』</li>
-</ul>
-<h2 id="Web-之难"><a href="#Web-之难" class="headerlink" title="Web 之难"></a>Web 之难</h2><p>对于大多数同学来说，如果没有业余做一些小项目，其实是很难理解 Web 到底是怎么回事儿的，至少我当年就因为『觉得』 Web 很难所以『抗拒』Web 和网络相关的开发。虽然课堂上学过计算机网络，甚至也去实验室捣鼓过路由器交换机，但是真到自己开发的时候，真的是一脸懵逼。现在回过头来看，发现主要有以下原因：</p>
-<ul>
-<li>教学内容僵硬，硬件部分只讲硬件，软件部分只讲软件，没有联系起来</li>
-<li>实验设计不接地气，为了实验而实验，没有结合具体的场景来复制相关概念的理解</li>
-</ul>
-<p>当然，最重要的原因还是在自己的『好奇心』不足，没有追根溯源把事儿弄明白。底层原理和上层应用的有机结合本来就是非常需要花功夫的，以目前国内高校的现状来看，甚至是『吃力不讨好』的。如果体制内没有变革的动力，那不妨通过外部努力进行自下而上的改变。</p>
-<p>看到越来越多非常走心的教程以开源的方式出现在网上，我特别开心。这种开放和分享的精神在中文（互联网）世界里生根发芽，信息流动的过程本身就是一种平等。只要有网络和一颗想要学习的心，不需要缴纳高昂的学费，同样可以学到本领。程序员有程序员改变世界的方式，这就是我开博客写文章的初心了。</p>
-<p>Web 之难，主要是简单操作背后所隐藏着的复杂体系，需要有比较完善的计算机及网络相关的知识积累，既需要大局观，也需要懂细节，这对于初学者来说可能就像无法逾越的大山，很多东西只知道怎么做，却不知道为什么要这样做。与此同时，遇到问题也没有解决的思路，就很容易有挫败感。（心疼当年的自己一秒）</p>
-<p>希望本文能给在困惑中的同学一点帮助，虽然不能面面俱到，但至少能给出一些有用的提示和方法，出了问题不至于束手无策。</p>
-<h2 id="一次点击背后"><a href="#一次点击背后" class="headerlink" title="一次点击背后"></a>一次点击背后</h2><p>之前在 caoz 的公众号中看到过，他喜欢出的一道面试题是：</p>
-<blockquote>
-<p>从浏览器地址栏输入网址，到网页彻底打开，中间都发生了什么？</p>
-</blockquote>
-<p>这道题看起来很简单，但其实需要答题者对 Web 的工作过程有整体认识。与此同时，面试官也可以根据具体情况选择一到两个细节进行深入的讨论。只有明白了整个系统运行的机制，之后的调试、测试、优化才不是无源之水。而弄懂这些问题本身，也能体现一个人学习的习惯和对技术的追求，这才是面试最需要体现的东西。</p>
-<p>我一直认为，即使是做一个小的模块，也应该把自己放到更大的场景中去思考，这个模块在系统中所处的位置，与其他模块的关系与交互方式等等都是需要去思考的，这样才能写出最有价值的代码，并从中找到之后改进的方向。如果让我去面试，具体的技术细节我反而不会去拘泥太多，毕竟聪明的人很快就能学会，我在意的是候选人能不能真正以网络和计算机的方式去思考问题，这才是最重要的。（原文可以在<a href="http://chuansong.me/n/1795517" target="_blank" rel="external">caoz 的梦呓</a>中查看）</p>
-<p>仔细读题，我们应该想到的细节问题是：</p>
-<ul>
-<li>为什么我们要输入网址而不是其他什么东西？</li>
-<li>浏览器做了什么事情？</li>
-<li>网址最后去了哪里？</li>
-<li>服务器是怎么收到网址的？</li>
-<li>服务器做了什么事情？</li>
-<li>不同的页面效果是怎么出来的？</li>
-</ul>
-<p>化简一下，就是『客户端』、『网络』和『服务端』。每个部分都有各自相关的技术体系，学习的时候一定要弄清楚自己处于哪一块，比如上面几个问题涉及的相关知识点是：</p>
-<ul>
-<li>为什么我们要输入网址而不是其他什么东西？<ul>
-<li>DNS 服务器的工作原理。具体每个部分的缓存机制，如何依次更新？</li>
-<li>CDN 的工作原理。如何在硬件条件限制的情况下提供最佳服务质量？</li>
-</ul>
-</li>
-<li>浏览器做了什么事情？<ul>
-<li>Host 文件的作用。应用扩展与劫持。</li>
-</ul>
-</li>
-<li>网址最后去了哪里？<ul>
-<li>不同层的网络协议(HTTP, TCP, UDP)</li>
-<li>路由规则，传播路径，tracert</li>
-</ul>
-</li>
-<li>服务器是怎么收到网址的？<ul>
-<li>端口监听</li>
-<li>静态资源</li>
-<li>动态请求处理</li>
-</ul>
-</li>
-<li>服务器做了什么事情？<ul>
-<li>防火墙</li>
-<li>缓存</li>
-<li>数据库</li>
-<li>负载均衡</li>
-<li>集群</li>
-</ul>
-</li>
-<li>不同的页面效果是怎么出来的？<ul>
-<li>javascript</li>
-<li>css/html </li>
-</ul>
-</li>
-</ul>
-<p>一个网址请求背后就有这么多的东西，基本上每一个都可以开一门一学期的课程，初学者忽然面对这样概念饱和的轰炸，真的是九死一生。而这么多知识点，真的要样样精通，不太可能，不过如果有一个完整的概念，学习或工作中涉及具体的某个领域，再根据需要深挖，就能逐步触类旁通，找到技术的感觉。</p>
-<p>可能前面说的都比较虚，了解系统原理最直接的好处是：出了问题知道怎么排查。比如前一阵子我的博客访问忽然变慢，我做了什么呢？</p>
-<ol>
-<li>梳理架构及流程。我的博客是静态博客，评论系统采用第三方服务，页面部署在 Github 和 Coding 双平台。因为是第三方托管，所以服务器的部分我不需要操心，而客户端的话我在手机和电脑都测试过，也并没有表现出设备相关的特性，于是把问题锁定在网络传输层面。</li>
-<li>因为是静态网站，静态本身已经帮我缩小了可能出现问题的范围，无非是几个可能：页面内容传输、图片传输、字体渲染、图标显示和评论系统加载，逐个进行排查。</li>
-<li>切换 VPN 确定 Github 和 Coding 没有问题后（即页面内容和图片的传输正常），发现字体渲染卡住了，检查后是因为所用的字体库不稳定（为了照顾国内使用了 360 的源），所以切换到了中科大的源。</li>
-<li>问题解决。另外，几天后，360 官方也给出通告，停止了该源的维护，所以我也经历了一次『春江水暖刀先知』了</li>
-</ol>
-<p>平时遇到的问题大多是模糊的，只有对系统运行的机制有基本的理解，才能快速找到问题的关键所在，而这就是个人价值的体现。</p>
-<p>另一篇类似的文章是<a href="http://kb.cnblogs.com/page/132716/" target="_blank" rel="external">技术普及帖：你刚才在淘宝上买了一件东西</a></p>
-<h2 id="Web-的发展历程"><a href="#Web-的发展历程" class="headerlink" title="Web 的发展历程"></a>Web 的发展历程</h2><p>通过前面一道面试题，我们大致了解了 Web 的整体框架逻辑，这里我们从历史出发，分门别类介绍一下 Web 相关的技术</p>
-<ul>
-<li>1989 - HTML - SGML 的一个子集，由 1960 年代的 GML 衍生而来</li>
-<li>1990 - HTTP 协议 - 一开始只有一个方法 GET</li>
-<li>1993 - CGI(Common Gateway Interface)，允许应用程序动态生成 HTML</li>
-<li>1994 - Cookies</li>
-<li>1995 - SSL</li>
-<li>1996 - JavaScript</li>
-<li>1999 - AJAX</li>
-<li>2008 - 开始制定 HTML5 标准</li>
-</ul>
-<h3 id="HTML-与-CSS"><a href="#HTML-与-CSS" class="headerlink" title="HTML 与 CSS"></a>HTML 与 CSS</h3><p>HTML 其实是一个比较笼统的说法，具体的规范有很多，比如 HTML4, XML, XHTML, HTML5 等等，各有各的标准。问题在于这种标准并不是强制性的，所以现实生活中往往不同的厂商有不同的实现方式，目前看来，HTML5 是比较有前途的。</p>
-<p>最原始的页面基本都是非常『简陋』的，就是把需要显示的内容显示出来。而随着时代的发展，大家对于外观的要求越来越高，慢慢就出现了样式和内容分离的趋势，也就是 CSS(Cascading Style Sheets) 的出现。</p>
-<p>纵观历史，就会发现这样的解耦其实无处不在。为什么每一次解耦都能够带来巨大的进步呢？因为解耦实际上是沟通方式的抽象化，用更加高层的抽象能够表示更多的细节，分工更细，自然挖掘得更深。</p>
-<h3 id="DOM-Document-Object-Model"><a href="#DOM-Document-Object-Model" class="headerlink" title="DOM - Document Object Model"></a>DOM - Document Object Model</h3><p>提到 HTML，就不得不提 DOM 这概念，甚至可以这么说，万变不离其宗，我们看到的五花八门的各种前端技术，实际上都是基于 DOM 这个东西的。DOM 可以认为是一个 HTML 的对象模型，一个表示 HTML 文档的节点树。树中的每个节点可能是元素(element)，属性(attribute)或文本(text)，我们通过操作不同的节点，就可以展现出不同的页面。</p>
-<p>尤其是在动态页面大行其道的今天（但静态仍然有静态的好处，比如本博客就是静态博客），如何看待 DOM，如何操作 DOM 是每个前端框架都必须要回答的问题，比方说 React 提出的 Virtual DOM，就是希望优化传统对 DOM 操作可能带来的各种问题。</p>
-<h3 id="Javascript"><a href="#Javascript" class="headerlink" title="Javascript"></a>Javascript</h3><p>如何去操作 DOM？如何在页面中展现动态效果呢？这就离不开基于浏览器的脚本语言 - JavaScript 了。看现在的趋势，JavaScript 还真有一统前端天下的感觉，虽然最初设计得很烂（十天搞定），但是架不住用的人多呀。</p>
-<p>而随着语言本身的不断进化，也出现了各种各样的『方言』，虽然说最终都会转化成 JavaScript，但如果开发过程中有特定的需求（比方说希望有强类型），还是有用武之地的。</p>
-<p>简单描述 JavaScript 就是：</p>
-<ul>
-<li>类 C 语法</li>
-<li>垃圾回收</li>
-<li>基于对象（函数是对象）</li>
-<li>对象有具名属性</li>
-<li>函数可以是属性</li>
-<li>基于原型</li>
-<li>解释型</li>
-<li>动态类型</li>
-<li>在浏览器中运行</li>
-</ul>
-<p>好了，相信再多写点大家也看不下去了，总之写的时候多思考下就好。</p>
-<h3 id="jQuery"><a href="#jQuery" class="headerlink" title="jQuery"></a>jQuery</h3><p>有一定开发经验的同学都知道，没有各种各样的库的支持，开发起来真的是捉襟见肘。对于前端来说，jQuery 虽然现在听起来有些过时，但确实是一代王者。在它的帮助下，我们得以以更加清晰的方式来进行开发。jQuery 提供了：</p>
-<ul>
-<li>DOM 操作支持（元素选择，遍历等等）</li>
-<li>事件支持</li>
-<li>AJAX 支持</li>
-<li>工具支持</li>
-<li>插件支持</li>
-</ul>
-<p>不过现在各大公司都在推自己的前端技术栈，希望大家在看热闹的同时不要忘记曾经的英雄 - jQuery。</p>
-<h3 id="AJAX"><a href="#AJAX" class="headerlink" title="AJAX"></a>AJAX</h3><p>前面提到的 AJAX 并不是一种语言，而是一种技术，允许异步 HTTP 调用，识得更具交互性的 web 应用成为可能，因为我们不在需要每次都刷新整个页面，减少服务器负载的同时，增加了灵活性。</p>
-<p>具体的原理也很简单，使用 JavaScript 通过 XMLHttpRequest 从服务端获取数据，把数据转换成 DOM 树，再融合到现有的 Dom 树中，就完成了页面的更新。</p>
-<h3 id="HTTP-与服务器"><a href="#HTTP-与服务器" class="headerlink" title="HTTP 与服务器"></a>HTTP 与服务器</h3><p>除了前面提到的技术，Web 另一部分非常重要的内容就是服务器。这里以 HTTP 服务器为例，简要进行说明。开始之前，先来看一眼服务器的市场份额：</p>
-<p><img src="/images/14748987739818.jpg" alt=""></p>
-<p>老牌劲旅 Apache 在最近两年和 Microsoft 的缠斗中逐渐失去了王者地位，从最高的 70%（大约是 05-06 年）跌落到现在的不足 30%，而微软倒是不紧不慢地突破了 40%，还有一个值得注意的特点是 nginx 这种反向代理服务器的异军突起。</p>
-<p>简单来说，用户通过 URI 指定要访问的资源，向服务器发起请求。传输的协议基于 TCP，默认是服务器的 80 端口进行接收。具体的服务器实现因为 HTTP 规范，所以比较复杂，但基本结构是简单的，就是读取请求 - 处理请求 - 返回响应，如下所示：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">while (true) &#123;</div><div class="line">    request = readHttpRequest(...);</div><div class="line">    response = processHTTPRequest(request);</div><div class="line">    sendHttpResponse(..., response);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>服务器需要照顾的东西非常多，比如：</p>
-<ul>
-<li>服务器名称</li>
-<li>电子邮件</li>
-<li>文档位置</li>
-<li>IP 地址和端口</li>
-<li>超时</li>
-<li>最大请求长度</li>
-<li>缓存</li>
-<li>目录显示</li>
-<li>验证与授权</li>
-<li>日志与监控</li>
-<li>错误处理</li>
-<li>系统管理</li>
-<li>性能</li>
-<li>安全</li>
-<li>….</li>
-</ul>
-<p>不一而足，这里就暂时不展开了。</p>
-<h3 id="Cookies-与-Sessions"><a href="#Cookies-与-Sessions" class="headerlink" title="Cookies 与 Sessions"></a>Cookies 与 Sessions</h3><p>前面忘了说，HTTP 其实是无状态的，即不同的请求没有上下文关系，但是很多时候页面上的操作是需要依赖上下文的，比方说登录注册购物车。这时候就是 Cookies 与 Sessions 登场的时候了。</p>
-<p>Cookies 有几种类型：</p>
-<ul>
-<li>Session Cookie - 浏览器关闭就删除</li>
-<li>Persistent Cookie - 过期才删除</li>
-<li>第三方 Cookie - 从其他站点得到的，通常用于追踪，可以在浏览器中设置拒绝</li>
-</ul>
-<p>而 Sessions 则可以认为是一个短期的状态暂存，通常用 cookie 来实现。我们保存一个 session id，通过这个 id 来取出服务器上对应的 <code>(name, object)</code>，来进行相关操作。</p>
-<h3 id="网络地址"><a href="#网络地址" class="headerlink" title="网络地址"></a>网络地址</h3><p>回过头来说说网络传输层面，针对不同层级，我们都需要一个方式来区别不同的设备和应用，于是有了：</p>
-<ul>
-<li>MAC 地址 - 底层 - 硬件地址</li>
-<li>IP 地址 - 可路由的地址 </li>
-<li>DNS 主机名 - 高层 - 逻辑地址</li>
-</ul>
-<p>确定了服务器之后，使用不同的端口来和不同的应用沟通，比如</p>
-<ul>
-<li>telnet - 23</li>
-<li>smtp - 25</li>
-<li>rdp - 3389</li>
-</ul>
-<p>在开发和部署中，也有一些惯例，我们在开发的时候最好也遵守这种约定：</p>
-<ul>
-<li>部署<ul>
-<li>HTTP - 80</li>
-<li>SSL - 443</li>
-<li>MySQL - 3306</li>
-</ul>
-</li>
-<li>开发 <ul>
-<li>HTTP - 8080 </li>
-<li>SSL - 8443</li>
-</ul>
-</li>
-</ul>
-<h2 id="Web-技术演进"><a href="#Web-技术演进" class="headerlink" title="Web 技术演进"></a>Web 技术演进</h2><h3 id="CGI"><a href="#CGI" class="headerlink" title="CGI"></a>CGI</h3><p>虽然现在可能很多人都不知道 CGI(Common Gateway Interface)是啥了，但是从 1993 年出现其，CGI 使得在网页上动态显示内容成为可能。这里的动态并不是指页面在动，而是可以通过 Web 请求动态生成内容。这是怎么做到的呢？说来也简单，CGI 可以认为是 Web 服务器用来执行外部程序的接口，等于把一个 HTTP 请求通过 CGI 转化成了一个函数调用，而具体调用的函数可以由我们自己编写。当年最流行的语言是 Perl, Shell, 和 C，只要符合 CGI 接口标准，就可以把内容发送给 Web 服务器，用户也就能看到了。</p>
-<p>借助 CGI 这一层，我们把 Web 请求和处理请求的程序解耦了。当年的网站大概是这样的：</p>
-<p><img src="/images/14749872547418.jpg" alt=""></p>
-<h3 id="PHP"><a href="#PHP" class="headerlink" title="PHP"></a>PHP</h3><p>能显示动态内容是一个巨大的进步，不过很快人们就发现 CGI 没有办法满足需求了，因为每来一个请求，就要启动一个进程来处理。而且需要我们的程序自己输出 HTML 字符串，哪怕只需要一个简单的页面，也不得不输出成吨的 HTML 代码。</p>
-<p>程序员就想，那我把不变的部分抽出来，把动态内容留个占位符最后填充进去不就省事儿了吗？于是，我们就有了模板。折腾的人多了，自然就要弄出一个新东西，于是 PHP 就在 1994 年横空出世（毕竟是『最好的』语言）。</p>
-<p>之后的 ASP 和 JSP 其实可以认为是类似 PHP 这样的模板引擎，只不过后端的语言不同罢了。后来为了把内容和样式分离，1996 年的时候 W3C 发布了 CSS 1.0 规范。这下好了，Web 终于成了一个可以处理复杂事务的平台了。</p>
-<h3 id="J2EE-Net"><a href="#J2EE-Net" class="headerlink" title="J2EE / .Net"></a>J2EE / .Net</h3><p>随着 Web 应用越来越大，大家又不满足了。分布式要考虑，安全要考虑，事务要考虑，部署方式要考虑。各大公司一看，这是一个可以赚钱的事儿，于是双雄争霸，Java 派以 Servlet, JSP 和 EJB 合体出战，是为 J2EE。而微软甩出 ASP.Net 和 Visual Studio，用拖拽组件方式创建 Web 页面，极大降低了门槛。</p>
-<h3 id="框架的兴起"><a href="#框架的兴起" class="headerlink" title="框架的兴起"></a>框架的兴起</h3><p>不同的技术方案在发展到一定程度，再次面临了同一个问题，就是如何多人协作，如何组织代码。回答这两个方式有多种答案，但是最流行的答案是 MVC 的方法，即 Model/View/Controller 的套路。这种分类方式按照不同的角色进行代码复用和组织，Web 应用可以以更加灵活的方式进行配置。</p>
-<p>有的框架大而全，如果没有特别多个性化需求，几乎可能在很短的时间完成开发工作，但缺点是易学难精，一旦出现问题和稍微复杂且小众的需求，就需要大量的开发工作。</p>
-<p>有的框架小而灵活，不过需要使用者对于自己的需求和技术整体有比较清晰的认知，才能挑选出正确的组件完成工作。</p>
-<p>不同语言基本都有自己的框架，具体怎么选择就看团队和业务的要求了，如果好奇各个框架的性能，可以看<a href="http://www.techempower.com/benchmarks/#section=data-r12&amp;hw=peak&amp;test=query" target="_blank" rel="external">这里</a>，进行查看，比如说：</p>
-<p><img src="/images/14749903956246.jpg" alt=""></p>
-<p>随着前端的复杂度越来越高，各种各样前端的框架也应运而生，比如 BackboneJS, AngularJS, EmberJS（然而我并不熟悉，就此略过）</p>
-<p>框架另外做的事情是 ORM，我们不需要自己去写 SQL 语句，而是像操作对象一样操作数据库中的数据即可。</p>
-<p>更多内容可以查看<a href="https://www.zhihu.com/question/25654738" target="_blank" rel="external">Spring，Django，Rails，Express这些框架技术的出现都是为了解决什么问题，现在这些框架都应用在哪些方面？</a></p>
-<h3 id="RESTful"><a href="#RESTful" class="headerlink" title="RESTful"></a>RESTful</h3><p>从原来的静态页面开始，到各种框架，Web 本身几乎已经淹没于各种技术名词中。直到 REST 的提出和 RESTful API 的广泛使用，通过 URL 而不是其他来组织功能，可以看做是 Web 精神的回归。</p>
-<p>不过 REST 和 MVC 并不是互斥的关系，经过合理的设计，其实可以真正发挥 Web 开放、简洁且平等的力量。</p>
-<h2 id="优秀学习资源"><a href="#优秀学习资源" class="headerlink" title="优秀学习资源"></a>优秀学习资源</h2><ul>
-<li><a href="https://www.freecodecamp.cn/" target="_blank" rel="external">从零开始学习Web开发 - FreeCodeCamp</a></li>
-<li><a href="https://github.com/justjavac/free-programming-books-zh_CN" target="_blank" rel="external">免费的编程中文书籍索引</a></li>
-<li><a href="https://github.com/JacksonTian/fks" target="_blank" rel="external">前端技能汇总</a></li>
-<li><a href="https://www.zhihu.com/question/19834302" target="_blank" rel="external">零基础的前端开发初学者应如何系统地学习？</a></li>
-<li><a href="https://github.com/nieweidong/fetool" target="_blank" rel="external">大前端工具集</a></li>
-<li><a href="https://www.zhihu.com/question/19696149" target="_blank" rel="external">单人做一个网站需要掌握哪些知识？</a></li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>前面走马观花写了这么多，可能还是有很多地方没有讲清楚。之后会以系列文章的形式，把自己学习 Web 相关技术的过程跟大家分享。最后会制作一个较大型的开源 Web 应用，以实例讲解的形式完成这个系列的文章。</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="https://news.netcraft.com/archives/2016/09/19/september-2016-web-server-survey.html" target="_blank" rel="external">September 2016 Web Server Survey</a></li>
-<li><a href="https://www.tianmaying.com/tutorial/web-history" target="_blank" rel="external">Web开发技术发展历史</a></li>
-<li><a href="http://www.williamlong.info/archives/3829.html" target="_blank" rel="external">中国互联网二十年回忆</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;虽然我是原生应用的坚定粉，但是随着微信小程序的出现，还是得了解一下 Web 应用的开发。本文结合 CMU 15417 Web Application Development 这门课，大致梳理一下入门 Web 开发的必备知识及思维方式上需要转变的地方。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-    
-      <category term="开发" scheme="http://wdxtub.com/tags/%E5%BC%80%E5%8F%91/"/>
-    
-      <category term="Web" scheme="http://wdxtub.com/tags/Web/"/>
-    
-      <category term="入门" scheme="http://wdxtub.com/tags/%E5%85%A5%E9%97%A8/"/>
     
   </entry>
   
