@@ -98,7 +98,7 @@
 <meta property="og:image" content="http://wdxtub.com/images/14601450728106.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14601452084625.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14601453998378.jpg">
-<meta property="og:updated_time" content="2016-04-30T16:13:00.000Z">
+<meta property="og:updated_time" content="2016-11-04T14:12:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【读薄 CSAPP】玖 并行与同步">
 <meta name="twitter:description" content="进程和线程有什么差别？超线程又是什么意思？为什么多线程能够提高程序执行的速度？是所有情况都适用吗？并行程序有没有什么限制？这一讲我们来聊聊并行与同步这两个『继往开来』的概念。在今后的学习中，大家一定会不止一次发现，很多问题说来说去，其实就是并行与同步的问题。">
@@ -369,6 +369,31 @@
         <p>进程和线程有什么差别？超线程又是什么意思？为什么多线程能够提高程序执行的速度？是所有情况都适用吗？并行程序有没有什么限制？这一讲我们来聊聊并行与同步这两个『继往开来』的概念。在今后的学习中，大家一定会不止一次发现，很多问题说来说去，其实就是并行与同步的问题。</p>
 <a id="more"></a>
 <hr>
+<h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><p>读薄部分</p>
+<ul>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-0/">零 系列概览</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-1/">壹 数据表示 - 不同的数据是如何存储与表示的</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-2/">贰 机器指令与程序优化 - 控制流、过程调用、缓冲区溢出</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-3/">叁 内存与缓存 - 内存层级与缓存机制</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-4/">肆 链接 - 不同的代码如何协同</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-5/">伍 异常控制流 - 不同进程间的切换与沟通</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-6/">陆 系统输入输出 - 怎么把不同的内容发送到不同的地方</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-7/">柒 虚拟内存与动态内存分配 - 现代计算机中内存的奥秘</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-8/">捌 网络编程 - 从最原始套接字彻底理解网络编程</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-9/">玖 并行与同步 - 协同工作中最重要的两个问题</a></li>
+</ul>
+<p>读厚部分</p>
+<ul>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-0/">实验概览</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-1/">I Data Lab - 位操作，数据表示</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-2/">II Bomb Lab - 汇编，栈帧与 gdb</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-3/">III Attack Lab - 漏洞是如何被攻击的</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-4/">IV Cache Lab - 实现一个缓存系统来加速计算</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-5/">V Shell Lab - 实现一个 shell</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-6/">VI Malloc Lab - 实现一个动态内存分配</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-7/">VII Proxy Lab - 实现一个多线程带缓存的代理服务器</a></li>
+<li><a href="http://wdxtub.com/2016/05/01/csapp-review/">知识点复习</a></li>
+</ul>
 <h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
 <li>理解并行的几个层次：进程、事件、线程</li>
 <li>了解 Posix 标准</li>
@@ -907,7 +932,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#学习目标"><span class="nav-number">1.</span> <span class="nav-text">学习目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并行方法"><span class="nav-number">2.</span> <span class="nav-text">并行方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基于进程"><span class="nav-number">2.1.</span> <span class="nav-text">基于进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于事件"><span class="nav-number">2.2.</span> <span class="nav-text">基于事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于线程"><span class="nav-number">2.3.</span> <span class="nav-text">基于线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小结"><span class="nav-number">2.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步"><span class="nav-number">3.</span> <span class="nav-text">同步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#共享变量"><span class="nav-number">3.1.</span> <span class="nav-text">共享变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键区域-Critical-Section"><span class="nav-number">3.2.</span> <span class="nav-text">关键区域 Critical Section</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信号量"><span class="nav-number">3.3.</span> <span class="nav-text">信号量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生产者-消费者问题"><span class="nav-number">4.</span> <span class="nav-text">生产者-消费者问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读者-写者问题"><span class="nav-number">5.</span> <span class="nav-text">读者-写者问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程安全"><span class="nav-number">6.</span> <span class="nav-text">线程安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#超线程"><span class="nav-number">7.</span> <span class="nav-text">超线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#学习目标"><span class="nav-number">2.</span> <span class="nav-text">学习目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并行方法"><span class="nav-number">3.</span> <span class="nav-text">并行方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基于进程"><span class="nav-number">3.1.</span> <span class="nav-text">基于进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于事件"><span class="nav-number">3.2.</span> <span class="nav-text">基于事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于线程"><span class="nav-number">3.3.</span> <span class="nav-text">基于线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小结"><span class="nav-number">3.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步"><span class="nav-number">4.</span> <span class="nav-text">同步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#共享变量"><span class="nav-number">4.1.</span> <span class="nav-text">共享变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键区域-Critical-Section"><span class="nav-number">4.2.</span> <span class="nav-text">关键区域 Critical Section</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信号量"><span class="nav-number">4.3.</span> <span class="nav-text">信号量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生产者-消费者问题"><span class="nav-number">5.</span> <span class="nav-text">生产者-消费者问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读者-写者问题"><span class="nav-number">6.</span> <span class="nav-text">读者-写者问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程安全"><span class="nav-number">7.</span> <span class="nav-text">线程安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#超线程"><span class="nav-number">8.</span> <span class="nav-text">超线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
           </div>
         </section>

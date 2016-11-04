@@ -95,7 +95,7 @@
 <meta property="og:image" content="http://wdxtub.com/images/14614963360280.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14614966173879.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14614968463687.jpg">
-<meta property="og:updated_time" content="2016-04-24T11:52:51.000Z">
+<meta property="og:updated_time" content="2016-11-04T14:12:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【读薄 CSAPP】陆 系统输入输出">
 <meta name="twitter:description" content="Linux 系统中 IO 的概念是非常有趣的，结合『所有东西都是文件』这个抽象，无论是输入输出重定向，还是挂载不同的设备，甚至是网络编程，都可以由系统输入输出这个统一的模型来进行描述。这一讲我们就来了解一下以 stdin, stdout 等为代表的系统输入输出。">
@@ -366,6 +366,31 @@
         <p>Linux 系统中 IO 的概念是非常有趣的，结合『所有东西都是文件』这个抽象，无论是输入输出重定向，还是挂载不同的设备，甚至是网络编程，都可以由系统输入输出这个统一的模型来进行描述。这一讲我们就来了解一下以 <code>stdin</code>, <code>stdout</code> 等为代表的系统输入输出。</p>
 <a id="more"></a>
 <hr>
+<h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><p>读薄部分</p>
+<ul>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-0/">零 系列概览</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-1/">壹 数据表示 - 不同的数据是如何存储与表示的</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-2/">贰 机器指令与程序优化 - 控制流、过程调用、缓冲区溢出</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-3/">叁 内存与缓存 - 内存层级与缓存机制</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-4/">肆 链接 - 不同的代码如何协同</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-5/">伍 异常控制流 - 不同进程间的切换与沟通</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-6/">陆 系统输入输出 - 怎么把不同的内容发送到不同的地方</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-7/">柒 虚拟内存与动态内存分配 - 现代计算机中内存的奥秘</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-8/">捌 网络编程 - 从最原始套接字彻底理解网络编程</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thin-csapp-9/">玖 并行与同步 - 协同工作中最重要的两个问题</a></li>
+</ul>
+<p>读厚部分</p>
+<ul>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-0/">实验概览</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-1/">I Data Lab - 位操作，数据表示</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-2/">II Bomb Lab - 汇编，栈帧与 gdb</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-3/">III Attack Lab - 漏洞是如何被攻击的</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-4/">IV Cache Lab - 实现一个缓存系统来加速计算</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-5/">V Shell Lab - 实现一个 shell</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-6/">VI Malloc Lab - 实现一个动态内存分配</a></li>
+<li><a href="http://wdxtub.com/2016/04/16/thick-csapp-lab-7/">VII Proxy Lab - 实现一个多线程带缓存的代理服务器</a></li>
+<li><a href="http://wdxtub.com/2016/05/01/csapp-review/">知识点复习</a></li>
+</ul>
 <h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><ol>
 <li>理解 Unix I/O 的设计与应用</li>
 <li>了解不同的文件类型</li>
@@ -758,7 +783,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#学习目标"><span class="nav-number">1.</span> <span class="nav-text">学习目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unix-I-O"><span class="nav-number">2.</span> <span class="nav-text">Unix I/O</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#打开文件"><span class="nav-number">2.1.</span> <span class="nav-text">打开文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭文件"><span class="nav-number">2.2.</span> <span class="nav-text">关闭文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取文件"><span class="nav-number">2.3.</span> <span class="nav-text">读取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写入文件"><span class="nav-number">2.4.</span> <span class="nav-text">写入文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#元数据"><span class="nav-number">3.</span> <span class="nav-text">元数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重定向"><span class="nav-number">4.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标准输入输出"><span class="nav-number">5.</span> <span class="nav-text">标准输入输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">7.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#学习目标"><span class="nav-number">2.</span> <span class="nav-text">学习目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unix-I-O"><span class="nav-number">3.</span> <span class="nav-text">Unix I/O</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#打开文件"><span class="nav-number">3.1.</span> <span class="nav-text">打开文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭文件"><span class="nav-number">3.2.</span> <span class="nav-text">关闭文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取文件"><span class="nav-number">3.3.</span> <span class="nav-text">读取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写入文件"><span class="nav-number">3.4.</span> <span class="nav-text">写入文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#元数据"><span class="nav-number">4.</span> <span class="nav-text">元数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重定向"><span class="nav-number">5.</span> <span class="nav-text">重定向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标准输入输出"><span class="nav-number">6.</span> <span class="nav-text">标准输入输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
