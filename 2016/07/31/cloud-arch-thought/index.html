@@ -88,13 +88,13 @@
 
 <meta name="description" content="在云资源无比丰富的今天，公司核心新系统的设计开发，尤其是后台架构部分，如果不是仅仅为验证想法而做的 MVP，应该在一开始就考虑好如何利用云平台的特性，这样才能在业务增长时仍能游刃有余。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="云平台架构沉思录">
+<meta property="og:title" content="【架与构】2 云平台架构沉思录">
 <meta property="og:url" content="http://wdxtub.com/2016/07/31/cloud-arch-thought/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="在云资源无比丰富的今天，公司核心新系统的设计开发，尤其是后台架构部分，如果不是仅仅为验证想法而做的 MVP，应该在一开始就考虑好如何利用云平台的特性，这样才能在业务增长时仍能游刃有余。">
-<meta property="og:updated_time" content="2016-07-31T07:18:08.000Z">
+<meta property="og:updated_time" content="2016-11-13T00:28:38.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="云平台架构沉思录">
+<meta name="twitter:title" content="【架与构】2 云平台架构沉思录">
 <meta name="twitter:description" content="在云资源无比丰富的今天，公司核心新系统的设计开发，尤其是后台架构部分，如果不是仅仅为验证想法而做的 MVP，应该在一开始就考虑好如何利用云平台的特性，这样才能在业务增长时仍能游刃有余。">
 
 
@@ -113,7 +113,7 @@
   };
 </script>
 
-  <title> 云平台架构沉思录 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 【架与构】2 云平台架构沉思录 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -311,7 +311,7 @@
             
             
               
-                云平台架构沉思录
+                【架与构】2 云平台架构沉思录
               
             
           </h1>
@@ -386,6 +386,11 @@
 <a id="more"></a>
 <hr>
 <p>本文是我在设计新系统时的一些思考，剥离了具体的业务内容，但是仍会在业务层面关注各个系统组件的可用性和伸缩性，力求在设计中充分利用云计算的优势，同时为未来留有余地。简单来说，是结合企业的业务特点构建稳定可靠的分布式系统。</p>
+<p>更新历史</p>
+<ul>
+<li>2016.07.31: 初稿完成</li>
+<li>2016.11.13: 合并到【架与构】系列中</li>
+</ul>
 <h2 id="他山之石"><a href="#他山之石" class="headerlink" title="他山之石"></a>他山之石</h2><p>当当架构部总监史海峰在其为架构师杂志写的开卷语中列举的架构师自我修养工整且字字在理，这里摘抄如下，也算是对自己的鼓励和激励：</p>
 <ul>
 <li>以工程思维全面理解业务需求</li>
@@ -397,7 +402,26 @@
 <li>并在系统生命周期内持续演进</li>
 </ul>
 <p>架构能力的成长没有捷径，也不可能成为所谓的理论家，一定要在项目实践中不断思考积累经验，了解技术和业务发展趋势，用强大的自学能力补足各种短板，严格要求自己，用最大的动力朝抵抗力最大的路径走。当然，最重要的，有责任心，要对自己交付的每一行代码，每一张图片，每一句文字都负责。</p>
-<p>接下来就对云平台中比较重要的几个关键技术点进行简单说明，同时也有自己的一些思考。</p>
+<p>一个访问人数众多的 7x24 的互联网服务对于架构师和开发者来说意味着以下三个方面：高吞吐高并发、低延迟、负载均衡。而如果我们想要面向全球用户提供服务，抛开繁文缛节的法律问题不说，如何跨越时空限制，也是难点之一。</p>
+<p>《分布式系统本质论》中把架构问题做了一个很好的总结：</p>
+<ul>
+<li>互联网海量承载问题<ul>
+<li>提高吞吐量：分层调用、异步并发</li>
+<li>降低延迟：缓存、NoSQL</li>
+</ul>
+</li>
+<li>大量服务器管理问题<ul>
+<li>故障恢复和可扩展性：分布式目录服务、消息队列服务、分布式事务系统</li>
+<li>运维便利性：自动部署工具、统一日志系统</li>
+</ul>
+</li>
+<li>开发效率问题<ul>
+<li>复杂的通信编程：微服务框架、异步编程工具</li>
+<li>大量功能模块需要分工：搭建 IaaS/PaaS/SaaS 云服务</li>
+</ul>
+</li>
+</ul>
+<p>接下来就对云平台架构设计中比较重要的几个关键技术点进行简单说明，同时也有自己的一些思考。</p>
 <h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>云平台对于用户来说是一个黑盒子，而负载均衡可以算得上是盒子内外的分界线，一个好的负载均衡机制，对于构建高性能高可用的网络架构非常重要。当然，一般来说凡事这类基础且需要一定技术水平才能做好的模块，目前的云平台都会提供，比方说 AWS ELB 就可以让开发人员告别繁琐的服务器配置，接入服务即可。不过即使如此，我们依旧需要了解其中的门道，这样即使需要自己搭建，也不至于手足无措。</p>
 <p>负载均衡会和几乎所有的服务器主机连接，具体如何保证网络安全就是一个大问题，一个解决方案是利用 VPC。把主机和系统资源放置在 VPC 网络中并指定内网网段，这样经负载均衡隔离，主机间与资源间只通过内网地址进行通信，就不至于暴露在公网。</p>
 <p>负载均衡一般来说有一台服务器负责扮演负载均衡器的角色，是一个单点问题，我们可以为其做冗余备份，一旦出现问题，立刻进行替换。具体涉及的技术一般是七层(Nginx, HAProxy)/四层(LVS)负载均衡，可以根据分发需求与性能需求进行选择；用来监控后端服务器可以使用简单的心跳检查。</p>
@@ -433,6 +457,11 @@
 <p>看起来都很虚，要慢慢悟。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>不谋万世者，不足以谋一时。虽然架构演进是一个漫长而艰巨的过程，但是加入一定程度的面向未来设计，后面随着业务发展也会少走一点弯路。</p>
 <p>希望自己在实践中也能牢记此律。</p>
+<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><ul>
+<li><a href="http://www.52cs.org/?p=1290" target="_blank" rel="external">分布式系统本质论 1</a></li>
+<li><a href="http://www.52cs.org/?p=1302" target="_blank" rel="external">分布式系统本质论 2</a></li>
+<li><a href="http://www.52cs.org/?p=1316" target="_blank" rel="external">分布式系统本质论 3</a></li>
+</ul>
 
       
     </div>
@@ -551,7 +580,7 @@
   <div class="comments" id="comments">
     
       <div class="ds-thread" data-thread-key="2016/07/31/cloud-arch-thought/"
-           data-title="云平台架构沉思录" data-url="http://wdxtub.com/2016/07/31/cloud-arch-thought/">
+           data-title="【架与构】2 云平台架构沉思录" data-url="http://wdxtub.com/2016/07/31/cloud-arch-thought/">
       </div>
     
   </div>
@@ -717,7 +746,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#他山之石"><span class="nav-number">1.</span> <span class="nav-text">他山之石</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#负载均衡"><span class="nav-number">2.</span> <span class="nav-text">负载均衡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存系统"><span class="nav-number">3.</span> <span class="nav-text">缓存系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#业务层"><span class="nav-number">4.</span> <span class="nav-text">业务层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据层"><span class="nav-number">5.</span> <span class="nav-text">数据层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后端框架"><span class="nav-number">6.</span> <span class="nav-text">后端框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#他山之石"><span class="nav-number">1.</span> <span class="nav-text">他山之石</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#负载均衡"><span class="nav-number">2.</span> <span class="nav-text">负载均衡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存系统"><span class="nav-number">3.</span> <span class="nav-text">缓存系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#业务层"><span class="nav-number">4.</span> <span class="nav-text">业务层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据层"><span class="nav-number">5.</span> <span class="nav-text">数据层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后端框架"><span class="nav-number">6.</span> <span class="nav-text">后端框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展阅读"><span class="nav-number">8.</span> <span class="nav-text">扩展阅读</span></a></li></ol></div>
             
           </div>
         </section>
