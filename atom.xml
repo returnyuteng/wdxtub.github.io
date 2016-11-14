@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2016-11-12T06:16:07.000Z</updated>
+  <updated>2016-11-14T11:28:15.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -14,6 +14,211 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Javascript 编码风格指南</title>
+    <link href="http://wdxtub.com/2016/11/14/javascript-style-guide/"/>
+    <id>http://wdxtub.com/2016/11/14/javascript-style-guide/</id>
+    <published>2016-11-14T11:26:27.000Z</published>
+    <updated>2016-11-14T11:28:15.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Javascript 作为一个非常灵活的脚本语言，光是比较流行的编码风格指南就有好几种。有 Google, NPM, Node.js, jQuery, Airbnb 等等。本文以 Airbnb 风格为基础来介绍 js 的编码风格，对原文的逻辑进行了梳理。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2016.11.14: 初稿完成</li>
+</ul>
+<h2 id="格式规范"><a href="#格式规范" class="headerlink" title="格式规范"></a>格式规范</h2><ul>
+<li><strong>命名规则：规范</strong><ul>
+<li>避免单字母命名。命名应具备描述性</li>
+<li>使用驼峰式命名对象、函数和实例（首字母小写）</li>
+<li>使用帕斯卡式命名构造函数或类（首字母大写）</li>
+<li>使用下划线 <code>_</code> 开头命名私有属性</li>
+<li>别保存 <code>this</code> 的引用。使用箭头函数或 <code>Function#bind</code></li>
+<li>如果你的文件只输出一个类，那你的文件名必须和类名完全保持一致</li>
+<li>当你导出默认的函数时使用驼峰式命名。你的文件名必须和函数名完全保持一致</li>
+<li>当你导出单例、函数库、空对象时使用帕斯卡式命名</li>
+</ul>
+</li>
+<li><strong>代码块：规范</strong><ul>
+<li>使用大括号包裹所有的多行代码块</li>
+<li>如果通过 <code>if</code> 和 <code>else</code> 使用多行代码块，把 <code>else</code> 放在 <code>if</code> 代码块关闭括号的同一行</li>
+</ul>
+</li>
+<li><strong>注释：规范</strong><ul>
+<li>使用 <code>/** ... */</code> 作为多行注释。包含描述、指定所有参数和返回值的类型和值</li>
+<li>使用 <code>//</code> 作为单行注释。在评论对象上面另起一行使用单行注释。在注释前插入空行</li>
+<li>给注释增加 <code>FIXME</code> 或 <code>TODO</code> 的前缀可以帮助其他开发者快速了解这是一个需要复查的问题，或是给需要实现的功能提供一个解决方式。这将有别于常见的注释，因为它们是可操作的。使用 <code>FIXME -- need to figure this out</code> 或者 <code>TODO -- need to implement</code></li>
+</ul>
+</li>
+<li><strong>空白：这个部分见仁见智保持一致即可</strong><ul>
+<li>使用 2 个空格作为缩进</li>
+<li>在花括号前放一个空格</li>
+<li>在控制语句(<code>if</code>、<code>while</code>)等的小括号前放一个空格。在函数调用及声明中，不在函数的参数列表前加空格</li>
+<li>使用空格把运算符隔开</li>
+<li>在文件末尾插入一个空行</li>
+<li>在使用长方法链时进行缩进。使用前面的点 <code>.</code> 强调这是方法调用而不是新语句</li>
+<li>在块末和新语句前插入空行</li>
+</ul>
+</li>
+<li><strong>逗号：规范</strong><ul>
+<li>行首逗号：不需要</li>
+<li>增加结尾的逗号: 需要。因为这会让 git diffs 更干净</li>
+</ul>
+</li>
+<li><strong>分号：规范</strong><ul>
+<li>使用分号，防止在极端情况下被合并   </li>
+</ul>
+</li>
+</ul>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
+<li><strong>类型：核心思想是避免复杂类型的深浅复制</strong><ul>
+<li>直接存取基本类型：字符串、数值、布尔类型、<code>null</code>、<code>undefined</code></li>
+<li>通过引用的方式存取复杂类型：对象、数组、函数</li>
+</ul>
+</li>
+<li><strong>引用：核心思想是最小化引用的影响范围，不要轻易变化</strong><ul>
+<li>对所有的引用使用 <code>const</code>，不要使用 <code>var</code>。这能确保无法对引用重新赋值，避免出现 bug，减少理解成本</li>
+<li>如果一定需要可变动的引用，使用 <code>let</code> 而不是 <code>var</code>。因为 <code>let</code> 是块级作用域，而 <code>var</code> 是函数作用域</li>
+<li><code>let</code> 和 <code>const</code> 都是块级作用域</li>
+</ul>
+</li>
+<li><strong>变量：</strong><ul>
+<li>一直使用 <code>const</code> 来声明变量，如果不这样做就会产生全局变量。我们需要避免全局命名空间的污染</li>
+<li>将所有的 <code>const</code> 和 <code>let</code> 分组，当你需要把已赋值变量赋值给未赋值变量时非常有用</li>
+<li>在你需要的地方给变量赋值，但请把它们放在一个合理的位置。因为 <code>let</code> 和 <code>const</code> 是块级作用域而不是函数作用域</li>
+</ul>
+</li>
+<li><strong>字符串：增加可读性</strong><ul>
+<li>字符串使用单引号 <code>&#39;&#39;</code></li>
+<li>字符串超过 80 个字节应该使用字符串连接号换行</li>
+<li>过度使用字串连接符号可能会对性能造成影响</li>
+<li>程序化生成字符串时，使用模板字符串代替字符串连接。因为模板字符串更为简洁，更具可读性</li>
+</ul>
+</li>
+<li><strong>比较运算符 &amp; 等号：规范与代码可读性</strong><ul>
+<li>优先使用 <code>===</code> 和 <code>!==</code> 而不是 <code>==</code> 和 <code>!=</code></li>
+<li>条件表达式例如 <code>if</code> 语句通过抽象方法 <code>ToBoolean</code> 强制计算它们的表达式并且总是遵守下面的规则<ul>
+<li><code>对象</code> 被计算为 <code>true</code></li>
+<li><code>Undefined</code> 被计算为 <code>false</code></li>
+<li><code>Null</code> 被计算为 <code>false</code></li>
+<li><code>布尔值</code> 被计算为 <code>布尔的值</code></li>
+<li><code>数字</code> 如果是 <code>+0</code>、<code>-0</code>、或 <code>NaN</code> 被计算为 <code>false</code>, 否则为 <code>true</code></li>
+<li><code>字符串</code> 如果是空字符串 <code>&#39;&#39;</code> 被计算为 <code>false</code>，否则为 <code>true</code></li>
+</ul>
+</li>
+<li>使用简写</li>
+</ul>
+</li>
+<li><strong>类型转换：</strong><ul>
+<li>在语句开始时执行类型转换</li>
+<li>字符串不要用 <code>this.score + &#39;&#39;</code>，而是 <code>String(this.score)</code></li>
+<li>对数字使用 <code>parseInt</code> 转换，并带上类型转换的基数</li>
+<li>如果因为某些原因 parseInt 成为你所做的事的瓶颈而需要使用位操作解决<a href="http://jsperf.com/coercion-vs-casting/3" target="_blank" rel="external">性能问题</a>时，留个注释说清楚原因和你的目的</li>
+<li>小心使用位操作运算符。数字会被当成 64 位值，但是位操作运算符总是返回 32 位的整数（<a href="http://es5.github.io/#x11.7" target="_blank" rel="external">参考</a>）。位操作处理大于 32 位的整数值时还会导致意料之外的行为。<a href="https://github.com/airbnb/javascript/issues/109" target="_blank" rel="external">关于这个问题的讨论</a>。最大的 32 位整数是 2,147,483,647</li>
+<li>使用 <code>Boolean()</code> 或 <code>!!</code> 来进行布尔值的转换</li>
+</ul>
+</li>
+<li><strong>存取器：一致性与规范</strong><ul>
+<li>属性的存取函数不是必须的</li>
+<li>如果你需要存取函数时使用 <code>getVal()</code> 和 <code>setVal(&#39;hello&#39;)</code></li>
+<li>如果属性是布尔值，使用 <code>isVal()</code> 或 <code>hasVal()</code></li>
+<li>创建 <code>get()</code> 和 <code>set()</code> 函数是可以的，但要保持一致</li>
+</ul>
+</li>
+<li><strong>jQuery：明确指出使用 jQuery 的代码，优化性能</strong><ul>
+<li>使用 <code>$</code> 作为存储 jQuery 对象的变量名前缀</li>
+<li>缓存 jQuery 查询</li>
+<li>对 DOM 查询使用层叠 <code>$(&#39;.sidebar ul&#39;)</code> 或 父元素 &gt; 子元素 <code>$(&#39;.sidebar &gt; ul&#39;)</code></li>
+<li>对有作用域的 jQuery 对象查询使用 <code>find</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="复杂结构"><a href="#复杂结构" class="headerlink" title="复杂结构"></a>复杂结构</h2><ul>
+<li><strong>对象：考虑兼容性与可读性</strong><ul>
+<li>使用字面值创造对象，如 <code>const item = {};</code> 而非 <code>const item = new Object();</code></li>
+<li>浏览器环境中执行的代码不要使用 <a href="http://es5.github.io/#x7.6.1" target="_blank" rel="external">保留字</a> 作为键值（比如 <code>private</code> 这类就不要用），可以使用同义词替换所需要使用的保留字，比如说把 <code>class</code> 换成 <code>type</code></li>
+<li>创建有动态属性名的对象时，使用可被计算的属性名称，这样就可以在一个地方定义所有的对象属性</li>
+<li>使用对象方法和对象属性值的简写</li>
+<li>在对象属性声明前把简写的属性分组，这样能清楚地看出哪些属性使用了简写</li>
+</ul>
+</li>
+<li><strong>数组：可读性与操作简化</strong><ul>
+<li>使用字面值创建数组，如 <code>const items = [];</code> 而非 <code>const items = new Array();</code></li>
+<li>向数组添加元素时使用 <code>Arrary#push</code> 替代直接赋值</li>
+<li>使用拓展运算符 <code>...</code> 复制数组，如 <code>const itemsCopy = [...items]</code></li>
+<li>使用 <code>Array#from</code> 把一个类数组对象转换成数组</li>
+</ul>
+</li>
+<li><strong>解构：减少操作开销</strong><ul>
+<li>使用解构存取和使用多属性对象，这样能减少临时引用属性</li>
+<li>对数组使用解构赋值</li>
+<li>需要回传多个值时，使用对象解构，而不是数组解构。因为增加属性或者改变排序不会改变调用时的位置</li>
+</ul>
+</li>
+<li><strong>函数：性能与可读性</strong><ul>
+<li>使用函数声明代替函数表达式，如 <code>function foo() {}</code></li>
+<li>永远不要在一个非函数代码块（if、while 等）中声明一个函数，把那个函数赋给一个变量。浏览器允许你这么做，但它们的解析表现不一致</li>
+<li>ECMA-262 把 <code>block</code> 定义为一组语句。函数声明不是语句</li>
+<li>永远不要把参数命名为 <code>arguments</code>。这将取代原来函数作用域内的 <code>arguments</code> 对象</li>
+<li>不要使用 <code>arguments</code>。可以选择 rest 语法 <code>...</code> 替代。因为使用 <code>...</code> 能明确你要传入的参数。另外 rest 参数是一个真正的数组，而 <code>arguments</code> 是一个类数组</li>
+<li>直接给函数的参数指定默认值，不要使用一个变化的函数参数</li>
+<li>直接给函数参数赋值时需要避免副作用</li>
+</ul>
+</li>
+<li><strong>箭头函数：简化代码，加强可读性</strong> <ul>
+<li>当你必须使用函数表达式（或传递一个匿名函数）时，使用箭头函数符号</li>
+<li>如果一个函数适合用一行写出并且只有一个参数，那就把花括号、圆括号和 return 都省略掉。如果不是，那就不要省略。如 <code>[1, 2, 3].map(x =&gt; x * x)</code></li>
+</ul>
+</li>
+<li><strong>构造器：维持一致性，链式调用</strong><ul>
+<li>总是使用 <code>class</code>，避免直接操作 <code>prototype</code>。因为 <code>class</code> 语法更有可读性</li>
+<li>使用 <code>extends</code> 继承，因为 <code>extends</code> 是一个内建的原型继承方法并且不会破坏 <code>instanceof</code></li>
+<li>方法可以返回 <code>this</code> 来帮助链式调用</li>
+<li>可以写一个自定义的 <code>toString()</code> 方法，但要确保它能正常运行并且不会引起副作用</li>
+</ul>
+</li>
+<li><strong>模块：确保模块化，符合规范</strong><ul>
+<li>总是使用模组(<code>import</code>/<code>export</code>)而不是其他非标准模块系统。你可以编译为你喜欢的模块系统</li>
+<li>不要使用通配符 <code>import</code>，这样能确保你只有一个默认 <code>export</code></li>
+<li>不要从 <code>import</code> 中直接 <code>export</code>。虽然一行代码简洁明了，但让 import 和 export 各司其职让事情能保持一致</li>
+</ul>
+</li>
+<li><strong>迭代器：往函数式编程上靠，减少副作用</strong><ul>
+<li>不要使用 <code>iterators</code>。使用高阶函数例如 <code>map()</code> 和 <code>reduce()</code> 替代 <code>for-of</code>。因为处理纯函数的回调值更易读，这比它带来的副作用更重要</li>
+</ul>
+</li>
+<li><strong>属性：区分是否通过变量来访问</strong><ul>
+<li>使用 <code>.</code> 来访问对象的属性</li>
+<li>当通过变量访问属性时使用中括号 <code>[]</code></li>
+</ul>
+</li>
+<li><strong>事件：灵活性，降低判断成本</strong><ul>
+<li>当给事件附加数据时（无论是 DOM 事件还是私有事件），传入一个哈希而不是原始值。这样可以让后面的贡献者增加更多数据到事件数据而无需找出并更新事件的每一个处理器</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://lzw.me/a/javascript-coding-style-reference.html/comment-page-1" target="_blank" rel="external">JavaScript 流行代码风格参考指南</a></li>
+<li><a href="https://github.com/yuche/javascript" target="_blank" rel="external">Airbnb JavaScript 编码规范</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Javascript 作为一个非常灵活的脚本语言，光是比较流行的编码风格指南就有好几种。有 Google, NPM, Node.js, jQuery, Airbnb 等等。本文以 Airbnb 风格为基础来介绍 js 的编码风格，对原文的逻辑进行了梳理。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="风格" scheme="http://wdxtub.com/tags/%E9%A3%8E%E6%A0%BC/"/>
+    
+      <category term="Javascript" scheme="http://wdxtub.com/tags/Javascript/"/>
+    
+  </entry>
   
   <entry>
     <title>第二十二周 - 在梅边</title>
@@ -2157,65 +2362,6 @@
       <category term="转载" scheme="http://wdxtub.com/tags/%E8%BD%AC%E8%BD%BD/"/>
     
       <category term="风格" scheme="http://wdxtub.com/tags/%E9%A3%8E%E6%A0%BC/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>技术文档写作指南</title>
-    <link href="http://wdxtub.com/2016/10/10/tech-doc-guide/"/>
-    <id>http://wdxtub.com/2016/10/10/tech-doc-guide/</id>
-    <published>2016-10-09T23:29:13.000Z</published>
-    <updated>2016-10-10T14:44:46.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>一个成功且可持续的项目，除了良好的架构设计和高质量的代码外，清晰且易于理解的技术文档也是必不可少的一部分。本文结合自己工作中文档写作的一些经验，来说说如何把文档写好。</p>
-<a id="more"></a>
-<hr>
-<p>可能是因为长期写博客的缘故，在写作这个事儿上，我还是有比较严苛的要求的。技术文档和技术博客在很多方面有相似之处，比方说都是写给技术人员（爱好者）看的。在我看来，很多现在网上的技术博客基本上连技术文档的要求都达不到，或者说文档和博客各占一点，半桶水瞎晃荡。简单来说，博客重在原理与引起读者的兴趣与思考，文档重在细节与方便技术人员解决问题，那这个标准去套，应该就能看出问题所在了。</p>
-<h2 id="为什么要写文档"><a href="#为什么要写文档" class="headerlink" title="为什么要写文档"></a>为什么要写文档</h2><p>前面说文档和博客的相似，最主要是在技术层面上的相似，甚至眼光放广一点，跟写代码也非常相似，都需要好的设计与架构。而为什么要写文档呢？大约有以下原因：</p>
-<ul>
-<li>项目合作需要：比方说前后端分离之后，利用接口进行连接，那么需要接口文档。</li>
-<li>项目维护需要：总体项目开发完成后，维护人员和后期开发人员需要相关文档来照看工作。</li>
-<li>思路整理需要：通过撰写技术文档，可以梳理好整个系统技术相关思路，更加负责的开发人员会在这个过程中进行优化，使系统更好</li>
-<li>技术积累需要：通过抽取一些与业务无关的部分，能够在之后的开发中进行复用，就需要文档支持</li>
-</ul>
-<p>简单来说，就是 <strong>总结 -&gt; 积累 -&gt; 提高 -&gt; 复用</strong> 的过程。</p>
-<h2 id="怎么写好文档"><a href="#怎么写好文档" class="headerlink" title="怎么写好文档"></a>怎么写好文档</h2><p>我们都希望接手的工作有优秀的文档，但是写文档的时候却常常过于随便。所以我们不妨从『好』文档的标准说起：</p>
-<ul>
-<li>准确：不会给人模棱两可的感觉</li>
-<li>清晰：不会给人写了很多但不知道写了啥的感觉</li>
-<li>完整：不会给人话说到一半戛然而止的感觉</li>
-<li>简洁：不会给人没话找话说的感觉</li>
-<li>有组织：不会给人不知道要去哪里看什么内容的感觉</li>
-<li>可读性好：不会给人每个字都认识但就是看不懂的感觉</li>
-<li>任务导向：不会给人跑题不说重点的感觉。</li>
-</ul>
-<p>总结一下，其实就是信息架构的能力，是不是发现和代码架构很像？再延伸一些，是不是想到了各种框架？什么 MVC 什么 MVVM 其实不就是某种意义上的层次模块分明吗？</p>
-<p>其实凡是需要进行组织的事物，都需要架构能力。好的架构师一定是善于观察善于思考善于提炼的，这些能力在写代码中可以训练，在写文档写博客中同样可以训练。而阅读各种经典，其实就是在向各类牛人们学习，为什么别人这么写我看得爽，我能不能也这么写。一旦有了这个思路，就不怕不知道怎么提高了。</p>
-<p>从这个角度出发，来具体给出一些建议吧，因为基于自己的经验，不会特别全面，如果需要全面学习的话，可以去看看技术写作的相关书籍。</p>
-<ol>
-<li>总分总：这个从小时候就常用的方式可以说是最符合人类思维习惯的结构。如果要用比较时髦的词就是『金字塔原理』，无论是正金字塔还是倒金字塔，可以根据需要进行选择。</li>
-<li>一图胜千言：涉及到诸多概念及其相关联系时，不要过多解释，画一个清晰的图，比什么效果都好。不需要太复杂，简单的 UML 已经足够。</li>
-<li>看人下菜：针对不同的群体要有不同的写作侧重点。如果是给运维人员看的，那么重点是要说清楚各个操作以及相关逻辑；如果是给非技术人员看的，一定要尽量『看图说话』，联系他们能够理解的概念来跨越不同职业的鸿沟；如果是给交接的技术同事看的，重点是架构设计以及代码原理。</li>
-<li>少即是多：文档太长，自己更新起来累，别人看起来也累，维护起来更累。所以去掉各类套话，说重点，并保证及时更新。</li>
-<li>理论结合实际：涉及需要操作或者修改的部分，一定要配上简单的例子，否则别人连如何去开始第一步都不知道。</li>
-<li>我用 Markdown：简单、够用，这就是唯一的理由。</li>
-</ol>
-<h2 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h2><p>很多时候我们在面对各种做不完的需求时，最先牺牲的就是文档质量，而整个项目的腐化就是从一点一滴开始的。努力安排好时间，不要降低对自己对项目的要求，需求仔细评估排期，一旦做了，就一次做好。否则如果是长期项目，就是坑自己；如果是临时交接，就是坑别人。为什么不可以直接把事情做好，非要后面辛辛苦苦擦屁股搞得好像很努力很负责一样呢？</p>
-<p>要我说，一开始没做好，就是最大的不负责。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;一个成功且可持续的项目，除了良好的架构设计和高质量的代码外，清晰且易于理解的技术文档也是必不可少的一部分。本文结合自己工作中文档写作的一些经验，来说说如何把文档写好。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-    
-      <category term="技术" scheme="http://wdxtub.com/tags/%E6%8A%80%E6%9C%AF/"/>
-    
-      <category term="文档" scheme="http://wdxtub.com/tags/%E6%96%87%E6%A1%A3/"/>
     
   </entry>
   

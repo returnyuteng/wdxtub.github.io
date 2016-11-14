@@ -1,0 +1,1181 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="风格,Javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Javascript 作为一个非常灵活的脚本语言，光是比较流行的编码风格指南就有好几种。有 Google, NPM, Node.js, jQuery, Airbnb 等等。本文以 Airbnb 风格为基础来介绍 js 的编码风格，对原文的逻辑进行了梳理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javascript 编码风格指南">
+<meta property="og:url" content="http://wdxtub.com/2016/11/14/javascript-style-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="Javascript 作为一个非常灵活的脚本语言，光是比较流行的编码风格指南就有好几种。有 Google, NPM, Node.js, jQuery, Airbnb 等等。本文以 Airbnb 风格为基础来介绍 js 的编码风格，对原文的逻辑进行了梳理。">
+<meta property="og:updated_time" content="2016-11-14T11:28:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Javascript 编码风格指南">
+<meta name="twitter:description" content="Javascript 作为一个非常灵活的脚本语言，光是比较流行的编码风格指南就有好几种。有 Google, NPM, Node.js, jQuery, Airbnb 等等。本文以 Airbnb 风格为基础来介绍 js 的编码风格，对原文的逻辑进行了梳理。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 4016951,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Javascript 编码风格指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=59042340";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <div style="display: none;">
+    <script src="http://s6.cnzz.com/stat.php?id=1260625611&web_id=1260625611" type="text/javascript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-work">
+          <a href="/2016/09/11/work-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />
+            
+            作品
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tech">
+          <a href="/2009/09/11/tech-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
+            
+            技术
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/1990/09/11/life-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
+            
+            生活
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/1997/09/11/booklist-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书单
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
+            
+            关于我
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Javascript 编码风格指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-14T19:26:27+08:00" content="2016-11-14">
+              2016-11-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/14/javascript-style-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/14/javascript-style-guide/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+              &nbsp; | &nbsp;
+              <span class="page-pv"><i class="fa fa-file-o"></i>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+              </span>
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Javascript 作为一个非常灵活的脚本语言，光是比较流行的编码风格指南就有好几种。有 Google, NPM, Node.js, jQuery, Airbnb 等等。本文以 Airbnb 风格为基础来介绍 js 的编码风格，对原文的逻辑进行了梳理。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2016.11.14: 初稿完成</li>
+</ul>
+<h2 id="格式规范"><a href="#格式规范" class="headerlink" title="格式规范"></a>格式规范</h2><ul>
+<li><strong>命名规则：规范</strong><ul>
+<li>避免单字母命名。命名应具备描述性</li>
+<li>使用驼峰式命名对象、函数和实例（首字母小写）</li>
+<li>使用帕斯卡式命名构造函数或类（首字母大写）</li>
+<li>使用下划线 <code>_</code> 开头命名私有属性</li>
+<li>别保存 <code>this</code> 的引用。使用箭头函数或 <code>Function#bind</code></li>
+<li>如果你的文件只输出一个类，那你的文件名必须和类名完全保持一致</li>
+<li>当你导出默认的函数时使用驼峰式命名。你的文件名必须和函数名完全保持一致</li>
+<li>当你导出单例、函数库、空对象时使用帕斯卡式命名</li>
+</ul>
+</li>
+<li><strong>代码块：规范</strong><ul>
+<li>使用大括号包裹所有的多行代码块</li>
+<li>如果通过 <code>if</code> 和 <code>else</code> 使用多行代码块，把 <code>else</code> 放在 <code>if</code> 代码块关闭括号的同一行</li>
+</ul>
+</li>
+<li><strong>注释：规范</strong><ul>
+<li>使用 <code>/** ... */</code> 作为多行注释。包含描述、指定所有参数和返回值的类型和值</li>
+<li>使用 <code>//</code> 作为单行注释。在评论对象上面另起一行使用单行注释。在注释前插入空行</li>
+<li>给注释增加 <code>FIXME</code> 或 <code>TODO</code> 的前缀可以帮助其他开发者快速了解这是一个需要复查的问题，或是给需要实现的功能提供一个解决方式。这将有别于常见的注释，因为它们是可操作的。使用 <code>FIXME -- need to figure this out</code> 或者 <code>TODO -- need to implement</code></li>
+</ul>
+</li>
+<li><strong>空白：这个部分见仁见智保持一致即可</strong><ul>
+<li>使用 2 个空格作为缩进</li>
+<li>在花括号前放一个空格</li>
+<li>在控制语句(<code>if</code>、<code>while</code>)等的小括号前放一个空格。在函数调用及声明中，不在函数的参数列表前加空格</li>
+<li>使用空格把运算符隔开</li>
+<li>在文件末尾插入一个空行</li>
+<li>在使用长方法链时进行缩进。使用前面的点 <code>.</code> 强调这是方法调用而不是新语句</li>
+<li>在块末和新语句前插入空行</li>
+</ul>
+</li>
+<li><strong>逗号：规范</strong><ul>
+<li>行首逗号：不需要</li>
+<li>增加结尾的逗号: 需要。因为这会让 git diffs 更干净</li>
+</ul>
+</li>
+<li><strong>分号：规范</strong><ul>
+<li>使用分号，防止在极端情况下被合并   </li>
+</ul>
+</li>
+</ul>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><ul>
+<li><strong>类型：核心思想是避免复杂类型的深浅复制</strong><ul>
+<li>直接存取基本类型：字符串、数值、布尔类型、<code>null</code>、<code>undefined</code></li>
+<li>通过引用的方式存取复杂类型：对象、数组、函数</li>
+</ul>
+</li>
+<li><strong>引用：核心思想是最小化引用的影响范围，不要轻易变化</strong><ul>
+<li>对所有的引用使用 <code>const</code>，不要使用 <code>var</code>。这能确保无法对引用重新赋值，避免出现 bug，减少理解成本</li>
+<li>如果一定需要可变动的引用，使用 <code>let</code> 而不是 <code>var</code>。因为 <code>let</code> 是块级作用域，而 <code>var</code> 是函数作用域</li>
+<li><code>let</code> 和 <code>const</code> 都是块级作用域</li>
+</ul>
+</li>
+<li><strong>变量：</strong><ul>
+<li>一直使用 <code>const</code> 来声明变量，如果不这样做就会产生全局变量。我们需要避免全局命名空间的污染</li>
+<li>将所有的 <code>const</code> 和 <code>let</code> 分组，当你需要把已赋值变量赋值给未赋值变量时非常有用</li>
+<li>在你需要的地方给变量赋值，但请把它们放在一个合理的位置。因为 <code>let</code> 和 <code>const</code> 是块级作用域而不是函数作用域</li>
+</ul>
+</li>
+<li><strong>字符串：增加可读性</strong><ul>
+<li>字符串使用单引号 <code>&#39;&#39;</code></li>
+<li>字符串超过 80 个字节应该使用字符串连接号换行</li>
+<li>过度使用字串连接符号可能会对性能造成影响</li>
+<li>程序化生成字符串时，使用模板字符串代替字符串连接。因为模板字符串更为简洁，更具可读性</li>
+</ul>
+</li>
+<li><strong>比较运算符 &amp; 等号：规范与代码可读性</strong><ul>
+<li>优先使用 <code>===</code> 和 <code>!==</code> 而不是 <code>==</code> 和 <code>!=</code></li>
+<li>条件表达式例如 <code>if</code> 语句通过抽象方法 <code>ToBoolean</code> 强制计算它们的表达式并且总是遵守下面的规则<ul>
+<li><code>对象</code> 被计算为 <code>true</code></li>
+<li><code>Undefined</code> 被计算为 <code>false</code></li>
+<li><code>Null</code> 被计算为 <code>false</code></li>
+<li><code>布尔值</code> 被计算为 <code>布尔的值</code></li>
+<li><code>数字</code> 如果是 <code>+0</code>、<code>-0</code>、或 <code>NaN</code> 被计算为 <code>false</code>, 否则为 <code>true</code></li>
+<li><code>字符串</code> 如果是空字符串 <code>&#39;&#39;</code> 被计算为 <code>false</code>，否则为 <code>true</code></li>
+</ul>
+</li>
+<li>使用简写</li>
+</ul>
+</li>
+<li><strong>类型转换：</strong><ul>
+<li>在语句开始时执行类型转换</li>
+<li>字符串不要用 <code>this.score + &#39;&#39;</code>，而是 <code>String(this.score)</code></li>
+<li>对数字使用 <code>parseInt</code> 转换，并带上类型转换的基数</li>
+<li>如果因为某些原因 parseInt 成为你所做的事的瓶颈而需要使用位操作解决<a href="http://jsperf.com/coercion-vs-casting/3" target="_blank" rel="external">性能问题</a>时，留个注释说清楚原因和你的目的</li>
+<li>小心使用位操作运算符。数字会被当成 64 位值，但是位操作运算符总是返回 32 位的整数（<a href="http://es5.github.io/#x11.7" target="_blank" rel="external">参考</a>）。位操作处理大于 32 位的整数值时还会导致意料之外的行为。<a href="https://github.com/airbnb/javascript/issues/109" target="_blank" rel="external">关于这个问题的讨论</a>。最大的 32 位整数是 2,147,483,647</li>
+<li>使用 <code>Boolean()</code> 或 <code>!!</code> 来进行布尔值的转换</li>
+</ul>
+</li>
+<li><strong>存取器：一致性与规范</strong><ul>
+<li>属性的存取函数不是必须的</li>
+<li>如果你需要存取函数时使用 <code>getVal()</code> 和 <code>setVal(&#39;hello&#39;)</code></li>
+<li>如果属性是布尔值，使用 <code>isVal()</code> 或 <code>hasVal()</code></li>
+<li>创建 <code>get()</code> 和 <code>set()</code> 函数是可以的，但要保持一致</li>
+</ul>
+</li>
+<li><strong>jQuery：明确指出使用 jQuery 的代码，优化性能</strong><ul>
+<li>使用 <code>$</code> 作为存储 jQuery 对象的变量名前缀</li>
+<li>缓存 jQuery 查询</li>
+<li>对 DOM 查询使用层叠 <code>$(&#39;.sidebar ul&#39;)</code> 或 父元素 &gt; 子元素 <code>$(&#39;.sidebar &gt; ul&#39;)</code></li>
+<li>对有作用域的 jQuery 对象查询使用 <code>find</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="复杂结构"><a href="#复杂结构" class="headerlink" title="复杂结构"></a>复杂结构</h2><ul>
+<li><strong>对象：考虑兼容性与可读性</strong><ul>
+<li>使用字面值创造对象，如 <code>const item = {};</code> 而非 <code>const item = new Object();</code></li>
+<li>浏览器环境中执行的代码不要使用 <a href="http://es5.github.io/#x7.6.1" target="_blank" rel="external">保留字</a> 作为键值（比如 <code>private</code> 这类就不要用），可以使用同义词替换所需要使用的保留字，比如说把 <code>class</code> 换成 <code>type</code></li>
+<li>创建有动态属性名的对象时，使用可被计算的属性名称，这样就可以在一个地方定义所有的对象属性</li>
+<li>使用对象方法和对象属性值的简写</li>
+<li>在对象属性声明前把简写的属性分组，这样能清楚地看出哪些属性使用了简写</li>
+</ul>
+</li>
+<li><strong>数组：可读性与操作简化</strong><ul>
+<li>使用字面值创建数组，如 <code>const items = [];</code> 而非 <code>const items = new Array();</code></li>
+<li>向数组添加元素时使用 <code>Arrary#push</code> 替代直接赋值</li>
+<li>使用拓展运算符 <code>...</code> 复制数组，如 <code>const itemsCopy = [...items]</code></li>
+<li>使用 <code>Array#from</code> 把一个类数组对象转换成数组</li>
+</ul>
+</li>
+<li><strong>解构：减少操作开销</strong><ul>
+<li>使用解构存取和使用多属性对象，这样能减少临时引用属性</li>
+<li>对数组使用解构赋值</li>
+<li>需要回传多个值时，使用对象解构，而不是数组解构。因为增加属性或者改变排序不会改变调用时的位置</li>
+</ul>
+</li>
+<li><strong>函数：性能与可读性</strong><ul>
+<li>使用函数声明代替函数表达式，如 <code>function foo() {}</code></li>
+<li>永远不要在一个非函数代码块（if、while 等）中声明一个函数，把那个函数赋给一个变量。浏览器允许你这么做，但它们的解析表现不一致</li>
+<li>ECMA-262 把 <code>block</code> 定义为一组语句。函数声明不是语句</li>
+<li>永远不要把参数命名为 <code>arguments</code>。这将取代原来函数作用域内的 <code>arguments</code> 对象</li>
+<li>不要使用 <code>arguments</code>。可以选择 rest 语法 <code>...</code> 替代。因为使用 <code>...</code> 能明确你要传入的参数。另外 rest 参数是一个真正的数组，而 <code>arguments</code> 是一个类数组</li>
+<li>直接给函数的参数指定默认值，不要使用一个变化的函数参数</li>
+<li>直接给函数参数赋值时需要避免副作用</li>
+</ul>
+</li>
+<li><strong>箭头函数：简化代码，加强可读性</strong> <ul>
+<li>当你必须使用函数表达式（或传递一个匿名函数）时，使用箭头函数符号</li>
+<li>如果一个函数适合用一行写出并且只有一个参数，那就把花括号、圆括号和 return 都省略掉。如果不是，那就不要省略。如 <code>[1, 2, 3].map(x =&gt; x * x)</code></li>
+</ul>
+</li>
+<li><strong>构造器：维持一致性，链式调用</strong><ul>
+<li>总是使用 <code>class</code>，避免直接操作 <code>prototype</code>。因为 <code>class</code> 语法更有可读性</li>
+<li>使用 <code>extends</code> 继承，因为 <code>extends</code> 是一个内建的原型继承方法并且不会破坏 <code>instanceof</code></li>
+<li>方法可以返回 <code>this</code> 来帮助链式调用</li>
+<li>可以写一个自定义的 <code>toString()</code> 方法，但要确保它能正常运行并且不会引起副作用</li>
+</ul>
+</li>
+<li><strong>模块：确保模块化，符合规范</strong><ul>
+<li>总是使用模组(<code>import</code>/<code>export</code>)而不是其他非标准模块系统。你可以编译为你喜欢的模块系统</li>
+<li>不要使用通配符 <code>import</code>，这样能确保你只有一个默认 <code>export</code></li>
+<li>不要从 <code>import</code> 中直接 <code>export</code>。虽然一行代码简洁明了，但让 import 和 export 各司其职让事情能保持一致</li>
+</ul>
+</li>
+<li><strong>迭代器：往函数式编程上靠，减少副作用</strong><ul>
+<li>不要使用 <code>iterators</code>。使用高阶函数例如 <code>map()</code> 和 <code>reduce()</code> 替代 <code>for-of</code>。因为处理纯函数的回调值更易读，这比它带来的副作用更重要</li>
+</ul>
+</li>
+<li><strong>属性：区分是否通过变量来访问</strong><ul>
+<li>使用 <code>.</code> 来访问对象的属性</li>
+<li>当通过变量访问属性时使用中括号 <code>[]</code></li>
+</ul>
+</li>
+<li><strong>事件：灵活性，降低判断成本</strong><ul>
+<li>当给事件附加数据时（无论是 DOM 事件还是私有事件），传入一个哈希而不是原始值。这样可以让后面的贡献者增加更多数据到事件数据而无需找出并更新事件的每一个处理器</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://lzw.me/a/javascript-coding-style-reference.html/comment-page-1" target="_blank" rel="external">JavaScript 流行代码风格参考指南</a></li>
+<li><a href="https://github.com/yuche/javascript" target="_blank" rel="external">Airbnb JavaScript 编码规范</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持是对我创作最大的鼓励！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/misc/alipay.jpg" alt="wdxtub Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/风格/" rel="tag">#风格</a>
+          
+            <a href="/tags/Javascript/" rel="tag">#Javascript</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/12/zai-mei-bian/" rel="next" title="第二十二周 - 在梅边">
+                <i class="fa fa-chevron-left"></i> 第二十二周 - 在梅边
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/14/javascript-style-guide/"
+           data-title="Javascript 编码风格指南" data-url="http://wdxtub.com/2016/11/14/javascript-style-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">人文/科学/读书/写作/思考/编程/架构/数据/广交朋友/@SYSU/@CMU</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">714</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">877</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.lofter.com/" title="我的 Lofter" target="_blank">我的 Lofter</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#格式规范"><span class="nav-number">1.</span> <span class="nav-text">格式规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本操作"><span class="nav-number">2.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复杂结构"><span class="nav-number">3.</span> <span class="nav-text">复杂结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementById('footer')
+      || document.getElementById('footer')).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src=""></script>
+
+
+  
+
+  
+<script type="text/javascript" async src="//push.zhanzhang.baidu.com/push.js">
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+</body>
+</html>
