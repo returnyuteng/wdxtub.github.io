@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/08/17/rsyslog-kafka-guide/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。">
-<meta property="og:updated_time" content="2016-11-05T04:50:13.000Z">
+<meta property="og:updated_time" content="2016-11-19T07:42:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rsyslog 连接 Kafka 指南">
 <meta name="twitter:description" content="从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。">
@@ -388,17 +388,20 @@
 <p>更新记录</p>
 <ul>
 <li>2016.08.17: 初稿</li>
+<li>2016.11.19: 更新通天塔之日志分析平台系列文章链接</li>
 </ul>
-<p>Kafka 集群的配置可以在<a href="http://wdxtub.com/2016/08/15/kafka-guide/">这里</a>查阅，这里不再赘述，认为大家已经有一个可以正常运行的 Kafka 集群，并且创建了一个名为 test 的 topic</p>
-<h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><p>ELK 不仅仅可以用于日志，更可以作为底层的分析引擎，不过调参数和配置，需要下点功夫的。</p>
-<ul>
-<li><a href="http://wdxtub.com/2016/07/26/elk-guide/">ELK 指南</a></li>
-<li><a href="http://wdxtub.com/2016/09/28/elasticsearch-cluster-guide/">Elasticsearch 集群指南</a></li>
-<li><a href="http://wdxtub.com/2016/07/24/elastic-search-guide/">Elasticsearch 入门指南</a></li>
-<li><a href="http://wdxtub.com/2016/07/24/logstash-guide/">Logstash 入门指南</a></li>
-<li><a href="http://wdxtub.com/2016/08/18/logstash-kafka-guide/">Logstash 连接 Kafka 指南</a></li>
-<li><a href="http://wdxtub.com/2016/08/17/rsyslog-kafka-guide/">Rsyslog 连接 Kafka 指南</a></li>
-<li><a href="http://wdxtub.com/2016/08/12/rsyslog-logstash-guide/">Rsyslog + Logstash 日志传输指南</a></li>
+<h2 id="通天塔之日志分析平台系列文章"><a href="#通天塔之日志分析平台系列文章" class="headerlink" title="通天塔之日志分析平台系列文章"></a>通天塔之日志分析平台系列文章</h2><ul>
+<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="Nginx-配置"><a href="#Nginx-配置" class="headerlink" title="Nginx 配置"></a>Nginx 配置</h2><p>因为 Kafka 集群的通讯是走内网 ip，而外网访问的端口因为安全考虑只开了少数几个（这里是 8080），所以我们用 Nginx 反向代理来连通内外网</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">upstream mq_pool&#123;</div><div class="line">server ip1:13647 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">server localhost:13647 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server&#123;</div><div class="line">listen 8080;</div><div class="line">allow all;</div><div class="line">proxy_pass mq_pool;</div><div class="line">proxy_connect_timeout 24h;</div><div class="line">proxy_timeout 24h;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -589,7 +592,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">721</span>
+              <span class="site-state-item-count">732</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -606,7 +609,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">882</span>
+                <span class="site-state-item-count">888</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -710,7 +713,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx-配置"><span class="nav-number">2.</span> <span class="nav-text">Nginx 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-server-配置"><span class="nav-number">3.</span> <span class="nav-text">Kafka server 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python-测试"><span class="nav-number">4.</span> <span class="nav-text">Python 测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rsyslog-配置"><span class="nav-number">5.</span> <span class="nav-text">Rsyslog 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#通天塔之日志分析平台系列文章"><span class="nav-number">1.</span> <span class="nav-text">通天塔之日志分析平台系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx-配置"><span class="nav-number">2.</span> <span class="nav-text">Nginx 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-server-配置"><span class="nav-number">3.</span> <span class="nav-text">Kafka server 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python-测试"><span class="nav-number">4.</span> <span class="nav-text">Python 测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rsyslog-配置"><span class="nav-number">5.</span> <span class="nav-text">Rsyslog 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>
