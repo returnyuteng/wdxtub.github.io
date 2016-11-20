@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/08/17/rsyslog-kafka-guide/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。">
-<meta property="og:updated_time" content="2016-11-19T07:42:28.000Z">
+<meta property="og:updated_time" content="2016-11-20T15:36:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Rsyslog 连接 Kafka 指南">
 <meta name="twitter:description" content="从去耦合和安全性考虑，最近在负责把公司内各个业务的日志统一接入到 Kafka 再进行下一步的处理，除了常见的 ELK 方案，我还尝试了系统自带的 rsyslog，以下是具体的配置过程。">
@@ -391,17 +391,17 @@
 <li>2016.11.19: 更新通天塔之日志分析平台系列文章链接</li>
 </ul>
 <h2 id="通天塔之日志分析平台系列文章"><a href="#通天塔之日志分析平台系列文章" class="headerlink" title="通天塔之日志分析平台系列文章"></a>通天塔之日志分析平台系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="Nginx-配置"><a href="#Nginx-配置" class="headerlink" title="Nginx 配置"></a>Nginx 配置</h2><p>因为 Kafka 集群的通讯是走内网 ip，而外网访问的端口因为安全考虑只开了少数几个（这里是 8080），所以我们用 Nginx 反向代理来连通内外网</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">upstream mq_pool&#123;</div><div class="line">server ip1:13647 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">server localhost:13647 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server&#123;</div><div class="line">listen 8080;</div><div class="line">allow all;</div><div class="line">proxy_pass mq_pool;</div><div class="line">proxy_connect_timeout 24h;</div><div class="line">proxy_timeout 24h;</div><div class="line">&#125;</div></pre></td></tr></table></figure>

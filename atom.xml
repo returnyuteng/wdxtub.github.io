@@ -91,7 +91,7 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/</id>
     <published>2016-11-19T03:11:11.000Z</published>
-    <updated>2016-11-19T08:32:48.000Z</updated>
+    <updated>2016-11-20T15:34:35.000Z</updated>
     
     <content type="html"><![CDATA[<p>作为开篇，本文会介绍『日志分析平台』系列的内容梗概并完成基本的环境配置。作为『通天塔』这一技术主题合集的首个系列，我会尝试和『读薄/读厚 CSAPP』系列不一样的风格，但是目的是一致的，就是让感兴趣的朋友少走点弯路。</p>
 <a id="more"></a>
@@ -101,17 +101,17 @@
 <li>2016.11.19: 初稿完成</li>
 </ul>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><ol>
 <li>理解日志分析平台出现的背景</li>
@@ -135,6 +135,7 @@
 <li>把这些日志用某种方式保存并索引起来(Search &amp; Storage)</li>
 <li>需要的时候直接在汇总的日志中查询(Web Interface)</li>
 </ol>
+<p><img src="/images/14795970842446.gif" alt=""></p>
 <p>听起来没有很麻烦，因为原理大约总是简单的，但具体到做工程，就有各种问题各种坑了。我个人是不提倡自己重新造轮子的（确实没必要），除了现在很多现成的日志分析平台服务之外，我们也可以选择利用开源的力量自己搭建一个日志分析平台。</p>
 <p>这也是正是这个系列想要教给大家的。我会从单机系统说起，最后扩展到集群和更复杂的解决方案。</p>
 <h2 id="为什么选择-ElasticStack"><a href="#为什么选择-ElasticStack" class="headerlink" title="为什么选择 ElasticStack"></a>为什么选择 ElasticStack</h2><p>（开个玩笑）原因很简单：因为我在用。</p>
@@ -181,30 +182,39 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/</id>
     <published>2016-11-19T03:11:10.000Z</published>
-    <updated>2016-11-19T07:52:54.000Z</updated>
+    <updated>2016-11-20T15:34:22.000Z</updated>
     
-    <content type="html"><![CDATA[<p>施工中：Elastic/Logstash/Kibana 环境搭建及简单实例</p>
+    <content type="html"><![CDATA[<p>前一讲我们对 ElasticStack 进行了简要介绍并完成了基本的系统环境配置，这一次我们要把 Elasticsearch/Logstash/Kibana 安装配置好，并把 Linux 的系统日志导入进来。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
-<h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<ul>
+<li>2016.11.20: 完成初稿</li>
 </ul>
-<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="5-0-版本的改动"><a href="#5-0-版本的改动" class="headerlink" title="5.0 版本的改动"></a>5.0 版本的改动</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
+<h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
+</ul>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><ol>
+<li>掌握并完成 Elasticsearch, Logstash 和 Kibana 的安装配置</li>
+<li>了解 Linux 系统日志的内容及保存位置，并利用 Logstash 导入到 Elasticsearch 中，最终由 Kibana 展示</li>
+<li>掌握 Linux 的进程控制机制，学会如何启动和关闭前台/后台应用</li>
+<li></li>
+</ol>
+<h2 id="ElasticStack-5-0"><a href="#ElasticStack-5-0" class="headerlink" title="ElasticStack 5.0"></a>ElasticStack 5.0</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;施工中：Elastic/Logstash/Kibana 环境搭建及简单实例&lt;/p&gt;
+      &lt;p&gt;前一讲我们对 ElasticStack 进行了简要介绍并完成了基本的系统环境配置，这一次我们要把 Elasticsearch/Logstash/Kibana 安装配置好，并把 Linux 的系统日志导入进来。&lt;/p&gt;
     
     </summary>
     
@@ -226,24 +236,24 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/</id>
     <published>2016-11-19T03:11:09.000Z</published>
-    <updated>2016-11-19T07:53:04.000Z</updated>
+    <updated>2016-11-20T15:36:03.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：Kafka 搭建、使用；连接 logstash 和 elasticsearch</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
@@ -271,24 +281,24 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/</id>
     <published>2016-11-19T03:11:08.000Z</published>
-    <updated>2016-11-19T07:53:07.000Z</updated>
+    <updated>2016-11-20T15:35:54.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：各个附加功能的应用</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
@@ -316,24 +326,24 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/</id>
     <published>2016-11-19T03:11:07.000Z</published>
-    <updated>2016-11-19T07:53:19.000Z</updated>
+    <updated>2016-11-20T15:35:48.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：集群配置和全球部署可能带来的问题</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
@@ -361,24 +371,24 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/</id>
     <published>2016-11-19T03:11:06.000Z</published>
-    <updated>2016-11-19T07:53:26.000Z</updated>
+    <updated>2016-11-20T15:35:41.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：如题</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
@@ -406,24 +416,24 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/</id>
     <published>2016-11-19T03:11:05.000Z</published>
-    <updated>2016-11-19T07:53:32.000Z</updated>
+    <updated>2016-11-20T15:35:35.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：如题</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
@@ -451,24 +461,24 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/</id>
     <published>2016-11-19T03:11:04.000Z</published>
-    <updated>2016-11-19T07:53:37.000Z</updated>
+    <updated>2016-11-20T15:35:06.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：如题</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
@@ -496,24 +506,24 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/</id>
     <published>2016-11-19T03:11:03.000Z</published>
-    <updated>2016-11-19T07:53:42.000Z</updated>
+    <updated>2016-11-20T15:34:59.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：简单的接口访问次数统计和 IP 统计</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
@@ -541,24 +551,24 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/</id>
     <published>2016-11-19T03:11:02.000Z</published>
-    <updated>2016-11-19T07:53:52.000Z</updated>
+    <updated>2016-11-20T15:34:52.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：看各个大厂是如何做这个事情的</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
-<li><a href="http://wdxtub.com2016/11/19/babel-series-intro/" target="_blank" rel="external">『通天塔』技术作品合集介绍</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-0/" target="_blank" rel="external">零 系列简介与环境配置</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-1/" target="_blank" rel="external">壹 ELK 环境搭建</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-2/" target="_blank" rel="external">贰 Kafka 缓冲区</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-3/" target="_blank" rel="external">叁 监控、安全、报警与通知</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-4/" target="_blank" rel="external">肆 从单机到集群</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-5/" target="_blank" rel="external">伍 Logstash 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-6/" target="_blank" rel="external">陆 Elasticsearch 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-7/" target="_blank" rel="external">柒 Kibana 技巧指南</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-8/" target="_blank" rel="external">捌 实例：接入外部应用日志</a></li>
-<li><a href="http://wdxtub.com2016/11/19/babel-log-analysis-platform-9/" target="_blank" rel="external">玖 业界：大厂实践</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/">壹 ELK 环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/">贰 Kafka 缓冲区</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/">叁 监控、安全、报警与通知</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/">肆 从单机到集群</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/">伍 Logstash 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/">陆 Elasticsearch 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
+<li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
 <h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
@@ -618,9 +628,9 @@
       <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
     
     
-      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
-    
       <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
+    
+      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
     
   </entry>
   
@@ -659,9 +669,9 @@
       <category term="Reading" scheme="http://wdxtub.com/categories/Reading/"/>
     
     
-      <category term="收集" scheme="http://wdxtub.com/tags/%E6%94%B6%E9%9B%86/"/>
-    
       <category term="剪报" scheme="http://wdxtub.com/tags/%E5%89%AA%E6%8A%A5/"/>
+    
+      <category term="收集" scheme="http://wdxtub.com/tags/%E6%94%B6%E9%9B%86/"/>
     
   </entry>
   
