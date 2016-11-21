@@ -92,10 +92,19 @@
 <meta property="og:url" content="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="前一讲我们对 ElasticStack 进行了简要介绍并完成了基本的系统环境配置，这一次我们要把 Elasticsearch/Logstash/Kibana 安装配置好，并把 Linux 的系统日志导入进来。">
-<meta property="og:updated_time" content="2016-11-20T15:34:22.000Z">
+<meta property="og:image" content="http://wdxtub.com/images/14797108735042.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14797196056865.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14797197975730.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14797212868418.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14797126705730.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14797126971993.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14797163664177.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14797164257675.jpg">
+<meta property="og:updated_time" content="2016-11-21T14:27:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【通天塔之日志分析平台】壹 ELK 环境搭建">
 <meta name="twitter:description" content="前一讲我们对 ElasticStack 进行了简要介绍并完成了基本的系统环境配置，这一次我们要把 Elasticsearch/Logstash/Kibana 安装配置好，并把 Linux 的系统日志导入进来。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14797108735042.jpg">
 
 
 
@@ -387,7 +396,7 @@
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2016.11.20: 完成初稿</li>
+<li>2016.11.21: 完成初稿</li>
 </ul>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
 <li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
@@ -406,9 +415,143 @@
 <li>掌握并完成 Elasticsearch, Logstash 和 Kibana 的安装配置</li>
 <li>了解 Linux 系统日志的内容及保存位置，并利用 Logstash 导入到 Elasticsearch 中，最终由 Kibana 展示</li>
 <li>掌握 Linux 的进程控制机制，学会如何启动和关闭前台/后台应用</li>
-<li></li>
 </ol>
-<h2 id="ElasticStack-5-0"><a href="#ElasticStack-5-0" class="headerlink" title="ElasticStack 5.0"></a>ElasticStack 5.0</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
+<h2 id="安装与启动"><a href="#安装与启动" class="headerlink" title="安装与启动"></a>安装与启动</h2><p>无论是 Elasticsearch, Logstash 还是 Kibana，我们都推荐手动安装的方式，毕竟不涉及太多配置操作，用 <code>apt-get</code> 反而有些用牛刀杀鸡了。这里我们直接上命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 进入用户文件夹</span></div><div class="line"><span class="built_in">cd</span> ~</div><div class="line"><span class="comment"># 下载 Elasticsearch</span></div><div class="line">wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.0.1.tar.gz</div><div class="line"><span class="comment"># 下载 Logstash</span></div><div class="line">wget https://artifacts.elastic.co/downloads/logstash/logstash-5.0.1.tar.gz</div><div class="line"><span class="comment"># 下载 Kibana</span></div><div class="line">wget https://artifacts.elastic.co/downloads/kibana/kibana-5.0.1-linux-x86_64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># 解压 </span></div><div class="line">tar -xvf elasticsearch-5.0.1.tar.gz</div><div class="line">tar -xvf logstash-5.0.1.tar.gz</div><div class="line">tar -xvf kibana-5.0.1-linux-x86_64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># 把安装包保存到固定文件夹中，这里叫 software</span></div><div class="line">mv elasticsearch-5.0.1.tar.gz software/mv kibana-5.0.1-linux-x86_64.tar.gz software/mv logstash-5.0.1.tar.gz software/</div></pre></td></tr></table></figure>
+<p>解压完成之后，ElasticStack 运行前的准备就基本完成了。Logstash 可以在需要时再启用，这里我们先把 Elasticsearch 和 Kibana 给启动起来（这里我们继续用 tmux，关于 tmux 的使用可以参考我写的<a href="http://wdxtub.com/2016/03/30/tmux-guide/">tmux 指南</a>）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 新建 tmux session</span></div><div class="line">tmux</div><div class="line"><span class="comment"># 启动 Elasticsearch</span></div><div class="line"><span class="comment"># 这里注意，最好虚拟机有 4G 内存，不然很容易卡死</span></div><div class="line"><span class="built_in">cd</span> elasticsearch-5.0.1/bin; ./elasticsearch</div><div class="line"><span class="comment"># 启动 Kibana</span></div><div class="line"><span class="built_in">cd</span> kibana-5.0.1-linux-x86_64/; ./bin/kibana</div></pre></td></tr></table></figure>
+<p>打开浏览器，访问 <code>localhost:5601</code>，如果看到如下所示的页面，Elasticsearch 和 Kibana 基本就没问题了。</p>
+<p><img src="/images/14797108735042.jpg" alt=""></p>
+<p>然后我们体验一下 Logstash，输入下列命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 进入文件夹</span></div><div class="line"><span class="built_in">cd</span> logstash-5.0.1/</div><div class="line"><span class="comment"># 启动 logstash，输入和输出均为命令行</span></div><div class="line">bin/logstash <span class="_">-e</span> <span class="string">'input &#123; stdin &#123; &#125; &#125; output &#123; stdout &#123;&#125; &#125;'</span></div></pre></td></tr></table></figure>
+<p>然后我们随意输入一些内容，显示为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">parallels@ubuntu:~/logstash-5.0.1$ bin/logstash <span class="_">-e</span> <span class="string">'input &#123; stdin &#123; &#125; &#125; output &#123; stdout &#123;&#125; &#125;'</span>wdxtub.com updatedSending Logstash<span class="string">'s logs to /home/parallels/logstash-5.0.1/logs which is now configured via log4j2.propertiesThe stdin plugin is now waiting for input:[2016-11-20T22:54:20,014][INFO ][logstash.pipeline        ] Starting pipeline &#123;"id"=&gt;"main", "pipeline.workers"=&gt;2, "pipeline.batch.size"=&gt;125, "pipeline.batch.delay"=&gt;5, "pipeline.max_inflight"=&gt;250&#125;[2016-11-20T22:54:20,038][INFO ][logstash.pipeline        ] Pipeline main started[2016-11-20T22:54:20,088][INFO ][logstash.agent           ] Successfully started Logstash API endpoint &#123;:port=&gt;9600&#125;2016-11-21T06:54:20.036Z ubuntu wdxtub.com updatedwdxtub.com is a personal blog2016-11-21T06:54:41.187Z ubuntu wdxtub.com is a personal blogwdxtub.com is created in 20152016-11-21T06:54:55.190Z ubuntu wdxtub.com is created in 2015</span></div></pre></td></tr></table></figure>
+<p>至此，ElasticStack 三大组件都已经运行了一次，我们可以用一个实际的任务来上手了。不过开始之前，我们来简单了解一下 ElasticStack 的发展历程。</p>
+<h2 id="ElasticStack-5-0-的变化"><a href="#ElasticStack-5-0-的变化" class="headerlink" title="ElasticStack 5.0 的变化"></a>ElasticStack 5.0 的变化</h2><p>ElasticStack 之所以版本一开始就是 5.0，主要原因是把各个产品进行版本统一。5.0 之前，Elasticsearch 的版本是 2.4，Logstash 的版本也是 2.4，但是 Kibana 是 4.5。这样一来开发者其实很难把各个组件对应起来，于是 Elastic 公司干脆直接统一到 5.0，皆大欢喜。</p>
+<p>考虑到不是所有的朋友都有接触过 2.4 及之前版本的 ElasticStack，所以这部分会简明扼要介绍一下 5.0 版本的重大改变：</p>
+<ul>
+<li>Elasticsearch 的底层引擎是 Lucene，5.0 版本中集成了 Lucene6， 新增的多维浮点字段特性极大提高了对 <code>date</code>, <code>numeric</code>, <code>ip</code> 等类型字段的操作的性能。更直观一点说：磁盘空间少一半；索引时间少一半；查询性能提升25%（底层采用 k-d 树编码，更多信息可以在 <a href="http://lucene.apache.org/" target="_blank" rel="external">Lucene 官网</a>中查阅）</li>
+<li>Instant Aggregations 特性在 Shard 层级提供了聚合结果的缓存，如果数据没有变化，Elasticsearch 可以直接返回上次的结果</li>
+<li>Scliced Scroll 操作允许并发进行数据遍历，大大提升索引重建和遍历的速度</li>
+<li>Profile API 可以帮助进行查询的优化，通过确定每个组件的性能消耗来进行优化（设置 <code>profile:true</code> 即可）</li>
+<li>Shrink API 可以对分片(Shard)数量进行收缩（从前是不能更改的），利用这个特性，我们可以在写入压力非常大的收集阶段，设置足够多的索引，充分利用shard的并行写能力，索引写完之后收缩成更少的shard，提高查询性能（利用系统的 Hardlink 来进行链接，速度很快）</li>
+<li>Rollover API 可以帮助我们按日切割日志，只需要简单的配置即可更加方便灵活分割日志，不用原来 <code>[YYYY-MM-DD]</code> 这样的模板了</li>
+<li>Wait for Refresh 提供了文档级别的刷新</li>
+<li>Ingest Node 可以直接在建立索引的时候对数据进行加工，这个功能还是很强大的</li>
+<li>Task Manager 任务调度管理，来做离线任务</li>
+</ul>
+<p>总而言之，5.0 是目前最好的一个 ElasticStack 版本，增加了很多新功能，非常值得试一试，更加详细的变动可以查看如下链接，这里不再赘述</p>
+<ul>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes.html" target="_blank" rel="external">Elasticsearch 5.0 Breaking Changes</a></li>
+<li><a href="https://www.elastic.co/guide/en/kibana/current/breaking-changes.html" target="_blank" rel="external">Kibana 5.0 Breaking Changes</a></li>
+<li><a href="https://www.elastic.co/guide/en/logstash/current/breaking-changes.html" target="_blank" rel="external">Logstash 5.0 Breaking Changes</a></li>
+</ul>
+<p>接下来我们先简单了解一下 Elasticsearch 的基本概念，然后就可以上手来完成一个小小的实例了。</p>
+<h2 id="Elasticsearch-快速入门"><a href="#Elasticsearch-快速入门" class="headerlink" title="Elasticsearch 快速入门"></a>Elasticsearch 快速入门</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>和 Mongodb 的思路类似，Elasticsearch 中保存的是整个文档(document)，并且还会根据文档的内容进行索引，于是我们得以进行搜索、排序和过滤等操作。在 Elasticsearch 中，利用 JSON 来表示文档。举个例子，下面的 JSON 文档就表示一个用户对象：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"email"</span>: <span class="string">"dawang@wdxtub.com"</span>,</div><div class="line">    <span class="attr">"name"</span>: <span class="string">"Da Wang"</span>,</div><div class="line">    <span class="attr">"info"</span>: &#123;</div><div class="line">        <span class="attr">"bio"</span>: <span class="string">"Sharp Blade, Shape Mind"</span>,</div><div class="line">        <span class="attr">"age"</span>: <span class="string">"25"</span>,</div><div class="line">        <span class="attr">"interests"</span>: [<span class="string">"games"</span>, <span class="string">"music"</span>]</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"birthday"</span>: <span class="string">"1990/09/11"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在 Elasticsearch 中存储数据的行为就叫做索引(indexing)，而前面提到的文档，属于一种类型(type)，这里类型会存在索引(index)中，如果列一个表来和传统数据库比较，大概是这样的：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">关系型数据</th>
+<th style="text-align:center">Elasticsearch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Databases</td>
+<td style="text-align:center">Indices</td>
+</tr>
+<tr>
+<td style="text-align:center">Tables</td>
+<td style="text-align:center">Types</td>
+</tr>
+<tr>
+<td style="text-align:center">Rows</td>
+<td style="text-align:center">Documents</td>
+</tr>
+<tr>
+<td style="text-align:center">Columns</td>
+<td style="text-align:center">Fields</td>
+</tr>
+</tbody>
+</table>
+<p>一个 Elasticsearch 集群可以包含多个索引(indices，对应于『数据库』)，每个索引可以包含多个类型(types，对应于『表』)，每个类型可以包含多个文档(document，对应于『行』)，每个文档可以包含多个字段(fields，对应于『列』)</p>
+<p>这里有一点需要强调一下，前面出现了两种『索引』，第一种，索引(indexing，动词，对应于关系型数据库的插入 insert)指的是把一个文档存储到索引(index，名词) 中；第二种的索引(index，名词）对应于关系型数据库的数据库，这里一定要根据上下文来进行理解。一般来说，我们会对数据库增加索引（这里是第三种意思，就是传统的索引的定义）来提高检索效率，Elasticsearch 和 Lucene 使用『倒排索引』的数据结构来完成这个工作（传统数据库一般用红黑树或者 B 树来完成）。默认情况下，文档中的每个字段都会拥有其对应的倒排索引，Elasticsearch 也是通过这个来进行检索的。</p>
+<h3 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h3><p>我们用一个简单的例子来感受一下 Elasticsearch 的威力吧。设定一个场景，有一天我开了一家名为 “ohmywdx” 的公司，我需要为每个公司里的员工创建记录，我需要做的是：</p>
+<ul>
+<li>为每个员工的文档(document)建立索引，每个文档包含一个员工的各类信息，类型为 <code>wdxtuber</code></li>
+<li><code>wdxtuber</code> 类型属于索引 <code>ohmywdx</code>（这里的索引对应于数据库）</li>
+<li><code>ohmywdx</code> 索引存储在 Elasticsearch 集群中</li>
+</ul>
+<p>我们先来插入几条员工记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">PUT /ohmywdx/wdxtuber/1</div><div class="line">&#123;</div><div class="line">    <span class="string">"name"</span>: <span class="string">"Da Wang"</span>,</div><div class="line">    <span class="string">"age"</span>: 25,</div><div class="line">    <span class="string">"about"</span>: <span class="string">"First one who is stupid enough to join this company"</span>,</div><div class="line">    <span class="string">"interests"</span>: [<span class="string">"game"</span>, <span class="string">"music"</span>]</div><div class="line">&#125;</div><div class="line"></div><div class="line">PUT /ohmywdx/wdxtuber/2</div><div class="line">&#123;</div><div class="line">    <span class="string">"name"</span>: <span class="string">"Tracy Bryant"</span>,</div><div class="line">    <span class="string">"age"</span>: 20,</div><div class="line">    <span class="string">"about"</span>: <span class="string">"First basketball robot for our company"</span>,</div><div class="line">    <span class="string">"interests"</span>: [<span class="string">"guard"</span>, <span class="string">"forward"</span>]</div><div class="line">&#125;</div><div class="line"></div><div class="line">PUT /ohmywdx/wdxtuber/3</div><div class="line">&#123;</div><div class="line">    <span class="string">"name"</span>: <span class="string">"Shadow Mouse"</span>,</div><div class="line">    <span class="string">"age"</span>: 50,</div><div class="line">    <span class="string">"about"</span>: <span class="string">"Secret agent for our company"</span>,</div><div class="line">    <span class="string">"interests"</span>: [<span class="string">"guitar"</span>, <span class="string">"sugar"</span>]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>具体怎么插入呢，我们可以使用 Kibana 5.0 自带的 Dev Tools 来折腾，把上面的命令粘贴到左边的输入框，然后点击绿色的运行按钮，就可以在右边看到结果了：</p>
+<p><img src="/images/14797196056865.jpg" alt=""></p>
+<p>按照这个套路，继续把其他两个人的资料插入 Elasticsearch。</p>
+<p>有了数据之后，我们来看看如何搜索，简单来说，按照存储的方式来检索即可，不过这里我们使用 GET 方法，如下图所示：</p>
+<p><img src="/images/14797197975730.jpg" alt=""></p>
+<p>我们可以看到，原始文档内容包含在 <code>_source</code> 字段中。如果说这个搜索太明确了，啥都指定了没意思，我们可以来试试看下面几条搜索</p>
+<ul>
+<li><code>GET /ohmywdx/wdxtuber/_search</code></li>
+<li><code>GET /ohmywdx/wdxtuber/_search?q=name:Da</code></li>
+</ul>
+<p>这里我们来看看第二个搜索的结果</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;  <span class="attr">"took"</span>: <span class="number">11</span>,  <span class="attr">"timed_out"</span>: <span class="literal">false</span>,  <span class="attr">"_shards"</span>: &#123;    <span class="attr">"total"</span>: <span class="number">5</span>,    <span class="attr">"successful"</span>: <span class="number">5</span>,    <span class="attr">"failed"</span>: <span class="number">0</span>  &#125;,  <span class="attr">"hits"</span>: &#123;    <span class="attr">"total"</span>: <span class="number">1</span>,    <span class="attr">"max_score"</span>: <span class="number">0.25811607</span>,    <span class="attr">"hits"</span>: [      &#123;        <span class="attr">"_index"</span>: <span class="string">"ohmywdx"</span>,        <span class="attr">"_type"</span>: <span class="string">"wdxtuber"</span>,        <span class="attr">"_id"</span>: <span class="string">"1"</span>,        <span class="attr">"_score"</span>: <span class="number">0.25811607</span>,        <span class="attr">"_source"</span>: &#123;          <span class="attr">"name"</span>: <span class="string">"Da Wang"</span>,          <span class="attr">"age"</span>: <span class="number">25</span>,          <span class="attr">"about"</span>: <span class="string">"First one who is stupid enough to join this company"</span>,          <span class="attr">"interests"</span>: [            <span class="string">"game"</span>,            <span class="string">"music"</span>          ]        &#125;      &#125;    ]  &#125;&#125;</div></pre></td></tr></table></figure>
+<p>除了 <code>_source</code> 的信息之外，我们可以看到有一个 <code>_score</code>，敏感的同学大概会意识到，Elasticsearch 是根据相关性来对结果进行排序的，这个得分就是相关性分数。</p>
+<p>除了前面说明的搜索，我们还可以使用 DSL 语句来组合更加复杂的搜索，什么过滤、组合条件、全文、短语搜索，都不在话下，我们甚至可以高亮搜索结果。另外我们还可以利用『聚合』来实现关系型数据库中『Group By』类似的操作。其他诸如推荐、定位、渗透、模糊及部分匹配同样也支持。不过这一篇仅仅是一个简要介绍，就不继续深入了。</p>
+<h2 id="实例：收集-Linux-系统日志"><a href="#实例：收集-Linux-系统日志" class="headerlink" title="实例：收集 Linux 系统日志"></a>实例：收集 Linux 系统日志</h2><p>万事俱备，只欠东风，我们现在就把  ElasticStack 用起来！第一个任务很简单，就是把本机的日志给监控起来，这样我们在查询系统发生的事件时，就不用再去 <code>/var/log/</code> 文件夹里『翻箱倒柜』了。</p>
+<h3 id="系统日志介绍"><a href="#系统日志介绍" class="headerlink" title="系统日志介绍"></a>系统日志介绍</h3><p>这里简要介绍一下比较通用的系统日志及对应的内容，之后导入日志的时候我会挑选：</p>
+<ul>
+<li><code>/var/log/apport.log</code> 应用程序崩溃记录</li>
+<li><code>/var/log/apt/</code> 用 apt-get 安装卸载软件的信息</li>
+<li><code>/var/log/auth.log</code>  登录认证的日志</li>
+<li><code>/var/log/boot.log</code>  系统启动时的日志。</li>
+<li><code>/var/log/dmesg</code> 包含内核缓冲信息(kernel ringbuffer)。在系统启动时，显示屏幕上的与硬件有关的信息</li>
+<li><code>/var/log/faillog</code> 包含用户登录失败信息。此外，错误登录命令也会记录在本文件中</li>
+<li><code>/var/log/fsck</code> 文件系统日志</li>
+<li><code>/var/log/kern.log</code> 包含内核产生的日志，有助于在定制内核时解决问题</li>
+<li><code>/var/log/wtmp</code> 包含登录信息。使用 wtmp 可以找出谁正在登陆进入系统，谁使用命令显示这个文件或信息等</li>
+</ul>
+<h3 id="启动-Logstash"><a href="#启动-Logstash" class="headerlink" title="启动 Logstash"></a>启动 Logstash</h3><p>这一步的任务是利用 Logstash 把系统日志给导入 Elasticsearch 中。暂时没有使用最新的 Beats 组件，而是继续使用传统的 Logstash 来进行操作（比较重型），用法和之前有些不同，我们会把配置写在一个文件中，而不是直接在命令中输入。具体如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 我的习惯是把配置文件统一放到名为 confs 的文件夹中</div><div class="line"># 本配置文件名为 syslog.conf</div><div class="line">input &#123;</div><div class="line">  file &#123;</div><div class="line">    # 确定需要检测的文件</div><div class="line">    path =&gt; [ &quot;/var/log/*.log&quot;, &quot;/var/log/messages&quot;, &quot;/var/log/syslog&quot;, &quot;/var/log/apt&quot;, &quot;/var/log/fsck&quot;, &quot;/var/log/faillog&quot;]</div><div class="line">    # 日志类型</div><div class="line">    type =&gt; &quot;syslog&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">output &#123;</div><div class="line">  # 输出到命令行，一般用于调试</div><div class="line">  stdout &#123; </div><div class="line">    codec =&gt; rubydebug </div><div class="line">  &#125;</div><div class="line">  # 输出到 elasticsearch，这里指定索引名为 system-log</div><div class="line">  elasticsearch &#123; </div><div class="line">    hosts =&gt; &quot;localhost:9200&quot;</div><div class="line">    index =&gt; &quot;system-log&quot; </div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>有了配置文件，我们就可以把日志导入到 Elasticsearch 了，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># -f 表示从文件中读取配置</span></div><div class="line">bin/logstash <span class="_">-f</span> confs/syslog.conf</div></pre></td></tr></table></figure>
+<p>大概的输出是如下：</p>
+<p><img src="/images/14797212868418.jpg" alt=""></p>
+<p>如果到这里一切正常，我们就可以去 Kibana 中查看导入的日志了。</p>
+<h3 id="使用-Kibana"><a href="#使用-Kibana" class="headerlink" title="使用 Kibana"></a>使用 Kibana</h3><p>Kibana 相当于是 Elasticsearch 的一个可视化插件，所以我们需要在 Management 页面中告诉 Kibana 我们刚才创建的 <code>system-log</code> 索引，完成之后可以看到具体的条目及对应的信息（包括是否可被检索，是否能聚合，是否被分词等）</p>
+<p><img src="/images/14797126705730.jpg" alt=""></p>
+<p>创建完成后我们就可以在 Discover 面板里查看数据了。</p>
+<p><img src="/images/14797126971993.jpg" alt=""></p>
+<p>分别介绍下每个面板的作用（更加详细的介绍参见 <a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a>）</p>
+<ul>
+<li>Discover: 探索数据</li>
+<li>Visualize: 可视化统计</li>
+<li>Dashboard: 仪表盘</li>
+<li>Timelion: 时序，这里我们暂时不用</li>
+<li>Management: 设置</li>
+<li>Dev Tools: 开发工具，可以方便的测试内置接口</li>
+</ul>
+<p>这里我简单给出两个实例，介绍一下 Visualize 和 Dashboard 的基本用法</p>
+<p>如下图配置，我们可以轻松查看日志都是从哪些文件导入的，除了饼图外，柱状图折线图之类的都是支持的，大家可以自行尝试一下</p>
+<p><img src="/images/14797163664177.jpg" alt=""></p>
+<p>每个 Visualization 都可以保存，保存之后可以在 Dashboard 面板里集中显示，这样我们只需要看一眼，就对机器运行的状况有一个清晰的了解。</p>
+<p><img src="/images/14797164257675.jpg" alt=""></p>
+<p>至此，我们就完成了收集系统日志并展示的任务，本章内容到此基本结束。</p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><ol>
+<li>搭建完成之后，看看自己的系统中最多出现的 log 是什么？</li>
+<li>在 Kibana 中 Dev Tools 的使用 Elasticsearch 的 HTTP 接口来进行简单的查询</li>
+<li>尝试 logstash 自己感兴趣的插件，看看能不能为系统日志添加更多字段</li>
+<li>创建几个不同的 Visualization 并添加到 Dashboard 中，让内容更丰富一些</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本节中我们完成了 ElasticStack 核心的 ELK 安装，并用一个简单的实例熟悉了相关操作。刚开始接触，一定是会有很多陌生的概念，建议大家去浏览一下官方的快速入门文档，写得还是比较清晰的。下一讲我们会介绍整个日志处理流程中很重要的『缓冲区』- Kafka，有了它，我们的日志分析平台就有了基本的雏形了。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://www.elastic.co/guide/index.html" target="_blank" rel="external">Elastic Stack and Product Documentation</a></li>
+<li><a href="http://www.infoq.com/cn/news/2016/08/Elasticsearch-5-0-Elastic" target="_blank" rel="external">大数据杂谈微课堂|Elasticsearch 5.0新版本的特性与改进</a></li>
+<li><a href="http://www.infoq.com/cn/news/2016/11/Elasticsearch-5-0-publish" target="_blank" rel="external">开源搜索引擎Elasticsearch 5.0版本正式发布</a></li>
+</ul>
+
       
     </div>
 
@@ -694,7 +837,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ElasticStack-5-0"><span class="nav-number">3.</span> <span class="nav-text">ElasticStack 5.0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">4.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装与启动"><span class="nav-number">3.</span> <span class="nav-text">安装与启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ElasticStack-5-0-的变化"><span class="nav-number">4.</span> <span class="nav-text">ElasticStack 5.0 的变化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch-快速入门"><span class="nav-number">5.</span> <span class="nav-text">Elasticsearch 快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念"><span class="nav-number">5.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hello-World"><span class="nav-number">5.2.</span> <span class="nav-text">Hello World</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例：收集-Linux-系统日志"><span class="nav-number">6.</span> <span class="nav-text">实例：收集 Linux 系统日志</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#系统日志介绍"><span class="nav-number">6.1.</span> <span class="nav-text">系统日志介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-Logstash"><span class="nav-number">6.2.</span> <span class="nav-text">启动 Logstash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Kibana"><span class="nav-number">6.3.</span> <span class="nav-text">使用 Kibana</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">7.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">9.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>

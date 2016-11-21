@@ -86,16 +86,16 @@
 
 
 
-<meta name="description" content="施工中：Kafka 搭建、使用；连接 logstash 和 elasticsearch">
+<meta name="description" content="前一讲我们已经搭建好了 ElasticStack 的核心组件，但是在日常使用中，一般会在 Logstash 和 Elasticsearch 之间加一层 Kafka 用来缓存和控制，这次我们就来看看如何实现这样的功能。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【通天塔之日志分析平台】贰 Kafka 缓冲区">
 <meta property="og:url" content="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/index.html">
 <meta property="og:site_name" content="小土刀">
-<meta property="og:description" content="施工中：Kafka 搭建、使用；连接 logstash 和 elasticsearch">
-<meta property="og:updated_time" content="2016-11-20T15:36:03.000Z">
+<meta property="og:description" content="前一讲我们已经搭建好了 ElasticStack 的核心组件，但是在日常使用中，一般会在 Logstash 和 Elasticsearch 之间加一层 Kafka 用来缓存和控制，这次我们就来看看如何实现这样的功能。">
+<meta property="og:updated_time" content="2016-11-21T14:27:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【通天塔之日志分析平台】贰 Kafka 缓冲区">
-<meta name="twitter:description" content="施工中：Kafka 搭建、使用；连接 logstash 和 elasticsearch">
+<meta name="twitter:description" content="前一讲我们已经搭建好了 ElasticStack 的核心组件，但是在日常使用中，一般会在 Logstash 和 Elasticsearch 之间加一层 Kafka 用来缓存和控制，这次我们就来看看如何实现这样的功能。">
 
 
 
@@ -382,10 +382,13 @@
       
 
       
-        <p>施工中：Kafka 搭建、使用；连接 logstash 和 elasticsearch</p>
+        <p>前一讲我们已经搭建好了 ElasticStack 的核心组件，但是在日常使用中，一般会在 Logstash 和 Elasticsearch 之间加一层 Kafka 用来缓存和控制，这次我们就来看看如何实现这样的功能。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
+<ul>
+<li>2016.11.21: 完成初稿</li>
+</ul>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
 <li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
@@ -399,7 +402,168 @@
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
-<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><ol>
+<li>安装并配置好 Kafka</li>
+<li>理解 Kafka 的工作机制</li>
+<li>掌握 Kafka 的基本操作，学会基本的错误处理</li>
+<li>完成 Logstash-Kafka-Elasticsearch 链路的构建，理解这种架构的优劣</li>
+<li>通过实际操作，增加对 ElasticStack 的理解</li>
+</ol>
+<h2 id="Kafka-简介"><a href="#Kafka-简介" class="headerlink" title="Kafka 简介"></a>Kafka 简介</h2><p>作为云计算大数据的套件，Kafka 是一个分布式的、可分区的、可复制的消息系统。该有的功能基本都有，而且有自己的特色：</p>
+<ul>
+<li>以 topic 为单位进行消息归纳</li>
+<li>向 topic 发布消息的是 producer</li>
+<li>从 topic 获取消息的是 consumer</li>
+<li>集群方式运行，每个服务叫 broker</li>
+<li>客户端和服务器通过 TCP 进行通信</li>
+</ul>
+<p>在Kafka集群中，没有“中心主节点”的概念，集群中所有的服务器都是对等的，因此，可以在不做任何配置的更改的情况下实现服务器的的添加与删除，同样的消息的生产者和消费者也能够做到随意重启和机器的上下线。</p>
+<p>对每个 topic 来说，Kafka 会对其进行分区，每个分区都由一系列有序的、不可变的消息组成，这些消息被连续的追加到分区中。分区中的每个消息都有一个连续的序列号叫做 offset,用来在分区中唯一的标识这个消息。</p>
+<p>发布消息通常有两种模式：队列模式(queuing)和发布-订阅模式(publish-subscribe)。队列模式中，consumers 可以同时从服务端读取消息，每个消息只被其中一个 consumer 读到；发布-订阅模式中消息被广播到所有的 consumer 中。更常见的是，每个 topic 都有若干数量的 consumer 组，每个组都是一个逻辑上的『订阅者』，为了容错和更好的稳定性，每个组由若干 consumer 组成。这其实就是一个发布-订阅模式，只不过订阅者是个组而不是单个 consumer。</p>
+<p>通过分区的概念，Kafka 可以在多个 consumer 组并发的情况下提供较好的有序性和负载均衡。将每个分区分只分发给一个 consumer 组，这样一个分区就只被这个组的一个 consumer 消费，就可以顺序的消费这个分区的消息。因为有多个分区，依然可以在多个 consumer 组之间进行负载均衡。注意 consumer 组的数量不能多于分区的数量，也就是有多少分区就允许多少并发消费。</p>
+<p>Kafka 只能保证一个分区之内消息的有序性，在不同的分区之间是不可以的，这已经可以满足大部分应用的需求。如果需要 topic 中所有消息的有序性，那就只能让这个 topic 只有一个分区，当然也就只有一个 consumer 组消费它。</p>
+<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>我们可以根据自己的需求来进行简单的配置，具体如下：</p>
+<h3 id="1-下载-Kafka"><a href="#1-下载-Kafka" class="headerlink" title="(1) 下载 Kafka"></a>(1) 下载 Kafka</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 美国主机</span></div><div class="line">wget http://www-us.apache.org/dist/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz</div><div class="line"><span class="comment"># 解压</span></div><div class="line">tar -xzf kafka_2.11-0.10.1.0.tgz</div><div class="line"><span class="comment"># 进入文件夹</span></div><div class="line"><span class="built_in">cd</span> kafka_2.11-0.10.1.0</div></pre></td></tr></table></figure>
+<h3 id="2-配置-Zookeeper-及-Kafka"><a href="#2-配置-Zookeeper-及-Kafka" class="headerlink" title="(2) 配置 Zookeeper 及 Kafka"></a>(2) 配置 Zookeeper 及 Kafka</h3><p>Zookeeper 的配置在 <code>config/zookeeper.properties</code> 文件中，Kafka 的配置在 <code>config/server.properties</code> 文件中。</p>
+<p>Zookeeper 的配置不需要特别更改，注意默认数据存放的位置是 <code>/zookeeper</code>，这里最好放到挂载磁盘上（如果使用云主机，一般来说系统盘比较小，具体可以用 <code>df -h</code> 查看）。Kafka 的默认数据存放位置是 <code>/tmp/kafka-logs</code>，我们把 zookeeper 和 kafka 的数据存放位置一并进行修改</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 在 zookeeper.properties 中</span></div><div class="line">/data/home/logger/kafka-data/zookeeper</div><div class="line"></div><div class="line"><span class="comment"># 在 server.properties 中</span></div><div class="line">log.dirs=/data/home/logger/kafka-data/kafka-logs</div></pre></td></tr></table></figure>
+<p>其他配置这里推荐进行一些修改，具体如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># advertised.listerners 改为对外服务的地址</span></div><div class="line"><span class="comment"># 比如对外的 ip 地址是 xx.xx.xx.xx，端口是 8080，那么</span></div><div class="line">advertised.listeners=PLAINTEXT://xx.xx.xx.xx:8080</div><div class="line"></div><div class="line"><span class="comment"># 允许删除 topic</span></div><div class="line">delete.topic.enable=<span class="literal">true</span></div><div class="line"></div><div class="line"><span class="comment"># 不允许自动创建 topic，方便管理</span></div><div class="line">auto.create.topics.enable=<span class="literal">false</span></div><div class="line"></div><div class="line"><span class="comment"># 设定每个 topic 的分区数量，这里设为 100</span></div><div class="line">num.partitions=100</div><div class="line"></div><div class="line"><span class="comment"># 设定日志保留的时间，这里改为 72 小时</span></div><div class="line">log.retention.hours=72</div></pre></td></tr></table></figure>
+<h3 id="3-启动-Zookeeper-及-Kafka"><a href="#3-启动-Zookeeper-及-Kafka" class="headerlink" title="(3) 启动 Zookeeper 及 Kafka"></a>(3) 启动 Zookeeper 及 Kafka</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 可以使用 tmux 或 nohup &amp; 等方式来进行后台运行，这里使用 tmux</span></div><div class="line"><span class="comment"># 启动 Zookeeper</span></div><div class="line">bin/zookeeper-server-start.sh config/zookeeper.properties</div><div class="line"></div><div class="line"><span class="comment"># 启动 Kafka</span></div><div class="line">bin/kafka-server-start.sh config/server.properties</div></pre></td></tr></table></figure>
+<p>如果没有出现错误，则启动成功，接下来可以做一个简单的测试</p>
+<h3 id="4-内部测试-Kafka"><a href="#4-内部测试-Kafka" class="headerlink" title="(4) 内部测试 Kafka"></a>(4) 内部测试 Kafka</h3><p>先创建一个叫做 wdxtub 的 topic，它只有一个分区和一个副本，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 创建 topic</span></div><div class="line">bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic wdxtub</div></pre></td></tr></table></figure>
+<p>然后我们可以使用 <code>bin/kafka-topics.sh --list --zookeeper localhost:2181</code> 命令来查看目前已有的 topic 列表，这时候应该能看到我们刚才创建的名为 wdxtub 的 topic。如果看到程序返回了 <code>wdxtub</code>，那么表示 topic 创建成功。</p>
+<p>接下来我们创建一个简单的 producer，用来从标准输入中读取消息并发送给 Kafka，命令为 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 创建一个向 topic wdxtub 发送消息的 producer</span></div><div class="line"><span class="comment"># 按回车发送，ctrl+c 退出</span></div><div class="line">bin/kafka-console-producer.sh --broker-list localhost:9092 --topic wdxtub</div></pre></td></tr></table></figure>
+<p>另外新建一个窗口，启动一个 consumer，用来读取消息并输出到标准输出，命令为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 创建一个从 topic wdxtub 读取消息的 consumer</span></div><div class="line">bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic wdxtub --from-beginning</div></pre></td></tr></table></figure>
+<p>启动成功后，我们在 producer 中输入的内容，就可以在 consumer 中看到：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># producer 窗口内容</span></div><div class="line">$&gt; ~/kafka_2.11-0.10.1.0$ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic wdxtub</div><div class="line">abcdefu</div><div class="line">dalkdjflka^H^H^H^H^H^H^H</div><div class="line">wdxtub.com</div><div class="line">wdxtub.com is good</div><div class="line"></div><div class="line"><span class="comment"># consumer 窗口内容</span></div><div class="line">$&gt; ~/kafka_2.11-0.10.1.0$ bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic wdxtub --from-beginning</div><div class="line">Using the ConsoleConsumer with old consumer is deprecated and will be removed <span class="keyword">in</span> a future major release. Consider using the new consumer by passing [bootstrap-server] instead of [zookeeper].</div><div class="line">abcdefu</div><div class="line">dalkdjflka</div><div class="line">wdxtub.com</div><div class="line">wdxtub.com is good</div></pre></td></tr></table></figure>
+<h3 id="5-Nginx-配置"><a href="#5-Nginx-配置" class="headerlink" title="(5) Nginx 配置"></a>(5) Nginx 配置</h3><p>因为 Kafka 集群的通讯是走内网 ip，而外网访问的端口因为安全考虑只开了少数几个（这里是 8080），所以我们用 Nginx 反向代理来连通内外网</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">upstream mq_pool&#123;</div><div class="line">server ip1:9092 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">server localhost:9092 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server&#123;</div><div class="line">listen 8080;</div><div class="line">allow all;</div><div class="line">proxy_pass mq_pool;</div><div class="line">proxy_connect_timeout 24h;</div><div class="line">proxy_timeout 24h;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个配置的意思大概是把所有 8080 端口的消息转发到 <code>mq_pool</code> 的两台机器上（负载均衡），其他的就是常规配置。</p>
+<h3 id="6-外部测试-Kafka"><a href="#6-外部测试-Kafka" class="headerlink" title="(6) 外部测试 Kafka"></a>(6) 外部测试 Kafka</h3><p>现在我们的 Kafka 已经在运行了，但是刚才的测试程序是在本机，所以我们无法保证外部应用也能向 Kafka 发送消息（很多时候会用 Nginx 来控制），这里我们就来编写一段简单的 python 脚本来测试能否从其他服务器连接 Kafka。</p>
+<p>这里我们采用的 python 包名为 <a href="https://github.com/dpkp/kafka-python" target="_blank" rel="external">dpkp/kafka-python</a>，如果已经有 <code>pip</code> 工具的话，直接 <code>pip install kafka-python</code> 即可。然后我们可以简单编写一个 producer 来进行测试：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 名为 kafka-test.py</span></div><div class="line"><span class="keyword">from</span> kafka <span class="keyword">import</span> KafkaProducer</div><div class="line"><span class="comment"># 设置 Kafka 地址</span></div><div class="line">producer = KafkaProducer(</div><div class="line">    bootstrap_servers=<span class="string">'your.host.name:8080'</span>)</div><div class="line"></div><div class="line"><span class="comment"># 设置需要发送的 topic 及内容</span></div><div class="line">producer.send(<span class="string">'wdxtub'</span>, <span class="string">'Hello World! This is wdxtub.com.'</span>)</div></pre></td></tr></table></figure>
+<p>执行一下 <code>python kafka-test.py</code>，如果能在第(4)步中打开的 consumer 中看到 Hello World 这行字儿，说明能够正确连接。</p>
+<h2 id="Kafka-常用操作"><a href="#Kafka-常用操作" class="headerlink" title="Kafka 常用操作"></a>Kafka 常用操作</h2><p>所有的工具都可以在 <code>bin/</code> 文件夹下查看，如果不带任何参数，就会给出所有命令的列表说明，这里只简要说明一些常用的命令</p>
+<h3 id="管理-topic"><a href="#管理-topic" class="headerlink" title="管理 topic"></a>管理 topic</h3><p>可以手动创建 topic，或在数据进来时自动创建不存在的 topic，如果是自动创建的话，可能需要根据<a href="http://kafka.apache.org/documentation.html#topic-config" target="_blank" rel="external">这里</a>来进行对应调整。</p>
+<p><strong>创建 topic</strong></p>
+<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --create --topic my_topic_name --partitions 20 --replication-factor 3 --config x=y</code></p>
+<p>replication-factor 控制复制的份数，建议 2-3 份来兼顾容错和效率。partitions 控制该 topic 将被分区的数目，partitions 的数目最好不要超过服务器的个数（因为分区的意义是增加并行效率，而服务器数量决定了并行的数量，假设只有 2 台服务器，分 4 个区和 2 个区其实差别不大）。另外，topic 的名称不能超过 249 个字符</p>
+<p><strong>修改 topic</strong></p>
+<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --alter --topic my_topic_name --partitions 40</code></p>
+<p>这里需要注意，即使修改了分区的个数，已有的数据也不会进行变动，Kafka 不会做任何自动重分布</p>
+<p><strong>增加配置</strong></p>
+<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --alter --topic my_topic_name --config x=y</code></p>
+<p><strong>移除配置</strong></p>
+<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --alter --topic my_topic_name --delete-config x</code></p>
+<p><strong>删除 topic</strong></p>
+<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --delete --topic my_topic_name</code></p>
+<p>这个需要 <code>delete.topic.enable=true</code>，目前 Kafka 不支持减少 topic 的分区数目</p>
+<h3 id="优雅关闭"><a href="#优雅关闭" class="headerlink" title="优雅关闭"></a>优雅关闭</h3><p>Kafka 会自动检测 broker 的状态并根据机器状态选举出新的 leader。但是如果需要进行配置更改停机的时候，我们就需要使用优雅关闭了，好处在于：</p>
+<ol>
+<li>会把所有的日志同步到磁盘上，避免重启之后的日志恢复，减少重启时间</li>
+<li>会在关闭前把以这台机为 leader 的分区数据迁移到其他节点，会减少不可用的时间</li>
+</ol>
+<p>但是这个需要开启 <code>controlled.shutdown.enable=true</code>。</p>
+<p>刚重启之后的节点不是任何分区的 leader，所以这时候需要进行重新分配：</p>
+<p><code>bin/kafka-preferred-replica-election.sh --zookeeper zk_host:port/chroot</code></p>
+<p>这里需要开启 <code>auto.leader.rebalance.enable=true</code></p>
+<p>然后可以使用脚本 <code>bin/kafka-server-stop.sh</code></p>
+<p>注意，如果配置文件中没有 <code>auto.leader.rebalance.enable=true</code>，就还需要重新平衡。</p>
+<h2 id="深入理解"><a href="#深入理解" class="headerlink" title="深入理解"></a>深入理解</h2><p>这里只是一部分摘录，更多内容可查阅参考链接（尤其是美团技术博客的那篇）</p>
+<h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><p>Kafka 大量依赖文件系统去存储和缓存消息。而文件系统最终会放在硬盘上，不过不用担心，很多时候硬盘的快慢完全取决于使用它的方式。设计良好的硬盘架构可以和内存一样快。</p>
+<p>所以与传统的将数据缓存在内存中然后刷到硬盘的设计不同，Kafka直接将数据写到了文件系统的日志中，因此也避开了 JVM 的劣势——Java 对象占用空间巨大，数据量增大后垃圾回收有困难。使用文件系统，即使系统重启了，也不需要刷新数据，也简化了维护数据一致性的逻辑。</p>
+<p>对于主要用于日志处理的消息系统，数据的持久化可以简单的通过将数据追加到文件中实现，读的时候从文件中读就好了。这样做的好处是读和写都是 O(1) 的，并且读操作不会阻塞写操作和其他操作。这样带来的性能优势是很明显的，因为性能和数据的大小没有关系了。</p>
+<p>既然可以使用几乎没有容量限制（相对于内存来说）的硬盘空间建立消息系统，就可以在没有性能损失的情况下提供一些一般消息系统不具备的特性。比如，一般的消息系统都是在消息被消费后立即删除，Kafka却可以将消息保存一段时间（比如一星期），这给consumer提供了很好的机动性和灵活性。</p>
+<h3 id="事务定义"><a href="#事务定义" class="headerlink" title="事务定义"></a>事务定义</h3><p>数据传输的事务定义通常有以下三种级别：</p>
+<ul>
+<li>最多一次: 消息不会被重复发送，最多被传输一次，但也有可能一次不传输。</li>
+<li>最少一次: 消息不会被漏发送，最少被传输一次，但也有可能被重复传输.</li>
+<li>精确的一次（Exactly once）: 不会漏传输也不会重复传输,每个消息都传输被一次而且仅仅被传输一次，这是大家所期望的。</li>
+</ul>
+<p>Kafka 的机制和 git 有点类似，有一个 commit 的概念，一旦提交且 broker 在工作，那么数据就不会丢失。如果 producer 发布消息时发生了网络错误，但又不确定实在提交之前发生的还是提交之后发生的，这种情况虽然不常见，但是必须考虑进去，现在Kafka版本还没有解决这个问题，将来的版本正在努力尝试解决。</p>
+<p>并不是所有的情况都需要“精确的一次”这样高的级别，Kafka 允许 producer 灵活的指定级别。比如 producer 可以指定必须等待消息被提交的通知，或者完全的异步发送消息而不等待任何通知，或者仅仅等待 leader 声明它拿到了消息（followers没有必要）。</p>
+<p>现在从 consumer 的方面考虑这个问题，所有的副本都有相同的日志文件和相同的offset，consumer 维护自己消费的消息的 offset。如果 consumer 崩溃了，会有另外一个 consumer 接着消费消息，它需要从一个合适的 offset 继续处理。这种情况下可以有以下选择：</p>
+<ul>
+<li>consumer 可以先读取消息，然后将 offset 写入日志文件中，然后再处理消息。这存在一种可能就是在存储 offset 后还没处理消息就 crash 了，新的 consumer 继续从这个 offset 处理，那么就会有些消息永远不会被处理，这就是上面说的『最多一次』</li>
+<li>consumer 可以先读取消息，处理消息，最后记录o ffset，当然如果在记录 offset 之前就 crash 了，新的 consumer 会重复的消费一些消息，这就是上面说的『最少一次』</li>
+<li>『精确一次』可以通过将提交分为两个阶段来解决：保存了 offset 后提交一次，消息处理成功之后再提交一次。但是还有个更简单的做法：将消息的 offset 和消息被处理后的结果保存在一起。比如用 Hadoop ETL 处理消息时，将处理后的结果和 offset 同时保存在 HDFS 中，这样就能保证消息和 offser 同时被处理了</li>
+</ul>
+<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><p>Kafka 在提高效率方面做了很大努力。Kafka 的一个主要使用场景是处理网站活动日志，吞吐量是非常大的，每个页面都会产生好多次写操作。读方面，假设每个消息只被消费一次，读的量的也是很大的，Kafka 也尽量使读的操作更轻量化。</p>
+<p>线性读写的情况下影响磁盘性能问题大约有两个方面：太多的琐碎的 I/O 操作和太多的字节拷贝。I/O 问题发生在客户端和服务端之间，也发生在服务端内部的持久化的操作中。</p>
+<p><strong>消息集(message set)</strong></p>
+<p>为了避免这些问题，Kafka 建立了<strong>消息集(message set)</strong>的概念，将消息组织到一起，作为处理的单位。以消息集为单位处理消息，比以单个的消息为单位处理，会提升不少性能。Producer 把消息集一块发送给服务端，而不是一条条的发送；服务端把消息集一次性的追加到日志文件中，这样减少了琐碎的 I/O 操作。consumer 也可以一次性的请求一个消息集。</p>
+<p>另外一个性能优化是在字节拷贝方面。在低负载的情况下这不是问题，但是在高负载的情况下它的影响还是很大的。为了避免这个问题，Kafka 使用了标准的二进制消息格式，这个格式可以在 producer, broker 和 producer 之间共享而无需做任何改动。</p>
+<p><strong>zero copy</strong></p>
+<p>Broker 维护的消息日志仅仅是一些目录文件，消息集以固定队的格式写入到日志文件中，这个格式 producer 和 consumer 是共享的，这使得 Kafka 可以一个很重要的点进行优化：消息在网络上的传递。现代的 unix 操作系统提供了高性能的将数据从页面缓存发送到 socket 的系统函数，在 linux 中，这个函数是 <code>sendfile</code></p>
+<p>为了更好的理解 <code>sendfile</code> 的好处，我们先来看下一般将数据从文件发送到 socket 的数据流向：</p>
+<ul>
+<li>操作系统把数据从文件拷贝内核中的页缓存中</li>
+<li>应用程序从页缓存从把数据拷贝自己的内存缓存中</li>
+<li>应用程序将数据写入到内核中 socket 缓存中</li>
+<li>操作系统把数据从 socket 缓存中拷贝到网卡接口缓存，从这里发送到网络上。</li>
+</ul>
+<p>这显然是低效率的，有 4 次拷贝和 2 次系统调用。<code>sendfile</code> 通过直接将数据从页面缓存发送网卡接口缓存，避免了重复拷贝，大大的优化了性能。</p>
+<p>在一个多consumers的场景里，数据仅仅被拷贝到页面缓存一次而不是每次消费消息的时候都重复的进行拷贝。这使得消息以近乎网络带宽的速率发送出去。这样在磁盘层面你几乎看不到任何的读操作，因为数据都是从页面缓存中直接发送到网络上去了。</p>
+<p><strong>数据压缩</strong></p>
+<p>很多时候，性能的瓶颈并非CPU或者硬盘而是网络带宽，对于需要在数据中心之间传送大量数据的应用更是如此。当然用户可以在没有 Kafka 支持的情况下各自压缩自己的消息，但是这将导致较低的压缩率，因为相比于将消息单独压缩，将大量文件压缩在一起才能起到最好的压缩效果。</p>
+<p>Kafka 采用了端到端的压缩：因为有『消息集』的概念，客户端的消息可以一起被压缩后送到服务端，并以压缩后的格式写入日志文件，以压缩的格式发送到 consumer，消息从 producer 发出到 consumer 拿到都被是压缩的，只有在 consumer 使用的时候才被解压缩，所以叫做『端到端的压缩』。Kafka支持GZIP和Snappy压缩协议。</p>
+<h2 id="Logstash-gt-Kafka"><a href="#Logstash-gt-Kafka" class="headerlink" title="Logstash -&gt; Kafka"></a>Logstash -&gt; Kafka</h2><p>让我们回想一下之前的架构，Logstash 会直接把日志发送给 Elasticsearch，再由 Kibana 进行展示。因为 Logstash 是同步把日志发送给 Elasticsearch 的，所以等于这俩耦合在了一起，Elasticsearch 一旦挂掉，可能就会丢失数据。</p>
+<p>于是，我们考虑利用 Kafka 作为缓冲区，让 Logstash 不受 Elasticsearch 的影响。所以第一步就是让 Logstash 把日志发送到 Kafka，这里 Logstash 相当于 producer。</p>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><p>结合上一篇，进行内容调整</p>
+<h3 id="Input-读取文件"><a href="#Input-读取文件" class="headerlink" title="Input 读取文件"></a>Input 读取文件</h3><p>Logstash 使用一个名叫 FileWatch 的 Ruby Gem 库来监听文件变化。这个库支持 glob 展开文件路径，而且会记录一个叫 <code>.sincedb</code> 的数据库文件来跟踪被监听的日志文件的当前读取位置。通过记录下来的 <code>inode</code>, <code>major number</code>, <code>minor number</code> 和 <code>pos</code> 就可以保证不漏过每一条日志。一个可能的配置文件是这样的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">input &#123;</div><div class="line">  file &#123;</div><div class="line">    path =&gt; [&quot;/data/home/service/project/current/log/logstash_production.log&quot;, &quot;/data/home/service/project/current/log/logstash_production.log.1&quot;]</div><div class="line">    add_field =&gt; &#123; &quot;topic&quot; =&gt; &quot;djiservice&quot;&#125;</div><div class="line">    stat_interval =&gt; 1800</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里说一下 File rotation 的情况，为了处理被 rotate 的情况，最好把 rotate 之后的文件名也加到 path 中（如上面所示），这里注意，如果 <code>start_position</code> 被设为 <code>beginning</code>，被 rotate 的文件因为会被认为是新文件，而重新导入。如果用默认值 <code>end</code>，那么在最后一次读之后到被 rotate 结束前生成的日志不会被采集。</p>
+<p>其他一些配置的设定原因</p>
+<ul>
+<li><code>add_field</code> 添加一个 topic 字段，用作之后导入 elasticsearch 的索引标识</li>
+<li><code>stat_interval</code> 单位是秒，这里 30 分钟进行一次检测，不过测试的时候需要去掉这个配置</li>
+<li><code>codec</code> 因为已经处理成 logstash 兼容格式，就直接以 json 解析</li>
+</ul>
+<h3 id="Filter-内容定制"><a href="#Filter-内容定制" class="headerlink" title="Filter 内容定制"></a>Filter 内容定制</h3><p>Filter 主要是对数据进行一些处理，比如说我用的是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">filter &#123;</div><div class="line">  mutate &#123;</div><div class="line">    remove_field =&gt; [&quot;format&quot;]</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  geoip &#123;</div><div class="line">    source =&gt; &quot;ip&quot;</div><div class="line">    fields =&gt; [&quot;location&quot;, &quot;city_name&quot;, &quot;country_name&quot;, &quot;country_code2&quot;,&quot;country_code3&quot;, &quot;region_name&quot;, &quot;continent_code&quot;]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里做的操作一是移除无效的域，二是把 ip 转换为地理位置，方便后期的处理。</p>
+<h3 id="Output-输出到-Kafka"><a href="#Output-输出到-Kafka" class="headerlink" title="Output 输出到 Kafka"></a>Output 输出到 Kafka</h3><p>因为 Logstash 自带 Kafka 插件，直接配置上即可，比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">output &#123;</div><div class="line">  kafka &#123;</div><div class="line">    topic_id =&gt; &quot;test&quot;</div><div class="line">    bootstrap_servers =&gt; &quot;kafka_url:port&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下面是基本的配置及其设定原因</p>
+<ul>
+<li><code>topic_id</code> 指定 topic 来进行发送</li>
+<li><code>bootstrap_servers</code> 这里是 Kafka 的接入地址</li>
+</ul>
+<p>其他一些需要注意的配置</p>
+<ul>
+<li><code>acks</code> 可以选的值为 <code>0</code>, <code>1</code>, <code>all</code>，这里解释一下，0 表示不需要 server 返回就认为请求已完成；1 表示需要 leader 返回才认为请求完成；all 表示需要所有的服务器返回才认为请求完成</li>
+<li><code>batch_size</code> 单位是字节，如果是发送到同一分区，会攒够这个大小才发送一次请求</li>
+<li><code>block_on_buffer_full</code> 这个设置在缓冲区慢了之后阻塞还是直接报错</li>
+<li><code>buffer_memory</code> 发送给服务器之前的缓冲区大小，单位是字节</li>
+<li><code>client_id</code> 可以在这里设定有意义的名字，就不一定要用 ip 和 端口来区分</li>
+<li><code>compression_type</code> 压缩方式，默认是 <code>none</code>，其他可选的是 <code>gzip</code> 和 <code>snappy</code></li>
+</ul>
+<h2 id="Kafka-gt-Elasticsearch"><a href="#Kafka-gt-Elasticsearch" class="headerlink" title="Kafka -&gt; Elasticsearch"></a>Kafka -&gt; Elasticsearch</h2><p>利用 Logstash 从 Kafka 导出数据到 Elasticsearch</p>
+<p>这一步就比较简单了，先从 Kafka 中读取，然后写入到 elasticsearch，这里 Logstash 作为 consumer</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">output &#123;</div><div class="line">  input &#123;</div><div class="line">    kafka &#123;</div><div class="line">      zk_connect =&gt; &quot;localhost:2181&quot;</div><div class="line">      topic_id =&gt; &quot;log&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  stdout &#123;</div><div class="line">     codec =&gt; rubydebug</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  elasticsearch &#123;</div><div class="line">    hosts =&gt; [&quot;url:port&quot;]</div><div class="line">    user =&gt; &quot;name&quot;</div><div class="line">    password =&gt; &quot;password&quot;</div><div class="line">    index =&gt; &quot;%&#123;service&#125;-%&#123;+YYYY-MM-dd&#125;&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样可以按照配置的服务名称和日期来切割。</p>
+<p>至此，我们完成了从 Logstash 到 Kafka 再到 Elasticsearch 的连接，下一步就可以用 kibana 来展示日志的监控分析结果了。</p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://kafka.apache.org/quickstart" target="_blank" rel="external">Kafka 快速入门</a></li>
+<li><a href="https://www.apache.org/dyn/closer.cgi?path=/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz" target="_blank" rel="external">Kafka 2.11-0.10.1.0 下载</a></li>
+<li><a href="http://blog.csdn.net/LOUISLIAOXH/article/details/51567515" target="_blank" rel="external">Kafka学习整理六(server.properties配置实践)</a></li>
+<li><a href="http://kafka.apache.org/" target="_blank" rel="external">Apache Kafka</a></li>
+<li><a href="http://kafka.apache.org/documentation.html#quickstart" target="_blank" rel="external">Quick Start</a></li>
+<li><a href="http://www.aboutyun.com/thread-12882-1-1.html" target="_blank" rel="external">Kafka入门经典教程</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-kafka/" target="_blank" rel="external">Apache kafka 工作原理介绍</a></li>
+<li><a href="http://www.coderli.com/setup-kafka-cluster-step-by-step/" target="_blank" rel="external">事无巨细 Apache Kafka 0.9.0.1 集群环境搭建</a></li>
+<li><a href="http://blog.csdn.net/dhtx_wzgl/article/details/46892231" target="_blank" rel="external">kafka集群搭建</a></li>
+<li><a href="http://tech.meituan.com/kafka-fs-design-theory.html" target="_blank" rel="external">Kafka文件存储机制那些事</a></li>
+<li><a href="http://kaimingwan.com/post/kafka/kafkayuan-li-yi-ji-she-ji-shi-xian-si-xiang" target="_blank" rel="external">kafka原理以及设计实现思想</a></li>
+<li><a href="http://www.dexcoder.com/dexcoder/article/2194" target="_blank" rel="external">kafka设计原理介绍</a></li>
+<li><a href="http://blog.jobbole.com/99195/" target="_blank" rel="external">Kafka集群操作指南</a></li>
+<li><a href="https://www.quora.com/What-is-the-actual-role-of-ZooKeeper-in-Kafka" target="_blank" rel="external">What is the actual role of ZooKeeper in Kafka?</a></li>
+</ul>
+
       
     </div>
 
@@ -685,7 +849,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">3.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-简介"><span class="nav-number">3.</span> <span class="nav-text">Kafka 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境配置"><span class="nav-number">4.</span> <span class="nav-text">环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-下载-Kafka"><span class="nav-number">4.1.</span> <span class="nav-text">(1) 下载 Kafka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-配置-Zookeeper-及-Kafka"><span class="nav-number">4.2.</span> <span class="nav-text">(2) 配置 Zookeeper 及 Kafka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-启动-Zookeeper-及-Kafka"><span class="nav-number">4.3.</span> <span class="nav-text">(3) 启动 Zookeeper 及 Kafka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-内部测试-Kafka"><span class="nav-number">4.4.</span> <span class="nav-text">(4) 内部测试 Kafka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Nginx-配置"><span class="nav-number">4.5.</span> <span class="nav-text">(5) Nginx 配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-外部测试-Kafka"><span class="nav-number">4.6.</span> <span class="nav-text">(6) 外部测试 Kafka</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-常用操作"><span class="nav-number">5.</span> <span class="nav-text">Kafka 常用操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#管理-topic"><span class="nav-number">5.1.</span> <span class="nav-text">管理 topic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优雅关闭"><span class="nav-number">5.2.</span> <span class="nav-text">优雅关闭</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深入理解"><span class="nav-number">6.</span> <span class="nav-text">深入理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件系统"><span class="nav-number">6.1.</span> <span class="nav-text">文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务定义"><span class="nav-number">6.2.</span> <span class="nav-text">事务定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能优化"><span class="nav-number">6.3.</span> <span class="nav-text">性能优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Logstash-gt-Kafka"><span class="nav-number">7.</span> <span class="nav-text">Logstash -> Kafka</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TODO"><span class="nav-number">8.</span> <span class="nav-text">TODO</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Input-读取文件"><span class="nav-number">8.1.</span> <span class="nav-text">Input 读取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Filter-内容定制"><span class="nav-number">8.2.</span> <span class="nav-text">Filter 内容定制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Output-输出到-Kafka"><span class="nav-number">8.3.</span> <span class="nav-text">Output 输出到 Kafka</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-gt-Elasticsearch"><span class="nav-number">9.</span> <span class="nav-text">Kafka -> Elasticsearch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">10.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">11.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">12.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
           </div>
         </section>

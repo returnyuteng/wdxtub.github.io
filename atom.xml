@@ -91,7 +91,7 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/</id>
     <published>2016-11-19T03:11:11.000Z</published>
-    <updated>2016-11-20T15:34:35.000Z</updated>
+    <updated>2016-11-21T14:27:52.000Z</updated>
     
     <content type="html"><![CDATA[<p>作为开篇，本文会介绍『日志分析平台』系列的内容梗概并完成基本的环境配置。作为『通天塔』这一技术主题合集的首个系列，我会尝试和『读薄/读厚 CSAPP』系列不一样的风格，但是目的是一致的，就是让感兴趣的朋友少走点弯路。</p>
 <a id="more"></a>
@@ -147,6 +147,7 @@
 <li>Kibana 则自带各种查询聚合以及生成报表功能。</li>
 </ul>
 <p>再加上查询简单、扩展容易之类的特点，大受欢迎其实也在情理之中。官方也在不断吸收社区精华的同时开发了安全、报警、监控、报告等一系列功能，再加上能够轻松和 Hadoop 这类分布式计算框架配合，怎么看都是非常不错的选择。</p>
+<h2 id="系列内容"><a href="#系列内容" class="headerlink" title="系列内容"></a>系列内容</h2><p>『通天塔之日志分析平台』这个系列的主要是内容是和大家一起一步一步搭建起来一个完整的日志分析平台，具体的内容通过前面的目录应该能够略知一二，会包含业界通用的解决方案，在介绍原理的同时，每一章都会有一定的产出，这样在学习的时候比较不容易懈怠。</p>
 <h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>关于 ElasticStack 的更多详细介绍会在接下来的文章中继续，现在我们先把系统准备好吧。考虑到现在大部分服务器都在跑 Linux，所以本文会以 Ubuntu 64bit 14.04 这个长期支持版本来作为我们的操作系统。我目前在用的是 MacBook Pro(Retina, 13’, Late 2013)，8GB 内存 2.4 GHz 的 i5，在虚拟机里跑 Ubuntu。</p>
 <p>ElasticStack 对系统和软件的配置要求并不高，我们只需要安装 JDK 即可。可以用如下的命令或者是我已经写好的脚本<a href="https://github.com/wdxtub/wdxtools/blob/master/linux-script/ubuntu-java-install.sh" target="_blank" rel="external"><code>ubuntu-java-install.sh</code></a></p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 添加源 </div><div class="line">sudo add-apt-repository -y ppa:webupd8team/java</div><div class="line"># 更新地址 </div><div class="line">sudo apt-get update</div><div class="line"># 安装 </div><div class="line">sudo apt-get -y install oracle-java8-installer</div></pre></td></tr></table></figure>
@@ -182,14 +183,14 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/</id>
     <published>2016-11-19T03:11:10.000Z</published>
-    <updated>2016-11-20T15:34:22.000Z</updated>
+    <updated>2016-11-21T14:27:52.000Z</updated>
     
     <content type="html"><![CDATA[<p>前一讲我们对 ElasticStack 进行了简要介绍并完成了基本的系统环境配置，这一次我们要把 Elasticsearch/Logstash/Kibana 安装配置好，并把 Linux 的系统日志导入进来。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2016.11.20: 完成初稿</li>
+<li>2016.11.21: 完成初稿</li>
 </ul>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
 <li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
@@ -208,9 +209,143 @@
 <li>掌握并完成 Elasticsearch, Logstash 和 Kibana 的安装配置</li>
 <li>了解 Linux 系统日志的内容及保存位置，并利用 Logstash 导入到 Elasticsearch 中，最终由 Kibana 展示</li>
 <li>掌握 Linux 的进程控制机制，学会如何启动和关闭前台/后台应用</li>
-<li></li>
 </ol>
-<h2 id="ElasticStack-5-0"><a href="#ElasticStack-5-0" class="headerlink" title="ElasticStack 5.0"></a>ElasticStack 5.0</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
+<h2 id="安装与启动"><a href="#安装与启动" class="headerlink" title="安装与启动"></a>安装与启动</h2><p>无论是 Elasticsearch, Logstash 还是 Kibana，我们都推荐手动安装的方式，毕竟不涉及太多配置操作，用 <code>apt-get</code> 反而有些用牛刀杀鸡了。这里我们直接上命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 进入用户文件夹</span></div><div class="line"><span class="built_in">cd</span> ~</div><div class="line"><span class="comment"># 下载 Elasticsearch</span></div><div class="line">wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.0.1.tar.gz</div><div class="line"><span class="comment"># 下载 Logstash</span></div><div class="line">wget https://artifacts.elastic.co/downloads/logstash/logstash-5.0.1.tar.gz</div><div class="line"><span class="comment"># 下载 Kibana</span></div><div class="line">wget https://artifacts.elastic.co/downloads/kibana/kibana-5.0.1-linux-x86_64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># 解压 </span></div><div class="line">tar -xvf elasticsearch-5.0.1.tar.gz</div><div class="line">tar -xvf logstash-5.0.1.tar.gz</div><div class="line">tar -xvf kibana-5.0.1-linux-x86_64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># 把安装包保存到固定文件夹中，这里叫 software</span></div><div class="line">mv elasticsearch-5.0.1.tar.gz software/mv kibana-5.0.1-linux-x86_64.tar.gz software/mv logstash-5.0.1.tar.gz software/</div></pre></td></tr></table></figure>
+<p>解压完成之后，ElasticStack 运行前的准备就基本完成了。Logstash 可以在需要时再启用，这里我们先把 Elasticsearch 和 Kibana 给启动起来（这里我们继续用 tmux，关于 tmux 的使用可以参考我写的<a href="http://wdxtub.com/2016/03/30/tmux-guide/">tmux 指南</a>）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 新建 tmux session</span></div><div class="line">tmux</div><div class="line"><span class="comment"># 启动 Elasticsearch</span></div><div class="line"><span class="comment"># 这里注意，最好虚拟机有 4G 内存，不然很容易卡死</span></div><div class="line"><span class="built_in">cd</span> elasticsearch-5.0.1/bin; ./elasticsearch</div><div class="line"><span class="comment"># 启动 Kibana</span></div><div class="line"><span class="built_in">cd</span> kibana-5.0.1-linux-x86_64/; ./bin/kibana</div></pre></td></tr></table></figure>
+<p>打开浏览器，访问 <code>localhost:5601</code>，如果看到如下所示的页面，Elasticsearch 和 Kibana 基本就没问题了。</p>
+<p><img src="/images/14797108735042.jpg" alt=""></p>
+<p>然后我们体验一下 Logstash，输入下列命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 进入文件夹</span></div><div class="line"><span class="built_in">cd</span> logstash-5.0.1/</div><div class="line"><span class="comment"># 启动 logstash，输入和输出均为命令行</span></div><div class="line">bin/logstash <span class="_">-e</span> <span class="string">'input &#123; stdin &#123; &#125; &#125; output &#123; stdout &#123;&#125; &#125;'</span></div></pre></td></tr></table></figure>
+<p>然后我们随意输入一些内容，显示为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">parallels@ubuntu:~/logstash-5.0.1$ bin/logstash <span class="_">-e</span> <span class="string">'input &#123; stdin &#123; &#125; &#125; output &#123; stdout &#123;&#125; &#125;'</span>wdxtub.com updatedSending Logstash<span class="string">'s logs to /home/parallels/logstash-5.0.1/logs which is now configured via log4j2.propertiesThe stdin plugin is now waiting for input:[2016-11-20T22:54:20,014][INFO ][logstash.pipeline        ] Starting pipeline &#123;"id"=&gt;"main", "pipeline.workers"=&gt;2, "pipeline.batch.size"=&gt;125, "pipeline.batch.delay"=&gt;5, "pipeline.max_inflight"=&gt;250&#125;[2016-11-20T22:54:20,038][INFO ][logstash.pipeline        ] Pipeline main started[2016-11-20T22:54:20,088][INFO ][logstash.agent           ] Successfully started Logstash API endpoint &#123;:port=&gt;9600&#125;2016-11-21T06:54:20.036Z ubuntu wdxtub.com updatedwdxtub.com is a personal blog2016-11-21T06:54:41.187Z ubuntu wdxtub.com is a personal blogwdxtub.com is created in 20152016-11-21T06:54:55.190Z ubuntu wdxtub.com is created in 2015</span></div></pre></td></tr></table></figure>
+<p>至此，ElasticStack 三大组件都已经运行了一次，我们可以用一个实际的任务来上手了。不过开始之前，我们来简单了解一下 ElasticStack 的发展历程。</p>
+<h2 id="ElasticStack-5-0-的变化"><a href="#ElasticStack-5-0-的变化" class="headerlink" title="ElasticStack 5.0 的变化"></a>ElasticStack 5.0 的变化</h2><p>ElasticStack 之所以版本一开始就是 5.0，主要原因是把各个产品进行版本统一。5.0 之前，Elasticsearch 的版本是 2.4，Logstash 的版本也是 2.4，但是 Kibana 是 4.5。这样一来开发者其实很难把各个组件对应起来，于是 Elastic 公司干脆直接统一到 5.0，皆大欢喜。</p>
+<p>考虑到不是所有的朋友都有接触过 2.4 及之前版本的 ElasticStack，所以这部分会简明扼要介绍一下 5.0 版本的重大改变：</p>
+<ul>
+<li>Elasticsearch 的底层引擎是 Lucene，5.0 版本中集成了 Lucene6， 新增的多维浮点字段特性极大提高了对 <code>date</code>, <code>numeric</code>, <code>ip</code> 等类型字段的操作的性能。更直观一点说：磁盘空间少一半；索引时间少一半；查询性能提升25%（底层采用 k-d 树编码，更多信息可以在 <a href="http://lucene.apache.org/" target="_blank" rel="external">Lucene 官网</a>中查阅）</li>
+<li>Instant Aggregations 特性在 Shard 层级提供了聚合结果的缓存，如果数据没有变化，Elasticsearch 可以直接返回上次的结果</li>
+<li>Scliced Scroll 操作允许并发进行数据遍历，大大提升索引重建和遍历的速度</li>
+<li>Profile API 可以帮助进行查询的优化，通过确定每个组件的性能消耗来进行优化（设置 <code>profile:true</code> 即可）</li>
+<li>Shrink API 可以对分片(Shard)数量进行收缩（从前是不能更改的），利用这个特性，我们可以在写入压力非常大的收集阶段，设置足够多的索引，充分利用shard的并行写能力，索引写完之后收缩成更少的shard，提高查询性能（利用系统的 Hardlink 来进行链接，速度很快）</li>
+<li>Rollover API 可以帮助我们按日切割日志，只需要简单的配置即可更加方便灵活分割日志，不用原来 <code>[YYYY-MM-DD]</code> 这样的模板了</li>
+<li>Wait for Refresh 提供了文档级别的刷新</li>
+<li>Ingest Node 可以直接在建立索引的时候对数据进行加工，这个功能还是很强大的</li>
+<li>Task Manager 任务调度管理，来做离线任务</li>
+</ul>
+<p>总而言之，5.0 是目前最好的一个 ElasticStack 版本，增加了很多新功能，非常值得试一试，更加详细的变动可以查看如下链接，这里不再赘述</p>
+<ul>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes.html" target="_blank" rel="external">Elasticsearch 5.0 Breaking Changes</a></li>
+<li><a href="https://www.elastic.co/guide/en/kibana/current/breaking-changes.html" target="_blank" rel="external">Kibana 5.0 Breaking Changes</a></li>
+<li><a href="https://www.elastic.co/guide/en/logstash/current/breaking-changes.html" target="_blank" rel="external">Logstash 5.0 Breaking Changes</a></li>
+</ul>
+<p>接下来我们先简单了解一下 Elasticsearch 的基本概念，然后就可以上手来完成一个小小的实例了。</p>
+<h2 id="Elasticsearch-快速入门"><a href="#Elasticsearch-快速入门" class="headerlink" title="Elasticsearch 快速入门"></a>Elasticsearch 快速入门</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>和 Mongodb 的思路类似，Elasticsearch 中保存的是整个文档(document)，并且还会根据文档的内容进行索引，于是我们得以进行搜索、排序和过滤等操作。在 Elasticsearch 中，利用 JSON 来表示文档。举个例子，下面的 JSON 文档就表示一个用户对象：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"email"</span>: <span class="string">"dawang@wdxtub.com"</span>,</div><div class="line">    <span class="attr">"name"</span>: <span class="string">"Da Wang"</span>,</div><div class="line">    <span class="attr">"info"</span>: &#123;</div><div class="line">        <span class="attr">"bio"</span>: <span class="string">"Sharp Blade, Shape Mind"</span>,</div><div class="line">        <span class="attr">"age"</span>: <span class="string">"25"</span>,</div><div class="line">        <span class="attr">"interests"</span>: [<span class="string">"games"</span>, <span class="string">"music"</span>]</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"birthday"</span>: <span class="string">"1990/09/11"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在 Elasticsearch 中存储数据的行为就叫做索引(indexing)，而前面提到的文档，属于一种类型(type)，这里类型会存在索引(index)中，如果列一个表来和传统数据库比较，大概是这样的：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">关系型数据</th>
+<th style="text-align:center">Elasticsearch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Databases</td>
+<td style="text-align:center">Indices</td>
+</tr>
+<tr>
+<td style="text-align:center">Tables</td>
+<td style="text-align:center">Types</td>
+</tr>
+<tr>
+<td style="text-align:center">Rows</td>
+<td style="text-align:center">Documents</td>
+</tr>
+<tr>
+<td style="text-align:center">Columns</td>
+<td style="text-align:center">Fields</td>
+</tr>
+</tbody>
+</table>
+<p>一个 Elasticsearch 集群可以包含多个索引(indices，对应于『数据库』)，每个索引可以包含多个类型(types，对应于『表』)，每个类型可以包含多个文档(document，对应于『行』)，每个文档可以包含多个字段(fields，对应于『列』)</p>
+<p>这里有一点需要强调一下，前面出现了两种『索引』，第一种，索引(indexing，动词，对应于关系型数据库的插入 insert)指的是把一个文档存储到索引(index，名词) 中；第二种的索引(index，名词）对应于关系型数据库的数据库，这里一定要根据上下文来进行理解。一般来说，我们会对数据库增加索引（这里是第三种意思，就是传统的索引的定义）来提高检索效率，Elasticsearch 和 Lucene 使用『倒排索引』的数据结构来完成这个工作（传统数据库一般用红黑树或者 B 树来完成）。默认情况下，文档中的每个字段都会拥有其对应的倒排索引，Elasticsearch 也是通过这个来进行检索的。</p>
+<h3 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h3><p>我们用一个简单的例子来感受一下 Elasticsearch 的威力吧。设定一个场景，有一天我开了一家名为 “ohmywdx” 的公司，我需要为每个公司里的员工创建记录，我需要做的是：</p>
+<ul>
+<li>为每个员工的文档(document)建立索引，每个文档包含一个员工的各类信息，类型为 <code>wdxtuber</code></li>
+<li><code>wdxtuber</code> 类型属于索引 <code>ohmywdx</code>（这里的索引对应于数据库）</li>
+<li><code>ohmywdx</code> 索引存储在 Elasticsearch 集群中</li>
+</ul>
+<p>我们先来插入几条员工记录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">PUT /ohmywdx/wdxtuber/1</div><div class="line">&#123;</div><div class="line">    <span class="string">"name"</span>: <span class="string">"Da Wang"</span>,</div><div class="line">    <span class="string">"age"</span>: 25,</div><div class="line">    <span class="string">"about"</span>: <span class="string">"First one who is stupid enough to join this company"</span>,</div><div class="line">    <span class="string">"interests"</span>: [<span class="string">"game"</span>, <span class="string">"music"</span>]</div><div class="line">&#125;</div><div class="line"></div><div class="line">PUT /ohmywdx/wdxtuber/2</div><div class="line">&#123;</div><div class="line">    <span class="string">"name"</span>: <span class="string">"Tracy Bryant"</span>,</div><div class="line">    <span class="string">"age"</span>: 20,</div><div class="line">    <span class="string">"about"</span>: <span class="string">"First basketball robot for our company"</span>,</div><div class="line">    <span class="string">"interests"</span>: [<span class="string">"guard"</span>, <span class="string">"forward"</span>]</div><div class="line">&#125;</div><div class="line"></div><div class="line">PUT /ohmywdx/wdxtuber/3</div><div class="line">&#123;</div><div class="line">    <span class="string">"name"</span>: <span class="string">"Shadow Mouse"</span>,</div><div class="line">    <span class="string">"age"</span>: 50,</div><div class="line">    <span class="string">"about"</span>: <span class="string">"Secret agent for our company"</span>,</div><div class="line">    <span class="string">"interests"</span>: [<span class="string">"guitar"</span>, <span class="string">"sugar"</span>]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>具体怎么插入呢，我们可以使用 Kibana 5.0 自带的 Dev Tools 来折腾，把上面的命令粘贴到左边的输入框，然后点击绿色的运行按钮，就可以在右边看到结果了：</p>
+<p><img src="/images/14797196056865.jpg" alt=""></p>
+<p>按照这个套路，继续把其他两个人的资料插入 Elasticsearch。</p>
+<p>有了数据之后，我们来看看如何搜索，简单来说，按照存储的方式来检索即可，不过这里我们使用 GET 方法，如下图所示：</p>
+<p><img src="/images/14797197975730.jpg" alt=""></p>
+<p>我们可以看到，原始文档内容包含在 <code>_source</code> 字段中。如果说这个搜索太明确了，啥都指定了没意思，我们可以来试试看下面几条搜索</p>
+<ul>
+<li><code>GET /ohmywdx/wdxtuber/_search</code></li>
+<li><code>GET /ohmywdx/wdxtuber/_search?q=name:Da</code></li>
+</ul>
+<p>这里我们来看看第二个搜索的结果</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;  <span class="attr">"took"</span>: <span class="number">11</span>,  <span class="attr">"timed_out"</span>: <span class="literal">false</span>,  <span class="attr">"_shards"</span>: &#123;    <span class="attr">"total"</span>: <span class="number">5</span>,    <span class="attr">"successful"</span>: <span class="number">5</span>,    <span class="attr">"failed"</span>: <span class="number">0</span>  &#125;,  <span class="attr">"hits"</span>: &#123;    <span class="attr">"total"</span>: <span class="number">1</span>,    <span class="attr">"max_score"</span>: <span class="number">0.25811607</span>,    <span class="attr">"hits"</span>: [      &#123;        <span class="attr">"_index"</span>: <span class="string">"ohmywdx"</span>,        <span class="attr">"_type"</span>: <span class="string">"wdxtuber"</span>,        <span class="attr">"_id"</span>: <span class="string">"1"</span>,        <span class="attr">"_score"</span>: <span class="number">0.25811607</span>,        <span class="attr">"_source"</span>: &#123;          <span class="attr">"name"</span>: <span class="string">"Da Wang"</span>,          <span class="attr">"age"</span>: <span class="number">25</span>,          <span class="attr">"about"</span>: <span class="string">"First one who is stupid enough to join this company"</span>,          <span class="attr">"interests"</span>: [            <span class="string">"game"</span>,            <span class="string">"music"</span>          ]        &#125;      &#125;    ]  &#125;&#125;</div></pre></td></tr></table></figure>
+<p>除了 <code>_source</code> 的信息之外，我们可以看到有一个 <code>_score</code>，敏感的同学大概会意识到，Elasticsearch 是根据相关性来对结果进行排序的，这个得分就是相关性分数。</p>
+<p>除了前面说明的搜索，我们还可以使用 DSL 语句来组合更加复杂的搜索，什么过滤、组合条件、全文、短语搜索，都不在话下，我们甚至可以高亮搜索结果。另外我们还可以利用『聚合』来实现关系型数据库中『Group By』类似的操作。其他诸如推荐、定位、渗透、模糊及部分匹配同样也支持。不过这一篇仅仅是一个简要介绍，就不继续深入了。</p>
+<h2 id="实例：收集-Linux-系统日志"><a href="#实例：收集-Linux-系统日志" class="headerlink" title="实例：收集 Linux 系统日志"></a>实例：收集 Linux 系统日志</h2><p>万事俱备，只欠东风，我们现在就把  ElasticStack 用起来！第一个任务很简单，就是把本机的日志给监控起来，这样我们在查询系统发生的事件时，就不用再去 <code>/var/log/</code> 文件夹里『翻箱倒柜』了。</p>
+<h3 id="系统日志介绍"><a href="#系统日志介绍" class="headerlink" title="系统日志介绍"></a>系统日志介绍</h3><p>这里简要介绍一下比较通用的系统日志及对应的内容，之后导入日志的时候我会挑选：</p>
+<ul>
+<li><code>/var/log/apport.log</code> 应用程序崩溃记录</li>
+<li><code>/var/log/apt/</code> 用 apt-get 安装卸载软件的信息</li>
+<li><code>/var/log/auth.log</code>  登录认证的日志</li>
+<li><code>/var/log/boot.log</code>  系统启动时的日志。</li>
+<li><code>/var/log/dmesg</code> 包含内核缓冲信息(kernel ringbuffer)。在系统启动时，显示屏幕上的与硬件有关的信息</li>
+<li><code>/var/log/faillog</code> 包含用户登录失败信息。此外，错误登录命令也会记录在本文件中</li>
+<li><code>/var/log/fsck</code> 文件系统日志</li>
+<li><code>/var/log/kern.log</code> 包含内核产生的日志，有助于在定制内核时解决问题</li>
+<li><code>/var/log/wtmp</code> 包含登录信息。使用 wtmp 可以找出谁正在登陆进入系统，谁使用命令显示这个文件或信息等</li>
+</ul>
+<h3 id="启动-Logstash"><a href="#启动-Logstash" class="headerlink" title="启动 Logstash"></a>启动 Logstash</h3><p>这一步的任务是利用 Logstash 把系统日志给导入 Elasticsearch 中。暂时没有使用最新的 Beats 组件，而是继续使用传统的 Logstash 来进行操作（比较重型），用法和之前有些不同，我们会把配置写在一个文件中，而不是直接在命令中输入。具体如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 我的习惯是把配置文件统一放到名为 confs 的文件夹中</div><div class="line"># 本配置文件名为 syslog.conf</div><div class="line">input &#123;</div><div class="line">  file &#123;</div><div class="line">    # 确定需要检测的文件</div><div class="line">    path =&gt; [ &quot;/var/log/*.log&quot;, &quot;/var/log/messages&quot;, &quot;/var/log/syslog&quot;, &quot;/var/log/apt&quot;, &quot;/var/log/fsck&quot;, &quot;/var/log/faillog&quot;]</div><div class="line">    # 日志类型</div><div class="line">    type =&gt; &quot;syslog&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">output &#123;</div><div class="line">  # 输出到命令行，一般用于调试</div><div class="line">  stdout &#123; </div><div class="line">    codec =&gt; rubydebug </div><div class="line">  &#125;</div><div class="line">  # 输出到 elasticsearch，这里指定索引名为 system-log</div><div class="line">  elasticsearch &#123; </div><div class="line">    hosts =&gt; &quot;localhost:9200&quot;</div><div class="line">    index =&gt; &quot;system-log&quot; </div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>有了配置文件，我们就可以把日志导入到 Elasticsearch 了，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># -f 表示从文件中读取配置</span></div><div class="line">bin/logstash <span class="_">-f</span> confs/syslog.conf</div></pre></td></tr></table></figure>
+<p>大概的输出是如下：</p>
+<p><img src="/images/14797212868418.jpg" alt=""></p>
+<p>如果到这里一切正常，我们就可以去 Kibana 中查看导入的日志了。</p>
+<h3 id="使用-Kibana"><a href="#使用-Kibana" class="headerlink" title="使用 Kibana"></a>使用 Kibana</h3><p>Kibana 相当于是 Elasticsearch 的一个可视化插件，所以我们需要在 Management 页面中告诉 Kibana 我们刚才创建的 <code>system-log</code> 索引，完成之后可以看到具体的条目及对应的信息（包括是否可被检索，是否能聚合，是否被分词等）</p>
+<p><img src="/images/14797126705730.jpg" alt=""></p>
+<p>创建完成后我们就可以在 Discover 面板里查看数据了。</p>
+<p><img src="/images/14797126971993.jpg" alt=""></p>
+<p>分别介绍下每个面板的作用（更加详细的介绍参见 <a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/">柒 Kibana 技巧指南</a>）</p>
+<ul>
+<li>Discover: 探索数据</li>
+<li>Visualize: 可视化统计</li>
+<li>Dashboard: 仪表盘</li>
+<li>Timelion: 时序，这里我们暂时不用</li>
+<li>Management: 设置</li>
+<li>Dev Tools: 开发工具，可以方便的测试内置接口</li>
+</ul>
+<p>这里我简单给出两个实例，介绍一下 Visualize 和 Dashboard 的基本用法</p>
+<p>如下图配置，我们可以轻松查看日志都是从哪些文件导入的，除了饼图外，柱状图折线图之类的都是支持的，大家可以自行尝试一下</p>
+<p><img src="/images/14797163664177.jpg" alt=""></p>
+<p>每个 Visualization 都可以保存，保存之后可以在 Dashboard 面板里集中显示，这样我们只需要看一眼，就对机器运行的状况有一个清晰的了解。</p>
+<p><img src="/images/14797164257675.jpg" alt=""></p>
+<p>至此，我们就完成了收集系统日志并展示的任务，本章内容到此基本结束。</p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><ol>
+<li>搭建完成之后，看看自己的系统中最多出现的 log 是什么？</li>
+<li>在 Kibana 中 Dev Tools 的使用 Elasticsearch 的 HTTP 接口来进行简单的查询</li>
+<li>尝试 logstash 自己感兴趣的插件，看看能不能为系统日志添加更多字段</li>
+<li>创建几个不同的 Visualization 并添加到 Dashboard 中，让内容更丰富一些</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本节中我们完成了 ElasticStack 核心的 ELK 安装，并用一个简单的实例熟悉了相关操作。刚开始接触，一定是会有很多陌生的概念，建议大家去浏览一下官方的快速入门文档，写得还是比较清晰的。下一讲我们会介绍整个日志处理流程中很重要的『缓冲区』- Kafka，有了它，我们的日志分析平台就有了基本的雏形了。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://www.elastic.co/guide/index.html" target="_blank" rel="external">Elastic Stack and Product Documentation</a></li>
+<li><a href="http://www.infoq.com/cn/news/2016/08/Elasticsearch-5-0-Elastic" target="_blank" rel="external">大数据杂谈微课堂|Elasticsearch 5.0新版本的特性与改进</a></li>
+<li><a href="http://www.infoq.com/cn/news/2016/11/Elasticsearch-5-0-publish" target="_blank" rel="external">开源搜索引擎Elasticsearch 5.0版本正式发布</a></li>
+</ul>
+]]></content>
     
     <summary type="html">
     
@@ -236,12 +371,15 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/</id>
     <published>2016-11-19T03:11:09.000Z</published>
-    <updated>2016-11-20T15:36:03.000Z</updated>
+    <updated>2016-11-21T14:27:52.000Z</updated>
     
-    <content type="html"><![CDATA[<p>施工中：Kafka 搭建、使用；连接 logstash 和 elasticsearch</p>
+    <content type="html"><![CDATA[<p>前一讲我们已经搭建好了 ElasticStack 的核心组件，但是在日常使用中，一般会在 Logstash 和 Elasticsearch 之间加一层 Kafka 用来缓存和控制，这次我们就来看看如何实现这样的功能。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
+<ul>
+<li>2016.11.21: 完成初稿</li>
+</ul>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
 <li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
@@ -255,11 +393,172 @@
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
-<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><ol>
+<li>安装并配置好 Kafka</li>
+<li>理解 Kafka 的工作机制</li>
+<li>掌握 Kafka 的基本操作，学会基本的错误处理</li>
+<li>完成 Logstash-Kafka-Elasticsearch 链路的构建，理解这种架构的优劣</li>
+<li>通过实际操作，增加对 ElasticStack 的理解</li>
+</ol>
+<h2 id="Kafka-简介"><a href="#Kafka-简介" class="headerlink" title="Kafka 简介"></a>Kafka 简介</h2><p>作为云计算大数据的套件，Kafka 是一个分布式的、可分区的、可复制的消息系统。该有的功能基本都有，而且有自己的特色：</p>
+<ul>
+<li>以 topic 为单位进行消息归纳</li>
+<li>向 topic 发布消息的是 producer</li>
+<li>从 topic 获取消息的是 consumer</li>
+<li>集群方式运行，每个服务叫 broker</li>
+<li>客户端和服务器通过 TCP 进行通信</li>
+</ul>
+<p>在Kafka集群中，没有“中心主节点”的概念，集群中所有的服务器都是对等的，因此，可以在不做任何配置的更改的情况下实现服务器的的添加与删除，同样的消息的生产者和消费者也能够做到随意重启和机器的上下线。</p>
+<p>对每个 topic 来说，Kafka 会对其进行分区，每个分区都由一系列有序的、不可变的消息组成，这些消息被连续的追加到分区中。分区中的每个消息都有一个连续的序列号叫做 offset,用来在分区中唯一的标识这个消息。</p>
+<p>发布消息通常有两种模式：队列模式(queuing)和发布-订阅模式(publish-subscribe)。队列模式中，consumers 可以同时从服务端读取消息，每个消息只被其中一个 consumer 读到；发布-订阅模式中消息被广播到所有的 consumer 中。更常见的是，每个 topic 都有若干数量的 consumer 组，每个组都是一个逻辑上的『订阅者』，为了容错和更好的稳定性，每个组由若干 consumer 组成。这其实就是一个发布-订阅模式，只不过订阅者是个组而不是单个 consumer。</p>
+<p>通过分区的概念，Kafka 可以在多个 consumer 组并发的情况下提供较好的有序性和负载均衡。将每个分区分只分发给一个 consumer 组，这样一个分区就只被这个组的一个 consumer 消费，就可以顺序的消费这个分区的消息。因为有多个分区，依然可以在多个 consumer 组之间进行负载均衡。注意 consumer 组的数量不能多于分区的数量，也就是有多少分区就允许多少并发消费。</p>
+<p>Kafka 只能保证一个分区之内消息的有序性，在不同的分区之间是不可以的，这已经可以满足大部分应用的需求。如果需要 topic 中所有消息的有序性，那就只能让这个 topic 只有一个分区，当然也就只有一个 consumer 组消费它。</p>
+<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>我们可以根据自己的需求来进行简单的配置，具体如下：</p>
+<h3 id="1-下载-Kafka"><a href="#1-下载-Kafka" class="headerlink" title="(1) 下载 Kafka"></a>(1) 下载 Kafka</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 美国主机</span></div><div class="line">wget http://www-us.apache.org/dist/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz</div><div class="line"><span class="comment"># 解压</span></div><div class="line">tar -xzf kafka_2.11-0.10.1.0.tgz</div><div class="line"><span class="comment"># 进入文件夹</span></div><div class="line"><span class="built_in">cd</span> kafka_2.11-0.10.1.0</div></pre></td></tr></table></figure>
+<h3 id="2-配置-Zookeeper-及-Kafka"><a href="#2-配置-Zookeeper-及-Kafka" class="headerlink" title="(2) 配置 Zookeeper 及 Kafka"></a>(2) 配置 Zookeeper 及 Kafka</h3><p>Zookeeper 的配置在 <code>config/zookeeper.properties</code> 文件中，Kafka 的配置在 <code>config/server.properties</code> 文件中。</p>
+<p>Zookeeper 的配置不需要特别更改，注意默认数据存放的位置是 <code>/zookeeper</code>，这里最好放到挂载磁盘上（如果使用云主机，一般来说系统盘比较小，具体可以用 <code>df -h</code> 查看）。Kafka 的默认数据存放位置是 <code>/tmp/kafka-logs</code>，我们把 zookeeper 和 kafka 的数据存放位置一并进行修改</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 在 zookeeper.properties 中</span></div><div class="line">/data/home/logger/kafka-data/zookeeper</div><div class="line"></div><div class="line"><span class="comment"># 在 server.properties 中</span></div><div class="line">log.dirs=/data/home/logger/kafka-data/kafka-logs</div></pre></td></tr></table></figure>
+<p>其他配置这里推荐进行一些修改，具体如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># advertised.listerners 改为对外服务的地址</span></div><div class="line"><span class="comment"># 比如对外的 ip 地址是 xx.xx.xx.xx，端口是 8080，那么</span></div><div class="line">advertised.listeners=PLAINTEXT://xx.xx.xx.xx:8080</div><div class="line"></div><div class="line"><span class="comment"># 允许删除 topic</span></div><div class="line">delete.topic.enable=<span class="literal">true</span></div><div class="line"></div><div class="line"><span class="comment"># 不允许自动创建 topic，方便管理</span></div><div class="line">auto.create.topics.enable=<span class="literal">false</span></div><div class="line"></div><div class="line"><span class="comment"># 设定每个 topic 的分区数量，这里设为 100</span></div><div class="line">num.partitions=100</div><div class="line"></div><div class="line"><span class="comment"># 设定日志保留的时间，这里改为 72 小时</span></div><div class="line">log.retention.hours=72</div></pre></td></tr></table></figure>
+<h3 id="3-启动-Zookeeper-及-Kafka"><a href="#3-启动-Zookeeper-及-Kafka" class="headerlink" title="(3) 启动 Zookeeper 及 Kafka"></a>(3) 启动 Zookeeper 及 Kafka</h3><figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 可以使用 tmux 或 nohup &amp; 等方式来进行后台运行，这里使用 tmux</span></div><div class="line"><span class="comment"># 启动 Zookeeper</span></div><div class="line">bin/zookeeper-server-start.sh config/zookeeper.properties</div><div class="line"></div><div class="line"><span class="comment"># 启动 Kafka</span></div><div class="line">bin/kafka-server-start.sh config/server.properties</div></pre></td></tr></table></figure>
+<p>如果没有出现错误，则启动成功，接下来可以做一个简单的测试</p>
+<h3 id="4-内部测试-Kafka"><a href="#4-内部测试-Kafka" class="headerlink" title="(4) 内部测试 Kafka"></a>(4) 内部测试 Kafka</h3><p>先创建一个叫做 wdxtub 的 topic，它只有一个分区和一个副本，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 创建 topic</span></div><div class="line">bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic wdxtub</div></pre></td></tr></table></figure>
+<p>然后我们可以使用 <code>bin/kafka-topics.sh --list --zookeeper localhost:2181</code> 命令来查看目前已有的 topic 列表，这时候应该能看到我们刚才创建的名为 wdxtub 的 topic。如果看到程序返回了 <code>wdxtub</code>，那么表示 topic 创建成功。</p>
+<p>接下来我们创建一个简单的 producer，用来从标准输入中读取消息并发送给 Kafka，命令为 </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 创建一个向 topic wdxtub 发送消息的 producer</span></div><div class="line"><span class="comment"># 按回车发送，ctrl+c 退出</span></div><div class="line">bin/kafka-console-producer.sh --broker-list localhost:9092 --topic wdxtub</div></pre></td></tr></table></figure>
+<p>另外新建一个窗口，启动一个 consumer，用来读取消息并输出到标准输出，命令为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 创建一个从 topic wdxtub 读取消息的 consumer</span></div><div class="line">bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic wdxtub --from-beginning</div></pre></td></tr></table></figure>
+<p>启动成功后，我们在 producer 中输入的内容，就可以在 consumer 中看到：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># producer 窗口内容</span></div><div class="line">$&gt; ~/kafka_2.11-0.10.1.0$ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic wdxtub</div><div class="line">abcdefu</div><div class="line">dalkdjflka^H^H^H^H^H^H^H</div><div class="line">wdxtub.com</div><div class="line">wdxtub.com is good</div><div class="line"></div><div class="line"><span class="comment"># consumer 窗口内容</span></div><div class="line">$&gt; ~/kafka_2.11-0.10.1.0$ bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic wdxtub --from-beginning</div><div class="line">Using the ConsoleConsumer with old consumer is deprecated and will be removed <span class="keyword">in</span> a future major release. Consider using the new consumer by passing [bootstrap-server] instead of [zookeeper].</div><div class="line">abcdefu</div><div class="line">dalkdjflka</div><div class="line">wdxtub.com</div><div class="line">wdxtub.com is good</div></pre></td></tr></table></figure>
+<h3 id="5-Nginx-配置"><a href="#5-Nginx-配置" class="headerlink" title="(5) Nginx 配置"></a>(5) Nginx 配置</h3><p>因为 Kafka 集群的通讯是走内网 ip，而外网访问的端口因为安全考虑只开了少数几个（这里是 8080），所以我们用 Nginx 反向代理来连通内外网</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">upstream mq_pool&#123;</div><div class="line">server ip1:9092 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">server localhost:9092 weight=1 max_fails=3 fail_timeout=30s;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server&#123;</div><div class="line">listen 8080;</div><div class="line">allow all;</div><div class="line">proxy_pass mq_pool;</div><div class="line">proxy_connect_timeout 24h;</div><div class="line">proxy_timeout 24h;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个配置的意思大概是把所有 8080 端口的消息转发到 <code>mq_pool</code> 的两台机器上（负载均衡），其他的就是常规配置。</p>
+<h3 id="6-外部测试-Kafka"><a href="#6-外部测试-Kafka" class="headerlink" title="(6) 外部测试 Kafka"></a>(6) 外部测试 Kafka</h3><p>现在我们的 Kafka 已经在运行了，但是刚才的测试程序是在本机，所以我们无法保证外部应用也能向 Kafka 发送消息（很多时候会用 Nginx 来控制），这里我们就来编写一段简单的 python 脚本来测试能否从其他服务器连接 Kafka。</p>
+<p>这里我们采用的 python 包名为 <a href="https://github.com/dpkp/kafka-python" target="_blank" rel="external">dpkp/kafka-python</a>，如果已经有 <code>pip</code> 工具的话，直接 <code>pip install kafka-python</code> 即可。然后我们可以简单编写一个 producer 来进行测试：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 名为 kafka-test.py</span></div><div class="line"><span class="keyword">from</span> kafka <span class="keyword">import</span> KafkaProducer</div><div class="line"><span class="comment"># 设置 Kafka 地址</span></div><div class="line">producer = KafkaProducer(</div><div class="line">    bootstrap_servers=<span class="string">'your.host.name:8080'</span>)</div><div class="line"></div><div class="line"><span class="comment"># 设置需要发送的 topic 及内容</span></div><div class="line">producer.send(<span class="string">'wdxtub'</span>, <span class="string">'Hello World! This is wdxtub.com.'</span>)</div></pre></td></tr></table></figure>
+<p>执行一下 <code>python kafka-test.py</code>，如果能在第(4)步中打开的 consumer 中看到 Hello World 这行字儿，说明能够正确连接。</p>
+<h2 id="Kafka-常用操作"><a href="#Kafka-常用操作" class="headerlink" title="Kafka 常用操作"></a>Kafka 常用操作</h2><p>所有的工具都可以在 <code>bin/</code> 文件夹下查看，如果不带任何参数，就会给出所有命令的列表说明，这里只简要说明一些常用的命令</p>
+<h3 id="管理-topic"><a href="#管理-topic" class="headerlink" title="管理 topic"></a>管理 topic</h3><p>可以手动创建 topic，或在数据进来时自动创建不存在的 topic，如果是自动创建的话，可能需要根据<a href="http://kafka.apache.org/documentation.html#topic-config" target="_blank" rel="external">这里</a>来进行对应调整。</p>
+<p><strong>创建 topic</strong></p>
+<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --create --topic my_topic_name --partitions 20 --replication-factor 3 --config x=y</code></p>
+<p>replication-factor 控制复制的份数，建议 2-3 份来兼顾容错和效率。partitions 控制该 topic 将被分区的数目，partitions 的数目最好不要超过服务器的个数（因为分区的意义是增加并行效率，而服务器数量决定了并行的数量，假设只有 2 台服务器，分 4 个区和 2 个区其实差别不大）。另外，topic 的名称不能超过 249 个字符</p>
+<p><strong>修改 topic</strong></p>
+<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --alter --topic my_topic_name --partitions 40</code></p>
+<p>这里需要注意，即使修改了分区的个数，已有的数据也不会进行变动，Kafka 不会做任何自动重分布</p>
+<p><strong>增加配置</strong></p>
+<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --alter --topic my_topic_name --config x=y</code></p>
+<p><strong>移除配置</strong></p>
+<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --alter --topic my_topic_name --delete-config x</code></p>
+<p><strong>删除 topic</strong></p>
+<p><code>bin/kafka-topics.sh --zookeeper zk_host:port/chroot --delete --topic my_topic_name</code></p>
+<p>这个需要 <code>delete.topic.enable=true</code>，目前 Kafka 不支持减少 topic 的分区数目</p>
+<h3 id="优雅关闭"><a href="#优雅关闭" class="headerlink" title="优雅关闭"></a>优雅关闭</h3><p>Kafka 会自动检测 broker 的状态并根据机器状态选举出新的 leader。但是如果需要进行配置更改停机的时候，我们就需要使用优雅关闭了，好处在于：</p>
+<ol>
+<li>会把所有的日志同步到磁盘上，避免重启之后的日志恢复，减少重启时间</li>
+<li>会在关闭前把以这台机为 leader 的分区数据迁移到其他节点，会减少不可用的时间</li>
+</ol>
+<p>但是这个需要开启 <code>controlled.shutdown.enable=true</code>。</p>
+<p>刚重启之后的节点不是任何分区的 leader，所以这时候需要进行重新分配：</p>
+<p><code>bin/kafka-preferred-replica-election.sh --zookeeper zk_host:port/chroot</code></p>
+<p>这里需要开启 <code>auto.leader.rebalance.enable=true</code></p>
+<p>然后可以使用脚本 <code>bin/kafka-server-stop.sh</code></p>
+<p>注意，如果配置文件中没有 <code>auto.leader.rebalance.enable=true</code>，就还需要重新平衡。</p>
+<h2 id="深入理解"><a href="#深入理解" class="headerlink" title="深入理解"></a>深入理解</h2><p>这里只是一部分摘录，更多内容可查阅参考链接（尤其是美团技术博客的那篇）</p>
+<h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><p>Kafka 大量依赖文件系统去存储和缓存消息。而文件系统最终会放在硬盘上，不过不用担心，很多时候硬盘的快慢完全取决于使用它的方式。设计良好的硬盘架构可以和内存一样快。</p>
+<p>所以与传统的将数据缓存在内存中然后刷到硬盘的设计不同，Kafka直接将数据写到了文件系统的日志中，因此也避开了 JVM 的劣势——Java 对象占用空间巨大，数据量增大后垃圾回收有困难。使用文件系统，即使系统重启了，也不需要刷新数据，也简化了维护数据一致性的逻辑。</p>
+<p>对于主要用于日志处理的消息系统，数据的持久化可以简单的通过将数据追加到文件中实现，读的时候从文件中读就好了。这样做的好处是读和写都是 O(1) 的，并且读操作不会阻塞写操作和其他操作。这样带来的性能优势是很明显的，因为性能和数据的大小没有关系了。</p>
+<p>既然可以使用几乎没有容量限制（相对于内存来说）的硬盘空间建立消息系统，就可以在没有性能损失的情况下提供一些一般消息系统不具备的特性。比如，一般的消息系统都是在消息被消费后立即删除，Kafka却可以将消息保存一段时间（比如一星期），这给consumer提供了很好的机动性和灵活性。</p>
+<h3 id="事务定义"><a href="#事务定义" class="headerlink" title="事务定义"></a>事务定义</h3><p>数据传输的事务定义通常有以下三种级别：</p>
+<ul>
+<li>最多一次: 消息不会被重复发送，最多被传输一次，但也有可能一次不传输。</li>
+<li>最少一次: 消息不会被漏发送，最少被传输一次，但也有可能被重复传输.</li>
+<li>精确的一次（Exactly once）: 不会漏传输也不会重复传输,每个消息都传输被一次而且仅仅被传输一次，这是大家所期望的。</li>
+</ul>
+<p>Kafka 的机制和 git 有点类似，有一个 commit 的概念，一旦提交且 broker 在工作，那么数据就不会丢失。如果 producer 发布消息时发生了网络错误，但又不确定实在提交之前发生的还是提交之后发生的，这种情况虽然不常见，但是必须考虑进去，现在Kafka版本还没有解决这个问题，将来的版本正在努力尝试解决。</p>
+<p>并不是所有的情况都需要“精确的一次”这样高的级别，Kafka 允许 producer 灵活的指定级别。比如 producer 可以指定必须等待消息被提交的通知，或者完全的异步发送消息而不等待任何通知，或者仅仅等待 leader 声明它拿到了消息（followers没有必要）。</p>
+<p>现在从 consumer 的方面考虑这个问题，所有的副本都有相同的日志文件和相同的offset，consumer 维护自己消费的消息的 offset。如果 consumer 崩溃了，会有另外一个 consumer 接着消费消息，它需要从一个合适的 offset 继续处理。这种情况下可以有以下选择：</p>
+<ul>
+<li>consumer 可以先读取消息，然后将 offset 写入日志文件中，然后再处理消息。这存在一种可能就是在存储 offset 后还没处理消息就 crash 了，新的 consumer 继续从这个 offset 处理，那么就会有些消息永远不会被处理，这就是上面说的『最多一次』</li>
+<li>consumer 可以先读取消息，处理消息，最后记录o ffset，当然如果在记录 offset 之前就 crash 了，新的 consumer 会重复的消费一些消息，这就是上面说的『最少一次』</li>
+<li>『精确一次』可以通过将提交分为两个阶段来解决：保存了 offset 后提交一次，消息处理成功之后再提交一次。但是还有个更简单的做法：将消息的 offset 和消息被处理后的结果保存在一起。比如用 Hadoop ETL 处理消息时，将处理后的结果和 offset 同时保存在 HDFS 中，这样就能保证消息和 offser 同时被处理了</li>
+</ul>
+<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><p>Kafka 在提高效率方面做了很大努力。Kafka 的一个主要使用场景是处理网站活动日志，吞吐量是非常大的，每个页面都会产生好多次写操作。读方面，假设每个消息只被消费一次，读的量的也是很大的，Kafka 也尽量使读的操作更轻量化。</p>
+<p>线性读写的情况下影响磁盘性能问题大约有两个方面：太多的琐碎的 I/O 操作和太多的字节拷贝。I/O 问题发生在客户端和服务端之间，也发生在服务端内部的持久化的操作中。</p>
+<p><strong>消息集(message set)</strong></p>
+<p>为了避免这些问题，Kafka 建立了<strong>消息集(message set)</strong>的概念，将消息组织到一起，作为处理的单位。以消息集为单位处理消息，比以单个的消息为单位处理，会提升不少性能。Producer 把消息集一块发送给服务端，而不是一条条的发送；服务端把消息集一次性的追加到日志文件中，这样减少了琐碎的 I/O 操作。consumer 也可以一次性的请求一个消息集。</p>
+<p>另外一个性能优化是在字节拷贝方面。在低负载的情况下这不是问题，但是在高负载的情况下它的影响还是很大的。为了避免这个问题，Kafka 使用了标准的二进制消息格式，这个格式可以在 producer, broker 和 producer 之间共享而无需做任何改动。</p>
+<p><strong>zero copy</strong></p>
+<p>Broker 维护的消息日志仅仅是一些目录文件，消息集以固定队的格式写入到日志文件中，这个格式 producer 和 consumer 是共享的，这使得 Kafka 可以一个很重要的点进行优化：消息在网络上的传递。现代的 unix 操作系统提供了高性能的将数据从页面缓存发送到 socket 的系统函数，在 linux 中，这个函数是 <code>sendfile</code></p>
+<p>为了更好的理解 <code>sendfile</code> 的好处，我们先来看下一般将数据从文件发送到 socket 的数据流向：</p>
+<ul>
+<li>操作系统把数据从文件拷贝内核中的页缓存中</li>
+<li>应用程序从页缓存从把数据拷贝自己的内存缓存中</li>
+<li>应用程序将数据写入到内核中 socket 缓存中</li>
+<li>操作系统把数据从 socket 缓存中拷贝到网卡接口缓存，从这里发送到网络上。</li>
+</ul>
+<p>这显然是低效率的，有 4 次拷贝和 2 次系统调用。<code>sendfile</code> 通过直接将数据从页面缓存发送网卡接口缓存，避免了重复拷贝，大大的优化了性能。</p>
+<p>在一个多consumers的场景里，数据仅仅被拷贝到页面缓存一次而不是每次消费消息的时候都重复的进行拷贝。这使得消息以近乎网络带宽的速率发送出去。这样在磁盘层面你几乎看不到任何的读操作，因为数据都是从页面缓存中直接发送到网络上去了。</p>
+<p><strong>数据压缩</strong></p>
+<p>很多时候，性能的瓶颈并非CPU或者硬盘而是网络带宽，对于需要在数据中心之间传送大量数据的应用更是如此。当然用户可以在没有 Kafka 支持的情况下各自压缩自己的消息，但是这将导致较低的压缩率，因为相比于将消息单独压缩，将大量文件压缩在一起才能起到最好的压缩效果。</p>
+<p>Kafka 采用了端到端的压缩：因为有『消息集』的概念，客户端的消息可以一起被压缩后送到服务端，并以压缩后的格式写入日志文件，以压缩的格式发送到 consumer，消息从 producer 发出到 consumer 拿到都被是压缩的，只有在 consumer 使用的时候才被解压缩，所以叫做『端到端的压缩』。Kafka支持GZIP和Snappy压缩协议。</p>
+<h2 id="Logstash-gt-Kafka"><a href="#Logstash-gt-Kafka" class="headerlink" title="Logstash -&gt; Kafka"></a>Logstash -&gt; Kafka</h2><p>让我们回想一下之前的架构，Logstash 会直接把日志发送给 Elasticsearch，再由 Kibana 进行展示。因为 Logstash 是同步把日志发送给 Elasticsearch 的，所以等于这俩耦合在了一起，Elasticsearch 一旦挂掉，可能就会丢失数据。</p>
+<p>于是，我们考虑利用 Kafka 作为缓冲区，让 Logstash 不受 Elasticsearch 的影响。所以第一步就是让 Logstash 把日志发送到 Kafka，这里 Logstash 相当于 producer。</p>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><p>结合上一篇，进行内容调整</p>
+<h3 id="Input-读取文件"><a href="#Input-读取文件" class="headerlink" title="Input 读取文件"></a>Input 读取文件</h3><p>Logstash 使用一个名叫 FileWatch 的 Ruby Gem 库来监听文件变化。这个库支持 glob 展开文件路径，而且会记录一个叫 <code>.sincedb</code> 的数据库文件来跟踪被监听的日志文件的当前读取位置。通过记录下来的 <code>inode</code>, <code>major number</code>, <code>minor number</code> 和 <code>pos</code> 就可以保证不漏过每一条日志。一个可能的配置文件是这样的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">input &#123;</div><div class="line">  file &#123;</div><div class="line">    path =&gt; [&quot;/data/home/service/project/current/log/logstash_production.log&quot;, &quot;/data/home/service/project/current/log/logstash_production.log.1&quot;]</div><div class="line">    add_field =&gt; &#123; &quot;topic&quot; =&gt; &quot;djiservice&quot;&#125;</div><div class="line">    stat_interval =&gt; 1800</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里说一下 File rotation 的情况，为了处理被 rotate 的情况，最好把 rotate 之后的文件名也加到 path 中（如上面所示），这里注意，如果 <code>start_position</code> 被设为 <code>beginning</code>，被 rotate 的文件因为会被认为是新文件，而重新导入。如果用默认值 <code>end</code>，那么在最后一次读之后到被 rotate 结束前生成的日志不会被采集。</p>
+<p>其他一些配置的设定原因</p>
+<ul>
+<li><code>add_field</code> 添加一个 topic 字段，用作之后导入 elasticsearch 的索引标识</li>
+<li><code>stat_interval</code> 单位是秒，这里 30 分钟进行一次检测，不过测试的时候需要去掉这个配置</li>
+<li><code>codec</code> 因为已经处理成 logstash 兼容格式，就直接以 json 解析</li>
+</ul>
+<h3 id="Filter-内容定制"><a href="#Filter-内容定制" class="headerlink" title="Filter 内容定制"></a>Filter 内容定制</h3><p>Filter 主要是对数据进行一些处理，比如说我用的是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">filter &#123;</div><div class="line">  mutate &#123;</div><div class="line">    remove_field =&gt; [&quot;format&quot;]</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  geoip &#123;</div><div class="line">    source =&gt; &quot;ip&quot;</div><div class="line">    fields =&gt; [&quot;location&quot;, &quot;city_name&quot;, &quot;country_name&quot;, &quot;country_code2&quot;,&quot;country_code3&quot;, &quot;region_name&quot;, &quot;continent_code&quot;]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里做的操作一是移除无效的域，二是把 ip 转换为地理位置，方便后期的处理。</p>
+<h3 id="Output-输出到-Kafka"><a href="#Output-输出到-Kafka" class="headerlink" title="Output 输出到 Kafka"></a>Output 输出到 Kafka</h3><p>因为 Logstash 自带 Kafka 插件，直接配置上即可，比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">output &#123;</div><div class="line">  kafka &#123;</div><div class="line">    topic_id =&gt; &quot;test&quot;</div><div class="line">    bootstrap_servers =&gt; &quot;kafka_url:port&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下面是基本的配置及其设定原因</p>
+<ul>
+<li><code>topic_id</code> 指定 topic 来进行发送</li>
+<li><code>bootstrap_servers</code> 这里是 Kafka 的接入地址</li>
+</ul>
+<p>其他一些需要注意的配置</p>
+<ul>
+<li><code>acks</code> 可以选的值为 <code>0</code>, <code>1</code>, <code>all</code>，这里解释一下，0 表示不需要 server 返回就认为请求已完成；1 表示需要 leader 返回才认为请求完成；all 表示需要所有的服务器返回才认为请求完成</li>
+<li><code>batch_size</code> 单位是字节，如果是发送到同一分区，会攒够这个大小才发送一次请求</li>
+<li><code>block_on_buffer_full</code> 这个设置在缓冲区慢了之后阻塞还是直接报错</li>
+<li><code>buffer_memory</code> 发送给服务器之前的缓冲区大小，单位是字节</li>
+<li><code>client_id</code> 可以在这里设定有意义的名字，就不一定要用 ip 和 端口来区分</li>
+<li><code>compression_type</code> 压缩方式，默认是 <code>none</code>，其他可选的是 <code>gzip</code> 和 <code>snappy</code></li>
+</ul>
+<h2 id="Kafka-gt-Elasticsearch"><a href="#Kafka-gt-Elasticsearch" class="headerlink" title="Kafka -&gt; Elasticsearch"></a>Kafka -&gt; Elasticsearch</h2><p>利用 Logstash 从 Kafka 导出数据到 Elasticsearch</p>
+<p>这一步就比较简单了，先从 Kafka 中读取，然后写入到 elasticsearch，这里 Logstash 作为 consumer</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">output &#123;</div><div class="line">  input &#123;</div><div class="line">    kafka &#123;</div><div class="line">      zk_connect =&gt; &quot;localhost:2181&quot;</div><div class="line">      topic_id =&gt; &quot;log&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  stdout &#123;</div><div class="line">     codec =&gt; rubydebug</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  elasticsearch &#123;</div><div class="line">    hosts =&gt; [&quot;url:port&quot;]</div><div class="line">    user =&gt; &quot;name&quot;</div><div class="line">    password =&gt; &quot;password&quot;</div><div class="line">    index =&gt; &quot;%&#123;service&#125;-%&#123;+YYYY-MM-dd&#125;&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样可以按照配置的服务名称和日期来切割。</p>
+<p>至此，我们完成了从 Logstash 到 Kafka 再到 Elasticsearch 的连接，下一步就可以用 kibana 来展示日志的监控分析结果了。</p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://kafka.apache.org/quickstart" target="_blank" rel="external">Kafka 快速入门</a></li>
+<li><a href="https://www.apache.org/dyn/closer.cgi?path=/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz" target="_blank" rel="external">Kafka 2.11-0.10.1.0 下载</a></li>
+<li><a href="http://blog.csdn.net/LOUISLIAOXH/article/details/51567515" target="_blank" rel="external">Kafka学习整理六(server.properties配置实践)</a></li>
+<li><a href="http://kafka.apache.org/" target="_blank" rel="external">Apache Kafka</a></li>
+<li><a href="http://kafka.apache.org/documentation.html#quickstart" target="_blank" rel="external">Quick Start</a></li>
+<li><a href="http://www.aboutyun.com/thread-12882-1-1.html" target="_blank" rel="external">Kafka入门经典教程</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-kafka/" target="_blank" rel="external">Apache kafka 工作原理介绍</a></li>
+<li><a href="http://www.coderli.com/setup-kafka-cluster-step-by-step/" target="_blank" rel="external">事无巨细 Apache Kafka 0.9.0.1 集群环境搭建</a></li>
+<li><a href="http://blog.csdn.net/dhtx_wzgl/article/details/46892231" target="_blank" rel="external">kafka集群搭建</a></li>
+<li><a href="http://tech.meituan.com/kafka-fs-design-theory.html" target="_blank" rel="external">Kafka文件存储机制那些事</a></li>
+<li><a href="http://kaimingwan.com/post/kafka/kafkayuan-li-yi-ji-she-ji-shi-xian-si-xiang" target="_blank" rel="external">kafka原理以及设计实现思想</a></li>
+<li><a href="http://www.dexcoder.com/dexcoder/article/2194" target="_blank" rel="external">kafka设计原理介绍</a></li>
+<li><a href="http://blog.jobbole.com/99195/" target="_blank" rel="external">Kafka集群操作指南</a></li>
+<li><a href="https://www.quora.com/What-is-the-actual-role-of-ZooKeeper-in-Kafka" target="_blank" rel="external">What is the actual role of ZooKeeper in Kafka?</a></li>
+</ul>
+]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;施工中：Kafka 搭建、使用；连接 logstash 和 elasticsearch&lt;/p&gt;
+      &lt;p&gt;前一讲我们已经搭建好了 ElasticStack 的核心组件，但是在日常使用中，一般会在 Logstash 和 Elasticsearch 之间加一层 Kafka 用来缓存和控制，这次我们就来看看如何实现这样的功能。&lt;/p&gt;
     
     </summary>
     
@@ -326,7 +625,7 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/</id>
     <published>2016-11-19T03:11:07.000Z</published>
-    <updated>2016-11-20T15:35:48.000Z</updated>
+    <updated>2016-11-21T14:27:52.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：集群配置和全球部署可能带来的问题</p>
 <a id="more"></a>
@@ -345,7 +644,107 @@
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
-<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h3 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h3><p>这里简单说一下 Elasticsearch 的分布式吧。开发人员花了很多心思，尽量让一台机上运行和集群上运行的体验一致，具体说，Elasticsearch 在底层主要做的工作有：</p>
+<ul>
+<li>根据配置进行数据分片(sharding)，并且保存在一个或者多个节点中</li>
+<li>将分片均匀分配到各个节点，对索引和搜索做负载均衡</li>
+<li>分片冗余，提高容错性</li>
+<li>将集群中任意一个节点上的请求路由到相应数据所在的节点</li>
+<li>增加或者移除节点时无缝迁移数据</li>
+</ul>
+<h2 id="老-ES-集群指南"><a href="#老-ES-集群指南" class="headerlink" title="老 ES 集群指南"></a>老 ES 集群指南</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>虽然 Elasticsearch 的安装比较简单，不过我还是写了一个安装脚本，可以在<a href="https://github.com/wdxtub/wdxtools/tree/master/linux-script" target="_blank" rel="external">这里</a>查看，具体来说其实就两步，下载和解压，如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.4.0/elasticsearch-2.4.0.tar.gz</div><div class="line">tar -xvzf elasticsearch-2.4.0.tar.gz</div></pre></td></tr></table></figure>
+<p>分别在集群中每台机器中完成安装即可，具体的启动也非常简单，如果要在前台，直接 <code>./bin/elasticsearch</code> 即可，如果要放到后台，则使用 <code>nohup ./bin/elasticsearch &amp;</code>。</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>配置文件位于 <code>config</code> 文件夹中，其中 <code>elasticsearch.yml</code> 是 elasticsearch 的配置，而 <code>logging.yml</code> 是输出日志相关的设置。配置文件的内容有很多，不过因为默认值基本都够用了，所以我们只需要配置很少的内容。假设现在有两个节点，内部 IP 地址分别为 <code>A: 10.1.1.0</code> 和 <code>B: 10.1.1.1</code>，那么配置为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 节点 A</div><div class="line">cluster.name: wdxtubes</div><div class="line">node.name: &quot;es01&quot;</div><div class="line">bootstrap.mlockall: true</div><div class="line">network.host: 10.1.1.0</div><div class="line">network.publish_host: 10.1.1.0</div><div class="line">discovery.zen.ping.unicast.hosts: [&quot;10.1.1.1&quot;]</div><div class="line">discovery.zen.fd.ping_timeout: 120s</div><div class="line">discovery.zen.fd.ping_retries: 6</div><div class="line">discovery.zen.fd.ping_interval: 30s</div><div class="line"></div><div class="line"></div><div class="line"># 节点 B</div><div class="line">cluster.name: wdxtubes</div><div class="line">node.name: &quot;es02&quot;</div><div class="line">bootstrap.mlockall: true</div><div class="line">network.host: 10.1.1.1</div><div class="line">network.publish_host: 10.1.1.1</div><div class="line">discovery.zen.ping.unicast.hosts: [&quot;10.1.1.0&quot;]</div><div class="line">discovery.zen.fd.ping_timeout: 120s</div><div class="line">discovery.zen.fd.ping_retries: 6</div><div class="line">discovery.zen.fd.ping_interval: 30s</div></pre></td></tr></table></figure>
+<p>这里需要注意的是我们采用单播的方式来进行集群中机器的查找，因为 elasticsearch 已经尽量帮我们做好了集群相关的工作，只要保证 <code>cluster.name</code> 一致，就可以自动发现。另外，我们调大了超时的间隔和互相 ping 发送的频率以及重试次数，防止某台机器在 Full GC 的时候因未能及时响应而造成的连锁反应（后面会详细说明）</p>
+<p>多说一句，机器配置的时候，最好确保两台机器可以互相 ping 通，并开放所有端口的内部访问（如果是用云主机的话，尤其需要注意这一点）</p>
+<p>如果需要扩展的话，只需要保证 <code>cluster.name</code> 一致即可，比如说现在新加入一台 <code>C: 10.1.1.2</code>，那么配置可以这么写</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 节点 C</div><div class="line">cluster.name: wdxtubes</div><div class="line">node.name: &quot;es03&quot;</div><div class="line">bootstrap.mlockall: true</div><div class="line">network.host: 10.1.1.2</div><div class="line">network.publish_host: 10.1.1.2</div><div class="line">discovery.zen.ping.unicast.hosts: [&quot;10.1.1.0&quot;]</div><div class="line">discovery.zen.fd.ping_timeout: 120s</div><div class="line">discovery.zen.fd.ping_retries: 6</div><div class="line">discovery.zen.fd.ping_interval: 30s</div></pre></td></tr></table></figure>
+<p>这里 <code>discovery.zen.ping.unicast.hosts</code> 中只需要填写原有集群中任意一台机器的地址即可。</p>
+<p>然后我们可以在集群中的机器上使用 <code>curl http://10.1.1.0:9200/_cluster/health</code> 来查看集群状态。比如：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"cluster_name"</span>:<span class="string">"wdxtub-es"</span>,</div><div class="line">    <span class="attr">"status"</span>:<span class="string">"green"</span>,</div><div class="line">    <span class="attr">"timed_out"</span>:<span class="literal">false</span>,</div><div class="line">    <span class="attr">"number_of_nodes"</span>:<span class="number">2</span>,</div><div class="line">    <span class="attr">"number_of_data_nodes"</span>:<span class="number">2</span>,</div><div class="line">    <span class="attr">"active_primary_shards"</span>:<span class="number">821</span>,</div><div class="line">    <span class="attr">"active_shards"</span>:<span class="number">1642</span>,</div><div class="line">    <span class="attr">"relocating_shards"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"initializing_shards"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"unassigned_shards"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"delayed_unassigned_shards"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"number_of_pending_tasks"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"number_of_in_flight_fetch"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"task_max_waiting_in_queue_millis"</span>:<span class="number">0</span>,</div><div class="line">    <span class="attr">"active_shards_percent_as_number"</span>:<span class="number">100.0</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果状态是 green，那就没有问题啦。下面我们会结合不同的实例进行介绍</p>
+<h3 id="重启"><a href="#重启" class="headerlink" title="重启"></a>重启</h3><p>Elasticsearch 的重启是一个非常需要按规矩操作的过程，否则会带来一系列的意想不到的问题，所以一定要按照官方建议的步骤来进行。</p>
+<p>首先，因为 Elasticsearch 自带的高可用机制，一旦一个节点下线，就会在集群内部进行数据的重分配，会带来很多不必要的开销，所以需要先关闭，关闭方法是给集群发送一个请求，这个请求可以动态修改集群的设置：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">PUT /_cluster/settings</div><div class="line">&#123;</div><div class="line">  &quot;persistent&quot;: &#123;</div><div class="line">    &quot;cluster.routing.allocation.enable&quot;: &quot;none&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>而在重启之后需要进行数据恢复，如果停止索引并发送一个同步刷新请求，这个过程就会快很多，需要注意的是，如果此时有任何正在进行的索引操作，这个 flush 操作会失败，因此必要时我们可以重试多次，这是安全的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">POST /_flush/synced</div></pre></td></tr></table></figure>
+<p>现在我们可以停止集群中的各个节点，完成重启或升级的操作。具体单台机器的操作可以看<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/rolling-upgrades.html#upgrade-node" target="_blank" rel="external">这里</a></p>
+<p>完成之后，我们最好先启动那些 <code>node.master</code> 设置为 true 的节点（这也是默认设置），等到集群选举出了 master 节点，就可以继续添加数据节点了（即那些 <code>node.master</code> 为 false 且 <code>node.data</code> 为 true 的），这里我们可以用以下方式进行监控</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">GET _cat/health</div><div class="line"></div><div class="line">GET _cat/nodes</div></pre></td></tr></table></figure>
+<p>每个节点加入集群之后，就会开始恢复本地保存的首要分片，一开始 <code>_cat/health</code> 查询的结果是 red，之后会变成 yellow，也就意味着所有的首要分片已经恢复了，但是其他的复制分片还没有恢复，因为我们一开始已经设置不恢复复制分片。</p>
+<p>最后一步，我们需要重新开启集群的数据重分配，以保证集群的高可用性，操作也很简单：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">PUT /_cluster/settings</div><div class="line">&#123;</div><div class="line">  &quot;persistent&quot;: &#123;</div><div class="line">    &quot;cluster.routing.allocation.enable&quot;: &quot;all&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当使用 <code>_cat/health</code> 的结果为 green 时，则重启和恢复顺利完成。</p>
+<h3 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h3><p>无论是 Elasticsearch 官方还是社区，有很多插件可以完成监控的任务，但是本文只介绍默认的 API，主要是 <code>_cat</code> 和 <code>_cluster</code> 这两个接口，具体的文档可以在 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/cat.html" target="_blank" rel="external">cat API</a> 和 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster.html" target="_blank" rel="external">cluster API</a> 中查看，这里简要介绍一下。</p>
+<p>对于 <code>_cat</code> 接口，在请求后面加上 <code>?v</code> 就会输出详细信息，例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ curl 10.1.1.10:9200/_cat/master?v</div><div class="line">id                     host      ip        node   </div><div class="line">AoVFmiU4Q2SAHNVcMGPsWQ 10.1.1.11 10.1.1.11 node-2</div></pre></td></tr></table></figure>
+<p>如果对于字段的名字有疑问，可以使用 <code>?help</code>，例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ curl 10.1.1.10:9200/_cat/master?<span class="built_in">help</span></div><div class="line">id   |   | node id    </div><div class="line">host | h | host name  </div><div class="line">ip   |   | ip address </div><div class="line">node | n | node name</div></pre></td></tr></table></figure>
+<p>如果只想要查看指定字段，可以利用 <code>?h=</code> 来进行指定，例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ curl 10.1.1.10:9200/_cat/nodes?h=ip,port,heapPercent,name</div><div class="line">10.1.1.11 9300 64 node-2 </div><div class="line">10.1.1.10 9300 71 node-1</div></pre></td></tr></table></figure>
+<p>对于带数字的输出，可以利用管道来进行排序，比如下面的命令就可以按照索引大小来进行排序（这里的 <code>-rnk8</code> 指的是按照第八列排序）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wdxtub:~$ curl 10.1.1.10:9200/_cat/indices?bytes=b | sort -rnk8</div><div class="line">green open slog-2016-09-11   5 1 9729152      0 11128793222 5564396611 </div><div class="line">green open slog-2016-09-12   5 1 8355880      0  9539380440 4769690220 </div><div class="line">green open slog-2016-09-25   5 1 6720954      0  7415719218 3707859609 </div><div class="line">green open slog-2016-09-19   5 1 5840177      0  6575155002 3287577501 </div><div class="line">green open slog-2016-09-10   5 1 5858916      0  6504251544 3252125772</div></pre></td></tr></table></figure>
+<p>其他比较常用的命令如下所示，具体的可以参阅文档，这里不再赘述：</p>
+<ul>
+<li><code>_cat/count</code> 文档总数</li>
+<li><code>_cat/count/[index_name]</code> 某个索引的文档总数</li>
+<li><code>_cat/fielddata?v</code> 显示每个节点的字段的堆内存使用量</li>
+<li><code>_cat/health?v</code> 节点的健康状况<ul>
+<li>可以使用下面的命令来自动检查集群状况</li>
+<li><code>while true; do curl localhost:9200/_cat/health; sleep 120; done</code></li>
+</ul>
+</li>
+<li><code>_cat/indices?v</code> 查看每个索引的详细信息，配合管道命令可以有很多应用，比如<ul>
+<li>找出所有状态为 yellow 的索引 <code>curl localhost:9200/_cat/indices | grep ^yell</code></li>
+<li>排序 <code>curl &#39;localhost:9200/_cat/indices?bytes=b&#39; | sort -rnk8</code></li>
+<li>指定列及内存使用状况 <code>curl &#39;localhost:9200/_cat/indices?v&amp;h=i,tm&#39;</code></li>
+</ul>
+</li>
+<li><code>_cat/nodes</code> 展示集群的拓扑结构</li>
+<li><code>_cat/pending_tasks?v</code> 显示正在排队的任务</li>
+<li><code>_cat/recovery?v</code> 显示分片恢复的过程</li>
+<li><code>_cat/thread_pool?v</code> 显示线程池相关信息，有很多信息，可以根据需要进行查询</li>
+<li><code>_cat/shards?v</code> 显示分片的相关信息</li>
+<li><code>_cat/shards/[index-name]</code> 显示指定索引的分片信息  </li>
+</ul>
+<p><code>_cluster</code> 的接口的用法和 <code>_cat</code> 类似，这里就不再赘述了。</p>
+<h3 id="合理计划服务器"><a href="#合理计划服务器" class="headerlink" title="合理计划服务器"></a>合理计划服务器</h3><p>在 Elasticsearch 的配置文件中，可以根据两个配置(<code>node.master</code> 和 <code>node.data</code>)选项来分配不同节点的角色，以达到提高服务器性能的目的。</p>
+<ul>
+<li><code>node.master: false; node.data: true</code> - 该节点只作为数据节点，用于存储和查询，资源消耗会较低</li>
+<li><code>node.master: true; node.data: false</code> - 该节点只作为 master 节点，不存储数据，主要负责协调索引请求和查询请求</li>
+<li><code>node.master: false; node.data: falst</code> - 该节点不作为 master 节点，也不存储数据，主要用于查询时的负载均衡（做结果汇总等工作）</li>
+</ul>
+<p>另外，一台服务器最好只部署一个节点以维持服务器稳定，毕竟资源是有限的，多开也没啥</p>
+<h3 id="数据节点就是数据节点"><a href="#数据节点就是数据节点" class="headerlink" title="数据节点就是数据节点"></a>数据节点就是数据节点</h3><p>如果有配置数据节点，那么可以关闭其 http 功能，让它专注于索引的操作。插件之类的也最好安装到非数据节点服务器上，这样是一个兼顾数据安全和服务器性能的考虑。具体的配置项是 <code>http.enabled: false</code></p>
+<h3 id="线程池配置"><a href="#线程池配置" class="headerlink" title="线程池配置"></a>线程池配置</h3><p>针对 Elasticsearch 的不同操作，可以配置不同大小的线程池，这个需要根据业务需求确定最佳值，场景的操作有：index, search, suggest, get, bulk, percolate, snapshot, snapshot_data, warmer, refresh。</p>
+<p>这里以 index(创建/更新/删除索引数据)和 search(搜索操作)为例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">threadpool:</div><div class="line">     index:</div><div class="line">         type: fixed</div><div class="line">         size: 24（逻辑核心数*3）</div><div class="line">         queue_ size: 1000</div><div class="line"> </div><div class="line">     search:</div><div class="line">         type: fixed</div><div class="line">         size: 24（逻辑核心数*3）</div><div class="line">         queue_ size: 1000</div></pre></td></tr></table></figure>
+<h3 id="分片与副本"><a href="#分片与副本" class="headerlink" title="分片与副本"></a>分片与副本</h3><p>默认的参数是 5 个分片(shard)和 1 个副本(replica)，碎片数目越多，索引速度越快；副本数目越多，搜索能力及可用性更高。分片的数目是在一开始就设定好的，但是副本的数目是可以后期修改的。</p>
+<p>而在恢复数据的时候，可以先减少分片刷新索引的时间间隔，如</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">curl -XPUT <span class="string">'http://10.1.1.0:9200/_settings'</span> <span class="_">-d</span> <span class="string">'&#123; </span></div><div class="line">    "index" : &#123; </div><div class="line">        "refresh_interval" : "-1" </div><div class="line">    &#125; </div><div class="line">&#125;'</div></pre></td></tr></table></figure>
+<p>完成插入之后再恢复</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">curl -XPUT <span class="string">'http://10.1.1.0:9200/_settings'</span> <span class="_">-d</span> <span class="string">'&#123; </span></div><div class="line">    "index" : &#123; </div><div class="line">        "refresh_interval" : "1s" </div><div class="line">    &#125; </div><div class="line">&#125;'</div></pre></td></tr></table></figure>
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p>查询中最重要的思路就是 routing，尽量减少慢查询的次数。而当索引越来越大的时候，每个分片也会增大，查询速度就会变慢。一个可行的解决思路就是分索引，比方说不同类型的数据利用不同的 routing 进行分离。</p>
+<p>还有一个从业务出发的思路，就是不索引不需要的字段，这样就可以减小集群所需资源的量。</p>
+<h3 id="JVM-设置"><a href="#JVM-设置" class="headerlink" title="JVM 设置"></a>JVM 设置</h3><p>关于 JVM 的设置我还在摸索中，不过有几个技巧：</p>
+<ul>
+<li>JVM 的堆大小不要超过 32G，来源 <a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html#compressed_oops" target="_blank" rel="external">Don’t Cross 32 GB!</a></li>
+<li>使用 <code>bootstrap.mlockall: true</code>，启动时就锁定内存</li>
+<li>用较小的 heapsize 配合 SSD</li>
+</ul>
+<h3 id="Full-GC-问题"><a href="#Full-GC-问题" class="headerlink" title="Full GC 问题"></a>Full GC 问题</h3><p>这里以一个实例来介绍我是如何在生产环境中排查和修复 Elasticsearch 集群忽然响应时间剧增的问题的。</p>
+<p>情况是这样的，随着接入 Elasticsearch 的数据量增大，忽然有一个周末出问题了 - ES 集群的查询和插入都变得巨慢无比。监控报警都把邮箱和手机发爆炸了。</p>
+<p>那么问题来了，究竟是哪里出了乱子？</p>
+<p>因为发送数据的客户端和服务器近期并没有特别大的改动，我检查了 Kafka 队列也一切正常，于是可以锁定问题出在 Elasticsearch 身上。</p>
+<p>第一反应就是先去看 Elasticsearch 的日志，发现根据日志显示，一致在不停的垃圾回收。因此对症下药，把 JVM 的堆内存改大。但是在集群重启之后仍然会出现性能急剧下降的状况，于是继续检查日志，发现是因为 JVM 进行 Full GC 的时间过长，导致 ES 集群认为拓扑结构改变，开始迁移数据所导致。而迁移数据本身又会导致 Full GC，让情况更糟的是，在 Full GC 结束之后，集群的拓扑结构又再次改变，于是就陷入了这样的死循环。</p>
+<p>破局的方法其实非常简单粗暴，把检测集群拓扑的时间间隔和超时次数加大一点，留足够的时间给 JVM 进行 Full GC 即可。</p>
+<h3 id="导入数据过慢问题"><a href="#导入数据过慢问题" class="headerlink" title="导入数据过慢问题"></a>导入数据过慢问题</h3><p>最近在从 MySQL 数据库中导入大量数据到 Elasticsearch 的时候，出现写入极其缓慢，甚至在使用了 bulk（批量）接口之后也没有改善的问题。奇怪的是，从 MySQL 的表 A 和表 B 中导入甚至会有几十倍的速度差距，这是为什么呢？</p>
+<p>经过一步一步排查，基本上 ES 的文档和可以配置的参数都调整过之后并没有改善，于是开始从数据源入手，最后发现表 A 和 表 B 的数据顺序是不太一样的。表 A 中基本是顺序递增的数据，主键（自增长 ID）基本对应于时间顺序；而表 B 中则基本是随机插入的，所以按照数据库中的 ID 进行顺序导出，就会发现相邻记录对应的日期可能相差很大，而正好我们在 ES 中又是根据日期来进行索引的切割的，导致每次都需要在不同的索引中进行切换，速度自然上不去。</p>
+<p>所以我们把从 MySQL 数据库中选择数据的语句利用 timestamp 作为 order by 的标准，导入速度就很快了。</p>
+<p>这里有一点需要注意每次除了 ID 之外，还需要记录 timestamp 的值，这样才能保证是顺序导入的 <code>where id &gt; xxx and timestamp &gt; xxx</code>，其中 timestamp 每次需要归 0。</p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
     <summary type="html">
     
@@ -371,7 +770,7 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-5/</id>
     <published>2016-11-19T03:11:06.000Z</published>
-    <updated>2016-11-20T15:35:41.000Z</updated>
+    <updated>2016-11-21T14:27:52.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：如题</p>
 <a id="more"></a>
@@ -390,7 +789,69 @@
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
-<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="老介绍"><a href="#老介绍" class="headerlink" title="老介绍"></a>老介绍</h2><p>Logstash 最打动我的是整个社区的风格，而这个风格和作者 Jordan Sissel 本人分不开，虽然现在最初的 Google groups 已经搬迁到 elastic 官方的论坛，但是还是能看到这么一句话：</p>
+<blockquote>
+<p>Remember: if a new user has a bad time, it’s a bug in logstash</p>
+</blockquote>
+<p>这是什么精神，这是白求恩精神，做一个高尚的人，一个纯粹的人，一个有道德的人，一个脱离了低级趣味的人，一个有益于人民的人。嗯，就是这样。</p>
+<p>简单的入门可以参考我的 <a href="./2016/07/24/logstash-guide/">Logstash 入门指南</a>，这里重点介绍一些中高级用法。</p>
+<p>Logstash 支持的数据值类型有 bool, string, number, array 和 hash，和 Redis 一样，支持得不多，但是完全够用。支持的条件判断和表达式则比较丰富，如：</p>
+<ul>
+<li>基本条件判断 <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code></li>
+<li><code>=~</code> 匹配正则, <code>!~</code> 不匹配正则</li>
+<li><code>in</code> 包含, <code>not in</code> 不包含</li>
+<li><code>and</code> 与, <code>or</code> 或, <code>nand</code> 非与, <code>xor</code> 非或</li>
+<li><code>()</code> 复合表达式, <code>!()</code> 表达式结果取反</li>
+</ul>
+<p>比方说我们有一个字段是 <code>type</code>，我们想要过滤一下做指定操作的话，可以</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">if &quot;good&quot; in [type] &#123;</div><div class="line">    // do something</div><div class="line">&#125; else &#123;</div><div class="line">    // do something</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从 Logstash 5.0 开始，可以在 <code>$LS_HOME/config/logstash.yml</code> 文件进行所有的命令行参数配置，例如</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="attr">pipeline:</span></div><div class="line"><span class="attr">    workers:</span> <span class="number">24</span></div><div class="line"><span class="attr">    batch:</span></div><div class="line"><span class="attr">        size:</span> <span class="number">125</span></div><div class="line"><span class="attr">        delay:</span> <span class="number">5</span></div></pre></td></tr></table></figure>
+<h3 id="Plugin"><a href="#Plugin" class="headerlink" title="Plugin"></a>Plugin</h3><p>使用之前我们先要安装一下 ruby，命令为 <code>sudo apt install ruby</code>，然后我们可以运行 <code>logstash-plugin list</code> 来看看本机中目前有多少插件可以用，这里会有一个警告，不过查阅 github issue 中说没有问题，那就暂时忽略。插件很多，这里就不一一介绍，简单贴一下 help 文档应该就一目了然了：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">dawang@dawang-Parallels-Virtual-Platform:~$ logstash-plugin -hUsage:    bin/logstash-plugin [OPTIONS] SUBCOMMAND [ARG] ...Parameters:    SUBCOMMAND                    subcommand    [ARG] ...                     subcommand argumentsSubcommands:    install                       Install a plugin    uninstall                     Uninstall a plugin    update                        Update a plugin    pack                          Package currently installed plugins    unpack                        Unpack packaged plugins    list                          List all installed pluginsOptions:    -h, --help                    <span class="built_in">print</span> <span class="built_in">help</span></div></pre></td></tr></table></figure>
+<h3 id="自动运行"><a href="#自动运行" class="headerlink" title="自动运行"></a>自动运行</h3><p>通常来说，我们需要 logstash 在后台长期运行，否则每次需要去各台机器上手动操作，会很麻烦。</p>
+<p>有两种方法，一种是配合 <code>crontab</code>，定期执行指定命令，另一种是让 logstash 以服务或者守护进程的形式运行，配合配置文件中的 schedule 即可。其中 <code>crontab</code> 的方法可以参阅 <a href="./2016/07/26/crontab-guide/">Crontab 指南</a>，这里主要介绍另外四种方法。</p>
+<p><strong>方法一：标准的 service 方式</strong></p>
+<p>在 <code>/etc/init.d/logstash</code> 脚本中，会加载 <code>/etc/init.d/functions</code> 库文件，利用其中的 daemon 函数，将 logstash 进程作为后台程序运行。</p>
+<p>我们要做的是把配置文件都放到 <code>/etc/logstsh/</code> 目录下，必须以 <code>.conf</code> 结尾，然后我们执行 <code>service logstash start</code> 即可（注意要在配置文件中设定好 schedule，这样就可以按照要求自动执行了）</p>
+<p><strong>方法二：nohup 方式</strong></p>
+<p>简单来说，一句话就可以搞定，如果想让某命令在后台长期运行，需要在命令前加 <code>nohup</code>，后面加 <code>&amp;</code></p>
+<p><strong>方法三：用 tmux/screen</strong></p>
+<p>一般来说，如果我需要让服务器跑一堆命令又不想挂着 ssh 连接的话，直接用 tmux/screen 运行命令即可，这样即使退出，命令也依然在执行，具体的使用可以参考 <a href="./2016/03/30/tmux-guide/">tmux 指南</a></p>
+<p><strong>方法四：daemontools 方式</strong></p>
+<p>如果需要长期在后台运行大量程序，建议使用 daemontools 工具，可以通过配置文件来管理操作程序，类似于自动化的 tmux，比方说 python 实现的 <code>supervisord</code>，perl 实现的 <code>ubic</code> 或者 ruby 实现的 <code>god</code>，具体的用法之后会写日志进行说明</p>
+<h3 id="Input"><a href="#Input" class="headerlink" title="Input"></a>Input</h3><p>我们的配置文件中一定需要有一个 input，如果没有的话，就会默认使用 <code>input/stdin</code>。这里只记录一些最常用和最基本的插件，更多的插件可以参考官方文档或参考链接中的教程。</p>
+<ul>
+<li>读取文件 File</li>
+<li>读取 Syslog 数据</li>
+<li>编码插件 Codec: JSON</li>
+</ul>
+<h3 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h3><p>这部分是 Logstash 最具特色和扩展性的部分（但并不一定是必须的），这里只记录一些最常用和最基本的插件，更多的插件可以参考官方文档或参考链接中的教程。</p>
+<ul>
+<li>时间处理 Date，包括 <code>ISO8601</code>, <code>UNIX</code>, <code>UNIX_MS</code>, <code>TAI64N</code> 和 <code>Joda-Time</code></li>
+<li>正则捕获 Grok，这个插件可以摆弄出非常多的黑魔法，可以考虑重点应用，记得使用 Grok Debugger 来调试 grok 表达式</li>
+<li>GeoIP 地址查询，用于统计区域活着可视化地图</li>
+<li>Mutate 数据修改，可以用来转换类型、处理字符串以及处理字段（重命名、更新、替换等）</li>
+<li>split 拆分事件</li>
+</ul>
+<h3 id="Output"><a href="#Output" class="headerlink" title="Output"></a>Output</h3><p>我们的配置文件中一定需要有一个 input，如果没有的话，就会默认使用 <code>output/stdout</code>。这里只记录一些最常用和最基本的插件，更多的插件可以参考官方文档或参考链接中的教程。</p>
+<ul>
+<li>保存到 Elasticsearch 中，注意几个参数： <code>flush_size</code> 是攒够这个大小才写入，<code>idle_flush_time</code> 是隔这么多时间写入一次，这俩都会影响 ES 的写入性能</li>
+<li>发邮件 Email</li>
+<li>调用命令执行 exec，比方说可以发短信，最好只用于少量的信息处理场景</li>
+<li>保存成文件 file</li>
+<li>发送到 HDFS 可以使用 <code>hadoop_webhdfs</code> 插件</li>
+</ul>
+<h3 id="监控-API"><a href="#监控-API" class="headerlink" title="监控 API"></a>监控 API</h3><p>从 Logstash 5.0 开始提供了监控 API，就不再像以前那样比较黑盒了，具体有</p>
+<ul>
+<li>events <code>curl -s localhost:9600/_node/stats/events?pretty=true</code></li>
+<li>jvm <code>curl -s localhost:9600/_node/stats/jvm?pretty=true</code></li>
+<li>process <code>curl -s localhost:9600/_node/stats/process?pretty=true</code></li>
+<li>热线程统计 <code>curl -s localhost:9600/_node/stats/hot_threads?human=true</code></li>
+</ul>
+<h2 id="疑难杂症"><a href="#疑难杂症" class="headerlink" title="疑难杂症"></a>疑难杂症</h2><p>Logstash 的字段中不能出现 <code>.</code> 这个问题，可以通过 <code>de_dot</code> 这个插件解决，安装命令 <code>bin/logstash-plugin install logstash-filter-de_dot</code>，然后在 logstash 的配置文件中添加如下一段代码即可。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">filter &#123;</div><div class="line">  de_dot &#123; &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
     <summary type="html">
     
@@ -416,7 +877,7 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-6/</id>
     <published>2016-11-19T03:11:05.000Z</published>
-    <updated>2016-11-20T15:35:35.000Z</updated>
+    <updated>2016-11-21T14:27:52.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：如题</p>
 <a id="more"></a>
@@ -435,7 +896,41 @@
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
-<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="老介绍"><a href="#老介绍" class="headerlink" title="老介绍"></a>老介绍</h2><p>配置文件在 <code>/etc/elasticsearch/elasticsearch.yml</code>，重启命令 <code>sudo service elasticsearch restart</code></p>
+<h3 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h3><p>这部分内容虽然不一定对工程有立竿见影的帮助，但是知其然还知其所以然，才是高手的做事风格。那么问题来了</p>
+<blockquote>
+<p>写入的数据是如何变成 Elasticsearch 里可以被检索和聚合的索引内容的？</p>
+</blockquote>
+<p>关键在于『倒排索引』，新收到的数据会被写入到内存的 buffer 中，然后在一定的时间间隔后刷到磁盘中，成为一个新的 segment，然后另外使用一个 commit 文件来记录所有的 segment，数据只有在成为 segment 之后才能被检索。默认的从 buffer 到 segment 的时间间隔是 1 秒，基本已经是『实时』了，如果需要更改，也可以调用 <code>/_refresh</code> 接口。不过很多时候我们不需要这么『实时』，所以可以加大这个时间间隔，以获得更快的写入性能。导入历史数据时甚至可以关闭，导入完成再重新开启。</p>
+<p>为了保证数据从 buffer 到 segment 的一致性，Elasticsearch 还会有一个名为 Translog 的记录，至于  Translog 的一致性则是通过定期保存到磁盘中来实现的</p>
+<p>前面说过 Lucene 会不断开新文件，这样磁盘上就会有一堆小文件，所以 ES 会在后台把这些零散的 segment 做数据归并，归并完成后就可以把小的 segment 删掉，也就减少了 segment 的数量了。为了不影响 IO 和 CPU，会对归并线程做一定的限制，我们可以根据硬件的不同来调整 <code>indices.store.throttle.max_bytes_per_sec</code> 来提高性能。与此同时，我们也有不同的归并策略，不过总体来说就是让我们加大 flush 的间隔，尽量让每次新生成的 segment 本身就比较大。</p>
+<p>ES 的分布式处理主要是通过 sharding 机制，也会保留副本进行冗余备份，具体采用的是 gossip 协议，配置也不算复杂，这里就不赘述，如果有机会专门写一篇实例教程。</p>
+<h3 id="增删改查"><a href="#增删改查" class="headerlink" title="增删改查"></a>增删改查</h3><p>ES 虽然不是数据库，不过其特性决定了，这就是一个很好的 NoSQL 数据库嘛，因为 ELK stack 的缘故，写入由 Logstash 负责，查询由 Kibana 负责，不过修改和删除就有些无能为力了（毕竟为什么要简单修改和删除日志？），可是修改和删除是数据库必须的功能，好在 ES 提供了 RESTful 接口来处理 JSON 请求，最简单的用 <code>curl</code> 就可以完成各类操作。这里推荐一个 Chrome 的插件 Postman，可以很方便进行各类测试。具体如何发送请求请参考文档，这里不赘述了。</p>
+<h3 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h3><p>前面的增删改查针对的是单条记录，ES 中更重要的是搜索。这里回顾一下：刚写入的数据，可以通过 translog 立刻获取；但是直到其成为一个 segment 之后，才能被搜索到</p>
+<p>可以利用 <code>/_search?q=</code> 这种 querystring 的简单语法，或者发送完整的 json 来进行查询。具体可以依据版本查阅文档，这里不赘述。</p>
+<p>另外，聚合、管道聚合</p>
+<h3 id="其他功能"><a href="#其他功能" class="headerlink" title="其他功能"></a>其他功能</h3><p>Elasticsearch 目前已经可以和 Hadoop, HDFS, Spark Streaming 等大数据工具连接使用。如果需要配置权限，可以使用 Elastic 官方的 Shield，如果想用开源的话，可以使用 <a href="https://github.com/floragunncom/search-guard" target="_blank" rel="external">search-guard</a>，这样不同的用户可以访问不同的索引，达到权限控制。</p>
+<p>监控集群健康状态也可以通过接口访问，比如 <code>curl -XGET 127.0.0.1:9200/_cluster/health?pretty</code>，更多监控信息请参阅文档，这里不赘述。</p>
+<p>需要提的一点就是 GC 是非常影响性能的，所以我们来简单介绍一下 JVM 的机制。启动 JVM 虚拟机的时候，会分配固定大小的内存块，也就是堆 heap。堆又分成两组，Young 组是为新实例化的对象所分配的空间，比较小，一般来说几百 MB，Young 组内又分为两个 survivor 空间。Young 空间满了后，就垃圾回收一次，还存活的对象放到幸存空间中，失效的就被移除。Old 组就是保存那些重启存活且一段时间不会变化的内容，对于 ES 来说可能有 30 GB 内存是 Old 组，同样，满了之后就垃圾回收。</p>
+<p>垃圾回收的时候，JVM 采用的是 STW(Stop The World) 机制，Young 组比较小还好，但是 Old 组可能需要几秒十几秒，那就是服务器无响应啊！所以我们必须非常关注 GC 性能。</p>
+<p>如果 ES 集群中经常有很耗时的 GC，说明内存不足，如果影响集群之间 ping 的话，就会退出集群，然后因为分片缘故导致更大的影响。我们可以在节点状态中的 <code>jvm</code> 部分查看对应的数值，最重要是 <code>heap_used_percent</code>，如果大于 75，那么就要垃圾回收了，如果长期在 75 以上，那就是内存不足。</p>
+<p>注：节点状态可以通过 <code>curl -XGET http://127.0.0.1:9200/_nodes/stats</code> 查看，下面是一个例子（省略了部分内容）：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"cluster_name"</span> : <span class="string">"wdxtub"</span>,</div><div class="line">  <span class="attr">"nodes"</span> : &#123;</div><div class="line">    <span class="attr">"M-OzSwFBTc6uU8ndWU1SFw"</span> : &#123;</div><div class="line">      <span class="attr">"timestamp"</span> : <span class="number">1470310258934</span>,</div><div class="line">      <span class="attr">"name"</span> : <span class="string">"Kleinstocks"</span>,</div><div class="line">      <span class="attr">"transport_address"</span> : <span class="string">"127.0.0.1:9302"</span>,</div><div class="line">      <span class="attr">"host"</span> : <span class="string">"127.0.0.1"</span>,</div><div class="line">      <span class="attr">"ip"</span> : [ <span class="string">"127.0.0.1:9302"</span>, <span class="string">"NONE"</span> ],</div><div class="line">      <span class="attr">"indices"</span> : &#123;</div><div class="line">        <span class="attr">"docs"</span> : &#123;</div><div class="line">          <span class="attr">"count"</span> : <span class="number">7240861</span>,</div><div class="line">          <span class="attr">"deleted"</span> : <span class="number">257</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"store"</span> : &#123;</div><div class="line">          <span class="attr">"size_in_bytes"</span> : <span class="number">1836976476</span>,</div><div class="line">          <span class="attr">"throttle_time_in_millis"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"indexing"</span> : &#123;</div><div class="line">          <span class="attr">"index_total"</span> : <span class="number">17746868</span>,</div><div class="line">          <span class="attr">"index_time_in_millis"</span> : <span class="number">5340065</span>,</div><div class="line">          <span class="attr">"index_current"</span> : <span class="number">2</span>,</div><div class="line">          <span class="attr">"index_failed"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"delete_total"</span> : <span class="number">418</span>,</div><div class="line">          <span class="attr">"delete_time_in_millis"</span> : <span class="number">70</span>,</div><div class="line">          <span class="attr">"delete_current"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"noop_update_total"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"is_throttled"</span> : <span class="literal">false</span>,</div><div class="line">          <span class="attr">"throttle_time_in_millis"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"get"</span> : &#123;</div><div class="line">          <span class="attr">"total"</span> : <span class="number">351</span>,</div><div class="line">          <span class="attr">"time_in_millis"</span> : <span class="number">146</span>,</div><div class="line">          <span class="attr">"exists_total"</span> : <span class="number">240</span>,</div><div class="line">          <span class="attr">"exists_time_in_millis"</span> : <span class="number">104</span>,</div><div class="line">          <span class="attr">"missing_total"</span> : <span class="number">111</span>,</div><div class="line">          <span class="attr">"missing_time_in_millis"</span> : <span class="number">42</span>,</div><div class="line">          <span class="attr">"current"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"search"</span> : &#123;</div><div class="line">          <span class="attr">"open_contexts"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"query_total"</span> : <span class="number">2408275</span>,</div><div class="line">          <span class="attr">"query_time_in_millis"</span> : <span class="number">5930419</span>,</div><div class="line">          <span class="attr">"query_current"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"fetch_total"</span> : <span class="number">474268</span>,</div><div class="line">          <span class="attr">"fetch_time_in_millis"</span> : <span class="number">2706552</span>,</div><div class="line">          <span class="attr">"fetch_current"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"scroll_total"</span> : <span class="number">80</span>,</div><div class="line">          <span class="attr">"scroll_time_in_millis"</span> : <span class="number">158449847</span>,</div><div class="line">          <span class="attr">"scroll_current"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"merges"</span> : &#123;</div><div class="line">          <span class="attr">"current"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"current_docs"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"current_size_in_bytes"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"total"</span> : <span class="number">85947</span>,</div><div class="line">          <span class="attr">"total_time_in_millis"</span> : <span class="number">30458385</span>,</div><div class="line">          <span class="attr">"total_docs"</span> : <span class="number">876375857</span>,</div><div class="line">          <span class="attr">"total_size_in_bytes"</span> : <span class="number">256573193466</span>,</div><div class="line">          <span class="attr">"total_stopped_time_in_millis"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"total_throttled_time_in_millis"</span> : <span class="number">348966</span>,</div><div class="line">          <span class="attr">"total_auto_throttle_in_bytes"</span> : <span class="number">65901809302</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"refresh"</span> : &#123;</div><div class="line">          <span class="attr">"total"</span> : <span class="number">833546</span>,</div><div class="line">          <span class="attr">"total_time_in_millis"</span> : <span class="number">7243577</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"flush"</span> : &#123;</div><div class="line">          <span class="attr">"total"</span> : <span class="number">4038</span>,</div><div class="line">          <span class="attr">"total_time_in_millis"</span> : <span class="number">58670</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"warmer"</span> : &#123;</div><div class="line">          <span class="attr">"current"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"total"</span> : <span class="number">309738</span>,</div><div class="line">          <span class="attr">"total_time_in_millis"</span> : <span class="number">102270</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"query_cache"</span> : &#123;</div><div class="line">          <span class="attr">"memory_size_in_bytes"</span> : <span class="number">588080</span>,</div><div class="line">          <span class="attr">"total_count"</span> : <span class="number">47737532</span>,</div><div class="line">          <span class="attr">"hit_count"</span> : <span class="number">66843</span>,</div><div class="line">          <span class="attr">"miss_count"</span> : <span class="number">47670689</span>,</div><div class="line">          <span class="attr">"cache_size"</span> : <span class="number">408</span>,</div><div class="line">          <span class="attr">"cache_count"</span> : <span class="number">1687</span>,</div><div class="line">          <span class="attr">"evictions"</span> : <span class="number">1279</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"fielddata"</span> : &#123;</div><div class="line">          <span class="attr">"memory_size_in_bytes"</span> : <span class="number">16791680</span>,</div><div class="line">          <span class="attr">"evictions"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"percolate"</span> : &#123;</div><div class="line">          <span class="attr">"total"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"time_in_millis"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"current"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"memory_size_in_bytes"</span> : <span class="number">-1</span>,</div><div class="line">          <span class="attr">"memory_size"</span> : <span class="string">"-1b"</span>,</div><div class="line">          <span class="attr">"queries"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"completion"</span> : &#123;</div><div class="line">          <span class="attr">"size_in_bytes"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"segments"</span> : &#123;</div><div class="line">          <span class="attr">"count"</span> : <span class="number">14771</span>,</div><div class="line">          <span class="attr">"memory_in_bytes"</span> : <span class="number">162052342</span>,</div><div class="line">          <span class="attr">"terms_memory_in_bytes"</span> : <span class="number">101949950</span>,</div><div class="line">          <span class="attr">"stored_fields_memory_in_bytes"</span> : <span class="number">4785984</span>,</div><div class="line">          <span class="attr">"term_vectors_memory_in_bytes"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"norms_memory_in_bytes"</span> : <span class="number">77376</span>,</div><div class="line">          <span class="attr">"doc_values_memory_in_bytes"</span> : <span class="number">55239032</span>,</div><div class="line">          <span class="attr">"index_writer_memory_in_bytes"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"index_writer_max_memory_in_bytes"</span> : <span class="number">1583616000</span>,</div><div class="line">          <span class="attr">"version_map_memory_in_bytes"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"fixed_bit_set_memory_in_bytes"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"translog"</span> : &#123;</div><div class="line">          <span class="attr">"operations"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"size_in_bytes"</span> : <span class="number">132999</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"suggest"</span> : &#123;</div><div class="line">          <span class="attr">"total"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"time_in_millis"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"current"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"request_cache"</span> : &#123;</div><div class="line">          <span class="attr">"memory_size_in_bytes"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"evictions"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"hit_count"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"miss_count"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"recovery"</span> : &#123;</div><div class="line">          <span class="attr">"current_as_source"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"current_as_target"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"throttle_time_in_millis"</span> : <span class="number">0</span></div><div class="line">        &#125;</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">"os"</span> : &#123;</div><div class="line">        <span class="attr">"timestamp"</span> : <span class="number">1470310262865</span>,</div><div class="line">        <span class="attr">"cpu_percent"</span> : <span class="number">56</span>,</div><div class="line">        <span class="attr">"load_average"</span> : <span class="number">2.04</span>,</div><div class="line">        <span class="attr">"mem"</span> : &#123;</div><div class="line">          <span class="attr">"total_in_bytes"</span> : <span class="number">16827527168</span>,</div><div class="line">          <span class="attr">"free_in_bytes"</span> : <span class="number">761749504</span>,</div><div class="line">          <span class="attr">"used_in_bytes"</span> : <span class="number">16065777664</span>,</div><div class="line">          <span class="attr">"free_percent"</span> : <span class="number">5</span>,</div><div class="line">          <span class="attr">"used_percent"</span> : <span class="number">95</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"swap"</span> : &#123;</div><div class="line">          <span class="attr">"total_in_bytes"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"free_in_bytes"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"used_in_bytes"</span> : <span class="number">0</span></div><div class="line">        &#125;</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">"process"</span> : &#123;</div><div class="line">        <span class="attr">"timestamp"</span> : <span class="number">1470310262865</span>,</div><div class="line">        <span class="attr">"open_file_descriptors"</span> : <span class="number">26370</span>,</div><div class="line">        <span class="attr">"max_file_descriptors"</span> : <span class="number">65535</span>,</div><div class="line">        <span class="attr">"cpu"</span> : &#123;</div><div class="line">          <span class="attr">"percent"</span> : <span class="number">30</span>,</div><div class="line">          <span class="attr">"total_in_millis"</span> : <span class="number">1508401460</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"mem"</span> : &#123;</div><div class="line">          <span class="attr">"total_virtual_in_bytes"</span> : <span class="number">7386607616</span></div><div class="line">        &#125;</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">"jvm"</span> : &#123;</div><div class="line">        <span class="attr">"timestamp"</span> : <span class="number">1470310262874</span>,</div><div class="line">        <span class="attr">"uptime_in_millis"</span> : <span class="number">1237196806</span>,</div><div class="line">        <span class="attr">"mem"</span> : &#123;</div><div class="line">          <span class="attr">"heap_used_in_bytes"</span> : <span class="number">2868003728</span>,</div><div class="line">          <span class="attr">"heap_used_percent"</span> : <span class="number">67</span>,</div><div class="line">          <span class="attr">"heap_committed_in_bytes"</span> : <span class="number">4260102144</span>,</div><div class="line">          <span class="attr">"heap_max_in_bytes"</span> : <span class="number">4260102144</span>,</div><div class="line">          <span class="attr">"non_heap_used_in_bytes"</span> : <span class="number">75855480</span>,</div><div class="line">          <span class="attr">"non_heap_committed_in_bytes"</span> : <span class="number">109502464</span>,</div><div class="line">          <span class="attr">"pools"</span> : &#123;</div><div class="line">            <span class="attr">"young"</span> : &#123;</div><div class="line">              <span class="attr">"used_in_bytes"</span> : <span class="number">193899664</span>,</div><div class="line">              <span class="attr">"max_in_bytes"</span> : <span class="number">279183360</span>,</div><div class="line">              <span class="attr">"peak_used_in_bytes"</span> : <span class="number">279183360</span>,</div><div class="line">              <span class="attr">"peak_max_in_bytes"</span> : <span class="number">279183360</span></div><div class="line">            &#125;,</div><div class="line">            <span class="attr">"survivor"</span> : &#123;</div><div class="line">              <span class="attr">"used_in_bytes"</span> : <span class="number">29947264</span>,</div><div class="line">              <span class="attr">"max_in_bytes"</span> : <span class="number">34865152</span>,</div><div class="line">              <span class="attr">"peak_used_in_bytes"</span> : <span class="number">34865152</span>,</div><div class="line">              <span class="attr">"peak_max_in_bytes"</span> : <span class="number">34865152</span></div><div class="line">            &#125;,</div><div class="line">            <span class="attr">"old"</span> : &#123;</div><div class="line">              <span class="attr">"used_in_bytes"</span> : <span class="number">2644156800</span>,</div><div class="line">              <span class="attr">"max_in_bytes"</span> : <span class="number">3946053632</span>,</div><div class="line">              <span class="attr">"peak_used_in_bytes"</span> : <span class="number">3916390728</span>,</div><div class="line">              <span class="attr">"peak_max_in_bytes"</span> : <span class="number">3946053632</span></div><div class="line">            &#125;</div><div class="line">          &#125;</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"threads"</span> : &#123;</div><div class="line">          <span class="attr">"count"</span> : <span class="number">78</span>,</div><div class="line">          <span class="attr">"peak_count"</span> : <span class="number">88</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"gc"</span> : &#123;</div><div class="line">          <span class="attr">"collectors"</span> : &#123;</div><div class="line">            <span class="attr">"young"</span> : &#123;</div><div class="line">              <span class="attr">"collection_count"</span> : <span class="number">764634</span>,</div><div class="line">              <span class="attr">"collection_time_in_millis"</span> : <span class="number">25826848</span></div><div class="line">            &#125;,</div><div class="line">            <span class="attr">"old"</span> : &#123;</div><div class="line">              <span class="attr">"collection_count"</span> : <span class="number">500</span>,</div><div class="line">              <span class="attr">"collection_time_in_millis"</span> : <span class="number">56557</span></div><div class="line">            &#125;</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">"thread_pool"</span> : &#123;</div><div class="line">        <span class="attr">"bulk"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">4</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">4</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">877671</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"fetch_shard_started"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">8</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">8</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">17037949</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"fetch_shard_store"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"flush"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">1</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">2</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">10416</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"force_merge"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"generic"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">4</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">5</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">17161902</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"get"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">4</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">4</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">351</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"index"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">4</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">4</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">302497</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"listener"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">2</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">2</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">457516</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"management"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">5</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">1</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">5</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">838887</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"percolate"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"refresh"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">1</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">2</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">833549</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"search"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">7</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">105785</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">7</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">2930414</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"snapshot"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"suggest"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">0</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"warmer"</span> : &#123;</div><div class="line">          <span class="attr">"threads"</span> : <span class="number">1</span>,</div><div class="line">          <span class="attr">"queue"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"active"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"rejected"</span> : <span class="number">0</span>,</div><div class="line">          <span class="attr">"largest"</span> : <span class="number">2</span>,</div><div class="line">          <span class="attr">"completed"</span> : <span class="number">864039</span></div><div class="line">        &#125;</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">"fs"</span> : &#123;</div><div class="line">        <span class="attr">"timestamp"</span> : <span class="number">1470310262388</span>,</div><div class="line">        <span class="attr">"total"</span> : &#123;</div><div class="line">          <span class="attr">"total_in_bytes"</span> : <span class="number">316934193152</span>,</div><div class="line">          <span class="attr">"free_in_bytes"</span> : <span class="number">32878755840</span>,</div><div class="line">          <span class="attr">"available_in_bytes"</span> : <span class="number">16755851264</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">"data"</span> : [ &#123;</div><div class="line">          <span class="attr">"path"</span> : <span class="string">"/data2/active2/dji-active/nodes/0"</span>,</div><div class="line">          <span class="attr">"mount"</span> : <span class="string">"/data2 (/dev/xvdf)"</span>,</div><div class="line">          <span class="attr">"type"</span> : <span class="string">"ext4"</span>,</div><div class="line">          <span class="attr">"total_in_bytes"</span> : <span class="number">316934193152</span>,</div><div class="line">          <span class="attr">"free_in_bytes"</span> : <span class="number">32878755840</span>,</div><div class="line">          <span class="attr">"available_in_bytes"</span> : <span class="number">16755851264</span>,</div><div class="line">          <span class="attr">"spins"</span> : <span class="string">"false"</span></div><div class="line">        &#125; ]</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">"transport"</span> : &#123;</div><div class="line">        <span class="attr">"server_open"</span> : <span class="number">0</span>,</div><div class="line">        <span class="attr">"rx_count"</span> : <span class="number">30</span>,</div><div class="line">        <span class="attr">"rx_size_in_bytes"</span> : <span class="number">8193</span>,</div><div class="line">        <span class="attr">"tx_count"</span> : <span class="number">36</span>,</div><div class="line">        <span class="attr">"tx_size_in_bytes"</span> : <span class="number">13202</span></div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>状态比较多，这里挑几个说一下，首先是 <code>gc</code> 部分，显示的是 young 和 old gc 的耗时，一般来说 young 会比较大，这是正常的。一次 young gc 大概在 1-2ms，old gc 在 100 ms 左右，如果有量级上的差距，建议打开 slow-gc 日志，具体研究原因。</p>
+<p><code>thread_pool</code> 是线程池信息，我们主要看 <code>rejected</code> 的数据，如果这个数值很大，就说明 ES 忙不过来了。</p>
+<p>其他的基本就是系统和文件系统的数据如果 <code>fielddata_breaker.tripped</code> 数值太高，那么就需要优化了。</p>
+<p>其他一些监控接口</p>
+<ul>
+<li><code>hot_threads</code> 状态 <code>curl -XGET &#39;http://127.0.0.1:9200/_nodes/_local/hot_threads?interval=60s&#39;</code></li>
+<li>等待执行的任务列表 <code>curl -XGET http://127.0.0.1:9200/_cluster/pending_tasks{ &quot;tasks&quot;: [] }</code></li>
+<li>可以用 <code>/_cat</code> 接口，具体参考文档<ul>
+<li>集群状态 <code>curl -XGET http://127.0.0.1:9200/_cat/health?v</code></li>
+<li>节点状态 <code>curl -XGET http://127.0.0.1:9200/_cat/nodes?v</code> </li>
+</ul>
+</li>
+</ul>
+<p>Elasticsearch 的日志在 <code>$ES_HOME/logs/</code> 中，或者可以使用 官方自己的监控工具 - marvel。如果在生产环境中，最好使用 nagios, zabbix, ganglia, collectd 这类监控系统。</p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
     <summary type="html">
     
@@ -461,7 +956,7 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/</id>
     <published>2016-11-19T03:11:04.000Z</published>
-    <updated>2016-11-20T15:35:06.000Z</updated>
+    <updated>2016-11-21T14:27:52.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：如题</p>
 <a id="more"></a>
@@ -480,7 +975,56 @@
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
-<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="老介绍"><a href="#老介绍" class="headerlink" title="老介绍"></a>老介绍</h2><p>Kibana3 和 Kibana4 基本还处于并行的状态（想到了 Python），这里主要介绍 Kibana4（因为主要在用这个版本）</p>
+<p>任何需要展示的数据都需要现在 Settings 中进行索引配置，注意可以选择配置时间索引，这样在 Discover 页面会多出来时间的选项。默认情况下，Discover 页面会显示匹配搜索条件的前 500 个文档。Visualization 用来为搜索结果做可视化。每个可视化都是跟一个搜索关联着的。Dashboard 可以创建定值自己的仪表盘。</p>
+<p>要应用到生产环境的话，具体对于 Nginx, shield 和 SSL 的配置请参考官方文档。使用 Shield 的话，可以做到索引级别的访问控制，这对多团队管理很有帮助。</p>
+<h3 id="Discover"><a href="#Discover" class="headerlink" title="Discover"></a>Discover</h3><p>Discover 标签用于交互式探索数据。基本上常用的功能应有尽有，具体就要自己慢慢摸索。</p>
+<ul>
+<li>右上角的时间过滤器、中间的直方图都可以选择时间范围</li>
+<li>搜索的时候可以使用 Lucene 查询语法，可以用完整的基于 JSON 的 Elasticsearch 查询 DSL</li>
+<li>按字段过滤包含正反两种过滤器，尝试一下即可</li>
+<li>JSON 中可以灵活应用 bool query 组合中各种 <code>should</code>, <code>must</code>, <code>must not</code> 条件</li>
+<li>可以使用任何已建立索引的字段排序文档表哥中的数据。如果当前索引模式配置了时间字段，默认会使用该字段倒序排列文档</li>
+</ul>
+<h3 id="Visualize"><a href="#Visualize" class="headerlink" title="Visualize"></a>Visualize</h3><p>几个不同的大类</p>
+<ul>
+<li>Area chart: 用区块图来可视化多个不同序列的总体共享</li>
+<li>Data table: 用数据表来显示聚合的原始数据。其他可视化可以通过点击底部的方式显示数据表</li>
+<li>Line char: 用折线图来比较不同序列</li>
+<li>Markdown widget: 用 Markdown 显示自定义格式的信息或和仪表盘有关的用法说明</li>
+<li>Metric: 用指标在仪表盘上显示单个数字</li>
+<li>Pie char: 用饼图来显示每个来源对总体的贡献</li>
+<li>Tile map: 用瓦片地图将聚合结果和经纬度联系起来</li>
+<li>Vertical bar chart: 用垂直条形图作为一个通用图形</li>
+</ul>
+<p>Y 轴的数值维度有以下聚合：</p>
+<ul>
+<li>Count 原始计数</li>
+<li>Average 平均值</li>
+<li>Sum 总和</li>
+<li>Min 最小值</li>
+<li>Max 最大值</li>
+<li>Unique Count 不重复的值</li>
+<li>Standard Deviation 标准差</li>
+<li>Percentile 百分比</li>
+<li>Percentile Rank 百分比排名</li>
+</ul>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>Kibana 服务器在启动的时候会从 <code>kibana.yml</code> 文件读取属性。常见的属性有</p>
+<ul>
+<li><code>port</code></li>
+<li><code>host</code></li>
+<li><code>elasticsearch_url</code></li>
+<li><code>kibana_index</code></li>
+<li><code>default_app_id</code></li>
+<li><code>request_timeout</code></li>
+<li><code>shard_timeout</code></li>
+<li><code>verify_ssl</code></li>
+<li><code>ca</code></li>
+<li><code>ssl_key_file</code></li>
+<li><code>ssl_cert_file</code></li>
+<li><code>pid_file</code></li>
+</ul>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
     
     <summary type="html">
     
@@ -628,9 +1172,9 @@
       <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
     
     
-      <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
-    
       <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
+    
+      <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
     
   </entry>
   
@@ -1497,9 +2041,9 @@
       <category term="Life" scheme="http://wdxtub.com/categories/Life/"/>
     
     
-      <category term="基础" scheme="http://wdxtub.com/tags/%E5%9F%BA%E7%A1%80/"/>
-    
       <category term="拍摄" scheme="http://wdxtub.com/tags/%E6%8B%8D%E6%91%84/"/>
+    
+      <category term="基础" scheme="http://wdxtub.com/tags/%E5%9F%BA%E7%A1%80/"/>
     
   </entry>
   

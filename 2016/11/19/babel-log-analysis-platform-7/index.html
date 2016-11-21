@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-7/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="施工中：如题">
-<meta property="og:updated_time" content="2016-11-20T15:35:06.000Z">
+<meta property="og:updated_time" content="2016-11-21T14:27:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【通天塔之日志分析平台】柒 Kibana 技巧指南">
 <meta name="twitter:description" content="施工中：如题">
@@ -399,7 +399,56 @@
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
-<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="老介绍"><a href="#老介绍" class="headerlink" title="老介绍"></a>老介绍</h2><p>Kibana3 和 Kibana4 基本还处于并行的状态（想到了 Python），这里主要介绍 Kibana4（因为主要在用这个版本）</p>
+<p>任何需要展示的数据都需要现在 Settings 中进行索引配置，注意可以选择配置时间索引，这样在 Discover 页面会多出来时间的选项。默认情况下，Discover 页面会显示匹配搜索条件的前 500 个文档。Visualization 用来为搜索结果做可视化。每个可视化都是跟一个搜索关联着的。Dashboard 可以创建定值自己的仪表盘。</p>
+<p>要应用到生产环境的话，具体对于 Nginx, shield 和 SSL 的配置请参考官方文档。使用 Shield 的话，可以做到索引级别的访问控制，这对多团队管理很有帮助。</p>
+<h3 id="Discover"><a href="#Discover" class="headerlink" title="Discover"></a>Discover</h3><p>Discover 标签用于交互式探索数据。基本上常用的功能应有尽有，具体就要自己慢慢摸索。</p>
+<ul>
+<li>右上角的时间过滤器、中间的直方图都可以选择时间范围</li>
+<li>搜索的时候可以使用 Lucene 查询语法，可以用完整的基于 JSON 的 Elasticsearch 查询 DSL</li>
+<li>按字段过滤包含正反两种过滤器，尝试一下即可</li>
+<li>JSON 中可以灵活应用 bool query 组合中各种 <code>should</code>, <code>must</code>, <code>must not</code> 条件</li>
+<li>可以使用任何已建立索引的字段排序文档表哥中的数据。如果当前索引模式配置了时间字段，默认会使用该字段倒序排列文档</li>
+</ul>
+<h3 id="Visualize"><a href="#Visualize" class="headerlink" title="Visualize"></a>Visualize</h3><p>几个不同的大类</p>
+<ul>
+<li>Area chart: 用区块图来可视化多个不同序列的总体共享</li>
+<li>Data table: 用数据表来显示聚合的原始数据。其他可视化可以通过点击底部的方式显示数据表</li>
+<li>Line char: 用折线图来比较不同序列</li>
+<li>Markdown widget: 用 Markdown 显示自定义格式的信息或和仪表盘有关的用法说明</li>
+<li>Metric: 用指标在仪表盘上显示单个数字</li>
+<li>Pie char: 用饼图来显示每个来源对总体的贡献</li>
+<li>Tile map: 用瓦片地图将聚合结果和经纬度联系起来</li>
+<li>Vertical bar chart: 用垂直条形图作为一个通用图形</li>
+</ul>
+<p>Y 轴的数值维度有以下聚合：</p>
+<ul>
+<li>Count 原始计数</li>
+<li>Average 平均值</li>
+<li>Sum 总和</li>
+<li>Min 最小值</li>
+<li>Max 最大值</li>
+<li>Unique Count 不重复的值</li>
+<li>Standard Deviation 标准差</li>
+<li>Percentile 百分比</li>
+<li>Percentile Rank 百分比排名</li>
+</ul>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>Kibana 服务器在启动的时候会从 <code>kibana.yml</code> 文件读取属性。常见的属性有</p>
+<ul>
+<li><code>port</code></li>
+<li><code>host</code></li>
+<li><code>elasticsearch_url</code></li>
+<li><code>kibana_index</code></li>
+<li><code>default_app_id</code></li>
+<li><code>request_timeout</code></li>
+<li><code>shard_timeout</code></li>
+<li><code>verify_ssl</code></li>
+<li><code>ca</code></li>
+<li><code>ssl_key_file</code></li>
+<li><code>ssl_cert_file</code></li>
+<li><code>pid_file</code></li>
+</ul>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
       
     </div>
 
@@ -685,7 +734,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">3.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#老介绍"><span class="nav-number">3.</span> <span class="nav-text">老介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Discover"><span class="nav-number">3.1.</span> <span class="nav-text">Discover</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Visualize"><span class="nav-number">3.2.</span> <span class="nav-text">Visualize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">3.3.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">4.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>
