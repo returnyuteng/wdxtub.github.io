@@ -183,7 +183,7 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-1/</id>
     <published>2016-11-19T03:11:10.000Z</published>
-    <updated>2016-11-21T14:52:53.000Z</updated>
+    <updated>2016-11-22T12:48:07.000Z</updated>
     
     <content type="html"><![CDATA[<p>前一讲我们对 ElasticStack 进行了简要介绍并完成了基本的系统环境配置，这一次我们要把 Elasticsearch/Logstash/Kibana 安装配置好，并把 Linux 的系统日志导入进来。</p>
 <a id="more"></a>
@@ -211,7 +211,7 @@
 <li>掌握 Linux 的进程控制机制，学会如何启动和关闭前台/后台应用</li>
 </ol>
 <h2 id="安装与启动"><a href="#安装与启动" class="headerlink" title="安装与启动"></a>安装与启动</h2><p>无论是 Elasticsearch, Logstash 还是 Kibana，我们都推荐手动安装的方式，毕竟不涉及太多配置操作，用 <code>apt-get</code> 反而有些用牛刀杀鸡了。这里我们直接上命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 进入用户文件夹</span></div><div class="line"><span class="built_in">cd</span> ~</div><div class="line"><span class="comment"># 下载 Elasticsearch</span></div><div class="line">wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.0.1.tar.gz</div><div class="line"><span class="comment"># 下载 Logstash</span></div><div class="line">wget https://artifacts.elastic.co/downloads/logstash/logstash-5.0.1.tar.gz</div><div class="line"><span class="comment"># 下载 Kibana</span></div><div class="line">wget https://artifacts.elastic.co/downloads/kibana/kibana-5.0.1-linux-x86_64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># 解压 </span></div><div class="line">tar -xvf elasticsearch-5.0.1.tar.gz</div><div class="line">tar -xvf logstash-5.0.1.tar.gz</div><div class="line">tar -xvf kibana-5.0.1-linux-x86_64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># 把安装包保存到固定文件夹中，这里叫 software</span></div><div class="line">mv elasticsearch-5.0.1.tar.gz software/</div><div class="line">mv kibana-5.0.1-linux-x86_64.tar.gz software/</div><div class="line">mv logstash-5.0.1.tar.gz software/</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 进入用户文件夹</span></div><div class="line"><span class="built_in">cd</span> ~</div><div class="line"><span class="comment"># 下载 Elasticsearch</span></div><div class="line">wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.0.1.tar.gz</div><div class="line"><span class="comment"># 下载 Logstash</span></div><div class="line">wget https://artifacts.elastic.co/downloads/logstash/logstash-5.0.1.tar.gz</div><div class="line"><span class="comment"># 下载 Kibana</span></div><div class="line">wget https://artifacts.elastic.co/downloads/kibana/kibana-5.0.1-linux-x86_64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># 解压 </span></div><div class="line">tar -xvf elasticsearch-5.0.1.tar.gz</div><div class="line">tar -xvf logstash-5.0.1.tar.gz</div><div class="line">tar -xvf kibana-5.0.1-linux-x86_64.tar.gz</div><div class="line"></div><div class="line"><span class="comment"># 把安装包保存到固定文件夹中，这里叫 software</span></div><div class="line">mv elasticsearch-5.0.1.tar.gz software/mv kibana-5.0.1-linux-x86_64.tar.gz software/mv logstash-5.0.1.tar.gz software/</div></pre></td></tr></table></figure>
 <p>解压完成之后，ElasticStack 运行前的准备就基本完成了。Logstash 可以在需要时再启用，这里我们先把 Elasticsearch 和 Kibana 给启动起来（这里我们继续用 tmux，关于 tmux 的使用可以参考我写的<a href="http://wdxtub.com/2016/03/30/tmux-guide/">tmux 指南</a>）</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 新建 tmux session</span></div><div class="line">tmux</div><div class="line"><span class="comment"># 启动 Elasticsearch</span></div><div class="line"><span class="comment"># 这里注意，最好虚拟机有 4G 内存，不然很容易卡死</span></div><div class="line"><span class="built_in">cd</span> elasticsearch-5.0.1/bin; ./elasticsearch</div><div class="line"><span class="comment"># 启动 Kibana</span></div><div class="line"><span class="built_in">cd</span> kibana-5.0.1-linux-x86_64/; ./bin/kibana</div></pre></td></tr></table></figure>
 <p>打开浏览器，访问 <code>localhost:5601</code>，如果看到如下所示的页面，Elasticsearch 和 Kibana 基本就没问题了。</p>
@@ -219,7 +219,7 @@
 <p>然后我们体验一下 Logstash，输入下列命令：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 进入文件夹</span></div><div class="line"><span class="built_in">cd</span> logstash-5.0.1/</div><div class="line"><span class="comment"># 启动 logstash，输入和输出均为命令行</span></div><div class="line">bin/logstash <span class="_">-e</span> <span class="string">'input &#123; stdin &#123; &#125; &#125; output &#123; stdout &#123;&#125; &#125;'</span></div></pre></td></tr></table></figure>
 <p>然后我们随意输入一些内容，显示为：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">parallels@ubuntu:~/logstash-5.0.1$ bin/logstash <span class="_">-e</span> <span class="string">'input &#123; stdin &#123; &#125; &#125; output &#123; stdout &#123;&#125; &#125;'</span></div><div class="line">wdxtub.com updated</div><div class="line">Sending Logstash<span class="string">'s logs to /home/parallels/logstash-5.0.1/logs which is now configured via log4j2.properties</span></div><div class="line">The stdin plugin is now waiting for input:[2016-11-20T22:54:20,014</div><div class="line">[INFO ][logstash.pipeline        ] Starting pipeline &#123;"id"=&gt;"main", "pipeline.workers"=&gt;2, "pipeline.batch.size"=&gt;125, "pipeline.batch.delay"=&gt;5, "pipeline.max_inflight"=&gt;250&#125;</div><div class="line"></div><div class="line">[2016-11-20T22:54:20,038][INFO ][logstash.pipeline        ] Pipeline main started</div><div class="line">[2016-11-20T22:54:20,088][INFO ][logstash.agent           ] Successfully started Logstash API endpoint &#123;:port=&gt;9600&#125;</div><div class="line">2016-11-21T06:54:20.036Z ubuntu wdxtub.com updated</div><div class="line">wdxtub.com is a personal blog</div><div class="line">2016-11-21T06:54:41.187Z ubuntu wdxtub.com is a personal blog</div><div class="line">wdxtub.com is created in 2015</div><div class="line">2016-11-21T06:54:55.190Z ubuntu wdxtub.com is created in 2015</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">parallels@ubuntu:~/logstash-5.0.1$ bin/logstash <span class="_">-e</span> <span class="string">'input &#123; stdin &#123; &#125; &#125; output &#123; stdout &#123;&#125; &#125;'</span>wdxtub.com updatedSending Logstash<span class="string">'s logs to /home/parallels/logstash-5.0.1/logs which is now configured via log4j2.propertiesThe stdin plugin is now waiting for input:[2016-11-20T22:54:20,014][INFO ][logstash.pipeline        ] Starting pipeline &#123;"id"=&gt;"main", "pipeline.workers"=&gt;2, "pipeline.batch.size"=&gt;125, "pipeline.batch.delay"=&gt;5, "pipeline.max_inflight"=&gt;250&#125;[2016-11-20T22:54:20,038][INFO ][logstash.pipeline        ] Pipeline main started[2016-11-20T22:54:20,088][INFO ][logstash.agent           ] Successfully started Logstash API endpoint &#123;:port=&gt;9600&#125;2016-11-21T06:54:20.036Z ubuntu wdxtub.com updatedwdxtub.com is a personal blog2016-11-21T06:54:41.187Z ubuntu wdxtub.com is a personal blogwdxtub.com is created in 20152016-11-21T06:54:55.190Z ubuntu wdxtub.com is created in 2015</span></div></pre></td></tr></table></figure>
 <p>至此，ElasticStack 三大组件都已经运行了一次，我们可以用一个实际的任务来上手了。不过开始之前，我们来简单了解一下 ElasticStack 的发展历程。</p>
 <h2 id="ElasticStack-5-0-的变化"><a href="#ElasticStack-5-0-的变化" class="headerlink" title="ElasticStack 5.0 的变化"></a>ElasticStack 5.0 的变化</h2><p>ElasticStack 之所以版本一开始就是 5.0，主要原因是把各个产品进行版本统一。5.0 之前，Elasticsearch 的版本是 2.4，Logstash 的版本也是 2.4，但是 Kibana 是 4.5。这样一来开发者其实很难把各个组件对应起来，于是 Elastic 公司干脆直接统一到 5.0，皆大欢喜。</p>
 <p>考虑到不是所有的朋友都有接触过 2.4 及之前版本的 ElasticStack，所以这部分会简明扼要介绍一下 5.0 版本的重大改变：</p>
@@ -291,7 +291,7 @@
 <li><code>GET /ohmywdx/wdxtuber/_search?q=name:Da</code></li>
 </ul>
 <p>这里我们来看看第二个搜索的结果</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"took"</span>: <span class="number">11</span>,</div><div class="line">  <span class="attr">"timed_out"</span>: <span class="literal">false</span>,</div><div class="line">  <span class="attr">"_shards"</span>: &#123;</div><div class="line">    <span class="attr">"total"</span>: <span class="number">5</span>,</div><div class="line">    <span class="attr">"successful"</span>: <span class="number">5</span>,</div><div class="line">    <span class="attr">"failed"</span>: <span class="number">0</span></div><div class="line">  &#125;,</div><div class="line">  <span class="attr">"hits"</span>: &#123;</div><div class="line">    <span class="attr">"total"</span>: <span class="number">1</span>,</div><div class="line">    <span class="attr">"max_score"</span>: <span class="number">0.25811607</span>,</div><div class="line">    <span class="attr">"hits"</span>: [</div><div class="line">      &#123;</div><div class="line">        <span class="attr">"_index"</span>: <span class="string">"ohmywdx"</span>,</div><div class="line">        <span class="attr">"_type"</span>: <span class="string">"wdxtuber"</span>,</div><div class="line">        <span class="attr">"_id"</span>: <span class="string">"1"</span>,        <span class="attr">"_score"</span>: <span class="number">0.25811607</span>,</div><div class="line">        <span class="attr">"_source"</span>: &#123;</div><div class="line">          <span class="attr">"name"</span>: <span class="string">"Da Wang"</span>,</div><div class="line">          <span class="attr">"age"</span>: <span class="number">25</span>,</div><div class="line">          <span class="attr">"about"</span>: <span class="string">"First one who is stupid enough to join this company"</span>,</div><div class="line">          <span class="attr">"interests"</span>: [</div><div class="line">            <span class="string">"game"</span>,</div><div class="line">            <span class="string">"music"</span></div><div class="line">          ]</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    ]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;  <span class="attr">"took"</span>: <span class="number">11</span>,  <span class="attr">"timed_out"</span>: <span class="literal">false</span>,  <span class="attr">"_shards"</span>: &#123;    <span class="attr">"total"</span>: <span class="number">5</span>,    <span class="attr">"successful"</span>: <span class="number">5</span>,    <span class="attr">"failed"</span>: <span class="number">0</span>  &#125;,  <span class="attr">"hits"</span>: &#123;    <span class="attr">"total"</span>: <span class="number">1</span>,    <span class="attr">"max_score"</span>: <span class="number">0.25811607</span>,    <span class="attr">"hits"</span>: [      &#123;        <span class="attr">"_index"</span>: <span class="string">"ohmywdx"</span>,        <span class="attr">"_type"</span>: <span class="string">"wdxtuber"</span>,        <span class="attr">"_id"</span>: <span class="string">"1"</span>,        <span class="attr">"_score"</span>: <span class="number">0.25811607</span>,        <span class="attr">"_source"</span>: &#123;          <span class="attr">"name"</span>: <span class="string">"Da Wang"</span>,          <span class="attr">"age"</span>: <span class="number">25</span>,          <span class="attr">"about"</span>: <span class="string">"First one who is stupid enough to join this company"</span>,          <span class="attr">"interests"</span>: [            <span class="string">"game"</span>,            <span class="string">"music"</span>          ]        &#125;      &#125;    ]  &#125;&#125;</div></pre></td></tr></table></figure>
 <p>除了 <code>_source</code> 的信息之外，我们可以看到有一个 <code>_score</code>，敏感的同学大概会意识到，Elasticsearch 是根据相关性来对结果进行排序的，这个得分就是相关性分数。</p>
 <p>除了前面说明的搜索，我们还可以使用 DSL 语句来组合更加复杂的搜索，什么过滤、组合条件、全文、短语搜索，都不在话下，我们甚至可以高亮搜索结果。另外我们还可以利用『聚合』来实现关系型数据库中『Group By』类似的操作。其他诸如推荐、定位、渗透、模糊及部分匹配同样也支持。不过这一篇仅仅是一个简要介绍，就不继续深入了。</p>
 <h2 id="实例：收集-Linux-系统日志"><a href="#实例：收集-Linux-系统日志" class="headerlink" title="实例：收集 Linux 系统日志"></a>实例：收集 Linux 系统日志</h2><p>万事俱备，只欠东风，我们现在就把  ElasticStack 用起来！第一个任务很简单，就是把本机的日志给监控起来，这样我们在查询系统发生的事件时，就不用再去 <code>/var/log/</code> 文件夹里『翻箱倒柜』了。</p>
@@ -307,8 +307,11 @@
 <li><code>/var/log/kern.log</code> 包含内核产生的日志，有助于在定制内核时解决问题</li>
 <li><code>/var/log/wtmp</code> 包含登录信息。使用 wtmp 可以找出谁正在登陆进入系统，谁使用命令显示这个文件或信息等</li>
 </ul>
-<h3 id="启动-Logstash"><a href="#启动-Logstash" class="headerlink" title="启动 Logstash"></a>启动 Logstash</h3><p>这一步的任务是利用 Logstash 把系统日志给导入 Elasticsearch 中。暂时没有使用最新的 Beats 组件，而是继续使用传统的 Logstash 来进行操作（比较重型），用法和之前有些不同，我们会把配置写在一个文件中，而不是直接在命令中输入。具体如下：</p>
+<h3 id="启动-Logstash"><a href="#启动-Logstash" class="headerlink" title="启动 Logstash"></a>启动 Logstash</h3><p>这一步的任务是利用 Logstash 把系统日志给导入 Elasticsearch 中。暂时没有使用最新的 Beats 组件，而是继续使用传统的 Logstash 来进行操作（比较重型），用法和之前有些不同，我们会把配置写在一个文件中，而不是直接在命令中输入。</p>
+<p>Logstash 使用一个名叫 FileWatch 的 Ruby Gem 库来监听文件变化。这个库支持 glob 展开文件路径，而且会记录一个叫 <code>.sincedb</code> 的数据库文件来跟踪被监听的日志文件的当前读取位置。通过记录下来的 <code>inode</code>, <code>major number</code>, <code>minor number</code> 和 <code>pos</code> 就可以保证不漏过每一条日志。</p>
+<p>具体配置如下：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 我的习惯是把配置文件统一放到名为 confs 的文件夹中</div><div class="line"># 本配置文件名为 syslog.conf</div><div class="line">input &#123;</div><div class="line">  file &#123;</div><div class="line">    # 确定需要检测的文件</div><div class="line">    path =&gt; [ &quot;/var/log/*.log&quot;, &quot;/var/log/messages&quot;, &quot;/var/log/syslog&quot;, &quot;/var/log/apt&quot;, &quot;/var/log/fsck&quot;, &quot;/var/log/faillog&quot;]</div><div class="line">    # 日志类型</div><div class="line">    type =&gt; &quot;syslog&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">output &#123;</div><div class="line">  # 输出到命令行，一般用于调试</div><div class="line">  stdout &#123; </div><div class="line">    codec =&gt; rubydebug </div><div class="line">  &#125;</div><div class="line">  # 输出到 elasticsearch，这里指定索引名为 system-log</div><div class="line">  elasticsearch &#123; </div><div class="line">    hosts =&gt; &quot;localhost:9200&quot;</div><div class="line">    index =&gt; &quot;system-log&quot; </div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里说一下 File rotation 的情况，为了处理被 rotate 的情况，最好把 rotate 之后的文件名也加到 path 中（如上面所示），这里注意，如果 <code>start_position</code> 被设为 <code>beginning</code>，被 rotate 的文件因为会被认为是新文件，而重新导入。如果用默认值 <code>end</code>，那么在最后一次读之后到被 rotate 结束前生成的日志不会被采集。</p>
 <p>有了配置文件，我们就可以把日志导入到 Elasticsearch 了，命令如下：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># -f 表示从文件中读取配置</span></div><div class="line">bin/logstash <span class="_">-f</span> confs/syslog.conf</div></pre></td></tr></table></figure>
 <p>大概的输出是如下：</p>
@@ -371,7 +374,7 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-2/</id>
     <published>2016-11-19T03:11:09.000Z</published>
-    <updated>2016-11-21T14:27:52.000Z</updated>
+    <updated>2016-11-22T12:48:07.000Z</updated>
     
     <content type="html"><![CDATA[<p>前一讲我们已经搭建好了 ElasticStack 的核心组件，但是在日常使用中，一般会在 Logstash 和 Elasticsearch 之间加一层 Kafka 用来缓存和控制，这次我们就来看看如何实现这样的功能。</p>
 <a id="more"></a>
@@ -502,29 +505,19 @@
 <p><strong>数据压缩</strong></p>
 <p>很多时候，性能的瓶颈并非CPU或者硬盘而是网络带宽，对于需要在数据中心之间传送大量数据的应用更是如此。当然用户可以在没有 Kafka 支持的情况下各自压缩自己的消息，但是这将导致较低的压缩率，因为相比于将消息单独压缩，将大量文件压缩在一起才能起到最好的压缩效果。</p>
 <p>Kafka 采用了端到端的压缩：因为有『消息集』的概念，客户端的消息可以一起被压缩后送到服务端，并以压缩后的格式写入日志文件，以压缩的格式发送到 consumer，消息从 producer 发出到 consumer 拿到都被是压缩的，只有在 consumer 使用的时候才被解压缩，所以叫做『端到端的压缩』。Kafka支持GZIP和Snappy压缩协议。</p>
-<h2 id="Logstash-gt-Kafka"><a href="#Logstash-gt-Kafka" class="headerlink" title="Logstash -&gt; Kafka"></a>Logstash -&gt; Kafka</h2><p>让我们回想一下之前的架构，Logstash 会直接把日志发送给 Elasticsearch，再由 Kibana 进行展示。因为 Logstash 是同步把日志发送给 Elasticsearch 的，所以等于这俩耦合在了一起，Elasticsearch 一旦挂掉，可能就会丢失数据。</p>
+<h2 id="实例：把系统日志通过-Kafka-接入-Elasticsearch"><a href="#实例：把系统日志通过-Kafka-接入-Elasticsearch" class="headerlink" title="实例：把系统日志通过 Kafka 接入 Elasticsearch"></a>实例：把系统日志通过 Kafka 接入 Elasticsearch</h2><p>现在我们就把上一讲搭建好的架构中加入 Kakfa 作为缓冲区，具体分两步</p>
+<h3 id="1-Logstash-gt-Kafka"><a href="#1-Logstash-gt-Kafka" class="headerlink" title="(1) Logstash -&gt; Kafka"></a>(1) Logstash -&gt; Kafka</h3><p>让我们回想一下之前的架构，Logstash 会直接把日志发送给 Elasticsearch，再由 Kibana 进行展示。因为 Logstash 是同步把日志发送给 Elasticsearch 的，所以等于这俩耦合在了一起，Elasticsearch 一旦挂掉，可能就会丢失数据。</p>
 <p>于是，我们考虑利用 Kafka 作为缓冲区，让 Logstash 不受 Elasticsearch 的影响。所以第一步就是让 Logstash 把日志发送到 Kafka，这里 Logstash 相当于 producer。</p>
-<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><p>结合上一篇，进行内容调整</p>
-<h3 id="Input-读取文件"><a href="#Input-读取文件" class="headerlink" title="Input 读取文件"></a>Input 读取文件</h3><p>Logstash 使用一个名叫 FileWatch 的 Ruby Gem 库来监听文件变化。这个库支持 glob 展开文件路径，而且会记录一个叫 <code>.sincedb</code> 的数据库文件来跟踪被监听的日志文件的当前读取位置。通过记录下来的 <code>inode</code>, <code>major number</code>, <code>minor number</code> 和 <code>pos</code> 就可以保证不漏过每一条日志。一个可能的配置文件是这样的</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">input &#123;</div><div class="line">  file &#123;</div><div class="line">    path =&gt; [&quot;/data/home/service/project/current/log/logstash_production.log&quot;, &quot;/data/home/service/project/current/log/logstash_production.log.1&quot;]</div><div class="line">    add_field =&gt; &#123; &quot;topic&quot; =&gt; &quot;djiservice&quot;&#125;</div><div class="line">    stat_interval =&gt; 1800</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这里说一下 File rotation 的情况，为了处理被 rotate 的情况，最好把 rotate 之后的文件名也加到 path 中（如上面所示），这里注意，如果 <code>start_position</code> 被设为 <code>beginning</code>，被 rotate 的文件因为会被认为是新文件，而重新导入。如果用默认值 <code>end</code>，那么在最后一次读之后到被 rotate 结束前生成的日志不会被采集。</p>
-<p>其他一些配置的设定原因</p>
+<p>不过在开始之前，我们先启动 Kafka</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 启动 Zookeeper</span></div><div class="line">bin/zookeeper-server-start.sh config/zookeeper.properties</div><div class="line"><span class="comment"># 启动 Kafka</span></div><div class="line">bin/kafka-server-start.sh config/server.properties</div></pre></td></tr></table></figure>
+<p>我们之前的 Logstash 配置文件是把日志直接发送到 Elasticsearch 的，这里我们需要更新为发送到 Kafka</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 我的习惯是把配置文件统一放到名为 confs 的文件夹中</div><div class="line"># 本配置文件名为 log-to-kafka.conf</div><div class="line">input &#123;</div><div class="line">  file &#123;</div><div class="line">    # 确定需要检测的文件</div><div class="line">    path =&gt; [ &quot;/var/log/*.log&quot;, &quot;/var/log/messages&quot;, &quot;/var/log/syslog&quot;, &quot;/var/log/apt&quot;, &quot;/var/log/fsck&quot;, &quot;/var/log/faillog&quot;]</div><div class="line">    # 日志类型</div><div class="line">    type =&gt; &quot;syslog&quot;</div><div class="line">    add_field =&gt; &#123; &quot;service&quot; =&gt; &quot;system-log&quot;&#125;</div><div class="line">    # stat_interval =&gt; 1800</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">output &#123;</div><div class="line">  # 输出到命令行，一般用于调试</div><div class="line">  stdout &#123; </div><div class="line">    codec =&gt; rubydebug </div><div class="line">  &#125;</div><div class="line">  # 输出到 Kafka，topic 名称为 logs，地址为默认的端口号</div><div class="line">  kafka &#123;</div><div class="line">    topic_id =&gt; &quot;logs&quot;</div><div class="line">    bootstrap_servers =&gt; &quot;localhost:9092&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>file 插件其他一些配置设定原因</p>
 <ul>
 <li><code>add_field</code> 添加一个 topic 字段，用作之后导入 elasticsearch 的索引标识</li>
 <li><code>stat_interval</code> 单位是秒，这里 30 分钟进行一次检测，不过测试的时候需要去掉这个配置</li>
-<li><code>codec</code> 因为已经处理成 logstash 兼容格式，就直接以 json 解析</li>
 </ul>
-<h3 id="Filter-内容定制"><a href="#Filter-内容定制" class="headerlink" title="Filter 内容定制"></a>Filter 内容定制</h3><p>Filter 主要是对数据进行一些处理，比如说我用的是：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">filter &#123;</div><div class="line">  mutate &#123;</div><div class="line">    remove_field =&gt; [&quot;format&quot;]</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  geoip &#123;</div><div class="line">    source =&gt; &quot;ip&quot;</div><div class="line">    fields =&gt; [&quot;location&quot;, &quot;city_name&quot;, &quot;country_name&quot;, &quot;country_code2&quot;,&quot;country_code3&quot;, &quot;region_name&quot;, &quot;continent_code&quot;]</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这里做的操作一是移除无效的域，二是把 ip 转换为地理位置，方便后期的处理。</p>
-<h3 id="Output-输出到-Kafka"><a href="#Output-输出到-Kafka" class="headerlink" title="Output 输出到 Kafka"></a>Output 输出到 Kafka</h3><p>因为 Logstash 自带 Kafka 插件，直接配置上即可，比如：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">output &#123;</div><div class="line">  kafka &#123;</div><div class="line">    topic_id =&gt; &quot;test&quot;</div><div class="line">    bootstrap_servers =&gt; &quot;kafka_url:port&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>下面是基本的配置及其设定原因</p>
-<ul>
-<li><code>topic_id</code> 指定 topic 来进行发送</li>
-<li><code>bootstrap_servers</code> 这里是 Kafka 的接入地址</li>
-</ul>
-<p>其他一些需要注意的配置</p>
+<p>kafka 插件其他一些需要注意的配置</p>
 <ul>
 <li><code>acks</code> 可以选的值为 <code>0</code>, <code>1</code>, <code>all</code>，这里解释一下，0 表示不需要 server 返回就认为请求已完成；1 表示需要 leader 返回才认为请求完成；all 表示需要所有的服务器返回才认为请求完成</li>
 <li><code>batch_size</code> 单位是字节，如果是发送到同一分区，会攒够这个大小才发送一次请求</li>
@@ -533,12 +526,21 @@
 <li><code>client_id</code> 可以在这里设定有意义的名字，就不一定要用 ip 和 端口来区分</li>
 <li><code>compression_type</code> 压缩方式，默认是 <code>none</code>，其他可选的是 <code>gzip</code> 和 <code>snappy</code></li>
 </ul>
-<h2 id="Kafka-gt-Elasticsearch"><a href="#Kafka-gt-Elasticsearch" class="headerlink" title="Kafka -&gt; Elasticsearch"></a>Kafka -&gt; Elasticsearch</h2><p>利用 Logstash 从 Kafka 导出数据到 Elasticsearch</p>
-<p>这一步就比较简单了，先从 Kafka 中读取，然后写入到 elasticsearch，这里 Logstash 作为 consumer</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">output &#123;</div><div class="line">  input &#123;</div><div class="line">    kafka &#123;</div><div class="line">      zk_connect =&gt; &quot;localhost:2181&quot;</div><div class="line">      topic_id =&gt; &quot;log&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  stdout &#123;</div><div class="line">     codec =&gt; rubydebug</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  elasticsearch &#123;</div><div class="line">    hosts =&gt; [&quot;url:port&quot;]</div><div class="line">    user =&gt; &quot;name&quot;</div><div class="line">    password =&gt; &quot;password&quot;</div><div class="line">    index =&gt; &quot;%&#123;service&#125;-%&#123;+YYYY-MM-dd&#125;&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这样可以按照配置的服务名称和日期来切割。</p>
+<h3 id="2-Kafka-gt-Elasticsearch"><a href="#2-Kafka-gt-Elasticsearch" class="headerlink" title="(2) Kafka -&gt; Elasticsearch"></a>(2) Kafka -&gt; Elasticsearch</h3><p>利用 Logstash 从 Kafka 导出数据到 Elasticsearch。这一步就比较简单了，先从 Kafka 中读取，然后写入到 elasticsearch，这里 Logstash 作为 consumer。唯一需要注意的地方是要保证 topic 名称一致</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 文件名 kafka-to-es.conf</div><div class="line">input &#123;</div><div class="line">  kafka &#123;</div><div class="line">    bootstrap_servers =&gt; &quot;localhost:9092&quot;</div><div class="line">    topics =&gt; [&quot;logs&quot;]</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">output &#123;</div><div class="line">  # for debugging</div><div class="line">  stdout &#123;</div><div class="line">     codec =&gt; rubydebug</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  elasticsearch &#123; </div><div class="line">    hosts =&gt; &quot;localhost:9200&quot;</div><div class="line">    index =&gt; &quot;system-log&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>至此，我们完成了从 Logstash 到 Kafka 再到 Elasticsearch 的连接，下一步就可以用 kibana 来展示日志的监控分析结果了。</p>
-<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<p><img src="/images/14797818253620.jpg" alt=""></p>
+<p>如上图所示，打开 Kibana，即可见到我们使用 Logstash 通过 Kafka 再发送到 Elasticsearch 的日志。至此，我们就成功把 Kafka 加入到日志分析平台的架构中了。</p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><ol>
+<li>查阅 Logstash 的 Kafka 插件的文档，了解其他的配置选项</li>
+<li>Logstash 能够处理 json 格式的日志，试着把系统日志转换成 json，并进行处理</li>
+<li>更新 Logstash 配置，看看能不能多记录一些系统事件</li>
+<li>随着日志的增多，使用 Kibana 多创建一些图表并添加到 Dashboard 中</li>
+</ol>
+<p>一个可能的例子如下：</p>
+<p><img src="/images/14797829019725.jpg" alt=""></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这一讲我们主要学习了 Kafka 的相关内容，并在了解原理的基础上更新了日志分析平台的架构，这样我们的日志在发送到 Elasticsearch 之前。下一讲我们会在单机的状态下完成监控、安全、报警与通知的功能。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="http://kafka.apache.org/quickstart" target="_blank" rel="external">Kafka 快速入门</a></li>
 <li><a href="https://www.apache.org/dyn/closer.cgi?path=/kafka/0.10.1.0/kafka_2.11-0.10.1.0.tgz" target="_blank" rel="external">Kafka 2.11-0.10.1.0 下载</a></li>
 <li><a href="http://blog.csdn.net/LOUISLIAOXH/article/details/51567515" target="_blank" rel="external">Kafka学习整理六(server.properties配置实践)</a></li>
@@ -580,7 +582,7 @@
     <link href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/"/>
     <id>http://wdxtub.com/2016/11/19/babel-log-analysis-platform-3/</id>
     <published>2016-11-19T03:11:08.000Z</published>
-    <updated>2016-11-20T15:35:54.000Z</updated>
+    <updated>2016-11-22T12:48:07.000Z</updated>
     
     <content type="html"><![CDATA[<p>施工中：各个附加功能的应用</p>
 <a id="more"></a>
@@ -599,7 +601,67 @@
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
-<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>]]></content>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><ol>
+<li>完成 X-Pack 的安装</li>
+<li>了解 Security, Alerting, Monitoring, Reporting 几大组件的功能</li>
+<li>自己编写一个报警规则</li>
+<li>自己生成一个数据报表</li>
+</ol>
+<h2 id="X-Pack-简介与安装"><a href="#X-Pack-简介与安装" class="headerlink" title="X-Pack 简介与安装"></a>X-Pack 简介与安装</h2><p>在 Elasticsearch 2.4 时代，如果想对其进行监控和管理，除了五花八门的开源解决方案外，还可以使用 elastic 官方的配套插件。但是从前的名字比较乱，从 Shield 到 Watcher 再到 Marvel，还要一个一个安装配置。</p>
+<p>不过在 ElasticStack 5.0 时代，所有的功能得到了统一，统称为 X-Pack，包含：</p>
+<ul>
+<li>安全：用户权限管理</li>
+<li>警报：自动报警</li>
+<li>监控：监控 Elasticsearch 集群状态</li>
+<li>报告：发送报表、导出数据</li>
+<li>图表：可视化数据</li>
+</ul>
+<p>这些功能基本上涵盖了日常应用的方方面面，接下来我们就来简单了解一下各项功能。不过开始之前，我们先把 X-Pack 装好。</p>
+<p>安装需要先停止 Kibana 和 Elasticsearch，这个时候就体现出 Kafka 的优势了：我们可以对 Elasticsearch 进行修改，因为缓存到了 Kafka<br>，所以不必担心日志服务停止。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 为 Elasticsearch 安装 X-Pack</span></div><div class="line">bin/elasticsearch-plugin install x-pack</div><div class="line"><span class="comment"># 启动 Elasticsearch</span></div><div class="line">bin/elasticsearch</div><div class="line"></div><div class="line"><span class="comment"># 为 Kibana 安装 X-Pack</span></div><div class="line">bin/kibana-plugin install x-pack</div><div class="line"><span class="comment"># 启动 Kibana</span></div><div class="line">bin/kibana</div></pre></td></tr></table></figure>
+<p>命令完成之后，安装就算完成了。这里需要额外提一点，因为加上了安全认证，所以原先我们的 Logstash 脚本就不能用了，初始的用户名为 <code>user</code> 和密码为 <code>changeme</code>，对应的配置文件需要更新为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 文件名：kafka-to-es.conf</div><div class="line">input &#123;</div><div class="line">  kafka &#123;</div><div class="line">    bootstrap_servers =&gt; &quot;localhost:9092&quot;</div><div class="line">    topics =&gt; [&quot;logs&quot;]</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">output &#123;</div><div class="line">  # for debugging</div><div class="line">  stdout &#123;</div><div class="line">     codec =&gt; rubydebug</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  elasticsearch &#123; </div><div class="line">    hosts =&gt; &quot;localhost:9200&quot;</div><div class="line">    index =&gt; &quot;system-log&quot;</div><div class="line">    # 用户名和密码如果变更需要更改</div><div class="line">    user =&gt; &quot;elastic&quot;</div><div class="line">    password =&gt; &quot;changeme&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="安全-Security"><a href="#安全-Security" class="headerlink" title="安全 Security"></a>安全 Security</h2><p>再次打开之前的 Kibana 页面，就会发现我们需要登录了：</p>
+<p><img src="/images/14797879133833.jpg" alt=""></p>
+<p>输入一开始预置的用户名与密码(elastic:changeme)，就可以进入 Kibana 了。然后我们在 Management 面板中可以看到一个新的 Elasticsearch 的栏目，可以在这里进行用户和角色的定制。</p>
+<p><img src="/images/14797883023338.jpg" alt=""></p>
+<p>这里我们暂时使用默认的帐号和角色进行操作，更多关于安全方面的问题可以参考下面的链接：</p>
+<ul>
+<li><a href="https://www.elastic.co/guide/en/x-pack/current/encrypting-communications.html" target="_blank" rel="external">通讯加密</a></li>
+<li><a href="https://www.elastic.co/guide/en/x-pack/current/ip-filtering.html" target="_blank" rel="external">IP 过滤</a></li>
+</ul>
+<h2 id="监控-Monitoring"><a href="#监控-Monitoring" class="headerlink" title="监控 Monitoring"></a>监控 Monitoring</h2><p>点击左侧的 Monitoring 面板，便可以清楚查阅 Elasticsearch 和 Kibana 的状态。</p>
+<p><img src="/images/14797888163112.jpg" alt=""></p>
+<p>点击进入 Overview，便可以清晰了解整体的使用状况：</p>
+<p><img src="/images/14797951637038.jpg" alt=""></p>
+<p>而在 Indices 分页中点击具体的索引，便可以看到索引的详细：</p>
+<p><img src="/images/14797952970767.jpg" alt=""></p>
+<p>监控功能在遇到问题的时候进行问题查找和确定非常有用，也可以结合报警和报告功能实现自动化通知。</p>
+<h2 id="报警-Alerting"><a href="#报警-Alerting" class="headerlink" title="报警 Alerting"></a>报警 Alerting</h2><p>Elasticsearch 中报警功能的实现目前还不算特别智能，这里我们只简单了解一下其工作机制，具体在需要的时候可以根据文档来进行设置。</p>
+<p>简单来说，我们需要自己设定触发条件，并指定条件触发之后的动作。一个实际的例子就是，如果发现近十分钟内某个接口一直返回 503 错误，那么就发送邮件通知。分解一下，一个可能的逻辑是：</p>
+<ol>
+<li>Trigger: 每十分钟执行一次</li>
+<li>Input: 对某个 index 进行检索，查询日志中状态为 error 的条目</li>
+<li>Condition: 如果 error 的次数超过 5 次，则认为触发了条件</li>
+<li>Transform: 触发之后会再次进行检索，检索的结果可以被之后的动作访问</li>
+<li>Actions: 执行具体的操作，可以是通知第三方系统或发送邮件等</li>
+</ol>
+<p>上面的套路对应到配置文件就是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">PUT _xpack/watcher/watch/log_errors</div><div class="line">&#123;</div><div class="line">  &quot;metadata&quot; : &#123; </div><div class="line">    &quot;color&quot; : &quot;red&quot;</div><div class="line">  &#125;,</div><div class="line">  &quot;trigger&quot; : &#123; </div><div class="line">    &quot;schedule&quot; : &#123;</div><div class="line">      &quot;interval&quot; : &quot;5m&quot;</div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line">  &quot;input&quot; : &#123; </div><div class="line">    &quot;search&quot; : &#123;</div><div class="line">      &quot;request&quot; : &#123;</div><div class="line">        &quot;indices&quot; : &quot;log-events&quot;,</div><div class="line">        &quot;body&quot; : &#123;</div><div class="line">          &quot;size&quot; : 0,</div><div class="line">          &quot;query&quot; : &#123; &quot;match&quot; : &#123; &quot;status&quot; : &quot;error&quot; &#125; &#125;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line">  &quot;condition&quot; : &#123; </div><div class="line">    &quot;compare&quot; : &#123; &quot;ctx.payload.hits.total&quot; : &#123; &quot;gt&quot; : 5 &#125;&#125;</div><div class="line">  &#125;,</div><div class="line">  &quot;transform&quot; : &#123; </div><div class="line">    &quot;search&quot; : &#123;</div><div class="line">        &quot;request&quot; : &#123;</div><div class="line">          &quot;indices&quot; : &quot;log-events&quot;,</div><div class="line">          &quot;body&quot; : &#123;</div><div class="line">            &quot;query&quot; : &#123; &quot;match&quot; : &#123; &quot;status&quot; : &quot;error&quot; &#125; &#125;</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line">  &quot;actions&quot; : &#123; </div><div class="line">    &quot;my_webhook&quot; : &#123;</div><div class="line">      &quot;webhook&quot; : &#123;</div><div class="line">        &quot;method&quot; : &quot;POST&quot;,</div><div class="line">        &quot;host&quot; : &quot;mylisteninghost&quot;,</div><div class="line">        &quot;port&quot; : 9200,</div><div class="line">        &quot;path&quot; : &quot;/&#123;&#123;watch_id&#125;&#125;&quot;,</div><div class="line">        &quot;body&quot; : &quot;Encountered &#123;&#123;ctx.payload.hits.total&#125;&#125; errors&quot;</div><div class="line">      &#125;</div><div class="line">    &#125;,</div><div class="line">    &quot;email_administrator&quot; : &#123;</div><div class="line">      &quot;email&quot; : &#123;</div><div class="line">        &quot;to&quot; : &quot;sys.admino@host.domain&quot;,</div><div class="line">        &quot;subject&quot; : &quot;Encountered &#123;&#123;ctx.payload.hits.total&#125;&#125; errors&quot;,</div><div class="line">        &quot;body&quot; : &quot;Too many error in the system, see attached data&quot;,</div><div class="line">        &quot;attachments&quot; : &#123;</div><div class="line">          &quot;attached_data&quot; : &#123;</div><div class="line">            &quot;data&quot; : &#123;</div><div class="line">              &quot;format&quot; : &quot;json&quot;</div><div class="line">            &#125;</div><div class="line">          &#125;</div><div class="line">        &#125;,</div><div class="line">        &quot;priority&quot; : &quot;high&quot;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上也可以在 Dev Tools 中的面板中执行试试看。</p>
+<h2 id="报告-Reporting"><a href="#报告-Reporting" class="headerlink" title="报告 Reporting"></a>报告 Reporting</h2><p>简单来说，这个功能就是一个输出搜索结果和图表的按钮。我们进入 Dashboard 页面，保存当前的图表后，点击右上角的 Reporting 按钮，就会出现一个下载按钮：</p>
+<p><img src="/images/14797974158340.jpg" alt=""></p>
+<p>点击之后我们会发现并不能够直接下载，因为这个按钮只是给系统发送了一个生成报表的请求，具体的文件我们需要在 Management 面板的 Kibana/Reporting 部分查看：</p>
+<p><img src="/images/14797975688905.jpg" alt=""></p>
+<p>除了手动生成，我们也可以设置自动生成（使用上面图片中的 Generation URL）并通过给出的 api 来进行下载，具体可以参照 <a href="https://www.elastic.co/guide/en/x-pack/current/automating-report-generation.html" target="_blank" rel="external">Automating Report Generation</a></p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><ol>
+<li>阅读 <a href="https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html" target="_blank" rel="external">X-Pack Settings</a> 来了解各种设置</li>
+<li>阅读 <a href="https://www.elastic.co/guide/en/x-pack/current/xpack-api.html" target="_blank" rel="external">X-Pack APIs</a> 来了解相关 API，以实现自动化设置</li>
+<li>阅读 <a href="https://www.elastic.co/guide/en/x-pack/current/xpack-limitations.html" target="_blank" rel="external">Limitaions</a> 来了解 X-Pack 的限制</li>
+<li>自己设定一个报警条件，并在触发之后自动发送邮件给自己</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>经历了前两节辛苦的环境搭建，本节内容还是比较轻松的，把环境基本搭建完成之后，就可以真刀真枪做一些实际的项目了。下一讲我们会学习从单机到集群的迁移操作和需要注意的地方，为扩展系统做好准备。</p>
+]]></content>
     
     <summary type="html">
     
