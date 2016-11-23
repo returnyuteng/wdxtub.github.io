@@ -86,16 +86,16 @@
 
 
 
-<meta name="description" content="施工中：集群配置和全球部署可能带来的问题">
+<meta name="description" content="之前所做的工作都是在单机上运行，随着业务数据量的增长和维持服务高可用的需要，基本都得进行从单机到集群的变迁。从单机到集群主要需要克服的问题和多人合作一样，就是沟通问题。如果需要向全球提供服务，全球部署带来的高延迟和不稳定同样也是一个难题。本文会简单介绍一些解决这些问题的思路。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【通天塔之日志分析平台】肆 从单机到集群">
 <meta property="og:url" content="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/index.html">
 <meta property="og:site_name" content="小土刀">
-<meta property="og:description" content="施工中：集群配置和全球部署可能带来的问题">
-<meta property="og:updated_time" content="2016-11-21T14:27:52.000Z">
+<meta property="og:description" content="之前所做的工作都是在单机上运行，随着业务数据量的增长和维持服务高可用的需要，基本都得进行从单机到集群的变迁。从单机到集群主要需要克服的问题和多人合作一样，就是沟通问题。如果需要向全球提供服务，全球部署带来的高延迟和不稳定同样也是一个难题。本文会简单介绍一些解决这些问题的思路。">
+<meta property="og:updated_time" content="2016-11-23T14:11:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【通天塔之日志分析平台】肆 从单机到集群">
-<meta name="twitter:description" content="施工中：集群配置和全球部署可能带来的问题">
+<meta name="twitter:description" content="之前所做的工作都是在单机上运行，随着业务数据量的增长和维持服务高可用的需要，基本都得进行从单机到集群的变迁。从单机到集群主要需要克服的问题和多人合作一样，就是沟通问题。如果需要向全球提供服务，全球部署带来的高延迟和不稳定同样也是一个难题。本文会简单介绍一些解决这些问题的思路。">
 
 
 
@@ -382,10 +382,13 @@
       
 
       
-        <p>施工中：集群配置和全球部署可能带来的问题</p>
+        <p>之前所做的工作都是在单机上运行，随着业务数据量的增长和维持服务高可用的需要，基本都得进行从单机到集群的变迁。从单机到集群主要需要克服的问题和多人合作一样，就是沟通问题。如果需要向全球提供服务，全球部署带来的高延迟和不稳定同样也是一个难题。本文会简单介绍一些解决这些问题的思路。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
+<ul>
+<li>2016.11.23: 完成初稿</li>
+</ul>
 <h2 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h2><ul>
 <li><a href="http://wdxtub.com/2016/11/19/babel-series-intro/">『通天塔』技术作品合集介绍</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-0/">零 系列简介与环境配置</a></li>
@@ -399,7 +402,11 @@
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-8/">捌 实例：接入外部应用日志</a></li>
 <li><a href="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-9/">玖 业界：大厂实践</a></li>
 </ul>
-<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><h3 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h3><p>这里简单说一下 Elasticsearch 的分布式吧。开发人员花了很多心思，尽量让一台机上运行和集群上运行的体验一致，具体说，Elasticsearch 在底层主要做的工作有：</p>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><ol>
+<li>完成 Elasticsearch 集群的搭建</li>
+<li>完成 Kafka 集群的搭建</li>
+</ol>
+<h2 id="Elasticsearch-集群配置"><a href="#Elasticsearch-集群配置" class="headerlink" title="Elasticsearch 集群配置"></a>Elasticsearch 集群配置</h2><p>开发人员花了很多心思，尽量让一台机上运行和集群上运行的体验一致，具体说，Elasticsearch 在底层主要做的工作有：</p>
 <ul>
 <li>根据配置进行数据分片(sharding)，并且保存在一个或者多个节点中</li>
 <li>将分片均匀分配到各个节点，对索引和搜索做负载均衡</li>
@@ -407,7 +414,7 @@
 <li>将集群中任意一个节点上的请求路由到相应数据所在的节点</li>
 <li>增加或者移除节点时无缝迁移数据</li>
 </ul>
-<h2 id="老-ES-集群指南"><a href="#老-ES-集群指南" class="headerlink" title="老 ES 集群指南"></a>老 ES 集群指南</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>虽然 Elasticsearch 的安装比较简单，不过我还是写了一个安装脚本，可以在<a href="https://github.com/wdxtub/wdxtools/tree/master/linux-script" target="_blank" rel="external">这里</a>查看，具体来说其实就两步，下载和解压，如下：</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>虽然 Elasticsearch 的安装比较简单，不过我还是写了一个安装脚本，可以在<a href="https://github.com/wdxtub/wdxtools/tree/master/linux-script" target="_blank" rel="external">这里</a>查看，具体来说其实就两步，下载和解压，如下：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.4.0/elasticsearch-2.4.0.tar.gz</div><div class="line">tar -xvzf elasticsearch-2.4.0.tar.gz</div></pre></td></tr></table></figure>
 <p>分别在集群中每台机器中完成安装即可，具体的启动也非常简单，如果要在前台，直接 <code>./bin/elasticsearch</code> 即可，如果要放到后台，则使用 <code>nohup ./bin/elasticsearch &amp;</code>。</p>
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>配置文件位于 <code>config</code> 文件夹中，其中 <code>elasticsearch.yml</code> 是 elasticsearch 的配置，而 <code>logging.yml</code> 是输出日志相关的设置。配置文件的内容有很多，不过因为默认值基本都够用了，所以我们只需要配置很少的内容。假设现在有两个节点，内部 IP 地址分别为 <code>A: 10.1.1.0</code> 和 <code>B: 10.1.1.1</code>，那么配置为：</p>
@@ -499,7 +506,74 @@
 <p>经过一步一步排查，基本上 ES 的文档和可以配置的参数都调整过之后并没有改善，于是开始从数据源入手，最后发现表 A 和 表 B 的数据顺序是不太一样的。表 A 中基本是顺序递增的数据，主键（自增长 ID）基本对应于时间顺序；而表 B 中则基本是随机插入的，所以按照数据库中的 ID 进行顺序导出，就会发现相邻记录对应的日期可能相差很大，而正好我们在 ES 中又是根据日期来进行索引的切割的，导致每次都需要在不同的索引中进行切换，速度自然上不去。</p>
 <p>所以我们把从 MySQL 数据库中选择数据的语句利用 timestamp 作为 order by 的标准，导入速度就很快了。</p>
 <p>这里有一点需要注意每次除了 ID 之外，还需要记录 timestamp 的值，这样才能保证是顺序导入的 <code>where id &gt; xxx and timestamp &gt; xxx</code>，其中 timestamp 每次需要归 0。</p>
-<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
+<h2 id="Kafka-集群配置"><a href="#Kafka-集群配置" class="headerlink" title="Kafka 集群配置"></a>Kafka 集群配置</h2><p>kafka 使用 ZooKeeper 用于管理、协调代理。每个 Kafka 代理通过 Zookeeper 协调其他 Kafka 代理。当 Kafka 系统中新增了代理或某个代理失效时，Zookeeper 服务将通知生产者和消费者。生产者与消费者据此开始与其他代理协调工作。</p>
+<h3 id="安装-Java"><a href="#安装-Java" class="headerlink" title="安装 Java"></a>安装 Java</h3><p>先给两台机子安装 Java</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sudo add-apt-repository -y ppa:webupd8team/java</div><div class="line">sudo apt-get update</div><div class="line">sudo apt-get -y install oracle-java8-installer</div></pre></td></tr></table></figure>
+<h3 id="更新-Hosts"><a href="#更新-Hosts" class="headerlink" title="更新 Hosts"></a>更新 Hosts</h3><p>这里用两台机器做例子（理论上最好是 3 台起步，偶数个不是不可以的，但是zookeeper集群是以宕机个数过半才会让整个集群宕机的，所以奇数个集群更佳），分别配置 <code>/etc/hosts</code> 文件为</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">127.0.0.1 localhost</div><div class="line">10.1.1.164 bi03</div><div class="line">10.1.1.44 bi02</div></pre></td></tr></table></figure>
+<h3 id="修改-Zookeeper-配置文件"><a href="#修改-Zookeeper-配置文件" class="headerlink" title="修改 Zookeeper 配置文件"></a>修改 Zookeeper 配置文件</h3><p>修改 <code>config/zookeeper.properties</code> 为</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">dataDir=/data/home/logger/kafka_2.11-0.10.0.0/zookeeper-logs/</div><div class="line">clientPort=2181</div><div class="line"># maxClientCnxns=0</div><div class="line">tickTime=2000</div><div class="line">initLimit=5</div><div class="line">syncLimit=2</div><div class="line"></div><div class="line">server.1=bi03:13645:13646</div><div class="line">server.2=bi02:13645:13646</div></pre></td></tr></table></figure>
+<p>参数的意义为：</p>
+<ul>
+<li>initLimit: zookeeper集群中的包含多台 server，其中一台为 leader，集群中其余的 server 为 follower。initLimit 参数配置初始化连接时，follower 和 leader 之间的最长心跳时间。此时该参数设置为 5，说明时间限制为 5 倍 tickTime，即 <code>5*2000=10000ms=10s</code></li>
+<li>syncLimit: 该参数配置 leader 和 follower 之间发送消息，请求和应答的最大时间长度。此时该参数设置为 2，说明时间限制为 2 倍 tickTime，即 4000ms</li>
+<li>server.X=A:B:C 其中 X 是一个数字, 表示这是第几号 server。A 是该 server 所在的 IP 地址。B 配置该 server 和集群中的 leader 交换消息所使用的端口。C 配置选举 leader 时所使用的端口。</li>
+</ul>
+<h3 id="给服务器编号"><a href="#给服务器编号" class="headerlink" title="给服务器编号"></a>给服务器编号</h3><p>在 dataDir 目录下建立一个 myid 文件，分别为</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># server.1</div><div class="line">echo 1 &gt; myid</div><div class="line"></div><div class="line"># server.2</div><div class="line">echo 2 &gt; myid</div></pre></td></tr></table></figure>
+<h3 id="启动-Zookeeper"><a href="#启动-Zookeeper" class="headerlink" title="启动 Zookeeper"></a>启动 Zookeeper</h3><p>然后在每台机子上启动 zookeeper 服务 </p>
+<p><code>bin/zookeeper-server-start.sh config/zookeeper.properties &amp;</code></p>
+<p>所有机子的 zookeeper 都启动之前会报错，这都是正常的</p>
+<p>如果不想要任何输出</p>
+<p><code>nohup bin/zookeeper-server-start.sh config/zookeeper.properties &amp;</code></p>
+<h3 id="修改-Kafka-配置文件"><a href="#修改-Kafka-配置文件" class="headerlink" title="修改 Kafka 配置文件"></a>修改 Kafka 配置文件</h3><p>修改 <code>config/server.properties</code>，几个要改的部分是 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line"># 允许删除 topic</div><div class="line">delete.topic.enable=true</div><div class="line">broker.id=0 # 这里不能重复</div><div class="line">listeners=PLAINTEXT://bi03:13647 # 这里要配置成本机的 host name</div><div class="line"># 这里需要配置成外网能够访问的地址及端口</div><div class="line">advertised.listeners=PLAINTEXT://external.ip:8080</div><div class="line"></div><div class="line">log.dirs=/data/home/logger/kafka_2.11-0.10.0.0/kafka-logs</div><div class="line">num.partitions=2</div><div class="line"></div><div class="line">zookeeper.connect=bi03:2181,bi02:2181</div></pre></td></tr></table></figure>
+<h3 id="启动-Kafka"><a href="#启动-Kafka" class="headerlink" title="启动 Kafka"></a>启动 Kafka</h3><p>在每个节点上执行</p>
+<p><code>bin/kafka-server-start.sh config/server.properties &amp;</code></p>
+<p>如果不想要任何输出</p>
+<p><code>nohup bin/kafka-server-start.sh config/server.properties &amp;</code></p>
+<h3 id="验证安装"><a href="#验证安装" class="headerlink" title="验证安装"></a>验证安装</h3><p>创建一个 topic</p>
+<p><code>bin/kafka-topics.sh --create --zookeeper bi03:2181,bi02:2181 --replication-factor 2 --partitions 1 --topic test</code></p>
+<p>查看集群状态</p>
+<p><code>bin/kafka-topics.sh --describe --zookeeper bi03:2181,bi02:2181 --topic test</code></p>
+<p>生产消息，这里注意要生产到前面设置的监听端口，而不是 zookeeper 的端口</p>
+<p><code>bin/kafka-console-producer.sh --broker-list bi03:13647,bi02:13647 --topic test</code></p>
+<p>消费消息，这里注意是 zookeeper 的端口，而不是 kafka 的端口</p>
+<p><code>bin/kafka-console-consumer.sh --zookeeper bi03:2181,bi02:2181 --from-beginning --topic test</code></p>
+<p>显示 topic 列表</p>
+<p><code>bin/kafka-topics.sh --zookeeper bi03:2181,bi02:2181 --list</code></p>
+<p>删除 topic</p>
+<p><code>bin/kafka-topics.sh --zookeeper bi03:2181,bi02:2181 --delete --topic hello</code></p>
+<h3 id="其他配置"><a href="#其他配置" class="headerlink" title="其他配置"></a>其他配置</h3><p>Kafka 使用键值对的属性文件格式来进行配置，比如 <code>config/server.properties</code>，具体的值可以从文件中读取，或者在代码中进行指定。最重要的三个属性是：</p>
+<ul>
+<li><code>broker.id</code>: broker 的编号，不能相同</li>
+<li><code>log.dirs</code>: 日志保存的文件夹，默认为 <code>/tmp/kafka-logs</code></li>
+<li><code>zookeeper.connect</code>: zookeeper 的 host</li>
+</ul>
+<p>其他一些我觉得比较有用的属性为</p>
+<ul>
+<li><code>auto.create.topics.enable</code> 是否允许自动创建 topic，boolean 值，默认为 <code>true</code></li>
+<li><code>auto.leader.rebalance.enable</code> 是否允许 leader 进行自动平衡，boolean 值，默认为 <code>true</code></li>
+<li><code>background.threads</code> 后台进程数目，int 值，默认为 10 个</li>
+<li><code>compression.type</code> 指定 topic 的压缩方式，string 值，可选有<ul>
+<li><code>gzip</code>, <code>snappy</code>, <code>lz4</code> 压缩方法</li>
+<li><code>uncompressed</code> 不压缩</li>
+<li><code>producer</code> 跟随 producer 的压缩方式</li>
+</ul>
+</li>
+<li><code>delete.topic.enable</code> 是否允许删除 topic，boolean 值，默认为 false（主要用于控制 admin 界面中的控制）</li>
+<li><code>leader.imbalance.check.interval.seconds</code> 检查是否平衡的时间间隔，long 值，默认为 300</li>
+<li><code>leader.imbalance.per.broker.percentage</code> 允许的不平衡的百分比，超出则会进行重平衡，int 值，默认为 10</li>
+<li><code>log.flush.interval.messages</code> 攒了多少条消息之后会把数据刷入磁盘，long 值，默认是 9223372036854775807</li>
+<li><code>log.flush.interval.ms</code> 每条消息在保存到磁盘中前会在内存中待多久，单位毫秒，long 值，如果不设定，默认使用 <code>log.flush.scheduler.interval.ms</code>，也就是 9223372036854775807</li>
+</ul>
+<p>更多的配置可以参考<a href="http://kafka.apache.org/documentation.html#brokerconfigs" target="_blank" rel="external">这里</a>，以上的配置均针对 broker，因为目前我只用 broker 的部分</p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><ol>
+<li>尝试主动关闭集群中某一台机器，看看整个集群是如何保证高可用的</li>
+<li>Zookeeper 在 Kafka 集群中起到了什么作用？尝试使用单独的 zookeeper 而不是 Kafka 自带的</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本节中的配置需要多台机器或者是一台机器开多个实例进行测试，对于没有条件的同学来说可能会比较麻烦，不过现在 AWS 有一年的免费使用时间（当然只有最基础的机器），所以大家其实可以申请一个 AWS 帐号，在上面进行学习和测试（而且速度也会更快）。接下来的几篇文章会具体介绍 Logstash, Elasticsearch 和 Kibana 的相关使用。</p>
+
       
     </div>
 
@@ -785,7 +859,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式"><span class="nav-number">2.1.</span> <span class="nav-text">分布式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#老-ES-集群指南"><span class="nav-number">3.</span> <span class="nav-text">老 ES 集群指南</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">3.2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重启"><span class="nav-number">3.3.</span> <span class="nav-text">重启</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监控"><span class="nav-number">3.4.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合理计划服务器"><span class="nav-number">3.5.</span> <span class="nav-text">合理计划服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据节点就是数据节点"><span class="nav-number">3.6.</span> <span class="nav-text">数据节点就是数据节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池配置"><span class="nav-number">3.7.</span> <span class="nav-text">线程池配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片与副本"><span class="nav-number">3.8.</span> <span class="nav-text">分片与副本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询"><span class="nav-number">3.9.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-设置"><span class="nav-number">3.10.</span> <span class="nav-text">JVM 设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Full-GC-问题"><span class="nav-number">3.11.</span> <span class="nav-text">Full GC 问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入数据过慢问题"><span class="nav-number">3.12.</span> <span class="nav-text">导入数据过慢问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">4.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch-集群配置"><span class="nav-number">3.</span> <span class="nav-text">Elasticsearch 集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">3.2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重启"><span class="nav-number">3.3.</span> <span class="nav-text">重启</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监控"><span class="nav-number">3.4.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合理计划服务器"><span class="nav-number">3.5.</span> <span class="nav-text">合理计划服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据节点就是数据节点"><span class="nav-number">3.6.</span> <span class="nav-text">数据节点就是数据节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池配置"><span class="nav-number">3.7.</span> <span class="nav-text">线程池配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片与副本"><span class="nav-number">3.8.</span> <span class="nav-text">分片与副本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询"><span class="nav-number">3.9.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-设置"><span class="nav-number">3.10.</span> <span class="nav-text">JVM 设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Full-GC-问题"><span class="nav-number">3.11.</span> <span class="nav-text">Full GC 问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入数据过慢问题"><span class="nav-number">3.12.</span> <span class="nav-text">导入数据过慢问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-集群配置"><span class="nav-number">4.</span> <span class="nav-text">Kafka 集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Java"><span class="nav-number">4.1.</span> <span class="nav-text">安装 Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新-Hosts"><span class="nav-number">4.2.</span> <span class="nav-text">更新 Hosts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-Zookeeper-配置文件"><span class="nav-number">4.3.</span> <span class="nav-text">修改 Zookeeper 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#给服务器编号"><span class="nav-number">4.4.</span> <span class="nav-text">给服务器编号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-Zookeeper"><span class="nav-number">4.5.</span> <span class="nav-text">启动 Zookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-Kafka-配置文件"><span class="nav-number">4.6.</span> <span class="nav-text">修改 Kafka 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-Kafka"><span class="nav-number">4.7.</span> <span class="nav-text">启动 Kafka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证安装"><span class="nav-number">4.8.</span> <span class="nav-text">验证安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他配置"><span class="nav-number">4.9.</span> <span class="nav-text">其他配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">5.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>
