@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/11/19/babel-log-analysis-platform-4/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="之前所做的工作都是在单机上运行，随着业务数据量的增长和维持服务高可用的需要，基本都得进行从单机到集群的变迁。从单机到集群主要需要克服的问题和多人合作一样，就是沟通问题。如果需要向全球提供服务，全球部署带来的高延迟和不稳定同样也是一个难题。本文会简单介绍一些解决这些问题的思路。">
-<meta property="og:updated_time" content="2016-11-23T14:11:33.000Z">
+<meta property="og:updated_time" content="2016-11-24T13:33:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【通天塔之日志分析平台】肆 从单机到集群">
 <meta name="twitter:description" content="之前所做的工作都是在单机上运行，随着业务数据量的增长和维持服务高可用的需要，基本都得进行从单机到集群的变迁。从单机到集群主要需要克服的问题和多人合作一样，就是沟通问题。如果需要向全球提供服务，全球部署带来的高延迟和不稳定同样也是一个难题。本文会简单介绍一些解决这些问题的思路。">
@@ -472,40 +472,6 @@
 <li><code>_cat/shards/[index-name]</code> 显示指定索引的分片信息  </li>
 </ul>
 <p><code>_cluster</code> 的接口的用法和 <code>_cat</code> 类似，这里就不再赘述了。</p>
-<h3 id="合理计划服务器"><a href="#合理计划服务器" class="headerlink" title="合理计划服务器"></a>合理计划服务器</h3><p>在 Elasticsearch 的配置文件中，可以根据两个配置(<code>node.master</code> 和 <code>node.data</code>)选项来分配不同节点的角色，以达到提高服务器性能的目的。</p>
-<ul>
-<li><code>node.master: false; node.data: true</code> - 该节点只作为数据节点，用于存储和查询，资源消耗会较低</li>
-<li><code>node.master: true; node.data: false</code> - 该节点只作为 master 节点，不存储数据，主要负责协调索引请求和查询请求</li>
-<li><code>node.master: false; node.data: falst</code> - 该节点不作为 master 节点，也不存储数据，主要用于查询时的负载均衡（做结果汇总等工作）</li>
-</ul>
-<p>另外，一台服务器最好只部署一个节点以维持服务器稳定，毕竟资源是有限的，多开也没啥</p>
-<h3 id="数据节点就是数据节点"><a href="#数据节点就是数据节点" class="headerlink" title="数据节点就是数据节点"></a>数据节点就是数据节点</h3><p>如果有配置数据节点，那么可以关闭其 http 功能，让它专注于索引的操作。插件之类的也最好安装到非数据节点服务器上，这样是一个兼顾数据安全和服务器性能的考虑。具体的配置项是 <code>http.enabled: false</code></p>
-<h3 id="线程池配置"><a href="#线程池配置" class="headerlink" title="线程池配置"></a>线程池配置</h3><p>针对 Elasticsearch 的不同操作，可以配置不同大小的线程池，这个需要根据业务需求确定最佳值，场景的操作有：index, search, suggest, get, bulk, percolate, snapshot, snapshot_data, warmer, refresh。</p>
-<p>这里以 index(创建/更新/删除索引数据)和 search(搜索操作)为例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">threadpool:</div><div class="line">     index:</div><div class="line">         type: fixed</div><div class="line">         size: 24（逻辑核心数*3）</div><div class="line">         queue_ size: 1000</div><div class="line"> </div><div class="line">     search:</div><div class="line">         type: fixed</div><div class="line">         size: 24（逻辑核心数*3）</div><div class="line">         queue_ size: 1000</div></pre></td></tr></table></figure>
-<h3 id="分片与副本"><a href="#分片与副本" class="headerlink" title="分片与副本"></a>分片与副本</h3><p>默认的参数是 5 个分片(shard)和 1 个副本(replica)，碎片数目越多，索引速度越快；副本数目越多，搜索能力及可用性更高。分片的数目是在一开始就设定好的，但是副本的数目是可以后期修改的。</p>
-<p>而在恢复数据的时候，可以先减少分片刷新索引的时间间隔，如</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">curl -XPUT <span class="string">'http://10.1.1.0:9200/_settings'</span> <span class="_">-d</span> <span class="string">'&#123; </span></div><div class="line">    "index" : &#123; </div><div class="line">        "refresh_interval" : "-1" </div><div class="line">    &#125; </div><div class="line">&#125;'</div></pre></td></tr></table></figure>
-<p>完成插入之后再恢复</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">curl -XPUT <span class="string">'http://10.1.1.0:9200/_settings'</span> <span class="_">-d</span> <span class="string">'&#123; </span></div><div class="line">    "index" : &#123; </div><div class="line">        "refresh_interval" : "1s" </div><div class="line">    &#125; </div><div class="line">&#125;'</div></pre></td></tr></table></figure>
-<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p>查询中最重要的思路就是 routing，尽量减少慢查询的次数。而当索引越来越大的时候，每个分片也会增大，查询速度就会变慢。一个可行的解决思路就是分索引，比方说不同类型的数据利用不同的 routing 进行分离。</p>
-<p>还有一个从业务出发的思路，就是不索引不需要的字段，这样就可以减小集群所需资源的量。</p>
-<h3 id="JVM-设置"><a href="#JVM-设置" class="headerlink" title="JVM 设置"></a>JVM 设置</h3><p>关于 JVM 的设置我还在摸索中，不过有几个技巧：</p>
-<ul>
-<li>JVM 的堆大小不要超过 32G，来源 <a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/heap-sizing.html#compressed_oops" target="_blank" rel="external">Don’t Cross 32 GB!</a></li>
-<li>使用 <code>bootstrap.mlockall: true</code>，启动时就锁定内存</li>
-<li>用较小的 heapsize 配合 SSD</li>
-</ul>
-<h3 id="Full-GC-问题"><a href="#Full-GC-问题" class="headerlink" title="Full GC 问题"></a>Full GC 问题</h3><p>这里以一个实例来介绍我是如何在生产环境中排查和修复 Elasticsearch 集群忽然响应时间剧增的问题的。</p>
-<p>情况是这样的，随着接入 Elasticsearch 的数据量增大，忽然有一个周末出问题了 - ES 集群的查询和插入都变得巨慢无比。监控报警都把邮箱和手机发爆炸了。</p>
-<p>那么问题来了，究竟是哪里出了乱子？</p>
-<p>因为发送数据的客户端和服务器近期并没有特别大的改动，我检查了 Kafka 队列也一切正常，于是可以锁定问题出在 Elasticsearch 身上。</p>
-<p>第一反应就是先去看 Elasticsearch 的日志，发现根据日志显示，一致在不停的垃圾回收。因此对症下药，把 JVM 的堆内存改大。但是在集群重启之后仍然会出现性能急剧下降的状况，于是继续检查日志，发现是因为 JVM 进行 Full GC 的时间过长，导致 ES 集群认为拓扑结构改变，开始迁移数据所导致。而迁移数据本身又会导致 Full GC，让情况更糟的是，在 Full GC 结束之后，集群的拓扑结构又再次改变，于是就陷入了这样的死循环。</p>
-<p>破局的方法其实非常简单粗暴，把检测集群拓扑的时间间隔和超时次数加大一点，留足够的时间给 JVM 进行 Full GC 即可。</p>
-<h3 id="导入数据过慢问题"><a href="#导入数据过慢问题" class="headerlink" title="导入数据过慢问题"></a>导入数据过慢问题</h3><p>最近在从 MySQL 数据库中导入大量数据到 Elasticsearch 的时候，出现写入极其缓慢，甚至在使用了 bulk（批量）接口之后也没有改善的问题。奇怪的是，从 MySQL 的表 A 和表 B 中导入甚至会有几十倍的速度差距，这是为什么呢？</p>
-<p>经过一步一步排查，基本上 ES 的文档和可以配置的参数都调整过之后并没有改善，于是开始从数据源入手，最后发现表 A 和 表 B 的数据顺序是不太一样的。表 A 中基本是顺序递增的数据，主键（自增长 ID）基本对应于时间顺序；而表 B 中则基本是随机插入的，所以按照数据库中的 ID 进行顺序导出，就会发现相邻记录对应的日期可能相差很大，而正好我们在 ES 中又是根据日期来进行索引的切割的，导致每次都需要在不同的索引中进行切换，速度自然上不去。</p>
-<p>所以我们把从 MySQL 数据库中选择数据的语句利用 timestamp 作为 order by 的标准，导入速度就很快了。</p>
-<p>这里有一点需要注意每次除了 ID 之外，还需要记录 timestamp 的值，这样才能保证是顺序导入的 <code>where id &gt; xxx and timestamp &gt; xxx</code>，其中 timestamp 每次需要归 0。</p>
 <h2 id="Kafka-集群配置"><a href="#Kafka-集群配置" class="headerlink" title="Kafka 集群配置"></a>Kafka 集群配置</h2><p>kafka 使用 ZooKeeper 用于管理、协调代理。每个 Kafka 代理通过 Zookeeper 协调其他 Kafka 代理。当 Kafka 系统中新增了代理或某个代理失效时，Zookeeper 服务将通知生产者和消费者。生产者与消费者据此开始与其他代理协调工作。</p>
 <h3 id="安装-Java"><a href="#安装-Java" class="headerlink" title="安装 Java"></a>安装 Java</h3><p>先给两台机子安装 Java</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><div class="line">sudo add-apt-repository -y ppa:webupd8team/java</div><div class="line">sudo apt-get update</div><div class="line">sudo apt-get -y install oracle-java8-installer</div></pre></td></tr></table></figure>
@@ -738,7 +704,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">732</span>
+              <span class="site-state-item-count">733</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -755,7 +721,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">888</span>
+                <span class="site-state-item-count">889</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -859,7 +825,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch-集群配置"><span class="nav-number">3.</span> <span class="nav-text">Elasticsearch 集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">3.2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重启"><span class="nav-number">3.3.</span> <span class="nav-text">重启</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监控"><span class="nav-number">3.4.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合理计划服务器"><span class="nav-number">3.5.</span> <span class="nav-text">合理计划服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据节点就是数据节点"><span class="nav-number">3.6.</span> <span class="nav-text">数据节点就是数据节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程池配置"><span class="nav-number">3.7.</span> <span class="nav-text">线程池配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分片与副本"><span class="nav-number">3.8.</span> <span class="nav-text">分片与副本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询"><span class="nav-number">3.9.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-设置"><span class="nav-number">3.10.</span> <span class="nav-text">JVM 设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Full-GC-问题"><span class="nav-number">3.11.</span> <span class="nav-text">Full GC 问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入数据过慢问题"><span class="nav-number">3.12.</span> <span class="nav-text">导入数据过慢问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-集群配置"><span class="nav-number">4.</span> <span class="nav-text">Kafka 集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Java"><span class="nav-number">4.1.</span> <span class="nav-text">安装 Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新-Hosts"><span class="nav-number">4.2.</span> <span class="nav-text">更新 Hosts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-Zookeeper-配置文件"><span class="nav-number">4.3.</span> <span class="nav-text">修改 Zookeeper 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#给服务器编号"><span class="nav-number">4.4.</span> <span class="nav-text">给服务器编号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-Zookeeper"><span class="nav-number">4.5.</span> <span class="nav-text">启动 Zookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-Kafka-配置文件"><span class="nav-number">4.6.</span> <span class="nav-text">修改 Kafka 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-Kafka"><span class="nav-number">4.7.</span> <span class="nav-text">启动 Kafka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证安装"><span class="nav-number">4.8.</span> <span class="nav-text">验证安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他配置"><span class="nav-number">4.9.</span> <span class="nav-text">其他配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">5.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch-集群配置"><span class="nav-number">3.</span> <span class="nav-text">Elasticsearch 集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">3.2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重启"><span class="nav-number">3.3.</span> <span class="nav-text">重启</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监控"><span class="nav-number">3.4.</span> <span class="nav-text">监控</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-集群配置"><span class="nav-number">4.</span> <span class="nav-text">Kafka 集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Java"><span class="nav-number">4.1.</span> <span class="nav-text">安装 Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新-Hosts"><span class="nav-number">4.2.</span> <span class="nav-text">更新 Hosts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-Zookeeper-配置文件"><span class="nav-number">4.3.</span> <span class="nav-text">修改 Zookeeper 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#给服务器编号"><span class="nav-number">4.4.</span> <span class="nav-text">给服务器编号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-Zookeeper"><span class="nav-number">4.5.</span> <span class="nav-text">启动 Zookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-Kafka-配置文件"><span class="nav-number">4.6.</span> <span class="nav-text">修改 Kafka 配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-Kafka"><span class="nav-number">4.7.</span> <span class="nav-text">启动 Kafka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证安装"><span class="nav-number">4.8.</span> <span class="nav-text">验证安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他配置"><span class="nav-number">4.9.</span> <span class="nav-text">其他配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">5.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>
