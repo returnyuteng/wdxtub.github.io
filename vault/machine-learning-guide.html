@@ -94,7 +94,7 @@
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="本文是我学习机器学习时候的一些笔记和总结，因为时间比较长了，参考链接都遗失了，在这里感谢各位老司机在我学习过程中给我的帮助。">
 <meta property="og:image" content="http://wdxtub.com/images/14734728090031.gif">
-<meta property="og:updated_time" content="2016-11-25T12:19:23.000Z">
+<meta property="og:updated_time" content="2016-11-27T05:50:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习指南">
 <meta name="twitter:description" content="本文是我学习机器学习时候的一些笔记和总结，因为时间比较长了，参考链接都遗失了，在这里感谢各位老司机在我学习过程中给我的帮助。">
@@ -281,6 +281,446 @@
     
       <p>本文是我学习机器学习时候的一些笔记和总结，因为时间比较长了，参考链接都遗失了，在这里感谢各位老司机在我学习过程中给我的帮助。</p>
 <a id="more"></a>
+<hr>
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>将数据划分到已知类别。分类器的构建基于有监督学习(标注数据:训练集)</p>
+<ul>
+<li>给定一个样例集合(训练集)<ul>
+<li>每个样例包含一个属性集合，其中一个属性是类标记/类号</li>
+</ul>
+</li>
+<li>基于训练集构建一个模型，该模型将类标记属性看作是其它属性值的一个函数</li>
+<li>目标：对心的样例尽可能准确地赋予标记<ul>
+<li>基于一个测试集来评估模型的准确性</li>
+</ul>
+</li>
+</ul>
+<p>Training Set -&gt; Learn Classifier -&gt; Model &lt;- Test set</p>
+<ul>
+<li>二类分类：正、负</li>
+<li>多类分类：多类(&gt;=3)</li>
+</ul>
+<p>二类分类是分类问题的最基本形式，多类分类问题可通过转化为二类分类问题加以解决。</p>
+<ul>
+<li>One vs. One<ul>
+<li>对于 K 类分类需要 K(K-1)/2 个二类分类器</li>
+<li>测试分类时采用投票方式确定类别</li>
+<li>E.g. Labels: a, b, c</li>
+<li>分类器: a vs b, b vs c, a vs c</li>
+</ul>
+</li>
+<li>One vs. All(Rest):<ul>
+<li>对于 K 类分类需要 K 个二类分类器</li>
+<li>测试分类时取返回最大值的类别</li>
+<li>E.g. Labels: a, b, c</li>
+<li>分类器: a vs (b, c), b vs (a, c), c vs (a, b)</li>
+</ul>
+</li>
+</ul>
+<p>层次式分类，类别构成层次式结构(树状)。中图法、ODP目录。</p>
+<ul>
+<li>应用<ul>
+<li>新闻分类</li>
+<li>广告页面判别</li>
+<li>垃圾邮件过滤</li>
+<li>垃圾短信过滤</li>
+<li>博客风格判断</li>
+<li>评论情感分析</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于规则的分类"><a href="#基于规则的分类" class="headerlink" title="基于规则的分类"></a>基于规则的分类</h3><p>人工/专家制定分类规则，使用布尔操作符(AND, OR, NOT)，可将规则组织成决策树，节点代表规则，叶节点代表类别</p>
+<ul>
+<li>优势<ul>
+<li>透明，易于理解，易于修改</li>
+</ul>
+</li>
+<li>劣势<ul>
+<li>复杂，耗时</li>
+<li>主要依赖人工/专家的智能，而非系统/机器智能</li>
+<li>不易拓展</li>
+<li>绝对的类别划分，无置信度</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于统计的分类"><a href="#基于统计的分类" class="headerlink" title="基于统计的分类"></a>基于统计的分类</h3><ul>
+<li>优势<ul>
+<li>可以输出置信概率、允许阈值控制、可扩展</li>
+</ul>
+</li>
+<li>劣势<ul>
+<li>需要已标注好的训练数据</li>
+</ul>
+</li>
+<li>典型方法<ul>
+<li>朴素贝叶斯</li>
+<li>Rocchio</li>
+<li>K 近邻</li>
+<li>支持向量机</li>
+</ul>
+</li>
+</ul>
+<h3 id="文本统计分类流程"><a href="#文本统计分类流程" class="headerlink" title="文本统计分类流程"></a>文本统计分类流程</h3><ul>
+<li>预处理<ul>
+<li>Tokenization</li>
+<li>Filtering</li>
+<li>Stemming</li>
+</ul>
+</li>
+<li>特征计算<ul>
+<li>tf</li>
+<li>Log(tf+1)</li>
+<li>tfidf</li>
+</ul>
+</li>
+<li>特征选择<ul>
+<li>MI</li>
+<li>Chi-Square</li>
+<li>Information Gain</li>
+</ul>
+</li>
+<li>分类学习<ul>
+<li>SVM</li>
+<li>Rocchio</li>
+<li>Naive Bayes</li>
+</ul>
+</li>
+<li>结果评估<ul>
+<li>Recall</li>
+<li>F-Measure</li>
+<li>Precision</li>
+</ul>
+</li>
+</ul>
+<h3 id="文本分类-特征向量表示"><a href="#文本分类-特征向量表示" class="headerlink" title="文本分类-特征向量表示"></a>文本分类-特征向量表示</h3><ul>
+<li>文本表示为特征向量<ul>
+<li>词语(term): 基本单元</li>
+<li>权重 TF * IDF<ul>
+<li>TF: 词频</li>
+<li>IDF: log(N/DF), N 为文档总数量，DF 为包含该词语的文档数量</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="文本分类-特征选择"><a href="#文本分类-特征选择" class="headerlink" title="文本分类-特征选择"></a>文本分类-特征选择</h3><ul>
+<li>好处<ul>
+<li>减少特征维数，改善效果</li>
+<li>防止过拟合，增强模型的泛化能力</li>
+<li>提高学习效率</li>
+<li>提高模型的可解释性</li>
+</ul>
+</li>
+<li>方法，从原有特征集合中找出一个更加有效的子集<ul>
+<li>Document Frequency 文档频率<ul>
+<li>词语的 DF 小于某个阈值去掉(太小，没有代表性)</li>
+<li>词语的 DF 大于某个阈值也去掉(太多，没有区分度)</li>
+</ul>
+</li>
+<li>Mutual Information 互信息<ul>
+<li>MI 越大词语 t 和 c 共现程度越大</li>
+</ul>
+</li>
+<li>Information Gain 信息增益<ul>
+<li>词语 t 为整个分类所能提供的信息量(不考虑任何特征的熵和考虑该特征后的熵的差值)</li>
+</ul>
+</li>
+<li>Information Ratio</li>
+<li>Chi Squrae</li>
+<li>Odd Ratio</li>
+</ul>
+</li>
+</ul>
+<h3 id="朴素贝叶斯分类"><a href="#朴素贝叶斯分类" class="headerlink" title="朴素贝叶斯分类"></a>朴素贝叶斯分类</h3><ul>
+<li>基于概率理论的学习和分类方法</li>
+<li>贝叶斯理论充当重要角色</li>
+<li>分类是根据给定样本描述的可能的类别基础上产生的后验概率分布<ul>
+<li>基于贝叶斯理论来计算后验概率</li>
+</ul>
+</li>
+<li>分类原理：最大后验估计 MAP(maximum posteriori)</li>
+</ul>
+<h3 id="Rocchio-分类方法"><a href="#Rocchio-分类方法" class="headerlink" title="Rocchio 分类方法"></a>Rocchio 分类方法</h3><ul>
+<li>使用中心向量(centroid vector)表示一个类别<ul>
+<li>中心向量为某个类别下所有文档向量的平均向量</li>
+<li>基于训练集计算</li>
+</ul>
+</li>
+<li>对于新文档，计算该文档与每个类别的中心向量的距离/相似度<ul>
+<li>基于余弦测度</li>
+</ul>
+</li>
+<li>确定其类别为距离最小/相似性最大的类别</li>
+<li>优势: 训练快速，模型很小，快速分类</li>
+<li>劣势: 类别数量增加时准确率降低</li>
+</ul>
+<h3 id="K-近邻分类方法"><a href="#K-近邻分类方法" class="headerlink" title="K 近邻分类方法"></a>K 近邻分类方法</h3><ul>
+<li>与 Rocchio 方法类似</li>
+<li>检查新文档的 k 个近邻向量，利用这些近邻向量的类别来确定该文档的类别<ul>
+<li>K 通过实验确定</li>
+<li>“近邻” 通过相似度/距离测度来定义</li>
+</ul>
+</li>
+<li>1 近邻分类方法<ul>
+<li>将新文档划分到与其最相近的文档样例所属的类别</li>
+</ul>
+</li>
+<li>K 近邻分类方法<ul>
+<li>基于投票机制，将新文档划分到 k 个近邻文档中多数文档所属的类别</li>
+<li>进一步，基于加权投票机制，根据近邻文档的相近程度，赋予每个近邻文档一定的权重</li>
+</ul>
+</li>
+<li>优势<ul>
+<li>不需要训练阶段</li>
+<li>类别数量增加也具有良好的扩展性</li>
+</ul>
+</li>
+<li>劣势<ul>
+<li>训练数据很大时模型很大</li>
+<li>需要大量内存</li>
+<li>性能较慢</li>
+</ul>
+</li>
+</ul>
+<h3 id="支持向量机-Support-Vector-Machine"><a href="#支持向量机-Support-Vector-Machine" class="headerlink" title="支持向量机 Support Vector Machine"></a>支持向量机 Support Vector Machine</h3><ul>
+<li>对于二类分类，该方法在向量空间中找出一个决策超平面(分类函数 f(x) = wx + b)，对属于两个类别的文档向量进行有效粉绿<ul>
+<li>通常有很多可能的分割超平面</li>
+<li>找到最好的一个超平面: 最大间隔准则<ul>
+<li>使得属于不同类别的数据点间隔最大</li>
+</ul>
+</li>
+<li>间隔区边缘上的向量称为支撑向量</li>
+</ul>
+</li>
+<li>实际上要求解一个带约束的二次规划(quadratic programming, QP)问题</li>
+<li>训练结果<ul>
+<li>支撑向量</li>
+</ul>
+</li>
+<li>分类<ul>
+<li>计算新文档向量与支撑向量的距离</li>
+</ul>
+</li>
+<li>常用工具<ul>
+<li>SVMLight</li>
+<li>LIBSVM</li>
+</ul>
+</li>
+<li>优势<ul>
+<li>只有支撑向量用来对新文档分类</li>
+<li>模型小</li>
+<li>一般不会过拟合</li>
+</ul>
+</li>
+<li>劣势<ul>
+<li>训练过程非常复杂: 优化问题</li>
+</ul>
+</li>
+</ul>
+<h3 id="分类结果评估"><a href="#分类结果评估" class="headerlink" title="分类结果评估"></a>分类结果评估</h3><ul>
+<li>对每个分类都可以计算出 precision, recall, F-measure<ul>
+<li>一般侧重正例的结果</li>
+</ul>
+</li>
+<li>总体评价: 精度(Accuracy) = 正确分类的样本数量 / 总样本数量</li>
+</ul>
+<h3 id="如何应用于实际"><a href="#如何应用于实际" class="headerlink" title="如何应用于实际"></a>如何应用于实际</h3><ul>
+<li>大多数应用都是直接采用已有的分类算法与工具<ul>
+<li>不需要开发新的</li>
+</ul>
+</li>
+<li>关键在于特征工程<ul>
+<li>针对特定应用问题寻找合理、有效的特征集</li>
+</ul>
+</li>
+<li>一般需要调节分类算法与工具的多个参数<ul>
+<li>比如 KNN 中的 K，SVM 中的 C 参数等</li>
+</ul>
+</li>
+</ul>
+<h2 id="聚类"><a href="#聚类" class="headerlink" title="聚类"></a>聚类</h2><ul>
+<li>给定一个数据点集合，每个数据点具有一组属性，数据点之间能进行相似度度量，聚类目标为找到若干类簇：<ul>
+<li>同一类簇中的数据点相似</li>
+<li>不同类簇中的数据点不相似</li>
+</ul>
+</li>
+<li>无监督学习<ul>
+<li>没有标注数据</li>
+<li>类簇未知</li>
+</ul>
+</li>
+<li>相似度度量准则<ul>
+<li>欧氏距离(L2 norm)</li>
+<li>余弦准则</li>
+<li>L1 范式(L1 norm)</li>
+</ul>
+</li>
+<li>聚类算法<ul>
+<li>K-Means 聚类</li>
+<li>层次式聚类(Hierarchical clustering)</li>
+<li>增量式单遍聚类</li>
+<li>基于图分割的聚类</li>
+<li>基于密度峰值的聚类</li>
+</ul>
+</li>
+</ul>
+<p>应用：文档聚类</p>
+<ul>
+<li>目标：发现文档类簇，同一类簇中文档相似(基于重要词语)</li>
+<li>方法：识别每篇文档中的重要词语，基于文档相似性进行聚类</li>
+</ul>
+<h3 id="层次式聚类"><a href="#层次式聚类" class="headerlink" title="层次式聚类"></a>层次式聚类</h3><ul>
+<li>自底向上的凝聚式聚类(Agglomerative clustering)<ul>
+<li>初始每个文档自成一个类簇</li>
+<li>每次合并最相似/距离最近的两个类簇，形成一个新类簇，循环执行，直到满足终止条件<ul>
+<li>终止条件为类簇数量或者相似度阈值</li>
+</ul>
+</li>
+<li>结果为树形图</li>
+</ul>
+</li>
+<li>不同的计算类簇间距离/相似性的方法<ul>
+<li>最小距离(single link)</li>
+<li>最大距离(complete link)</li>
+<li>平均距离(group average)</li>
+</ul>
+</li>
+<li>自顶向下的划分式聚类(Divisive clustering)<ul>
+<li>初始只有一个类簇，包括所有文档</li>
+<li>每次从当前类簇中选择最大(或最不合理)的一个类簇，将其分割成两个(或多个)新的类簇，循环执行，直到满足终止条件<ul>
+<li>类簇分割方法可以采用其他聚类方法，比如 K 均值算法等</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="K-均值-K-means-聚类"><a href="#K-均值-K-means-聚类" class="headerlink" title="K 均值(K-means)聚类"></a>K 均值(K-means)聚类</h3><ul>
+<li>一种基于划分的聚类算法</li>
+<li>算法将文档集划分到 k 个类簇中<ul>
+<li>每个类簇有一个类簇中心，称为 centroid</li>
+<li>可基于该类簇文档向量的平均向量计算</li>
+</ul>
+</li>
+<li>K 由用户指定</li>
+</ul>
+<h3 id="Buckshot-算法"><a href="#Buckshot-算法" class="headerlink" title="Buckshot 算法"></a>Buckshot 算法</h3><p>结合 K-means 与凝聚式聚类</p>
+<ul>
+<li>从原始 n 个数据点中随机取 √n 个数据点</li>
+<li>针对这些样本数据点上运行凝聚式聚类</li>
+<li>使用凝聚式聚类结果作为初始种子点</li>
+<li>在元数据上基于初始种子点运行 K-means</li>
+</ul>
+<p>改善了种子点的选择</p>
+<h3 id="增量式单遍聚类-Single-Pass"><a href="#增量式单遍聚类-Single-Pass" class="headerlink" title="增量式单遍聚类(Single-Pass)"></a>增量式单遍聚类(Single-Pass)</h3><ul>
+<li>增量式聚类，适合于高效处理动态文本数据流</li>
+<li>将新文档与已有类簇逐一对比，如果与某个类簇的相似度值大于设定的阈值，那么将该文档归并到相应类簇中，否则基于该文档形成一个新的类簇<ul>
+<li>数据流中第一个文档形成第一个类簇</li>
+</ul>
+</li>
+</ul>
+<h3 id="基于图分割的聚类"><a href="#基于图分割的聚类" class="headerlink" title="基于图分割的聚类"></a>基于图分割的聚类</h3><ul>
+<li>计算文档对之间的相似度值，构建相似度图 G=(V,E)<ul>
+<li>每个文档为图的一个节点</li>
+<li>文档之间有边连接，边的权重 W 为文档相似度</li>
+</ul>
+</li>
+<li>文档聚类问题转换成在图上进行顶点分割的问题</li>
+<li>切割标准 min cut(A,B)</li>
+<li>问题<ul>
+<li>只考虑了类簇之间的连接情况</li>
+<li>没有考虑类簇内部的密度</li>
+</ul>
+</li>
+<li>改进方法: Normalized Cut</li>
+</ul>
+<h3 id="基于密度峰值的聚类-Science"><a href="#基于密度峰值的聚类-Science" class="headerlink" title="基于密度峰值的聚类(Science)"></a>基于密度峰值的聚类(Science)</h3><ul>
+<li>简单优美，可自动确定聚类数目，检测孤立点，可识别不同形状的聚类</li>
+<li>假设: 类簇中心被一些局部密度较低的点围绕，并且这些点距离其他有高局部密度的点的距离都比较大</li>
+<li>聚类过程<ul>
+<li>计算出所有数据点的局部密度值和到高局部密度点的距离后，可以得到一张决策图</li>
+<li>在决策图上挑选具有较大密度的样本点作为类簇中心</li>
+<li>将其他样本点按照局部密度从高到底依次确定所属类簇，其类簇为领域内最近的高于该点局部密度的样本点所处的类簇</li>
+</ul>
+</li>
+</ul>
+<h3 id="半监督聚类"><a href="#半监督聚类" class="headerlink" title="半监督聚类"></a>半监督聚类</h3><p>除了带聚类的数据，还提供了少量先验知识</p>
+<ul>
+<li>部分标注信息<ul>
+<li>例如为若干数据点标注了类簇</li>
+</ul>
+</li>
+<li>约束信息<ul>
+<li>例如要求某两个数据点必须在同一类簇，或者某两个数据点不能在同一类簇</li>
+</ul>
+</li>
+<li>Seeded K-means<ul>
+<li>用户提供了 Seeded points</li>
+<li>利用提供的标注信息(seeded points)寻找初始类簇中心，然后运行 K-means</li>
+<li>Seeded points 的标签可能会改变</li>
+</ul>
+</li>
+<li>Constrained K-means<ul>
+<li>用户提供了 Seeded points</li>
+<li>利用提供的标注信息(seeded points)寻找初始类簇中心，然后运行 K-means</li>
+<li>Seeded points 的标签不允许被改变</li>
+</ul>
+</li>
+</ul>
+<h3 id="聚类结果评估"><a href="#聚类结果评估" class="headerlink" title="聚类结果评估"></a>聚类结果评估</h3><ul>
+<li>基于人工标注的类簇进行评价</li>
+<li>评价准则包括: F 值、纯度(Purity)、规范化信息(NMI)</li>
+</ul>
+<h3 id="聚类算法的选择"><a href="#聚类算法的选择" class="headerlink" title="聚类算法的选择"></a>聚类算法的选择</h3><ul>
+<li>聚类算法的选择具有挑战性<ul>
+<li>每种算法都有各自的优势与不足，聚类效果通常依赖于聚类算法、距离函数、具体的数据与应用</li>
+</ul>
+</li>
+<li>实际做法<ul>
+<li>运行使用不同距离函数的多个聚类算法，分析和比较聚类结果</li>
+</ul>
+</li>
+<li>对聚类结果的解释要基于原始数据的意义以及聚类算法的特性</li>
+</ul>
+<h3 id="半监督聚类-1"><a href="#半监督聚类-1" class="headerlink" title="半监督聚类"></a>半监督聚类</h3><ul>
+<li>COP K-means<ul>
+<li>用户提供了 must-link 与 cannot-link 约束</li>
+<li>初始化: 类簇中心随机选择，但必须保证满足 must-link 约束，也就是 must-link 的两个数据点不能选择做为不同类簇的中心</li>
+<li>算法: 一个数据点必须在不违反任何约束的情况下归属到临近的类簇</li>
+</ul>
+</li>
+</ul>
+<h3 id="检索结果聚类"><a href="#检索结果聚类" class="headerlink" title="检索结果聚类"></a>检索结果聚类</h3><ul>
+<li>两类方法<ul>
+<li>先对 snippet 进行聚类，然后为每个类簇选择标签</li>
+<li>先分析获取有意义的类簇标签，然后将检索结果划分到不同标签</li>
+</ul>
+</li>
+<li>基于后缀树的检索结果聚类(Suffix Tree Clustering, STC)<ul>
+<li>时间复杂度低，高效</li>
+<li>容易获得每个类簇的关键词标签</li>
+<li>允许一个文档属于多个类簇</li>
+</ul>
+</li>
+<li>基于回归学习的检索结果聚类<ul>
+<li>现货的重要的短语代表类簇，然后再将检索结果跟类簇关联</li>
+<li>同样允许一文档隶属多个类簇</li>
+<li>候选短语(频率大于3的n-gram(n&lt;=3))</li>
+<li>短语重要性排序<ul>
+<li>看做回归问题</li>
+<li>利用 SVM-Light 实现的支撑向量回归等多个回归方法</li>
+<li>人工标注短语训练集，也即短语与其重要性分值</li>
+</ul>
+</li>
+<li>短语特征<ul>
+<li>Phrase Frequency/Inverted Document Frequency(TFIDF)</li>
+<li>Phrase Length</li>
+<li>Intra-Cluster Similarity</li>
+<li>Cluster Entropy</li>
+<li>Phrase Independence</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <hr>
 <h2 id="朴素贝叶斯-NB"><a href="#朴素贝叶斯-NB" class="headerlink" title="朴素贝叶斯(NB)"></a>朴素贝叶斯(NB)</h2><ul>
 <li>优点<ul>
@@ -1007,7 +1447,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">735</span>
+              <span class="site-state-item-count">737</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1024,7 +1464,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">889</span>
+                <span class="site-state-item-count">890</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
