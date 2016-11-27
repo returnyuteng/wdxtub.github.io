@@ -94,7 +94,7 @@
 <meta property="og:description" content="前一讲大概了解了这个系列会涉及的内容，这一讲就从最重要的概念，Big O 开始讲起。既然我们要找到效率更高的算法，首先就得知道，怎么样才是高效率。">
 <meta property="og:image" content="http://wdxtub.com/images/14535025616030.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14535029849534.jpg">
-<meta property="og:updated_time" content="2016-11-24T13:33:36.000Z">
+<meta property="og:updated_time" content="2016-11-27T13:46:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【不周山之算法与数据结构】贰 Big O 分析">
 <meta name="twitter:description" content="前一讲大概了解了这个系列会涉及的内容，这一讲就从最重要的概念，Big O 开始讲起。既然我们要找到效率更高的算法，首先就得知道，怎么样才是高效率。">
@@ -381,6 +381,35 @@
 <li><a href="http://wdxtub.com/2016/01/23/programmer-startline-12/">拾贰 其他知识</a></li>
 <li><a href="http://wdxtub.com/2016/01/23/programmer-startline-13/">拾叁 总结</a></li>
 </ul>
+<h2 id="前条件-后条件"><a href="#前条件-后条件" class="headerlink" title="前条件/后条件"></a>前条件/后条件</h2><p>建议在写具体的函数之前，都要先想好（写好）前条件和后条件，这样可以确定问题的边界。</p>
+<ul>
+<li>前条件：在函数调用之前一定为真的条件</li>
+<li>后条件：在函数执行完之后为真的条件</li>
+</ul>
+<p>例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Precondition: x &gt;= 0</span></div><div class="line"><span class="comment">// Postcondition: The square root of x has</span></div><div class="line"><span class="comment">// been written to the standard output</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeSqrt</span><span class="params">(<span class="keyword">double</span> x)</span></span>&#123;</div><div class="line">...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Big-O"><a href="#Big-O" class="headerlink" title="Big O"></a>Big O</h2><p>在具体介绍之前，先来一些基本的数学公式复习</p>
+ $$log_b(x_1·x_2)=log_bx_1+log_bx_2$$ 
+ $$log_b(\frac{x_1}{x_2})=log_bx_1-log_bx_2$$ 
+ $$log_b(x^c)=c·log_bx$$ 
+<p>事实上除了我们常用的 Big O，还有另外两种表示的方法：Big Omega($Big- \Omega$) 和 Big Theta($Big - \theta$)</p>
+<p>这里只介绍它们的差别，具体的定义可以自行查看。</p>
+<p>Big-O 实际上只表示上限，比如说，我们知道 $17n^2\in O(n^2)$，但是同时我们也可以说 $17n^2\in O(n^37)$ 和 $17n^2\in O(2^n)$</p>
+<p>Big omega 则是表示下限，例如 $f(n) = n$，那么下面两个式子都成立 $f(n) \in O(n^2)$ 与 $n^2 \in \Omega(n)$</p>
+<p>而 Big theta(Big $\theta$) 则是前面两个的交集：</p>
+<p>$$\theta(f)=O(f) \cap \Omega(f)$$</p>
+<p>举例来说，函数 $f(n) = 4n$，则</p>
+<p>$$f(n)\in O(n)$$</p>
+<p>$$f(n) \in \Omega(n)$$</p>
+<p>所以</p>
+<p>$$f(n)\in \theta(n)$$</p>
+<p>简单来说就是</p>
+<ol>
+<li>Big O 是一个算法最坏情况的度量</li>
+<li>Big Omega 是一个算法最好情况的度量</li>
+<li>Big Theta 表达了一个算法的区间，给定了一个函数的渐近的逼近(asymptotically tight bound)</li>
+</ol>
+<p>但是一般来说用 Big O 也就足够了</p>
 <h2 id="基本法则"><a href="#基本法则" class="headerlink" title="基本法则"></a>基本法则</h2><p>我们先来了解一下程序分析的基本法则。一般来说，常见的输入输出以及简单的赋值语句，可以认为时间复杂度是 O(1)。在算复杂度的时候乘以一个常数复杂度不变，即 $O(Cf(n)) = O(f(n))$，其中C是一个正常数。</p>
 <p>我们知道，程序设计中无非是三种形态：顺序，选择和循环，只要能够算清楚这三种形态的复杂度，那么整个算法的复杂度也就不在话下了。</p>
 <p>先来看看顺序结构，因为是顺序执行，所以可以通过求和法则来进行计算。若算法的 2 个部分时间复杂度分别为 $T1(n)=O(f(n))$ 和 $T2(n)=O(g(n))$,则 $T1(n)+T2(n)=O(max(f(n), g(n)))$。如果这两个部分的参数不一样的话，即 $T1(m)=O(f(m))$ 和 $T2(n)=O(g(n))$,则 $T1(m)+T2(n)=O(f(m) + g(n))$</p>
@@ -706,7 +735,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本法则"><span class="nav-number">2.</span> <span class="nav-text">基本法则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#递归"><span class="nav-number">3.</span> <span class="nav-text">递归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例题"><span class="nav-number">4.</span> <span class="nav-text">例题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前条件-后条件"><span class="nav-number">2.</span> <span class="nav-text">前条件/后条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Big-O"><span class="nav-number">3.</span> <span class="nav-text">Big O</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本法则"><span class="nav-number">4.</span> <span class="nav-text">基本法则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#递归"><span class="nav-number">5.</span> <span class="nav-text">递归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例题"><span class="nav-number">6.</span> <span class="nav-text">例题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>

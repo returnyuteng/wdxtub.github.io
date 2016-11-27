@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/01/22/programmer-startline-4/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="栈和队列，因为其特殊的性质，如果巧妙利用，可以解决许多原本比较复杂的问题，而且还是 BFS 和 DFS 的基础，这一讲我们就来看看对于栈和队列的相关知识。">
-<meta property="og:updated_time" content="2016-11-24T13:33:36.000Z">
+<meta property="og:updated_time" content="2016-11-27T13:52:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【不周山之算法与数据结构】肆 栈和队列">
 <meta name="twitter:description" content="栈和队列，因为其特殊的性质，如果巧妙利用，可以解决许多原本比较复杂的问题，而且还是 BFS 和 DFS 的基础，这一讲我们就来看看对于栈和队列的相关知识。">
@@ -377,6 +377,75 @@
 <li><a href="http://wdxtub.com/2016/01/23/programmer-startline-11/">拾壹 面向对象</a></li>
 <li><a href="http://wdxtub.com/2016/01/23/programmer-startline-12/">拾贰 其他知识</a></li>
 <li><a href="http://wdxtub.com/2016/01/23/programmer-startline-13/">拾叁 总结</a></li>
+</ul>
+<h2 id="栈与队列"><a href="#栈与队列" class="headerlink" title="栈与队列"></a>栈与队列</h2><p>栈和队列是比较典型的 ADT，所谓 ADT，就是实际上内存中没有类似的数据结构对应，具体的操作是人为增加的设定，是为 Abstract，但是同时它们也被当做数据类型来用，是为 Data Type，于是就成为 ADT。</p>
+<p>因为比较简单的缘故，这里大概说一下要点：</p>
+<h3 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h3><p>性质</p>
+<ul>
+<li>后入先出</li>
+<li>Last-In / First-Out</li>
+</ul>
+<p>支持的操作：</p>
+<ul>
+<li>push - 入栈</li>
+<li>peek - 查看栈顶</li>
+<li>pop - 弹出栈顶元素</li>
+</ul>
+<p>常见应用</p>
+<ul>
+<li>程序执行 - 函数调用和返回实际上就是入栈出栈的内容，详情见我的『深入理解计算机系统』系列</li>
+<li>解析 - Parsing</li>
+<li>计算 postfix 表达式的值 - 例如 <code>4 + 3</code> 可以写成 <code>4 3 +</code></li>
+</ul>
+<p>需要注意的问题</p>
+<ul>
+<li>在栈为空的时候执行 pop，会导致 underflow</li>
+</ul>
+<p>实现方式</p>
+<ul>
+<li>数组实现 - 需要一个变量来标记栈顶位置</li>
+<li>链表实现 - 插入元素时对表头操作需要注意</li>
+</ul>
+<p>常见题目</p>
+<ul>
+<li>括号匹配</li>
+<li>翻转字符串</li>
+<li>模拟递归（N 皇后问题）</li>
+</ul>
+<h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>性质</p>
+<ul>
+<li>先入先出</li>
+<li>First-In / First-Out</li>
+</ul>
+<p>支持的操作：</p>
+<ul>
+<li>Enqueue - 入队列</li>
+<li>Dequeue - 出队列</li>
+</ul>
+<p>常见应用</p>
+<ul>
+<li>Round-robin 调度机制 - 处理器处理进程或服务器处理请求（负载均衡）</li>
+<li>输入/输出 处理</li>
+<li>网络中 packet 的排队处理</li>
+</ul>
+<p>实现方式</p>
+<ul>
+<li>数组实现 - 需要一个变量来标记队列头及队列尾的位置</li>
+<li>链表实现 - 需要保存表尾，处理表头的时候注意操作顺序</li>
+</ul>
+<p>与栈的组合</p>
+<ul>
+<li>利用一个栈和一个队列可以用来判断回文串</li>
+</ul>
+<p>队列的进阶使用</p>
+<ul>
+<li>优先队列<ul>
+<li>插入队列的元素有一定的顺序要求</li>
+<li>每次插入实际上是某种意义上搜索和排序的过程</li>
+<li>可以用数组来模拟实现</li>
+<li>可以看作是『最大堆』或『最小堆』</li>
+</ul>
+</li>
 </ul>
 <h2 id="解题策略"><a href="#解题策略" class="headerlink" title="解题策略"></a>解题策略</h2><p>对于栈和队列的题目，一定要意识到这两个数据结构背后所代表的含义。</p>
 <p>比方说，有一类问题有这样的特性：当前节点的解依赖后驱节点。也就是说，对于某个当前节点，如果不能获知后驱节点，就无法得到有意义的解。这类问题可以通过栈(或等同于栈的若干个临时变量)解决：先将当前节点入栈，然后看其后继节点的值，直到其依赖的所有节点都完备时，再从栈中弹出该节点求解。某些时候，甚至需要反复这个过程：将当前节点的计算结果再次入栈，直到其依赖的后继节点完备。</p>
@@ -695,7 +764,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解题策略"><span class="nav-number">2.</span> <span class="nav-text">解题策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">3.</span> <span class="nav-text">附录</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列文章"><span class="nav-number">1.</span> <span class="nav-text">系列文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#栈与队列"><span class="nav-number">2.</span> <span class="nav-text">栈与队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#栈"><span class="nav-number">2.1.</span> <span class="nav-text">栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#队列"><span class="nav-number">2.2.</span> <span class="nav-text">队列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解题策略"><span class="nav-number">3.</span> <span class="nav-text">解题策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a></li></ol></div>
             
           </div>
         </section>
