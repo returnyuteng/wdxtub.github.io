@@ -5,10 +5,10 @@
   
 
 
-<html class="theme-next mist use-motion">
+<html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
 
@@ -29,7 +29,7 @@
 
   
   
-  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
@@ -63,9 +63,9 @@
 
 
 
-<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="读书笔记,代码,重构," />
@@ -79,7 +79,7 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
 
 
 
@@ -99,19 +99,35 @@
 
 
 
-<script type="text/javascript" id="hexo.configuration">
+<script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
+    root: '/',
     scheme: 'Mist',
     sidebar: {"position":"left","display":"post"},
     fancybox: true,
     motion: true,
     duoshuo: {
-      userId: 4016951,
+      userId: '4016951',
       author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     }
   };
 </script>
+
+
+
+  <link rel="canonical" href="http://wdxtub.com/2016/08/09/refactoring-clip/"/>
+
+
+
+
 
   <title> 【重构 改善既有代码的设计】读书笔记 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
@@ -137,7 +153,7 @@
 
 
   <div style="display: none;">
-    <script src="http://s6.cnzz.com/stat.php?id=1260625611&web_id=1260625611" type="text/javascript"></script>
+    <script src="//s95.cnzz.com/z_stat.php?id=1260625611&web_id=1260625611" language="JavaScript"></script>
   </div>
 
 
@@ -196,7 +212,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />
             
-            作品
+            不周山
           </a>
         </li>
       
@@ -206,7 +222,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-battery-full"></i> <br />
             
-            技术
+            通天塔
           </a>
         </li>
       
@@ -216,7 +232,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-bolt"></i> <br />
             
-            生活
+            好望角
           </a>
         </li>
       
@@ -226,7 +242,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
             
-            书单
+            书影音
           </a>
         </li>
       
@@ -236,7 +252,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-gift"></i> <br />
             
-            关于我
+            关于
           </a>
         </li>
       
@@ -258,6 +274,8 @@
   
 </nav>
 
+
+
  </div>
     </header>
 
@@ -271,13 +289,26 @@
     
 
   
-  
 
   
   
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://wdxtub.com/2016/08/09/refactoring-clip/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="wdxtub">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/misc/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="小土刀">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="小土刀" src="">
+    </span>
+  </span>
 
     
       <header class="post-header">
@@ -296,24 +327,40 @@
 
         <div class="post-meta">
           <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-09T06:10:41+08:00" content="2016-08-09">
-              2016-08-09
-            </time>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-08-09T06:10:41+08:00">
+                2016-08-09
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              <span class="post-meta-item-text">更新于</span>
+              <time title="更新于" itemprop="dateModified" datetime="2016-08-11T21:05:36+08:00">
+                2016-08-11
+              </time>
+            
           </span>
 
           
             <span class="post-category" >
-              &nbsp; | &nbsp;
+              <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Reading/" itemprop="url" rel="index">
                     <span itemprop="name">Reading</span>
                   </a>
@@ -321,7 +368,6 @@
 
                 
                 
-
               
             </span>
           
@@ -329,9 +375,9 @@
           
             
               <span class="post-comments-count">
-                &nbsp; | &nbsp;
+                <span class="post-meta-divider">|</span>
                 <a href="/2016/08/09/refactoring-clip/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/09/refactoring-clip/" itemprop="commentsCount"></span>
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/09/refactoring-clip/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -343,11 +389,14 @@
           
 
           
-              &nbsp; | &nbsp;
-              <span class="page-pv"><i class="fa fa-file-o"></i>
-              <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
-              </span>
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
           
+
+          
+
         </div>
       </header>
     
@@ -1044,6 +1093,7 @@
     <div>
       
         
+
       
     </div>
 
@@ -1075,15 +1125,16 @@
       
     </div>
 
+
     <footer class="post-footer">
       
         <div class="post-tags">
           
-            <a href="/tags/读书笔记/" rel="tag">#读书笔记</a>
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
           
-            <a href="/tags/代码/" rel="tag">#代码</a>
+            <a href="/tags/代码/" rel="tag"># 代码</a>
           
-            <a href="/tags/重构/" rel="tag">#重构</a>
+            <a href="/tags/重构/" rel="tag"># 重构</a>
           
         </div>
       
@@ -1097,6 +1148,8 @@
               </a>
             
           </div>
+
+          <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
@@ -1189,7 +1242,7 @@
         </ul>
       
 
-      <section class="site-overview sidebar-panel ">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/misc/avatar.jpg"
@@ -1200,7 +1253,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">745</span>
+              <span class="site-state-item-count">746</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1217,7 +1270,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">894</span>
+                <span class="site-state-item-count">898</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -1270,10 +1323,16 @@
 
         
         
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
 
         
         
-          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
             <div class="links-of-blogroll-title">
               <i class="fa  fa-fw fa-globe"></i>
               不妨看看
@@ -1312,19 +1371,27 @@
           </div>
         
 
+        
+
+
       </section>
 
       
+      <!--noindex-->
         <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
           <div class="post-toc">
+
             
               
             
+
             
               <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#重构原则"><span class="nav-number">1.</span> <span class="nav-text">重构原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码的坏味道"><span class="nav-number">2.</span> <span class="nav-text">代码的坏味道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构筑测试体系"><span class="nav-number">3.</span> <span class="nav-text">构筑测试体系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重新组织函数"><span class="nav-number">4.</span> <span class="nav-text">重新组织函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#提炼函数-Extract-Method"><span class="nav-number">4.1.</span> <span class="nav-text">提炼函数 Extract Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内联函数-Inline-Method"><span class="nav-number">4.2.</span> <span class="nav-text">内联函数 Inline Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内联临时变量-Inline-Temp"><span class="nav-number">4.3.</span> <span class="nav-text">内联临时变量 Inline Temp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以查询取代临时变量-Replace-Temp-with-Query"><span class="nav-number">4.4.</span> <span class="nav-text">以查询取代临时变量 Replace Temp with Query</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入解释性变量-Introduce-Explaining-Variable"><span class="nav-number">4.5.</span> <span class="nav-text">引入解释性变量 Introduce Explaining Variable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分解临时变量-Split-Temporary-Variable"><span class="nav-number">4.6.</span> <span class="nav-text">分解临时变量 Split Temporary Variable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除对参数的赋值-Remove-Assignments-to-Parameters"><span class="nav-number">4.7.</span> <span class="nav-text">移除对参数的赋值 Remove Assignments to Parameters</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以函数对象取代函数-Replace-Method-with-Method-Object"><span class="nav-number">4.8.</span> <span class="nav-text">以函数对象取代函数 Replace Method with Method Object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#替换算法-Substitute-Algorithm"><span class="nav-number">4.9.</span> <span class="nav-text">替换算法  Substitute Algorithm</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在对象之间搬移特性"><span class="nav-number">5.</span> <span class="nav-text">在对象之间搬移特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#搬移函数-Move-Method"><span class="nav-number">5.1.</span> <span class="nav-text">搬移函数 Move Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搬移字段-Move-Field"><span class="nav-number">5.2.</span> <span class="nav-text">搬移字段 Move Field</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提炼类-Extract-Class"><span class="nav-number">5.3.</span> <span class="nav-text">提炼类 Extract Class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将类内联化-Inline-Class"><span class="nav-number">5.4.</span> <span class="nav-text">将类内联化 Inline Class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隐藏委托关系-Hide-Delegate"><span class="nav-number">5.5.</span> <span class="nav-text">隐藏委托关系 Hide Delegate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除中间人-Remove-Middle-Man"><span class="nav-number">5.6.</span> <span class="nav-text">移除中间人 Remove Middle Man</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入外加函数-Introduce-Foreign-Method"><span class="nav-number">5.7.</span> <span class="nav-text">引入外加函数 Introduce Foreign Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入本地扩展-Introduce-Local-Extension"><span class="nav-number">5.8.</span> <span class="nav-text">引入本地扩展 Introduce Local Extension</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重新组织数据"><span class="nav-number">6.</span> <span class="nav-text">重新组织数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自封装字段-Self-Encapsulate-Field"><span class="nav-number">6.1.</span> <span class="nav-text">自封装字段 Self Encapsulate Field</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以对象取代数据值-Replace-Data-Value-with-Object"><span class="nav-number">6.2.</span> <span class="nav-text">以对象取代数据值 Replace Data Value with Object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将值对象改为引用对象-Change-Value-to-Reference"><span class="nav-number">6.3.</span> <span class="nav-text">将值对象改为引用对象 Change Value to Reference</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将引用对象改为值对象-Change-Reference-to-Value"><span class="nav-number">6.4.</span> <span class="nav-text">将引用对象改为值对象 Change Reference to Value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以对象取代数组-Replace-Array-with-Object"><span class="nav-number">6.5.</span> <span class="nav-text">以对象取代数组 Replace Array with Object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制『被监视的数据』-Duplicate-Observed-Data"><span class="nav-number">6.6.</span> <span class="nav-text">复制『被监视的数据』 Duplicate Observed Data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将单向关联改为双向关联-Change-Unidirectional-Association-to-Bidirectional"><span class="nav-number">6.7.</span> <span class="nav-text">将单向关联改为双向关联 Change Unidirectional Association to Bidirectional</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将双向关联改为单向关联-Change-Bidirectional-Association-to-Unidirectional"><span class="nav-number">6.8.</span> <span class="nav-text">将双向关联改为单向关联 Change Bidirectional Association to Unidirectional</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以字面常量取代魔法数-Replace-Magic-Number-with-Symbolic-Constant"><span class="nav-number">6.9.</span> <span class="nav-text">以字面常量取代魔法数 Replace Magic Number with Symbolic Constant</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装字段-Encapsulate-Field"><span class="nav-number">6.10.</span> <span class="nav-text">封装字段 Encapsulate Field</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装集合-Encapsulate-Collection"><span class="nav-number">6.11.</span> <span class="nav-text">封装集合 Encapsulate Collection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以数据类取代记录-Replace-Record-with-Data-Class"><span class="nav-number">6.12.</span> <span class="nav-text">以数据类取代记录 Replace Record with Data Class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以类取代类型码-Replace-Type-Code-with-Class"><span class="nav-number">6.13.</span> <span class="nav-text">以类取代类型码 Replace Type Code with Class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以子类取代类型码-Replace-Type-Code-with-Subclasses"><span class="nav-number">6.14.</span> <span class="nav-text">以子类取代类型码 Replace Type Code with Subclasses</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以-State-Strategy-取代类型码-Replace-Type-Code-with-State-Strategy"><span class="nav-number">6.15.</span> <span class="nav-text">以 State/Strategy 取代类型码 Replace Type Code with State/Strategy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以字段取代子类-Replace-Subclass-with-Fields"><span class="nav-number">6.16.</span> <span class="nav-text">以字段取代子类 Replace Subclass with Fields</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简化条件表达式"><span class="nav-number">7.</span> <span class="nav-text">简化条件表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分解条件表达式-Decompose-Conditional"><span class="nav-number">7.1.</span> <span class="nav-text">分解条件表达式 Decompose Conditional</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合并条件表达式-Consolidate-Conditional-Expression"><span class="nav-number">7.2.</span> <span class="nav-text">合并条件表达式 Consolidate Conditional Expression</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合并重复的条件片段-Consolidate-Duplicate-Conditional-Fragments"><span class="nav-number">7.3.</span> <span class="nav-text">合并重复的条件片段 Consolidate Duplicate Conditional Fragments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除控制标记-Remove-Control-Flag"><span class="nav-number">7.4.</span> <span class="nav-text">移除控制标记 Remove Control Flag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以-Guard-语句取代嵌套条件表达式-Replace-Nested-Conditional-with-Guard-Clauses"><span class="nav-number">7.5.</span> <span class="nav-text">以 Guard 语句取代嵌套条件表达式 Replace Nested Conditional with Guard Clauses</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以多态取代条件表达式-Replace-Conditional-with-Polymorphism"><span class="nav-number">7.6.</span> <span class="nav-text">以多态取代条件表达式 Replace Conditional with Polymorphism</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入-Null-对象"><span class="nav-number">7.7.</span> <span class="nav-text">引入 Null 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入断言-Introduce-Assertion"><span class="nav-number">7.8.</span> <span class="nav-text">引入断言 Introduce Assertion</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简化函数调用"><span class="nav-number">8.</span> <span class="nav-text">简化函数调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数改名-Rename-Method"><span class="nav-number">8.1.</span> <span class="nav-text">函数改名 Rename Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加参数-Add-Parameter"><span class="nav-number">8.2.</span> <span class="nav-text">添加参数 Add Parameter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除参数-Remove-Parameter"><span class="nav-number">8.3.</span> <span class="nav-text">移除参数 Remove Parameter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将查询函数和修改函数分裂-Separate-Query-from-Modifier"><span class="nav-number">8.4.</span> <span class="nav-text">将查询函数和修改函数分裂 Separate Query from Modifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#令函数携带参数-Parameterized-Method"><span class="nav-number">8.5.</span> <span class="nav-text">令函数携带参数 Parameterized Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以明确函数取代参数-Replace-Parameter-with-Explicit-Methods"><span class="nav-number">8.6.</span> <span class="nav-text">以明确函数取代参数 Replace Parameter with Explicit Methods</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保持对象完整-Preserve-Whole-Object"><span class="nav-number">8.7.</span> <span class="nav-text">保持对象完整 Preserve Whole Object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以函数取代参数-Replace-Parameter-with-Method"><span class="nav-number">8.8.</span> <span class="nav-text">以函数取代参数 Replace Parameter with Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入参数对象-Introduce-Parameter-Object"><span class="nav-number">8.9.</span> <span class="nav-text">引入参数对象 Introduce Parameter Object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除设值函数-Remove-Setting-Method"><span class="nav-number">8.10.</span> <span class="nav-text">移除设值函数 Remove Setting Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隐藏函数-Hide-Method"><span class="nav-number">8.11.</span> <span class="nav-text">隐藏函数 Hide Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以工厂函数取代构造函数-Replace-Constructor-with-Factory-Method"><span class="nav-number">8.12.</span> <span class="nav-text">以工厂函数取代构造函数 Replace Constructor with Factory Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装向下转型-Encapsulate-Downcast"><span class="nav-number">8.13.</span> <span class="nav-text">封装向下转型 Encapsulate Downcast</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以异常取代错误码-Replace-Error-Code-with-Exception"><span class="nav-number">8.14.</span> <span class="nav-text">以异常取代错误码 Replace Error Code with Exception</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以测试取代异常-Replace-Exception-with-Test"><span class="nav-number">8.15.</span> <span class="nav-text">以测试取代异常 Replace Exception with Test</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理概括关系"><span class="nav-number">9.</span> <span class="nav-text">处理概括关系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字段上移-Pull-Up-Field"><span class="nav-number">9.1.</span> <span class="nav-text">字段上移 Pull Up Field</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数上移-Pull-Up-Method"><span class="nav-number">9.2.</span> <span class="nav-text">函数上移 Pull Up Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造函数本体上移-Pull-Up-Constructor-Body"><span class="nav-number">9.3.</span> <span class="nav-text">构造函数本体上移 Pull Up Constructor Body</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数下移-Push-Down-Method"><span class="nav-number">9.4.</span> <span class="nav-text">函数下移 Push Down Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字段下移-Push-Down-Field"><span class="nav-number">9.5.</span> <span class="nav-text">字段下移 Push Down Field</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提炼子类-Extract-Subclass"><span class="nav-number">9.6.</span> <span class="nav-text">提炼子类 Extract Subclass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提炼超类-Extract-Superclass"><span class="nav-number">9.7.</span> <span class="nav-text">提炼超类 Extract Superclass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提炼接口-Extract-Interface"><span class="nav-number">9.8.</span> <span class="nav-text">提炼接口 Extract Interface</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#折叠继承体系-Collapse-Hierarchy"><span class="nav-number">9.9.</span> <span class="nav-text">折叠继承体系 Collapse Hierarchy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#塑造模板函数-Form-Template-Method"><span class="nav-number">9.10.</span> <span class="nav-text">塑造模板函数 Form Template Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以委托取代继承-Replace-Inheritance-with-Delegation"><span class="nav-number">9.11.</span> <span class="nav-text">以委托取代继承 Replace Inheritance with Delegation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以继承取代委托-Replace-Delegation-with-Inheritance"><span class="nav-number">9.12.</span> <span class="nav-text">以继承取代委托 Replace Delegation with Inheritance</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#大型重构"><span class="nav-number">10.</span> <span class="nav-text">大型重构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#梳理并分解继承体系-Tease-Apart-Inheritance"><span class="nav-number">10.1.</span> <span class="nav-text">梳理并分解继承体系 Tease Apart Inheritance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将过程化设计转化为对象设计-Convert-Procedural-Design-to-Objects"><span class="nav-number">10.2.</span> <span class="nav-text">将过程化设计转化为对象设计 Convert Procedural Design to Objects</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将领域和展示分离-Separate-Domain-from-Presentation"><span class="nav-number">10.3.</span> <span class="nav-text">将领域和展示分离 Separate Domain from Presentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提炼继承体系-Extract-Hierarchy"><span class="nav-number">10.4.</span> <span class="nav-text">提炼继承体系 Extract Hierarchy</span></a></li></ol></li></ol></div>
             
+
           </div>
         </section>
+      <!--/noindex-->
       
 
     </div>
@@ -1347,8 +1414,9 @@
   <span class="author" itemprop="copyrightHolder">wdxtub</span>
 </div>
 
+
 <div class="powered-by">
-  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
@@ -1357,6 +1425,7 @@
     NexT.Mist
   </a>
 </div>
+
 
         
 
@@ -1406,46 +1475,46 @@
 
 
   
-  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
 
   
-  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
-  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
   
-  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
 
   
-  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
   
-  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
-
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
 
 
 
@@ -1463,51 +1532,72 @@
       ds.id = 'duoshuo-script';
       ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
       ds.charset = 'UTF-8';
-      (document.getElementById('footer')
-      || document.getElementById('footer')).appendChild(ds);
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
     })();
   </script>
 
   
     
       
-      <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
-      <script src="/js/src/hook-duoshuo.js"></script>
+      <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js?v=5.1.0"></script>
     
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
   
 
 
 
 
 
-  
-  
-  
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-        processEscapes: true,
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-  </script>
 
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-      var all = MathJax.Hub.getAllJax(), i;
-      for (i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-      }
-    });
-  </script>
-  <script type="text/javascript" src=""></script>
 
 
   
+  
 
   
-<script type="text/javascript" async src="//push.zhanzhang.baidu.com/push.js">
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
 </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
@@ -1526,6 +1616,9 @@
 </script>
 <!-- End: Injected MathJax -->
 <!-- hexo-inject:end -->
+
+
+  
 
 
 </body>
