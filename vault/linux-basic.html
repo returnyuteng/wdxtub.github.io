@@ -110,7 +110,7 @@
 <meta property="og:image" content="http://wdxtub.com/images/14590057224870.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14590057295211.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14590057435416.jpg">
-<meta property="og:updated_time" content="2016-03-26T15:38:33.000Z">
+<meta property="og:updated_time" content="2016-11-30T12:27:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux 的概念与体系">
 <meta name="twitter:description" content="这篇日志来自 Vamei 博客 中的系列文章，把一些基本的内容做了整合，方便查阅。">
@@ -909,6 +909,18 @@ $ls -l a.txt
 <li><a href="http://www.cnblogs.com/vamei/archive/2013/03/03/2871198.html" target="_blank" rel="external">Linux 常用命令</a></li>
 <li><a href="http://www.cnblogs.com/peida/archive/2012/12/05/2803591.html" target="_blank" rel="external">每天一个linux命令目录</a></li>
 </ul>
+<hr>
+<p>#Linux内核精髓：精通Linux内核必会的75个绝技</p>
+<p>本书介绍的是Linux内核所提供的功能。不仅有比较基础的功能，还有一些功能需要具有一定的知识才能使用。 此外，还介绍了使用功能时需要用到的信息和命令。除了内核以外，本书还将介绍相关的应用程序。基本上是基于TUI进行说明的，但也有一部分关于GUI的介绍。</p>
+<p>最具有代表性的源码树，应属Linux内核的最初创始人——Linus Torvalds所管理的Linus树。新版本Linux内核的发布，就意味着Linus树的源代码被贴上了新发布版本的标签。到2011年为止，Linux内核的版本号一直是用2.6.x这样的三个数字来表示的[1]。Linus树一直被认为是Linux内核源代码的“根源”，因此一旦其发布了新版本，其他的开发树就会将自己独特的开发成果移植到这个版本上，在此基础上再次进行开发。Linus树由于其“根源”的地位而称为主线（mainline）。</p>
+<p>一旦发布新版本Linus树，就会立刻打开一个“合并窗口”（merge window），接受下一版本需要作出的改变。合并窗口将开启约两周时间。合并窗口关闭后，就会发布下一版本的候选版，即所谓的“rc内核”[2]。从rc内核发布后到下一版本发布的期间为测试期，这一期间基本只接受关于bugfix的修改。rc版内核每隔约一周时间会依次推出rc1、rc2……当Linus判断其质量已经达到可以发布的水平时，就会作为新版本发布。按照最近的实际情况来看，基本上在rc6～rc9左右就会发布新版本，也就是说Linux内核每隔2～3个月就会发布新版本。新版本发布后，又会打开下一版本的合并窗口，然后对rc版进行测试。Linux内核就是按照这样的周期来开发的。</p>
+<p>小贴士：Linus树的内核由于完全没有任何华而不实的东西，因此称为“香草”（vanilla）内核或“库存”（stock）内核。</p>
+<p>linux-next树 这是一个为发布将来的版本而积累新代码并进行测试的源码树，主要由Stephen Rothwell等人进行管理和运营。原则上要添加新功能或者进行安装配置时，首先要在linux-next树中进行测试，在确认各自之间可以兼容之后再添加到Linus树内。</p>
+<p>stable树 这是一个主要只针对过去发布的内核版本进行bug修改，使其更加稳定的树，由Greg Kroah-Hartman、Chris Wright进行维护管理。这个树的版本号是在Linus树的版本号后面加一位数字，以2.6.x.y这样的4个数字来表示。针对某个Linus树版本的稳定（stable）版维护一般持续6个月左右，但也有持续更久的。</p>
+<p>开发树 Linux内核可以说是各种功能的集合体。例如内存管理、文件系统、网络、各种设备驱动程序、CPU架构固有部分等。这些功能部分称为“子系统”，各子系统分别在不同的源码树中进行开发。在开发、修改过程中也有一些不属于特定子系统的内容，这些内容首先会被发送到Andrew Morton管理的mm树（准确地说是mmotm：mm on the moment，补丁包的缩写）。这样的源码树统称为“开发树”。</p>
+<p>发布版内核 最后要介绍的是发布版内核（distribution kernel）。应该有很多人使用的都是作为Linux发布版的一部分发布的内核。这些来源于发布版的内核几乎都是在Linus树或stable树内核的基础上进行发布版特有的扩展和bug修改而得到的。像这样添加了发布版特有的修改，并作为发布版的一部分发布的内核，就称为“发布版内核”。</p>
+<p>Linux内核是单内核（monolithic kernel），也就是所有的内核功能都集成在一个内核空间内。但是内核具有模块功能，可以将磁盘驱动程序、文件系统等独立的内核功能制作成模块，并动态添加到内核空间或者删除。 内核模块是可以动态添加到Linux内核空间的二进制文件，文件扩展名为ko。</p>
+<p>Linux内核的主要工作是资源管理。资源管理这一叫法看似简单，其实管理的资源是非常多样的，包括对CPU时间进行分配的进程调度、物理内存的分配与虚拟空间的控制、磁盘I/O等。本章将介绍Linux内核中的几个资源管理功能。其中Linux内核特有的Cgroup资源控制，就是能够进行虚拟化资源控制的重要功能。</p>
 
     
   </div>
@@ -1040,7 +1052,7 @@ $ls -l a.txt
 
         
         
-          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
             <div class="links-of-blogroll-title">
               <i class="fa  fa-fw fa-globe"></i>
               不妨看看
