@@ -1,0 +1,1029 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="不周山,网络协议," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="如果说计算机科学中最重要的概念是抽象，那么『分层』绝对有资格争榜眼，再不济也是一个探花。计算机网络是最能代表『分层』思想的概念，本文我们就来了解一下计算机网络中的各种协议。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【不周山之计算机基础】计算机网络协议指南">
+<meta property="og:url" content="http://wdxtub.com/2016/12/03/bzs-network-protocol-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="如果说计算机科学中最重要的概念是抽象，那么『分层』绝对有资格争榜眼，再不济也是一个探花。计算机网络是最能代表『分层』思想的概念，本文我们就来了解一下计算机网络中的各种协议。">
+<meta property="og:image" content="http://wdxtub.com/images/14551392855125.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551394375473.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14551394884094.jpg">
+<meta property="og:updated_time" content="2016-12-03T09:56:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【不周山之计算机基础】计算机网络协议指南">
+<meta name="twitter:description" content="如果说计算机科学中最重要的概念是抽象，那么『分层』绝对有资格争榜眼，再不济也是一个探花。计算机网络是最能代表『分层』思想的概念，本文我们就来了解一下计算机网络中的各种协议。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14551392855125.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '4016951',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wdxtub.com/2016/12/03/bzs-network-protocol-guide/"/>
+
+
+
+
+
+  <title> 【不周山之计算机基础】计算机网络协议指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=59042340";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1260625611&web_id=1260625611" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-work">
+          <a href="/2016/09/11/work-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wifi"></i> <br />
+            
+            不周山
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tech">
+          <a href="/2009/09/11/tech-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gear"></i> <br />
+            
+            通天塔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/1990/09/11/life-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-compass"></i> <br />
+            
+            好望角
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/1997/09/11/booklist-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书影音
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://wdxtub.com/2016/12/03/bzs-network-protocol-guide/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="wdxtub">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/misc/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="小土刀">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="小土刀" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【不周山之计算机基础】计算机网络协议指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-03T14:33:06+08:00">
+                2016-12-03
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              <span class="post-meta-item-text">更新于</span>
+              <time title="更新于" itemprop="dateModified" datetime="2016-12-03T17:56:56+08:00">
+                2016-12-03
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2016/12/03/bzs-network-protocol-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/03/bzs-network-protocol-guide/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>如果说计算机科学中最重要的概念是抽象，那么『分层』绝对有资格争榜眼，再不济也是一个探花。计算机网络是最能代表『分层』思想的概念，本文我们就来了解一下计算机网络中的各种协议。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2016.12.03: 完成初稿</li>
+</ul>
+<h2 id="系列目录"><a href="#系列目录" class="headerlink" title="系列目录"></a>系列目录</h2><ul>
+<li><a href="http://wdxtub.com/2016/12/03/bzs-linux-concept-guide/">Linux 概念指南</a></li>
+<li><a href="http://wdxtub.com/2016/12/03/bzs-network-protocol-guide/">计算机网络协议指南</a></li>
+</ul>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><ol>
+<li>了解计算机网络的几种分层模型</li>
+<li>了解数据链路层、网络层、传输层和应用层的常见协议及其特性</li>
+<li>学会利用命令查看基本的网络信息</li>
+</ol>
+<h2 id="分层模型"><a href="#分层模型" class="headerlink" title="分层模型"></a>分层模型</h2><p>网络通信是基于分层模型的。虽然不同的协议有不同的层级划分（甚至同一种协议也有不同的层级划分），但是都离不开分层。分层的好处有很多，最重要的是能够比较好控制具体实现的复杂度，由于每层之间由事先约定的接口通信，并不需要关心其他层的实现细节。</p>
+<p>比较出名的分层模型有 <a href="https://zh.wikipedia.org/wiki/OSI%E6%A8%A1%E5%9E%8B" target="_blank" rel="external">OSI 分层模型</a>和 <a href="https://zh.wikipedia.org/wiki/TCP/IP%E5%8D%8F%E8%AE%AE%E6%97%8F" target="_blank" rel="external">TCP/IP 分层模型</a>，本文以 TCP/IP 的四层模型进行讲解，他们分别是：</p>
+<ul>
+<li>网络接口层(link layer): 以太网, Wi-Fi</li>
+<li>网络互连层(internet layer): IP, ARP</li>
+<li>传输层(transport layer): TCP, UDP, RTP, SCTP</li>
+<li>应用层(application layer): HTTP, FTP, DNS</li>
+</ul>
+<p>下面就开始分别介绍这四层的基本概念和重要的协议。</p>
+<h2 id="网络接口层"><a href="#网络接口层" class="headerlink" title="网络接口层"></a>网络接口层</h2><p>网络接口层的基础是光纤、电缆或者电磁波等真实存在的物理媒介。对于数字应用来说，我们只需要两种物理信号来分别表示 0 和 1，比如用高电压表示 1，低电压表示 0，就构成了简单的物理层协议。针对某种媒介，电脑可以有相应的接口，用来接收物理信号，并解读成为 0/1 序列</p>
+<p>在这些介质中，信息以『帧(frame)』为单位传输。所谓的帧，是一段有限的 0/1 序列。连接层协议的功能就是识别 0/1 序列中所包含的帧。比如说，根据一定的 0/1 组合识别出帧的起始和结束。在帧中，有收信地址(Source, SRC)和送信地址(Destination, DST)，还有能够探测错误的校验序列(Frame Check Sequence)。当然，帧中最重要的最重要是所要传输的数据(payload)。这些数据往往符合更高层协议，供网络的上层使用。与数据相配套，帧中也有数据的类型(Type)信息。连接层协议不关心数据中到底包含什么。帧就像是一个信封，把数据包裹起来。</p>
+<h3 id="深入理解帧-Frame"><a href="#深入理解帧-Frame" class="headerlink" title="深入理解帧(Frame)"></a>深入理解帧(Frame)</h3><p>帧的结构很简单，一共三部分：<code>头部 | 数据(Payload) | 尾部</code>，发送时由头发送到尾，其中：</p>
+<ul>
+<li>头部: <code>Preamble SFD DST SRC Type</code></li>
+<li>数据: <code>Payload(Data)</code></li>
+<li>尾部: <code>Pad FCS Extension</code></li>
+</ul>
+<p>我知道看到这些奇奇怪怪的单词大家一定一头雾水，不要紧张，这就来一个一个解释：</p>
+<ul>
+<li>Preamble: 翻译过来叫序言，是一帧的前 7 个字节，每个字节都是 <code>10101010</code>，所以合起来大概样子是 <code>10101010101010101010101010101010101010101010101010101010</code>。这是要干嘛？对表！为什么要对表！因为不同的网卡发送/接收的频率可能是不一样的，所以就通过这些 1010 来让彼此找到节奏，这个过程叫做时钟复原(recover the clock)</li>
+<li>SFD: 起始信号(Start Frame Delimiter)，估计是 <code>0xAB</code></li>
+<li>DST: 目的地(Destination)，对方的 MAC 地址（物理设备自带的序号）</li>
+<li>SRC: 起始地(Source)，本机的 MAC 地址（只能在同一个以太网中识别）</li>
+<li>Type: 用来描述数据部分的类型，如果是 IPv4 则为 <code>0x0800</code>，如果是 ARP 则为 <code>0x0806</code></li>
+<li>FCS: 校验序列(Frame Check Sequence)，检测传输过来的数据是否出错，采用 CRC 算法</li>
+</ul>
+<p>数据部分一般包含更高层协议的数据，比如 IP 包，但是其实具体里面是帧是并不在意的。另外数据尾部可能有一串用来填充的 0，因为数据有一个最小长度限制。</p>
+<h3 id="集线器与交换机"><a href="#集线器与交换机" class="headerlink" title="集线器与交换机"></a>集线器与交换机</h3><p>我们现在把想要发送的数据打包成帧，然后要怎么发送呢？老一点的方式是通过集线器，而目前基本上都是通过交换机。</p>
+<p>集线器的每个端口都会连接一台计算机，一旦有一台电脑把帧发送到集线器，就会自动转发到其他所有的端口，由每台计算机进行检测，如果不是 DST 的话，就忽略这一帧。这种机制实际上有两个问题：</p>
+<ol>
+<li>两台计算机的通信在同一个以太网上是公开的，甚至都不需要去截获，帧自己就会推送过来。虽然信息本身可以加密，但是能够知道发送信息的时间和规律，也并不是特别安全的做法</li>
+<li>因为每次都需要广播消息，所以实际上集线器不能同时发送信息，一旦冲突，就等待一段时间再进行发送</li>
+</ol>
+<p>交换机解决了这两个问题，一是记录各个设备的 MAC 地址，按需发送的同时也允许多路同时通信。正因为如此，交换机取代集线器也就非常理所当然了。</p>
+<h2 id="网络互联层"><a href="#网络互联层" class="headerlink" title="网络互联层"></a>网络互联层</h2><p>如果我们想让一台连接 Wifi 的计算和一台连接以太网的计算机通信，只使用网络接口层的『帧』是万万做不到的，因为有线和无线并没有办法进行信号的传输，所有我们需要一个桥梁，也就是路由器(router)。路由器可以在 Wifi 和 以太网之间发送/接收数据，这样一来就把中间欠缺的环节补上了。但是还有一个问题，我们来看看整个通信过程：</p>
+<p>Computer1(Wifi) &lt;-&gt; Router(Wifi) &lt;-&gt; Router(Ethernet) &lt;-&gt; Computer2(Ethernet)</p>
+<p>这里需要四个地址！但是一个帧里面只有 SRC(起点)和 DST(终点)的地址，所以我们就需要在前面的数据(payload)中添加信息，来完成信息的传输，于是便有了 IP 协议。</p>
+<h3 id="IP-协议"><a href="#IP-协议" class="headerlink" title="IP 协议"></a>IP 协议</h3><p>网络互联层是互联网最重要的根基，通过几乎一统的 IP 协议构成了我们今天的互联网。更高层的协议，无论是 TCP 还是 UDP，必须通过网络层的 IP 数据包(datagram)来传递信息。操作系统也会提供该层的 socket，从而允许用户直接操作 IP 包。</p>
+<p>IP 协议现在有 IPv4 和 IPv6 两个版本，比如下面就是 IPv4 的格式：</p>
+<p><img src="/images/14551392855125.jpg" alt=""></p>
+<p>其中 source 和 destination 的长度都是 4 字节，我们通常会把每个字节转化成一个 0-255 的十进制整数，记为类似 192.168.0.1 这样的形式。</p>
+<p>IP地址是全球地址，它可以识别局域网和主机。这是通过将IP地址分类实现的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">IP class    From          To                Subnet Mask</div><div class="line">A           1.0.0.0       126.255.255.255    255.0.0.0</div><div class="line">B           128.0.0.0     191.255.255.255    255.255.0.0</div><div class="line">C           192.0.0.0     223.255.255.255    255.255.255.0</div></pre></td></tr></table></figure>
+<p>每个 IP 地址的 32 位分为前后两部分，第一部分用来区分局域网，第二个部分用来区分该局域网的主机。子网掩码(Subnet Mask)告诉我们这两部分的分界线，比如 255.0.0.0 (也就是8个1和24个0)表示前 8 位用于区分局域网，后 24 位用于区分主机。由于 A、B、C 分类是已经规定好的，所以当一个IP地址属于 B 类范围时，我们就知道它的前 16 位和后 16 位分别表示局域网和主机。</p>
+<p>而在具体传输的时候，需要依赖路由器中的路由表，在不同机器间传递的时候，改变的只有帧中的 SRC 和 DST，而 IP 包的内容在帧的 Payload 中是不会变化的。但是现在问题来了，我们怎么知道 IP 和 MAC 的对应关系呢？这里就是 ARP 协议发挥作用的时候了，它会把IP 地址与 MAC 地址的对应传播到局域网的每个主机和路由。而路由表除了可以手动进行编写外，也可以使用 RIP(Routing Information Protocol) 来根据距离进行生成。</p>
+<p>IP 协议是 “Best Effort” 式的，也就是说是不可靠的（如果失败了就失败了），但于此同时也是的 IP 协议效率很高，至于更加可靠的传输方式，就要靠传输层实现了。</p>
+<p>除了 IP 协议之外，网络互联层一个很重要的协议是 ICMP(Internet Control Message Protocol) 协议，它介于网络层和传输层，主要功能是传输网络诊断信息。我们常用的 <code>ping</code> 命令就是基于 ICMP 协议的。</p>
+<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>现在我们已经能在两台计算机之间进行通信了，但是问题来了，每个计算机有不同的进程，如果我想指定找远方计算机的某个进程要怎么办呢，IP 协议又不够用了。所以传输层协议(TCP, UDP)使用端口号来标注进程，在传输数据的时候，我们写上目的进程的端口。当数据到达另一台计算机时，会根据传输层协议，识别端口号，将信送给不同的进程。</p>
+<p>传输层最重要的协议是 TCP 协议和 UDP 协议。TCP 协议复杂但传输可靠，UDP 协议简单但传输不可靠，接下来我们来简单了解一下这俩协议。</p>
+<h3 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h3><p>UDP 协议其实并没有在 IP 协议的基础上做太多额外的工作，主要是为 IP 协议增加了端口的支持，头部如下：</p>
+<p><img src="/images/14551394375473.jpg" alt=""></p>
+<p>从上图就可以看到，UDP 的头部很短，只是额外包含了端口信息，可以看作是 IP 协议暴露在传输层上的接口。</p>
+<h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><p>TCP(Transportation Control Protocol)协议与 IP 协议是一同产生的，或者说，他俩一开始就是同一个协议，后来才被拆开的。TCP 因为实现了『流』式通信，在特定场景中非常有用。具体『流』式通信的实现这里就不展开了，我们来看看 TCP 协议的头部大概就知道它要比 UDP 复杂多少了：</p>
+<p><img src="/images/14551394884094.jpg" alt=""></p>
+<p>在 TCP 传输数据之前，需要先进行连接，这个过程就是我们常说的 TCP 三次握手(three-way handshaking)。而结束联结的时候也需要进行双方互相确认的工作，就是我们常说的 TCP 四次挥手。</p>
+<p>TCP 是一个非常复杂的协议，感兴趣的同学可以在参考链接中找到非常详细的说明，这里我就不再赘述了。</p>
+<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>传输层协议其实在大部分时候已经能够满足我们的需求，但是随着网络应用的增加，不同类型的应用也慢慢有了自己的一套规则，就是我们所说的应用层协议了，比如 HTTP, FTP, IMAP, DNS 等等。这里我们简单介绍一下 HTTP 协议。</p>
+<p>HTTP 使用的是『请求(request)』-『回复(response)』机制，客户端向服务器发送请求，而服务器给客户端发送回复。具体回复的状态会在返回的信息中以状态码的形式进行表示。早期发送请求的时候，都需要重新进行 TCP 连接，网络开销很大，同时每次的通信也是无状态的(stateless)。现在 HTTP 协议允许 TCP 链接复用，但是这种无状态的特性依然保留了下来。</p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><ol>
+<li>访问 wdxtub.com，看看在这个过程中数据是如何传输的</li>
+<li>试着 ping 一些地址，看看返回的信息是什么</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文中我们简单了解了计算机网络的基本概念和常用协议，如果有需要，会在后面的系列中进行深入讲解。</p>
+<p>（写此文时精神状态不佳，振作后再进行修订）</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://read.douban.com/column/1788114/" target="_blank" rel="external">协议森林 - 趣话网络协议</a></li>
+<li><a href="http://www.cnblogs.com/vamei/p/3784866.html" target="_blank" rel="external">Mac OS X 网络诊断命令</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持是对我创作最大的鼓励！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/misc/alipay.jpg" alt="wdxtub Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/不周山/" rel="tag"># 不周山</a>
+          
+            <a href="/tags/网络协议/" rel="tag"># 网络协议</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/03/bzs-linux-concept-guide/" rel="next" title="【不周山之计算机基础】Linux 概念指南">
+                <i class="fa fa-chevron-left"></i> 【不周山之计算机基础】Linux 概念指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/12/03/bzs-network-protocol-guide/"
+           data-title="【不周山之计算机基础】计算机网络协议指南" data-url="http://wdxtub.com/2016/12/03/bzs-network-protocol-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">人文/科学/读书/写作/思考/编程/架构/数据/广交朋友/@SYSU/@CMU</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">749</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">899</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://jackqdyulei.github.io/" title="雷雷" target="_blank">雷雷</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://guojiex.github.io/" title="瓜瓜" target="_blank">瓜瓜</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.lofter.com/" title="我的 Lofter" target="_blank">我的 Lofter</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系列目录"><span class="nav-number">1.</span> <span class="nav-text">系列目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">2.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分层模型"><span class="nav-number">3.</span> <span class="nav-text">分层模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络接口层"><span class="nav-number">4.</span> <span class="nav-text">网络接口层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#深入理解帧-Frame"><span class="nav-number">4.1.</span> <span class="nav-text">深入理解帧(Frame)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集线器与交换机"><span class="nav-number">4.2.</span> <span class="nav-text">集线器与交换机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络互联层"><span class="nav-number">5.</span> <span class="nav-text">网络互联层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IP-协议"><span class="nav-number">5.1.</span> <span class="nav-text">IP 协议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传输层"><span class="nav-number">6.</span> <span class="nav-text">传输层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UDP"><span class="nav-number">6.1.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP"><span class="nav-number">6.2.</span> <span class="nav-text">TCP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用层"><span class="nav-number">7.</span> <span class="nav-text">应用层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">8.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">10.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js?v=5.1.0"></script>
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+
+</body>
+</html>

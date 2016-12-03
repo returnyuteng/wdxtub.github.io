@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2016-12-03T06:27:20.000Z</updated>
+  <updated>2016-12-03T09:56:56.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -16,11 +16,119 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>【不周山之操作系统】Linux 概念指南</title>
-    <link href="http://wdxtub.com/2016/12/03/linux-concept-guide/"/>
-    <id>http://wdxtub.com/2016/12/03/linux-concept-guide/</id>
+    <title>【不周山之计算机基础】计算机网络协议指南</title>
+    <link href="http://wdxtub.com/2016/12/03/bzs-network-protocol-guide/"/>
+    <id>http://wdxtub.com/2016/12/03/bzs-network-protocol-guide/</id>
+    <published>2016-12-03T06:33:06.000Z</published>
+    <updated>2016-12-03T09:56:56.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>如果说计算机科学中最重要的概念是抽象，那么『分层』绝对有资格争榜眼，再不济也是一个探花。计算机网络是最能代表『分层』思想的概念，本文我们就来了解一下计算机网络中的各种协议。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2016.12.03: 完成初稿</li>
+</ul>
+<h2 id="系列目录"><a href="#系列目录" class="headerlink" title="系列目录"></a>系列目录</h2><ul>
+<li><a href="http://wdxtub.com/2016/12/03/bzs-linux-concept-guide/">Linux 概念指南</a></li>
+<li><a href="http://wdxtub.com/2016/12/03/bzs-network-protocol-guide/">计算机网络协议指南</a></li>
+</ul>
+<h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><ol>
+<li>了解计算机网络的几种分层模型</li>
+<li>了解数据链路层、网络层、传输层和应用层的常见协议及其特性</li>
+<li>学会利用命令查看基本的网络信息</li>
+</ol>
+<h2 id="分层模型"><a href="#分层模型" class="headerlink" title="分层模型"></a>分层模型</h2><p>网络通信是基于分层模型的。虽然不同的协议有不同的层级划分（甚至同一种协议也有不同的层级划分），但是都离不开分层。分层的好处有很多，最重要的是能够比较好控制具体实现的复杂度，由于每层之间由事先约定的接口通信，并不需要关心其他层的实现细节。</p>
+<p>比较出名的分层模型有 <a href="https://zh.wikipedia.org/wiki/OSI%E6%A8%A1%E5%9E%8B" target="_blank" rel="external">OSI 分层模型</a>和 <a href="https://zh.wikipedia.org/wiki/TCP/IP%E5%8D%8F%E8%AE%AE%E6%97%8F" target="_blank" rel="external">TCP/IP 分层模型</a>，本文以 TCP/IP 的四层模型进行讲解，他们分别是：</p>
+<ul>
+<li>网络接口层(link layer): 以太网, Wi-Fi</li>
+<li>网络互连层(internet layer): IP, ARP</li>
+<li>传输层(transport layer): TCP, UDP, RTP, SCTP</li>
+<li>应用层(application layer): HTTP, FTP, DNS</li>
+</ul>
+<p>下面就开始分别介绍这四层的基本概念和重要的协议。</p>
+<h2 id="网络接口层"><a href="#网络接口层" class="headerlink" title="网络接口层"></a>网络接口层</h2><p>网络接口层的基础是光纤、电缆或者电磁波等真实存在的物理媒介。对于数字应用来说，我们只需要两种物理信号来分别表示 0 和 1，比如用高电压表示 1，低电压表示 0，就构成了简单的物理层协议。针对某种媒介，电脑可以有相应的接口，用来接收物理信号，并解读成为 0/1 序列</p>
+<p>在这些介质中，信息以『帧(frame)』为单位传输。所谓的帧，是一段有限的 0/1 序列。连接层协议的功能就是识别 0/1 序列中所包含的帧。比如说，根据一定的 0/1 组合识别出帧的起始和结束。在帧中，有收信地址(Source, SRC)和送信地址(Destination, DST)，还有能够探测错误的校验序列(Frame Check Sequence)。当然，帧中最重要的最重要是所要传输的数据(payload)。这些数据往往符合更高层协议，供网络的上层使用。与数据相配套，帧中也有数据的类型(Type)信息。连接层协议不关心数据中到底包含什么。帧就像是一个信封，把数据包裹起来。</p>
+<h3 id="深入理解帧-Frame"><a href="#深入理解帧-Frame" class="headerlink" title="深入理解帧(Frame)"></a>深入理解帧(Frame)</h3><p>帧的结构很简单，一共三部分：<code>头部 | 数据(Payload) | 尾部</code>，发送时由头发送到尾，其中：</p>
+<ul>
+<li>头部: <code>Preamble SFD DST SRC Type</code></li>
+<li>数据: <code>Payload(Data)</code></li>
+<li>尾部: <code>Pad FCS Extension</code></li>
+</ul>
+<p>我知道看到这些奇奇怪怪的单词大家一定一头雾水，不要紧张，这就来一个一个解释：</p>
+<ul>
+<li>Preamble: 翻译过来叫序言，是一帧的前 7 个字节，每个字节都是 <code>10101010</code>，所以合起来大概样子是 <code>10101010101010101010101010101010101010101010101010101010</code>。这是要干嘛？对表！为什么要对表！因为不同的网卡发送/接收的频率可能是不一样的，所以就通过这些 1010 来让彼此找到节奏，这个过程叫做时钟复原(recover the clock)</li>
+<li>SFD: 起始信号(Start Frame Delimiter)，估计是 <code>0xAB</code></li>
+<li>DST: 目的地(Destination)，对方的 MAC 地址（物理设备自带的序号）</li>
+<li>SRC: 起始地(Source)，本机的 MAC 地址（只能在同一个以太网中识别）</li>
+<li>Type: 用来描述数据部分的类型，如果是 IPv4 则为 <code>0x0800</code>，如果是 ARP 则为 <code>0x0806</code></li>
+<li>FCS: 校验序列(Frame Check Sequence)，检测传输过来的数据是否出错，采用 CRC 算法</li>
+</ul>
+<p>数据部分一般包含更高层协议的数据，比如 IP 包，但是其实具体里面是帧是并不在意的。另外数据尾部可能有一串用来填充的 0，因为数据有一个最小长度限制。</p>
+<h3 id="集线器与交换机"><a href="#集线器与交换机" class="headerlink" title="集线器与交换机"></a>集线器与交换机</h3><p>我们现在把想要发送的数据打包成帧，然后要怎么发送呢？老一点的方式是通过集线器，而目前基本上都是通过交换机。</p>
+<p>集线器的每个端口都会连接一台计算机，一旦有一台电脑把帧发送到集线器，就会自动转发到其他所有的端口，由每台计算机进行检测，如果不是 DST 的话，就忽略这一帧。这种机制实际上有两个问题：</p>
+<ol>
+<li>两台计算机的通信在同一个以太网上是公开的，甚至都不需要去截获，帧自己就会推送过来。虽然信息本身可以加密，但是能够知道发送信息的时间和规律，也并不是特别安全的做法</li>
+<li>因为每次都需要广播消息，所以实际上集线器不能同时发送信息，一旦冲突，就等待一段时间再进行发送</li>
+</ol>
+<p>交换机解决了这两个问题，一是记录各个设备的 MAC 地址，按需发送的同时也允许多路同时通信。正因为如此，交换机取代集线器也就非常理所当然了。</p>
+<h2 id="网络互联层"><a href="#网络互联层" class="headerlink" title="网络互联层"></a>网络互联层</h2><p>如果我们想让一台连接 Wifi 的计算和一台连接以太网的计算机通信，只使用网络接口层的『帧』是万万做不到的，因为有线和无线并没有办法进行信号的传输，所有我们需要一个桥梁，也就是路由器(router)。路由器可以在 Wifi 和 以太网之间发送/接收数据，这样一来就把中间欠缺的环节补上了。但是还有一个问题，我们来看看整个通信过程：</p>
+<p>Computer1(Wifi) &lt;-&gt; Router(Wifi) &lt;-&gt; Router(Ethernet) &lt;-&gt; Computer2(Ethernet)</p>
+<p>这里需要四个地址！但是一个帧里面只有 SRC(起点)和 DST(终点)的地址，所以我们就需要在前面的数据(payload)中添加信息，来完成信息的传输，于是便有了 IP 协议。</p>
+<h3 id="IP-协议"><a href="#IP-协议" class="headerlink" title="IP 协议"></a>IP 协议</h3><p>网络互联层是互联网最重要的根基，通过几乎一统的 IP 协议构成了我们今天的互联网。更高层的协议，无论是 TCP 还是 UDP，必须通过网络层的 IP 数据包(datagram)来传递信息。操作系统也会提供该层的 socket，从而允许用户直接操作 IP 包。</p>
+<p>IP 协议现在有 IPv4 和 IPv6 两个版本，比如下面就是 IPv4 的格式：</p>
+<p><img src="/images/14551392855125.jpg" alt=""></p>
+<p>其中 source 和 destination 的长度都是 4 字节，我们通常会把每个字节转化成一个 0-255 的十进制整数，记为类似 192.168.0.1 这样的形式。</p>
+<p>IP地址是全球地址，它可以识别局域网和主机。这是通过将IP地址分类实现的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">IP class    From          To                Subnet Mask</div><div class="line">A           1.0.0.0       126.255.255.255    255.0.0.0</div><div class="line">B           128.0.0.0     191.255.255.255    255.255.0.0</div><div class="line">C           192.0.0.0     223.255.255.255    255.255.255.0</div></pre></td></tr></table></figure>
+<p>每个 IP 地址的 32 位分为前后两部分，第一部分用来区分局域网，第二个部分用来区分该局域网的主机。子网掩码(Subnet Mask)告诉我们这两部分的分界线，比如 255.0.0.0 (也就是8个1和24个0)表示前 8 位用于区分局域网，后 24 位用于区分主机。由于 A、B、C 分类是已经规定好的，所以当一个IP地址属于 B 类范围时，我们就知道它的前 16 位和后 16 位分别表示局域网和主机。</p>
+<p>而在具体传输的时候，需要依赖路由器中的路由表，在不同机器间传递的时候，改变的只有帧中的 SRC 和 DST，而 IP 包的内容在帧的 Payload 中是不会变化的。但是现在问题来了，我们怎么知道 IP 和 MAC 的对应关系呢？这里就是 ARP 协议发挥作用的时候了，它会把IP 地址与 MAC 地址的对应传播到局域网的每个主机和路由。而路由表除了可以手动进行编写外，也可以使用 RIP(Routing Information Protocol) 来根据距离进行生成。</p>
+<p>IP 协议是 “Best Effort” 式的，也就是说是不可靠的（如果失败了就失败了），但于此同时也是的 IP 协议效率很高，至于更加可靠的传输方式，就要靠传输层实现了。</p>
+<p>除了 IP 协议之外，网络互联层一个很重要的协议是 ICMP(Internet Control Message Protocol) 协议，它介于网络层和传输层，主要功能是传输网络诊断信息。我们常用的 <code>ping</code> 命令就是基于 ICMP 协议的。</p>
+<h2 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h2><p>现在我们已经能在两台计算机之间进行通信了，但是问题来了，每个计算机有不同的进程，如果我想指定找远方计算机的某个进程要怎么办呢，IP 协议又不够用了。所以传输层协议(TCP, UDP)使用端口号来标注进程，在传输数据的时候，我们写上目的进程的端口。当数据到达另一台计算机时，会根据传输层协议，识别端口号，将信送给不同的进程。</p>
+<p>传输层最重要的协议是 TCP 协议和 UDP 协议。TCP 协议复杂但传输可靠，UDP 协议简单但传输不可靠，接下来我们来简单了解一下这俩协议。</p>
+<h3 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h3><p>UDP 协议其实并没有在 IP 协议的基础上做太多额外的工作，主要是为 IP 协议增加了端口的支持，头部如下：</p>
+<p><img src="/images/14551394375473.jpg" alt=""></p>
+<p>从上图就可以看到，UDP 的头部很短，只是额外包含了端口信息，可以看作是 IP 协议暴露在传输层上的接口。</p>
+<h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><p>TCP(Transportation Control Protocol)协议与 IP 协议是一同产生的，或者说，他俩一开始就是同一个协议，后来才被拆开的。TCP 因为实现了『流』式通信，在特定场景中非常有用。具体『流』式通信的实现这里就不展开了，我们来看看 TCP 协议的头部大概就知道它要比 UDP 复杂多少了：</p>
+<p><img src="/images/14551394884094.jpg" alt=""></p>
+<p>在 TCP 传输数据之前，需要先进行连接，这个过程就是我们常说的 TCP 三次握手(three-way handshaking)。而结束联结的时候也需要进行双方互相确认的工作，就是我们常说的 TCP 四次挥手。</p>
+<p>TCP 是一个非常复杂的协议，感兴趣的同学可以在参考链接中找到非常详细的说明，这里我就不再赘述了。</p>
+<h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>传输层协议其实在大部分时候已经能够满足我们的需求，但是随着网络应用的增加，不同类型的应用也慢慢有了自己的一套规则，就是我们所说的应用层协议了，比如 HTTP, FTP, IMAP, DNS 等等。这里我们简单介绍一下 HTTP 协议。</p>
+<p>HTTP 使用的是『请求(request)』-『回复(response)』机制，客户端向服务器发送请求，而服务器给客户端发送回复。具体回复的状态会在返回的信息中以状态码的形式进行表示。早期发送请求的时候，都需要重新进行 TCP 连接，网络开销很大，同时每次的通信也是无状态的(stateless)。现在 HTTP 协议允许 TCP 链接复用，但是这种无状态的特性依然保留了下来。</p>
+<h2 id="试一试"><a href="#试一试" class="headerlink" title="试一试"></a>试一试</h2><ol>
+<li>访问 wdxtub.com，看看在这个过程中数据是如何传输的</li>
+<li>试着 ping 一些地址，看看返回的信息是什么</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文中我们简单了解了计算机网络的基本概念和常用协议，如果有需要，会在后面的系列中进行深入讲解。</p>
+<p>（写此文时精神状态不佳，振作后再进行修订）</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://read.douban.com/column/1788114/" target="_blank" rel="external">协议森林 - 趣话网络协议</a></li>
+<li><a href="http://www.cnblogs.com/vamei/p/3784866.html" target="_blank" rel="external">Mac OS X 网络诊断命令</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;如果说计算机科学中最重要的概念是抽象，那么『分层』绝对有资格争榜眼，再不济也是一个探花。计算机网络是最能代表『分层』思想的概念，本文我们就来了解一下计算机网络中的各种协议。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="不周山" scheme="http://wdxtub.com/tags/%E4%B8%8D%E5%91%A8%E5%B1%B1/"/>
+    
+      <category term="网络协议" scheme="http://wdxtub.com/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【不周山之计算机基础】Linux 概念指南</title>
+    <link href="http://wdxtub.com/2016/12/03/bzs-linux-concept-guide/"/>
+    <id>http://wdxtub.com/2016/12/03/bzs-linux-concept-guide/</id>
     <published>2016-12-03T00:19:09.000Z</published>
-    <updated>2016-12-03T06:27:20.000Z</updated>
+    <updated>2016-12-03T06:37:02.000Z</updated>
     
     <content type="html"><![CDATA[<p>如果说计算机科学的三大浪漫是操作系统、编译原理和计算机图形学的话，谈及操作系统，Linux 就一定是那个程序员对它又爱又恨的存在。本文带大家了解 Linux 中的基本概念和原理，正所谓知其然也要知其所以然。</p>
 <a id="more"></a>
@@ -30,7 +138,8 @@
 <li>2016.12.03: 初稿完成</li>
 </ul>
 <h2 id="系列目录"><a href="#系列目录" class="headerlink" title="系列目录"></a>系列目录</h2><ul>
-<li><a href="http://wdxtub.com/2016/12/03/linux-concept-guide/">Linux 概念指南</a></li>
+<li><a href="http://wdxtub.com/2016/12/03/bzs-linux-concept-guide/">Linux 概念指南</a></li>
+<li><a href="http://wdxtub.com/2016/12/03/bzs-network-protocol-guide/">计算机网络协议指南</a></li>
 </ul>
 <h2 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h2><ol>
 <li>了解 Linux 的基本概念</li>
@@ -2541,49 +2650,6 @@
       <category term="平台" scheme="http://wdxtub.com/tags/%E5%B9%B3%E5%8F%B0/"/>
     
       <category term="业界" scheme="http://wdxtub.com/tags/%E4%B8%9A%E7%95%8C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>第二十三周 - 少年壮志不言愁</title>
-    <link href="http://wdxtub.com/2016/11/18/youth-dream/"/>
-    <id>http://wdxtub.com/2016/11/18/youth-dream/</id>
-    <published>2016-11-18T11:20:51.000Z</published>
-    <updated>2016-11-18T15:15:08.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>几度风雨几度春秋，风霜雪雨博激流。历尽苦难痴心不改，少年壮志不言愁。</p>
-<a id="more"></a>
-<hr>
-<p>这周发生的事情有点多，多到我已经有点记不太清楚顺序。在回家的动车上写周记，就写到哪儿是哪儿吧。如果要一句话总结的话就是：我很满意，我已经使出了洪荒之力!!!</p>
-<p>周一去看了传说中的『超级月亮』，虽然兴致勃勃带着新买的相机，但是发现镜头吃紧并没有办法拍出像样的月亮，于是『赏月』之旅变成了『自拍』练习。遗憾的是在暗光场景下我对相机的使用简直直逼『智障』，只能恬不知耻地说一句：技术不够颜值来凑。</p>
-<p>周二迎来了公司篮球赛小组赛的最后一场，带着两战皆负提前出局的心态，我们部门的六个人迎来了最后一场的荣誉之战。大家没有看错，就是六个人的球队要打全场。前三节比分紧紧咬住甚至还略微有些领先，最后一节我们深陷犯规泥潭。早早领到第四次犯规的我（五次就罚下场）防守基本靠眼神和吼叫，最后一次快攻后我的得分定格在 12 分，最终我们以 19 比 23 败北。但是这已经是我们得分最多且失分最少的一场了，大家能一起在场上奔跑，本身就是很美好的事情，只是希望以后部门的活动大家都能参与进来，不能聚餐积极打球就当逃兵啊。</p>
-<p>写到这儿忽然想起来周末沿着海边跑了 13 公里时候的感觉，不轻松但是特别畅快。生活中的很多感悟，其实都能在一次跑步中一次兑现。从一开始的斗志满满到临近极限的艰难再到突破自己的喜悦，不由得想，原地踏步的人看不到新的风景，眼里只有终点的人无暇欣赏一路的风景，只有方向坚定但是又不拘泥于此的人才能真正享受探索和发现的旅程。</p>
-<p>前两天博客的访问量突破 20 万了，因为是在 10 万的时候才记下了日子，所以只知道第二个十万花了 74 天，希望第三个十万能少花几天（慢慢进步，我不贪心）。这个周末终于腾出了一点时间来打理一下博客，把几个系列都开了出来：</p>
-<ul>
-<li>小土刀玩摄影：用来记录我学习摄影的经历</li>
-<li>小土刀的剪报本：用来取代之前的『一周读报』系列，收集我平时看到的比较有价值的信息</li>
-</ul>
-<p>周末应该会把最近构造日志系统的各种经验汇总成一个新的系列，把之前若干分散的文章整合成一个可操作易上手的系列，争取让读者看完这个系列之后也能快速搭建起这样一套集中化日志监控系统。</p>
-<p>之所以想要把之前的技术文章系列化作品化，其实也是受机械工业出版社华章分社（学计算机的应该非常熟悉了）温姚二位老师的启发和影响。回想半年前因创作《读厚/读薄 CSAPP》系列结缘，到今天拿到还未上市的 CSAPP 第三版中文版，能和二位奋斗在计算机教育第一线的先锋聊聊人生聊聊理想，真的倍感荣幸，也确实的感受到，自己能为这片我深爱的土地和在这之上生活着的人们做些什么。期间聊到计算机基础教育的现状，不由得提到了母校中山大学。作为和 CMU 联合办学的第一批走向社会的学生，真的是非常幸运，赶上了『好时候』。曾经软件学院的李文军院长其实一直非常注重培养学生的软硬结合能力，尤其在 CMU 进行了深入学习之后，才更能够理解院长的一片苦心。可惜的是最近因为各种架构和人员的调整，风雨飘摇，原先计划的若干合作也不得不转为其他的形式。</p>
-<p><img src="/images/14794821052176.jpg" alt=""></p>
-<p>深入理解计算机系统（即 CSAPP）是一本非常值得每个计算机软硬件的同学学习的教材，二位老师和我都希望能尽自己的努力，想各种办法弥补暂时和国外一流大学师资上的差距，让更多想要迈入计算机学科大门的同学，能有一个更好的起跑。这里先偷偷剧透一下，之后可能会联合北大清华复旦大学的教授以在线公开课或者学习社区的形式来和大家一起学习 CSAPP，我也会以『助教』的角色陪大家一起成长。欢迎更多对此感兴趣的同学能够参与进来，毕竟少年强则国强嘛。</p>
-<p>最后说说工作，近一个月来一直在开发的保密项目终于完成了核心系统的开发，一个人把产品经理项目经理架构师前端后端运维的事儿都做了个遍（后来有了小伙伴轻松了不少），算是强行把前端的基本技能给点亮了。临下班前跟二老板说了一下自己之后的想法，因为保密项目的开发接近尾声，后面会空出来一些时间，会继续把 UTM 和数据平台的事情做起来。不过对我来说最大的收获反而算是第一次真正跟二老板沟通自己的想法，让老大知道自己在做什么，还是很重要滴。</p>
-<p>在一个飞速发展的公司，能够参与到最前沿的工作，这种没有任何攻略的挑战，其实是非常刺激的。我可能不是一个愿意在轨道上安安稳稳前进的人，我不想要有这样一条轨道，我想要尝试各种可能。在老板眼皮底下干活，逼着自己完成工作的同时，眼界要更宽，思维要更严密。虽然谈不上轻松，但是被逼迫着快速成长，也是很有意思的经历。再说了，我也相信自己一定能搞定。</p>
-<p>峥嵘岁月，何惧风流，危难之处显身手。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;几度风雨几度春秋，风霜雪雨博激流。历尽苦难痴心不改，少年壮志不言愁。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
-    
-    
-      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
-    
-      <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
     
   </entry>
   
