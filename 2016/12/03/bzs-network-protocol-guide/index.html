@@ -92,14 +92,15 @@
 <meta property="og:url" content="http://wdxtub.com/2016/12/03/bzs-network-protocol-guide/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="如果说计算机科学中最重要的概念是抽象，那么『分层』绝对有资格争榜眼，再不济也是一个探花。计算机网络是最能代表『分层』思想的概念，本文我们就来了解一下计算机网络中的各种协议。">
+<meta property="og:image" content="http://wdxtub.com/images/14808113173928.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14551392855125.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14551394375473.jpg">
 <meta property="og:image" content="http://wdxtub.com/images/14551394884094.jpg">
-<meta property="og:updated_time" content="2016-12-03T09:56:56.000Z">
+<meta property="og:updated_time" content="2016-12-04T00:29:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【不周山之计算机基础】计算机网络协议指南">
 <meta name="twitter:description" content="如果说计算机科学中最重要的概念是抽象，那么『分层』绝对有资格争榜眼，再不济也是一个探花。计算机网络是最能代表『分层』思想的概念，本文我们就来了解一下计算机网络中的各种协议。">
-<meta name="twitter:image" content="http://wdxtub.com/images/14551392855125.jpg">
+<meta name="twitter:image" content="http://wdxtub.com/images/14808113173928.jpg">
 
 
 
@@ -350,8 +351,8 @@
                 <i class="fa fa-calendar-check-o"></i>
               </span>
               <span class="post-meta-item-text">更新于</span>
-              <time title="更新于" itemprop="dateModified" datetime="2016-12-03T17:56:56+08:00">
-                2016-12-03
+              <time title="更新于" itemprop="dateModified" datetime="2016-12-04T08:29:47+08:00">
+                2016-12-04
               </time>
             
           </span>
@@ -439,12 +440,14 @@
 <p>下面就开始分别介绍这四层的基本概念和重要的协议。</p>
 <h2 id="网络接口层"><a href="#网络接口层" class="headerlink" title="网络接口层"></a>网络接口层</h2><p>网络接口层的基础是光纤、电缆或者电磁波等真实存在的物理媒介。对于数字应用来说，我们只需要两种物理信号来分别表示 0 和 1，比如用高电压表示 1，低电压表示 0，就构成了简单的物理层协议。针对某种媒介，电脑可以有相应的接口，用来接收物理信号，并解读成为 0/1 序列</p>
 <p>在这些介质中，信息以『帧(frame)』为单位传输。所谓的帧，是一段有限的 0/1 序列。连接层协议的功能就是识别 0/1 序列中所包含的帧。比如说，根据一定的 0/1 组合识别出帧的起始和结束。在帧中，有收信地址(Source, SRC)和送信地址(Destination, DST)，还有能够探测错误的校验序列(Frame Check Sequence)。当然，帧中最重要的最重要是所要传输的数据(payload)。这些数据往往符合更高层协议，供网络的上层使用。与数据相配套，帧中也有数据的类型(Type)信息。连接层协议不关心数据中到底包含什么。帧就像是一个信封，把数据包裹起来。</p>
-<h3 id="深入理解帧-Frame"><a href="#深入理解帧-Frame" class="headerlink" title="深入理解帧(Frame)"></a>深入理解帧(Frame)</h3><p>帧的结构很简单，一共三部分：<code>头部 | 数据(Payload) | 尾部</code>，发送时由头发送到尾，其中：</p>
+<h3 id="深入理解帧-Frame"><a href="#深入理解帧-Frame" class="headerlink" title="深入理解帧(Frame)"></a>深入理解帧(Frame)</h3><p><img src="/images/14808113173928.jpg" alt=""></p>
+<p>帧的结构很简单，一共三部分：<code>头部 | 数据(Payload) | 尾部</code>，发送时由头发送到尾，其中：</p>
 <ul>
-<li>头部: <code>Preamble SFD DST SRC Type</code></li>
+<li>头部: <code>DST SRC Type</code></li>
 <li>数据: <code>Payload(Data)</code></li>
 <li>尾部: <code>Pad FCS Extension</code></li>
 </ul>
+<p>更正：<code>Preamble</code> 和 <code>SFD</code> 如上图所示是 packet 的一部分，具体参考 <a href="https://en.m.wikipedia.org/wiki/Ethernet_frame" target="_blank" rel="external">这里</a></p>
 <p>我知道看到这些奇奇怪怪的单词大家一定一头雾水，不要紧张，这就来一个一个解释：</p>
 <ul>
 <li>Preamble: 翻译过来叫序言，是一帧的前 7 个字节，每个字节都是 <code>10101010</code>，所以合起来大概样子是 <code>10101010101010101010101010101010101010101010101010101010</code>。这是要干嘛？对表！为什么要对表！因为不同的网卡发送/接收的频率可能是不一样的，所以就通过这些 1010 来让彼此找到节奏，这个过程叫做时钟复原(recover the clock)</li>
@@ -661,7 +664,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">750</span>
+              <span class="site-state-item-count">751</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
