@@ -1,0 +1,2237 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="编程,风格,Cpp," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="距离我第一次接触 Google Cpp 编码风格指南已经过去了八年，现在再来看看，感觉别有一番风味。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cpp 编码风格指南">
+<meta property="og:url" content="http://wdxtub.com/2017/01/29/cpp-style-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="距离我第一次接触 Google Cpp 编码风格指南已经过去了八年，现在再来看看，感觉别有一番风味。">
+<meta property="og:updated_time" content="2017-01-29T07:17:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cpp 编码风格指南">
+<meta name="twitter:description" content="距离我第一次接触 Google Cpp 编码风格指南已经过去了八年，现在再来看看，感觉别有一番风味。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '4016951',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wdxtub.com/2017/01/29/cpp-style-guide/"/>
+
+
+
+
+
+  <title> Cpp 编码风格指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=59042340";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-work">
+          <a href="/2016/09/11/work-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wifi"></i> <br />
+            
+            不周山
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tech">
+          <a href="/2009/09/11/tech-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gear"></i> <br />
+            
+            通天塔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/1990/09/11/life-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-compass"></i> <br />
+            
+            好望角
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/1997/09/11/booklist-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书影音
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://wdxtub.com/2017/01/29/cpp-style-guide/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="wdxtub">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/misc/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="小土刀">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="小土刀" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Cpp 编码风格指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-29T09:33:22+08:00">
+                2017-01-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              <span class="post-meta-item-text">更新于</span>
+              <time title="更新于" itemprop="dateModified" datetime="2017-01-29T15:17:30+08:00">
+                2017-01-29
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/01/29/cpp-style-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/29/cpp-style-guide/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>距离我第一次接触 Google Cpp 编码风格指南已经过去了八年，现在再来看看，感觉别有一番风味。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.01.29: 完成初稿</li>
+</ul>
+<p>本文来源于 <a href="https://github.com/zh-google-styleguide/zh-google-styleguide" target="_blank" rel="external">Google 开源项目风格指南 (中文版) </a>，版本 4.45。感谢原作者和译者的付出。这里主要是整理一下，方便自己阅读。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>C++ 是 Google 大部分开源项目的主要编程语言. 正如每个 C++ 程序员都知道的, C++ 有很多强大的特性, 但这种强大不可避免的导致它走向复杂，使代码更容易产生 bug, 难以阅读和维护.</p>
+<p>本指南的目的是通过详细阐述 C++ 注意事项来驾驭其复杂性. 这些规则在保证代码易于管理的同时, 也能高效使用 C++ 的语言特性.</p>
+<p>风格, 亦被称作可读性, 也就是指导 C++ 编程的约定. 使用术语 “风格” 有些用词不当, 因为这些习惯远不止源代码文件格式化这么简单.</p>
+<p>使代码易于管理的方法之一是加强代码一致性. 让任何程序员都可以快速读懂你的代码这点非常重要. 保持统一编程风格并遵守约定意味着可以很容易根据 “模式匹配” 规则来推断各种标识符的含义. 创建通用, 必需的习惯用语和模式可以使代码更容易理解. 在一些情况下可能有充分的理由改变某些编程风格, 但我们还是应该遵循一致性原则，尽量不这么做.</p>
+<p>本指南的另一个观点是 C++ 特性的臃肿. C++ 是一门包含大量高级特性的庞大语言. 某些情况下, 我们会限制甚至禁止使用某些特性. 这么做是为了保持代码清爽, 避免这些特性可能导致的各种问题. 指南中列举了这类特性, 并解释为什么这些特性被限制使用.</p>
+<p>Google 主导的开源项目均符合本指南的规定.</p>
+<p>注意: 本指南并非 C++ 教程, 我们假定读者已经对 C++ 非常熟悉.</p>
+<h2 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h2><p>通常每一个 <code>.cc</code> 文件都有一个对应的 <code>.h</code> 文件. 也有一些常见例外, 如单元测试代码和只包含 <code>main()</code> 函数的 <code>.cc</code> 文件.</p>
+<p>正确使用头文件可令代码在可读性、文件大小和性能上大为改观.</p>
+<p>下面的规则将引导你规避使用头文件时的各种陷阱.</p>
+<h3 id="Self-contained-头文件"><a href="#Self-contained-头文件" class="headerlink" title="Self-contained 头文件"></a>Self-contained 头文件</h3><blockquote>
+<p>头文件应该能够自给自足（self-contained,也就是可以作为第一个头文件被引入），以 <code>.</code>h 结尾。至于用来插入文本的文件，说到底它们并不是头文件，所以应以 <code>.inc</code> 结尾。不允许分离出 <code>-inl.h</code> 头文件的做法.</p>
+</blockquote>
+<p>所有头文件要能够自给自足。换言之，用户和重构工具不需要为特别场合而包含额外的头文件。详言之，一个头文件要有 <code>#define</code> 保护，统统包含它所需要的其它头文件，也不要求定义任何特别 symbols.</p>
+<p>不过有一个例外，即一个文件并不是 self-contained 的，而是作为文本插入到代码某处。或者，文件内容实际上是其它头文件的特定平台（platform-specific）扩展部分。这些文件就要用 <code>.inc</code> 文件扩展名。</p>
+<p>如果 <code>.h</code> 文件声明了一个模板或内联函数，同时也在该文件加以定义。凡是有用到这些的 <code>.cc</code> 文件，就得统统包含该头文件，否则程序可能会在构建中链接失败。不要把这些定义放到分离的 <code>-inl.h</code> 文件里（译者注：过去该规范曾提倡把定义放到 <code>-inl.h</code> 里过）。</p>
+<p>有个例外：如果某函数模板为所有相关模板参数显式实例化，或本身就是某类的一个私有成员，那么它就只能定义在实例化该模板的 <code>.cc</code> 文件里。</p>
+<h3 id="define-保护"><a href="#define-保护" class="headerlink" title="#define 保护"></a>#define 保护</h3><blockquote>
+<p>所有头文件都应该使用 <code>#define</code> 来防止头文件被多重包含, 命名格式当是: <code>&lt;PROJECT&gt;_&lt;PATH&gt;_&lt;FILE&gt;_H_</code> .<br>为保证唯一性, 头文件的命名应该基于所在项目源代码树的全路径. 例如, 项目 <code>foo</code> 中的头文件 <code>foo/src/bar/baz.h</code> 可按如下方式保护:</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> FOO_BAR_BAZ_H_</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> FOO_BAR_BAZ_H_</span></div><div class="line">…</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// FOO_BAR_BAZ_H_</span></span></div></pre></td></tr></table></figure>
+<h3 id="前置声明"><a href="#前置声明" class="headerlink" title="前置声明"></a>前置声明</h3><blockquote>
+<p>尽可能地避免使用前置声明。使用 #include 包含需要的头文件即可。</p>
+</blockquote>
+<p><strong>定义：</strong></p>
+<p>所谓「前置声明」（forward declaration）是类、函数和模板的纯粹声明，没伴随着其定义.</p>
+<p><strong>优点：</strong></p>
+<ul>
+<li>前置声明能够节省编译时间，多余的 <code>#include</code> 会迫使编译器展开更多的文件，处理更多的输入。</li>
+<li>前置声明能够节省不必要的重新编译的时间。 <code>#include</code> 使代码因为头文件中无关的改动而被重新编译多次。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>前置声明隐藏了依赖关系，头文件改动时，用户的代码会跳过必要的重新编译过程。</li>
+<li>前置声明可能会被库的后续更改所破坏。前置声明函数或模板有时会妨碍头文件开发者变动其 API. 例如扩大形参类型，加个自带默认参数的模板形参等等。</li>
+<li>前置声明来自命名空间 <code>std::</code> 的 symbol 时，其行为未定义。</li>
+<li>很难判断什么时候该用前置声明，什么时候该用 <code>#include</code> 。极端情况下，用前置声明代替 <code>includes</code> 甚至都会暗暗地改变代码的含义：</li>
+</ul>
+<p>如果 <code>#include</code> 被 B 和 D 的前置声明替代，<code>test()</code> 就会调用 <code>f(void*)</code> . </p>
+<ul>
+<li>前置声明了不少来自头文件的 symbol 时，就会比单单一行的 <code>include</code> 冗长。</li>
+<li>仅仅为了能前置声明而重构代码（比如用指针成员代替对象成员）会使代码变得更慢更复杂.</li>
+</ul>
+<p><strong>结论</strong>：</p>
+<ul>
+<li>尽量避免前置声明那些定义在其他项目中的实体.</li>
+<li>函数：总是使用 <code>#include</code>.</li>
+<li>类模板：优先使用 <code>#include</code>.</li>
+</ul>
+<p>至于什么时候包含头文件，参见 name-and-order-of-includes。</p>
+<h3 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h3><blockquote>
+<p>只有当函数只有 10 行甚至更少时才将其定义为内联函数.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>当函数被声明为内联函数之后, 编译器会将其内联展开, 而不是按通常的函数调用机制进行调用.</p>
+<p><strong>优点:</strong></p>
+<p>只要内联的函数体较小, 内联该函数可以令目标代码更加高效. 对于存取函数以及其它函数体比较短, 性能关键的函数, 鼓励使用内联.</p>
+<p><strong>缺点:</strong></p>
+<p>滥用内联将导致程序变得更慢. 内联可能使目标代码量或增或减, 这取决于内联函数的大小. 内联非常短小的存取函数通常会减少代码大小, 但内联一个相当大的函数将戏剧性的增加代码大小. 现代处理器由于更好的利用了指令缓存, 小巧的代码往往执行更快。</p>
+<p><strong>结论:</strong></p>
+<p>一个较为合理的经验准则是, 不要内联超过 10 行的函数. 谨慎对待析构函数, 析构函数往往比其表面看起来要更长, 因为有隐含的成员和基类析构函数被调用!</p>
+<p>另一个实用的经验准则: 内联那些包含循环或 <code>switch</code> 语句的函数常常是得不偿失 (除非在大多数情况下, 这些循环或 <code>switch</code> 语句从不被执行).</p>
+<p>有些函数即使声明为内联的也不一定会被编译器内联, 这点很重要; 比如虚函数和递归函数就不会被正常内联. 通常, 递归函数不应该声明成内联函数.（YuleFox 注: 递归调用堆栈的展开并不像循环那么简单, 比如递归层数在编译时可能是未知的, 大多数编译器都不支持内联递归函数). 虚函数内联的主要原因则是想把它的函数体放在类定义内, 为了图个方便, 抑或是当作文档描述其行为, 比如精短的存取函数.</p>
+<h3 id="include-的路径及顺序"><a href="#include-的路径及顺序" class="headerlink" title="#include 的路径及顺序"></a>#include 的路径及顺序</h3><blockquote>
+<p>使用标准的头文件包含顺序可增强可读性, 避免隐藏依赖: 相关头文件, C 库, C++ 库, 其他库的 .h, 本项目内的 .h.</p>
+</blockquote>
+<p>项目内头文件应按照项目源代码目录树结构排列, 避免使用 UNIX 特殊的快捷目录 <code>.</code> (当前目录) 或 <code>..</code> (上级目录). 例如, <code>google-awesome-project/src/base/logging.h</code> 应该按如下方式包含:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"base/logging.h"</span></span></div></pre></td></tr></table></figure>
+<p>又如, <code>dir/foo.cc</code> 的主要作用是实现或测试 <code>dir2/foo2.h</code> 的功能, <code>foo.cc</code> 中包含头文件的次序如下:</p>
+<ol>
+<li><code>dir2/foo2.h</code> (优先位置, 详情如下)</li>
+<li>C 系统文件</li>
+<li>C++ 系统文件</li>
+<li>其他库的 <code>.h</code> 文件</li>
+<li>本项目内 <code>.h</code> 文件</li>
+</ol>
+<p>这种优先的顺序排序保证当 <code>dir2/foo2.h</code> 遗漏某些必要的库时， <code>dir/foo.cc</code> 或 <code>dir/foo_test.cc</code> 的构建会立刻中止。因此这一条规则保证维护这些文件的人们首先看到构建中止的消息而不是维护其他包的人们。</p>
+<p><code>dir/foo.cc</code> 和 <code>dir2/foo2.h</code> 通常位于同一目录下 (如 <code>base/basictypes_unittest.cc</code> 和 <code>base/basictypes.h</code>), 但也可以放在不同目录下.</p>
+<p>按字母顺序对头文件包含进行二次排序是不错的主意。注意较老的代码可不符合这条规则，要在方便的时候改正它们。</p>
+<p>您所依赖的 symbols 被哪些头文件所定义，您就应该包含（include）哪些头文件，forward-declaration 情况除外。比如您要用到 <code>bar.h</code> 中的某个 symbol, 哪怕您所包含的 <code>foo.h</code> 已经包含了 <code>bar.h</code>, 也照样得包含 <code>bar.h</code>, 除非 <code>foo.h</code> 有明确说明它会自动向您提供 <code>bar.h</code> 中的 symbol. 不过，凡是 cc 文件所对应的「相关头文件」已经包含的，就不用再重复包含进其 cc 文件里面了，就像 <code>foo.cc</code> 只包含 <code>foo.h</code> 就够了，不用再管后者所包含的其它内容。</p>
+<p>举例来说, <code>google-awesome-project/src/foo/internal/fooserver.cc</code> 的包含次序如下:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"foo/public/fooserver.h"</span> <span class="comment">// 优先位置</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;hash_map&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"base/basictypes.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"base/commandlineflags.h"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"foo/public/bar.h"</span></span></div></pre></td></tr></table></figure>
+<p><strong>例外：</strong></p>
+<p>有时，平台特定（system-specific）代码需要条件编译（conditional includes），这些代码可以放到其它 includes 之后。当然，您的平台特定代码也要够简练且独立，比如：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"foo/public/fooserver.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"base/port.h"</span>  <span class="comment">// For LANG_CXX11.</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> LANG_CXX11</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;initializer_list&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span>  <span class="comment">// LANG_CXX11</span></span></div></pre></td></tr></table></figure>
+<p>译者 (YuleFox) 笔记</p>
+<ol>
+<li>避免多重包含是学编程时最基本的要求;</li>
+<li>前置声明是为了降低编译依赖，防止修改一个头文件引发多米诺效应;</li>
+<li>内联函数的合理使用可提高代码执行效率;</li>
+<li><code>-inl.h</code> 可提高代码可读性 (一般用不到吧:D);</li>
+<li>标准化函数参数顺序可以提高可读性和易维护性 (对函数参数的堆栈空间有轻微影响, 我以前大多是相同类型放在一起);</li>
+<li>包含文件的名称使用 <code>.</code> 和 <code>..</code> 虽然方便却易混乱, 使用比较完整的项目路径看上去很清晰, 很条理, 包含文件的次序除了美观之外, 最重要的是可以减少隐藏依赖, 使每个头文件在 “最需要编译” (对应源文件处 :D) 的地方编译, 有人提出库文件放在最后, 这样出错先是项目内的文件, 头文件都放在对应源文件的最前面, 这一点足以保证内部错误的及时发现了.</li>
+</ol>
+<p>译者（acgtyrant）笔记</p>
+<ol>
+<li>原来还真有项目用 <code>#includes</code> 来插入文本，且其文件扩展名 <code>.inc</code> 看上去也很科学。</li>
+<li>Google 已经不再提倡 <code>-inl.h</code> 用法。</li>
+<li>注意，前置声明的类是不完全类型（incomplete type），我们只能定义指向该类型的指针或引用，或者声明（但不能定义）以不完全类型作为参数或者返回类型的函数。毕竟编译器不知道不完全类型的定义，我们不能创建其类的任何对象，也不能声明成类内部的数据成员。</li>
+<li>类内部的函数一般会自动内联。所以某函数一旦不需要内联，其定义就不要再放在头文件里，而是放到对应的 <code>.cc</code> 文件里。这样可以保持头文件的类相当精炼，也很好地贯彻了声明与定义分离的原则。</li>
+<li>在 <code>#include</code> 中插入空行以分割相关头文件, C 库, C++ 库, 其他库的 <code>.h</code> 和本项目内的 <code>.h</code> 是个好习惯。</li>
+</ol>
+<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><h3 id="名字空间"><a href="#名字空间" class="headerlink" title="名字空间"></a>名字空间</h3><blockquote>
+<p>鼓励在 <code>.cc</code> 文件内使用匿名名字空间. 使用具名的名字空间时, 其名称可基于项目名或相对路径. 禁止使用 using 指示（using-directive）。禁止使用内联命名空间（inline namespace）。</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>名字空间将全局作用域细分为独立的, 具名的作用域, 可有效防止全局作用域的命名冲突.</p>
+<p><strong>优点:</strong></p>
+<p>虽然类已经提供了（可嵌套的）命名轴线 (YuleFox 注: 将命名分割在不同类的作用域内), 名字空间在这基础上又封装了一层.</p>
+<p>举例来说, 两个不同项目的全局作用域都有一个类 <code>Foo</code>, 这样在编译或运行时造成冲突. 如果每个项目将代码置于不同名字空间中, <code>project1::Foo</code> 和 <code>project2::Foo</code> 作为不同符号自然不会冲突.</p>
+<p>内联命名空间会自动把内部的标识符放到外层作用域，比如：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">namespace</span> X &#123;</div><div class="line"><span class="keyword">inline</span> <span class="keyword">namespace</span> Y &#123;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>X::Y::foo()</code> 与 <code>X::foo()</code> 彼此可代替。内联命名空间主要用来保持跨版本的 ABI 兼容性。</p>
+<p><strong>缺点:</strong></p>
+<p>名字空间具有迷惑性, 因为它们和类一样提供了额外的 (可嵌套的) 命名轴线.</p>
+<p>命名空间很容易令人迷惑，毕竟它们不再受其声明所在命名空间的限制。内联命名空间只在大型版本控制里有用。</p>
+<p>在头文件中使用匿名空间导致违背 C++ 的唯一定义原则 (One Definition Rule (ODR)).</p>
+<p><strong>结论:</strong></p>
+<p>根据下文将要提到的策略合理使用命名空间.</p>
+<h4 id="匿名名字空间"><a href="#匿名名字空间" class="headerlink" title="匿名名字空间"></a>匿名名字空间</h4><p>在 <code>.cc</code> 文件中, 允许甚至鼓励使用匿名名字空间, 以避免运行时的命名冲突:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">namespace</span> &#123;                             <span class="comment">// .cc 文件中</span></div><div class="line"></div><div class="line"><span class="comment">// 名字空间的内容无需缩进</span></div><div class="line"><span class="keyword">enum</span> &#123; kUNUSED, kEOF, kERROR &#125;;         <span class="comment">// 经常使用的符号</span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">AtEof</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> pos_ == kEOF; &#125;   <span class="comment">// 使用本名字空间内的符号 EOF</span></div><div class="line"></div><div class="line">&#125; <span class="comment">// namespace</span></div></pre></td></tr></table></figure>
+<p>然而, 与特定类关联的文件作用域声明在该类中被声明为类型, 静态数据成员或静态成员函数, 而不是匿名名字空间的成员. 如上例所示, 匿名空间结束时用注释 <code>// namespace</code> 标识.</p>
+<p>不要在 <code>.h</code> 文件中使用匿名名字空间.</p>
+<h4 id="具名的名字空间"><a href="#具名的名字空间" class="headerlink" title="具名的名字空间"></a>具名的名字空间</h4><p>具名的名字空间使用方式如下:</p>
+<p>用名字空间把文件包含, gflags 的声明/定义, 以及类的前置声明以外的整个源文件封装起来, 以区别于其它名字空间:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// .h 文件</span></div><div class="line"><span class="keyword">namespace</span> mynamespace &#123;</div><div class="line"></div><div class="line"><span class="comment">// 所有声明都置于命名空间中</span></div><div class="line"><span class="comment">// 注意不要使用缩进</span></div><div class="line"><span class="keyword">class</span> MyClass &#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line">    …</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Foo</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">&#125; <span class="comment">// namespace mynamespace</span></div><div class="line"><span class="comment">// .cc 文件</span></div><div class="line"><span class="keyword">namespace</span> mynamespace &#123;</div><div class="line"></div><div class="line"><span class="comment">// 函数定义都置于命名空间中</span></div><div class="line"><span class="keyword">void</span> MyClass::Foo() &#123;</div><div class="line">    …</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125; <span class="comment">// namespace mynamespace</span></div></pre></td></tr></table></figure>
+<p>通常的 <code>.cc</code> 文件包含更多, 更复杂的细节, 比如引用其他名字空间的类等.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> “a.h”</span></div><div class="line"></div><div class="line">DEFINE_bool(someflag, <span class="literal">false</span>, “dummy flag”);</div><div class="line"></div><div class="line"><span class="keyword">class</span> C;                    <span class="comment">// 全局名字空间中类 C 的前置声明</span></div><div class="line"><span class="keyword">namespace</span> a &#123; <span class="keyword">class</span> A; &#125;    <span class="comment">// a::A 的前置声明</span></div><div class="line"></div><div class="line"><span class="keyword">namespace</span> b &#123;</div><div class="line"></div><div class="line">…code <span class="keyword">for</span> b…                <span class="comment">// b 中的代码</span></div><div class="line"></div><div class="line">&#125; <span class="comment">// namespace b</span></div></pre></td></tr></table></figure>
+<p>不要在名字空间 <code>std</code> 内声明任何东西, 包括标准库的类前置声明. 在 <code>std</code> 名字空间声明实体会导致不确定的问题, 比如不可移植. 声明标准库下的实体, 需要包含对应的头文件.</p>
+<p>最好不要使用 <code>using</code> 指示，以保证名字空间下的所有名称都可以正常使用.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 禁止 —— 污染名字空间</span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> foo;</div></pre></td></tr></table></figure>
+<p>在 <code>.cc</code> 文件, <code>.h</code> 文件的函数, 方法或类中, 可以使用 using 声明。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 允许: .cc 文件中</span></div><div class="line"><span class="comment">// .h 文件的话, 必须在函数, 方法或类的内部使用</span></div><div class="line"><span class="keyword">using</span> ::foo::bar;</div></pre></td></tr></table></figure>
+<p>在 <code>.cc</code> 文件, <code>.h</code> 文件的函数, 方法或类中, 允许使用名字空间别名.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 允许: .cc 文件中</span></div><div class="line"><span class="comment">// .h 文件的话, 必须在函数, 方法或类的内部使用</span></div><div class="line"></div><div class="line"><span class="keyword">namespace</span> fbz = ::foo::bar::baz;</div><div class="line"></div><div class="line"><span class="comment">// 在 .h 文件里</span></div><div class="line"><span class="keyword">namespace</span> librarian &#123;</div><div class="line"><span class="comment">//以下别名在所有包含了该头文件的文件中生效。</span></div><div class="line"><span class="keyword">namespace</span> pd_s = ::pipeline_diagnostics::sidetable;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">my_inline_function</span><span class="params">()</span> </span>&#123;</div><div class="line">  <span class="comment">// namespace alias local to a function (or method).</span></div><div class="line">  <span class="keyword">namespace</span> fbz = ::foo::bar::baz;</div><div class="line">  ...</div><div class="line">&#125;</div><div class="line">&#125;  <span class="comment">// namespace librarian</span></div></pre></td></tr></table></figure>
+<p>注意在 <code>.h</code> 文件的别名对包含了该头文件的所有人可见，所以在公共头文件（在项目外可用）以及它们递归包含的其它头文件里，不要用别名。毕竟原则上公共 API 要尽可能地精简。<br>禁止用内联命名空间</p>
+<h3 id="嵌套类"><a href="#嵌套类" class="headerlink" title="嵌套类"></a>嵌套类</h3><blockquote>
+<p>当公有嵌套类作为接口的一部分时, 虽然可以直接将他们保持在全局作用域中, 但将嵌套类的声明置于<code>名字空间</code>内是更好的选择.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>在一个类内部定义另一个类; 嵌套类也被称为 成员类 (member class).</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">class</span> Foo &#123;</div><div class="line"></div><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="comment">// Bar是嵌套在Foo中的成员类</span></div><div class="line">    <span class="keyword">class</span> Bar &#123;</div><div class="line">        …</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><strong>优点:</strong></p>
+<p>当嵌套 (或成员) 类只被外围类使用时非常有用; 把它作为外围类作用域内的成员, 而不是去污染外部作用域的同名类. 嵌套类可以在外围类中做前置声明, 然后在 <code>.cc</code> 文件中定义, 这样避免在外围类的声明中定义嵌套类, 因为嵌套类的定义通常只与实现相关.</p>
+<p><strong>缺点:</strong></p>
+<p>嵌套类只能在外围类的内部做前置声明. 因此, 任何使用了  <code>Foo::Bar*</code> 指针的头文件不得不包含类 <code>Foo</code> 的整个声明.</p>
+<p><strong>结论:</strong></p>
+<p>不要将嵌套类定义成公有, 除非它们是接口的一部分, 比如, 嵌套类含有某些方法的一组选项.</p>
+<h3 id="非成员函数、静态成员函数和全局函数"><a href="#非成员函数、静态成员函数和全局函数" class="headerlink" title="非成员函数、静态成员函数和全局函数"></a>非成员函数、静态成员函数和全局函数</h3><blockquote>
+<p>使用静态成员函数或名字空间内的非成员函数, 尽量不要用裸的全局函数.</p>
+</blockquote>
+<p><strong>优点:</strong></p>
+<p>某些情况下, 非成员函数和静态成员函数是非常有用的, 将非成员函数放在名字空间内可避免污染全局作用域.</p>
+<p><strong>缺点:</strong></p>
+<p>将非成员函数和静态成员函数作为新类的成员或许更有意义, 当它们需要访问外部资源或具有重要的依赖关系时更是如此.</p>
+<p><strong>结论:</strong></p>
+<p>有时, 把函数的定义同类的实例脱钩是有益的, 甚至是必要的. 这样的函数可以被定义成静态成员, 或是非成员函数. 非成员函数不应依赖于外部变量, 应尽量置于某个名字空间内. 相比单纯为了封装若干不共享任何静态数据的静态成员函数而创建类, 不如使用<code>名字空间</code>。</p>
+<p>定义在同一编译单元的函数, 被其他编译单元直接调用可能会引入不必要的耦合和链接时依赖; 静态成员函数对此尤其敏感. 可以考虑提取到新类中, 或者将函数置于独立库的名字空间内.</p>
+<p>如果你必须定义非成员函数, 又只是在 .cc 文件中使用它, 可使用匿名 <code>namespaces</code> 或 <code>static</code> 链接关键字 (如 <code>static int Foo() {...}</code>) 限定其作用域.</p>
+<h3 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h3><blockquote>
+<p>将函数变量尽可能置于最小作用域内, 并在变量声明时进行初始化.</p>
+</blockquote>
+<p>C++ 允许在函数的任何位置声明变量. 我们提倡在尽可能小的作用域中声明变量, 离第一次使用越近越好. 这使得代码浏览者更容易定位变量声明的位置, 了解变量的类型和初始值. 特别是，应使用初始化的方式替代声明再赋值, 比如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> i;</div><div class="line">i = f(); <span class="comment">// 坏——初始化和声明分离</span></div><div class="line"><span class="keyword">int</span> j = g(); <span class="comment">// 好——初始化时声明</span></div><div class="line"></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v;</div><div class="line">v.push_back(<span class="number">1</span>); <span class="comment">// 用花括号初始化更好</span></div><div class="line">v.push_back(<span class="number">2</span>);</div><div class="line"></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v = &#123;<span class="number">1</span>, <span class="number">2</span>&#125;; <span class="comment">// 好——v 一开始就初始化</span></div></pre></td></tr></table></figure>
+<p>注意, GCC 可正确实现了 <code>for (int i = 0; i &lt; 10; ++i)</code> (<code>i</code> 的作用域仅限 <code>for</code> 循环内), 所以其他 <code>for</code> 循环中可以重新使用 <code>i</code>. 在 <code>if</code> 和 <code>while</code> 等语句中的作用域声明也是正确的, 如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">while</span> (<span class="keyword">const</span> <span class="keyword">char</span>* p = <span class="built_in">strchr</span>(str, ‘/’)) str = p + <span class="number">1</span>;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>Warning: 如果变量是一个对象, 每次进入作用域都要调用其构造函数, 每次退出作用域都要调用其析构函数.</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 低效的实现</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; ++i) &#123;</div><div class="line">    Foo f;                  <span class="comment">// 构造函数和析构函数分别调用 1000000 次!</span></div><div class="line">    f.DoSomething(i);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在循环作用域外面声明这类变量要高效的多:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">Foo f;                      <span class="comment">// 构造函数和析构函数只调用 1 次</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; ++i) &#123;</div><div class="line">    f.DoSomething(i);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="静态和全局变量"><a href="#静态和全局变量" class="headerlink" title="静态和全局变量"></a>静态和全局变量</h3><blockquote>
+<p>禁止使用 <code>class</code> 类型的静态或全局变量：它们会导致难以发现的 bug 和不确定的构造和析构函数调用顺序。不过 <code>constexpr</code> 变量除外，毕竟它们又不涉及动态初始化或析构。</p>
+</blockquote>
+<p>静态生存周期的对象，即包括了全局变量，静态变量，静态类成员变量和函数静态变量，都必须是原生数据类型 (POD : Plain Old Data): 即 int, char 和 float, 以及 POD 类型的指针、数组和结构体。</p>
+<p>静态变量的构造函数、析构函数和初始化的顺序在 C++ 中是不确定的，甚至随着构建变化而变化，导致难以发现的 bug. 所以除了禁用类类型的全局变量，我们也不允许用函数返回值来初始化 POD 变量，除非该函数不涉及（比如 <code>getenv()</code> 或 <code>getpid()</code>）不涉及任何全局变量。（函数作用域里的静态变量除外，毕竟它的初始化顺序是有明确定义的，而且只会在指令执行到它的声明那里才会发生。）</p>
+<p>同理，全局和静态变量在程序中断时会被析构，无论所谓中断是从 <code>main()</code> 返回还是对 <code>exit()</code> 的调用。析构顺序正好与构造函数调用的顺序相反。但既然构造顺序未定义，那么析构顺序当然也就不定了。比如，在程序结束时某静态变量已经被析构了，但代码还在跑——比如其它线程——并试图访问它且失败；再比如，一个静态 <code>string</code> 变量也许会在一个引用了前者的其它变量析构之前被析构掉。</p>
+<p>改善以上析构问题的办法之一是用 <code>quick_exit()</code> 来代替 <code>exit()</code> 并中断程序。它们的不同之处是前者不会执行任何析构，也不会执行 <code>atexit()</code> 所绑定的任何 handlers. 如果您想在执行 <code>quick_exit()</code> 来中断时执行某 handler（比如刷新 log），您可以把它绑定到 <code>_at_quick_exit()</code>. 如果您想在 <code>exit()</code> 和 <code>quick_exit()</code> 都用上该 handler, 都绑定上去。</p>
+<p>综上所述，我们只允许 POD 类型的静态变量，即完全禁用 <code>vector</code> (使用 C 数组替代) 和 <code>string</code> (使用 <code>const char []</code>)。</p>
+<p>如果您确实需要一个 <code>class</code> 类型的静态或全局变量，可以考虑在 <code>main()</code> 函数或 <code>pthread_once()</code> 内初始化一个指针且永不回收。注意只能用 raw 指针，别用智能指针，毕竟后者的析构函数涉及到上文指出的不定顺序问题。</p>
+<blockquote>
+<p>Note: 上文提及的静态变量泛指静态生存周期的对象, 包括: 全局变量, 静态变量, 静态类成员变量, 以及函数静态变量.</p>
+</blockquote>
+<p>译者 (YuleFox) 笔记</p>
+<ol>
+<li><code>cc</code> 中的匿名名字空间可避免命名冲突, 限定作用域, 避免直接使用 <code>using</code> 关键字污染命名空间;</li>
+<li>嵌套类符合局部使用原则, 只是不能在其他头文件中前置声明, 尽量不要 <code>public</code>;</li>
+<li>尽量不用全局函数和全局变量, 考虑作用域和命名空间限制, 尽量单独形成编译单元;</li>
+<li>多线程中的全局变量 (含静态成员变量) 不要使用 <code>class</code> 类型 (含 STL 容器), 避免不明确行为导致的 bug.</li>
+<li>作用域的使用, 除了考虑名称污染, 可读性之外, 主要是为降低耦合, 提高编译/执行效率.</li>
+</ol>
+<p>译者（acgtyrant）笔记</p>
+<ol>
+<li>注意「using 指示（using-directive）」和「using 声明（using-declaration）」的区别。</li>
+<li>匿名名字空间说白了就是文件作用域，就像 C static 声明的作用域一样，后者已经被 C++ 标准提倡弃用。</li>
+<li>局部变量在声明的同时进行显式值初始化，比起隐式初始化再赋值的两步过程要高效，同时也贯彻了计算机体系结构重要的概念「局部性（locality）」。</li>
+<li>注意别在循环犯大量构造和析构的低级错误。</li>
+</ol>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><p>类是 C++ 中代码的基本单元. 显然, 它们被广泛使用. 本节列举了在写一个类时的主要注意事项.</p>
+<h3 id="构造函数的职责"><a href="#构造函数的职责" class="headerlink" title="构造函数的职责"></a>构造函数的职责</h3><blockquote>
+<p>不要在构造函数中进行复杂的初始化 (尤其是那些有可能失败或者需要调用虚函数的初始化).</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>在构造函数体中进行初始化操作.</p>
+<p><strong>优点:</strong></p>
+<p>排版方便, 无需担心类是否已经初始化.</p>
+<p><strong>缺点:</strong></p>
+<p>在构造函数中执行操作引起的问题有:</p>
+<ul>
+<li>构造函数中很难上报错误, 不能使用异常.</li>
+<li>操作失败会造成对象初始化失败，进入不确定状态.</li>
+<li>如果在构造函数内调用了自身的虚函数, 这类调用是不会重定向到子类的虚函数实现. 即使当前没有子类化实现, 将来仍是隐患.</li>
+<li>如果有人创建该类型的全局变量 (虽然违背了上节提到的规则), 构造函数将先 main() 一步被调用, 有可能破坏构造函数中暗含的假设条件. 例如, gflags 尚未初始化.</li>
+</ul>
+<p><strong>结论:</strong></p>
+<p>构造函数不得调用虚函数, 或尝试报告一个非致命错误. 如果对象需要进行有意义的 (non-trivial) 初始化, 考虑使用明确的 <code>Init()</code> 方法或使用工厂模式.</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><blockquote>
+<p>如果类中定义了成员变量, 则必须在类中为每个类提供初始化函数或定义一个构造函数. 若未声明构造函数, 则编译器会生成一个默认的构造函数, 这有可能导致某些成员未被初始化或被初始化为不恰当的值.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p><code>new</code> 一个不带参数的类对象时, 会调用这个类的默认构造函数. 用 <code>new[]</code> 创建数组时, 默认构造函数则总是被调用. 在类成员里面进行初始化是指声明一个成员变量的时候使用一个结构例如 <code>int _count = 17</code> 或者 <code>string _name{&quot;abc&quot;}</code> 来替代 <code>int _count</code> 或者 <code>string _name</code> 这样的形式.</p>
+<p><strong>优点:</strong></p>
+<p>用户定义的默认构造函数将在没有提供初始化操作时将对象初始化. 这样就保证了对象在被构造之时就处于一个有效且可用的状态, 同时保证了对象在被创建时就处于一个显然”不可能”的状态, 以此帮助调试.</p>
+<p><strong>缺点:</strong></p>
+<p>对代码编写者来说, 这是多余的工作.</p>
+<p>如果一个成员变量在声明时初始化又在构造函数中初始化, 有可能造成混乱, 因为构造函数中的值会覆盖掉声明中的值.</p>
+<p><strong>结论:</strong></p>
+<p>简单的初始化用类成员初始化完成, 尤其是当一个成员变量要在多个构造函数里用相同的方式初始化的时候.</p>
+<p>如果你的类中有成员变量没有在类里面进行初始化, 而且没有提供其它构造函数, 你必须定义一个 (不带参数的) 默认构造函数. 把对象的内部状态初始化成一致 / 有效的值无疑是更合理的方式.</p>
+<p>这么做的原因是: 如果你没有提供其它构造函数, 又没有定义默认构造函数, 编译器将为你自动生成一个. 编译器生成的构造函数并不会对对象进行合理的初始化.</p>
+<p>如果你定义的类继承现有类, 而你又没有增加新的成员变量, 则不需要为新类定义默认构造函数.</p>
+<h3 id="显式构造函数"><a href="#显式构造函数" class="headerlink" title="显式构造函数"></a>显式构造函数</h3><blockquote>
+<p>对单个参数的构造函数使用 C++ 关键字 <code>explicit</code>.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>通常, 如果构造函数只有一个参数, 可看成是一种隐式转换. 打个比方, 如果你定义了 <code>Foo::Foo(string name)</code>, 接着把一个字符串传给一个以 <code>Foo</code> 对象为参数的函数, 构造函数 <code>Foo::Foo(string name)</code> 将被调用, 并将该字符串转换为一个 <code>Foo</code> 的临时对象传给调用函数. 看上去很方便, 但如果你并不希望如此通过转换生成一个新对象的话, 麻烦也随之而来. 为避免构造函数被调用造成隐式转换, 可以将其声明为 <code>explicit.</code></p>
+<p>除单参数构造函数外, 这一规则也适用于除第一个参数以外的其他参数都具有默认参数的构造函数, 例如 <code>Foo::Foo(string name, int id = 42)</code>.</p>
+<p><strong>优点:</strong></p>
+<p>避免不合时宜的变换.</p>
+<p><strong>缺点:</strong></p>
+<p>无</p>
+<p><strong>结论:</strong></p>
+<p>所有单参数构造函数都必须是显式的. 在类定义中, 将关键字 <code>explicit</code> 加到单参数构造函数前: <code>explicit Foo(string name);</code></p>
+<p>例外: 在极少数情况下, 拷贝构造函数可以不声明成 <code>explicit</code>. 作为其它类的透明包装器的类也是特例之一. 类似的例外情况应在注释中明确说明.</p>
+<p>最后, 只有 std::initializer_list 的构造函数可以是非 explicit, 以允许你的类型结构可以使用列表初始化的方式进行赋值. 例如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">MyType m = &#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</div><div class="line"><span class="function">MyType <span class="title">MakeMyType</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> &#123;<span class="number">1</span>, <span class="number">2</span>&#125;; &#125;</div><div class="line">TakeMyType(&#123;<span class="number">1</span>, <span class="number">2</span>&#125;);</div></pre></td></tr></table></figure>
+<h3 id="可拷贝类型和可移动类型"><a href="#可拷贝类型和可移动类型" class="headerlink" title="可拷贝类型和可移动类型"></a>可拷贝类型和可移动类型</h3><blockquote>
+<p>如果你的类型需要, 就让它们支持拷贝 / 移动. 否则, 就把隐式产生的拷贝和移动函数禁用.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>可拷贝类型允许对象在初始化时得到来自相同类型的另一对象的值, 或在赋值时被赋予相同类型的另一对象的值, 同时不改变源对象的值. 对于用户定义的类型, 拷贝操作一般通过拷贝构造函数与拷贝赋值操作符定义. string 类型就是一个可拷贝类型的例子.</p>
+<p>可移动类型允许对象在初始化时得到来自相同类型的临时对象的值, 或在赋值时被赋予相同类型的临时对象的值 (因此所有可拷贝对象也是可移动的). std::unique_ptr<int> 就是一个可移动但不可复制的对象的例子. 对于用户定义的类型, 移动操作一般是通过移动构造函数和移动赋值操作符实现的.</int></p>
+<p>拷贝 / 移动构造函数在某些情况下会被编译器隐式调用. 例如, 通过传值的方式传递对象.</p>
+<p><strong>优点:</strong></p>
+<p>可移动及可拷贝类型的对象可以通过传值的方式进行传递或者返回, 这使得 API 更简单, 更安全也更通用. 与传指针和引用不同, 这样的传递不会造成所有权, 生命周期, 可变性等方面的混乱, 也就没必要在协议中予以明确. 这同时也防止了客户端与实现在非作用域内的交互, 使得它们更容易被理解与维护. 这样的对象可以和需要传值操作的通用 API 一起使用, 例如大多数容器.</p>
+<p>拷贝 / 移动构造函数与赋值操作一般来说要比它们的各种替代方案, 比如 Clone(), CopyFrom() or Swap(), 更容易定义, 因为它们能通过编译器产生, 无论是隐式的还是通过 = 默认. 这种方式很简洁, 也保证所有数据成员都会被复制. 拷贝与移动构造函数一般也更高效, 因为它们不需要堆的分配或者是单独的初始化和赋值步骤, 同时, 对于类似省略不必要的拷贝这样的优化它们也更加合适.</p>
+<p>移动操作允许隐式且高效地将源数据转移出右值对象. 这有时能让代码风格更加清晰.</p>
+<p><strong>缺点:</strong></p>
+<p>许多类型都不需要拷贝, 为它们提供拷贝操作会让人迷惑, 也显得荒谬而不合理. 为基类提供拷贝 / 赋值操作是有害的, 因为在使用它们时会造成对象切割. 默认的或者随意的拷贝操作实现可能是不正确的, 这往往导致令人困惑并且难以诊断出的错误.</p>
+<p>拷贝构造函数是隐式调用的, 也就是说, 这些调用很容易被忽略. 这会让人迷惑, 尤其是对那些所用的语言约定或强制要求传引用的程序员来说更是如此. 同时, 这从一定程度上说会鼓励过度拷贝, 从而导致性能上的问题.<br>结论:</p>
+<p>如果需要就让你的类型可拷贝 / 可移动. 作为一个经验法则, 如果对于你的用户来说这个拷贝操作不是一眼就能看出来的, 那就不要把类型设置为可拷贝. 如果让类型可拷贝, 一定要同时给出拷贝构造函数和赋值操作的定义. 如果让类型可拷贝, 同时移动操作的效率高于拷贝操作, 那么就把移动的两个操作 (移动构造函数和赋值操作) 也给出定义. 如果类型不可拷贝, 但是移动操作的正确性对用户显然可见, 那么把这个类型设置为只可移动并定义移动的两个操作.</p>
+<p>建议通过 <code>= default</code> 定义拷贝和移动操作. 定义非默认的移动操作目前需要异常. 时刻记得检测默认操作的正确性. 由于存在对象切割的风险, 不要为任何有可能有派生类的对象提供赋值操作或者拷贝 / 移动构造函数 (当然也不要继承有这样的成员函数的类). 如果你的基类需要可复制属性, 请提供一个 <code>public virtual Clone()</code> 和一个 <code>protected</code> 的拷贝构造函数以供派生类实现.</p>
+<p>如果你的类不需要拷贝 / 移动操作, 请显式地通过 <code>= delete</code> 或其他手段禁用之.</p>
+<h3 id="委派和继承构造函数"><a href="#委派和继承构造函数" class="headerlink" title="委派和继承构造函数"></a>委派和继承构造函数</h3><blockquote>
+<p>在能够减少重复代码的情况下使用委派和继承构造函数.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>委派和继承构造函数是由 C++11 引进为了减少构造函数重复代码而开发的两种不同的特性. 通过特殊的初始化列表语法, 委派构造函数允许类的一个构造函数调用其他的构造函数. 例如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">X::X(<span class="keyword">const</span> <span class="built_in">string</span>&amp; name) : name_(name) &#123;</div><div class="line">  ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">X::X() : X(<span class="string">""</span>) &#123; &#125;</div></pre></td></tr></table></figure>
+<p>继承构造函数允许派生类直接调用基类的构造函数, 一如继承基类的其他成员函数, 而无需重新声明. 当基类拥有多个构造函数时这一功能尤其有用. 例如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">class</span> Base &#123;</div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  Base();</div><div class="line">  Base(<span class="keyword">int</span> n);</div><div class="line">  Base(<span class="keyword">const</span> <span class="built_in">string</span>&amp; s);</div><div class="line">  ...</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Derived : <span class="keyword">public</span> Base &#123;</div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  <span class="keyword">using</span> Base::Base;  <span class="comment">// Base's constructors are redeclared here.</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>如果派生类的构造函数只是调用基类的构造函数而没有其他行为时, 这一功能特别有用.</p>
+<p><strong>优点:</strong></p>
+<p>委派和继承构造函数可以减少冗余代码, 提高可读性. 委派构造函数对 Java 程序员来说并不陌生.</p>
+<p><strong>缺点:</strong></p>
+<p>使用辅助函数可以预估出委派构造函数的行为. 如果派生类和基类相比引入了新的成员变量, 继承构造函数就会让人迷惑, 因为基类并不知道这些新的成员变量的存在.</p>
+<p><strong>结论:</strong></p>
+<p>只在能够减少冗余代码, 提高可读性的前提下使用委派和继承构造函数. 如果派生类有新的成员变量, 那么使用继承构造函数时要小心. 如果在派生类中对成员变量使用了类内部初始化的话, 继承构造函数还是适用的.</p>
+<h3 id="结构体-VS-类"><a href="#结构体-VS-类" class="headerlink" title="结构体 VS. 类"></a>结构体 VS. 类</h3><blockquote>
+<p>仅当只有数据时使用 <code>struct</code>, 其它一概使用 <code>class</code>.</p>
+</blockquote>
+<p><strong>说明:</strong></p>
+<p>在 C++ 中 struct 和 class 关键字几乎含义一样. 我们为这两个关键字添加我们自己的语义理解, 以便未定义的数据类型选择合适的关键字.</p>
+<p>struct 用来定义包含数据的被动式对象, 也可以包含相关的常量, 但除了存取数据成员之外, 没有别的函数功能. 并且存取功能是通过直接访问位域, 而非函数调用. 除了构造函数, 析构函数, Initialize(), Reset(), Validate() 等类似的函数外, 不能提供其它功能的函数.</p>
+<p>如果需要更多的函数功能, class 更适合. 如果拿不准, 就用 class.</p>
+<p>为了和 STL 保持一致, 对于仿函数和 trait 特性可以不用 class 而是使用 struct.</p>
+<p>注意: 类和结构体的成员变量使用不同的命名规则.</p>
+<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><blockquote>
+<p>使用组合 (composition, YuleFox 注: 这一点也是 GoF 在 &lt;<design patterns="">&gt; 里反复强调的) 常常比使用继承更合理. 如果使用继承的话, 定义为 <code>public</code> 继承.</design></p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>当子类继承基类时, 子类包含了父基类所有数据及操作的定义. C++ 实践中, 继承主要用于两种场合: 实现继承 (implementation inheritance), 子类继承父类的实现代码; 接口继承 (interface inheritance), 子类仅继承父类的方法名称.</p>
+<p><strong>优点:</strong></p>
+<p>实现继承通过原封不动的复用基类代码减少了代码量. 由于继承是在编译时声明, 程序员和编译器都可以理解相应操作并发现错误. 从编程角度而言, 接口继承是用来强制类输出特定的 API. 在类没有实现 API 中某个必须的方法时, 编译器同样会发现并报告错误.</p>
+<p><strong>缺点:</strong></p>
+<p>对于实现继承, 由于子类的实现代码散布在父类和子类间之间, 要理解其实现变得更加困难. 子类不能重写父类的非虚函数, 当然也就不能修改其实现. 基类也可能定义了一些数据成员, 还要区分基类的实际布局.</p>
+<p><strong>结论:</strong></p>
+<p>所有继承必须是 <code>public</code> 的. 如果你想使用私有继承, 你应该替换成把基类的实例作为成员对象的方式.</p>
+<p>不要过度使用实现继承. 组合常常更合适一些. 尽量做到只在 “是一个” (“is-a”, YuleFox 注: 其他 “has-a” 情况下请使用组合) 的情况下使用继承: 如果 <code>Bar</code> 的确 “是一种” Foo, <code>Bar</code> 才能继承 <code>Foo</code>.</p>
+<p>必要的话, 析构函数声明为 <code>virtual</code>. 如果你的类有虚函数, 则析构函数也应该为虚函数. 注意 数据成员在任何情况下都必须是私有的.</p>
+<p>当重载一个虚函数, 在衍生类中把它明确的声明为 <code>virtual</code>. 理论依据: 如果省略 <code>virtual</code> 关键字, 代码阅读者不得不检查所有父类, 以判断该函数是否是虚函数.</p>
+<h3 id="多重继承"><a href="#多重继承" class="headerlink" title="多重继承"></a>多重继承</h3><blockquote>
+<p>真正需要用到多重实现继承的情况少之又少. 只在以下情况我们才允许多重继承: 最多只有一个基类是非抽象类; 其它基类都是以 <code>Interface</code> 为后缀的 纯接口类.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>多重继承允许子类拥有多个基类. 要将作为 纯接口 的基类和具有 实现 的基类区别开来.</p>
+<p><strong>优点:</strong></p>
+<p>相比单继承 (见 继承), 多重实现继承可以复用更多的代码.<br>缺点:</p>
+<p>真正需要用到多重 实现 继承的情况少之又少. 多重实现继承看上去是不错的解决方案, 但你通常也可以找到一个更明确, 更清晰的不同解决方案.</p>
+<p><strong>结论:</strong></p>
+<p>只有当所有父类除第一个外都是 纯接口类 时, 才允许使用多重继承. 为确保它们是纯接口, 这些类必须以 Interface 为后缀.</p>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><blockquote>
+<p>接口是指满足特定条件的类, 这些类以 Interface 为后缀 (不强制).</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>当一个类满足以下要求时, 称之为纯接口:</p>
+<ul>
+<li>只有纯虚函数 (“<code>=0</code>”) 和静态函数 (除了下文提到的析构函数).</li>
+<li>没有非静态数据成员.</li>
+<li>没有定义任何构造函数. 如果有, 也不能带有参数, 并且必须为  <code>protected</code>.</li>
+<li>如果它是一个子类, 也只能从满足上述条件并以 <code>Interface</code> 为后缀的类继承.</li>
+</ul>
+<p>接口类不能被直接实例化, 因为它声明了纯虚函数. 为确保接口类的所有实现可被正确销毁, 必须为之声明虚析构函数 (作为上述第 1 条规则的特例, 析构函数不能是纯虚函数). 具体细节可参考 Stroustrup 的 The C++ Programming Language, 3rd edition 第 12.4 节.</p>
+<p><strong>优点:</strong></p>
+<p>以 <code>Interface</code> 为后缀可以提醒其他人不要为该接口类增加函数实现或非静态数据成员. 这一点对于 多重继承 尤其重要. 另外, 对于 Java 程序员来说, 接口的概念已是深入人心.</p>
+<p><strong>缺点:</strong></p>
+<p><code>Interface</code> 后缀增加了类名长度, 为阅读和理解带来不便. 同时，接口特性作为实现细节不应暴露给用户.</p>
+<p><strong>结论:</strong></p>
+<p>只有在满足上述需要时, 类才以 <code>Interface</code> 结尾, 但反过来, 满足上述需要的类未必一定以 <code>Interface</code> 结尾.</p>
+<h3 id="运算符重载"><a href="#运算符重载" class="headerlink" title="运算符重载"></a>运算符重载</h3><blockquote>
+<p>除少数特定环境外，不要重载运算符.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>一个类可以定义诸如 <code>+</code> 和 <code>/</code> 等运算符, 使其可以像内建类型一样直接操作.</p>
+<p><strong>优点:</strong></p>
+<p>使代码看上去更加直观, 类表现的和内建类型 (如 int) 行为一致. 重载运算符使 <code>Equals()</code>, <code>Add()</code> 等函数名黯然失色. 为了使一些模板函数正确工作, 你可能必须定义操作符.</p>
+<p><strong>缺点:</strong></p>
+<p>虽然操作符重载令代码更加直观, 但也有一些不足:</p>
+<ul>
+<li>混淆视听, 让你误以为一些耗时的操作和操作内建类型一样轻巧.</li>
+<li>更难定位重载运算符的调用点, 查找 <code>Equals()</code> 显然比对应的 <code>==</code> 调用点要容易的多.</li>
+<li>有的运算符可以对指针进行操作, 容易导致 bug. <code>Foo + 4</code> 做的是一件事, 而 <code>&amp;Foo + 4</code> 可能做的是完全不同的另一件事. 对于二者, 编译器都不会报错, 使其很难调试;</li>
+<li>重载还有令你吃惊的副作用. 比如, 重载了 <code>operator&amp;</code> 的类不能被前置声明.</li>
+</ul>
+<p><strong>结论:</strong></p>
+<p>一般不要重载运算符. 尤其是赋值操作 (<code>operator=</code>) 比较诡异, 应避免重载. 如果需要的话, 可以定义类似 <code>Equals()</code>, <code>CopyFrom()</code> 等函数.</p>
+<p>然而, 极少数情况下可能需要重载运算符以便与模板或 “标准” C++ 类互操作 (如 <code>operator&lt;&lt;(ostream&amp;, const T&amp;)</code>). 只有被证明是完全合理的才能重载, 但你还是要尽可能避免这样做. 尤其是不要仅仅为了在 STL 容器中用作键值就重载 <code>operator==</code> 或 <code>operator&lt;</code>; 相反, 你应该在声明容器的时候, 创建相等判断和大小比较的仿函数类型.</p>
+<p>有些 STL 算法确实需要重载 <code>operator==</code> 时, 你可以这么做, 记得别忘了在文档中说明原因.</p>
+<p>参考 拷贝构造函数 和 函数重载.</p>
+<h3 id="存取控制"><a href="#存取控制" class="headerlink" title="存取控制"></a>存取控制</h3><blockquote>
+<p>将 所有 数据成员声明为 <code>private</code>, 并根据需要提供相应的存取函数. 例如, 某个名为 <code>foo_</code> 的变量, 其取值函数是 <code>foo()</code>. 还可能需要一个赋值函数 <code>set_foo()</code>.</p>
+</blockquote>
+<p>特例是, 静态常量数据成员 (一般写做 kFoo) 不需要是私有成员.</p>
+<p>一般在头文件中把存取函数定义成内联函数.</p>
+<p>参考 继承 和 函数命名</p>
+<h3 id="声明顺序"><a href="#声明顺序" class="headerlink" title="声明顺序"></a>声明顺序</h3><blockquote>
+<p>在类中使用特定的声明顺序: <code>public:</code> 在 <code>private:</code> 之前, 成员函数在数据成员 (变量) 前;</p>
+</blockquote>
+<p>类的访问控制区段的声明顺序依次为: <code>public:</code>, <code>protected:</code>, <code>private:</code>. 如果某区段没内容, 可以不声明.</p>
+<p>每个区段内的声明通常按以下顺序:</p>
+<ul>
+<li><code>typedefs</code> 和枚举</li>
+<li>常量</li>
+<li>构造函数</li>
+<li>析构函数</li>
+<li>成员函数, 含静态成员函数</li>
+<li>数据成员, 含静态数据成员</li>
+</ul>
+<p>友元声明应该放在 <code>private</code> 区段. 如果用宏 <code>DISALLOW_COPY_AND_ASSIGN</code> 禁用拷贝和赋值, 应当将其置于 <code>private</code> 区段的末尾, 也即整个类声明的末尾. 参见可拷贝类型和可移动类型.</p>
+<p><code>.cc</code> 文件中函数的定义应尽可能和声明顺序一致.</p>
+<p>不要在类定义中内联大型函数. 通常, 只有那些没有特别意义或性能要求高, 并且是比较短小的函数才能被定义为内联函数. 更多细节参考 内联函数.</p>
+<h3 id="编写简短函数"><a href="#编写简短函数" class="headerlink" title="编写简短函数"></a>编写简短函数</h3><blockquote>
+<p>倾向编写简短, 凝练的函数.</p>
+</blockquote>
+<p>我们承认长函数有时是合理的, 因此并不硬性限制函数的长度. 如果函数超过 40 行, 可以思索一下能不能在不影响程序结构的前提下对其进行分割.</p>
+<p>即使一个长函数现在工作的非常好, 一旦有人对其修改, 有可能出现新的问题. 甚至导致难以发现的 bug. 使函数尽量简短, 便于他人阅读和修改代码.</p>
+<p>在处理代码时, 你可能会发现复杂的长函数. 不要害怕修改现有代码: 如果证实这些代码使用 / 调试困难, 或者你需要使用其中的一小段代码, 考虑将其分割为更加简短并易于管理的若干函数.</p>
+<p><strong>译者 (YuleFox) 笔记</strong></p>
+<ol>
+<li>不在构造函数中做太多逻辑相关的初始化;</li>
+<li>编译器提供的默认构造函数不会对变量进行初始化, 如果定义了其他构造函数, 编译器不再提供, 需要编码者自行提供默认构造函数;</li>
+<li>为避免隐式转换, 需将单参数构造函数声明为 <code>explicit</code>;</li>
+<li>为避免拷贝构造函数, 赋值操作的滥用和编译器自动生成, 可将其声明为 <code>private</code> 且无需实现;</li>
+<li>仅在作为数据集合时使用 <code>struct</code>;</li>
+<li>组合 &gt; 实现继承 &gt; 接口继承 &gt; 私有继承, 子类重载的虚函数也要声明 <code>virtual</code> 关键字, 虽然编译器允许不这样做;</li>
+<li>避免使用多重继承, 使用时, 除一个基类含有实现外, 其他基类均为纯接口;</li>
+<li>接口类类名以 <code>Interface</code> 为后缀, 除提供带实现的虚析构函数, 静态成员函数外, 其他均为纯虚函数, 不定义非静态数据成员, 不提供构造函数, 提供的话，声明为 <code>protected</code>;</li>
+<li>为降低复杂性, 尽量不重载操作符, 模板, 标准类中使用时提供文档说明;</li>
+<li>存取函数一般内联在头文件中;</li>
+<li>声明次序: <code>public</code> -&gt; <code>protected</code> -&gt; <code>private</code>;</li>
+<li>函数体尽量短小, 紧凑, 功能单一;</li>
+</ol>
+<h2 id="其他-C-特性"><a href="#其他-C-特性" class="headerlink" title="其他 C++ 特性"></a>其他 C++ 特性</h2><h3 id="引用参数"><a href="#引用参数" class="headerlink" title="引用参数"></a>引用参数</h3><blockquote>
+<p>所有按引用传递的参数必须加上 const.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>在 C 语言中, 如果函数需要修改变量的值, 参数必须为指针, 如 <code>int foo(int *pval)</code>. 在 C++ 中, 函数还可以声明引用参数: <code>int foo(int &amp;val)</code>.</p>
+<p><strong>优点:</strong></p>
+<p>定义引用参数防止出现 <code>(*pval)++</code> 这样丑陋的代码. 像拷贝构造函数这样的应用也是必需的. 而且更明确, 不接受 <code>NULL</code> 指针.</p>
+<p><strong>缺点:</strong></p>
+<p>容易引起误解, 因为引用在语法上是值变量却拥有指针的语义.</p>
+<p><strong>结论:</strong></p>
+<p>函数参数列表中, 所有引用参数都必须是 <code>const</code>:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">Foo</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;in, <span class="built_in">string</span> *out)</span></span>;</div></pre></td></tr></table></figure>
+<p>事实上这在 Google Code 是一个硬性约定: 输入参数是值参或 <code>const</code> 引用, 输出参数为指针. 输入参数可以是 <code>const</code> 指针, 但决不能是非 <code>const</code> 的引用参数，除非用于交换，比如 <code>swap()</code>.</p>
+<p>有时候，在输入形参中用 <code>const T*</code> 指针比 <code>const T&amp;</code> 更明智。比如：</p>
+<ul>
+<li>您会传 null 指针。</li>
+<li>函数要把指针或对地址的引用赋值给输入形参。</li>
+</ul>
+<p>总之大多时候输入形参往往是 <code>const T&amp;</code>. 若用 <code>const T*</code> 说明输入另有处理。所以若您要用 <code>const T*</code>, 则应有理有据，否则会害得读者误解。</p>
+<h3 id="右值引用"><a href="#右值引用" class="headerlink" title="右值引用"></a>右值引用</h3><blockquote>
+<p>只在定义移动构造函数与移动赋值操作时使用右值引用. 不要使用 <code>std::forward</code>.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>右值引用是一种只能绑定到临时对象的引用的一种, 其语法与传统的引用语法相似. 例如, <code>void f(string&amp;&amp; s)</code>; 声明了一个其参数是一个字符串的右值引用的函数.</p>
+<p><strong>优点:</strong></p>
+<p>用于定义移动构造函数 (使用类的右值引用进行构造的函数) 使得移动一个值而非拷贝之成为可能. 例如, 如果 <code>v1</code> 是一个 <code>vector&lt;string&gt;</code>, 则 <code>auto v2(std::move(v1))</code> 将很可能不再进行大量的数据复制而只是简单地进行指针操作, 在某些情况下这将带来大幅度的性能提升.</p>
+<p>右值引用使得编写通用的函数封装来转发其参数到另外一个函数成为可能, 无论其参数是否是临时对象都能正常工作.</p>
+<p>右值引用能实现可移动但不可拷贝的类型, 这一特性对那些在拷贝方面没有实际需求, 但有时又需要将它们作为函数参数传递或塞入容器的类型很有用.</p>
+<p>要高效率地使用某些标准库类型, 例如 <code>std::unique_ptr</code>, <code>std::move</code> 是必需的.</p>
+<p><strong>缺点:</strong></p>
+<p>右值引用是一个相对比较新的特性 (由 C++11 引入), 它尚未被广泛理解. 类似引用崩溃, 移动构造函数的自动推导这样的规则都是很复杂的.</p>
+<p><strong>结论:</strong></p>
+<p>只在定义移动构造函数与移动赋值操作时使用右值引用, 不要使用 <code>std::forward</code> 功能函数. 你可能会使用 <code>std::move</code> 来表示将值从一个对象移动而不是复制到另一个对象.</p>
+<h3 id="函数重载"><a href="#函数重载" class="headerlink" title="函数重载"></a>函数重载</h3><blockquote>
+<p>若要用好函数重载，最好能让读者一看调用点（call site）就胸有成竹，不用花心思猜测调用的重载函数到底是哪一种。该规则适用于构造函数。</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>你可以编写一个参数类型为 <code>const string&amp;</code> 的函数, 然后用另一个参数类型为 <code>const char*</code> 的函数重载它:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">class</span> MyClass &#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Analyze</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;text)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Analyze</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *text, <span class="keyword">size_t</span> textlen)</span></span>;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p><strong>优点:</strong></p>
+<p>通过重载参数不同的同名函数, 令代码更加直观. 模板化代码需要重载, 同时为使用者带来便利.</p>
+<p><strong>缺点:</strong></p>
+<p>如果函数单单靠不同的参数类型而重载（acgtyrant 注：这意味着参数数量不变），读者就得十分熟悉 C++ 五花八门的匹配规则，以了解匹配过程具体到底如何。另外，当派生类只重载了某个函数的部分变体，继承语义容易令人困惑。</p>
+<p><strong>结论:</strong></p>
+<p>如果您打算重载一个函数, 可以试试改在函数名里加上参数信息。例如，用 <code>AppendString()</code> 和 <code>AppendInt()</code> 等， 而不是一口气重载多个 <code>Append()</code>.</p>
+<h3 id="缺省参数"><a href="#缺省参数" class="headerlink" title="缺省参数"></a>缺省参数</h3><blockquote>
+<p>我们不允许使用缺省函数参数，少数极端情况除外。尽可能改用函数重载。</p>
+</blockquote>
+<p><strong>优点:</strong></p>
+<p>当您有依赖缺省参数的函数时，您也许偶尔会修改修改这些缺省参数。通过缺省参数，不用再为个别情况而特意定义一大堆函数了。与函数重载相比，缺省参数语法更为清晰，代码少，也很好地区分了「必选参数」和「可选参数」。</p>
+<p><strong>缺点:</strong></p>
+<p>缺省参数会干扰函数指针，害得后者的函数签名（function signature）往往对不上所实际要调用的函数签名。即在一个现有函数添加缺省参数，就会改变它的类型，那么调用其地址的代码可能会出错，不过函数重载就没这问题了。此外，缺省参数会造成臃肿的代码，毕竟它们在每一个调用点（call site）都有重复（acgtyrant 注：我猜可能是因为调用函数的代码表面上看来省去了不少参数，但编译器在编译时还是会在每一个调用代码里统统补上所有默认实参信息，造成大量的重复）。函数重载正好相反，毕竟它们所谓的「缺省参数」只会出现在函数定义里。</p>
+<p><strong>结论:</strong></p>
+<p>由于缺点并不是很严重，有些人依旧偏爱缺省参数胜于函数重载。所以除了以下情况，我们要求必须显式提供所有参数（acgtyrant 注：即不能再通过缺省参数来省略参数了）。</p>
+<p>其一，位于 <code>.cc</code> 文件里的静态函数或匿名空间函数，毕竟都只能在局部文件里调用该函数了。</p>
+<p>其二，可以在构造函数里用缺省参数，毕竟不可能取得它们的地址。</p>
+<p>其三，可以用来模拟变长数组。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 通过空 AlphaNum 以支持四个形参</span></div><div class="line"><span class="function"><span class="built_in">string</span> <span class="title">StrCat</span><span class="params">(<span class="keyword">const</span> AlphaNum &amp;a,</span></span></div><div class="line">              <span class="keyword">const</span> AlphaNum &amp;b = gEmptyAlphaNum,</div><div class="line">              <span class="keyword">const</span> AlphaNum &amp;c = gEmptyAlphaNum,</div><div class="line">              <span class="keyword">const</span> AlphaNum &amp;d = gEmptyAlphaNum);</div></pre></td></tr></table></figure>
+<h3 id="变长数组和-alloca"><a href="#变长数组和-alloca" class="headerlink" title="变长数组和 alloca()"></a>变长数组和 <code>alloca()</code></h3><blockquote>
+<p>我们不允许使用变长数组和 <code>alloca()</code>.</p>
+</blockquote>
+<p><strong>优点:</strong></p>
+<p>变长数组具有浑然天成的语法. 变长数组和 <code>alloca()</code> 也都很高效.</p>
+<p><strong>缺点:</strong></p>
+<p>变长数组和 <code>alloca()</code> 不是标准 C++ 的组成部分. 更重要的是, 它们根据数据大小动态分配堆栈内存, 会引起难以发现的内存越界 bugs: “在我的机器上运行的好好的, 发布后却莫名其妙的挂掉了”.</p>
+<p><strong>结论:</strong></p>
+<p>改用更安全的分配器（allocator），就像 <code>std::vector</code> 或 <code>std::unique_ptr&lt;T[]&gt;</code>.</p>
+<h3 id="友元"><a href="#友元" class="headerlink" title="友元"></a>友元</h3><blockquote>
+<p>我们允许合理的使用友元类及友元函数.</p>
+</blockquote>
+<p>通常友元应该定义在同一文件内, 避免代码读者跑到其它文件查找使用该私有成员的类. 经常用到友元的一个地方是将 <code>FooBuilder</code> 声明为 <code>Foo</code> 的友元, 以便 <code>FooBuilder</code> 正确构造 <code>Foo</code> 的内部状态, 而无需将该状态暴露出来. 某些情况下, 将一个单元测试类声明成待测类的友元会很方便.</p>
+<p>友元扩大了 (但没有打破) 类的封装边界. 某些情况下, 相对于将类成员声明为 <code>public</code>, 使用友元是更好的选择, 尤其是如果你只允许另一个类访问该类的私有成员时. 当然, 大多数类都只应该通过其提供的公有成员进行互操作.</p>
+<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><blockquote>
+<p>我们不使用 C++ 异常.</p>
+</blockquote>
+<p><strong>优点:</strong></p>
+<ul>
+<li>异常允许应用高层决定如何处理在底层嵌套函数中「不可能发生」的失败（failures），不用管那些含糊且容易出错的错误代码（acgtyrant 注：error code, 我猜是Ｃ语言函数返回的非零 int 值）。</li>
+<li>很多现代语言都用异常。引入异常使得 C++ 与 Python, Java 以及其它类 C++ 的语言更一脉相承。</li>
+<li>有些第三方 C++ 库依赖异常，禁用异常就不好用了。</li>
+<li>异常是处理构造函数失败的唯一途径。虽然可以用工厂函数（acgtyrant 注：factory function, 出自 C++ 的一种设计模式，即「简单工厂模式」）或 <code>Init()</code> 方法代替异常, 但是前者要求在堆栈分配内存，后者会导致刚创建的实例处于 ”无效“ 状态。</li>
+<li>在测试框架里很好用。</li>
+</ul>
+<p><strong>缺点:</strong></p>
+<ul>
+<li>在现有函数中添加 <code>throw</code> 语句时，您必须检查所有调用点。要么让所有调用点统统具备最低限度的异常安全保证，要么眼睁睁地看异常一路欢快地往上跑，最终中断掉整个程序。举例，<code>f()</code> 调用 <code>g()</code>, <code>g()</code> 又调用 <code>h()</code>, 且 <code>h</code> 抛出的异常被 <code>f</code> 捕获。当心 <code>g</code>, 否则会没妥善清理好。</li>
+<li>还有更常见的，异常会彻底扰乱程序的执行流程并难以判断，函数也许会在您意料不到的地方返回。您或许会加一大堆何时何处处理异常的规定来降低风险，然而开发者的记忆负担更重了。</li>
+<li>异常安全需要RAII和不同的编码实践. 要轻松编写出正确的异常安全代码需要大量的支持机制. 更进一步地说, 为了避免读者理解整个调用表, 异常安全必须隔绝从持续状态写到 “提交” 状态的逻辑. 这一点有利有弊 (因为你也许不得不为了隔离提交而混淆代码). 如果允许使用异常, 我们就不得不时刻关注这样的弊端, 即使有时它们并不值得.</li>
+<li>启用异常会增加二进制文件数据，延长编译时间（或许影响小），还可能加大地址空间的压力。</li>
+<li>滥用异常会变相鼓励开发者去捕捉不合时宜，或本来就已经没法恢复的「伪异常」。比如，用户的输入不符合格式要求时，也用不着抛异常。如此之类的伪异常列都列不完。</li>
+</ul>
+<p><strong>结论:</strong></p>
+<p>从表面上看来，使用异常利大于弊, 尤其是在新项目中. 但是对于现有代码, 引入异常会牵连到所有相关代码. 如果新项目允许异常向外扩散, 在跟以前未使用异常的代码整合时也将是个麻烦. 因为 Google 现有的大多数 C++ 代码都没有异常处理, 引入带有异常处理的新代码相当困难.</p>
+<p>鉴于 Google 现有代码不接受异常, 在现有代码中使用异常比在新项目中使用的代价多少要大一些. 迁移过程比较慢, 也容易出错. 我们不相信异常的使用有效替代方案, 如错误代码, 断言等会造成严重负担.</p>
+<p>我们并不是基于哲学或道德层面反对使用异常, 而是在实践的基础上. 我们希望在 Google 使用我们自己的开源项目, 但项目中使用异常会为此带来不便, 因此我们也建议不要在 Google 的开源项目中使用异常. 如果我们需要把这些项目推倒重来显然不太现实.</p>
+<p>对于 Windows 代码来说, 有个 特例.</p>
+<p>(YuleFox 注: 对于异常处理, 显然不是短短几句话能够说清楚的, 以构造函数为例, 很多 C++ 书籍上都提到当构造失败时只有异常可以处理, Google 禁止使用异常这一点, 仅仅是为了自身的方便, 说大了, 无非是基于软件管理成本上, 实际使用中还是自己决定)</p>
+<h3 id="运行时类型识别"><a href="#运行时类型识别" class="headerlink" title="运行时类型识别"></a>运行时类型识别</h3><blockquote>
+<p>我们禁止使用 RTTI.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>RTTI 允许程序员在运行时识别 C++ 类对象的类型. 它通过使用 <code>typeid</code> 或者 <code>dynamic_cast</code> 完成.</p>
+<p><strong>优点:</strong></p>
+<p>RTTI 的标准替代 (下面将描述) 需要对有问题的类层级进行修改或重构. 有时这样的修改并不是我们所想要的, 甚至是不可取的, 尤其是在一个已经广泛使用的或者成熟的代码中.</p>
+<p>RTTI 在某些单元测试中非常有用. 比如进行工厂类测试时, 用来验证一个新建对象是否为期望的动态类型. RTTI 对于管理对象和派生对象的关系也很有用.</p>
+<p>在考虑多个抽象对象时 RTTI 也很好用. 例如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">bool</span> Base::Equal(Base* other) = <span class="number">0</span>;</div><div class="line"><span class="keyword">bool</span> Derived::Equal(Base* other) &#123;</div><div class="line">  Derived* that = <span class="keyword">dynamic_cast</span>&lt;Derived*&gt;(other);</div><div class="line">  <span class="keyword">if</span> (that == <span class="literal">NULL</span>)</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>缺点:</strong></p>
+<p>在运行时判断类型通常意味着设计问题. 如果你需要在运行期间确定一个对象的类型, 这通常说明你需要考虑重新设计你的类.</p>
+<p>随意地使用 RTTI 会使你的代码难以维护. 它使得基于类型的判断树或者 <code>switch</code> 语句散布在代码各处. 如果以后要进行修改, 你就必须检查它们.</p>
+<p><strong>结论:</strong></p>
+<p>RTTI 有合理的用途但是容易被滥用, 因此在使用时请务必注意. 在单元测试中可以使用 RTTI, 但是在其他代码中请尽量避免. 尤其是在新代码中, 使用 RTTI 前务必三思. 如果你的代码需要根据不同的对象类型执行不同的行为的话, 请考虑用以下的两种替代方案之一查询类型:</p>
+<p>虚函数可以根据子类类型的不同而执行不同代码. 这是把工作交给了对象本身去处理.</p>
+<p>如果这一工作需要在对象之外完成, 可以考虑使用双重分发的方案, 例如使用访问者设计模式. 这就能够在对象之外进行类型判断.</p>
+<p>如果程序能够保证给定的基类实例实际上都是某个派生类的实例, 那么就可以自由使用 <code>dynamic_cast</code>. 在这种情况下, 使用 <code>dynamic_cast</code> 也是一种替代方案.</p>
+<p>基于类型的判断树是一个很强的暗示, 它说明你的代码已经偏离正轨了. 不要像下面这样:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> (<span class="keyword">typeid</span>(*data) == <span class="keyword">typeid</span>(D1)) &#123;</div><div class="line">  ...</div><div class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeid</span>(*data) == <span class="keyword">typeid</span>(D2)) &#123;</div><div class="line">  ...</div><div class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeid</span>(*data) == <span class="keyword">typeid</span>(D3)) &#123;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>一旦在类层级中加入新的子类, 像这样的代码往往会崩溃. 而且, 一旦某个子类的属性改变了, 你很难找到并修改所有受影响的代码块.</p>
+<p>不要去手工实现一个类似 RTTI 的方案. 反对 RTTI 的理由同样适用于这些方案, 比如带类型标签的类继承体系. 而且, 这些方案会掩盖你的真实意图.</p>
+<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><blockquote>
+<p>使用 C++ 的类型转换, 如 <code>static_cast&lt;&gt;()</code>. 不要使用 <code>int y = (int)x</code> 或 <code>int y = int(x)</code> 等转换方式;</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>C++ 采用了有别于 C 的类型转换机制, 对转换操作进行归类.</p>
+<p><strong>优点:</strong></p>
+<p>C 语言的类型转换问题在于模棱两可的操作; 有时是在做强制转换 (如 <code>(int)3.5</code>), 有时是在做类型转换 (如 <code>(int)&quot;hello&quot;</code>). 另外, C++ 的类型转换在查找时更醒目.</p>
+<p><strong>缺点:</strong></p>
+<p>恶心的语法.</p>
+<p><strong>结论:</strong></p>
+<p>不要使用 C 风格类型转换. 而应该使用 C++ 风格.</p>
+<ul>
+<li>用 <code>static_cast</code> 替代 C 风格的值转换, 或某个类指针需要明确的向上转换为父类指针时.</li>
+<li>用 <code>const_cast</code> 去掉 <code>const</code> 限定符.</li>
+<li>用 <code>reinterpret_cast</code> 指针类型和整型或其它指针之间进行不安全的相互转换. 仅在你对所做一切了然于心时使用.</li>
+</ul>
+<p>至于 <code>dynamic_cast</code> 参见 运行时类型识别.</p>
+<h3 id="流"><a href="#流" class="headerlink" title="流"></a>流</h3><blockquote>
+<p>只在记录日志时使用流.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>流用来替代 <code>printf()</code> 和 <code>scanf()</code>.</p>
+<p><strong>优点:</strong></p>
+<p>有了流, 在打印时不需要关心对象的类型. 不用担心格式化字符串与参数列表不匹配 (虽然在 gcc 中使用 <code>printf</code> 也不存在这个问题). 流的构造和析构函数会自动打开和关闭对应的文件.</p>
+<p><strong>缺点:</strong></p>
+<p>流使得 <code>pread()</code> 等功能函数很难执行. 如果不使用 <code>printf</code> 风格的格式化字符串, 某些格式化操作 (尤其是常用的格式字符串 <code>%.*s</code>) 用流处理性能是很低的. 流不支持字符串操作符重新排序 (<code>%1s</code>), 而这一点对于软件国际化很有用.</p>
+<p><strong>结论:</strong></p>
+<p>不要使用流, 除非是日志接口需要. 使用 <code>printf</code> 之类的代替.</p>
+<p>使用流还有很多利弊, 但代码一致性胜过一切. 不要在代码中使用流.</p>
+<p><strong>拓展讨论:</strong></p>
+<p>对这一条规则存在一些争论, 这儿给出点深层次原因. 回想一下唯一性原则 (Only One Way): 我们希望在任何时候都只使用一种确定的 I/O 类型, 使代码在所有 I/O 处都保持一致. 因此, 我们不希望用户来决定是使用流还是 <code>printf + read/write</code>. 相反, 我们应该决定到底用哪一种方式. 把日志作为特例是因为日志是一个非常独特的应用, 还有一些是历史原因.</p>
+<p>流的支持者们主张流是不二之选, 但观点并不是那么清晰有力. 他们指出的流的每个优势也都是其劣势. 流最大的优势是在输出时不需要关心打印对象的类型. 这是一个亮点. 同时, 也是一个不足: 你很容易用错类型, 而编译器不会报警. 使用流时容易造成的这类错误:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="built_in">cout</span> &lt;&lt; <span class="keyword">this</span>;   <span class="comment">// 输出地址</span></div><div class="line"><span class="built_in">cout</span> &lt;&lt; *<span class="keyword">this</span>;  <span class="comment">// 输出值</span></div></pre></td></tr></table></figure>
+<p>由于 <code>&lt;&lt;</code> 被重载, 编译器不会报错. 就因为这一点我们反对使用操作符重载.</p>
+<p>有人说 <code>printf</code> 的格式化丑陋不堪, 易读性差, 但流也好不到哪儿去. 看看下面两段代码吧, 实现相同的功能, 哪个更清晰?</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="built_in">cerr</span> &lt;&lt; <span class="string">"Error connecting to '"</span> &lt;&lt; foo-&gt;bar()-&gt;hostname.first</div><div class="line">     &lt;&lt; <span class="string">":"</span> &lt;&lt; foo-&gt;bar()-&gt;hostname.second &lt;&lt; <span class="string">": "</span> &lt;&lt; strerror(errno);</div><div class="line"></div><div class="line"><span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Error connecting to '%s:%u: %s"</span>,</div><div class="line">        foo-&gt;bar()-&gt;hostname.first, foo-&gt;bar()-&gt;hostname.second,</div><div class="line">        strerror(errno));</div></pre></td></tr></table></figure>
+<p>你可能会说, “把流封装一下就会比较好了”, 这儿可以, 其他地方呢? 而且不要忘了, 我们的目标是使语言更紧凑, 而不是添加一些别人需要学习的新装备.</p>
+<p>每一种方式都是各有利弊, “没有最好, 只有更适合”. 简单性原则告诫我们必须从中选择其一, 最后大多数决定采用 <code>printf + read/write</code>.</p>
+<h3 id="前置自增和自减"><a href="#前置自增和自减" class="headerlink" title="前置自增和自减"></a>前置自增和自减</h3><blockquote>
+<p>对于迭代器和其他模板对象使用前缀形式 (++i) 的自增, 自减运算符.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>对于变量在自增 (++i 或 i++) 或自减 (–i 或 i–) 后表达式的值又没有没用到的情况下, 需要确定到底是使用前置还是后置的自增 (自减).</p>
+<p><strong>优点:</strong></p>
+<p>不考虑返回值的话, 前置自增 (++i) 通常要比后置自增 (i++) 效率更高. 因为后置自增 (或自减) 需要对表达式的值 i 进行一次拷贝. 如果 i 是迭代器或其他非数值类型, 拷贝的代价是比较大的. 既然两种自增方式实现的功能一样, 为什么不总是使用前置自增呢?</p>
+<p><strong>缺点:</strong></p>
+<p>在 C 开发中, 当表达式的值未被使用时, 传统的做法是使用后置自增, 特别是在 for 循环中. 有些人觉得后置自增更加易懂, 因为这很像自然语言, 主语 (i) 在谓语动词 (++) 前.</p>
+<p><strong>结论:</strong></p>
+<p>对简单数值 (非对象), 两种都无所谓. 对迭代器和模板类型, 使用前置自增 (自减).</p>
+<h3 id="const-用法"><a href="#const-用法" class="headerlink" title="const 用法"></a><code>const</code> 用法</h3><blockquote>
+<p>我们强烈建议你在任何可能的情况下都要使用 <code>const</code>. 此外有时改用 C++11 推出的 constexpr 更好。</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>在声明的变量或参数前加上关键字 <code>const</code> 用于指明变量值不可被篡改 (如 <code>const int foo</code> ). 为类中的函数加上 <code>const</code> 限定符表明该函数不会修改类成员变量的状态 (如 <code>class Foo { int Bar(char c) const; };</code>).</p>
+<p><strong>优点:</strong></p>
+<p>大家更容易理解如何使用变量. 编译器可以更好地进行类型检测, 相应地, 也能生成更好的代码. 人们对编写正确的代码更加自信, 因为他们知道所调用的函数被限定了能或不能修改变量值. 即使是在无锁的多线程编程中, 人们也知道什么样的函数是安全的.</p>
+<p><strong>缺点:</strong></p>
+<p><code>const</code> 是入侵性的: 如果你向一个函数传入 <code>const</code> 变量, 函数原型声明中也必须对应 <code>const</code> 参数 (否则变量需要 <code>const_cast</code> 类型转换), 在调用库函数时显得尤其麻烦.</p>
+<p><strong>结论:</strong></p>
+<p><code>const</code> 变量, 数据成员, 函数和参数为编译时类型检测增加了一层保障; 便于尽早发现错误. 因此, 我们强烈建议在任何可能的情况下使用 <code>const</code>:</p>
+<ul>
+<li>如果函数不会修改传你入的引用或指针类型参数, 该参数应声明为 <code>const</code>.</li>
+<li>尽可能将函数声明为 <code>const</code>. 访问函数应该总是 <code>const</code>. 其他不会修改任何数据成员, 未调用非 <code>const</code> 函数, 不会返回数据成员非 <code>const</code> 指针或引用的函数也应该声明成 <code>const</code>.</li>
+<li>如果数据成员在对象构造之后不再发生变化, 可将其定义为 <code>const</code>.</li>
+</ul>
+<p>然而, 也不要发了疯似的使用 <code>const</code>. 像 <code>const int * const * const x;</code> 就有些过了, 虽然它非常精确的描述了常量 <code>x</code>. 关注真正有帮助意义的信息: 前面的例子写成 <code>const int** x</code> 就够了.</p>
+<p>关键字 <code>mutable</code> 可以使用, 但是在多线程中是不安全的, 使用时首先要考虑线程安全.</p>
+<p><code>const</code> 的位置:</p>
+<p>有人喜欢 <code>int const *foo</code> 形式, 不喜欢 <code>const int* foo</code>, 他们认为前者更一致因此可读性也更好: 遵循了 <code>const</code> 总位于其描述的对象之后的原则. 但是一致性原则不适用于此, “不要过度使用” 的声明可以取消大部分你原本想保持的一致性. 将 <code>const</code> 放在前面才更易读, 因为在自然语言中形容词 (<code>const</code>) 是在名词 (<code>int</code>) 之前.</p>
+<p>这是说, 我们提倡但不强制 <code>const</code> 在前. 但要保持代码的一致性! (Yang.Y 注: 也就是不要在一些地方把 <code>const</code> 写在类型前面, 在其他地方又写在后面, 确定一种写法, 然后保持一致.)</p>
+<h3 id="constexpr-用法"><a href="#constexpr-用法" class="headerlink" title="constexpr 用法"></a><code>constexpr</code> 用法</h3><blockquote>
+<p>在 C++11 里，用 <code>constexpr</code> 来定义真正的常量，或实现常量初始化。</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>变量可以被声明成 <code>constexpr</code> 以表示它是真正意义上的常量，即在编译时和运行时都不变。函数或构造函数也可以被声明成 <code>constexpr</code>, 以用来定义 <code>constexpr</code> 变量。</p>
+<p><strong>优点:</strong></p>
+<p>如今 <code>constexpr</code> 就可以定义浮点式的真・常量，不用再依赖字面值了；也可以定义用户自定义类型上的常量；甚至也可以定义函数调用所返回的常量。</p>
+<p><strong>缺点:</strong></p>
+<p>若过早把变量优化成 <code>constexpr</code> 变量，将来又要把它改为常规变量时，挺麻烦的；当前对 <code>constexpr</code> 函数和构造函数中允许的限制可能会导致这些定义中解决的方法模糊。</p>
+<p><strong>结论:</strong></p>
+<p>靠 <code>constexpr</code> 特性，方才实现了 C++ 在接口上打造真正常量机制的可能。好好用 <code>constexpr</code> 来定义真・常量以及支持常量的函数。避免复杂的函数定义，以使其能够与 <code>constexpr</code> 一起使用。 千万别痴心妄想地想靠 <code>constexpr</code> 来强制代码「内联」。</p>
+<h3 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h3><blockquote>
+<p>C++ 内建整型中, 仅使用 <code>int</code>. 如果程序中需要不同大小的变量, 可以使用 <code>&lt;stdint.h&gt;</code> 中长度精确的整型, 如 <code>int16_t</code>.如果您的变量可能不小于 2^31 (2GiB), 就用 64 位变量比如 <code>int64_t</code>. 此外要留意，哪怕您的值并不会超出 int 所能够表示的范围，在计算过程中也可能会溢出。所以拿不准时，干脆用更大的类型。<br>定义:</p>
+</blockquote>
+<p>C++ 没有指定整型的大小. 通常人们假定 <code>short</code> 是 16 位, <code>int</code> 是 32 位, <code>long</code>是 32 位, <code>long long</code> 是 64 位.</p>
+<p><strong>优点:</strong></p>
+<p>保持声明统一.</p>
+<p><strong>缺点:</strong></p>
+<p>C++ 中整型大小因编译器和体系结构的不同而不同.</p>
+<p>结论:</p>
+<p><code>&lt;stdint.h&gt;</code> 定义了 <code>int16_t</code>, <code>uint32_t</code>, <code>int64_t</code> 等整型, 在需要确保整型大小时可以使用它们代替 <code>short</code>, <code>unsigned long long</code> 等. 在 C 整型中, 只使用 int. 在合适的情况下, 推荐使用标准类型如 <code>size_t</code> 和 <code>ptrdiff_t</code>.</p>
+<p>如果已知整数不会太大, 我们常常会使用 <code>int</code>, 如循环计数. 在类似的情况下使用原生类型 <code>int</code>. 你可以认为 <code>int</code> 至少为 32 位, 但不要认为它会多于 32 位. 如果需要 64 位整型, 用 <code>int64_t</code> 或 <code>uint64_t</code>.</p>
+<p>对于大整数, 使用 <code>int64_t</code>.</p>
+<p>不要使用 <code>uint32_t</code> 等无符号整型, 除非你是在表示一个位组而不是一个数值, 或是你需要定义二进制补码溢出. 尤其是不要为了指出数值永不会为负, 而使用无符号类型. 相反, 你应该使用断言来保护数据.</p>
+<p>如果您的代码涉及容器返回的大小（size），确保其类型足以应付容器各种可能的用法。拿不准时，类型越大越好。</p>
+<p>小心整型类型转换和整型提升（acgtyrant 注：integer promotions, 比如 <code>int</code> 与 <code>unsigned int</code> 运算时，前者被提升为 <code>unsigned int</code> 而有可能溢出），总有意想不到的后果。</p>
+<p>关于无符号整数:</p>
+<p>有些人, 包括一些教科书作者, 推荐使用无符号类型表示非负数. 这种做法试图达到自我文档化. 但是, 在 C 语言中, 这一优点被由其导致的 bug 所淹没. 看看下面的例子:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> i = foo.Length()<span class="number">-1</span>; i &gt;= <span class="number">0</span>; --i) ...</div></pre></td></tr></table></figure>
+<p>上述循环永远不会退出! 有时 gcc 会发现该 bug 并报警, 但大部分情况下都不会. 类似的 bug 还会出现在比较有符合变量和无符号变量时. 主要是 C 的类型提升机制会致使无符号类型的行为出乎你的意料.</p>
+<p>因此, 使用断言来指出变量为非负数, 而不是使用无符号型!</p>
+<h3 id="64-位下的可移植性"><a href="#64-位下的可移植性" class="headerlink" title="64 位下的可移植性"></a>64 位下的可移植性</h3><blockquote>
+<p>代码应该对 64 位和 32 位系统友好. 处理打印, 比较, 结构体对齐时应切记:</p>
+</blockquote>
+<p>对于某些类型, <code>printf()</code> 的指示符在 32 位和 64 位系统上可移植性不是很好. C99 标准定义了一些可移植的格式化指示符. 不幸的是, MSVC 7.1 并非全部支持, 而且标准中也有所遗漏, 所以有时我们不得不自己定义一个丑陋的版本 (头文件 <code>inttypes.h</code> 仿标准风格):</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// printf macros for size_t, in the style of inttypes.h</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _LP64</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __PRIS_PREFIX <span class="meta-string">"z"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __PRIS_PREFIX</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line"><span class="comment">// Use these macros after a % in a printf format string</span></div><div class="line"><span class="comment">// to get correct 32/64 bit behavior, like this:</span></div><div class="line"><span class="comment">// size_t size = records.size();</span></div><div class="line"><span class="comment">// printf("%"PRIuS"\n", size);</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PRIdS __PRIS_PREFIX <span class="meta-string">"d"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PRIxS __PRIS_PREFIX <span class="meta-string">"x"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PRIuS __PRIS_PREFIX <span class="meta-string">"u"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PRIXS __PRIS_PREFIX <span class="meta-string">"X"</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PRIoS __PRIS_PREFIX <span class="meta-string">"o"</span></span></div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">不要使用</th>
+<th style="text-align:center">使用</th>
+<th style="text-align:center">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>void *</code> (或其他指针类型)</td>
+<td style="text-align:center"><code>%lx</code></td>
+<td style="text-align:center"><code>%p</code></td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>int64_t</code></td>
+<td style="text-align:center"><code>%qd, %lld</code></td>
+<td style="text-align:center"><code>%&quot;PRId64&quot;</code></td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>uint64_t</code></td>
+<td style="text-align:center"><code>%qu, %llu, %llx</code></td>
+<td style="text-align:center"><code>%&quot;PRIu64&quot;, %&quot;PRIx64&quot;</code></td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>size_t</code></td>
+<td style="text-align:center"><code>%u</code></td>
+<td style="text-align:center"><code>%&quot;PRIuS&quot;, %&quot;PRIxS&quot;</code></td>
+<td style="text-align:center">C99 规定 <code>%zu</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>ptrdiff_t</code></td>
+<td style="text-align:center"><code>%d</code></td>
+<td style="text-align:center"><code>%&quot;PRIdS&quot;</code></td>
+<td style="text-align:center">C99 规定 <code>%zd</code></td>
+</tr>
+</tbody>
+</table>
+<p>注意 <code>PRI*</code> 宏会被编译器扩展为独立字符串. 因此如果使用非常量的格式化字符串, 需要将宏的值而不是宏名插入格式中. 使用 PRI* 宏同样可以在 <code>%</code> 后包含长度指示符. 例如, <code>printf(&quot;x = %30&quot;PRIuS&quot;\n&quot;, x)</code> 在 32 位 Linux 上将被展开为 <code>printf(&quot;x = %30&quot; &quot;u&quot; &quot;\n&quot;, x)</code>, 编译器当成 <code>printf(&quot;x = %30u\n&quot;, x)</code> 处理 (Yang.Y 注: 这在 MSVC 6.0 上行不通, VC 6 编译器不会自动把引号间隔的多个字符串连接一个长字符串).</p>
+<p>记住 <code>sizeof(void *) != sizeof(int)</code>. 如果需要一个指针大小的整数要用 <code>intptr_t</code>.</p>
+<p>你要非常小心的对待结构体对齐, 尤其是要持久化到磁盘上的结构体 (Yang.Y 注: 持久化 - 将数据按字节流顺序保存在磁盘文件或数据库中). 在 64 位系统中, 任何含有 <code>int64_t</code>/<code>uint64_t</code> 成员的类/结构体, 缺省都以 8 字节在结尾对齐. 如果 32 位和 64 位代码要共用持久化的结构体, 需要确保两种体系结构下的结构体对齐一致. 大多数编译器都允许调整结构体对齐. gcc 中可使用 <code>__attribute__((packed))</code>. MSVC 则提供了 <code>#pragma pack()</code> 和 <code>__declspec(align())</code> (YuleFox 注, 解决方案的项目属性里也可以直接设置).</p>
+<p>创建 64 位常量时使用 <code>LL</code> 或 <code>ULL</code> 作为后缀, 如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int64_t</span> my_value = <span class="number">0</span>×<span class="number">123456789L</span>L;</div><div class="line"><span class="keyword">uint64_t</span> my_mask = <span class="number">3U</span>LL &lt;&lt; <span class="number">48</span>;</div></pre></td></tr></table></figure>
+<p>如果你确实需要 32 位和 64 位系统具有不同代码, 可以使用 <code>#ifdef _LP64</code> 指令来切分 32/64 位代码. (尽量不要这么做, 如果非用不可, 尽量使修改局部化)</p>
+<h3 id="预处理宏"><a href="#预处理宏" class="headerlink" title="预处理宏"></a>预处理宏</h3><blockquote>
+<p>使用宏时要非常谨慎, 尽量以内联函数, 枚举和常量代替之.</p>
+</blockquote>
+<p>宏意味着你和编译器看到的代码是不同的. 这可能会导致异常行为, 尤其因为宏具有全局作用域.</p>
+<p>值得庆幸的是, C++ 中, 宏不像在 C 中那么必不可少. 以往用宏展开性能关键的代码, 现在可以用内联函数替代. 用宏表示常量可被 <code>const</code> 变量代替. 用宏 “缩写” 长变量名可被引用代替. 用宏进行条件编译… 这个, 千万别这么做, 会令测试更加痛苦 (<code>#define</code> 防止头文件重包含当然是个特例).</p>
+<p>宏可以做一些其他技术无法实现的事情, 在一些代码库 (尤其是底层库中) 可以看到宏的某些特性 (如用 # 字符串化, 用 ## 连接等等). 但在使用前, 仔细考虑一下能不能不使用宏达到同样的目的.</p>
+<p>下面给出的用法模式可以避免使用宏带来的问题; 如果你要宏, 尽可能遵守:</p>
+<ul>
+<li>不要在 <code>.h</code> 文件中定义宏.</li>
+<li>在马上要使用时才进行 <code>#define</code>, 使用后要立即 <code>#undef</code>.</li>
+<li>不要只是对已经存在的宏使用 <code>#undef</code>，选择一个不会冲突的名称；</li>
+<li>不要试图使用展开后会导致 C++ 构造不稳定的宏, 不然也至少要附上文档说明其行为.</li>
+<li>不要用 <code>##</code> 处理函数，类和变量的名字。</li>
+</ul>
+<h3 id="0-nullptr-和-NULL"><a href="#0-nullptr-和-NULL" class="headerlink" title="0, nullptr 和 NULL"></a>0, <code>nullptr</code> 和 <code>NULL</code></h3><blockquote>
+<p>整数用 <code>0</code>, 实数用 <code>0.0</code>, 指针用 <code>nullptr</code> 或 <code>NULL</code>, 字符 (串) 用 <code>&#39;\0&#39;</code>.</p>
+</blockquote>
+<p>整数用 <code>0</code>, 实数用 <code>0.0</code>, 这一点是毫无争议的.</p>
+<p>对于指针 (地址值), 到底是用 <code>0</code>, <code>NULL</code> 还是 <code>nullptr</code>. C++11 项目用 <code>nullptr</code>; C++03 项目则用 <code>NULL</code>, 毕竟它看起来像指针。实际上，一些 C++ 编译器对 <code>NULL</code> 的定义比较特殊，可以输出有用的警告，特别是 <code>sizeof(NULL)</code> 就和 <code>sizeof(0)</code> 不一样。</p>
+<p>字符 (串) 用 <code>&#39;\0&#39;</code>, 不仅类型正确而且可读性好.</p>
+<h3 id="sizeof"><a href="#sizeof" class="headerlink" title="sizeof"></a>sizeof</h3><blockquote>
+<p>尽可能用 <code>sizeof(varname)</code> 代替 <code>sizeof(type)</code>.</p>
+</blockquote>
+<p>使用 <code>sizeof(varname)</code> 是因为当代码中变量类型改变时会自动更新. 您或许会用 <code>sizeof(type)</code> 处理不涉及任何变量的代码，比如处理来自外部或内部的数据格式，这时用变量就不合适了。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">Struct data;</div><div class="line">Struct data; <span class="built_in">memset</span>(&amp;data, <span class="number">0</span>, <span class="keyword">sizeof</span>(data));</div></pre></td></tr></table></figure>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="built_in">memset</span>(&amp;data, <span class="number">0</span>, <span class="keyword">sizeof</span>(Struct));</div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> (raw_size &lt; <span class="keyword">sizeof</span>(<span class="keyword">int</span>)) &#123;</div><div class="line">    LOG(ERROR) &lt;&lt; <span class="string">"compressed record not big enough for count: "</span> &lt;&lt; raw_size;</div><div class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="auto"><a href="#auto" class="headerlink" title="auto"></a>auto</h3><blockquote>
+<p>用 auto 绕过烦琐的类型名，只要可读性好就继续用，别用在局部变量之外的地方。</p>
+</blockquote>
+<p><strong>定义：</strong></p>
+<p>C++11 中，若变量被声明成 <code>auto</code>, 那它的类型就会被自动匹配成初始化表达式的类型。您可以用 <code>auto</code> 来复制初始化或绑定引用。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; v;</div><div class="line">...</div><div class="line"><span class="keyword">auto</span> s1 = v[<span class="number">0</span>];  <span class="comment">// 创建一份 v[0] 的拷贝。</span></div><div class="line"><span class="keyword">const</span> <span class="keyword">auto</span>&amp; s2 = v[<span class="number">0</span>];  <span class="comment">// s2 是 v[0] 的一个引用。</span></div></pre></td></tr></table></figure>
+<p><strong>优点：</strong></p>
+<p>C++ 类型名有时又长又臭，特别是涉及模板或命名空间的时候。就像：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">sparse_hash_map&lt;<span class="built_in">string</span>, <span class="keyword">int</span>&gt;::iterator iter = m.find(val);</div></pre></td></tr></table></figure>
+<p>返回类型好难读，代码目的也不够一目了然。重构其：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">auto</span> iter = m.find(val);</div></pre></td></tr></table></figure>
+<p>好多了。</p>
+<p>没有 <code>auto</code> 的话，我们不得不在同一个表达式里写同一个类型名两次，无谓的重复，就像：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">diagnostics::ErrorStatus* status = <span class="keyword">new</span> diagnostics::ErrorStatus(<span class="string">"xyz"</span>);</div></pre></td></tr></table></figure>
+<p>有了 <code>auto</code>, 可以更方便地用中间变量，显式编写它们的类型轻松点。</p>
+<p><strong>缺点：</strong></p>
+<p>类型够明显时，特别是初始化变量时，代码才会够一目了然。但以下就不一样了：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">auto</span> i = x.Lookup(key);</div></pre></td></tr></table></figure>
+<p>看不出其类型是啥，x 的类型声明恐怕远在几百行之外了。</p>
+<p>程序员必须会区分 <code>auto</code> 和 <code>const auto&amp;</code> 的不同之处，否则会复制错东西。</p>
+<p><code>auto</code> 和 C++11 列表初始化的合体令人摸不着头脑：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">auto</span> <span class="title">x</span><span class="params">(<span class="number">3</span>)</span></span>;  <span class="comment">// 圆括号。</span></div><div class="line"><span class="keyword">auto</span> y&#123;<span class="number">3</span>&#125;;  <span class="comment">// 大括号。</span></div></pre></td></tr></table></figure>
+<p>它们不是同一回事——<code>x</code> 是 <code>int</code>, <code>y</code> 则是 <code>std::initializer_list&lt;int&gt;</code>. 其它一般不可见的代理类型（acgtyrant 注：normally-invisible proxy types, 它涉及到 C++ 鲜为人知的坑：<a href="http://stackoverflow.com/a/17794965/1546088" target="_blank" rel="external">Why is vector<bool> not a STL container?</bool></a>）也有大同小异的陷阱。</p>
+<p>如果在接口里用 <code>auto</code>, 比如声明头文件里的一个常量，那么只要仅仅因为程序员一时修改其值而导致类型变化的话——API 要翻天覆地了。</p>
+<p><strong>结论：</strong></p>
+<p><code>auto</code> 只能用在局部变量里用。别用在文件作用域变量，命名空间作用域变量和类数据成员里。永远别列表初始化 <code>auto</code> 变量。</p>
+<p><code>auto</code> 还可以和 C++11 特性「尾置返回类型（trailing return type）」一起用，不过后者只能用在 lambda 表达式里。</p>
+<h3 id="列表初始化"><a href="#列表初始化" class="headerlink" title="列表初始化"></a>列表初始化</h3><blockquote>
+<p>你可以用列表初始化。</p>
+</blockquote>
+<p>早在 C++03 里，聚合类型（aggregate types）就已经可以被列表初始化了，比如数组和不自带构造函数的结构体：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">struct</span> Point &#123; <span class="keyword">int</span> x; <span class="keyword">int</span> y; &#125;;</div><div class="line">Point p = &#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</div></pre></td></tr></table></figure>
+<p>C++11 中，该特性得到进一步的推广，任何对象类型都可以被列表初始化。示范如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Vector 接收了一个初始化列表。</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; v&#123;<span class="string">"foo"</span>, <span class="string">"bar"</span>&#125;;</div><div class="line"></div><div class="line"><span class="comment">// 不考虑细节上的微妙差别，大致上相同。</span></div><div class="line"><span class="comment">// 您可以任选其一。</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; v = &#123;<span class="string">"foo"</span>, <span class="string">"bar"</span>&#125;;</div><div class="line"></div><div class="line"><span class="comment">// 可以配合 new 一起用。</span></div><div class="line"><span class="keyword">auto</span> p = <span class="keyword">new</span> <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&#123;<span class="string">"foo"</span>, <span class="string">"bar"</span>&#125;;</div><div class="line"></div><div class="line"><span class="comment">// map 接收了一些 pair, 列表初始化大显神威。</span></div><div class="line"><span class="built_in">map</span>&lt;<span class="keyword">int</span>, <span class="built_in">string</span>&gt; m = &#123;&#123;<span class="number">1</span>, <span class="string">"one"</span>&#125;, &#123;<span class="number">2</span>, <span class="string">"2"</span>&#125;&#125;;</div><div class="line"></div><div class="line"><span class="comment">// 初始化列表也可以用在返回类型上的隐式转换。</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; test_function() &#123; <span class="keyword">return</span> &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;; &#125;</div><div class="line"></div><div class="line"><span class="comment">// 初始化列表可迭代。</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i : &#123;<span class="number">-1</span>, <span class="number">-2</span>, <span class="number">-3</span>&#125;) &#123;&#125;</div><div class="line"></div><div class="line"><span class="comment">// 在函数调用里用列表初始化。</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">TestFunction2</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v)</span> </span>&#123;&#125;</div><div class="line">TestFunction2(&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;);</div></pre></td></tr></table></figure>
+<p>用户自定义类型也可以定义接收 <code>std::initializer_list&lt;T&gt;</code> 的构造函数和赋值运算符，以自动列表初始化：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">class</span> MyType &#123;</div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  <span class="comment">// std::initializer_list 专门接收 init 列表。</span></div><div class="line">  <span class="comment">// 得以值传递。</span></div><div class="line">  MyType(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="keyword">int</span>&gt; init_list) &#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i : init_list) append(i);</div><div class="line">  &#125;</div><div class="line">  MyType&amp; <span class="keyword">operator</span>=(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="keyword">int</span>&gt; init_list) &#123;</div><div class="line">    clear();</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i : init_list) append(i);</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line">MyType m&#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>&#125;;</div></pre></td></tr></table></figure>
+<p>最后，列表初始化也适用于常规数据类型的构造，哪怕没有接收 <code>std::initializer_list&lt;T&gt;</code> 的构造函数。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">double</span> d&#123;<span class="number">1.23</span>&#125;;</div><div class="line"><span class="comment">// MyOtherType 没有 std::initializer_list 构造函数，</span></div><div class="line"> <span class="comment">// 直接上接收常规类型的构造函数。</span></div><div class="line"><span class="keyword">class</span> MyOtherType &#123;</div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  <span class="function"><span class="keyword">explicit</span> <span class="title">MyOtherType</span><span class="params">(<span class="built_in">string</span>)</span></span>;</div><div class="line">  MyOtherType(<span class="keyword">int</span>, <span class="built_in">string</span>);</div><div class="line">&#125;;</div><div class="line">MyOtherType m = &#123;<span class="number">1</span>, <span class="string">"b"</span>&#125;;</div><div class="line"><span class="comment">// 不过如果构造函数是显式的（explict），您就不能用 `= &#123;&#125;` 了。</span></div><div class="line">MyOtherType m&#123;<span class="string">"b"</span>&#125;;</div></pre></td></tr></table></figure>
+<p>千万别直接列表初始化 auto 变量，看下一句，估计没人看得懂：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">auto</span> d = &#123;<span class="number">1.23</span>&#125;;        <span class="comment">// d 即是 std::initializer_list&lt;double&gt;</span></div><div class="line"><span class="keyword">auto</span> d = <span class="keyword">double</span>&#123;<span class="number">1.23</span>&#125;;  <span class="comment">// 善哉 -- d 即为 double, 并非 std::initializer_list.</span></div></pre></td></tr></table></figure>
+<p>至于格式化，参见 braced-initializer-list-format.</p>
+<h3 id="Lambda-表达式"><a href="#Lambda-表达式" class="headerlink" title="Lambda 表达式"></a>Lambda 表达式</h3><blockquote>
+<p>适当使用 lambda 表达式。别用默认 lambda 捕获，所有捕获都要显式写出来。</p>
+</blockquote>
+<p><strong>定义：</strong></p>
+<p>Lambda 表达式是创建匿名函数对象的一种简易途径，常用于把函数当参数传，例如：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="built_in">std</span>::sort(v.begin(), v.end(), [](<span class="keyword">int</span> x, <span class="keyword">int</span> y) &#123;</div><div class="line">    <span class="keyword">return</span> Weight(x) &lt; Weight(y);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>C++11 首次提出 Lambdas, 还提供了一系列处理函数对象的工具，比如多态包装器（polymorphic wrapper） <code>std::function</code>.</p>
+<p><strong>优点：</strong></p>
+<ul>
+<li>传函数对象给 STL 算法，Lambdas 最简易，可读性也好。</li>
+<li>Lambdas, <code>std::functions</code> 和 <code>std::bind</code> 可以搭配成通用回调机制（general purpose callback mechanism）；写接收有界函数为参数的函数也很容易了。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>Lambdas 的变量捕获略旁门左道，可能会造成悬空指针。</li>
+<li>Lambdas 可能会失控；层层嵌套的匿名函数难以阅读。</li>
+</ul>
+<p><strong>结论：</strong></p>
+<ul>
+<li>按 format 小用 lambda 表达式怡情。</li>
+<li>禁用默认捕获，捕获都要显式写出来。打比方，比起 <code>[=](int x) {return x + n;}</code>, 您该写成 <code>[n](int x) {return x + n;}</code> 才对，这样读者也好一眼看出 <code>n</code> 是被捕获的值。</li>
+<li>匿名函数始终要简短，如果函数体超过了五行，那么还不如起名（acgtyrant 注：即把 lambda 表达式赋值给对象），或改用函数。</li>
+<li>如果可读性更好，就显式写出 lambda 的尾置返回类型，就像 <code>auto</code>.</li>
+</ul>
+<h3 id="模板编程"><a href="#模板编程" class="headerlink" title="模板编程"></a>模板编程</h3><blockquote>
+<p>不要使用复杂的模板编程</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>模板编程指的是利用 C++ 模板实例化机制是图灵完备性, 可以被用来实现编译时刻的类型判断的一系列编程技巧</p>
+<p><strong>优点:</strong></p>
+<p>模板编程能够实现非常灵活的类型安全的接口和极好的性能, 一些常见的工具比如 Google Test, <code>std::tuple</code>, <code>std::function</code> 和 <code>Boost.Spirit</code>. 这些工具如果没有模板是实现不了的</p>
+<p><strong>缺点:</strong></p>
+<ul>
+<li>模板编程所使用的技巧对于使用 C++不是很熟练的人是比较晦涩, 难懂的. 在复杂的地方使用模板的代码让人更不容易读懂, 并且debug 和 维护起来都很麻烦</li>
+<li>模板编程经常会导致编译出错的信息非常不友好: 在代码出错的时候, 即使这个接口非常的简单, 模板内部复杂的实现细节也会在出错信息显示. 导致这个编译出错信息看起来非常难以理解.</li>
+<li>大量的使用模板编程接口会让重构工具(Visual Assist X, Refactor for C++等等)更难发挥用途. 首先模板的代码会在很多上下文里面扩展开来, 所以很难确认重构对所有的这些展开的代码有用, 其次有些重构工具只对已经做过模板类型替换的代码的AST 有用. 因此重构工具对这些模板实现的原始代码并不有效, 很难找出哪些需要重构.</li>
+</ul>
+<p><strong>结论:</strong></p>
+<ul>
+<li>模板编程有时候能够实现更简洁更易用的接口, 但是更多的时候却适得其反. 因此模板编程最好只用在少量的基础组件, 基础数据结构上, 因为模板带来的额外的维护成本会被大量的使用给分担掉</li>
+<li>在使用模板编程或者其他复杂的模板技巧的时候, 你一定要再三考虑一下. 考虑一下你们团队成员的平均水平是否能够读懂并且能够维护你写的模板代码.或者一个非 C++ 程序员和一些只是在出错的时候偶尔看一下代码的人能够读懂这些错误信息或者能够跟踪函数的调用流程. 如果你使用递归的模板实例化, 或者类型列表, 或者元函数, 又或者表达式模板, 或者依赖SFINAE, 或者sizeof 的trick 手段来检查函数是否重载, 那么这说明你模板用的太多了, 这些模板太复杂了, 我们不推荐使用</li>
+<li>如果你使用模板编程, 你必须考虑尽可能的把复杂度最小化, 并且尽量不要让模板对外暴漏. 你最好只在实现里面使用模板, 然后给用户暴露的接口里面并不使用模板, 这样能提高你的接口的可读性. 并且你应该在这些使用模板的代码上写尽可能详细的注释. 你的注释里面应该详细的包含这些代码是怎么用的, 这些模板生成出来的代码大概是什么样子的. 还需要额外注意在用户错误使用你的模板代码的时候需要输出更人性化的出错信息. 因为这些出错信息也是你的接口的一部分, 所以你的代码必须调整到这些错误信息在用户看起来应该是非常容易理解, 并且用户很容易知道如何修改这些错误</li>
+</ul>
+<h3 id="Boost-库"><a href="#Boost-库" class="headerlink" title="Boost 库"></a>Boost 库</h3><blockquote>
+<p>只使用 Boost 中被认可的库.</p>
+</blockquote>
+<p><strong>定义:</strong></p>
+<p>Boost 库集 是一个广受欢迎, 经过同行鉴定, 免费开源的 C++ 库集.</p>
+<p><strong>优点:</strong></p>
+<p>Boost代码质量普遍较高, 可移植性好, 填补了 C++ 标准库很多空白, 如型别的特性, 更完善的绑定器, 更好的智能指针。</p>
+<p><strong>缺点:</strong></p>
+<p>某些 Boost 库提倡的编程实践可读性差, 比如元编程和其他高级模板技术, 以及过度 “函数化” 的编程风格.</p>
+<p><strong>结论:</strong></p>
+<p>为了向阅读和维护代码的人员提供更好的可读性, 我们只允许使用 Boost 一部分经认可的特性子集. 目前允许使用以下库:</p>
+<ul>
+<li>Call Traits : <code>boost/call_traits.hpp</code></li>
+<li>Compressed Pair : <code>boost/compressed_pair.hpp</code></li>
+<li>&lt;The Boost Graph Library (BGL) : <code>boost/graph</code>, except serialization (<code>adj_list_serialize.hpp</code>) and parallel/distributed algorithms and data structures(<code>boost/graph/parallel/*</code> and <code>boost/graph/distributed/*</code>)</li>
+<li>Property Map : <code>boost/property_map.hpp</code></li>
+<li>The part of Iterator that deals with defining iterators: <code>boost/iterator/iterator_adaptor.hpp</code>, <code>boost/iterator/iterator_facade.hpp</code>, and <code>boost/function_output_iterator.hpp</code></li>
+<li>The part of Polygon that deals with Voronoi diagram construction and doesn’t depend on the rest of Polygon: <code>boost/polygon/voronoi_builder.hpp</code>, <code>boost/polygon/voronoi_diagram.hpp</code>, and <code>boost/polygon/voronoi_geometry_type.hpp</code></li>
+<li>Bimap : <code>boost/bimap</code></li>
+<li>Statistical Distributions and Functions : <code>boost/math/distributions</code></li>
+<li>Multi-index : <code>boost/multi_index</code></li>
+<li>Heap : <code>boost/heap</code></li>
+<li>The flat containers from Container: <code>boost/container/flat_map</code>, and <code>boost/container/flat_set</code></li>
+</ul>
+<p>我们正在积极考虑增加其它 Boost 特性, 所以列表中的规则将不断变化.</p>
+<p>以下库可以用，但由于如今已经被 C++ 11 标准库取代，不再鼓励：</p>
+<ul>
+<li>Pointer Container : <code>boost/ptr_container</code>, 改用 std::unique_ptr</li>
+<li>Array : <code>boost/array.hpp</code>, 改用 std::array</li>
+</ul>
+<h3 id="C-11"><a href="#C-11" class="headerlink" title="C++11"></a>C++11</h3><blockquote>
+<p>适当用 C++11（前身是 C++0x）的库和语言扩展，在贵项目用 C++11 特性前三思可移植性。</p>
+</blockquote>
+<p><strong>定义：</strong></p>
+<p>C++11 有众多语言和库上的<a href="https://en.wikipedia.org/wiki/C%2B%2B11" target="_blank" rel="external">变革</a>。</p>
+<p><strong>优点：</strong></p>
+<p>在二〇一四年八月之前，C++11 一度是官方标准，被大多 C++ 编译器支持。它标准化很多我们早先就在用的 C++ 扩展，简化了不少操作，大大改善了性能和安全。</p>
+<p><strong>缺点：</strong></p>
+<p>C++11 相对于前身，复杂极了：1300 页 vs 800 页！很多开发者也不怎么熟悉它。于是从长远来看，前者特性对代码可读性以及维护代价难以预估。我们说不准什么时候采纳其特性，特别是在被迫依赖老实工具的项目上。</p>
+<p>和 Boost 库 一样，有些 C++11 扩展提倡实则对可读性有害的编程实践——就像去除冗余检查（比如类型名）以帮助读者，或是鼓励模板元编程等等。有些扩展在功能上与原有机制冲突，容易招致困惑以及迁移代价。</p>
+<p><strong>缺点：</strong></p>
+<p>C++11 特性除了个别情况下，可以用一用。除了本指南会有不少章节会加以讨若干 C++11 特性之外，以下特性最好不要用：</p>
+<ul>
+<li>尾置返回类型，比如用 <code>auto foo() -&gt; int</code> 代替 <code>int foo()</code>. 为了兼容于现有代码的声明风格。</li>
+<li>编译时合数 <code>&lt;ratio&gt;</code>, 因为它涉及一个重模板的接口风格。</li>
+<li><code>&lt;cfenv&gt;</code> 和 <code>&lt;fenv.h&gt;</code> 头文件，因为编译器尚不支持。</li>
+<li>默认 lambda 捕获。</li>
+</ul>
+<p>译者（acgtyrant）笔记</p>
+<ol>
+<li>实际上，<a href="http://www.zhihu.com/question/24439516/answer/27858964" target="_blank" rel="external">缺省参数会改变函数签名的前提是改变了它接收的参数数量</a>，比如把 <code>void a()</code> 改成 <code>void a(int b = 0)</code>, 开发者改变其代码的初衷也许是，在不改变「代码兼容性」的同时，又提供了可选 int 参数的余地，然而这终究会破坏函数指针上的兼容性，毕竟函数签名确实变了。</li>
+<li>此外把自带缺省参数的函数地址赋值给指针时，会丢失缺省参数信息。</li>
+<li>我还发现 <a href="http://www.zhihu.com/question/24439516/answer/27896004" target="_blank" rel="external">滥用缺省参数会害得读者光只看调用代码的话，会误以为其函数接受的参数数量比实际上还要少</a>。</li>
+<li><code>friend</code> 实际上只对函数／类赋予了对其所在类的访问权限，并不是有效的声明语句。所以除了在头文件类内部写 friend 函数／类，还要在类作用域之外正式地声明一遍，最后在对应的 <code>.cc</code> 文件加以定义。</li>
+<li>本风格指南都强调了「友元应该定义在同一文件内，避免代码读者跑到其它文件查找使用该私有成员的类」。那么可以把其声明放在类声明所在的头文件，定义也放在类定义所在的文件。</li>
+<li>由于友元函数／类并不是类的一部分，自然也不会是类可调用的公有接口，于是我主张全集中放在类的尾部，即的数据成员之后，参考 声明顺序 。</li>
+<li><a href="http://www.zhihu.com/question/22889420" target="_blank" rel="external">对使用 C++ 异常处理应具有怎样的态度？</a> 非常值得一读。</li>
+<li>注意初始化 <code>const</code> 对象时，必须在初始化的同时值初始化。</li>
+<li>用断言代替无符号整型类型，深有启发。</li>
+<li><code>auto</code> 在涉及迭代器的循环语句里挺常用。</li>
+<li><a href="http://stackoverflow.com/questions/11215227/should-the-trailing-return-type-syntax-style-become-the-default-for-new-c11-pr" target="_blank" rel="external">Should the trailing return type syntax style become the default for new C++11 programs?</a> 讨论了 auto 与尾置返回类型一起用的全新编码风格，值得一看。</li>
+</ol>
+<h2 id="命名约定"><a href="#命名约定" class="headerlink" title="命名约定"></a>命名约定</h2><p>最重要的一致性规则是命名管理. 命名风格快速获知名字代表是什么东东: 类型? 变量? 函数? 常量? 宏 … ? 甚至不需要去查找类型声明. 我们大脑中的模式匹配引擎可以非常可靠的处理这些命名规则.</p>
+<p>命名规则具有一定随意性, 但相比按个人喜好命名, 一致性更重, 所以不管你怎么想, 规则总归是规则.</p>
+<h3 id="通用命名规则"><a href="#通用命名规则" class="headerlink" title="通用命名规则"></a>通用命名规则</h3><blockquote>
+<p>函数命名，变量命名，文件命名要有描述性；少用缩写。</p>
+</blockquote>
+<p>尽可能给有描述性的命名，别心疼空间，毕竟让代码易于新读者理解很重要。不要用只有项目开发者能理解的缩写，也不要通过砍掉几个字母来缩写单词。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> price_count_reader;    <span class="comment">// 无缩写</span></div><div class="line"><span class="keyword">int</span> num_errors;            <span class="comment">// “num” 本来就很常见</span></div><div class="line"><span class="keyword">int</span> num_dns_connections;   <span class="comment">// 人人都知道 “DNS” 是啥</span></div></pre></td></tr></table></figure>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> n;                     <span class="comment">// 莫名其妙。</span></div><div class="line"><span class="keyword">int</span> nerr;                  <span class="comment">// 怪缩写。</span></div><div class="line"><span class="keyword">int</span> n_comp_conns;          <span class="comment">// 怪缩写。</span></div><div class="line"><span class="keyword">int</span> wgc_connections;       <span class="comment">// 只有贵团队知道是啥意思。</span></div><div class="line"><span class="keyword">int</span> pc_reader;             <span class="comment">// "pc" 有太多可能的解释了。</span></div><div class="line"><span class="keyword">int</span> cstmr_id;              <span class="comment">// 有删减若干字母。</span></div></pre></td></tr></table></figure>
+<h3 id="文件命名"><a href="#文件命名" class="headerlink" title="文件命名"></a>文件命名</h3><blockquote>
+<p>文件名要全部小写, 可以包含下划线 (<code>_</code>) 或连字符 (<code>-</code>). 按项目约定来. 如果并没有项目约定，<code>_</code> 更好。</p>
+</blockquote>
+<p>可接受的文件命名:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">* my_useful_class.cc</div><div class="line">* my-useful-<span class="keyword">class</span>.cc</div><div class="line">* myusefulclass.cc</div><div class="line">* muusefulclass_test.cc <span class="comment">// ``_unittest`` 和 ``_regtest`` 已弃用。</span></div></pre></td></tr></table></figure>
+<p>C++ 文件要以 <code>.cc</code> 结尾, 头文件以 <code>.h</code> 结尾. 专门插入文本的文件则以 <code>.inc</code> 结尾，参见 Self-contained 头文件。</p>
+<p>不要使用已经存在于 <code>/usr/include</code> 下的文件名 (Yang.Y 注: 即编译器搜索系统头文件的路径), 如 <code>db.h</code>.</p>
+<p>通常应尽量让文件名更加明确. <code>http_server_logs.h</code> 就比 <code>logs.h</code> 要好. 定义类时文件名一般成对出现, 如 <code>foo_bar.h</code> 和 <code>foo_bar.cc</code>, 对应于类 <code>FooBar</code>.</p>
+<p>内联函数必须放在 <code>.h</code> 文件中. 如果内联函数比较短, 就直接放在 <code>.h</code> 中.</p>
+<h3 id="类型命名"><a href="#类型命名" class="headerlink" title="类型命名"></a>类型命名</h3><blockquote>
+<p>类型名称的每个单词首字母均大写, 不包含下划线: <code>MyExcitingClass</code>, <code>MyExcitingEnum</code>.</p>
+</blockquote>
+<p>所有类型命名 —— 类, 结构体, 类型定义 (<code>typedef</code>), 枚举 —— 均使用相同约定. 例如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// classes and structs</span></div><div class="line"><span class="keyword">class</span> UrlTable &#123; ...</div><div class="line"><span class="keyword">class</span> UrlTableTester &#123; ...</div><div class="line"><span class="keyword">struct</span> UrlTableProperties &#123; ...</div><div class="line"></div><div class="line"><span class="comment">// typedefs</span></div><div class="line"><span class="keyword">typedef</span> hash_map&lt;UrlTableProperties *, <span class="built_in">string</span>&gt; PropertiesMap;</div><div class="line"></div><div class="line"><span class="comment">// enums</span></div><div class="line"><span class="keyword">enum</span> UrlTableErrors &#123; ...</div></pre></td></tr></table></figure>
+<h3 id="变量命名"><a href="#变量命名" class="headerlink" title="变量命名"></a>变量命名</h3><blockquote>
+<p>变量名一律小写, 单词之间用下划线连接. 类的成员变量以下划线结尾, 但结构体的就不用，如: <code>a_local_variable</code>, <code>a_struct_data_member</code>, <code>a_class_data_member</code>.</p>
+</blockquote>
+<p>普通变量命名:</p>
+<p>举例:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="built_in">string</span> table_name;  <span class="comment">// 可 - 用下划线。</span></div><div class="line"><span class="built_in">string</span> tablename;   <span class="comment">// 可 - 全小写。</span></div></pre></td></tr></table></figure>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="built_in">string</span> tableName;   <span class="comment">// 差 - 混合大小写。</span></div></pre></td></tr></table></figure>
+<p>类数据成员：</p>
+<p>不管是静态的还是非静态的，类数据成员都可以和普通变量一样, 但要接下划线。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">class</span> TableInfo &#123;</div><div class="line">  ...</div><div class="line"> <span class="keyword">private</span>:</div><div class="line">  <span class="built_in">string</span> table_name_;  <span class="comment">// 可 - 尾后加下划线。</span></div><div class="line">  <span class="built_in">string</span> tablename_;   <span class="comment">// 可。</span></div><div class="line">  <span class="keyword">static</span> Pool&lt;TableInfo&gt;* pool_;  <span class="comment">// 可。</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>结构体变量:</p>
+<p>不管是静态的还是非静态的，结构体数据成员都可以和普通变量一样, 不用像类那样接下划线:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">struct</span> UrlTableProperties &#123;</div><div class="line">    <span class="built_in">string</span> name;</div><div class="line">    <span class="keyword">int</span> num_entries;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>结构体与类的讨论参考 结构体 vs. 类 一节.</p>
+<p>全局变量:</p>
+<p>对全局变量没有特别要求, 少用就好, 但如果你要用, 可以用 <code>g_</code> 或其它标志作为前缀, 以便更好的区分局部变量.</p>
+<h3 id="常量命名"><a href="#常量命名" class="headerlink" title="常量命名"></a>常量命名</h3><blockquote>
+<p>在全局或类里的常量名称前加 <code>k</code>: <code>kDaysInAWeek</code>. 且除去开头的 <code>k</code> 之外每个单词开头字母均大写。</p>
+</blockquote>
+<p>所有编译时常量, 无论是局部的, 全局的还是类中的, 和其他变量稍微区别一下. <code>k</code> 后接大写字母开头的单词:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> kDaysInAWeek = <span class="number">7</span>;</div></pre></td></tr></table></figure>
+<p>这规则适用于编译时的局部作用域常量，不过要按变量规则来命名也可以。</p>
+<h3 id="函数命名"><a href="#函数命名" class="headerlink" title="函数命名"></a>函数命名</h3><blockquote>
+<p>常规函数使用大小写混合, 取值和设值函数则要求与变量名匹配: <code>MyExcitingFunction()</code>, <code>MyExcitingMethod()</code>, <code>my_exciting_member_variable()</code>, <code>set_my_exciting_member_variable()</code>.</p>
+</blockquote>
+<p>常规函数:</p>
+<p>函数名的每个单词首字母大写, 没有下划线。</p>
+<p>如果您的某函数出错时就要直接 crash, 那么就在函数名加上 OrDie. 但这函数本身必须集成在产品代码里，且平时也可能会出错。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">AddTableEntry()</div><div class="line">DeleteUrl()</div><div class="line">OpenFileOrDie()</div></pre></td></tr></table></figure>
+<p>取值和设值函数:</p>
+<p>取值（Accessors）和设值（Mutators）函数要与存取的变量名匹配. 这儿摘录一个类, <code>num_entries_</code> 是该类的实例变量:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">class</span> MyClass &#123;</div><div class="line">    <span class="keyword">public</span>:</div><div class="line">        ...</div><div class="line">        <span class="function"><span class="keyword">int</span> <span class="title">num_entries</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> num_entries_; &#125;</div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">set_num_entries</span><span class="params">(<span class="keyword">int</span> num_entries)</span> </span>&#123; num_entries_ = num_entries; &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span>:</div><div class="line">        <span class="keyword">int</span> num_entries_;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>其它非常短小的内联函数名也可以用小写字母, 例如. 如果你在循环中调用这样的函数甚至都不用缓存其返回值, 小写命名就可以接受.</p>
+<h3 id="名字空间命名"><a href="#名字空间命名" class="headerlink" title="名字空间命名"></a>名字空间命名</h3><blockquote>
+<p>名字空间用小写字母命名, 并基于项目名称和目录结构: <code>google_awesome_project.</code></p>
+</blockquote>
+<p>关于名字空间的讨论和如何命名, 参考 名字空间 一节.</p>
+<h3 id="枚举命名"><a href="#枚举命名" class="headerlink" title="枚举命名"></a>枚举命名</h3><blockquote>
+<p>枚举的命名应当和 常量 或 宏 一致: <code>kEnumName</code> 或是 <code>ENUM_NAME</code>.</p>
+</blockquote>
+<p>单独的枚举值应该优先采用 常量 的命名方式. 但 宏 方式的命名也可以接受. 枚举名 <code>UrlTableErrors</code> (以及 <code>AlternateUrlTableErrors</code>) 是类型, 所以要用大小写混合的方式.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">enum</span> UrlTableErrors &#123;</div><div class="line">    kOK = <span class="number">0</span>,</div><div class="line">    kErrorOutOfMemory,</div><div class="line">    kErrorMalformedInput,</div><div class="line">&#125;;</div><div class="line"><span class="keyword">enum</span> AlternateUrlTableErrors &#123;</div><div class="line">    OK = <span class="number">0</span>,</div><div class="line">    OUT_OF_MEMORY = <span class="number">1</span>,</div><div class="line">    MALFORMED_INPUT = <span class="number">2</span>,</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>2009 年 1 月之前, 我们一直建议采用 宏 的方式命名枚举值. 由于枚举值和宏之间的命名冲突, 直接导致了很多问题. 由此, 这里改为优先选择常量风格的命名方式. 新代码应该尽可能优先使用常量风格. 但是老代码没必要切换到常量风格, 除非宏风格确实会产生编译期问题.</p>
+<h3 id="宏命名"><a href="#宏命名" class="headerlink" title="宏命名"></a>宏命名</h3><blockquote>
+<p>你并不打算 使用宏, 对吧? 如果你一定要用, 像这样命名: <code>MY_MACRO_THAT_SCARES_SMALL_CHILDREN</code>.</p>
+</blockquote>
+<p>参考 预处理宏; 通常 不应该 使用宏. 如果不得不用, 其命名像枚举命名一样全部大写, 使用下划线:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> ROUND(x) ...</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PI_ROUNDED 3.0</span></div></pre></td></tr></table></figure>
+<h3 id="命名规则的特例"><a href="#命名规则的特例" class="headerlink" title="命名规则的特例"></a>命名规则的特例</h3><blockquote>
+<p>如果你命名的实体与已有 C/C++ 实体相似, 可参考现有命名策略.</p>
+</blockquote>
+<ul>
+<li><code>bigopen()</code>: 函数名, 参照 <code>open()</code> 的形式</li>
+<li><code>uint</code>: <code>typedef</code></li>
+<li><code>bigpos</code>: <code>struct</code> 或 <code>class</code>, 参照 <code>pos</code> 的形式</li>
+<li><code>sparse_hash_map</code>: STL 相似实体; 参照 STL 命名约定</li>
+<li><code>LONGLONG_MAX</code>: 常量, 如同 <code>INT_MAX</code></li>
+</ul>
+<p>译者（acgtyrant）笔记</p>
+<p>感觉 Google 的命名约定很高明，比如写了简单的类 QueryResult, 接着又可以直接定义一个变量 <code>query_result</code>, 区分度很好；再次，类内变量以下划线结尾，那么就可以直接传入同名的形参，比如 <code>TextQuery::TextQuery(std::string word) : word_(word) {}</code> , 其中 <code>word_</code> 自然是类内私有成员。</p>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><p>注释虽然写起来很痛苦, 但对保证代码可读性至关重要. 下面的规则描述了如何注释以及在哪儿注释. 当然也要记住: 注释固然很重要, 但最好的代码本身应该是自文档化. 有意义的类型名和变量名, 要远胜过要用注释解释的含糊不清的名字.</p>
+<p>你写的注释是给代码读者看的: 下一个需要理解你的代码的人. 慷慨些吧, 下一个人可能就是你!</p>
+<h3 id="注释风格"><a href="#注释风格" class="headerlink" title="注释风格"></a>注释风格</h3><blockquote>
+<p>使用 <code>//</code> 或 <code>/* */</code>, 统一就好.</p>
+</blockquote>
+<p><code>//</code> 或 <code>/* */</code> 都可以; 但 <code>//</code> 更 常用. 要在如何注释及注释风格上确保统一.</p>
+<h3 id="文件注释"><a href="#文件注释" class="headerlink" title="文件注释"></a>文件注释</h3><blockquote>
+<p>在每一个文件开头加入版权公告, 然后是文件内容描述.</p>
+</blockquote>
+<p>法律公告和作者信息:</p>
+<p>每个文件都应该包含以下项, 依次是:</p>
+<ul>
+<li>版权声明 (比如, Copyright 2008 Google Inc.)</li>
+<li>许可证. 为项目选择合适的许可证版本 (比如, Apache 2.0, BSD, LGPL, GPL)</li>
+<li>作者: 标识文件的原始作者.</li>
+</ul>
+<p>如果你对原始作者的文件做了重大修改, 将你的信息添加到作者信息里. 这样当其他人对该文件有疑问时可以知道该联系谁.</p>
+<p>文件内容:</p>
+<p>紧接着版权许可和作者信息之后, 每个文件都要用注释描述文件内容.</p>
+<p>通常, <code>.h</code> 文件要对所声明的类的功能和用法作简单说明. <code>.cc</code> 文件通常包含了更多的实现细节或算法技巧讨论, 如果你感觉这些实现细节或算法技巧讨论对于理解 <code>.h</code> 文件有帮助, 可以将该注释挪到 <code>.h</code>, 并在 <code>.cc</code> 中指出文档在 <code>.h</code>.</p>
+<p>不要简单的在 <code>.h</code> 和 <code>.cc</code> 间复制注释. 这种偏离了注释的实际意义.</p>
+<h3 id="类注释"><a href="#类注释" class="headerlink" title="类注释"></a>类注释</h3><blockquote>
+<p>每个类的定义都要附带一份注释, 描述类的功能和用法.</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Iterates over the contents of a GargantuanTable.  Sample usage:</span></div><div class="line"><span class="comment">//    GargantuanTable_Iterator* iter = table-&gt;NewIterator();</span></div><div class="line"><span class="comment">//    for (iter-&gt;Seek("foo"); !iter-&gt;done(); iter-&gt;Next()) &#123;</span></div><div class="line"><span class="comment">//      process(iter-&gt;key(), iter-&gt;value());</span></div><div class="line"><span class="comment">//    &#125;</span></div><div class="line"><span class="comment">//    delete iter;</span></div><div class="line"><span class="keyword">class</span> GargantuanTable_Iterator &#123;</div><div class="line">    ...</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>如果你觉得已经在文件顶部详细描述了该类, 想直接简单的来上一句 “完整描述见文件顶部” 也不打紧, 但务必确保有这类注释.</p>
+<p>如果类有任何同步前提, 文档说明之. 如果该类的实例可被多线程访问, 要特别注意文档说明多线程环境下相关的规则和常量使用.</p>
+<h3 id="函数注释"><a href="#函数注释" class="headerlink" title="函数注释"></a>函数注释</h3><blockquote>
+<p>函数声明处注释描述函数功能; 定义处描述函数实现.</p>
+</blockquote>
+<p>函数声明:</p>
+<p>注释位于声明之前, 对函数功能及用法进行描述. 注释使用叙述式 (“Opens the file”) 而非指令式 (“Open the file”); 注释只是为了描述函数, 而不是命令函数做什么. 通常, 注释不会描述函数如何工作. 那是函数定义部分的事情.</p>
+<p>函数声明处注释的内容:</p>
+<ul>
+<li>函数的输入输出.</li>
+<li>对类成员函数而言: 函数调用期间对象是否需要保持引用参数, 是否会释放这些参数.</li>
+<li>如果函数分配了空间, 需要由调用者释放.</li>
+<li>参数是否可以为 <code>NULL</code>.</li>
+<li>是否存在函数使用上的性能隐患.</li>
+<li>如果函数是可重入的, 其同步前提是什么?</li>
+</ul>
+<p>举例如下:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Returns an iterator for this table.  It is the client's</span></div><div class="line"><span class="comment">// responsibility to delete the iterator when it is done with it,</span></div><div class="line"><span class="comment">// and it must not use the iterator once the GargantuanTable object</span></div><div class="line"><span class="comment">// on which the iterator was created has been deleted.</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">// The iterator is initially positioned at the beginning of the table.</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">// This method is equivalent to:</span></div><div class="line"><span class="comment">//    Iterator* iter = table-&gt;NewIterator();</span></div><div class="line"><span class="comment">//    iter-&gt;Seek("");</span></div><div class="line"><span class="comment">//    return iter;</span></div><div class="line"><span class="comment">// If you are going to immediately seek to another place in the</span></div><div class="line"><span class="comment">// returned iterator, it will be faster to use NewIterator()</span></div><div class="line"><span class="comment">// and avoid the extra seek.</span></div><div class="line"><span class="function">Iterator* <span class="title">GetIterator</span><span class="params">()</span> <span class="keyword">const</span></span>;</div></pre></td></tr></table></figure>
+<p>但也要避免罗罗嗦嗦, 或做些显而易见的说明. 下面的注释就没有必要加上 “returns false otherwise”, 因为已经暗含其中了:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Returns true if the table cannot hold any more entries.</span></div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">IsTableFull</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure>
+<p>注释构造/析构函数时, 切记读代码的人知道构造/析构函数是干啥的, 所以 “destroys this object” 这样的注释是没有意义的. 注明构造函数对参数做了什么 (例如, 是否取得指针所有权) 以及析构函数清理了什么. 如果都是些无关紧要的内容, 直接省掉注释. 析构函数前没有注释是很正常的.</p>
+<p>函数定义:</p>
+<p>每个函数定义时要用注释说明函数功能和实现要点. 比如说说你用的编程技巧, 实现的大致步骤, 或解释如此实现的理由, 为什么前半部分要加锁而后半部分不需要.</p>
+<p>不要 从 <code>.h</code> 文件或其他地方的函数声明处直接复制注释. 简要重述函数功能是可以的, 但注释重点要放在如何实现上.</p>
+<h3 id="变量注释"><a href="#变量注释" class="headerlink" title="变量注释"></a>变量注释</h3><blockquote>
+<p>通常变量名本身足以很好说明变量用途. 某些情况下, 也需要额外的注释说明.</p>
+</blockquote>
+<p>类数据成员:</p>
+<p>每个类数据成员 (也叫实例变量或成员变量) 都应该用注释说明用途. 如果变量可以接受 <code>NULL</code> 或 <code>-1</code> 等警戒值, 须加以说明. 比如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">private</span>:</div><div class="line">    <span class="comment">// Keeps track of the total number of entries in the table.</span></div><div class="line">    <span class="comment">// Used to ensure we do not go over the limit. -1 means</span></div><div class="line">    <span class="comment">// that we don't yet know how many entries the table has.</span></div><div class="line">    <span class="keyword">int</span> num_total_entries_;</div></pre></td></tr></table></figure>
+<p>全局变量:</p>
+<p>和数据成员一样, 所有全局变量也要注释说明含义及用途. 比如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// The total number of tests cases that we run through in this regression test.</span></div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> kNumTestCases = <span class="number">6</span>;</div></pre></td></tr></table></figure>
+<h3 id="实现注释"><a href="#实现注释" class="headerlink" title="实现注释"></a>实现注释</h3><blockquote>
+<p>对于代码中巧妙的, 晦涩的, 有趣的, 重要的地方加以注释.</p>
+</blockquote>
+<p>代码前注释:</p>
+<p>巧妙或复杂的代码段前要加注释. 比如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// Divide result by two, taking into account that x</span></div><div class="line"><span class="comment">// contains the carry from the add.</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; result-&gt;size(); i++) &#123;</div><div class="line">    x = (x &lt;&lt; <span class="number">8</span>) + (*result)[i];</div><div class="line">    (*result)[i] = x &gt;&gt; <span class="number">1</span>;</div><div class="line">    x &amp;= <span class="number">1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>行注释:</p>
+<p>比较隐晦的地方要在行尾加入注释. 在行尾空两格进行注释. 比如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// If we have enough memory, mmap the data portion too.</span></div><div class="line">mmap_budget = max&lt;int64&gt;(<span class="number">0</span>, mmap_budget - index_-&gt;length());</div><div class="line"><span class="keyword">if</span> (mmap_budget &gt;= data_size_ &amp;&amp; !MmapData(mmap_chunk_bytes, mlock))</div><div class="line">    <span class="keyword">return</span>;  <span class="comment">// Error already logged.</span></div></pre></td></tr></table></figure>
+<p>注意, 这里用了两段注释分别描述这段代码的作用, 和提示函数返回时错误已经被记入日志.</p>
+<p>如果你需要连续进行多行注释, 可以使之对齐获得更好的可读性:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">DoSomething();                  <span class="comment">// Comment here so the comments line up.</span></div><div class="line">DoSomethingElseThatIsLonger();  <span class="comment">// Comment here so there are two spaces between</span></div><div class="line">                                <span class="comment">// the code and the comment.</span></div><div class="line">&#123; <span class="comment">// One space before comment when opening a new scope is allowed,</span></div><div class="line">  <span class="comment">// thus the comment lines up with the following comments and code.</span></div><div class="line">  DoSomethingElse();  <span class="comment">// Two spaces before line comments normally.</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>NULL, true/false, 1, 2, 3…:</p>
+<p>向函数传入 <code>NULL</code>, 布尔值或整数时, 要注释说明含义, 或使用常量让代码望文知意. 例如, 对比:</p>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">bool</span> success = CalculateSomething(interesting_value,</div><div class="line">                                  <span class="number">10</span>,</div><div class="line">                                  <span class="literal">false</span>,</div><div class="line">                                  <span class="literal">NULL</span>);  <span class="comment">// What are these arguments??</span></div></pre></td></tr></table></figure>
+<p>和:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">bool</span> success = CalculateSomething(interesting_value,</div><div class="line">                                  <span class="number">10</span>,     <span class="comment">// Default base value.</span></div><div class="line">                                  <span class="literal">false</span>,  <span class="comment">// Not the first time we're calling this.</span></div><div class="line">                                  <span class="literal">NULL</span>);  <span class="comment">// No callback.</span></div></pre></td></tr></table></figure>
+<p>或使用常量或描述性变量:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> kDefaultBaseValue = <span class="number">10</span>;</div><div class="line"><span class="keyword">const</span> <span class="keyword">bool</span> kFirstTimeCalling = <span class="literal">false</span>;</div><div class="line">Callback *null_callback = <span class="literal">NULL</span>;</div><div class="line"><span class="keyword">bool</span> success = CalculateSomething(interesting_value,</div><div class="line">                                  kDefaultBaseValue,</div><div class="line">                                  kFirstTimeCalling,</div><div class="line">                                  null_callback);</div></pre></td></tr></table></figure>
+<p>不允许:</p>
+<p>注意 永远不要 用自然语言翻译代码作为注释. 要假设读代码的人 C++ 水平比你高, 即便他/她可能不知道你的用意:</p>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 现在, 检查 b 数组并确保 i 是否存在,</span></div><div class="line"><span class="comment">// 下一个元素是 i+1.</span></div><div class="line">...        <span class="comment">// 天哪. 令人崩溃的注释.</span></div></pre></td></tr></table></figure>
+<h3 id="标点-拼写和语法"><a href="#标点-拼写和语法" class="headerlink" title="标点, 拼写和语法"></a>标点, 拼写和语法</h3><blockquote>
+<p>注意标点, 拼写和语法; 写的好的注释比差的要易读的多.</p>
+</blockquote>
+<p>注释的通常写法是包含正确大小写和结尾句号的完整语句. 短一点的注释 (如代码行尾注释) 可以随意点, 依然要注意风格的一致性. 完整的语句可读性更好, 也可以说明该注释是完整的, 而不是一些不成熟的想法.</p>
+<p>虽然被别人指出该用分号时却用了逗号多少有些尴尬, 但清晰易读的代码还是很重要的. 正确的标点, 拼写和语法对此会有所帮助.</p>
+<h3 id="TODO-注释"><a href="#TODO-注释" class="headerlink" title="TODO 注释"></a>TODO 注释</h3><blockquote>
+<p>对那些临时的, 短期的解决方案, 或已经够好但仍不完美的代码使用 <code>TODO</code> 注释.</p>
+</blockquote>
+<p><code>TODO</code> 注释要使用全大写的字符串 <code>TODO</code>, 在随后的圆括号里写上你的大名, 邮件地址, 或其它身份标识. 冒号是可选的. 主要目的是让添加注释的人 (也是可以请求提供更多细节的人) 可根据规范的 <code>TODO</code> 格式进行查找. 添加 <code>TODO</code> 注释并不意味着你要自己来修正.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// TODO(kl@gmail.com): Use a "*" here for concatenation operator.</span></div><div class="line"><span class="comment">// TODO(Zeke) change this to use relations.</span></div><div class="line">如果加 TODO 是为了在 “将来某一天做某事”, 可以附上一个非常明确的时间 “Fix by November <span class="number">2005</span>”), 或者一个明确的事项 (“Remove <span class="keyword">this</span> code when all clients can handle XML responses.”).</div></pre></td></tr></table></figure>
+<h3 id="弃用注释"><a href="#弃用注释" class="headerlink" title="弃用注释"></a>弃用注释</h3><blockquote>
+<p>通过弃用注释（DEPRECATED comments）以标记某接口点（interface points）已弃用。</p>
+</blockquote>
+<p>您可以写上包含全大写的 <code>DEPRECATED</code> 的注释，以标记某接口为弃用状态。注释可以放在接口声明前，或者同一行。</p>
+<p>在 <code>DEPRECATED</code> 一词后，留下您的名字，邮箱地址以及括号补充。</p>
+<p>仅仅标记接口为 <code>DEPRECATED</code> 并不会让大家不约而同地弃用，您还得亲自主动修正调用点（callsites），或是找个帮手。</p>
+<p>修正好的代码应该不会再涉及弃用接口点了，着实改用新接口点。如果您不知从何下手，可以找标记弃用注释的当事人一起商量。</p>
+<p>译者 (YuleFox) 笔记</p>
+<ol>
+<li>关于注释风格，很多 C++ 的 coders 更喜欢行注释, C coders 或许对块注释依然情有独钟, 或者在文件头大段大段的注释时使用块注释;</li>
+<li>文件注释可以炫耀你的成就, 也是为了捅了篓子别人可以找你;</li>
+<li>注释要言简意赅, 不要拖沓冗余, 复杂的东西简单化和简单的东西复杂化都是要被鄙视的;</li>
+<li>对于 Chinese coders 来说, 用英文注释还是用中文注释, it is a problem, 但不管怎样, 注释是为了让别人看懂, 难道是为了炫耀编程语言之外的你的母语或外语水平吗；</li>
+<li>注释不要太乱, 适当的缩进才会让人乐意看. 但也没有必要规定注释从第几列开始 (我自己写代码的时候总喜欢这样), UNIX/LINUX 下还可以约定是使用 tab 还是 space, 个人倾向于 space;</li>
+<li>TODO 很不错, 有时候, 注释确实是为了标记一些未完成的或完成的不尽如人意的地方, 这样一搜索, 就知道还有哪些活要干, 日志都省了.</li>
+</ol>
+<h2 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h2><p>代码风格和格式确实比较随意, 但一个项目中所有人遵循同一风格是非常容易的. 个体未必同意下述每一处格式规则, 但整个项目服从统一的编程风格是很重要的, 只有这样才能让所有人能很轻松的阅读和理解代码.</p>
+<p>另外, 我们写了一个 <a href="http://google-styleguide.googlecode.com/svn/trunk/google-c-style.el" target="_blank" rel="external">emacs 配置文件</a> 来帮助你正确的格式化代码.</p>
+<h3 id="行长度"><a href="#行长度" class="headerlink" title="行长度"></a>行长度</h3><blockquote>
+<p>每一行代码字符数不超过 80.</p>
+</blockquote>
+<p>我们也认识到这条规则是有争议的, 但很多已有代码都已经遵照这一规则, 我们感觉一致性更重要.</p>
+<p><strong>优点:</strong></p>
+<p>提倡该原则的人主张强迫他们调整编辑器窗口大小很野蛮. 很多人同时并排开几个代码窗口, 根本没有多余空间拉伸窗口. 大家都把窗口最大尺寸加以限定, 并且 80 列宽是传统标准. 为什么要改变呢?</p>
+<p><strong>缺点:</strong></p>
+<p>反对该原则的人则认为更宽的代码行更易阅读. 80 列的限制是上个世纪 60 年代的大型机的古板缺陷; 现代设备具有更宽的显示屏, 很轻松的可以显示更多代码.</p>
+<p><strong>结论:</strong></p>
+<p>80 个字符是最大值.</p>
+<p><strong>特例:</strong></p>
+<ul>
+<li>如果一行注释包含了超过 80 字符的命令或 URL, 出于复制粘贴的方便允许该行超过 80 字符.</li>
+<li>包含长路径的 <code>#include</code> 语句可以超出80列. 但应该尽量避免.</li>
+<li>头文件保护 可以无视该原则.</li>
+</ul>
+<h3 id="非-ASCII-字符"><a href="#非-ASCII-字符" class="headerlink" title="非 ASCII 字符"></a>非 ASCII 字符</h3><blockquote>
+<p>尽量不使用非 ASCII 字符, 使用时必须使用 UTF-8 编码.</p>
+</blockquote>
+<p>即使是英文, 也不应将用户界面的文本硬编码到源代码中, 因此非 ASCII 字符要少用. 特殊情况下可以适当包含此类字符. 如, 代码分析外部数据文件时, 可以适当硬编码数据文件中作为分隔符的非 ASCII 字符串; 更常见的是 (不需要本地化的) 单元测试代码可能包含非 ASCII 字符串. 此类情况下, 应使用 UTF-8 编码, 因为很多工具都可以理解和处理 UTF-8 编码.</p>
+<p>十六进制编码也可以, 能增强可读性的情况下尤其鼓励 —— 比如 <code>&quot;\xEF\xBB\xBF&quot;</code> 在 Unicode 中是 零宽度 无间断 的间隔符号, 如果不用十六进制直接放在 UTF-8 格式的源文件中, 是看不到的.</p>
+<p>(Yang.Y 注: <code>&quot;\xEF\xBB\xBF&quot;</code> 通常用作 UTF-8 with BOM 编码标记)</p>
+<p>用 <code>u8</code> 前缀以把带 <code>uXXXX</code> 转义序列的字符串字面值编码成 UTF-8. 不要用在本身就带 UTF-8 字符的字符串字面值上，因为如果编译器不把源代码识别成 UTF-8, 输出就会出错。</p>
+<p>别用 C++11 的 <code>char16_t</code> 和 <code>char32_t</code>, 它们和 UTF-8 文本没有关系，<code>wchar_t</code> 同理，除非您写的代码要调用 Windows API, 后者有用到 <code>wchar_t</code> 扩展。</p>
+<h3 id="空格还是制表位"><a href="#空格还是制表位" class="headerlink" title="空格还是制表位"></a>空格还是制表位</h3><blockquote>
+<p>只使用空格, 每次缩进 2 个空格.</p>
+</blockquote>
+<p>我们使用空格缩进. 不要在代码中使用制符表. 你应该设置编辑器将制符表转为空格.</p>
+<h3 id="函数声明与定义"><a href="#函数声明与定义" class="headerlink" title="函数声明与定义"></a>函数声明与定义</h3><blockquote>
+<p>返回类型和函数名在同一行, 参数也尽量放在同一行，如果放不下就对形参分行。</p>
+</blockquote>
+<p>函数看上去像这样:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">ReturnType ClassName::FunctionName(Type par_name1, Type par_name2) &#123;</div><div class="line">    DoSomething();</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果同一行文本太多, 放不下所有参数:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">ReturnType ClassName::ReallyLongFunctionName(Type par_name1, Type par_name2,</div><div class="line">                                             Type par_name3) &#123;</div><div class="line">    DoSomething();</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>甚至连第一个参数都放不下:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">ReturnType LongClassName::ReallyReallyReallyLongFunctionName(</div><div class="line">        Type par_name1,  <span class="comment">// 4 空格缩进</span></div><div class="line">        Type par_name2,</div><div class="line">        Type par_name3) &#123;</div><div class="line">    DoSomething();  <span class="comment">// 2 空格缩进</span></div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意以下几点:</p>
+<ul>
+<li>如果返回类型和函数名在一行放不下，分行。</li>
+<li>如果返回类型那个与函数声明或定义分行了，不要缩进。</li>
+<li>左圆括号总是和函数名在同一行;</li>
+<li>函数名和左圆括号间没有空格;</li>
+<li>圆括号与参数间没有空格;</li>
+<li>左大括号总在最后一个参数同一行的末尾处;</li>
+<li>如果其它风格规则允许的话，右大括号总是单独位于函数最后一行，或者与左大括号同一行。</li>
+<li>右大括号和左大括号间总是有一个空格;</li>
+<li>函数声明和定义中的所有形参必须有命名且一致;</li>
+<li>所有形参应尽可能对齐;</li>
+<li>缺省缩进为 2 个空格;</li>
+<li>换行后的参数保持 4 个空格的缩进;</li>
+<li>如果有些参数没有用到, 在函数定义处将参数名注释起来:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">// 接口中形参恒有命名。</div><div class="line">class Shape &#123;</div><div class="line"> public:</div><div class="line">  virtual void Rotate(double radians) = 0;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 声明中形参恒有命名。</div><div class="line">class Circle : public Shape &#123;</div><div class="line"> public:</div><div class="line">  virtual void Rotate(double radians);</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 定义中注释掉无用变量。</div><div class="line">void Circle::Rotate(double /*radians*/) &#123;&#125;</div></pre></td></tr></table></figure>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 差 - 如果将来有人要实现，很难猜出变量是干什么用的。</span></div><div class="line"><span class="keyword">void</span> Circle::Rotate(<span class="keyword">double</span>) &#123;&#125;</div></pre></td></tr></table></figure>
+<h3 id="Lambda-表达式-1"><a href="#Lambda-表达式-1" class="headerlink" title="Lambda 表达式"></a>Lambda 表达式</h3><blockquote>
+<p>其它函数怎么格式化形参和函数体，Lambda 表达式就怎么格式化；捕获列表同理。</p>
+</blockquote>
+<p>若用引用捕获，在变量名和 &amp; 之间不留空格。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> x = <span class="number">0</span>;</div><div class="line"><span class="keyword">auto</span> add_to_x = [&amp;x](<span class="keyword">int</span> n) &#123; x += n; &#125;;</div></pre></td></tr></table></figure>
+<p>短 lambda 就写得和内联函数一样。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="built_in">std</span>::<span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; blacklist = &#123;<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>&#125;;</div><div class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; digits = &#123;<span class="number">3</span>, <span class="number">9</span>, <span class="number">1</span>, <span class="number">8</span>, <span class="number">4</span>, <span class="number">7</span>, <span class="number">1</span>&#125;;</div><div class="line">digits.erase(<span class="built_in">std</span>::remove_if(digits.begin(), digits.end(), [&amp;blacklist](<span class="keyword">int</span> i) &#123;</div><div class="line">                <span class="keyword">return</span> blacklist.find(i) != blacklist.end();</div><div class="line">            &#125;),</div><div class="line">            digits.end());</div></pre></td></tr></table></figure>
+<h3 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h3><blockquote>
+<p>要么一行写完函数调用，要么在圆括号里对参数分行，要么参数另起一行且缩进四格。如果没有其它顾虑的话，尽可能精简行数，比如把多个参数适当地放在同一行里。</p>
+</blockquote>
+<p>函数调用遵循如下形式：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">bool</span> retval = DoSomething(argument1, argument2, argument3);</div></pre></td></tr></table></figure>
+<p>如果同一行放不下，可断为多行，后面每一行都和第一个实参对齐，左圆括号后和右圆括号前不要留空格：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">bool</span> retval = DoSomething(averyveryveryverylongargument1,</div><div class="line">                          argument2, argument3);</div></pre></td></tr></table></figure>
+<p>参数也可以放在次行，缩进四格：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> (...) &#123;</div><div class="line">  ...</div><div class="line">  ...</div><div class="line">  <span class="keyword">if</span> (...) &#123;</div><div class="line">    DoSomething(</div><div class="line">        argument1, argument2,  <span class="comment">// 4 空格缩进</span></div><div class="line">        argument3, argument4);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>把多个参数放在同一行，是为了减少函数调用所需的行数，除非影响到可读性。有人认为把每个参数都独立成行，不仅更好读，而且方便编辑参数。不过，比起所谓的参数编辑，我们更看重可读性，且后者比较好办：</p>
+<p>如果一些参数本身就是略复杂的表达式，且降低了可读性。那么可以直接创建临时变量描述该表达式，并传递给函数：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> my_heuristic = scores[x] * y + bases[x];</div><div class="line"><span class="keyword">bool</span> retval = DoSomething(my_heuristic, x, y, z);</div></pre></td></tr></table></figure>
+<p>或者放着不管，补充上注释：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">bool</span> retval = DoSomething(scores[x] * y + bases[x],  <span class="comment">// Score heuristic.</span></div><div class="line">                          x, y, z);</div></pre></td></tr></table></figure>
+<p>如果某参数独立成行，对可读性更有帮助的话，就这么办。</p>
+<p>此外，如果一系列参数本身就有一定的结构，可以酌情地按其结构来决定参数格式：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 通过 3x3 矩阵转换 widget.</span></div><div class="line">my_widget.Transform(x1, x2, x3,</div><div class="line">                    y1, y2, y3,</div><div class="line">                    z1, z2, z3);</div></pre></td></tr></table></figure>
+<h3 id="列表初始化格式"><a href="#列表初始化格式" class="headerlink" title="列表初始化格式"></a>列表初始化格式</h3><blockquote>
+<p>您平时怎么格式化函数调用，就怎么格式化 列表初始化。</p>
+</blockquote>
+<p>如果列表初始化伴随着名字，比如类型或变量名，您可以当名字是函数、{} 是函数调用的括号来格式化它。反之，就当它有个长度为零的名字。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 一行列表初始化示范。</span></div><div class="line"><span class="keyword">return</span> &#123;foo, bar&#125;;</div><div class="line">functioncall(&#123;foo, bar&#125;);</div><div class="line">pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; p&#123;foo, bar&#125;;</div><div class="line"></div><div class="line"><span class="comment">// 当不得不断行时。</span></div><div class="line">SomeFunction(</div><div class="line">    &#123;<span class="string">"assume a zero-length name before &#123;"</span>&#125;,</div><div class="line">    some_other_function_parameter);</div><div class="line">SomeType variable&#123;</div><div class="line">    some, other, values,</div><div class="line">    &#123;<span class="string">"assume a zero-length name before &#123;"</span>&#125;,</div><div class="line">    SomeOtherType&#123;</div><div class="line">        <span class="string">"Very long string requiring the surrounding breaks."</span>,</div><div class="line">        some, other values&#125;,</div><div class="line">    SomeOtherType&#123;<span class="string">"Slightly shorter string"</span>,</div><div class="line">                  some, other, values&#125;&#125;;</div><div class="line">SomeType variable&#123;</div><div class="line">    <span class="string">"This is too long to fit all in one line"</span>&#125;;</div><div class="line">MyType m = &#123;  <span class="comment">// 注意了，您可以在 &#123; 前断行。</span></div><div class="line">    superlongvariablename1,</div><div class="line">    superlongvariablename2,</div><div class="line">    &#123;<span class="keyword">short</span>, interior, <span class="built_in">list</span>&#125;,</div><div class="line">    &#123;interiorwrappinglist,</div><div class="line">     interiorwrappinglist2&#125;&#125;;</div></pre></td></tr></table></figure>
+<h3 id="条件语句"><a href="#条件语句" class="headerlink" title="条件语句"></a>条件语句</h3><blockquote>
+<p>倾向于不在圆括号内使用空格. 关键字 <code>if</code> 和 <code>else</code> 另起一行.</p>
+</blockquote>
+<p>对基本条件语句有两种可以接受的格式. 一种在圆括号和条件之间有空格, 另一种没有.</p>
+<p>最常见的是没有空格的格式. 哪种都可以, 但 保持一致性. 如果你是在修改一个文件, 参考当前已有格式. 如果是写新的代码, 参考目录下或项目中其它文件. 还在徘徊的话, 就不要加空格了.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> (condition) &#123;  圆括号里没空格紧邻。</div><div class="line">  ...  <span class="comment">// 2 空格缩进。</span></div><div class="line">&#125; <span class="keyword">else</span> &#123;  <span class="comment">// else 与 if 的右括号同一行。</span></div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果你更喜欢在圆括号内部加空格:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> ( condition ) &#123;  <span class="comment">// 圆括号与空格紧邻 - 不常见</span></div><div class="line">  ...  <span class="comment">// 2 空格缩进。</span></div><div class="line">&#125; <span class="keyword">else</span> &#123;  <span class="comment">// else 与 if 的右括号同一行。</span></div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意所有情况下 <code>if</code> 和左圆括号间都有个空格. 右圆括号和左大括号之间也要有个空格:</p>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span>(condition)     <span class="comment">// 差 - IF 后面没空格。</span></div><div class="line"><span class="keyword">if</span> (condition)&#123;   <span class="comment">// 差 - &#123; 前面没空格。</span></div><div class="line"><span class="keyword">if</span>(condition)&#123;    <span class="comment">// 变本加厉地差。</span></div><div class="line"><span class="keyword">if</span> (condition) &#123;  <span class="comment">// 可 - IF 和 &#123; 都与空格紧邻。</span></div></pre></td></tr></table></figure>
+<p>如果能增强可读性, 简短的条件语句允许写在同一行. 只有当语句简单并且没有使用 else 子句时使用:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> (x == kFoo) <span class="keyword">return</span> <span class="keyword">new</span> Foo();</div><div class="line"><span class="keyword">if</span> (x == kBar) <span class="keyword">return</span> <span class="keyword">new</span> Bar();</div></pre></td></tr></table></figure>
+<p>如果语句有 <code>else</code> 分支则不允许:</p>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 不可以这样子 - 当有 ELSE 分支时 IF 块却只有一行</span></div><div class="line"><span class="keyword">if</span> (x) DoThis();</div><div class="line"><span class="keyword">else</span> DoThat();</div></pre></td></tr></table></figure>
+<p>通常, 单行语句不需要使用大括号, 如果你喜欢用也没问题; 复杂的条件或循环语句用大括号可读性会更好. 也有一些项目要求 if 必须总是使用大括号:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> (condition)</div><div class="line">  DoSomething();  <span class="comment">// 2 空格缩进。</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> (condition) &#123;</div><div class="line">  DoSomething();  <span class="comment">// 2 空格缩进。</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>但如果语句中某个 if-else 分支使用了大括号的话, 其它分支也必须使用:</p>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 不可以这样子 - IF 有大括号 ELSE 却没有。</span></div><div class="line"><span class="keyword">if</span> (condition) &#123;</div><div class="line">    foo;</div><div class="line">&#125; <span class="keyword">else</span></div><div class="line">    bar;</div><div class="line"></div><div class="line"><span class="comment">// 不可以这样子 - ELSE 有大括号 IF 却没有。</span></div><div class="line"><span class="keyword">if</span> (condition)</div><div class="line">    foo;</div><div class="line"><span class="keyword">else</span> &#123;</div><div class="line">    bar;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 只要其中一个分支用了大括号，两个分支都要用上大括号。</span></div><div class="line"><span class="keyword">if</span> (condition) &#123;</div><div class="line">  foo;</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">  bar;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="循环和开关选择语句"><a href="#循环和开关选择语句" class="headerlink" title="循环和开关选择语句"></a>循环和开关选择语句</h3><blockquote>
+<p><code>switch</code> 语句可以使用大括号分段，以表明 cases 之间不是连在一起的。在单语句循环里，括号可用可不用。空循环体应使用 <code>{}</code> 或 <code>continue</code>.</p>
+</blockquote>
+<p><code>switch</code> 语句中的 <code>case</code> 块可以使用大括号也可以不用, 取决于你的个人喜好. 如果用的话, 要按照下文所述的方法.</p>
+<p>如果有不满足 <code>case</code> 条件的枚举值, <code>switch</code> 应该总是包含一个 <code>default</code> 匹配 (如果有输入值没有 <code>case</code> 去处理, 编译器将报警). 如果 <code>default</code> 应该永远执行不到, 简单的加条 <code>assert</code>:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">switch</span> (var) &#123;</div><div class="line">  <span class="keyword">case</span> <span class="number">0</span>: &#123;  <span class="comment">// 2 空格缩进</span></div><div class="line">    ...      <span class="comment">// 4 空格缩进</span></div><div class="line">    <span class="keyword">break</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">case</span> <span class="number">1</span>: &#123;</div><div class="line">    ...</div><div class="line">    <span class="keyword">break</span>;</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">default</span>: &#123;</div><div class="line">    assert(<span class="literal">false</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在单语句循环里，括号可用可不用：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; kSomeNumber; ++i)</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"I love you\n"</span>);</div><div class="line"></div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; kSomeNumber; ++i) &#123;</div><div class="line">    <span class="built_in">printf</span>(<span class="string">"I take it back\n"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>空循环体应使用 <code>{}</code> 或 <code>continue</code>, 而不是一个简单的分号.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">while</span> (condition) &#123;</div><div class="line">  <span class="comment">// 反复循环直到条件失效。</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; kSomeNumber; ++i) &#123;&#125;  <span class="comment">// 可 - 空循环体。</span></div><div class="line"><span class="keyword">while</span> (condition) <span class="keyword">continue</span>;  <span class="comment">// 可 - contunue 表明没有逻辑。</span></div></pre></td></tr></table></figure>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">while</span> (condition);  <span class="comment">// 差 - 看起来仅仅只是 while/loop 的部分之一。</span></div></pre></td></tr></table></figure>
+<h3 id="指针和引用表达式"><a href="#指针和引用表达式" class="headerlink" title="指针和引用表达式"></a>指针和引用表达式</h3><blockquote>
+<p>句点或箭头前后不要有空格. 指针/地址操作符 (<code>*</code>, <code>&amp;</code>) 之后不能有空格.</p>
+</blockquote>
+<p>下面是指针和引用表达式的正确使用范例:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">x = *p;</div><div class="line">p = &amp;x;</div><div class="line">x = r.y;</div><div class="line">x = r-&gt;y;</div></pre></td></tr></table></figure>
+<p>注意:</p>
+<ul>
+<li>在访问成员时, 句点或箭头前后没有空格.</li>
+<li>指针操作符 <code>*</code> 或 <code>&amp;</code> 后没有空格.</li>
+</ul>
+<p>在声明指针变量或参数时, 星号与类型或变量名紧挨都可以:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 好样的，空格前置。</span></div><div class="line"><span class="keyword">char</span> *c;</div><div class="line"><span class="keyword">const</span> <span class="built_in">string</span> &amp;str;</div><div class="line"></div><div class="line"><span class="comment">// 好样的，空格后置。</span></div><div class="line"><span class="keyword">char</span>* c;    <span class="comment">// 但别忘了 "char* c, *d, *e, ...;"!</span></div><div class="line"><span class="keyword">const</span> <span class="built_in">string</span>&amp; str;</div></pre></td></tr></table></figure>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">char</span> * c;  <span class="comment">// 差 - * 两边都有空格</span></div><div class="line"><span class="keyword">const</span> <span class="built_in">string</span> &amp; str;  <span class="comment">// 差 - &amp; 两边都有空格。</span></div></pre></td></tr></table></figure>
+<p>在单个文件内要保持风格一致, 所以, 如果是修改现有文件, 要遵照该文件的风格.</p>
+<h3 id="布尔表达式"><a href="#布尔表达式" class="headerlink" title="布尔表达式"></a>布尔表达式</h3><blockquote>
+<p>如果一个布尔表达式超过 标准行宽, 断行方式要统一一下.<br>下例中, 逻辑与 (<code>&amp;&amp;</code>) 操作符总位于行尾:</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> (this_one_thing &gt; this_other_thing &amp;&amp;</div><div class="line">    a_third_thing == a_fourth_thing &amp;&amp;</div><div class="line">    yet_another &amp; last_one) &#123;</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意, 上例的逻辑与 (<code>&amp;&amp;</code>) 操作符均位于行尾. 这格式在 Google 里很常见，您要把所有操作符放在开头也可以。可以考虑额外插入圆括号, 合理使用的话对增强可读性是很有帮助的. 此外直接用符号形式的操作符，比如 <code>&amp;&amp;</code> 和 <code>~</code>, 不要用词语形式的 <code>and</code> 和 <code>compl</code>.</p>
+<h3 id="函数返回值"><a href="#函数返回值" class="headerlink" title="函数返回值"></a>函数返回值</h3><blockquote>
+<p><code>return</code> 表达式里时没必要都用圆括号。</p>
+</blockquote>
+<p>假如您写 <code>x = epr</code> 时本来就会加上括号，那 <code>return expr;</code> 也可如法炮制。</p>
+<p>函数返回时不要使用圆括号:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">return</span> result;                  <span class="comment">// 返回值很简单，没有圆括号。</span></div><div class="line"><span class="comment">// 可以用圆括号把复杂表达式圈起来，改善可读性。</span></div><div class="line"><span class="keyword">return</span> (some_long_condition &amp;&amp;</div><div class="line">        another_condition);</div></pre></td></tr></table></figure>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">return</span> (value);                <span class="comment">// 毕竟您从来不会写 var = (value);</span></div><div class="line"><span class="keyword">return</span>(result);                <span class="comment">// return 可不是函数！</span></div></pre></td></tr></table></figure>
+<h3 id="变量及数组初始化"><a href="#变量及数组初始化" class="headerlink" title="变量及数组初始化"></a>变量及数组初始化</h3><blockquote>
+<p>用 <code>=</code>, <code>()</code> 和 <code>{}</code> 均可.</p>
+</blockquote>
+<p>您可以用 <code>=</code>, <code>()</code> 和 <code>{}</code>, 以下都对：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> x = <span class="number">3</span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">x</span><span class="params">(<span class="number">3</span>)</span></span>;</div><div class="line"><span class="keyword">int</span> x&#123;<span class="number">3</span>&#125;;</div><div class="line"><span class="function"><span class="built_in">string</span> <span class="title">name</span><span class="params">(<span class="string">"Some Name"</span>)</span></span>;</div><div class="line"><span class="built_in">string</span> name = <span class="string">"Some Name"</span>;</div><div class="line"><span class="built_in">string</span> name&#123;<span class="string">"Some Name"</span>&#125;;</div></pre></td></tr></table></figure>
+<p>请务必小心列表初始化 {…} 用 <code>std::initializer_list</code> 构造函数初始化出的类型。非空列表初始化就会优先调用 <code>std::initializer_list</code>, 不过空列表初始化除外，后者原则上会调用默认构造函数。为了强制禁用 <code>std::initializer_list</code> 构造函数，请改用括号。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v(<span class="number">100</span>, <span class="number">1</span>);  <span class="comment">// A vector of 100 1s.</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v&#123;<span class="number">100</span>, <span class="number">1</span>&#125;;  <span class="comment">// A vector of 100, 1.</span></div></pre></td></tr></table></figure>
+<p>此外，列表初始化不允许整型类型的四舍五入，这可以用来避免一些类型上的编程失误。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">pi</span><span class="params">(<span class="number">3.14</span>)</span></span>;  <span class="comment">// 可 -- pi == 3.</span></div><div class="line"><span class="keyword">int</span> pi&#123;<span class="number">3.14</span>&#125;;  <span class="comment">// Compile error: narrowing conversion.</span></div></pre></td></tr></table></figure>
+<h3 id="预处理指令"><a href="#预处理指令" class="headerlink" title="预处理指令"></a>预处理指令</h3><blockquote>
+<p>预处理指令不要缩进, 从行首开始.</p>
+</blockquote>
+<p>即使预处理指令位于缩进代码块中, 指令也应从行首开始.</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 可 - directives at beginning of line</span></div><div class="line">  <span class="keyword">if</span> (lopsided_score) &#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> DISASTER_PENDING      <span class="comment">// 正确 -- 行开头起。</span></span></div><div class="line">    DropEverything();</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">    BackToNormal();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 差 - indented directives</span></div><div class="line">  <span class="keyword">if</span> (lopsided_score) &#123;</div><div class="line">    <span class="meta">#<span class="meta-keyword">if</span> DISASTER_PENDING  <span class="comment">// 错了！ "#if" 应该放在行开头</span></span></div><div class="line">    DropEverything();</div><div class="line">    <span class="meta">#<span class="meta-keyword">endif</span>                <span class="comment">// 错了！ "#endif" 不要缩进</span></span></div><div class="line">    BackToNormal();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h3 id="类格式"><a href="#类格式" class="headerlink" title="类格式"></a>类格式</h3><blockquote>
+<p>访问控制块的声明依次序是 <code>public:</code>, <code>protected:</code>, <code>private:</code>, 每次缩进 1 个空格.</p>
+</blockquote>
+<p>类声明 (对类注释不了解的话, 参考 类注释) 的基本格式如下:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">class</span> MyClass : <span class="keyword">public</span> OtherClass &#123;</div><div class="line"> <span class="keyword">public</span>:      <span class="comment">// 注意有 1 空格缩进!</span></div><div class="line">  MyClass();  <span class="comment">// 照常，2 空格缩进。</span></div><div class="line">  <span class="function"><span class="keyword">explicit</span> <span class="title">MyClass</span><span class="params">(<span class="keyword">int</span> var)</span></span>;</div><div class="line">  ~MyClass() &#123;&#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">SomeFunction</span><span class="params">()</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">SomeFunctionThatDoesNothing</span><span class="params">()</span> </span>&#123;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">set_some_var</span><span class="params">(<span class="keyword">int</span> var)</span> </span>&#123; some_var_ = var; &#125;</div><div class="line">  <span class="function"><span class="keyword">int</span> <span class="title">some_var</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> some_var_; &#125;</div><div class="line"></div><div class="line"> <span class="keyword">private</span>:</div><div class="line">  <span class="function"><span class="keyword">bool</span> <span class="title">SomeInternalFunction</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">int</span> some_var_;</div><div class="line">  <span class="keyword">int</span> some_other_var_;</div><div class="line">  DISALLOW_COPY_AND_ASSIGN(MyClass);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>注意事项:</p>
+<ul>
+<li>所有基类名应在 80 列限制下尽量与子类名放在同一行.</li>
+<li>关键词 <code>public:</code>, <code>protected:</code>, <code>private:</code> 要缩进 1 个空格.</li>
+<li>除第一个关键词 (一般是 <code>public</code>) 外, 其他关键词前要空一行. 如果类比较小的话也可以不空.</li>
+<li>这些关键词后不要保留空行.</li>
+<li><code>public</code> 放在最前面, 然后是 <code>protected</code>, 最后是 <code>private</code>.</li>
+<li>关于声明顺序的规则请参考 声明顺序 一节.</li>
+</ul>
+<h3 id="构造函数初始值列表"><a href="#构造函数初始值列表" class="headerlink" title="构造函数初始值列表"></a>构造函数初始值列表</h3><blockquote>
+<p>构造函数初始值列表放在同一行或按四格缩进并排几行.</p>
+</blockquote>
+<p>下面两种初始值列表方式都可以接受:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 当全放在一行合适时：</span></div><div class="line">MyClass::MyClass(<span class="keyword">int</span> var) : some_var_(var), some_other_var_(var + <span class="number">1</span>) &#123;</div></pre></td></tr></table></figure>
+<p>或</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 如果要断成多行，缩进四格，冒号放在第一行初始化句：</span></div><div class="line">MyClass::MyClass(<span class="keyword">int</span> var)</div><div class="line">    : some_var_(var),             <span class="comment">// 4 空格缩进</span></div><div class="line">      some_other_var_(var + <span class="number">1</span>) &#123;  <span class="comment">// 对准</span></div><div class="line">  ...</div><div class="line">  DoSomething();</div><div class="line">  ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="名字空间格式化"><a href="#名字空间格式化" class="headerlink" title="名字空间格式化"></a>名字空间格式化</h3><blockquote>
+<p>名字空间内容不缩进.</p>
+</blockquote>
+<p>名字空间 不要增加额外的缩进层次, 例如:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">namespace</span> &#123;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;  <span class="comment">// 正确。命名空间内没有额外的缩进。</span></div><div class="line">  ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;  <span class="comment">// namespace</span></div></pre></td></tr></table></figure>
+<p>不要缩进名字空间:</p>
+<p>Warning</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">namespace</span> &#123;</div><div class="line"></div><div class="line">  <span class="comment">// 错，缩进多余了。</span></div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</div><div class="line">    ...</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;  <span class="comment">// namespace</span></div></pre></td></tr></table></figure>
+<p>声明嵌套命名空间时，每命名空间都独立成行。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">namespace</span> foo &#123;</div><div class="line"><span class="keyword">namespace</span> bar &#123;</div></pre></td></tr></table></figure>
+<h3 id="水平留白"><a href="#水平留白" class="headerlink" title="水平留白"></a>水平留白</h3><blockquote>
+<p>水平留白的使用因地制宜. 永远不要在行尾添加没意义的留白.</p>
+</blockquote>
+<p>常规:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">bool</span> b)</span> </span>&#123;  <span class="comment">// 左大括号前恒有空格。</span></div><div class="line">  ...</div><div class="line"><span class="keyword">int</span> i = <span class="number">0</span>;  <span class="comment">// 分号前不加空格。</span></div><div class="line"><span class="keyword">int</span> x[] = &#123; <span class="number">0</span> &#125;;  <span class="comment">// 大括号内部可与空格紧邻也不可，不过两边都要加上。</span></div><div class="line"><span class="keyword">int</span> x[] = &#123;<span class="number">0</span>&#125;;</div><div class="line"><span class="comment">// 继承与初始化列表中的冒号前后恒有空格。</span></div><div class="line"><span class="keyword">class</span> Foo : <span class="keyword">public</span> Bar &#123;</div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  <span class="comment">// 至于内联函数实现，在大括号内部加上空格并编写实现。</span></div><div class="line">  Foo(<span class="keyword">int</span> b) : Bar(), baz_(b) &#123;&#125;  <span class="comment">// 大括号里面是空的话，不加空格。</span></div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Reset</span><span class="params">()</span> </span>&#123; baz_ = <span class="number">0</span>; &#125;  <span class="comment">// 用括号把大括号与实现分开。</span></div><div class="line">  ...</div></pre></td></tr></table></figure>
+<p>添加冗余的留白会给其他人编辑时造成额外负担. 因此, 行尾不要留空格. 如果确定一行代码已经修改完毕, 将多余的空格去掉; 或者在专门清理空格时去掉（确信没有其他人在处理). (Yang.Y 注: 现在大部分代码编辑器稍加设置后, 都支持自动删除行首/行尾空格, 如果不支持, 考虑换一款编辑器或 IDE)</p>
+<p>循环和条件语句:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">if</span> (b) &#123;          <span class="comment">// if 条件语句和循环语句关键字后均有空格。</span></div><div class="line">&#125; <span class="keyword">else</span> &#123;          <span class="comment">// else 前后有空格。</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">while</span> (test) &#123;&#125;   <span class="comment">// 圆括号内部不紧邻空格。</span></div><div class="line"><span class="keyword">switch</span> (i) &#123;</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) &#123;</div><div class="line"><span class="keyword">switch</span> ( i ) &#123;    <span class="comment">// 循环和条件语句的圆括号里可以与空格紧邻。</span></div><div class="line"><span class="keyword">if</span> ( test ) &#123;     <span class="comment">// 圆括号，但这很少见。总之要一致。</span></div><div class="line"><span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i ) &#123;</div><div class="line"><span class="keyword">for</span> ( ; i &lt; <span class="number">5</span> ; ++i) &#123;  <span class="comment">// 循环里内 ; 后恒有空格，； 前可以加个空格。</span></div><div class="line"><span class="keyword">switch</span> (i) &#123;</div><div class="line">  <span class="keyword">case</span> <span class="number">1</span>:         <span class="comment">// switch case 的冒号前无空格。</span></div><div class="line">    ...</div><div class="line">  <span class="keyword">case</span> <span class="number">2</span>: <span class="keyword">break</span>;  <span class="comment">// 如果冒号有代码，加个空格。</span></div></pre></td></tr></table></figure>
+<p>操作符:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 赋值操作系统前后恒有空格。</span></div><div class="line">x = <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="comment">// 其它二元操作符也前后恒有空格，不过对 factors 前后不加空格也可以。</span></div><div class="line"><span class="comment">// 圆括号内部不紧邻空格。</span></div><div class="line">v = w * x + y / z;</div><div class="line">v = w*x + y/z;</div><div class="line">v = w * (x + z);</div><div class="line"></div><div class="line"><span class="comment">// 在参数和一元操作符之间不加空格。</span></div><div class="line">x = <span class="number">-5</span>;</div><div class="line">++x;</div><div class="line"><span class="keyword">if</span> (x &amp;&amp; !y)</div><div class="line">  ...</div></pre></td></tr></table></figure>
+<p>模板和转换:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="comment">// 尖叫括号(&lt; and &gt;) 不与空格紧邻，&lt; 前没有空格，&gt;( 之间也没有。</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; x;</div><div class="line">y = <span class="keyword">static_cast</span>&lt;<span class="keyword">char</span>*&gt;(x);</div><div class="line"></div><div class="line"><span class="comment">// 在类型与指针操作符之间留空格也可以，但要保持一致。</span></div><div class="line"><span class="built_in">vector</span>&lt;<span class="keyword">char</span> *&gt; x;</div><div class="line"><span class="built_in">set</span>&lt;<span class="built_in">list</span>&lt;<span class="built_in">string</span>&gt;&gt; x;        <span class="comment">// 在 C++11 代码里可以这样用了。</span></div><div class="line"><span class="built_in">set</span>&lt;<span class="built_in">list</span>&lt;<span class="built_in">string</span>&gt; &gt; x;       <span class="comment">// C++03 中要在 &gt; &gt; 里留个空格。</span></div><div class="line"></div><div class="line"><span class="comment">// 您或许可以在 &lt; &lt; 里加上一对对称的空格。</span></div><div class="line"><span class="built_in">set</span>&lt; <span class="built_in">list</span>&lt;<span class="built_in">string</span>&gt; &gt; x;</div></pre></td></tr></table></figure>
+<h3 id="垂直留白"><a href="#垂直留白" class="headerlink" title="垂直留白"></a>垂直留白</h3><blockquote>
+<p>垂直留白越少越好.</p>
+</blockquote>
+<p>这不仅仅是规则而是原则问题了: 不在万不得已, 不要使用空行. 尤其是: 两个函数定义之间的空行不要超过 2 行, 函数体首尾不要留空行, 函数体中也不要随意添加空行.</p>
+<p>基本原则是: 同一屏可以显示的代码越多, 越容易理解程序的控制流. 当然, 过于密集的代码块和过于疏松的代码块同样难看, 取决于你的判断. 但通常是垂直留白越少越好.</p>
+<p>空行心得如下：</p>
+<ul>
+<li>函数体内开头或结尾的空行可读性微乎其微。</li>
+<li>在多重 if-else 块里加空行或许有点可读性。</li>
+</ul>
+<p>译者 (YuleFox) 笔记</p>
+<ol>
+<li>对于代码格式, 因人, 系统而异各有优缺点, 但同一个项目中遵循同一标准还是有必要的;</li>
+<li>行宽原则上不超过 80 列, 把 22 寸的显示屏都占完, 怎么也说不过去;</li>
+<li>尽量不使用非 ASCII 字符, 如果使用的话, 参考 UTF-8 格式 (尤其是 UNIX/Linux 下, Windows 下可以考虑宽字符), 尽量不将字符串常量耦合到代码中, 比如独立出资源文件, 这不仅仅是风格问题了;</li>
+<li>UNIX/Linux 下无条件使用空格, MSVC 的话使用 Tab 也无可厚非;</li>
+<li>函数参数, 逻辑条件, 初始化列表: 要么所有参数和函数名放在同一行, 要么所有参数并排分行;</li>
+<li>除函数定义的左大括号可以置于行首外, 包括函数/类/结构体/枚举声明, 各种语句的左大括号置于行尾, 所有右大括号独立成行;</li>
+<li><code>.</code>/<code>-&gt;</code> 操作符前后不留空格, <code>*</code>/<code>&amp;</code> 不要前后都留, 一个就可, 靠左靠右依各人喜好;</li>
+<li>预处理指令/命名空间不使用额外缩进, 类/结构体/枚举/函数/语句使用缩进;</li>
+<li>初始化用 <code>=</code> 还是 <code>()</code> 依个人喜好, 统一就好;</li>
+<li><code>return</code> 不要加 <code>()</code>;</li>
+<li>水平/垂直留白不要滥用, 怎么易读怎么来.</li>
+<li>关于 UNIX/Linux 风格为什么要把左大括号置于行尾 (.cc 文件的函数实现处, 左大括号位于行首), 我的理解是代码看上去比较简约, 想想行首除了函数体被一对大括号封在一起之外, 只有右大括号的代码看上去确实也舒服; Windows 风格将左大括号置于行首的优点是匹配情况一目了然.</li>
+</ol>
+<p>译者（acgtyrant）笔记</p>
+<ol>
+<li>80 行限制事实上有助于避免代码可读性失控，比如超多重嵌套块，超多重函数调用等等。</li>
+<li>Linux 上设置好了 Locale 就几乎一劳永逸设置好所有开发环境的编码，不像奇葩的 Windows.</li>
+<li>Google 强调有一对 if-else 时，不论有没有嵌套，都要有大括号。Apple 正好 <a href="http://coolshell.cn/articles/11112.html" target="_blank" rel="external">有栽过跟头</a> .</li>
+<li>其实我主张指针／地址操作符与变量名紧邻，<code>int* a, b vs int *a, b</code>, 新手会误以为前者的 <code>b</code>是 <code>int *</code> 变量，但后者就不一样了，高下立判。</li>
+<li>在这风格指南里我才刚知道 C++ 原来还有所谓的 <a href="http://en.cppreference.com/w/cpp/language/operator_alternative" target="_blank" rel="external">Alternative operator representations</a>, 大概没人用吧。</li>
+<li>注意构造函数初始值列表（Constructer Initializer List）与列表初始化（Initializer List）是两码事，我就差点混淆了它们的翻译。</li>
+<li>事实上，如果您熟悉英语本身的书写规则，就会发现该风格指南在格式上的规定与英语语法相当一脉相承。比如普通标点符号和单词后面还有文本的话，总会留一个空格；特殊符号与单词之间就不用留了，比如 <code>if (true)</code> 中的圆括号与 <code>true</code>.</li>
+<li>本风格指南没有明确规定 void 函数里要不要用 return 语句，不过就 Google 开源项目 leveldb 并没有写；此外从 <a href="http://stackoverflow.com/questions/9316717/is-a-blank-return-statement-at-the-end-of-a-function-whos-return-type-is-void-ne" target="_blank" rel="external">Is a blank return statement at the end of a function whos return type is void necessary?</a> 来看，<code>return;</code> 比 <code>return ;</code> 更约定俗成（事实上 cpplint 会对后者报错，指出分号前有多余的空格），且可用来提前跳出函数栈。</li>
+</ol>
+<h2 id="规则特例"><a href="#规则特例" class="headerlink" title="规则特例"></a>规则特例</h2><p>前面说明的编程习惯基本都是强制性的. 但所有优秀的规则都允许例外, 这里就是探讨这些特例.</p>
+<h3 id="现有不合规范的代码"><a href="#现有不合规范的代码" class="headerlink" title="现有不合规范的代码"></a>现有不合规范的代码</h3><blockquote>
+<p>对于现有不符合既定编程风格的代码可以网开一面.</p>
+</blockquote>
+<p>当你修改使用其他风格的代码时, 为了与代码原有风格保持一致可以不使用本指南约定. 如果不放心可以与代码原作者或现在的负责人员商讨, 记住, 一致性 包括原有的一致性.</p>
+<h3 id="Windows-代码"><a href="#Windows-代码" class="headerlink" title="Windows 代码"></a>Windows 代码</h3><blockquote>
+<p>Windows 程序员有自己的编程习惯, 主要源于 Windows 头文件和其它 Microsoft 代码. 我们希望任何人都可以顺利读懂你的代码, 所以针对所有平台的 C++ 编程只给出一个单独的指南.<br>如果你习惯使用 Windows 编码风格, 这儿有必要重申一下某些你可能会忘记的指南:</p>
+</blockquote>
+<ul>
+<li>不要使用匈牙利命名法 (比如把整型变量命名成 <code>iNum</code>). 使用 Google 命名约定, 包括对源文件使用 <code>.cc</code> 扩展名.</li>
+<li>Windows 定义了很多原生类型的同义词 (YuleFox 注: 这一点, 我也很反感), 如 <code>DWORD</code>, <code>HANDLE</code> 等等. 在调用 Windows API 时这是完全可以接受甚至鼓励的. 但还是尽量使用原有的 C++ 类型, 例如, 使用 <code>const TCHAR *</code> 而不是 <code>LPCTSTR</code>.</li>
+<li>使用 Microsoft Visual C++ 进行编译时, 将警告级别设置为 3 或更高, 并将所有 warnings 当作 errors 处理.</li>
+<li>不要使用 <code>#pragma once</code>; 而应该使用 Google 的头文件保护规则. 头文件保护的路径应该相对于项目根目录 (Yang.Y 注: 如 <code>#ifndef SRC_DIR_BAR_H_</code>, 参考 #define 保护 一节).</li>
+<li>除非万不得已, 不要使用任何非标准的扩展, 如 <code>#pragma</code> 和 <code>__declspec</code>. 允许使用 <code>__declspec(dllimport)</code> 和 <code>__declspec(dllexport)</code>; 但你必须通过宏来使用, 比如 <code>DLLIMPORT</code> 和 <code>DLLEXPORT</code>, 这样其他人在分享使用这些代码时很容易就去掉这些扩展.</li>
+</ul>
+<p>在 Windows 上, 只有很少的一些情况下, 我们可以偶尔违反规则:</p>
+<ul>
+<li>通常我们 禁止使用多重继承, 但在使用 COM 和 ATL/WTL 类时可以使用多重继承. 为了实现 COM 或 ATL/WTL 类/接口, 你可能不得不使用多重实现继承.</li>
+<li>虽然代码中不应该使用异常, 但是在 ATL 和部分 STL（包括 Visual C++ 的 STL) 中异常被广泛使用. 使用 ATL 时, 应定义 <code>_ATL_NO_EXCEPTIONS</code> 以禁用异常. 你要研究一下是否能够禁用 STL 的异常, 如果无法禁用, 启用编译器异常也可以. (注意这只是为了编译 STL, 自己代码里仍然不要含异常处理.)</li>
+<li>通常为了利用头文件预编译, 每个每个源文件的开头都会包含一个名为 <code>StdAfx.h</code> 或 <code>precompile.h</code> 的文件. 为了使代码方便与其他项目共享, 避免显式包含此文件 (<code>precompile.cc</code>), 使用 <code>/FI</code> 编译器选项以自动包含.</li>
+<li>资源头文件通常命名为 <code>resource.h</code>, 且只包含宏的, 不需要遵守本风格指南.</li>
+</ul>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><blockquote>
+<p>运用常识和判断力, 并 保持一致.</p>
+</blockquote>
+<p>编辑代码时, 花点时间看看项目中的其它代码, 并熟悉其风格. 如果其它代码中 if 语句使用空格, 那么你也要使用. 如果其中的注释用星号 (<code>*</code>) 围成一个盒子状, 你同样要这么做.</p>
+<p>风格指南的重点在于提供一个通用的编程规范, 这样大家可以把精力集中在实现内容而不是表现形式上. 我们展示了全局的风格规范, 但局部风格也很重要, 如果你在一个文件中新加的代码和原有代码风格相去甚远, 这就破坏了文件本身的整体美观, 也影响阅读, 所以要尽量避免.</p>
+<p>好了, 关于编码风格写的够多了; 代码本身才更有趣. 尽情享受吧!</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持是对我创作最大的鼓励！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/misc/alipay.jpg" alt="wdxtub Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编程/" rel="tag"># 编程</a>
+          
+            <a href="/tags/风格/" rel="tag"># 风格</a>
+          
+            <a href="/tags/Cpp/" rel="tag"># Cpp</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/29/thinking-in-cpp-clip/" rel="next" title="【C++ 编程思想】读书笔记">
+                <i class="fa fa-chevron-left"></i> 【C++ 编程思想】读书笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/01/29/cpp-style-guide/"
+     data-title="Cpp 编码风格指南"
+     data-content=""
+     data-url="http://wdxtub.com/2017/01/29/cpp-style-guide/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/29/cpp-style-guide/"
+           data-title="Cpp 编码风格指南" data-url="http://wdxtub.com/2017/01/29/cpp-style-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">人文/科学/读书/写作/思考/编程/架构/数据/广交朋友/@SYSU/@CMU</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">794</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">926</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.lofter.com/" title="我的 Lofter" target="_blank">我的 Lofter</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#头文件"><span class="nav-number">2.</span> <span class="nav-text">头文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Self-contained-头文件"><span class="nav-number">2.1.</span> <span class="nav-text">Self-contained 头文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#define-保护"><span class="nav-number">2.2.</span> <span class="nav-text">#define 保护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前置声明"><span class="nav-number">2.3.</span> <span class="nav-text">前置声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内联函数"><span class="nav-number">2.4.</span> <span class="nav-text">内联函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#include-的路径及顺序"><span class="nav-number">2.5.</span> <span class="nav-text">#include 的路径及顺序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作用域"><span class="nav-number">3.</span> <span class="nav-text">作用域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#名字空间"><span class="nav-number">3.1.</span> <span class="nav-text">名字空间</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#匿名名字空间"><span class="nav-number">3.1.1.</span> <span class="nav-text">匿名名字空间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具名的名字空间"><span class="nav-number">3.1.2.</span> <span class="nav-text">具名的名字空间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#嵌套类"><span class="nav-number">3.2.</span> <span class="nav-text">嵌套类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非成员函数、静态成员函数和全局函数"><span class="nav-number">3.3.</span> <span class="nav-text">非成员函数、静态成员函数和全局函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局部变量"><span class="nav-number">3.4.</span> <span class="nav-text">局部变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#静态和全局变量"><span class="nav-number">3.5.</span> <span class="nav-text">静态和全局变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类"><span class="nav-number">4.</span> <span class="nav-text">类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造函数的职责"><span class="nav-number">4.1.</span> <span class="nav-text">构造函数的职责</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化"><span class="nav-number">4.2.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显式构造函数"><span class="nav-number">4.3.</span> <span class="nav-text">显式构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可拷贝类型和可移动类型"><span class="nav-number">4.4.</span> <span class="nav-text">可拷贝类型和可移动类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#委派和继承构造函数"><span class="nav-number">4.5.</span> <span class="nav-text">委派和继承构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结构体-VS-类"><span class="nav-number">4.6.</span> <span class="nav-text">结构体 VS. 类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继承"><span class="nav-number">4.7.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多重继承"><span class="nav-number">4.8.</span> <span class="nav-text">多重继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口"><span class="nav-number">4.9.</span> <span class="nav-text">接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运算符重载"><span class="nav-number">4.10.</span> <span class="nav-text">运算符重载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存取控制"><span class="nav-number">4.11.</span> <span class="nav-text">存取控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#声明顺序"><span class="nav-number">4.12.</span> <span class="nav-text">声明顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写简短函数"><span class="nav-number">4.13.</span> <span class="nav-text">编写简短函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他-C-特性"><span class="nav-number">5.</span> <span class="nav-text">其他 C++ 特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引用参数"><span class="nav-number">5.1.</span> <span class="nav-text">引用参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#右值引用"><span class="nav-number">5.2.</span> <span class="nav-text">右值引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数重载"><span class="nav-number">5.3.</span> <span class="nav-text">函数重载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺省参数"><span class="nav-number">5.4.</span> <span class="nav-text">缺省参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变长数组和-alloca"><span class="nav-number">5.5.</span> <span class="nav-text">变长数组和 alloca()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#友元"><span class="nav-number">5.6.</span> <span class="nav-text">友元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常"><span class="nav-number">5.7.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时类型识别"><span class="nav-number">5.8.</span> <span class="nav-text">运行时类型识别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型转换"><span class="nav-number">5.9.</span> <span class="nav-text">类型转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流"><span class="nav-number">5.10.</span> <span class="nav-text">流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前置自增和自减"><span class="nav-number">5.11.</span> <span class="nav-text">前置自增和自减</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#const-用法"><span class="nav-number">5.12.</span> <span class="nav-text">const 用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#constexpr-用法"><span class="nav-number">5.13.</span> <span class="nav-text">constexpr 用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整型"><span class="nav-number">5.14.</span> <span class="nav-text">整型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#64-位下的可移植性"><span class="nav-number">5.15.</span> <span class="nav-text">64 位下的可移植性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预处理宏"><span class="nav-number">5.16.</span> <span class="nav-text">预处理宏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0-nullptr-和-NULL"><span class="nav-number">5.17.</span> <span class="nav-text">0, nullptr 和 NULL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sizeof"><span class="nav-number">5.18.</span> <span class="nav-text">sizeof</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#auto"><span class="nav-number">5.19.</span> <span class="nav-text">auto</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列表初始化"><span class="nav-number">5.20.</span> <span class="nav-text">列表初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lambda-表达式"><span class="nav-number">5.21.</span> <span class="nav-text">Lambda 表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模板编程"><span class="nav-number">5.22.</span> <span class="nav-text">模板编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Boost-库"><span class="nav-number">5.23.</span> <span class="nav-text">Boost 库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C-11"><span class="nav-number">5.24.</span> <span class="nav-text">C++11</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命名约定"><span class="nav-number">6.</span> <span class="nav-text">命名约定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通用命名规则"><span class="nav-number">6.1.</span> <span class="nav-text">通用命名规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件命名"><span class="nav-number">6.2.</span> <span class="nav-text">文件命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型命名"><span class="nav-number">6.3.</span> <span class="nav-text">类型命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量命名"><span class="nav-number">6.4.</span> <span class="nav-text">变量命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常量命名"><span class="nav-number">6.5.</span> <span class="nav-text">常量命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数命名"><span class="nav-number">6.6.</span> <span class="nav-text">函数命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#名字空间命名"><span class="nav-number">6.7.</span> <span class="nav-text">名字空间命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#枚举命名"><span class="nav-number">6.8.</span> <span class="nav-text">枚举命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宏命名"><span class="nav-number">6.9.</span> <span class="nav-text">宏命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命名规则的特例"><span class="nav-number">6.10.</span> <span class="nav-text">命名规则的特例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注释"><span class="nav-number">7.</span> <span class="nav-text">注释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注释风格"><span class="nav-number">7.1.</span> <span class="nav-text">注释风格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件注释"><span class="nav-number">7.2.</span> <span class="nav-text">文件注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类注释"><span class="nav-number">7.3.</span> <span class="nav-text">类注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数注释"><span class="nav-number">7.4.</span> <span class="nav-text">函数注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量注释"><span class="nav-number">7.5.</span> <span class="nav-text">变量注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现注释"><span class="nav-number">7.6.</span> <span class="nav-text">实现注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标点-拼写和语法"><span class="nav-number">7.7.</span> <span class="nav-text">标点, 拼写和语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TODO-注释"><span class="nav-number">7.8.</span> <span class="nav-text">TODO 注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#弃用注释"><span class="nav-number">7.9.</span> <span class="nav-text">弃用注释</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#格式"><span class="nav-number">8.</span> <span class="nav-text">格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行长度"><span class="nav-number">8.1.</span> <span class="nav-text">行长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非-ASCII-字符"><span class="nav-number">8.2.</span> <span class="nav-text">非 ASCII 字符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空格还是制表位"><span class="nav-number">8.3.</span> <span class="nav-text">空格还是制表位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数声明与定义"><span class="nav-number">8.4.</span> <span class="nav-text">函数声明与定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lambda-表达式-1"><span class="nav-number">8.5.</span> <span class="nav-text">Lambda 表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数调用"><span class="nav-number">8.6.</span> <span class="nav-text">函数调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列表初始化格式"><span class="nav-number">8.7.</span> <span class="nav-text">列表初始化格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#条件语句"><span class="nav-number">8.8.</span> <span class="nav-text">条件语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环和开关选择语句"><span class="nav-number">8.9.</span> <span class="nav-text">循环和开关选择语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指针和引用表达式"><span class="nav-number">8.10.</span> <span class="nav-text">指针和引用表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#布尔表达式"><span class="nav-number">8.11.</span> <span class="nav-text">布尔表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数返回值"><span class="nav-number">8.12.</span> <span class="nav-text">函数返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量及数组初始化"><span class="nav-number">8.13.</span> <span class="nav-text">变量及数组初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预处理指令"><span class="nav-number">8.14.</span> <span class="nav-text">预处理指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类格式"><span class="nav-number">8.15.</span> <span class="nav-text">类格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造函数初始值列表"><span class="nav-number">8.16.</span> <span class="nav-text">构造函数初始值列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#名字空间格式化"><span class="nav-number">8.17.</span> <span class="nav-text">名字空间格式化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#水平留白"><span class="nav-number">8.18.</span> <span class="nav-text">水平留白</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垂直留白"><span class="nav-number">8.19.</span> <span class="nav-text">垂直留白</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#规则特例"><span class="nav-number">9.</span> <span class="nav-text">规则特例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#现有不合规范的代码"><span class="nav-number">9.1.</span> <span class="nav-text">现有不合规范的代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows-代码"><span class="nav-number">9.2.</span> <span class="nav-text">Windows 代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结束语"><span class="nav-number">10.</span> <span class="nav-text">结束语</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js?v=5.1.0"></script>
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+
+</body>
+</html>

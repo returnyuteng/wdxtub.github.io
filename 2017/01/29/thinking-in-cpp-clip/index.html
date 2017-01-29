@@ -1,0 +1,1429 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="经典,Cpp," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文源自我大学时阅读本书的笔记，算是对自己的『温故知新』。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【C++ 编程思想】读书笔记">
+<meta property="og:url" content="http://wdxtub.com/2017/01/29/thinking-in-cpp-clip/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="本文源自我大学时阅读本书的笔记，算是对自己的『温故知新』。">
+<meta property="og:updated_time" content="2017-01-29T01:21:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【C++ 编程思想】读书笔记">
+<meta name="twitter:description" content="本文源自我大学时阅读本书的笔记，算是对自己的『温故知新』。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '4016951',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wdxtub.com/2017/01/29/thinking-in-cpp-clip/"/>
+
+
+
+
+
+  <title> 【C++ 编程思想】读书笔记 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=59042340";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-work">
+          <a href="/2016/09/11/work-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wifi"></i> <br />
+            
+            不周山
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tech">
+          <a href="/2009/09/11/tech-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gear"></i> <br />
+            
+            通天塔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/1990/09/11/life-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-compass"></i> <br />
+            
+            好望角
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/1997/09/11/booklist-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书影音
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://wdxtub.com/2017/01/29/thinking-in-cpp-clip/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="wdxtub">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/misc/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="小土刀">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="小土刀" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                【C++ 编程思想】读书笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-29T07:43:32+08:00">
+                2017-01-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              <span class="post-meta-item-text">更新于</span>
+              <time title="更新于" itemprop="dateModified" datetime="2017-01-29T09:21:23+08:00">
+                2017-01-29
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Reading/" itemprop="url" rel="index">
+                    <span itemprop="name">Reading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/01/29/thinking-in-cpp-clip/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/29/thinking-in-cpp-clip/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文源自我大学时阅读本书的笔记，算是对自己的『温故知新』。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.01.29: 完成初稿</li>
+</ul>
+<h2 id="第1章-对象导言"><a href="#第1章-对象导言" class="headerlink" title="第1章 对象导言"></a>第1章 对象导言</h2><p>本章将介绍面向对象程序设计(OOP)的基本概念，包括OOP开发方法的概述。</p>
+<h3 id="1-1-抽象的过程"><a href="#1-1-抽象的过程" class="headerlink" title="1.1 抽象的过程"></a>1.1 抽象的过程</h3><p>所有的程序语言都提供抽象。可以说，人们能解决的问题的复杂性直接与抽象的类型和质量有关。汇编语言时对底层机器的小幅度抽象。其后的许多所谓“命令式”语言(例如Fortran、Basic和C)都是对汇编语言的抽象。OPP允许程序员用问题本市的术语来描述问题，而不是用要运行解决方案的计算机的术语来描述问题。每个对象看上去像一台小计算机，它有状态，有可执行的运算。这似乎是现实世界中对象的很好类比，它们都有特性和行为。</p>
+<p>面向对象语言的五个基本特性：</p>
+<ol>
+<li>万物皆对象。</li>
+<li>程序就是一组对象，对象之间通过发送消息互相通知做什么。</li>
+<li>每个对象都有它子集的由其他对象构成的存储区。</li>
+<li>每个对象都有一个类型。</li>
+<li>一个特定类型的所有对象都能接收相同的消息。</li>
+</ol>
+<h3 id="1-2-对象有一个接口"><a href="#1-2-对象有一个接口" class="headerlink" title="1.2 对象有一个接口"></a>1.2 对象有一个接口</h3><p>创建抽象数据类型是面向对象程序设计的基本思想。抽象数据类型几乎能完全像内部类型一样工作。</p>
+<p>类描述了一组有相同特性(数据元素)和相同行为(功能)的对象，因此类实际上就是数据类型。面向对象程序设计的难题之一，是在问题空间中的元素和解空间中的对象之间建立一对一的映射。</p>
+<p>必须有一种方法能向对象作出请求，使得它能做某些事情。可以向对象发出的请求是由它的接口(interface)定义的，而接口由类型确定。接口规定我们能向特定的对象发出什么请求。然后，必须有代码满足这种请求，再加上隐藏的数据，就组成了实现(implementation)。</p>
+<h3 id="1-3-实现的隐藏"><a href="#1-3-实现的隐藏" class="headerlink" title="1.3 实现的隐藏"></a>1.3 实现的隐藏</h3><p>C++语言使用了三个明确的关键字来设置类中的边界：public、private 和 protected。public 意味着随后的定义对所有人都可用。相反，private 关键字则意味着，除了该类型的创建者和该类型的内部成员函数之外，任何人都不能访问这些定义。继承的类可以访问 protected 成员，但不能访问 private 成员。</p>
+<h3 id="1-4-实现的重用"><a href="#1-4-实现的重用" class="headerlink" title="1.4 实现的重用"></a>1.4 实现的重用</h3><p>代码重用是面向对象程序设计语言的最大优点之一。可以用任何数量和类型的其他对象组成新类，通过组合得到新类所希望的功能。因为这是由已经存在的类组成新类，所以称为组合(composition)【或者更通常称为聚合(aggregation)】。组合常常被称为“has-a(有)”关系。</p>
+<p>当创建新类时，程序员应当首先考虑组合，因为它更简单和更灵活。如果采用组合的方法，设计将变得清晰。</p>
+<h3 id="1-5-继承：重用接口"><a href="#1-5-继承：重用接口" class="headerlink" title="1.5 继承：重用接口"></a>1.5 继承：重用接口</h3><p>克服许多困难去创造一个类，并随后强制性地创造一个有类似功能地全新地类，似乎很愚蠢。如果能选取已存在地类、克隆它，然后对这个克隆增加和修改，则是再好不过地事。这是继承(inheritance)带来地好处，缺点是，如果原来的类(称为基类、超类或父类)被修改，则这个修改过的“克隆”(称为派生类、继承类或子类)也会表现出这些改变。</p>
+<p>当我们从已经存在的类型来继承时，我们就创造了一个新类型。这个新类性不仅包含那个已经存在的类型的所有成员，还复制了这个基类的接口，这意味着这个派生类与这个基类是相同类型的。 </p>
+<p>有两种方法能使新派生类区别于原始基类。第一种相当直接，简单地向派生类添加全新的函数。这些新函数不是基类接口的一部分。着意味着，这个基类不能做我们希望它做的事情，所以必须添加函数。</p>
+<p>虽然继承有时意味着向接口添加新函数，但这未必真的需要。是新类有别于基类的第二个和更重要的方法是，改变已经存在的基类函数的行为，这称为重载(overriding)这个函数。为了重载函数，可以简单地再派生类中创建新定义。相当于说：“我正再使用同一个接口函数，但是我希望它为我做不同的事情。”</p>
+<p><strong>1.5.1 is-a 关系和 is-like-a 关系</strong></p>
+<p>只重载基类(并且不添加基类中没有的新成员函数)的继承意味着派生类和基类是完全相同的类型，因为它们有相同的接口。结果是，我们可以用派生类的对象代替基类的对象。因此这被认为是纯代替(pure substitution)，常常被称为代替原则(substitution principle)。这种情况下，我们常把基类和派生类直接的关系看作是一个“is-a(是)”关系。</p>
+<p>有时需要向一个派生类型添加新的接口元素，这样就扩展了接口并创建了新类型。这个新类型仍然可以代替这个基类，但这个代替不是完美的，因为这些新函数不能从基类访问，这可以描述为“is-like-a(像)”关系。</p>
+<h3 id="1-6-具有多态性的可互换对象"><a href="#1-6-具有多态性的可互换对象" class="headerlink" title="1.6 具有多态性的可互换对象"></a>1.6 具有多态性的可互换对象</h3><p>如果试图把派生类型的对象看做是比它们自身更一般的基本类型(圆形看做形体，自行车看做车辆)，这里就有一个问题：如果一个函数告诉一个一般的形体去绘制它子集，或者告诉一个一般的车辆去行驶，则编译器再编译时就不能确切地知道应当执行哪段代码。同样地问题是，消息发送时，程序员并不想知道将执行哪段代码。编译器不能确切地知道执行哪段代码，那么它应该怎么办呢？</p>
+<p>在面向对象的程序设计中，答案非常新奇：编译器并不做传统意义上的函数调用。非OOP编译器产生的函数调用会导致与被调用代码的早捆绑(early binding)，其意思是：编译器会对特定的函数名产生调用，而连接器将这个调用解析为要执行代码的绝对地址。</p>
+<p>在OOP中，知道程序运行时，编译器才能确定执行代码的地址，所以，当消息被发送给一般对象时，需要采用其他的方案。为了解决这一问题，面向对象语言采用晚捆绑(late binding)的思想。当给对象发送消息时，在程序运行时才去确定被调用的代码。编译器保证这个被调用的函数存在，并执行参数和返回值的类型检查【其中不采用这种处理方式的语言称为弱类型(weakly typed)语言】，但是它并不知道将执行的确切代码。</p>
+<p>为了执行晚捆绑，C++编译器在真正调用的地方插入一段特殊的二进制代码。通过使用存放在对象自身中的信息，这段代码在运行时计算被调用函数函数体的地址(详见第15章)。这样每个对象就能根据这段二进制代码的内容有不同的行为。当一个对象接收到消息时，它根据这个消息判断应当做什么。</p>
+<p>我们可以用关键字 virtual 声明他希望某个函数有晚捆绑的灵活性。在 C++ 中，必须记住添加 virtual 关键字，因为根据规定，默认情况下成员函数不能动态捆绑。virtual 函数(虚函数)可用来表示出在相同家族中的类具有不同的行为。这些不同是产生多态行为的原因。</p>
+<p>我们把处理派生类型就如同处理其基类型的过程称为向上类型转换(upcasting)。编译器和运行系统可以处理这些细节，我们只需要知道它会这样做和知道如何用它设计程序就行了。如果一个成员函数是virtual的，则当我们给一个对象发送消息时，这个对象将做正确的事情，即使是在有向上类型转换的情况下。</p>
+<h3 id="1-7-创建和销毁对象"><a href="#1-7-创建和销毁对象" class="headerlink" title="1.7 创建和销毁对象"></a>1.7 创建和销毁对象</h3><p>对象的数据存放在何处？如何控制对象的生命期？不同的设计语言有不同的处理方式。C++ 才去的方法是把效率控制作为最重要的问题，所以它为程序员提供了一个选择。为了最大化运行速度，通过将对象存放在栈中或静态存储区域中，存储和生命期可以在编写程序时确定。栈是内存中的一个区域，可以直接由微处理器在程序执行期间存放数据。在栈中的变量有时称自动变量(automatic variable)或局部变量(scoped variable)。静态存储区简单说是内存的一个固定块，在程序开始执行以前分配。使用栈或静态存储区，可以快速分配和释放，但是我们因此也牺牲了灵活性。</p>
+<p>第二种方法是在称为堆(heap)的区域动态创建对象。用这种方法，可以直到运行时还不知道需要多少个对象，它们的生命期是什么和他们的准确数据类型是什么。这些决定是在程序运行之中作出的。如果需要心的对象，直接使用new关键字让它在堆上生成。当使用结束时，用关键字delete释放。</p>
+<p>另一个问题是对象的生命期。如果在栈上或在静态存储上创建一个对象，编译器决定这个对象持续多长时间并能自动销毁它。然后，如果在堆上创建它，编译器则不知道它的生命期。在C++中，程序员必须编程决定何时销毁此对象。作为一个替换，运行环境可以提供一个称为垃圾收集器(garbage collector)的功能。当然，使用垃圾收集器编写程序是非常方便的，但是它需要所有应用软件能承受垃圾收集器的存在及垃圾收集的系统开销。</p>
+<h3 id="1-8-异常处理：应对错误"><a href="#1-8-异常处理：应对错误" class="headerlink" title="1.8 异常处理：应对错误"></a>1.8 异常处理：应对错误</h3><p>从程序设计语言出现开始，错误处理就是最重要的问题之一。因为设计一个好的错误处理方案非常困难，许多语言忽略这个问题，将这个问题转交给库的设计者，而库的设计者往往采取不彻底的措施，即可以在许多情况下起作用，但很容易被绕考，通常是被忽略。</p>
+<p>异常处理(exception handling)将错误处理直接与程序设计语言甚至有时是操作系统联系起来。异常是一个对象，它在出错的地方被抛出，并且被一段用以处理特定类型错误的异常处理代码(exception handler)所接收。异常处理似乎是另一个并行的执行路径，在出错的时候被调用。由于它使用一个单独的执行路径，它并不需要干涉正常的执行代码。因为不需经常检查错误，代码可以很简洁。另外，异常并不同于一个由函数返回的错误值或标记，后两者可以被忽略，而异常不能被忽略，必须保证它们在某些点上进行处理。最后，异常提供了一个从错误状态中进行可靠恢复的方法。除了从这个程序中退出以外，我们常常还可以作出正确的设置，并且回复程序执行，这有助于产生更健壮的系统。</p>
+<h3 id="1-9-分析和设计"><a href="#1-9-分析和设计" class="headerlink" title="1.9 分析和设计"></a>1.9 分析和设计</h3><p>方法(method)［通常称为方法论(methodology)］是一系列的过程和探索，用以降低程序设计问题的复杂性。</p>
+<p>经历开发过程时，最重要的问题是：不要迷路。如果不定因素不止一个，在没有创建一个能工作的原型之前，不要计划它将用多长时间和花费多少，这里的自由度太大了。</p>
+<p>应当牢记我们正在努力寻找的是什么：</p>
+<ul>
+<li>什么是对象(如何将项目分成多个组成部分？)</li>
+<li>它们的接口是什么？(需要向每个对象发送什么信息？)</li>
+</ul>
+<p>整个过程可以分5个阶段完成，阶段0只是使用一些结构的初始约定。</p>
+<p><strong>1.9.1 第0阶段：制定计划</strong></p>
+<p>我们必须首先决定在此过程中应当有哪些步骤。无论建造什么系统，不管如何复杂，都有其基本的目的，有其要处理的业务，有所满足的基本需要。通过各种观察，我们将最终找出它的核心，通常简单而又直接。</p>
+<p>这个相当重要，因为它设定了项目的基调，这是一种任务陈述。我们不必一开始就让它正确，但是要不停地努力使其越来越正确。</p>
+<p><strong>1.9.2 第1阶段：我们在做什么</strong></p>
+<p>这一阶段我们有必要把注意力始终放在核心问提上：确定这个系统要做什么。为此，最有价值的工具是一组所谓的“用例(use case)”。用例之明了系统中的关键特性，它们将展现我们使用的一些节本的类。它们实际上是对类似于下列问题的描述性回答：</p>
+<ul>
+<li>“谁将使用这个系统？”</li>
+<li>“执行者用这个系统做什么？”</li>
+<li>“执行者如何用这个系统工作？”</li>
+<li>“如果其他人也做这件事，或者同一个执行者有不同的目标，该怎么办？(揭示变化)”</li>
+<li>“当使用这个系统时，会发生什么问题？(揭示异常)”</li>
+</ul>
+<p>只要符合用户的使用感受，系统实际上如何实现并不重要。</p>
+<p><strong>1.9.3 第2阶段：我们将如何建立对象</strong></p>
+<p>在这一阶段，我们必须作出设计，描述这些类和它们如何交互。确定类和交互的出色技术就是：<br>类职责协同(Class-Responsibility-Collaboration，CRC)卡片。</p>
+<p>这个技术非常简单：只要有一组小空白卡片，在上面书写。每张卡片描述一个类，所写的内容有：</p>
+<ul>
+<li>类的名字。体现类行为的本质，一目了然的作用。</li>
+<li>类的职责。它应当做什么。通常，它可以仅由成员函数的名字陈述。</li>
+<li>类的协同：它与其他类有哪些交互？如果一张小卡片上放不下类所需要的信息，那么这个类就太复杂了(或者是考虑过细了，或者应当创建多个类)。理想的类应该一目了然。</li>
+</ul>
+<p>对象开发准则：</p>
+<ul>
+<li>让特定问题生成一个类，然后在解决其他问题期间让这个类生长和成熟。</li>
+<li>记住，发现所需要的类(和它们的接口)，是设计系统的主要内容。如果已经有了那些类，这个项目就不困难了。</li>
+<li>不要强迫自己在一开始就知道每一件事情，应当不断学习。</li>
+<li>开始编程，让一部分能够运行，这样就可以证明或否定已生成的设计。不要害怕过程型大杂烩式的代码──类的隔离性可以控制它们。坏的类不会破坏好的类。</li>
+<li>尽量保持简单。具有明显用途的不太清楚的对象比很复杂的接口好。从小的和简单的类开始，当我们对它有了较好的理解时再拓展这个类接口，但是很难从一个类中删去元素。</li>
+</ul>
+<p><strong>1.9.4 第3阶段：创建核心</strong></p>
+<p>这是从粗线条设计向便宜和执行可执行代码体的最初转换阶段，特别是，它将证明或者否定我们的体系结构。这不是一遍的过程，而是反复地建立系统的一系列步骤的开始。</p>
+<p><strong>1.9.5 第4阶段：迭代用例</strong></p>
+<p>一旦代码框架运行起来，我们增加的每一组特征本身就是一个小项目。在一次迭代(iteration)期间，我们增加一组特征，一次迭代是一个相当短的开发时期。</p>
+<p>理想情况下，每次迭代为一到三个星期，在这个期间的最后，我们得到一个集成的、测试过的、比前一周期有更多功能的系统。</p>
+<p>通过这些过程，我们可以更早地揭露和解决严重问题，客户有足够的机会改变它们的意见，程序员会更满意，能更精确地掌握项目。</p>
+<p><strong>1.9.6 第5阶段：进化</strong></p>
+<p>这是开发周期中，传统上称为“维护”的一个阶段。我们不可能第一次就使软件正确，所以应当为学习、返工和修改留有余地。</p>
+<p>“使软件正确”的意思不只是使程序按照要求和用例工作，还意味着我们理解代码的内部结构，并且认识到它能很好地协同工作，没有拙笨的语法和过大的对象，也没有难看的暴露的代码。</p>
+<p><strong>1.9.7 计划的回报</strong></p>
+<p>提出一个漂亮的方案感觉上更接近于艺术，而不是技术。精致总是有回报的，这不是一种虚浮的追求。它不仅给除了一个容易建造和调试的程序，而且容易理解和维护，这就是其经济价值的体现。</p>
+<h3 id="1-10-极限编程-eXtreme-Programming-XP"><a href="#1-10-极限编程-eXtreme-Programming-XP" class="headerlink" title="1.10 极限编程(eXtreme Programming,XP)"></a>1.10 极限编程(eXtreme Programming,XP)</h3><p>XP既是程序设计工作的哲学，又是做程序设计的一组原则。有两个原则最重要：“先写测试”和“结对编程”。</p>
+<p>先写测试有两个及其重要的作用：</p>
+<ul>
+<li>它强制类的接口有清楚的定义。</li>
+<li>能在每次编连软件时运行这些测试。</li>
+</ul>
+<p>结对编程(pair programming)反对深植于我们心中的个人主义，一个人编写代码时另一个人在思考。思考者的头脑中保持总体概念，不仅是手头问题这一段，而且还有XP指导方针。这种结对方式，使事情顺畅、有章可循。</p>
+<h2 id="第2章-对象的创建与使用"><a href="#第2章-对象的创建与使用" class="headerlink" title="第2章 对象的创建与使用"></a>第2章 对象的创建与使用</h2><h3 id="2-1-语言的翻译过程"><a href="#2-1-语言的翻译过程" class="headerlink" title="2.1 语言的翻译过程"></a>2.1 语言的翻译过程</h3><p>任何一种计算机语言都要从某种人们理解的形式(源代码)转化成计算机能执行的形式(机器指令)。通常，翻译器分为两类：解释器(interpreter)和编译器(compiler)。</p>
+<p><strong>解释器(interpreter)</strong></p>
+<p>将源代码转化成一些动作并立即执行这些动作。使用解释器有许多好处。从写代码到执行代码的转换几乎能立即完成，并且源代码总是显存，所以一旦出现错误，解释器能很容易地指出。另外的优点是较好的交互性和适于快速程序开发。</p>
+<p>做大项目时候就有某些局限性。要求一次输入整个源代码，一旦出现错误，就很难调试。</p>
+<p><strong>编译器(compiler)</strong></p>
+<p>编译器直接把源代码转化成汇编语言或机器指令。某些语言可以分别编译各段程序，最后使用连接器(linker)把各段程序连接成一个完整的可执行程序。这个过程称为分段编译(separate compilation)。</p>
+<p>某些语言(特别是C/C++)编译时，首先要对源代码执行预处理。预处理器(preprocessor)是一个简单的程序，用程序员(利用预处理器指令)定义好的模式代替源代码中的模式。</p>
+<p>编译一般分两遍进行。首先，对预处理过的代码进行语法分析。编译器把源代码分解成小的单元并把它们按树形结构组织起来。有时候会在编译的第一遍和第二遍之间使用全局优化器(global optimizer)来生成更短、更快的代码。</p>
+<p>编译的第二遍由代码生成器(code generator)遍历语法分析树，把树的每个节点转化成汇编语言或机器代码。</p>
+<p>类型检查(type checking)是编译器在第一遍中完成的。类型检查是检查函数参数是否正确使用，以防止许多程序设计错误。由于类型检查是在编译阶段而不是程序运行阶段进行的，所以称之为静态类型检查(static type checking)。在C++里可以不使用静态类型检查。我们可以自己做动态类型检查──这只需要写一些代码。</p>
+<h2 id="第3章-C-中的C"><a href="#第3章-C-中的C" class="headerlink" title="第3章 C++中的C"></a>第3章 C++中的C</h2><h3 id="3-1-指定存储空间分配"><a href="#3-1-指定存储空间分配" class="headerlink" title="3.1 指定存储空间分配"></a>3.1 指定存储空间分配</h3><p><strong>3.1.1 全局变量</strong></p>
+<p>全局变量是在所有函数体的外部定义的，程序的所有部分(甚至其他文件中的代码)都可以使用。全局变量不受作用域的影响，总是可用的(也就是说，全局变量的生命期一直到程序的结束)。如果在一个文件中存在全局变量，那么这个文件可以使用这个数据。</p>
+<p><strong>3.1.2 局部变量</strong></p>
+<p>局部变量出现在一个作用域内，它们是局限于一个函数的。局部变量经常被称为自动变量(automatic variable)，因为它们在进入作用域时自动生成，离开作用域时自动消失。<br>寄存器变量是一种局部变量，最好避免使用关键字register。</p>
+<p><strong>3.1.3 静态变量</strong></p>
+<p>关键字static有一些独特的意义。通常，函数中定义的局部变量在函数作用域结束时小时。当再次调用这个函数时，会重新创建该变量的存储空间，其值会被重新初始化。如果想使局部变量的值在程序的整个生命期里仍然存在，就可以定义函数的局部变量为static，并给它一个初始值。初始化只在函数第一次调用时执行，函数调用之间变量的值保持不变。用这种方式，函数可以“记住”函数调用之间的一些信息片段。</p>
+<p>static变量的优点是在函数范围之外它是不可用的，所以它不可能被轻易地改变。这会使错误局部化。</p>
+<p>static的第二层意思和前面的含义相关，即“在某个作用域外不可访问”。当应用static于函数名和所有函数外部的变量时，它的意思是“在文件的外部不可以使用这个名字”。函数名或变量是局部于文件的；我们说它具有文件作用域(file scope)。即使在另一个文件用extern声明，连接器也不会找到它。</p>
+<p><strong>3.1.4 外部变量</strong></p>
+<p>extern关键字告诉编译器存在着一个变量和函数，即使编译器在当前编译的文件中没有看到它，这个变量或函数可能在另一个文件中或者在当前文件的后面定义。</p>
+<p><strong>连接(linkage)</strong></p>
+<p>连接用连接器所见的方式描述存储空间。连结方式有两种：内部连接(internal linkage)和外部连接(external linkage)。内部连接意味着只对正被编译的文件创建存储空间。用内部连接，别的文件可以使用相同的标识符或全局变量，连接器不会发现冲突──也就是为每一个标识符创建单独的存储空间。在C和C++中，内部连接是由关键字static指定的。</p>
+<p>外部连接意味着所有被编译过的文件创建一片单独的存储空间。一旦创建存储空间，连接器必须解决所有对这片存储空间的引用。</p>
+<h3 id="3-2-运算符及其使用"><a href="#3-2-运算符及其使用" class="headerlink" title="3.2 运算符及其使用"></a>3.2 运算符及其使用</h3><p>所有的运算符都会从它们的操作数中产生一个值。除了赋值、自增、自减运算符之外，运算符所产生的值不会修改操作数。修改操作数被称为副作用(side effect)。一般使用修改操作数的运算就是为了产生这种副作用。</p>
+<p><strong>3.2.1 逗号运算符</strong></p>
+<p>可以作为一个运算符用于分隔表达式。在这种情况下，它只产生最后一个表达式的值。在逗号分隔的列表中，其余的表达式的计算只完成它们的副作用。</p>
+<p>通常，除了作为一个分隔符，逗号最好不作他用，因为人们不习惯把它看作是运算符。</p>
+<h2 id="第4章-数据抽象"><a href="#第4章-数据抽象" class="headerlink" title="第4章 数据抽象"></a>第4章 数据抽象</h2><p>库只是他人已经写好的一些代码，按照某种方式包装在一起。通常，最小的包是带有拓展名(如lib)的文件和向编译器声明库中有什么的一个或多个头文件。在跨越多种体系结构的平台(例如Linux和Unix)上，通常，提供库的最明智的方法是使用源代码，这样它就能在心的目标机上被重新配置和编译。</p>
+<p>所以，库大概是改进生产效率的最重要的方法。C++的主要设计目标之一就是使库使用起来更加容易。</p>
+<h3 id="4-1-什么是对象"><a href="#4-1-什么是对象" class="headerlink" title="4.1 什么是对象"></a>4.1 什么是对象</h3><p>在C++中，对象就是变量，它的最纯正的定义是“一块存储区”(更明确的说法是，“对象必须有惟一的标识”，在C++中是一个惟一的地址)。它是一块空间，在这里能存放数据，而且还隐含着对这些数据进行处理的操作。</p>
+<h3 id="4-2-抽象数据类型"><a href="#4-2-抽象数据类型" class="headerlink" title="4.2 抽象数据类型"></a>4.2 抽象数据类型</h3><p>将数据连同函数捆绑在一起的能力可以用于创建新的数据类型。这常常被称为封装(encapsulation)。称为抽象数据类型(abstract data type)，也许这是因为它能允许从问题空间抽象概念到解空间。对抽象数据类型[有时称为用户定义类型(user-defined type)]的类型检查就像对内建类型的类型检查一样严格。</p>
+<h3 id="4-3-头文件"><a href="#4-3-头文件" class="headerlink" title="4.3 头文件"></a>4.3 头文件</h3><p>头文件是我们和我们的库的用户之间的合约。这份合约描述了我们的数据结构，为函数调用贵点了参数和返回值。</p>
+<p>通过要求我们在使用结构和函数之前声明所有这些结构和函数，在定义成员函数之前声明这些成员函数，编译器强制履行这个合约。</p>
+<p>放到头文件中的基本原则是“只限于声明”，即只限于对编译器的信息，不涉及通过生成代码或创建变量而分配存储的任何信息。</p>
+<p><strong>4.3.1 头文件的标准</strong></p>
+<p>对于包含结构的每个头文件，应当首先检查这个头文件是否已经包含在特定的cpp文件中，如：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> HEADER_FLAG</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> HEADER_FLAG</span></div><div class="line"><span class="comment">// Type declaration here...</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// HEADER_FLAG</span></span></div></pre></td></tr></table></figure>
+<p>防止多次包含的这些预处理器语句常常称为包含守卫(include guard)。</p>
+<h2 id="第5章-隐藏实现"><a href="#第5章-隐藏实现" class="headerlink" title="第5章 隐藏实现"></a>第5章 隐藏实现</h2><h3 id="5-1-设置限制"><a href="#5-1-设置限制" class="headerlink" title="5.1 设置限制"></a>5.1 设置限制</h3><p>在任何关系中，设立相关各方面都遵从的边界是很重要的。需要控制对结构成员的访问有两个理由：一是让客户程序员远离一些它们不需要使用的工具，这些工具对数据类型内部的处理来说是必需的，但对客户程序员解决特定问题的接口却不是必须的。另一个理由是允许库的设计者改变struct的内部实现，而不必担心会对客户程序员产生影响。</p>
+<h3 id="5-2-C-的访问控制"><a href="#5-2-C-的访问控制" class="headerlink" title="5.2 C++的访问控制"></a>5.2 C++的访问控制</h3><p>引进了三个访问说明符(access specifier)：public、private和protected。无论什么时候使用访问说明符，后面必须加一个冒号。</p>
+<ul>
+<li><code>public</code> 意味着在其后声明的所有成员可以被所有的人访问。</li>
+<li><code>private</code> 关键字则意味着，除了该类型的创建者和类的内部成员函数之外，任何人都不能访问。</li>
+<li><code>protected</code> 与 <code>private</code> 基本相似，只有一点不同：继承的结构可以访问 protected 成员，但不能访问 private 成员。</li>
+</ul>
+<h3 id="5-3-友元"><a href="#5-3-友元" class="headerlink" title="5.3 友元"></a>5.3 友元</h3><p>如果想允许显示地不属于当前结构的一个成员函数访问当前结构中的数据，可以在该结构内部声明这个函数为friend(友元)。注意，一个 friend 必须在一个结构内声明，这一点很重要。</p>
+<p><strong>5.3.1 嵌套友元</strong></p>
+<p>嵌套的结构并不能自动获得访问private成员的权限。要获得访问私有成员的权限，必须存手特定的规则：首先声明(而不定义)一个嵌套的结构，然后声明它是全局范围使用的一个friend，最后定义这个结构。结构的定义必须与friend声明分开，否则编译器将不把它看做成员。</p>
+<p><strong>5.3.2 它是纯面向对象的吗</strong></p>
+<p>C++ 不是完全的面向对象语言，而只是一个混合产品。增加 friend 关键字就是为了用来解决一些实际问题。这也说明了这种语言是不纯的。毕竟 C++ 语言的设计目的是使用，而不是追求理想的抽象。</p>
+<h3 id="5-4-对象布局"><a href="#5-4-对象布局" class="headerlink" title="5.4 对象布局"></a>5.4 对象布局</h3><p>访问说明符是结构的一部分，它们并不影响从这个结构创建的对象。程序开始运行之前，所有的访问说明信息都消失了。访问说明信息通常是在编译期间消失的。</p>
+<p>一般说来，在程序员编写程序时，依赖特定实现的任何东西都是不合适的。如确有必要，这些特定实现部分应封装在一个结构之内，这样当环境改变时，只需修改一个地方就行了。</p>
+<h3 id="5-5-类"><a href="#5-5-类" class="headerlink" title="5.5 类"></a>5.5 类</h3><p>访问控制通常是指实现细节的隐藏(implementation hiding)。将函数包含到一个结构内(常称为封装)来产生一种带数据和操作的数据类型，由访问控制在该数据类型之内确定边界。</p>
+<p>然后在 C+ +中的 class 逐渐变成了一个非必要的关键字。它和 struct 的每个方面都是一样的，除了 class 中的成员默认为 private，而 struct 中的成员默认为 public。</p>
+<h3 id="5-6-句柄类"><a href="#5-6-句柄类" class="headerlink" title="5.6 句柄类"></a>5.6 句柄类</h3><p>C++ 中的访问控制允许将实现部分与接口部分分开，但实现部分的隐藏是不完全的。编译器仍然必须知道一个对象所有部分的声明。但 C++ 要尽可能多地在编译期间作静态类型检查。这意味着尽早捕获错误，也意味着程序具有更高的效率。然后包含似有实现部分会带来两个影响：一是既是客户程序员不能轻易地访问私有实现部分，但可以看到它；二是造成一些不必要的重复编译。</p>
+<p><strong>5.6.1 隐藏实现</strong></p>
+<p>有些项目不可让最终客户程序员看到其实现部分，就有必要把一个变一号的实际结构放在实现文件中，而不是让其暴露在头文件中。</p>
+<p><strong>5.6.2 减少重复编译</strong></p>
+<p>在我们的编译环境中，当一个文件被修改，或它所依赖的头文件被修改时，项目管理员需要重复编译该文件。这意味着程序员无论何时修改了一个类，无论修改的是公共的接口部分，还是私有成员的声明部分，他都必须再次编译包含头文件的所有文件。这就是通常所说的易碎的基类问题(fragile base-class problem)。对于一个大的项目而言，在开发初期这可能非常难以处理，因为内部实现部分可能需要经常改动。如果这个项目非常大，用于编译的时间过多可能妨碍项目的快速转型。</p>
+<p>解决这个问题的技术有时称为句柄类(handle class)或称为“Cheshire cat”。有关实现的任何东西都消失了，只剩一个单指针“smile”。该指针指向一个结构，该结构的定义与其所有的成员函数的定义一同出现在实现文件中。这样，只要接口部分不改变，头文件就不需变动，而实现部分可以按需要任意更改，完成后只需要对实现文件进行重新编译，然后重新连接到项目中。</p>
+<h2 id="第6章-初始化与清除"><a href="#第6章-初始化与清除" class="headerlink" title="第6章 初始化与清除"></a>第6章 初始化与清除</h2><p>C++中，初始化和清楚的概念是简化库的使用的关键所在，并可以减少那些在客户程序员忘记去完成这些操作时会引起的细微错误。</p>
+<h3 id="6-1-用构造函数确保初始化"><a href="#6-1-用构造函数确保初始化" class="headerlink" title="6.1 用构造函数确保初始化"></a>6.1 用构造函数确保初始化</h3><p>类的设计者可以通过提供一个叫做构造函数(constructor)的特殊函数来保证每个对象都被初始化。如果一个类有构造函数，编译器在创建对象时就自动调用这一函数。构造函数的名字与类的名字一样。这样的函数在初始化时会被自动调用。</p>
+<p>构造函数和析构函数是两个非常特殊的函数：它们没有返回值。</p>
+<p>在程序中创建和消除一个对象的行为非常特殊，就像出生和死亡，而且总是由编译器来调用这些函数以确保它们被执行。如果它们有返回值，要么编译器必须知道如何处理返回值，要么就只能由客户程序员子集来显式的调用构造函数与析构函数，这样一来，安全性就被破坏了。</p>
+<h3 id="6-2-用析构函数确保清除"><a href="#6-2-用析构函数确保清除" class="headerlink" title="6.2 用析构函数确保清除"></a>6.2 用析构函数确保清除</h3><p>在一个库中，对于一个曾经用过的对象，如果不做处理，对象就永远不会消失。在C++中，清除就像初始化一样重要，它通过析构函数来保证清除的执行。</p>
+<p>析构函数的语言与构造函数一样，用类的名字作为函数名。然而析构函数前面加上一个代字号(～)，以和构造函数区别。</p>
+<p>当对象超出它的作用域时，编译器将自动调用析构函数。</p>
+<h3 id="6-3-清除定义块"><a href="#6-3-清除定义块" class="headerlink" title="6.3 清除定义块"></a>6.3 清除定义块</h3><p>在C++中，应该在尽可能靠近变量的使用点处定义变量，并在定义时就初始化。这是出于安全性的考虑，通过减少变量在块中的生命周期，就可以减少该变量在块的其他地方被误用的机会。</p>
+<h3 id="6-4-集合初始化"><a href="#6-4-集合初始化" class="headerlink" title="6.4 集合初始化"></a>6.4 集合初始化</h3><p>集合(aggregate)就是多个事物聚集在一起。这个定义包括混合类型的集合。</p>
+<h3 id="6-5-默认构造函数"><a href="#6-5-默认构造函数" class="headerlink" title="6.5 默认构造函数"></a>6.5 默认构造函数</h3><p>默认构造函数(default constructor)就是不带任何参数的构造函数。一旦有了一个构造函数，编译器就会确保不关在什么情况下它总是会被调用。</p>
+<p>尽管编译器会创建一个默认的构造函数，但是编译器合成的构造函数的行为很少是我们期望的。我们应该把这个特征看成是一个安全网，但尽量少用它。一般说来，应该明确地定义子集的构造函数，而不让编译器来完成。</p>
+<h2 id="第7章-函数重载与默认参数"><a href="#第7章-函数重载与默认参数" class="headerlink" title="第7章 函数重载与默认参数"></a>第7章 函数重载与默认参数</h2><p>能使名字方便使用，是任何程序设计语言的一个重要特征。</p>
+<p>尽管函数重载对构造函数来说是必须的，但是它仍然是一个通用的方便手段，并可以与任意函数一起使用。另外，函数重载意味着，我们有两个库，它们都有同名的函数，只要它们的参数列表不同就不会发生冲突。</p>
+<h3 id="7-1-名字修饰"><a href="#7-1-名字修饰" class="headerlink" title="7.1 名字修饰"></a>7.1 名字修饰</h3><p>可以对不同的函数用同样的名字，只要求函数的参数不同，编译器会修饰这些名字、范围和参数来产生内部名以供它和连接器使用。</p>
+<p><strong>7.1.1 用返回值重载</strong></p>
+<p>仅仅依靠返回值来重载函数实在过于微妙，所以在 C++ 中禁止这样做。</p>
+<p><strong>7.1.2 类型安全连接</strong></p>
+<p>对名字修饰还可以带来一个额外的好处。在 C 中，如果用户错误地声明了一个函数，或者更糟糕地，一个函数还没声明就调用了，而编译器则按照函数被调用的方式去推断函数的声明。若这样的推断不正确，那么就会变成一个很难发现的错误。</p>
+<p>在 C++ 中，所有的恶函数在被使用前都必须事先声明，因此出现上述情况的机会大大减少了。名字修饰会给我们提供一个安全网，这也就是人们常说的类型安全连接(type-safe linkage)。</p>
+<h3 id="7-2-默认参数"><a href="#7-2-默认参数" class="headerlink" title="7.2 默认参数"></a>7.2 默认参数</h3><p>默认参数(default argument)是在函数声明时就已给定的一个值，如果在调用函数时没有指定这一参数的值，编译器就会自动地插上这个值。</p>
+<p>在使用默认参数时必须记住两条规则。第一，只有参数列表的后部参数才是可默认的，也就是说，不可以在一个默认参数后面又跟一个非默认的参数。第二，一旦在一个函数调用中开始使用默认参数，那么这个参数后面的所有参数都必须是默认的。</p>
+<p>默认参数只能放在函数声明中，通常在一个头文件中。编译器必须在使用该函数之前知道默认值。有时人们为了阅读方便在函数定义处放上你一些默认的注释值。</p>
+<h2 id="第8章-常量"><a href="#第8章-常量" class="headerlink" title="第8章 常量"></a>第8章 常量</h2><p>常量概念(由关键字const表示)是为了使程序员能够在变和不变之间画一条界线。这在C++程序设计项目中提供了安全性和可控性。</p>
+<h3 id="8-1-指针"><a href="#8-1-指针" class="headerlink" title="8.1 指针"></a>8.1 指针</h3><p>可以使指针成为 const。当处理 const 指针时，编译器仍将努力避免存储分配并进行常量折叠。如果程序员以后想在程序代码中改变 const 这种指针的使用，编译器将给出通知。这大大增加了安全性。</p>
+<p>当使用带有指针的 const 时，有两种选择：const 修饰指针正指向的对象，或者 const 修饰在指针里存储的地址。</p>
+<p><strong>8.1.1 指向const的指针</strong></p>
+<p>定义指针的技巧是在标识符的开始处读它并从里向外读。<code>const</code> 修饰“最靠近”它的那个。如：<code>const int* u;</code> 可以读成：<code>u</code> 是一个指针，它指向一个 <code>const int</code>。</p>
+<h3 id="8-2-const-指针"><a href="#8-2-const-指针" class="headerlink" title="8.2 const 指针"></a>8.2 const 指针</h3><p>使指针本身称为一个 const 指针，必须把 cons t标明的部分放在 <code>*</code> 的右边。如：<code>int d = 1; int * const w = &amp;d;</code> 可以读成 <code>w</code> 是一个 <code>const</code> 指针指向一个 <code>int</code>。<br>因为指针本身现在是 <code>const</code>指针，编译器要求给它一个初始值，这个值在指针生命期内不变。然而要改变它所指向的值是可以的：<code>*w = 2;</code></p>
+<p>当然也可以把一个const指针指向一个const对象。</p>
+<p>如果可能的话，一行只定义一个指针，并尽可能在定义时初始化。</p>
+<p><strong>8.1.3 赋值和类型检查</strong></p>
+<p>可以把一个非const对象的地址赋给一个const指针，因为也许有时不想改变某些可以改变的东西。然后不能把一个const对象的地址赋给一个非const指针，因为这样做可能通过被赋值的指针改变这个对象的值。</p>
+<h3 id="8-3-函数参数和返回值"><a href="#8-3-函数参数和返回值" class="headerlink" title="8.3 函数参数和返回值"></a>8.3 函数参数和返回值</h3><p><strong>8.3.1 传递 const 值</strong></p>
+<p>如果函数是按值传递，则可用指定参数是 const 的。这里参数不能被改变。所以它其实是函数创建者的工具，而不是函数调用者的工具。</p>
+<p>为了不使调用者很小，在函数内部用 const 限定参数优于在参数表里用 const 限定参数。可以用一个指针来实现，但更好的语法形式是“引用”。简而言之，引用相一个被自动间接引用的常量指针，它的作用是成为对象的别名。为建立一个引用，在定义里使用 <code>&amp;</code>。</p>
+<p><strong>8.3.2 返回 const 值</strong></p>
+<p>如果一个函数的返回值是一个常量(const)，这就约定了函数框架里的原变量不会被修改。另外，因为这是按值返回的，所以这个变量被制成副本，舍得初值不会被返回值所修改。</p>
+<p>对于内部类型来说，按值返回的是否是一个 const，是无关紧要的，所以按值返回一个内部类型时，应该去掉 const，从而不使客户程序员混淆。</p>
+<p>当处理用户定义的类型时，按值返回常量是很重要的。如果一个函数按值返回一个类对象为 const时，那么这个函数的返回值不能是一个左值(不能被赋值或修改)。</p>
+<p><strong>8.3.3 传递和返回地址</strong></p>
+<p>如果传递或返回一个地址(一个指针或一个引用)，客户程序员去取地址并修改其初值是可能的。如果使这个指针或者引用成为 const，就会阻止这类事的发生，这是非常重要的事情，事实上，无论什么时候传递一个地址给一个函数，都应该尽可能用 const 修饰它。如果不这样做，就不能以 const 指针参数的方式使用这个函数。</p>
+<h3 id="8-4-类"><a href="#8-4-类" class="headerlink" title="8.4 类"></a>8.4 类</h3><p><strong>8.4.1 类里的 const</strong></p>
+<p>常数表达式使用常量的地方之一是在类里。典型的例子是在一个类里建立一个数组，并用 <code>const</code> 代替 <code>#define</code> 设置数组大小。数组大小一直隐藏在类里，这样，如果用 size 表示数组大小，就可以把 size 这个名字用在另一个类里而不发生冲突。</p>
+<p>读者可能认为合乎逻辑的选择是把一个 const 放在类里。但这样不会产生预期的效果。在一个类里，const 又部分恢复到它在C语言中的含义。它在每个类对象里分配存储并代表一个值，这个值一旦被初始化以后就不能改变。在一个类里使用 const 意味着“在这个对象生命期内，它是一个常量”。然而，对这个常量来讲，每个不同的对象可以含有一个不同的值。</p>
+<p>这样，在一个类里建立一个普通的(非static的)const时，不能给它初值。这个初始化工作比须在构造函数里进行，当然，要在构造函数的某个特别的地方进行。因为 const 必须在建立它的地方被初始化，所以在构造函数的主体里，const 必定已被初始化了。否则，就只有等待，直到在构造函数主体以后的某个地方给它初始化，这意味着过一会儿才给 const 初始化。当然，无法防止在构造函数主体的不同地方改变 const 的值。</p>
+<p><strong>构造函数初始化列表</strong></p>
+<p>在构造函数里有个专门初始化的地方，这就是构造函数初始化列表(constructor initializer list)，起初用在机成立。构造函数初始化列表是一个出现在函数参数表和冒号后，但在构造函数主体开头的花括号前的“函数调用列表”。这提醒人们，表里的初始化发生在构造函数的任何代码执行之前。这是初始化所有 <code>const</code> 的地方，若 <code>size</code> 是 <code>Fred</code> 类的一个 <code>const</code> 成员的话，其正确形式是：<code>Fred::Fred(int sz) : size(sz){}</code></p>
+<p>把一个内部类型风装载一个类里以保证用构造函数初始化，这是很有用的。</p>
+<p><strong>8.4.2 编译期间类里的常量</strong></p>
+<p>若要让类有编译期间的常量成员，就要求使用另外一个关键字 <code>static</code>。在这种情况下，关键字<code>static</code> 意味着“不管类的对象被创建多少次，都只有一个实例”。因此，一个内部类型的 <code>static const</code> 可以看作一个编译期间的常量。</p>
+<p>必须在 <code>static const</code> 定义的地方对它进行初始化。</p>
+<p><strong>8.4.3 const对象和成员函数</strong></p>
+<p>如果声明一个成员函数为 <code>const</code> (修饰符 <code>const</code> 放在函数参数表的后面)，则等于告诉编译器该成员函数可以为一个 <code>const</code> 对象所调用。一个没有被明确声明为 <code>const</code> 的成员函数被堪称是将要修改数据成员的函数，而且编译器不允许它为一个 <code>const</code> 对象所调用。</p>
+<p>关键字 <code>const</code> 必须同样的方式重复出现在定义里，否则编译器把它看成一个不同的函数！</p>
+<p>一个 <code>const</code> 成员函数调用 <code>const</code> 和非 <code>const</code> 对象是安全的，因此，可以把它看做成员函数的最一般形式。不修改数据成员的任何函数都应该把它们声明为 <code>const</code>，这样它可以和 <code>const</code> 对象一起使用。</p>
+<h3 id="8-5-volatile"><a href="#8-5-volatile" class="headerlink" title="8.5 volatile"></a>8.5 volatile</h3><p><code>volatile</code> 的语法与 const 是一样的，但是 volatile 的意思是“在编译器认识的范围外，这个数据可以被改变”。不知何故，环境正在改变数据(可能通过多任务、多线程或者中断处理)，所以，<code>volatile</code> 告诉编译器不要擅自作出有关该数据的任何假定，优化期间尤其如此。</p>
+<h2 id="第9章-内联函数"><a href="#第9章-内联函数" class="headerlink" title="第9章 内联函数"></a>第9章 内联函数</h2><p>C++ 从 C 中集成的一个重要特征是效率。加入 C++ 的效率显著地低于 C 的效率，那么就会有很大一批程序员不去使用它。</p>
+<p>为了既保持预处理器宏的效率又增加安全性、而且还能像一般成员函数一样可以在类里访问自如，C++ 引入了内联函数(inline function)</p>
+<h3 id="9-1-预处理器的缺陷"><a href="#9-1-预处理器的缺陷" class="headerlink" title="9.1 预处理器的缺陷"></a>9.1 预处理器的缺陷</h3><p>预处理器宏存在问题的关键是我们可能认为预处理器的行为和编译器的行为一样。</p>
+<h3 id="9-2-内联函数"><a href="#9-2-内联函数" class="headerlink" title="9.2 内联函数"></a>9.2 内联函数</h3><p>在解决 C++ 中宏访问 <code>private</code> 类成员的问题过程中，所有和预处理器宏有关的问题也随之排除了。这是通过使宏被编译器控制来实现的。在 C++ 中，宏的概念是作为内联函数(inline function)来实现的，而内联函数无论从哪一方面上说都是真正的函数。</p>
+<p>任何在类中定义的函数自动成为内联函数，但也可以在非类的函数前面加上inline关键字使之称为内联函数。但为了使之有效，必须使函数体和声明结合在一起，否则，编译器将它作为普通函数对待。</p>
+<p>一般应该把内联定义放在头文件里。当编译器看到这个定义时，它把函数类型(函数名+返回值)和函数体放到符号表里。当使用函数时，编译器检查以确保调用是正确的且返回值被正确使用，然后将函数调用替换为函数体，因而消除了开销。内联代码的确占用空间，但假如函数较小，这实际上比为了一个普通函数调用而产生的代码(参数压栈和执行CALL)占用的空间还小。</p>
+<p><strong>9.2.1 类内部的内联函数</strong></p>
+<p>类内部的内联函数节省了在外部定义成员函数的额外步骤，所以我们一定想在类声明内每一处都使用内联函数。但应记住，使用内联函数的目的是减少函数调用的开销。但是，假如函数较大，由于需要在调用函数的每一处重复复制代码，这样将使代码膨胀，在速度方面获得的好处就会减少。</p>
+<p><strong>9.2.2 访问函数</strong></p>
+<p>在类中内联函数的最重要的使用之一是用做访问函数(access function)。这是一个小函数，它容许读或修改对象状态──即一个或几个内部变量。即最通常所说的set与get方法(修改器和访问器)。</p>
+<h3 id="9-3-内联函数和编译器"><a href="#9-3-内联函数和编译器" class="headerlink" title="9.3 内联函数和编译器"></a>9.3 内联函数和编译器</h3><p>对于函数，编译器在它的符号表里放入函数类型(即包括名字和参数类型的函数原型及函数的返回类型)。另外，当编译器看到内联函数和对内联函数体的分析没有发现错误时，就将对应于函数体的代码也放入符号表。代码是以源程序形式存放还是以编译过的汇编指令形式存放取决于编译器。</p>
+<p>当调用一个内联函数时，编译器首先确保调用正确，即所有的参数类型必须满足：要么与函数参数表中的参数类型一样，要么编译器能够将其转换为正确类型，并且返回值在目标表达式里应该是正确类型或可改变为正确类型。</p>
+<p><strong>9.3.1 限制</strong></p>
+<p>有两种编译器不能执行内联的情况。在这些情况下，它就像对非内联函数一样，根据内联函数定义和为函数建立存储空间，简单地将其转换为函数的普通形式。</p>
+<p>加入函数太复杂，编译器将不能执行内联。这取决于特定的编译器，但对大多数编译器这时都回放弃内联方式，因为这时内联可能不能提高任何效率。一般地，任何种类的循环都被认为太复杂。</p>
+<p>内联仅是编译器的一个建议，编译器不会被强迫内联任何代码。一个好的编译器将会内联小的、简单的函数，同时明智地忽略那些太复杂的内联。这将给我们想要的结果──具有宏效率的函数调用的真正语义学。</p>
+<p><strong>9.3.2 向前引用</strong></p>
+<p>当一个内联函数在类中向前引用一个还没有声明的函数时，是可以正常工作的，因为C++语言规定：只有在类声明结束后，其中的内联函数才会被计算。</p>
+<h2 id="第10章-名字控制"><a href="#第10章-名字控制" class="headerlink" title="第10章 名字控制"></a>第10章 名字控制</h2><p>创建名字是程序设计过程中一项最基本的活动，当一个项目很大时，它会不可避免地包含大量的名字。</p>
+<p>关于 <code>static</code> 的所有使用最基本的概念是指“位置不变的某个东西”，不管这里是指在内存中的物理位置还是指在文件中的可见性。</p>
+<h3 id="10-1-来自-C-语言中的静态元素"><a href="#10-1-来自-C-语言中的静态元素" class="headerlink" title="10.1 来自 C 语言中的静态元素"></a>10.1 来自 C 语言中的静态元素</h3><p>在 C 和 C++ 中，static 都有两种基本的含义，并且这两种含义经常是相互冲突的：</p>
+<ul>
+<li>在固定的地址上进行存储分配，也就是说对象是在一个特殊的静态数据区(static data area)上创建的，而不是每次函数调用时在堆栈上产生的。这也是静态存储的概念。</li>
+<li>对一个特定的编译单位来说是局部的。这样，<code>static</code> 控制名字的可见性(visibility)，所以这个名字在这个单元或类外是不可见的。这也描述了连接的概念，它决定连接器将看到哪些名字。</li>
+</ul>
+<p><strong>10.1.1 函数内部的静态变量</strong></p>
+<p>通常，在函数体内定义一个局部变量时，编译器在每次函数调用时使堆栈的指针下移到一个适当的位置，为这些局部变量非配内存。如果这个变量又一个初始化表达式，那么每当程序运行到此处，初始化就被执行。</p>
+<p>然而，有时想在两次函数调用之间保留一个变量的值，可以通过定义一个全局变量来实现，但这样一来，这个变量就不仅仅只受到这个函数的控制。C和C++都允许在函数内部定义一个static对象，这个对象将存储在静态数据区中，而不是在堆栈中。这个对象只在第一次调用是初始化一次，以后它将在两次函数调用之间保持它的值。</p>
+<p><strong>10.1.2 控制连接</strong></p>
+<p>一般情况下，在文件作用域(file scope)内的所有名字(即不嵌套在类或函数中的名字)对程序中的所有翻译单元来说都是可见的。这就是所谓的外部连接(external linkage)，因为在连接时这个名字对连接器来说是可见的，对单独的翻译单元来说，它是外部的。全局变量和普通函数都有外部连接。</p>
+<p>在文件作用域内，一个被明确声明为 <code>static</code> 的对象或函数的名字对翻译单元来说是局部于该单元的。这些名字有内部连接(internal linkage)。</p>
+<p>内部连接的一个好处是这个名字可以放在一个头文件中。</p>
+<h2 id="第11章-引用和拷贝构造函数"><a href="#第11章-引用和拷贝构造函数" class="headerlink" title="第11章 引用和拷贝构造函数"></a>第11章 引用和拷贝构造函数</h2><h3 id="11-1-C-中的指针"><a href="#11-1-C-中的指针" class="headerlink" title="11.1 C++ 中的指针"></a>11.1 C++ 中的指针</h3><p>C 不允许随便地把一个类型的指针赋给另一个类型，但允许通过 <code>void*</code> 来实现。由于 C 的这种功能允许把任何一种类型看做别的类型处理，这就在类型系统中流下了一个大的漏洞。C++ 不允许这样做，如果真想把某种类型当作别的类型处理，则必须显示地使用类型转换。</p>
+<h3 id="11-2-C-中的引用"><a href="#11-2-C-中的引用" class="headerlink" title="11.2 C++ 中的引用"></a>11.2 C++ 中的引用</h3><p>引用(reference)(&amp;)就像能自动地被编译器间接引用的常量型指针。它常用于函数的参数表中和函数的返回值，但也可以独立使用。</p>
+<p>使用引用时有一定的规则：</p>
+<ul>
+<li>当引用被创建时，它必须被初始化(指针则可以在任何时候被初始化)。</li>
+<li>一旦一个引用被初始化为指向一个对象，它就不能改变为另一个对象的引用(指针则可以在任何时候指向另一个对象)。</li>
+<li>不可能有NULL引用。必须确保引用是和一块合法的存储单元关联。</li>
+</ul>
+<p><strong>11.2.1 函数中的引用</strong></p>
+<p>最经常看见引用的地方是在函数参数和返回值中。当引用被用做函数参数时，在函数内任何对引用的更改将对函数外的参数产生改变。当然，可以通过传递一个指针来做相同的事情，但引用具有更清晰的语法。</p>
+<p>如果从函数中返回一个引用，必须像从函数中返回一个指针来一样对待。当函数返回时，无论引用关连的是什么都应该存在，否则，将不知道指向哪一个内存。</p>
+<p>若想要改变指针本身而不是它所指向的内容，函数参数变成指针的引用，用不着取得指针的地址。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">increment</span><span class="params">(<span class="keyword">int</span>*&amp; i)</span></span>&#123;i++&#125;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">	<span class="keyword">int</span> *i = <span class="number">0</span>;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; “i = ” &lt;&lt; i &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">	increment(i);</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; “i = ” &lt;&lt; i &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>1.2.2 参数传递准则</strong></p>
+<p>当给函数传递参数时，人们习惯上是通过常量引用来传递。这种简单习惯可以大大提高效率：传值方式需要调用构造函数和析构函数，然而，如果不想改变参数，则可以通过常量引用传递，它仅需要将地址压栈。</p>
+<h3 id="11-3-拷贝构造函数"><a href="#11-3-拷贝构造函数" class="headerlink" title="11.3 拷贝构造函数"></a>11.3 拷贝构造函数</h3><p>这是一个更令人混淆的概念，常被称为X(X&amp;)(“X引用的X”)，在函数调用时，这个构造函数是控制通过传值方式传递和返回用户定义类型的根本所在。这是很重要的。</p>
+<p><strong>11.3.1 按值传递和返回</strong></p>
+<p>在 C 和 C++ 中，参数是从右向左进栈的，然后调用函数，调用代码负责清理栈中的参数。但是要注意，通过按值传递方式传递参数时，编译器简单地将参数拷贝压栈──编译器知道拷贝有多大，并知道如何对参数压栈，对它们正确拷贝。</p>
+<h2 id="第13章-动态对象创建"><a href="#第13章-动态对象创建" class="headerlink" title="第13章 动态对象创建"></a>第13章 动态对象创建</h2><p>有时我们能知道程序中对象的确切数量、类型和生命期。但情况不总是这样。为了解决这个普遍的编程问题，在运行时可以创建和销毁对象是最基本的要求。C 提供了动态内存分配(dynamic memory allocation)函数 <code>malloc()</code> 和 <code>free()</code>，这些函数在运行时从堆(也称自由内存)中分配存储单元。</p>
+<p>然而，在C++中这些函数将不能很好的运行。因为构造函数不允许我们向它传递内存地址来进行初始化。</p>
+<p>C++ 是如何保证正确的初始化和清理，有允许我们在堆上动态创建对象呢？</p>
+<p>答案是，使动态对象称为语言的核心。<code>malloc</code> 和 <code>free</code> 是库函数，因此不在编译器控制范围之内。然而，如果我们有一个完成动态内存分配及初始化组合动作的运算符和另一个完成清理及释放内存组合动作的运算符，编译器仍可以保证所有对象的构造函数和析构函数会被调用。</p>
+<h3 id="13-1-对象创建"><a href="#13-1-对象创建" class="headerlink" title="13.1 对象创建"></a>13.1 对象创建</h3><p>当创建一个C++对象，会发生两件事：</p>
+<ul>
+<li>为对象分配内存。</li>
+<li>调用构造函数来初始化那个内存。</li>
+</ul>
+<p>到目前为止，因该确保步骤2一定发生。C++强迫这样做是因为未初始化的对象是程序出错的主要原因。对象在那里和如何创建无关紧要──构造函数总是需要被调用。</p>
+<p>然而，步骤1可以用几种方式或在可选择的时间发生：</p>
+<ol>
+<li>在静态存储区域，存储空间在程序开始之前就可以分配。这个存储空间在整个程序运行期间都存在。</li>
+<li>无论何时到达一个特殊的执行点(左大括号)时，存储单元都可以在栈上被创建。除了执行点(右大括号)，这个存储单元自动被释放。这些栈分配运算内置于处理器的指令集中，非常有效。然而，在写程序时，必须知道需要多少个存储单元，以便编译器生成正确的指令。</li>
+<li>存储单元也可以从一块称为堆(也被称为自由存储单元)的地方分配。这被称为动态内存分配。在运行时调用程序分配这些内存。这意味着可以在任何时候决定分配内存及分配多少内存。当然也需负责决定何时释放内存。这块内存的生存期由我们选择决定──而不受范围决定。</li>
+</ol>
+<p><strong>13.1.1 C 从堆中获取存储单元的方法</strong></p>
+<p>为了在运行时动态分配内存，如 <code>malloc()</code> 和 <code>free()</code>。这些函数是有效的但较原始的，需要编程人员理解和小心使用。例如，必须对分配的空间进行显式地类型转换，还需要自行调用初始化的函数(构造函数并不能被显式地调用)。这很容易出错。所以，C 程序设计者常常在静态内存区域使用虚拟内存机制分配很大的变量数组以避免使用动态内存分配。为了在 C++ 中使得一般的程序员可以安全使用库函数而不费力，所以 C 的动态内存方法是不可接受的。</p>
+<p><strong>13.1.2 operator new</strong></p>
+<p>C++ 中的解决方案是把船舰一个对象所需的所有动作都结合在一个称为 new 的运算符里。当用new(new的表达式)创建一个对象时，它就在堆里为对象分配内存并为这块内存调用构造函数。等价于调用 <code>malloc()</code> 函数并调用构造函数。返回一个指向该对象的this指针。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">MyType *fp = <span class="keyword">new</span> MyType;</div></pre></td></tr></table></figure>
+<p>默认的 new 还进行检查以确信在传递地址给构造函数之前内存分配是成功的，所以不必显式地确定调用是否成功。</p>
+<p>我们可以看到，在堆里创建对象的过程变得简单了──只是一个简单的表达式，它带有内置的长度计算、类型转换和安全检查。这样在堆里创建一个对象何在栈里创建一个对象一样容易。</p>
+<p><strong>13.1.3 operator delete</strong></p>
+<p>delete 表达式首先调用析构函数，然后释放内存(常调用free())。正如 new 表达式返回一个指向对象的指针一样，delete 表达式需要一个对象的地址。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">delete</span> fp；</div></pre></td></tr></table></figure>
+<p><code>delete</code> 只用于删除由 <code>new</code> 创建的对象。</p>
+<p><strong>13.1.4 内存管理的开销</strong></p>
+<p>当在堆栈里自动创建对象时，对象的大小和它们的生存期被准确地内置在生成的代码里，这是因为编译器知道确切的类型、数量和范围。而在堆里创建的对象还包括另外的时间和空间的开销。以下是一个典型情况：</p>
+<p>调用 <code>malloc()</code>，即从堆里搜索一块足够大的内存来满足请求，可以通过检查按某种方式排列的映射或目录来实现，这样的映射或目录用以显示内存的使用情况。这个过程很快但可能要试探几次，所以它可能是不确定的──即每次运行 <code>malloc()</code>并不是花费了相同的时间。</p>
+<h3 id="13-2-用于数组的-new-和-delete"><a href="#13-2-用于数组的-new-和-delete" class="headerlink" title="13.2 用于数组的 new 和 delete"></a>13.2 用于数组的 new 和 delete</h3><p>在栈或堆上创建一个对象数组是同样容易的。但这里有一个限制条件：由于不带参数的构造函数必须被每一个对象调用，所以除了在栈上整体初始化外还必须有一个默认的构造函数。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">MyType *fp = <span class="keyword">new</span> MyType[<span class="number">100</span>];</div><div class="line">MyType *fp2 = <span class="keyword">new</span> MyType;</div></pre></td></tr></table></figure>
+<p>我们知道其实fp和fp2是数组的起始地址。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">delete</span> fp2; <span class="comment">// OK</span></div><div class="line"><span class="keyword">delete</span> fp; <span class="comment">// Not the desired effect</span></div></pre></td></tr></table></figure>
+<p>对于 fp 来说，另外 99 个析构函数没有调用，正确应该这样：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">delete</span> []fp；</div></pre></td></tr></table></figure>
+<p>空的方括号告诉编译器产生代码，该代码的任务是将从数组创建时存放在某处的对象数量取回，并为数组的所有对象调用析构函数。</p>
+<p><strong>13.2.1 使指针更像数组</strong></p>
+<p>上面定义的 fp 可以被修改指向任何类型，但这对于一个数组的起始地址来说没有什么意义。一般来讲，把它定义为常量会更好些，因为这样任何修改指针的企图都会被认为出错。</p>
+<p>使得指针指向的int不能修改(指针可以修改)：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> <span class="keyword">const</span>* q = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];   or</div><div class="line"><span class="keyword">const</span> <span class="keyword">int</span>* q = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</div></pre></td></tr></table></figure>
+<p>使得指针不能被修改(数组可以修改)：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> * <span class="keyword">const</span> q = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</div></pre></td></tr></table></figure>
+<h3 id="13-3-耗尽内存"><a href="#13-3-耗尽内存" class="headerlink" title="13.3 耗尽内存"></a>13.3 耗尽内存</h3><p>当 <code>operator new()</code> 找不到组够大的连续内存块来安排对象时，一个称为 new-handler 的特殊函数将会被调用。首先，检查指向函数的指针，如果指针非 0，那么它指向的函数将被调用。<br> new-handler 的默认动作是产生一个异常(throw an exception)。</p>
+<h2 id="第14章-继承和组合"><a href="#第14章-继承和组合" class="headerlink" title="第14章 继承和组合"></a>第14章 继承和组合</h2><p>C++ 中最重要的特征之一是代码重用。但是如果希望更进一步，就不能仅仅用拷贝代码和修改代码的方法，而是要做更多的工作。</p>
+<p>关键技巧是使用这些类，但不修改已存在的代码。第一种方法很直接：我们简单地在心类中创建已存在类的对象。因为新类是由已存在的类的对象组合而成，所以这种方法称为组合(composition)。</p>
+<p>第二种方法要复杂些。我们创建一个新类作为一个已存在类的类型。我们不修改已存在的类，而是采取这个已存在类的形式，并将代码加入其中。这种巧妙方法称为继承(inheritance)，其中大量的工作是由编译器完成。继承是面向对象程序设计的基石。</p>
+<p>在语法上和行为上，组合和继承大部分是相似的。</p>
+<h3 id="14-1-组合语法"><a href="#14-1-组合语法" class="headerlink" title="14.1 组合语法"></a>14.1 组合语法</h3><p>直接把子对象放入新对象的组成中即可。</p>
+<p>访问嵌入对象(称为子对象)的成员的成员函数只需再一次的成员选择。更常见的是把嵌入的对象设为私有，因此它们将称为内部实现的一部分(这意味着如果我们原因，可以改变这个实现)。新类的公有接口函数包括了对嵌入对象的使用，但没有必要模仿这个对象的接口。</p>
+<h3 id="14-2-继承语法"><a href="#14-2-继承语法" class="headerlink" title="14.2 继承语法"></a>14.2 继承语法</h3><p>当继承时，我们会发现“这个新类很像原来的类”。我们规定，在代码中和原来一样给出该类的名字，但在类的左括号的前面，加一个冒号和基类的名字(对于多重继承，要给出多个基类名，它们之间用逗号分开)。当昨晚这些时，将会自动地得到基类中的所用数据成员和成员函数。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">class</span> Y：<span class="keyword">public</span> X&#123;<span class="comment">//......&#125;</span></div></pre></td></tr></table></figure>
+<p>我们可以看到 <code>Y</code> 对 <code>X</code> 进行了继承，这意味着Y将包含X中的所有数据成员和成员函数。所有X中的私有成员在Y中仍然是私有的，因为Y对X进行了继承并不意味着Y可以不遵守保护机制。</p>
+<p>这里基类前面是 <code>public</code>。由于在继承时，基类中所有的成员都是被预设为私有的，所以如果基类的前面没有 <code>public</code>，这意味着基类的所有公有成员将在派生类中变为私有的。这显然不是所希望的，我们希望基类中的所有公有成员在派生类中仍是公有的，这可以在继承时通过使用关键字 <code>public</code> 来实现。</p>
+<p>倘若 <code>X</code> 和 <code>Y</code> 类中均有一个 <code>set()</code> 函数，那么将会使用 <code>Y</code> 中重新定义的版本。这也就是说，如果不想使用某个继承而来的函数，我们可以改变它的内容。然而，当我们重新定义了一个函数之后，仍可能想调用基类的函数，为了调用基类 <code>X</code> 的 <code>set()</code> 函数，必须使用作用域运算符来显示地表明基类名。</p>
+<h3 id="14-3-构造函数的初始化列表"><a href="#14-3-构造函数的初始化列表" class="headerlink" title="14.3 构造函数的初始化列表"></a>14.3 构造函数的初始化列表</h3><p>在 C++ 中保证正确的初始化是多么重要，这一点在组合和继承中也是一样。当创建一个对象时，编译器确保调用了所有子对象的构造函数。</p>
+<p>但是，如果子对象没有默认构造函数或如果想改变构造函数的某个默认参数，就会出现问题，因为这个新类的构造函数没有权利访问这个子对象的私有数据成员，所以不能直接对它们初始化。</p>
+<p>解决的方法很简单：对于子函数调用构造函数，C++ 为此提供了专门的语法，即构造函数的初始化表达式表。构造函数的初始化表达式的形式模仿继承活动。</p>
+<p>对于继承，我们把基类至于冒号和这个类体的左括号之间。而在构造函数的初始化表达式中，可以将对子对象构造函数的调用语句放在构造函数参数表和冒号之后，在函数体的左括号之前。对于从 <code>Bar</code> 继承来的类 <code>MyType</code>，如果 <code>Bar</code> 的构造函数只有一个 <code>int</code> 型参数，则可以表示为：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">MyType::MyType(<span class="keyword">int</span> i) : Bar(i) &#123; <span class="comment">// ...</span></div></pre></td></tr></table></figure>
+<p><strong>14.3.1 成员对象初始化</strong></p>
+<p>对于组合，也可以对成员对象使用同样语法，只是所给出的不是类名，而是对象的名字。如果在初始化表达式表中有多个构造函数的调用，应当用逗号加以隔开：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line">MyType2::MyType(<span class="keyword">int</span> i) : Bar(i), m(i+<span class="number">1</span>) &#123; <span class="comment">// ...</span></div></pre></td></tr></table></figure>
+<p>这是类 <code>MyType2</code> 构造函数的开头，该类是从 <code>Bar</code> 继承来的，并且包含一个称为m的成员对象。请注意，虽然可以在这个构造函数的初始化表达式表中看到基类的类型，但只能看到成员对象的标识符。</p>
+<p><strong>14.3.2 在初始化表达式中的内部类型</strong></p>
+<p>构造函数的初始化表达式表允许我们显式地调用成员对象的构造函数。它的主要思想是，在进入新类的构造函数体之前调用所有其他的构造函数。这样，对于子对象的成员函数所做的任何调用都总是转到了这个被初始化的对象中。即使编译器可以隐藏地调用默认的构造函数，但在没有对所有的成员对象和基类对象的构造函数进行调用之前，就没有办法进入该构造函数体。这是 C++ 的一个强化的机制，它确保了，如果没有调用对象的构造函数，就别想向下进行。</p>
+<p>对于哪些没有构造函数的内部类型嵌入对象，这一切会怎么样？</p>
+<p>为了使语法一致，可以把内部类型看做这样一种类型，它只有一个取单个参数的构造函数，而这个参数与正在初始化的变量类型相同。于是可以这么写：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">class</span> X &#123;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line">	<span class="keyword">float</span> f;</div><div class="line">	<span class="keyword">char</span> c;</div><div class="line">	<span class="keyword">char</span>* s;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	X() : i(<span class="number">7</span>), f(<span class="number">1.4</span>), c(‘x’), s(“howdy”) &#123;&#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>这些“伪构造函数调用”操作可以进行简单的赋值。这种方法很方便，并且具有良好的编码风格。甚至在类之外创建内部类型的变量是，也可以使用伪构造函数语法。</p>
+<p>这使得内部类型的操作有点类似于对象，但是这些并不是真正的构造函数。特别地，如果没有显式的进行伪构造函数调用，初始化是不会执行的。</p>
+<h3 id="14-4-组合和继承的联合"><a href="#14-4-组合和继承的联合" class="headerlink" title="14.4 组合和继承的联合"></a>14.4 组合和继承的联合</h3><p>还可以把组合和继承放在一起使用。</p>
+<p><strong>自动析构函数调用</strong></p>
+<p>虽然常常需要在初始化表达式表中显式构造函数调用，但并不需要做显式的析构函数调用，因为对于任何类型只有一个析构函数，并且它并不取任何参数。然而，编译器仍要保证所有的析构函数被调用，这意味着，在整个层次中的所有析构函数中，从派生类最底层的析构函数开始调用，一直到根层。</p>
+<p><strong>14.4.1 构造函数和析构函数调用的次序</strong></p>
+<p>构造是从类层次的最根处开始，而在每一层，首先会调用基类构造函数，然后调用成员对象构造函数。调用析构函数则严格按照构造函数相反的次序──这是很重要的，因为要考虑潜在的相关性(对于派生类中的构造函数和析构函数，必须假设基类子对象仍然可供使用并且已经被构造了──或者还未被消除)。</p>
+<p>另一个有趣现象是，对于成员对象，构造函数调用的次序完全不受构造函数的初始化表达式表中的次序影响。该次序是由成员对象在类中声明的次序所决定的。</p>
+<h3 id="14-5-名字隐藏"><a href="#14-5-名字隐藏" class="headerlink" title="14.5 名字隐藏"></a>14.5 名字隐藏</h3><p>如果继承一个类并且对它的成员函数重新进行定义，可能会出现两种情况：</p>
+<p>第一种是正如在基类中所进行的定义一样，在派生类的定义中明确地定义操作和返回类型。这称之为对普通成员函数的重定义(redefining)，而如果基类的成员函数是虚函数的情况，又可称之为重写(overriding)。</p>
+<p>任何时候重新定义了基类中的一个重载函数，在新类之中所有其他版本则被自动地隐藏了。</p>
+<p>如果通过修改基类中一个成员函数的操作与/或返回类型来改变了基类的接口，我们就没有使用继承通常所提供的功能，而是按另一种方式来重用了该类。这并不一定意味着做错了，只是由于继承的最终目标是为了实现多态性(polymorphism)。</p>
+<h3 id="14-6-非自动继承的函数"><a href="#14-6-非自动继承的函数" class="headerlink" title="14.6 非自动继承的函数"></a>14.6 非自动继承的函数</h3><p>不是所有的函数都能自动地从基类继承到派生类中的。构造函数和析构函数用来处理对象的创建和析构操作，但它们只知道对它们的特定层次上的的对象做些什么。所以，在该类以下各个层次中的所有构造函数和析构函数都必须被调用，也就是说，构造函数和析构函数不能被继承，必须为每一个特定的派生类分别创建。</p>
+<p>另外，<code>operator=</code> 也不能被继承，因为它完成类似于构造函数的活动。</p>
+<p><strong>14.6.1 继承和静态成员函数</strong></p>
+<p>静态(static)成员函数与非静态成员函数的共同点：</p>
+<ul>
+<li>它们均可被继承到派生类中。</li>
+<li>如果我们重新定义了一个静态成员，所有在基类中的其他重载函数会被隐藏。</li>
+<li>如果我们改变了基类中一个函数的特征，所有使用该函数名字的基类版本都将会被隐藏。然而，静态(static)成员函数不可以是虚函数(virtual)。</li>
+</ul>
+<h3 id="14-7-组合与继承的选择"><a href="#14-7-组合与继承的选择" class="headerlink" title="14.7 组合与继承的选择"></a>14.7 组合与继承的选择</h3><p>组合通常是在希望新类内部具有已存在类的功能时使用，而不是希望已存在类作为它的接口。这就是说，嵌入一个对象用以实现新类的功能，而新类的用户看到的是新定义的接口而不是来自老类的接口。为此，在新类的内部嵌入已存在的 <code>private</code> 对象。</p>
+<p>有时，又希望允许类用户直接访问新类的组成，这就让成员对象是 <code>public</code>。由于成员对象使用自己的访问控制，所以是安全的，而当用户了结了我们所做的组装工作时，会更容易理解接口。</p>
+<p>is-a 关系用继承表达，has-a 关系用组合表达。</p>
+<p><strong>14.7.1 子类型设置</strong></p>
+<p>如果由一个已存在的类创建一个新类，并且希望这个类的每件东西都进来，就称为子类型化(subtyping)。这个新类与已存在的类有着严格相同的接口(希望增加任何我们想要加入的其他成员函数)，所以能在已经用过这个已存在的类的任何地方使用这个新类，这就是必须使用继承的地方。</p>
+<p><strong>14.7.2 私有继承</strong></p>
+<p>通过在基类表中去掉 <code>public</code> 或通过显式地声明 <code>private</code>，可以私有地继承基类。当私有继承时，我们是“照此实现”；也就是说，创建的新类具有基类的所有数据和功能，但这些功能是隐藏的，所以它只是部分的内部实现。该类的用户访问不到这些内部功能，并且一个对象不能被看做是这个基类的实例。</p>
+<p>为了完整性，<code>private</code> 继承被包含在该语言中。但是通常希望使用组合而不是 <code>private</code> 继承。</p>
+<p><strong>14.7.2.1 对私有继承成员公有化</strong></p>
+<p>私有继承时，基类的所有 <code>public</code> 成员都变成了 <code>private。如果希望其中的任何一个是可视的，只要用派生类的</code>public` 部分声明它们的名字即可</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">using</span> Pet::eat;</div></pre></td></tr></table></figure>
+<p>其中 <code>Pet</code> 是私有继承的类，这样就可以使用 <code>Pet</code> 类中的 <code>eat</code> 成员函数。</p>
+<p>这样，如果想要隐藏基类的部分功能，则 <code>private</code> 继承是有用的。注意给出一个重载函数的名字将使基类中的所有它的重载版本公有化。</p>
+<p>在使用 <code>private</code> 继承取代组合之前，应当仔细考虑，当与运行时类型标识相连时，私有继承特别复杂。</p>
+<h3 id="14-8-protected"><a href="#14-8-protected" class="headerlink" title="14.8 protected"></a>14.8 protected</h3><p>实际项目中，有时希望某些东西隐藏起来，但仍允许其派生类的成员访问，此时可用 <code>protected</code>。它的意思是：“就这个类的用户而言，它是 <code>private</code> 的，但它可被从这个类继承来的任何类使用”。</p>
+<p>最好让数据成员是 <code>private</code>，因为我们应该保留改变内部实现的权利。然后才能通过 <code>protected</code> 成员函数控制对该类的继承者的访问。</p>
+<p><strong>14.8.1 protected</strong></p>
+<p>保护继承的派生类意味着对其他类来说是“照此实现”，但它是对于派生类和友元是“is-a”。它是不常用的，它的存在只是为了语言的完备性。</p>
+<h3 id="14-9-运算符的重载与继承"><a href="#14-9-运算符的重载与继承" class="headerlink" title="14.9 运算符的重载与继承"></a>14.9 运算符的重载与继承</h3><p>除了赋值运算符以外，其余的运算符可以自动地继承到派生类中。</p>
+<h3 id="14-10-多重继承"><a href="#14-10-多重继承" class="headerlink" title="14.10 多重继承"></a>14.10 多重继承</h3><p>直到我们已经很好地学会程序设计并完全理解这个语言时，我们才能试着去用多重继承。不管我们如何认为我们必须用多重继承，我们总是能通过单继承完成。</p>
+<p>多重继承引起很多含糊的可能性。</p>
+<h3 id="14-11-渐增式开发"><a href="#14-11-渐增式开发" class="headerlink" title="14.11 渐增式开发"></a>14.11 渐增式开发</h3><p>继承和组合的优点之一是它支持渐增式开发(incremental development)，它允许在已存在的代码中引进代码，而不会给原来的代码带来错误。</p>
+<p>认识到程序开发就像人的学习过程一样，是一个渐增的过程，这是很重要的。我们能做尽可能多的分析，但当开始一个项目时，我们仍不可能知道所有的答案。</p>
+<p>记住，继承首先是表示一种关系，即“新类属于老类的类型(a type of)”。我们的程序不应当关心怎样怎样摆布位，而应当关心如何创建和处理各类型的对象，以便用问题空间的术语表示模型。</p>
+<h3 id="14-12-向上类型转换"><a href="#14-12-向上类型转换" class="headerlink" title="14.12 向上类型转换"></a>14.12 向上类型转换</h3><p>继承最重要的方面不是它为新类提供了成员函数，而是它是基类与新类之间的关系，这种关系可被描述为：“新类属于原有类的类型”。</p>
+<p>这个描述不仅仅是一种想象的解释继承的方法──它直接由编译器支持。将新类的引用或指针转变成基类的引用或指针的活动被称为向上类型转换(upcasting)。</p>
+<p><strong>14.12.1 为什么要“向上类型转换”</strong></p>
+<p>这个术语的引入是有其历史原因的，而且它也与类继承图的传统画法有关：在顶部是根，向下生长。</p>
+<p>向上类型转换总是安全的。因为是从更专门的类型到更一般的类型──对于这个类接口可能出现的唯一事情是它失去成员函数，而不是获得它们。这就是编译器允许向上类型转换而不需要显式地说明或做其他标记的原因。</p>
+<p><strong>14.12.2 向上类型转换和拷贝构造函数</strong></p>
+<p>必须记住无论何时我们在创建了子集的拷贝构造函数时，都要正确地调用基类拷贝构造函数(正如编译器所作的)。</p>
+<h2 id="第15章-多态性和虚函数"><a href="#第15章-多态性和虚函数" class="headerlink" title="第15章 多态性和虚函数"></a>第15章 多态性和虚函数</h2><ul>
+<li>多态性(在C++中通过虚函数来实现)是面向对象程序设计语言中数据抽象和继承之外的第三个基本特性。</li>
+<li>多态性(polymorphism)提供了接口与具体实现之间的另一层隔离，从而将“what”与“how”分离开来。多态性改善了代码的组织性和可读性，同时也使创建的程序具有可拓展性。</li>
+<li>封装(encapsulation)通过组合特性和行为来生成心的数据类型。访问控制通过使细节数据设为 private，将接口从具体实现中分离开来。</li>
+</ul>
+<h3 id="15-1-C-程序员的演变"><a href="#15-1-C-程序员的演变" class="headerlink" title="15.1 C++ 程序员的演变"></a>15.1 C++ 程序员的演变</h3><p>C程序员可以用三步演变为C++程序员。</p>
+<ul>
+<li>第一步：简单地把C++作为一个“更好的C”。</li>
+<li>第二步：进入“基于对象”的C++。</li>
+<li>第三步：了解和使用虚函数，这是理解面向对象程序设计的转折点。不用虚函数，就等于还不懂得面向对象程序设计(OOP)，虚函数增强了类型概念，而不只是在结构内部隐蔽地封装代码。</li>
+</ul>
+<h3 id="15-2-向上类型转换"><a href="#15-2-向上类型转换" class="headerlink" title="15.2 向上类型转换"></a>15.2 向上类型转换</h3><p>取一个对象的地址(指针或引用)，并将其作为基类的地址来处理，这被称为向上类型转换(upcasting)，因为继承树的绘制方式是以基类为顶点的。</p>
+<h3 id="15-3-捆绑"><a href="#15-3-捆绑" class="headerlink" title="15.3 捆绑"></a>15.3 捆绑</h3><p>把函数体与函数调用相联系称为捆绑(binding)。当捆绑在程序运行之前(由编译器和连接器)完成时，这称为早捆绑(early binding)。C编译只有一种函数调用方式，就是早捆绑。晚捆绑(late binding)意味着捆绑根据对象的类型，发生在运行时。晚捆绑又称为动态捆绑(dynamic binding)或运行时捆绑(runtime binding)。对于一种编译语言，编译器并不知道实际的对象类型，但它插入能找到和调用正确函数体的代码。</p>
+<h3 id="15-4-虚函数"><a href="#15-4-虚函数" class="headerlink" title="15.4 虚函数"></a>15.4 虚函数</h3><p>对于特定的函数，为了引起晚捆绑，C++要求在基类中声明这个函数时使用virtual关键字。晚捆绑支队virtual函数起作用，而且只在使用含有virtual函数的基类的地址时发生，尽管它们也可以在更早的基类中定义。</p>
+<p>为了创建一个像virtual这样的成员函数，可以简单地在声明这个函数时使用virtual关键字。仅仅在声明的时候需要使用关键字virtual，定义时并不需要。如果一个函数在基类中被声明为virtual，那么在所有的派生类中它都是virtual的。在派生类中virtual函数的重定义通常称为重写(overriding)。</p>
+<p>注意，仅需要在基类中声明一个函数为virtual。调用所有匹配基类声明行为的派生类函数都将使用虚机制。</p>
+<p><strong>15.4.1 拓展性</strong></p>
+<p>在一个设计风格良好的OOP程序中，大多数甚至所有的函数都可以沿用基类的某个模型，只需与基类接口通信。这样的程序是可拓展的(extensible)，因为可以通过从公共基类继承新数据类型而增加新功能。操作基类接口的函数完全不需要改变就可以适合于这些新类。</p>
+<h3 id="15-5-C-如何实现晚捆绑"><a href="#15-5-C-如何实现晚捆绑" class="headerlink" title="15.5 C++如何实现晚捆绑"></a>15.5 C++如何实现晚捆绑</h3><p>关键字 <code>virtual</code> 告诉编译器它不应当执行早捆绑，相反，它应当自动安装对于实现晚捆绑必需的所有机制。</p>
+<p>为了达到这个目的，典型的编译器对每个包含虚函数的类创建一个表(VTABLE)。在VTABLE中，编译器放置特定类的虚函数的地址。在每个带有虚函数的类中，编译器秘密地防止一个指针，称为vpointer(缩写为VPTR)，指向这个对象 VTABLE。当通过基类指针做虚函数调用时(也就是做多台调用时)，编译器静态地插入能取得这个 VPTR 并在 VTABLE 表中查找函数地址的代码，这样就能调用正确的函数并引起晚捆绑的发生。</p>
+<p>为每个类设置 VTABLE，初始化 VPTR、为虚函数调用插入代码，所有这些都是自动发生的。利用虚函数，即使在编译器还不知道这个对象的特定类型的情况下，也能调用这个对象中正确的函数。</p>
+<p><strong>15.5.1 存放类型信息</strong><br>如果有一个或多个虚函数，编译器都只在这个结构中插入一个单个指针(VPTR)，指向一个存放函数地址的表。我们只需要一个表，因为所有虚函数地址都包含在这个但个表里。</p>
+<h3 id="15-6-为什么需要虚函数"><a href="#15-6-为什么需要虚函数" class="headerlink" title="15.6 为什么需要虚函数"></a>15.6 为什么需要虚函数</h3><p>C++ 并不是对于绝对地址的一个简单的 CALL，而是为设置虚函数调用需要两条以上的复杂的汇编指令。这既需要代码空间，又需要执行时间。</p>
+<p>一些面向对象的语言已经接受了这种途径，即晚捆绑对于面向对象程序设计是性质所固有的，所以应当总是出现，它不应当是可选的，而且用户并不一定需要知道它。这是在创造语言的设计时决定的，而这种特殊的方法对于许多语言是适合的(smalltalk、Java和Python)。</p>
+<p>virtual 关键字可以改变程序的效率。当设计类时，我们不应当为效率问题担心。如果使用多态，就处处使用虚函数。当试图加速代码时，只需寻找可以不使用虚函数的函数。</p>
+<p>有些证据表明，C++ 中的规模和速度改进效果是在 C 的规模和速度的 10% 之内，并且常常更接近。能够得到更小的规模和更高速度的原因是 C++ 可以有比 C 更快的方法设计程序，而且设计的程序更小。</p>
+<h3 id="15-7-抽象基类和纯虚函数"><a href="#15-7-抽象基类和纯虚函数" class="headerlink" title="15.7 抽象基类和纯虚函数"></a>15.7 抽象基类和纯虚函数</h3><p>在设计时，常常希望基类仅仅作为其派生类的一个接口。这就是说，仅想对基类进行向上类型转换，使用它的接口，而不希望用户实际地创建一个基类对象。就可以在基类中加入至少一个纯虚函数(pure virtual function)，来使基类成为抽象(abstract)类。纯虚函数使用关键字 <code>virtual</code>，并且在其后面加上 <code>=0</code>。如果试着生成一个抽象类的对象，编译器会制止他。</p>
+<p>当继承一个抽象类时，必须实现所有的纯虚函数，否则继承出的类也将是一个抽象类。创建一个纯叙述函数允许在接口中放置成员函数，而不一定要提供一段可能对这个函数毫无意义的代码。同时纯虚函数要求继承出的类对它提供一个定义。</p>
+<p>建立公共接口的唯一原因是它能对于每个不同的子类有不同的表示。它建立一个基本的格式，用来确定什么是对于所有派生类是公共的──除此之外，别无用途。当仅希望通过一个公共接口来操纵一组类，且这个公共接口不需要实现(或者不需要完全实现)时，可以创建一个抽象类。语法为：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>= <span class="number">0</span>;</div></pre></td></tr></table></figure>
+<p>这样做，等于告诉编译器在 VTABLE 中为函数保留一个位置，但在这个特定位置中不放地址。只要有一个函数在类中被声明为纯虚函数，则 VTABLE 就是不完全的。</p>
+<p>如果一个类的  是不完全的，当试图创建这个类的对象时，编译器就发出一个出错信息。这样，编译器就保证了抽象类的纯洁性，就不会被误用了。</p>
+<p>一个类若全是纯虚函数，就称为纯抽象类(pure abstract class)。纯序函数是非常有用的，因为它们使得类有明显的抽象性，并告诉用户和编译器打算如何使用。</p>
+<p>注意，纯虚函数禁止对抽象类的函数以传值方式调用。这也是防止对象切片(object slicing)的一种方法。通过抽象类，可以保证在向上类型转换期间总是使用指针或引用。</p>
+<h3 id="15-8-继承和-VTABLE"><a href="#15-8-继承和-VTABLE" class="headerlink" title="15.8 继承和 VTABLE"></a>15.8 继承和 VTABLE</h3><p>当实现继承和重新定义一些虚函数时，编译器对新类创建一个新的 VTABLE表，并且插入新函数的地址，对于没有重新定义的虚函数使用基类函数的地址。无论如何，对于可被创建的每个对象(即它的类不含有纯虚函数)，在 VTABLE 中纵有一个函数地址的全集，所以绝对不能对不在其中的地址进行调用(否则结果将是灾难性的)。</p>
+<p>若在派生(derived)类中继承或增加新的虚函数，那么通过基类的指针是无法进行调用的。</p>
+<p>如果知道保存在一般容器中的所有对象的确切类型，会使我们的设计工作在最佳状态(或者没有选择)。这就是运行时类型辨认(Run-Time Type Identification,RTTI)问题。RTTI是有关向下类型转换基类指针到派生类指针的问题。向上类型转换是自动发生的，不需强制，因为它是绝对安全的。向下类型转换是不安全的，因为这里没有关于实际类型的编译时信息，所以必须准确地知道这个类实际是什么类型。如果把它转换称错误的类型，就会出现麻烦。</p>
+<p><strong>15.8.1 对象切片</strong></p>
+<p>当多态地处理对象时，传地址与传值有明显的不同。如果对一个对象进行向上类型转换，而不使用地址或引用，这个对象将会被“切片”，直到剩下来的是适合于目的的子对象。确切地来说，派生类对象会被切片成一个基类对象。</p>
+<p>对象切片实际上是当它拷贝到一个新的对象时，去掉原来对象的一部分，而不是像使用指针或引用那样简单地改变地址和内容。因此，不常使用对象向上类型转换，事实上，通常要提防或防止这种操作。</p>
+<h3 id="15-9-重载和重新定义"><a href="#15-9-重载和重新定义" class="headerlink" title="15.9 重载和重新定义"></a>15.9 重载和重新定义</h3><p>重新定义一个基类中的重载函数将会隐藏所有该函数的其他基类版本。而当对虚函数进行这些操作的时候，情况会有点不同。</p>
+<p>编译器不允许我们改变重新定义过的虚函数的返回值(如果不是虚函数，则是允许的)。这是一个非常重要的限制，因为编译器必须保证我们能够多态地通过基类调用函数，若返回值不同，那么就会产生问题。</p>
+<p>如果重新定义了基类中的一个重载成员函数，则在派生类中其他的重载函数将会被隐藏。例如，基类中有 <code>f(int)</code> 和 <code>f(string)</code> 这样的重载函数，如果我在派生类中重新定义了 <code>f(int)</code>，那么对于这个派生类来说，<code>f(string)</code>就被隐藏了，不可用了。</p>
+<p><strong>15.9.1 变量返回类型</strong></p>
+<p>通常，我们不能在重新定义过程中修改虚函数的返回类型，但是也有特例，如果返回一个指向基类的指针或引用，则该函数的重新定义版本可以从基类返回的内容中返回一个指向派生类的指针或引用。</p>
+<h3 id="15-10-虚函数和构造函数"><a href="#15-10-虚函数和构造函数" class="headerlink" title="15.10 虚函数和构造函数"></a>15.10 虚函数和构造函数</h3><p>当创建一个报含有虚函数的对象时，必须初始化它的 VPTR 以指向相应的 VTABLE。这必须在对虚函数进行任何调用之前完成。编译器在构造函数开头部分秘密地插入能初始化VPTR的代码。</p>
+<p>当寻找效率漏洞时，我们必须明白，编译器正在插入隐藏代码到我们构造函数中。这些隐藏代码不仅必须初始化 VPTR，而且还必须检查this的值(以免operator new返回零)和调用基类构造函数。放在一起，这些代码可以影响我们认为是一个小内联函数的调用。特别是，构造函数的规模会抵消函数调用代价的减少。如果做大量的内联构造函数调用，代码长度就会增长，而在速度上没有任何好处。</p>
+<p>当然，也许并不会立即把所有这些小构造函数都变成非内联，因为它们更容易写为内联构造函数。但是，当我们正在调整我们的代码时，务必去掉这些内联构造函数。</p>
+<p><strong>15.10.1 构造函数调用次序</strong></p>
+<p>所有基类构造函数总是在继承类构造函数中被调用。派生类只访问它自己的成员，而不访问基类的成员。只有基类构造函数能正确地初始化它自己的成员。如果不在构造函数初始化表达式表中显式地调用基类构造函数，他就调用默认构造函数。如果没有默认构造函数，编译器将报告错误。</p>
+<p>构造函数调用的顺序是重要的。当继承时，必须知道基类的全部成员并能访问基类的任何 <code>public</code> 和 <code>protected</code> 成员。在通常的成员函数中，构造已经发生，所以这个对象的所有部分的成员都已经建立。然而，在构造函数中，必须想办法保证所有成员都已经建立。保证它的惟一方法是让基类构造函数首先被调用。</p>
+<p>只要可能，我们应当在构造函数初始化表达式表中初始化所有的成员对象。只要遵从这个做法，我们就能保证初始化所有基类成员和当前对象的成员对象。</p>
+<p><strong>15.10.2 虚函数在构造函数中的行为</strong></p>
+<p>对于在构造函数中调用一个虚函数的情况，被调用的只是这个函数的本地版本。也就是说，虚机制在构造函数中不工作。</p>
+<p>构造函数的工作是生成一个对象。在任何构造函数中，可能只是部分形成对象──我们只能知道基类已被初始化，但并不能知道哪个类是从这个基类继承来的。然而，虚函数在继承层次上是“向前”和“向外”进行调用。它可以调用在派生类中的函数。如果我们在构造函数中也这样做，那么我们所调用的函数可能操作还没有被初始化的成员。这将导致灾难的发生。</p>
+<p>当一个构造函数被调用时，它做的首要事情之一就是初始化它的 VPTR。然而，它只能知道它属于“当前”类──即构造函数所在类。于是它完全忽视这个对象是否是基于其他类的。当编译器为这个构造函数产生代码时，它是为这个类的构造函数产生代码──既不是为基类，也不是为它的派生类。VPTR 的状态是由被最后调用的构造函数确定的。</p>
+<p>当这一系列构造函数调用正发生时，每个构造函数都已经设置 VPTR 指向子集的 VTABLE。如果函数调用使用虚机制，它将只产生通过它自己的 VTABLE 的调用，而不是最后派生的 VTABLE。</p>
+<p>总之，在构造函数中调用虚函数都不能得到预期的结果。</p>
+<h3 id="15-11-析构函数和虚拟析构函数"><a href="#15-11-析构函数和虚拟析构函数" class="headerlink" title="15.11 析构函数和虚拟析构函数"></a>15.11 析构函数和虚拟析构函数</h3><p>构造函数是不能为虚函数的。但析构函数能够且常常必须是虚的。</p>
+<p>构造函数有一项特殊工作，即一块一块地组合成一个对象。它首先调用基类构造函数，然后调用在继承顺序中的更晚派生的构造函数。类似地，析构函数也有一项特殊工作，即它必须拆卸属于某层次类的对象。析构函数自最晚派生的类开始，并向上到基类。</p>
+<p>如果通过指向某个对象基类的指针操纵这个对象(也就是通过它的一般接口操纵这对象)，当我们想在 <code>delete</code> 在栈中已经用new创建的对象的指针时，就会出现这个问题。如果这个指针是指向基类的，在 <code>delete</code> 期间，编译器只能知道调用这个析构函数的基类版本，幸运的是，析构函数可以是虚函数。</p>
+<p>不把析构函数设为虚函数是一个隐匿的错误，因为它常常不会对程序有直接的影响，但是会不知不觉引入存储器泄露(关闭程序时内存未释放)。同样，这样的析构操作还有可能掩盖发生的问题。</p>
+<p><strong>15.11.1 纯虚析构函数</strong></p>
+<p>尽管纯虚析构函数在标准 C++ 中是合法的，但在使用的时候有一个额外的限制：必须为纯虚析构函数提供一个函数体。纯虚析构函数和非纯虚虚构函数之间的唯一不同之处在于纯虚析构函数使得基类是抽象类，所以不能创建一个基类的对象(如果基类的任何其他函数是纯虚函数，也是具有同样的效果)。</p>
+<p>当从某个含有虚析构函数的类中继承出一个类，情况变得有点复杂。不像其他的纯虚函数，我们不要求在派生类中提供纯虚函数的定义。</p>
+<p>一般来说，如果在派生类中基类的纯虚函数(和所有其他纯虚函数)没有重新定义，则派生类将会成为抽象类。但是这里编译器将会自动地为每个类生成一个析构函数定义，基类的析构函数被重写(重新定义)，因此编译器会提供定义并且派生类实际上不会成为抽象类。</p>
+<p>当我们的类仅含有一个纯虚函数时，就会发现这个唯一的差别：析构函数。这里析构函数的纯虚性的唯一效果是阻止基类的实例化。如果有其他的纯虚函数，则它们会阻止基类的实例化。</p>
+<p>作为一个准则，任何时候我们的类中都要有一个虚函数，我们应当立即增加一个虚析构函数(即使它什么也不做)。这样，我们保证在后面不会出现问题。</p>
+<p><strong>15.11.2 析构函数中的虚机制</strong></p>
+<p>在析构期间，有一些我们可能不希望马上发生的情况。如果正在一个普通的成员函数中，并且调用一个虚函数，则会使用晚捆绑机制来调用这个函数。而对于析构函数，这样不行，不论是虚的还是非虚的。在析构函数中，只有成员函数的“本地”版本被调用；虚机制被忽略。</p>
+<p><strong>15.11.3 创建基于对象的继承</strong></p>
+<p>负责动态对象创建(使用 <code>new</code>)的对象进行 <code>delete</code> 调用的称之为“所有者”。在使用容器时的问题是，它们需要足够的灵活性用来接收不同类型的对象。为了做到这一点，容器使用 <code>void</code> 指针，因此它们并不知道所包容对象的类型。删除一个 <code>void</code> 指针并不调用析构函数，所以容器并不负责清除它的对象。</p>
+<p>一种方法要求我们要为想在容器中容纳的每一种类型都派生出新类。</p>
+<p>问题是我们希望容器可以容纳更多的类型，但我们不想使用 <code>void</code> 指针。另外一种解决方法是使用多态性，它通过强制容器内的所有对象从同一个基类继承而来。也就是说，容器容纳了具有同一基类的对象，并随后调用虚函数──特别地，我们可以调用虚析构函数来解决所有权问题。</p>
+<p>这种解决方法使用单根继承(singly-rooted hierarchy)或基于对象的继承(object-based hierarchy)。事实上，除了 C++，每种面向对象的语言都强制使用这样的体系──当创建一个类时，都会直接或间接地从一个公共基类中继承出它，这个基类是由该语言的创建者生成的。C++ 中认为，强制地使用这个公共基类会引起太多的开销，所有便没有使用它。</p>
+<h3 id="15-12-运算符重载"><a href="#15-12-运算符重载" class="headerlink" title="15.12 运算符重载"></a>15.12 运算符重载</h3><p>就像对成员函数那样，我们可以使用 virtual 运算符。然而，因为我们可能对两个不知道类型的对象进行操作，所以实现 virtual 运算符通常会很复杂。这通常用于处理数学部分。</p>
+<h3 id="15-13-向下类型转换"><a href="#15-13-向下类型转换" class="headerlink" title="15.13 向下类型转换"></a>15.13 向下类型转换</h3><p>C++ 提供了一个特殊的称为 <code>dynamic_cast</code> 的显式类型转换(explicit cast)，它就是一种安全类型向下类型转换(type-safe downcast)的操作。当使用 <code>dynamic_cast</code> 来试着向下类型转换一个特定的类型，仅当类型转换是正确的并且是成功的时，返回值会是一个指向所需类型的指针，否则它将会返回0来表示这并不是正确的类型。</p>
+<p>当使用 <code>dynamic_cast</code> 时，必须对一个真正多态的层次进行操作──它含有虚函数──这因为 <code>dynamic_cast</code> 使用了存储在 VTABLE 中的信息来判断实际的类型，所以运行时需要一点额外的开销。</p>
+<h2 id="第16章-模板介绍"><a href="#第16章-模板介绍" class="headerlink" title="第16章 模板介绍"></a>第16章 模板介绍</h2><p>继承和组合提供了重用对象代码的方法，而 C++ 的模板特征提供了重用源代码的方法。</p>
+<h3 id="16-1-容器"><a href="#16-1-容器" class="headerlink" title="16.1 容器"></a>16.1 容器</h3><p>在一般程序设计问题中，程序员在编写程序时并不知道将来需要创建多少个对象。C++ 中有更好的解决方法：用 <code>new</code> 创建所需要的对象，将其指针放入容器中，待实际实用时将其取出并进行处理。用这种方法，所创建的只是确实需要的对象。通常，在启动程序时没有可用的初始化条件。<code>new</code> 允许等待，直到在环境中相关事件发生后，再实际地创建这个对象。</p>
+<h3 id="16-2-模板综述"><a href="#16-2-模板综述" class="headerlink" title="16.2 模板综述"></a>16.2 模板综述</h3><p>有三种源代码重用的方法：</p>
+<p>C方法：应该摒弃，由于它表现繁琐、易发生错误、缺乏美感，是非常低效的技术。</p>
+<p>Smalltalk方法：通过继承来实现代码重用，既简单又直观。每个容器类包含通用的基类Object的项目。这是一种单纯的技巧，因为Smalltalk类层次上的任何类都源于Object的派生，任何容器可容纳任何类(包括容器本身)。这种基于通用的基类(常称为Object，在Java中也有类似情况)的单树形层次类型称为“基于对象的层次结构”。</p>
+<p><strong>16.2.1 模板方法</strong></p>
+<p>尽管具有多重继承的基于对象的层次结构在概念上是直观的，但是在实践上较为困难。</p>
+<p>模板对源代码进行重用，而不是通过继承和组合重用目标代码。容器不再存放称为Object的通用基类，而是存放一个未指明的参数。当用户使用模板时，参数由编译器来替换。</p>
+<p>C++ 中，模板实现了参数化类型(parameterized type)的概念。模板方法的另一个优点是，使对继承不熟悉、不适应的新程序员也能正确地使用密封的容器类。</p>
+<h3 id="16-3-模板语法"><a href="#16-3-模板语法" class="headerlink" title="16.3 模板语法"></a>16.3 模板语法</h3><p>template 这个关键字会告诉编译器，随后的类定义将操作一个或更多未指明的类型。当由这个模板产生实际类代码时，必须指定这些类型以使编译器能够替换它们。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="keyword">class</span> Array&#123;</div><div class="line">	<span class="keyword">enum</span>&#123; size = <span class="number">100</span> &#125;;</div><div class="line">	T A[size];</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	T&amp; <span class="keyword">operator</span>[](<span class="keyword">int</span> index)&#123;....&#125;</div><div class="line">&#125;;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">	Array&lt;<span class="keyword">int</span>&gt; ia;</div><div class="line">	Array&lt;<span class="keyword">double</span>&gt; da;</div><div class="line">	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里 <code>T</code> 是替换参数，它代表一个类型名称。在容器类中，它将出现在那些原本由某以特定类型出现的地方。</p>
+<p><strong>16.3.1 非内联函数定义</strong></p>
+<p>有时我们希望有非内联成员函数的定义。这时编译器需要在成员函数定义之前看到 <code>template</code> 声明。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line"><span class="keyword">class</span> Array&#123;</div><div class="line">	<span class="keyword">enum</span>&#123; size = <span class="number">100</span> &#125;;</div><div class="line">	T A[size];</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	T&amp; <span class="keyword">operator</span>[](<span class="keyword">int</span> index);</div><div class="line">&#125;;</div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div><div class="line">T&amp; Array&lt;T&gt;::<span class="keyword">operator</span>[] (<span class="keyword">int</span> index) &#123;...&#125;</div></pre></td></tr></table></figure>
+<p>注意在引用模板的类名的地方，必须伴游该模板的参数列表。可以想象，在内部，使用模板参数列表中的参数修饰类名，以便为每一个模板实例产生唯一的类名标识符。</p>
+<p>在 <code>template&lt;...&gt;</code> 之后的任何东西都意味着编译器在当时不为它分配存储空间，而是一直处于等待状态直到被一个模板示例告知。在编译器和连接器中有机制能去掉同一模板的多重定义。所以为了使用方便，几乎总是在头文件中放置全部的模板声明和定义。</p>
+<p>可以认为模板为 C++ 提供了一种弱类型(weak typing)机制，C++ 通常是强类型语言。</p>
+<p><strong>16.3.2 模板中的常量</strong></p>
+<p>模板参数并不局限于类定义的类型，可以使用编译器内置类型。这些参数值在编译期间编程模板的特定示例的常量。我们甚至可以对这些参数使用默认值。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T, <span class="keyword">int</span> size = <span class="number">100</span>&gt;</div><div class="line"><span class="keyword">class</span> Array&#123;</div><div class="line">	T <span class="built_in">array</span>[size];</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	<span class="function"><span class="keyword">int</span> <span class="title">length</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> size; &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>这里的 size 决不存放在类中，但对它的使用就如同是成员函数中的数据成员。</p>
+<p>如果某个类有一个指向 Array 的指针，而不是指向类型 Array 的嵌入对象。该指针在构造函数中不被初始化，而是推迟到第一次访问时。这称为懒惰初始化(lazy initialization)。如果创造大量的对象，但不访问每一个对象，为了节省存储，可以使用懒惰初始化技术。</p>
+<h3 id="16-4-打开和关闭所有权"><a href="#16-4-打开和关闭所有权" class="headerlink" title="16.4 打开和关闭所有权"></a>16.4 打开和关闭所有权</h3><p>以值包含对象的容器通常无需担心所有权问题，因为它们清晰地拥有它们所包含的对象。但是，如果容器内包含指向对象的指针(这种情况在C++中相当普遍，有其在多态的情况下)，而这些指针很可能用于程序的其他地方，那么删除该指针指向的对象会导致在程序的其他地方的指针对已销毁的对象进行引用。为了避免上述情况，在设计和使用容器时必须考虑所有权问题。</p>
+<p>处理所有权问题的最好方法是由客户程序员来选择。这常常通过构造函数的一个参数来完成，它默认地指明所有权。</p>
+<h3 id="16-5-以值存放对象"><a href="#16-5-以值存放对象" class="headerlink" title="16.5 以值存放对象"></a>16.5 以值存放对象</h3><p>如果我们没有模板，那么在一个一般的容器内创建对象的一个拷贝是一个复杂的问题。使用模板，事情噢那个就相对简单了，只要说我们存放对象而不是指针就行了。</p>
+<h3 id="16-6-迭代器简介"><a href="#16-6-迭代器简介" class="headerlink" title="16.6 迭代器简介"></a>16.6 迭代器简介</h3><p>迭代器(iterator)是一个对象，它在其他对象的容器上遍历，每此选择它们中的一个，不需要提供对这个容器的实现的直接访问。迭代器提供了一种访问元素的标准方法，无论容器是否提供了直接访问元素的方法。迭代器常常与容器类联合使用，而且迭代器在标准 C++ 容器的设计和使用中是一个基本概念。迭代器也是一种设计模式(design pattern)。</p>
+<p>迭代器通常模仿大多数指针的运算。然而，不同的是，迭代器的设计更安全，所以数组越界的可能性更小。</p>
+<p>习惯上，用构造函数来创建迭代器，并把它与一个容器对象联系，并且在它的生命期中，不把它与不同的容器联系。</p>
+<h2 id="第19章-深入理解模板"><a href="#第19章-深入理解模板" class="headerlink" title="第19章 深入理解模板"></a>第19章 深入理解模板</h2><p>C++ 模板应用的便利性远远超出了它只是一种“T类型容器”(containers of T)的范畴。尽管其最初的设计动机是为了能产生类型安全的通用容器，但在现在 C++ 中，模板也用来生成自定义代码，这些代码通过编译时的程序设计构造来优化程序的执行。</p>
+<h3 id="19-1-模板参数"><a href="#19-1-模板参数" class="headerlink" title="19.1 模板参数"></a>19.1 模板参数</h3><p>模板有两类：函数模板和类模板。二者都是由它们的参数来完全地描绘模板的特性。每个模板参数描述了下述内容之一：</p>
+<ul>
+<li>类型(或者是系统固有类型或者是用户自定义类型)。</li>
+<li>编译时常数值(例如，整数、指针和某些静态实体的引用，通常是作为无类型参数的引用)。</li>
+<li>其他模板。</li>
+</ul>
+<p><strong>5.1.1 无类型模板参数</strong></p>
+<p>一个无类型模板参数必须是一个编译时所知的整数值。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T, <span class="keyword">size_t</span> N&gt;</div></pre></td></tr></table></figure>
+<p><strong>5.1.2 默认模板参数</strong></p>
+<p>在类模板中，可以为模板参数提供默认(缺省)参数，但是在函数模板中却不行。作为默认的模板参数，它们只能被定义一次，编译器会知道第一次的模板声明或定义。一旦引入了一个默认参数，所有它之后的模板参数也必须具有默认值。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>您的支持是对我创作最大的鼓励！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/misc/alipay.jpg" alt="wdxtub Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/经典/" rel="tag"># 经典</a>
+          
+            <a href="/tags/Cpp/" rel="tag"># Cpp</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/27/pen-and-ink/" rel="next" title="第三十三周 - 笔墨登场">
+                <i class="fa fa-chevron-left"></i> 第三十三周 - 笔墨登场
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/29/cpp-style-guide/" rel="prev" title="Cpp 编码风格指南">
+                Cpp 编码风格指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/01/29/thinking-in-cpp-clip/"
+     data-title="【C++ 编程思想】读书笔记"
+     data-content=""
+     data-url="http://wdxtub.com/2017/01/29/thinking-in-cpp-clip/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/29/thinking-in-cpp-clip/"
+           data-title="【C++ 编程思想】读书笔记" data-url="http://wdxtub.com/2017/01/29/thinking-in-cpp-clip/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">人文/科学/读书/写作/思考/编程/架构/数据/广交朋友/@SYSU/@CMU</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">794</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">926</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.lofter.com/" title="我的 Lofter" target="_blank">我的 Lofter</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第1章-对象导言"><span class="nav-number">1.</span> <span class="nav-text">第1章 对象导言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-抽象的过程"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 抽象的过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-对象有一个接口"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 对象有一个接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-实现的隐藏"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 实现的隐藏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-实现的重用"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 实现的重用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-继承：重用接口"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 继承：重用接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-具有多态性的可互换对象"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 具有多态性的可互换对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-创建和销毁对象"><span class="nav-number">1.7.</span> <span class="nav-text">1.7 创建和销毁对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8-异常处理：应对错误"><span class="nav-number">1.8.</span> <span class="nav-text">1.8 异常处理：应对错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-9-分析和设计"><span class="nav-number">1.9.</span> <span class="nav-text">1.9 分析和设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-10-极限编程-eXtreme-Programming-XP"><span class="nav-number">1.10.</span> <span class="nav-text">1.10 极限编程(eXtreme Programming,XP)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第2章-对象的创建与使用"><span class="nav-number">2.</span> <span class="nav-text">第2章 对象的创建与使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-语言的翻译过程"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 语言的翻译过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第3章-C-中的C"><span class="nav-number">3.</span> <span class="nav-text">第3章 C++中的C</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-指定存储空间分配"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 指定存储空间分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-运算符及其使用"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 运算符及其使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第4章-数据抽象"><span class="nav-number">4.</span> <span class="nav-text">第4章 数据抽象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-什么是对象"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 什么是对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-抽象数据类型"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 抽象数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-头文件"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 头文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第5章-隐藏实现"><span class="nav-number">5.</span> <span class="nav-text">第5章 隐藏实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-设置限制"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 设置限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-C-的访问控制"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 C++的访问控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-友元"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 友元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-对象布局"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 对象布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-5-类"><span class="nav-number">5.5.</span> <span class="nav-text">5.5 类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-6-句柄类"><span class="nav-number">5.6.</span> <span class="nav-text">5.6 句柄类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第6章-初始化与清除"><span class="nav-number">6.</span> <span class="nav-text">第6章 初始化与清除</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-用构造函数确保初始化"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 用构造函数确保初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-用析构函数确保清除"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 用析构函数确保清除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-清除定义块"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 清除定义块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-集合初始化"><span class="nav-number">6.4.</span> <span class="nav-text">6.4 集合初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-5-默认构造函数"><span class="nav-number">6.5.</span> <span class="nav-text">6.5 默认构造函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第7章-函数重载与默认参数"><span class="nav-number">7.</span> <span class="nav-text">第7章 函数重载与默认参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-名字修饰"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 名字修饰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-默认参数"><span class="nav-number">7.2.</span> <span class="nav-text">7.2 默认参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第8章-常量"><span class="nav-number">8.</span> <span class="nav-text">第8章 常量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-指针"><span class="nav-number">8.1.</span> <span class="nav-text">8.1 指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-const-指针"><span class="nav-number">8.2.</span> <span class="nav-text">8.2 const 指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-函数参数和返回值"><span class="nav-number">8.3.</span> <span class="nav-text">8.3 函数参数和返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-4-类"><span class="nav-number">8.4.</span> <span class="nav-text">8.4 类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-5-volatile"><span class="nav-number">8.5.</span> <span class="nav-text">8.5 volatile</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第9章-内联函数"><span class="nav-number">9.</span> <span class="nav-text">第9章 内联函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#9-1-预处理器的缺陷"><span class="nav-number">9.1.</span> <span class="nav-text">9.1 预处理器的缺陷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-2-内联函数"><span class="nav-number">9.2.</span> <span class="nav-text">9.2 内联函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-3-内联函数和编译器"><span class="nav-number">9.3.</span> <span class="nav-text">9.3 内联函数和编译器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第10章-名字控制"><span class="nav-number">10.</span> <span class="nav-text">第10章 名字控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#10-1-来自-C-语言中的静态元素"><span class="nav-number">10.1.</span> <span class="nav-text">10.1 来自 C 语言中的静态元素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第11章-引用和拷贝构造函数"><span class="nav-number">11.</span> <span class="nav-text">第11章 引用和拷贝构造函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#11-1-C-中的指针"><span class="nav-number">11.1.</span> <span class="nav-text">11.1 C++ 中的指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-2-C-中的引用"><span class="nav-number">11.2.</span> <span class="nav-text">11.2 C++ 中的引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-3-拷贝构造函数"><span class="nav-number">11.3.</span> <span class="nav-text">11.3 拷贝构造函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第13章-动态对象创建"><span class="nav-number">12.</span> <span class="nav-text">第13章 动态对象创建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#13-1-对象创建"><span class="nav-number">12.1.</span> <span class="nav-text">13.1 对象创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-2-用于数组的-new-和-delete"><span class="nav-number">12.2.</span> <span class="nav-text">13.2 用于数组的 new 和 delete</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-3-耗尽内存"><span class="nav-number">12.3.</span> <span class="nav-text">13.3 耗尽内存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第14章-继承和组合"><span class="nav-number">13.</span> <span class="nav-text">第14章 继承和组合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#14-1-组合语法"><span class="nav-number">13.1.</span> <span class="nav-text">14.1 组合语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-2-继承语法"><span class="nav-number">13.2.</span> <span class="nav-text">14.2 继承语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-3-构造函数的初始化列表"><span class="nav-number">13.3.</span> <span class="nav-text">14.3 构造函数的初始化列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-4-组合和继承的联合"><span class="nav-number">13.4.</span> <span class="nav-text">14.4 组合和继承的联合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-5-名字隐藏"><span class="nav-number">13.5.</span> <span class="nav-text">14.5 名字隐藏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-6-非自动继承的函数"><span class="nav-number">13.6.</span> <span class="nav-text">14.6 非自动继承的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-7-组合与继承的选择"><span class="nav-number">13.7.</span> <span class="nav-text">14.7 组合与继承的选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-8-protected"><span class="nav-number">13.8.</span> <span class="nav-text">14.8 protected</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-9-运算符的重载与继承"><span class="nav-number">13.9.</span> <span class="nav-text">14.9 运算符的重载与继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-10-多重继承"><span class="nav-number">13.10.</span> <span class="nav-text">14.10 多重继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-11-渐增式开发"><span class="nav-number">13.11.</span> <span class="nav-text">14.11 渐增式开发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-12-向上类型转换"><span class="nav-number">13.12.</span> <span class="nav-text">14.12 向上类型转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第15章-多态性和虚函数"><span class="nav-number">14.</span> <span class="nav-text">第15章 多态性和虚函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#15-1-C-程序员的演变"><span class="nav-number">14.1.</span> <span class="nav-text">15.1 C++ 程序员的演变</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-2-向上类型转换"><span class="nav-number">14.2.</span> <span class="nav-text">15.2 向上类型转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-3-捆绑"><span class="nav-number">14.3.</span> <span class="nav-text">15.3 捆绑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-4-虚函数"><span class="nav-number">14.4.</span> <span class="nav-text">15.4 虚函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-5-C-如何实现晚捆绑"><span class="nav-number">14.5.</span> <span class="nav-text">15.5 C++如何实现晚捆绑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-6-为什么需要虚函数"><span class="nav-number">14.6.</span> <span class="nav-text">15.6 为什么需要虚函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-7-抽象基类和纯虚函数"><span class="nav-number">14.7.</span> <span class="nav-text">15.7 抽象基类和纯虚函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-8-继承和-VTABLE"><span class="nav-number">14.8.</span> <span class="nav-text">15.8 继承和 VTABLE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-9-重载和重新定义"><span class="nav-number">14.9.</span> <span class="nav-text">15.9 重载和重新定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-10-虚函数和构造函数"><span class="nav-number">14.10.</span> <span class="nav-text">15.10 虚函数和构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-11-析构函数和虚拟析构函数"><span class="nav-number">14.11.</span> <span class="nav-text">15.11 析构函数和虚拟析构函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-12-运算符重载"><span class="nav-number">14.12.</span> <span class="nav-text">15.12 运算符重载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-13-向下类型转换"><span class="nav-number">14.13.</span> <span class="nav-text">15.13 向下类型转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第16章-模板介绍"><span class="nav-number">15.</span> <span class="nav-text">第16章 模板介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#16-1-容器"><span class="nav-number">15.1.</span> <span class="nav-text">16.1 容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-2-模板综述"><span class="nav-number">15.2.</span> <span class="nav-text">16.2 模板综述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-3-模板语法"><span class="nav-number">15.3.</span> <span class="nav-text">16.3 模板语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-4-打开和关闭所有权"><span class="nav-number">15.4.</span> <span class="nav-text">16.4 打开和关闭所有权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-5-以值存放对象"><span class="nav-number">15.5.</span> <span class="nav-text">16.5 以值存放对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-6-迭代器简介"><span class="nav-number">15.6.</span> <span class="nav-text">16.6 迭代器简介</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第19章-深入理解模板"><span class="nav-number">16.</span> <span class="nav-text">第19章 深入理解模板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#19-1-模板参数"><span class="nav-number">16.1.</span> <span class="nav-text">19.1 模板参数</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js?v=5.1.0"></script>
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+
+</body>
+</html>
