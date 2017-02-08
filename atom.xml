@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2017-02-08T00:21:00.000Z</updated>
+  <updated>2017-02-08T15:05:22.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://wdxtub.com/2017/02/08/linear-algebra/"/>
     <id>http://wdxtub.com/2017/02/08/linear-algebra/</id>
     <published>2017-02-07T23:19:50.000Z</published>
-    <updated>2017-02-08T00:21:00.000Z</updated>
+    <updated>2017-02-08T15:05:22.000Z</updated>
     
     <content type="html"><![CDATA[<p>本文主要介绍线性代数中与机器学习相关的重要概念，方便不懂的时候进行查阅。</p>
 <a id="more"></a>
@@ -34,14 +34,64 @@
 <h2 id="向量、行列式、矩阵"><a href="#向量、行列式、矩阵" class="headerlink" title="向量、行列式、矩阵"></a>向量、行列式、矩阵</h2><blockquote>
 <p>线性代数中最重要的内容就是行列式和矩阵，虽然表面上看，行列式和矩阵不过是一种符号或速记，但从数学史上来看，优良的数学符号和生动的概念是数学思想产生的动力和钥匙。</p>
 </blockquote>
-<h3 id="向量-Vector"><a href="#向量-Vector" class="headerlink" title="向量 Vector"></a>向量 Vector</h3><h3 id="行列式-Determinant"><a href="#行列式-Determinant" class="headerlink" title="行列式 Determinant"></a>行列式 Determinant</h3><p><strong>行列式的三种变换：</strong></p>
+<h3 id="向量-Vector"><a href="#向量-Vector" class="headerlink" title="向量 Vector"></a>向量 Vector</h3><p>向量的可以用列的形式表示，但是为了书写和打印方便，一般会用圆括号括起来，转换为行的形式。如：$\mathbf{v}=(v_1,v_2)$。</p>
+<p>若有向量 $\mathbf{v}=(v_1,v_2),\; \mathbf{w}=(w_1, w_2)$ 和常数 $c, d$，则</p>
+<ul>
+<li>向量相加 $\mathbf{v+w}=(v_1+w_1,v_2+w_2)$</li>
+<li>向量数乘 $c\mathbf{v}=(cv_1,cv_2)$</li>
+<li>$c\mathbf{v}+d\mathbf{w}$ 是向量 $\mathbf{v}$ 和 $\mathbf{w}$ 的线性组合</li>
+<li>$\mathbf{v\cdot w}$ 是向量 $\mathbf{v}$ 和 $\mathbf{w}$ 的内积（点积），值为 $\mathbf{v\cdot w}=\sum v_iw_i$，显然 $\mathbf{v\cdot w}=\mathbf{w\cdot v}$</li>
+<li>$||\mathbf{v}||$ 是向量 $\mathbf{v}$ 的长度，$||\mathbf{v}=\sqrt{\mathbf{v\cdot v}}||$</li>
+<li>单位向量 $\mathbf{u}$ 的长度为1，$\mathbf{u}=\frac{\mathbf{v}}{||\mathbf{v}||}$ 是与 $\mathbf{v}$ 同方向的单位向量</li>
+</ul>
+<p>如果 $\mathbf{v}$ 和 $\mathbf{w}$ 是非零向量，则有</p>
+<p>$$\frac{\mathbf{v\cdot w}}{||\mathbf{v}|| ||\mathbf{w}||}=cos\;\theta$$</p>
+<p>据此我们可以得到两个重要不等式：</p>
+<ul>
+<li>$|\mathbf{v\cdot w}| \le ||\mathbf{v}||||\mathbf{w}||$</li>
+<li>$||\mathbf{v+w}|| \le ||\mathbf{v}|| + ||\mathbf{w}||$</li>
+</ul>
+<h3 id="行列式-Determinant"><a href="#行列式-Determinant" class="headerlink" title="行列式 Determinant"></a>行列式 Determinant</h3><p>行列式最初用于求解线性方程，行列式是否为零可用来判定一个线性方程是否有解。</p>
+<p><strong>行列式的三种变换：</strong></p>
 <ul>
 <li>互换某两行（列），记为 $r_i \leftrightarrow r_j\;(c_i \leftrightarrow c_j)$</li>
 <li>提出某一行（列）的公因子，记为 $r_i \div k\;(c_i \div k)$</li>
 <li>把某一行（列）的 $k$ 倍加到另一行（列），记为 $r_i+kr_j\;(c_i+kc_j)$</li>
 </ul>
 <p>计算行列式最常用的一种方法就是利用变换 $r_i+kr_j\;(c_i+kc_j)$ 和 $r_i \leftrightarrow r_j\;(c_i \leftrightarrow c_j)$，把行列式转化为上三角形行列式，从而算得行列式的值。</p>
-<h2 id="向量空间和子空间"><a href="#向量空间和子空间" class="headerlink" title="向量空间和子空间"></a>向量空间和子空间</h2><h2 id="正交与行列式"><a href="#正交与行列式" class="headerlink" title="正交与行列式"></a>正交与行列式</h2><h2 id="特征值与特征向量"><a href="#特征值与特征向量" class="headerlink" title="特征值与特征向量"></a>特征值与特征向量</h2><h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<p>行列式为零，要么是两行（列）相同，要么是两行（列）成比例。</p>
+<p>行列式按某行展开可以按任一行展开，而一行元素乘以另一行对应元素的代数余子式，其和为零。综合起来是：</p>
+$$a_{k1}A_{i1}+a_{k2}A_{i2}+ \cdots + a_{kn}A_{in}=\sum_{s=1}^n a_{ks}A_{is}=\begin{cases}D&, k=i\\ 0&,k\ne i\end{cases}$$
+<p>另外 $D^T=D$ 也是行列式的性质，这里提一下。</p>
+<h3 id="矩阵-Matrix"><a href="#矩阵-Matrix" class="headerlink" title="矩阵 Matrix"></a>矩阵 Matrix</h3><p>若有矩阵 $A$ 和矩阵 $B$，那么</p>
+<ul>
+<li>两个大小相同的矩阵才可以相加，记为 $A+B$，是对应位置的元素进行相加</li>
+<li>如果矩阵 $A$ 有 $n$ 列且矩阵 $B$ 有 $n$ 行，这两个矩阵可以相乘得到 $AB$</li>
+</ul>
+<p>一个 $m \times n$ 的矩阵与一个 $n\times p$ 的矩阵相乘所需的乘法次数是 $mnp$ 次，一般我们会采用动态规划的方法来对乘法进行优化。</p>
+<p>矩阵加法满足：</p>
+<ul>
+<li>交换率 $A+B=B+A$</li>
+<li>分配率 $c(A+B)=cA+cB$</li>
+<li>结合律 $A+(B+C)=(A+B)+C$</li>
+</ul>
+<p>矩阵乘法满足：</p>
+<ul>
+<li>左分配率 $C(A+B)=CA+CB$</li>
+<li>右分配率 $(A+B)C=AC+BC$</li>
+<li>结合律 $A(BC)=(AB)C$</li>
+</ul>
+<p>矩阵 $A$ 可逆当且仅当存在矩阵 $A^{-1}$，使得 $A^{-1}A=I$ 和 $AA^{-1}=I$，其中 $A^{-1}$ 称为 $A$ 的逆矩(inverse)阵。如果 $A$ 不可逆，称 $A$ 为奇异(singular)矩阵。</p>
+<p>转置(transpose)是把一个矩阵行与列进行互换，如对于矩阵 $A$ 转置为 $(A^T)_{ij}=A_{ji}$。</p>
+<p>对于矩阵 $A$ 和 $B$，$(A+B)^T=A^T+B^T,\;(AB)^T=B^TA^T,\;(A^{-1})^T=(A^T)^{-1}$</p>
+<p>如果对于矩阵 $A$ 有 $a_{ij}=a_{ji}$，则称 $A$ 为对称矩阵。对称矩阵 $A$ 可分解为 $A=LDL^T$</p>
+<p>对任意矩阵 $R$，$R^TR$ 和 $RR^T$ 都是对称矩阵且它们对角线上元素非负，大多数科学问题都是从一个矩阵 $R$ 开始，以 $R^TR$ 或 $RR^T$ 结束。</p>
+<p>对于非零矩阵 $A$，$A^2$ 可以是零矩阵，但 $A^TA$ 不可能是零矩阵。</p>
+<p><strong>求解线性方程组是线性代数的核心问题。</strong></p>
+<p>求解 $A\mathbf{x}=\mathbf{b}$ 是寻找一个特定组合来产生 $\mathbf{b}$，其中 $A$ 被称为系数矩阵。这个求解的过程，从另外一个角度来看是寻找多条线（平面或超平面）的交点。</p>
+<p>每个超级计算机都会拿求解 $A\mathbf{x}=\mathbf{b}$ 来测试速度，计算机编程中应该直接进行消元或者置换，而不应该采用矩阵相乘来实现，因为矩阵相乘的方式带来更多冗余计算。</p>
+<h2 id="向量空间和子空间"><a href="#向量空间和子空间" class="headerlink" title="向量空间和子空间"></a>向量空间和子空间</h2><h2 id="正交"><a href="#正交" class="headerlink" title="正交"></a>正交</h2><h2 id="特征值与特征向量"><a href="#特征值与特征向量" class="headerlink" title="特征值与特征向量"></a>特征值与特征向量</h2><h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li>理解矩阵 <a href="http://blog.csdn.net/myan/article/details/647511" target="_blank" rel="external">一</a> <a href="http://blog.csdn.net/myan/article/details/649018" target="_blank" rel="external">二</a> <a href="http://blog.csdn.net/myan/article/details/1865397" target="_blank" rel="external">三</a></li>
 <li><a href="https://hujiaweibujidao.github.io/files/linear_algebra_huangzhenghua.pdf" target="_blank" rel="external">线性代数·总结与复习</a></li>
 <li><a href="http://www.zhaokv.com/wiki/book/ila/review" target="_blank" rel="external">线性代数总结</a></li>
 </ul>
