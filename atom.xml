@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2017-02-09T00:46:53.000Z</updated>
+  <updated>2017-02-10T02:20:27.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://wdxtub.com/2017/02/08/linear-algebra/"/>
     <id>http://wdxtub.com/2017/02/08/linear-algebra/</id>
     <published>2017-02-07T23:19:50.000Z</published>
-    <updated>2017-02-09T00:46:53.000Z</updated>
+    <updated>2017-02-10T02:20:27.000Z</updated>
     
     <content type="html"><![CDATA[<p>本文主要介绍线性代数中与机器学习相关的重要概念，方便不懂的时候进行查阅。</p>
 <a id="more"></a>
@@ -116,7 +116,40 @@ $$a_{k1}A_{i1}+a_{k2}A_{i2}+ \cdots + a_{kn}A_{in}=\sum_{s=1}^n a_{ks}A_{is}=\be
 <li>齐次线性方程组 $Ax=0$ 只有零解</li>
 <li>非齐次线性方程组 $Ax=b$ 有唯一解</li>
 </ol>
-<h2 id="向量空间和子空间"><a href="#向量空间和子空间" class="headerlink" title="向量空间和子空间"></a>向量空间和子空间</h2><h2 id="正交、特征值、特征向量"><a href="#正交、特征值、特征向量" class="headerlink" title="正交、特征值、特征向量"></a>正交、特征值、特征向量</h2><h3 id="特征值与特征向量"><a href="#特征值与特征向量" class="headerlink" title="特征值与特征向量"></a>特征值与特征向量</h3><blockquote>
+<h2 id="向量空间和子空间"><a href="#向量空间和子空间" class="headerlink" title="向量空间和子空间"></a>向量空间和子空间</h2><p>空间 $R^n$ 包含任何含有 $n$ 个实数元素的列向量 $\mathbf{v}$，我们可以把 $R^n$ 中任意向量加在一起，也可以为任何向量乘上一个数字 $c$，得到的结果都在这个空间中。</p>
+<ul>
+<li>对于一个集合，如果集合中元素对加法和数乘（即向量乘以一个常数）是封闭的，那么这个集合构成一个空间。</li>
+<li>只包含一个零向量的空间称为空间 $Z$</li>
+</ul>
+<p>一个向量空间的子空间(Subspace)满足如下条件：如果 $\mathbf{v}$ 和 $\mathbf{w}$ 都在这个子空间中，则 $\mathbf{v+w}$ 与 $c\mathbf{v}$ 也在这个子空间中，而他们的线性组合 $c\mathbf{v}+d\mathbf{w}$ 也在子空间中。</p>
+<ul>
+<li>矩阵 $A$ 列向量的线性组合构成它的列空间，一般记为 $C(A)$，当 $\mathbf{b}$ 在 $C(A)$ 时 $A\mathbf{x}=\mathbf{b}$ 有解。</li>
+<li>矩阵 $A$ 的 NULL 空间包括满足 $A\mathbf{x}=0$ 的所有 $\mathbf{x}$，记为 $N(A)$</li>
+<li>一个矩阵的行空间和它的 NULL 空间相互正交</li>
+<li>矩阵的秩是矩阵主元的数量，可以记为 $r$，它不但是行向量的维度还是列向量的维度，而且 NULL 空间的维度是列空间的维度减去 $r$</li>
+<li>对于矩阵 $A$ 和 $B$，存在结论 $rank(AB) \le min(rank(A),rank(B))$</li>
+</ul>
+<p><strong>$A\mathbf{x}=\mathbf{b}$ 的全部解</strong></p>
+<ul>
+<li>求解 $A\mathbf{x}=\mathbf{b}$ 可以看做求以 $A$ 列向量为坐标轴时 $\mathbf{b}$ 的坐标值 $\mathbf{x}$</li>
+<li>$A\mathbf{x}=\mathbf{b}$ 可解当且仅当最后 $m-r$ 个等式变成 $0=0$</li>
+<li>$A\mathbf{x}=\mathbf{b}$ 的所有解是满足 $A\mathbf{x}=\mathbf{b}$ 的一个特解 $x_p$ 加上 $A\mathbf{x}=0$ </li>
+<li>根据秩 $r$ 的取值，线性方程组有如下四种可能（其中 $m,n$ 为行数、列数）<ul>
+<li>$r=m,r=n$，方阵且可逆，$A\mathbf{x}=\mathbf{b}$ 有且只有一个解</li>
+<li>$r=m,r&lt;n$，矮又宽型，$A\mathbf{x}=\mathbf{b}$ 有无穷多解</li>
+<li>$r&lt;m,r=n$，高又瘦型，$A\mathbf{x}=\mathbf{b}$ 有一个解或无解</li>
+<li>$r&lt;m,r&lt;n$，行和列都不满秩，$A\mathbf{x}=\mathbf{b}$ 有无穷多解或无解</li>
+</ul>
+</li>
+</ul>
+<p>一组向量 $\mathbf{v_1,\cdots,v_n}$ <strong>线性无关</strong>，当且仅当 $x_1\mathbf{v_1}+x_2\mathbf{v_2}+\cdots+x_n\mathbf{v_n}=\mathbf{0}$ 中的 $x$ 全为零。</p>
+<ul>
+<li>一组向量的线性组合所构成的空间是这组向量所张成的空间，空间中线性无关且能张成这一空间的一组向量可以作为这一空间的基。</li>
+<li>所有基包含向量个数相同，我们把这个数称为该空间的维度，矩阵 $A$ 列向量所张成空间的维度等于矩阵的秩</li>
+<li>空间中每个向量表示为一组基线性组合是唯一的</li>
+<li>空间 $Z$ 只包含零向量，这一空间的维度为 0，空集构成此空间的一组基</li>
+</ul>
+<h2 id="特征值与特征向量"><a href="#特征值与特征向量" class="headerlink" title="特征值与特征向量"></a>特征值与特征向量</h2><blockquote>
 <p>矩阵乘以向量，在功能上相当于把一个向量变换为另一个向量。一个矩阵的特征向量是这样一种特定的向量，它经过这种变换后方向不变（或正好相反），只发生长度上的伸缩，特征值则反映了特征向量的伸缩倍数（及方向）。</p>
 </blockquote>
 <p>用公式表示为：</p>
