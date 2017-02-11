@@ -86,16 +86,24 @@
 
 
 
-<meta name="description" content="公式">
+<meta name="description" content="2.4.1 比特心生研究问题有两种方法，一种是自顶向下，另一种是自底向上。对于设计来说，很多时候是自顶向下的，从一个整体想法出发，然后慢慢细化；而在学习化学的时候，往往是自底向上的，比方说先去了解组成元素的基本粒子，然后在这些粒子的基础上进行更加抽象的研究。从这个角度看，学习计算机系统，自底向上可能是一个好的方向。
+在计算机中，我们看到的一切，归根到底，都是比特，每个比特不是 0 就是 1。计">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【计算机系统导论】2.4 运算">
+<meta property="og:title" content="【计算机系统导论】2.4 整型与基本运算">
 <meta property="og:url" content="http://wdxtub.com/1984/09/11/ics-draft-2-4/index.html">
 <meta property="og:site_name" content="小土刀">
-<meta property="og:description" content="公式">
-<meta property="og:updated_time" content="2016-10-06T11:15:02.000Z">
+<meta property="og:description" content="2.4.1 比特心生研究问题有两种方法，一种是自顶向下，另一种是自底向上。对于设计来说，很多时候是自顶向下的，从一个整体想法出发，然后慢慢细化；而在学习化学的时候，往往是自底向上的，比方说先去了解组成元素的基本粒子，然后在这些粒子的基础上进行更加抽象的研究。从这个角度看，学习计算机系统，自底向上可能是一个好的方向。
+在计算机中，我们看到的一切，归根到底，都是比特，每个比特不是 0 就是 1。计">
+<meta property="og:image" content="http://wdxtub.com/images/14609257940557.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14609333219815.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14609496617886.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/csapp12.jpg">
+<meta property="og:updated_time" content="2017-02-11T09:04:52.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="【计算机系统导论】2.4 运算">
-<meta name="twitter:description" content="公式">
+<meta name="twitter:title" content="【计算机系统导论】2.4 整型与基本运算">
+<meta name="twitter:description" content="2.4.1 比特心生研究问题有两种方法，一种是自顶向下，另一种是自底向上。对于设计来说，很多时候是自顶向下的，从一个整体想法出发，然后慢慢细化；而在学习化学的时候，往往是自底向上的，比方说先去了解组成元素的基本粒子，然后在这些粒子的基础上进行更加抽象的研究。从这个角度看，学习计算机系统，自底向上可能是一个好的方向。
+在计算机中，我们看到的一切，归根到底，都是比特，每个比特不是 0 就是 1。计">
+<meta name="twitter:image" content="http://wdxtub.com/images/14609257940557.jpg">
 
 
 
@@ -129,7 +137,7 @@
 
 
 
-  <title> 【计算机系统导论】2.4 运算 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 【计算机系统导论】2.4 整型与基本运算 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -313,7 +321,7 @@
             
             
               
-                【计算机系统导论】2.4 运算
+                【计算机系统导论】2.4 整型与基本运算
               
             
           </h1>
@@ -340,8 +348,8 @@
                 <i class="fa fa-calendar-check-o"></i>
               </span>
               <span class="post-meta-item-text">更新于</span>
-              <time title="更新于" itemprop="dateModified" datetime="2016-10-06T19:15:02+08:00">
-                2016-10-06
+              <time title="更新于" itemprop="dateModified" datetime="2017-02-11T17:04:52+08:00">
+                2017-02-11
               </time>
             
           </span>
@@ -404,7 +412,423 @@
       
         <a id="more"></a>
 <hr>
- 公式 
+<h2 id="2-4-1-比特心生"><a href="#2-4-1-比特心生" class="headerlink" title="2.4.1 比特心生"></a>2.4.1 比特心生</h2><p>研究问题有两种方法，一种是自顶向下，另一种是自底向上。对于设计来说，很多时候是自顶向下的，从一个整体想法出发，然后慢慢细化；而在学习化学的时候，往往是自底向上的，比方说先去了解组成元素的基本粒子，然后在这些粒子的基础上进行更加抽象的研究。从这个角度看，学习计算机系统，自底向上可能是一个好的方向。</p>
+<p>在计算机中，我们看到的一切，归根到底，都是比特，每个比特不是 0 就是 1。计算机就是通过对比特进行不同方式的编码和描述，来完成执行不同的任务。那么问题来了，为什么是比特而不是其他呢？这就要从模拟电路讲起，一言以蔽之就是，比特这种描述方式很好存储，并且在有噪声或者传输不那么准确的情况下，也能保持比较高的可靠度（电压值有一定的容错范围）。</p>
+<p>在这样的物理基础上，计算机就是一个二进制系统，我们通过下面这个表格来把二进制、十进制和十六进制一一对应起来，这三种数字表示形式在今后的学习过程中会反复出现，可以把这个表格当做九九乘法表来看：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">十六进制</th>
+<th style="text-align:center">十进制</th>
+<th style="text-align:center">二进制</th>
+<th style="text-align:center">十六进制</th>
+<th style="text-align:center">十进制</th>
+<th style="text-align:center">二进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0000</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">1000 </td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0001</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">1001</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0010</td>
+<td style="text-align:center">A</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">1010</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0011</td>
+<td style="text-align:center">B</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">1011</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0100</td>
+<td style="text-align:center">C</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">1100</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">0101</td>
+<td style="text-align:center">D</td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">1101</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">0110</td>
+<td style="text-align:center">E</td>
+<td style="text-align:center">14</td>
+<td style="text-align:center">1110</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">0111</td>
+<td style="text-align:center">F</td>
+<td style="text-align:center">15</td>
+<td style="text-align:center">1111</td>
+</tr>
+</tbody>
+</table>
+<p>正如加减乘除，关于比特的基本逻辑运算也有四种，可以看做是布尔代数[8]的子集。对于 0 和 1 来说，是这样的：</p>
+<ul>
+<li>与 And：<code>A=1</code> 且 <code>B=1</code> 时，<code>A&amp;B = 1</code></li>
+<li>或 Or：<code>A=1</code> 或 <code>B=1</code> 时，<code>A|B = 1</code></li>
+<li>非 Not：<code>A=1</code> 时，<code>~A=0</code>；<code>A=0</code> 时，<code>~A=1</code></li>
+<li>异或 Exclusive-Or(Xor)：<code>A=1</code> 或 <code>B=1</code> 时，<code>A^B = 1</code>；<code>A=1</code> 且 <code>B=1</code> 时，<code>A^B = 0</code></li>
+</ul>
+<p>对应与集合运算则是交集、并集、差集和补集，假设集合 A 是 <code>{0, 3, 5, 6}</code>，集合 B 是 <code>{0, 2, 4, 6}</code>，全集为 <code>{0, 1, 2, 3, 4, 5, 6, 7}</code>那么：</p>
+<ul>
+<li><code>&amp;</code> 交集 Intersection <code>{0, 6}</code></li>
+<li><code>|</code> 并集 Union <code>{0, 2, 3, 4, 5, 6}</code></li>
+<li><code>^</code> 差集 Symmetric difference <code>{2, 3, 4, 5}</code></li>
+<li><code>~</code> 补集 Complement <code>{1, 3, 5, 7}</code></li>
+</ul>
+<p>有了这些知识，我们就可以来具体看看不同类型的数据在计算机中是如何存储和进行运算的了。</p>
+<h2 id="2-4-2-整型-Integer"><a href="#2-4-2-整型-Integer" class="headerlink" title="2.4.2 整型 Integer"></a>2.4.2 整型 Integer</h2><p>C 语言之所以效率高，很大程度上是因为抽象程度较低，很多关键字和计算机系统中的概念是一一对应的。比方说 <code>signed</code> 和 <code>unsigned</code>，就表示有符号数和无符号数。假设字长(word size)为 <code>w</code>，那么二进制向十进制的转换分别是：</p>
+<ul>
+<li>无符号数：$B2U(X)=\sum_{i=0}^{w-1}x_i·2^i$</li>
+<li>有符号数： $B2T(X)=-x_{w-1}·2^{w-1}+\sum_{i=0}^{w-2}x_i·2^i$ </li>
+</ul>
+<p>有符号数和无符号数的区别主要在于有没有最高位的符号位，以及由此带来的计算方式的不同。符号位中，0 表示非负数，1 表示负数。具体的表示方法如下</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">十进制</th>
+<th style="text-align:center">十六进制</th>
+<th style="text-align:center">二进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">15213</td>
+<td style="text-align:center">3B 6D</td>
+<td style="text-align:center">00111011 01101101</td>
+</tr>
+<tr>
+<td style="text-align:center">-15213</td>
+<td style="text-align:center">C4 93</td>
+<td style="text-align:center">11000100 10010011</td>
+</tr>
+</tbody>
+</table>
+<p>对于二进制数字来说，还有两种常用操作：左移和右移。左移比较简单，在右边补 0 即可。右移的话有两种类型，一种是逻辑右移（左边补 0），另一种是算术右移（左边补符号位）。为什么会有这两种，因为对应无符号数和有符号数的运算，有符号数的最高位（最左边）是符号位在负数的时候需要进行算术右移</p>
+<h3 id="整型表示的特点"><a href="#整型表示的特点" class="headerlink" title="整型表示的特点"></a>整型表示的特点</h3><p>接下来我们看看这种表示形式的特点，以及溢出的集中情况，假设字长为 <code>w</code>，定义如下的常量：</p>
+<ul>
+<li>UMin = 0 即 000…0</li>
+<li>UMax = $2^w-1$ 即 111…1</li>
+<li>TMin = $-2^{w-1}$ 即 100…0</li>
+<li>TMax = $2^{w-1}-1$ 即 011…1</li>
+<li>Minus 1 即 111…1</li>
+</ul>
+<p>这里的 U 表示无符号数，T 表示补码(Two’s Complement)，对于字长为 16 的情况来说，我们有：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">\</th>
+<th style="text-align:center">Decimal</th>
+<th style="text-align:center">Hex</th>
+<th style="text-align:center">Binary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">UMax</td>
+<td style="text-align:center">65535</td>
+<td style="text-align:center">FF FF</td>
+<td style="text-align:center">11111111 11111111</td>
+</tr>
+<tr>
+<td style="text-align:center">TMax</td>
+<td style="text-align:center">32767</td>
+<td style="text-align:center">7F FF</td>
+<td style="text-align:center">01111111 11111111</td>
+</tr>
+<tr>
+<td style="text-align:center">TMin</td>
+<td style="text-align:center">-32768</td>
+<td style="text-align:center">80 00</td>
+<td style="text-align:center">10000000 00000000</td>
+</tr>
+<tr>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">FF FF</td>
+<td style="text-align:center">11111111 11111111</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">00 00</td>
+<td style="text-align:center">00000000 00000000</td>
+</tr>
+</tbody>
+</table>
+<p>对于不同的 word size，数值也会有很大的变化</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">w</th>
+<th style="text-align:center">8</th>
+<th style="text-align:center">16</th>
+<th style="text-align:center">32</th>
+<th style="text-align:center">64 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">UMax</td>
+<td style="text-align:center">255</td>
+<td style="text-align:center">65,535</td>
+<td style="text-align:center">4,294,967,295</td>
+<td style="text-align:center">18,446,744,073,709,551,615</td>
+</tr>
+<tr>
+<td style="text-align:center">TMax</td>
+<td style="text-align:center">127</td>
+<td style="text-align:center">32,767</td>
+<td style="text-align:center">2,147,483,647</td>
+<td style="text-align:center">9,223,372,036,854,775,807</td>
+</tr>
+<tr>
+<td style="text-align:center">TMin</td>
+<td style="text-align:center">-128</td>
+<td style="text-align:center">-32,768</td>
+<td style="text-align:center">-2,147,483,648</td>
+<td style="text-align:center">-9223,372,036,854,775,808</td>
+</tr>
+</tbody>
+</table>
+<p>观察可以得知两个很重要的特性</p>
+<ul>
+<li>|TMin| = TMax + 1 (范围并不是对称的)</li>
+<li>UMax = 2*TMax + 1</li>
+</ul>
+<p>有符号数和无符号数在非负数的编码是一样的，每一个数字的编码是唯一的，这两者可以互换：</p>
+<ul>
+<li>$U2B(x)=B2U^{-1}(x)$</li>
+<li>$T2B(x)=B2T^{-1}(x)$</li>
+</ul>
+<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><p>我们在数轴上把有符号数和无符号数画出来的话，就能很清晰的看出相对的关系：</p>
+<p><img src="/images/14609257940557.jpg" alt=""></p>
+<p>在 C 语言中，如果不加关键字限制，默认的整型是有符号的。如果想要无符号数的话，需要在数字后面加 <code>U</code>，例如下面的代码段</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> a_signed_number = <span class="number">-15213</span>;</div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> a_unsigned_number = <span class="number">15213U</span>;</div></pre></td></tr></table></figure>
+<p>在进行有符号和无符号数的互相转换时：</p>
+<ul>
+<li>具体每一个字节的值不会改变，改变的是计算机解释当前值的方式</li>
+<li>如果一个表达式既包含有符号数也包含无符号数，那么会被隐式转换成无符号数进行比较</li>
+</ul>
+<p>下面用字长 <code>w = 32</code> 为例，来进行说明，注意这里的每个表达式都是成立的，其中 <code>TMin = -2,147,483,648</code>, <code>TMax = 2,147,483,647</code></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">表达式</th>
+<th style="text-align:center">比较对象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0 == 0U</td>
+<td style="text-align:center">无符号数</td>
+</tr>
+<tr>
+<td style="text-align:center">-1 &lt; 0</td>
+<td style="text-align:center">有符号数</td>
+</tr>
+<tr>
+<td style="text-align:center">-1 &gt; 0U</td>
+<td style="text-align:center">无符号数</td>
+</tr>
+<tr>
+<td style="text-align:center">2147483647 &gt; (-2147483647-1)</td>
+<td style="text-align:center">有符号数</td>
+</tr>
+<tr>
+<td style="text-align:center">2147483647U &lt; (-2147483647-1)</td>
+<td style="text-align:center">无符号数</td>
+</tr>
+<tr>
+<td style="text-align:center">-1 &gt; -2</td>
+<td style="text-align:center">有符号数</td>
+</tr>
+<tr>
+<td style="text-align:center">(unsigned)-1 &gt; -2</td>
+<td style="text-align:center">无符号数</td>
+</tr>
+<tr>
+<td style="text-align:center">2147483647 &lt; 2147483648U</td>
+<td style="text-align:center">无符号数</td>
+</tr>
+<tr>
+<td style="text-align:center">2147483647 &gt; (int)2147483648U</td>
+<td style="text-align:center">有符号数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="类型扩展与截取"><a href="#类型扩展与截取" class="headerlink" title="类型扩展与截取"></a>类型扩展与截取</h3><p>具体需要分情况讨论，如：</p>
+<ul>
+<li>扩展（例如从 <code>short int</code> 到 <code>int</code>），都可以得到预期的结果<ul>
+<li>无符号数：加 0</li>
+<li>有符号数：加符号位</li>
+</ul>
+</li>
+<li>截取（例如 <code>unsigned</code> 到 <code>unsigned short</code>），对于小的数字可以得到预期的结果<ul>
+<li>无符号数：mod 操作</li>
+<li>有符号数：近似 mod 操作</li>
+</ul>
+</li>
+</ul>
+<p>举个例子</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">short</span> <span class="keyword">int</span> x = <span class="number">15213</span>;</div><div class="line"><span class="keyword">int</span> ix = (<span class="keyword">int</span>) x;</div><div class="line"><span class="keyword">short</span> <span class="keyword">int</span> y = <span class="number">-15213</span>;</div><div class="line"><span class="keyword">int</span> iy = (<span class="keyword">int</span>) y;</div></pre></td></tr></table></figure>
+<p>C 语言会自动做符号拓展，把小的数据类型转换成大的，如下表所示</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">十进制</th>
+<th style="text-align:center">十六进制</th>
+<th style="text-align:center">二进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">x=15213</td>
+<td style="text-align:center">3B 6D</td>
+<td style="text-align:center">00111011 01101101</td>
+</tr>
+<tr>
+<td style="text-align:center">ix=15213</td>
+<td style="text-align:center">00 00 3B 6D</td>
+<td style="text-align:center">00000000 00000000 00111011 01101101</td>
+</tr>
+<tr>
+<td style="text-align:center">y=-15213</td>
+<td style="text-align:center">C4 93</td>
+<td style="text-align:center">11000100 10010011</td>
+</tr>
+<tr>
+<td style="text-align:center">iy=-15213</td>
+<td style="text-align:center">FF FF C4 93</td>
+<td style="text-align:center">11111111 11111111 11000100 10010011</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-4-3-整型运算与溢出"><a href="#2-4-3-整型运算与溢出" class="headerlink" title="2.4.3 整型运算与溢出"></a>2.4.3 整型运算与溢出</h2><p>无论是无符号数还是有符号数，一旦用来表示数值的最高位发生了进位，超出了表达形式或者改变了符号位，就会发生溢出。</p>
+<p>对于无符号数加法，如果两个 <code>w</code> 位的数字相加，结果是 <code>w+1</code> 位的话，那么就会丢弃掉最高位，实际上是做了一个 mod 操作（公式为 $s=UAdd_w(u,v)=u+v \; mod \; 2^w$）</p>
+<p>假设 <code>w=3</code>，那么能够表达的数字范围是 <code>000~111(0~7)</code>（括号内为二进制对应的十进制数值，后同），那么如果一个表达式是 <code>110+111(6+7)</code>，原本应该等于 <code>1101(13)</code>，但是由于 <code>w=3</code>，所以最终的结果是 <code>101(5)</code>，也就是发生了溢出，两个无符号数相加，有可能反而变『小』。</p>
+<p>对于有符号的加法(Two’s Complement Addition)，操作过程和无符号加法一样，只是解释的时候会有不同，因此会得到正溢出(positive overflow)和负溢出(negative overflow)两种。正溢出就是数值太大把原来为 0 的符号位修改成了 1，反而成了负数；负溢出是数值太小，把原来为 1 的符号位修改成了 0，反而成了正数。</p>
+<p>还是用刚才 <code>w=3</code> 作为例子，能够表达的数字范围是 <code>100~011(-4~3)</code>，如果一个表达式是 <code>011+010(3+2)</code>，理论上应该等于 5，但是相加之后变成了 <code>101(-3)</code>，也就是发生了正溢出。如果一个表达式是 <code>100+101(-4+(-3))</code>，理论上应该等于 -7，但是相加后进位截取变成了 <code>001(1)</code>，也就是发生了负溢出。</p>
+<p>对于乘法来说，值的范围会大很多，这里分情况讨论一下，假设两个乘数是 x,y 并且都是 w 位的：</p>
+<ul>
+<li>无符号数：至多 2w 位<ul>
+<li>范围 $0 \le x \times y \le (2^w-1)^2 = 2^{2w}-2^{w+1}+1$</li>
+</ul>
+</li>
+<li>有符号数，最小的负数：至多 2w - 1 位<ul>
+<li>范围 $x \times y \ge (-2^{w-1})\times(2^{w-1}-1)=-2^{2w-2}+2^{w-1}$</li>
+</ul>
+</li>
+<li>有符号数，最大的正数：至多 2w 位，只有 $(TMin_w)^2$ 一种情况<ul>
+<li>范围 $x \times y \le (-2^{w-1})^2=2^{2w-2}$</li>
+</ul>
+</li>
+</ul>
+<p>如果需要保证精度，就需要用软件来实现了。另外，计算的无符号乘法的时候，会忽略最高的 w 位，相当于 $UMult_w(u,v)=u·v\;mod\;2^w$</p>
+<h2 id="2-4-4-数据在内存中的形式"><a href="#2-4-4-数据在内存中的形式" class="headerlink" title="2.4.4 数据在内存中的形式"></a>2.4.4 数据在内存中的形式</h2><p>后续章节会有关于内存的详细介绍，这里我们只要知道不同数据类型所占据的字节数，以及大端-小端规则即可。</p>
+<p>操作系统会给每个进程提供私有的虚拟内存地址空间，一个进程可以访问自己的数据，但是不能访问别人的数据。在虚拟内存中地址是连续的，对应物理内存则不一定，根据字长的不同，有不同的间隔，如下图所示</p>
+<p><img src="/images/14609333219815.jpg" alt=""></p>
+<p>然后我们来看看常见数据类型所需要的字节数：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">数据类型</th>
+<th style="text-align:center">32 位</th>
+<th style="text-align:center">64 位</th>
+<th style="text-align:center">x86-64</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">char</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">short</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:center">int</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:center">long</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">float</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:center">double</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">long double</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">10/16</td>
+</tr>
+<tr>
+<td style="text-align:center">指针</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+</tr>
+</tbody>
+</table>
+<p>数据具体的排列也有两种方式：大端(Big Endian)与小端(Little Endian)，区别在于高位地址的位置。Internet 数据采用大端规则，而我们常见的 x86 或 ARM 处理器都采用小端规则。</p>
+<p>举个例子，假如变量 <code>x</code> 是 4 字节，值为 <code>0x01234567</code>。用 <code>&amp;x</code> 索引的地址是 <code>0x100</code>，那么大端和小端的表示形式是</p>
+<p><img src="/images/14609496617886.jpg" alt=""></p>
+<p>如何检查数据的表示呢，可以用下面的代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *pointer;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">show_bytes</span><span class="params">(pointer start, <span class="keyword">size_t</span> len)</span> </span>&#123;</div><div class="line">	<span class="keyword">size_t</span> i;</div><div class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; len; i++)</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"%p\t0x%.2x\n"</span>, start+i, start[i]);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"\n"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里 <code>%p</code> 用来输出指针，<code>%x</code> 用来输出 16 进制数据。执行可用：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><div class="line"><span class="keyword">int</span> a = <span class="number">15213</span>;</div><div class="line"><span class="built_in">printf</span>(<span class="string">"int a = 15213;\n"</span>);</div><div class="line">show_bytes((pointer) &amp;a, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</div></pre></td></tr></table></figure>
+<p>在我的电脑上，测试如下：</p>
+<p><img src="/images/csapp12.jpg" alt="csapp12"></p>
 
       
     </div>
@@ -460,8 +884,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/1984/09/11/ics-draft-2-3/" rel="next" title="【计算机系统导论】2.3 整型">
-                <i class="fa fa-chevron-left"></i> 【计算机系统导论】2.3 整型
+              <a href="/1984/09/11/ics-draft-2-3/" rel="next" title="【计算机系统导论】2.3 信息表示">
+                <i class="fa fa-chevron-left"></i> 【计算机系统导论】2.3 信息表示
               </a>
             
           </div>
@@ -488,7 +912,7 @@
     <div class="post-spread">
       
         <div class="ds-share flat" data-thread-key="1984/09/11/ics-draft-2-4/"
-     data-title="【计算机系统导论】2.4 运算"
+     data-title="【计算机系统导论】2.4 整型与基本运算"
      data-content=""
      data-url="http://wdxtub.com/1984/09/11/ics-draft-2-4/">
   <div class="ds-share-inline">
@@ -521,7 +945,7 @@
   <div class="comments" id="comments">
     
       <div class="ds-thread" data-thread-key="1984/09/11/ics-draft-2-4/"
-           data-title="【计算机系统导论】2.4 运算" data-url="http://wdxtub.com/1984/09/11/ics-draft-2-4/">
+           data-title="【计算机系统导论】2.4 整型与基本运算" data-url="http://wdxtub.com/1984/09/11/ics-draft-2-4/">
       </div>
     
   </div>
@@ -545,8 +969,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/misc/avatar.jpg"
@@ -672,6 +1105,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-1-比特心生"><span class="nav-number">1.</span> <span class="nav-text">2.4.1 比特心生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-2-整型-Integer"><span class="nav-number">2.</span> <span class="nav-text">2.4.2 整型 Integer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整型表示的特点"><span class="nav-number">2.1.</span> <span class="nav-text">整型表示的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型转换"><span class="nav-number">2.2.</span> <span class="nav-text">类型转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类型扩展与截取"><span class="nav-number">2.3.</span> <span class="nav-text">类型扩展与截取</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-3-整型运算与溢出"><span class="nav-number">3.</span> <span class="nav-text">2.4.3 整型运算与溢出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-4-数据在内存中的形式"><span class="nav-number">4.</span> <span class="nav-text">2.4.4 数据在内存中的形式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
