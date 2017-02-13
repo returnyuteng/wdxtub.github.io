@@ -86,16 +86,22 @@
 
 
 
-<meta name="description" content="ISA">
+<meta name="description" content="人们对性能的追求永无止境，从最初的流水线、到超标量处理器和多核处理器，都是为了让我们的计算更快更强。这背后的思路其实很简单，就是对于并发和并行的充分利用，本节我们就来一探究竟。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【计算机系统导论】3.3 并行与并发">
 <meta property="og:url" content="http://wdxtub.com/1984/09/11/ics-draft-3-3/index.html">
 <meta property="og:site_name" content="小土刀">
-<meta property="og:description" content="ISA">
-<meta property="og:updated_time" content="2017-02-13T02:08:17.000Z">
+<meta property="og:description" content="人们对性能的追求永无止境，从最初的流水线、到超标量处理器和多核处理器，都是为了让我们的计算更快更强。这背后的思路其实很简单，就是对于并发和并行的充分利用，本节我们就来一探究竟。">
+<meta property="og:image" content="http://wdxtub.com/images/14869542802144.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14869515229412.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14869538104785.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14869544005098.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14869538365517.jpg">
+<meta property="og:updated_time" content="2017-02-13T02:54:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【计算机系统导论】3.3 并行与并发">
-<meta name="twitter:description" content="ISA">
+<meta name="twitter:description" content="人们对性能的追求永无止境，从最初的流水线、到超标量处理器和多核处理器，都是为了让我们的计算更快更强。这背后的思路其实很简单，就是对于并发和并行的充分利用，本节我们就来一探究竟。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14869542802144.jpg">
 
 
 
@@ -340,7 +346,7 @@
                 <i class="fa fa-calendar-check-o"></i>
               </span>
               <span class="post-meta-item-text">更新于</span>
-              <time title="更新于" itemprop="dateModified" datetime="2017-02-13T10:08:17+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2017-02-13T10:54:05+08:00">
                 2017-02-13
               </time>
             
@@ -402,12 +408,44 @@
       
 
       
-        <p>ISA</p>
+        <p>人们对性能的追求永无止境，从最初的流水线、到超标量处理器和多核处理器，都是为了让我们的计算更快更强。这背后的思路其实很简单，就是对于并发和并行的充分利用，本节我们就来一探究竟。</p>
 <a id="more"></a>
 <hr>
- 公式 
+<p><strong>先介绍基本的概念逻辑</strong></p>
+<p>通常，处理一条指令包括很多操作。将它们组织成某个特殊的阶段序列，即使指令的动作差异很大，但所有的指令都循序统一的序列。每一步的具体处理取决于正在执行的指令。创建这样一个框架，我们便能够设计一个能充分利用硬件的处理器。下面是关于各个阶段以及各阶段内执行操作的简略描述：</p>
+<ul>
+<li>取指(fetch)：取值阶段从存储器读取指令字节，地址为程序计数器 PC 的值。</li>
+<li>译码(decode)：译码阶段从寄存器文件读入最多两个操作数</li>
+<li>执行(execute)：在执行阶段，ALU 要么执行指令明确的操作，计算存储器引用的有效地址，要么增加或减少栈指针。对一条跳转指令来说，这个阶段会检验条件码和分支条件，看看是否应该选择分支</li>
+<li>访存(memory)：访存阶段可以将数据写入存储器，或者从存储器读出数据。</li>
+<li>写回(write back)：写回阶段最多可以写两个结果到寄存器文件</li>
+<li>更新 PC(PC update)：将 PC 设置成下一条指令的地址</li>
+</ul>
+<p><img src="/images/14869542802144.jpg" alt=""></p>
+<p><strong>然后引入流水线</strong></p>
+<p>流水线增加了同时执行的指令数目以及指令开始和结束的速率。流水线并不能够减少单一指令的执行时间，也称为延迟。对流水线的设计者来说，指令集既可能将事物简单化，也可能将事物复杂化。流水线设计者必须解决结构冒险、控制冒险和数据冒险。而分支预测、转发和阻塞机制能够在保证得到正确结果的前提下提高计算机的性能。</p>
+<p>流水线和多发射都提高了指令的吞吐率并致力于开发指令级并行。然而，由于处理器有时必须等待依赖关系明确后才能继续工作，所以程序中的数据相关和控制相关往往限制了可达性能的上限。基于软件的指令级并行开发主要依赖于编译器来寻找依赖关系并尽量减少这些依赖关系可能造成的不良后果。基于硬件的指令级并行开发主要依赖于流水线和多发射机制。推测执行可以由硬件或编译器完成，它可以增加指令行并行。但是使用时必须小心，因为错误的推测可能会降低性能。</p>
+<p>除了存储系统以外，流水线的有效运作是决定处理器 CPI 乃至性能最终要的因素。结构冒险、数据冒险和控制冒险在简单流水线处理器和更复杂的流水线处理器中都是非常重要的，对现代流水线而言，结构冒险常出现在浮点单元附近，浮点单元是一个几乎不可能完全流水的地方。与之相比，控制冒险一般出现在整数程序中，因为其中分支出现的概率更高，也更难预测。数据冒险在整数和浮点程序中都可能成为性能平静。一般来说浮点程序中的数据冒险更容易处理，因为低的分支出现频率和规则的存储器存取使得编译器有更大的空间调度指令以避免冒险。与之相比，在整数程序中涉及大量的指针，存储器的存取更不规则，做这样的优化就要困难一些。有很多编译器和基于硬件的技术通过调度来减少数据间的依赖。</p>
+<p>通过动态多发射和推测执行开发指令级并行的负面问题是功耗效率。每项发明都成功将更多的晶体管转化为性能，但是这种转化往往极其缺乏效率。因为功耗墙的原因，最新的处理器是单片多核式的，而非前辈的深流水线或贪婪式推测。尽管简单的处理器没有复杂的处理器那么快，但是在同样的功耗下却能得到更高的性能。所以当设计的约束更多来自功耗而非晶体管数量时，简单的处理器能在单芯片上获得更高的性能。</p>
+<p><strong>流水线的细节</strong></p>
+<p>流水线化的一个重要特性就是增加了系统的吞吐量(throughput)，也就是单位时间内服务的顾客总数，不过它也会轻微地增加延迟(latency)，也就是服务一个用户所需要的时间。</p>
+<p><strong>流水线的局限性</strong></p>
+<ul>
+<li>不一致的划分<ul>
+<li>运行时钟的速率是由最慢阶段的延迟限制的（木桶理论）</li>
+<li>对硬件设计者来说，将系统计算设计划分成一组具有相同延迟的阶段是一个严峻的挑战。通常，处理器中的某些硬件单元，如 ALU 和存储器，是不能被划分成多个延迟较小的单元的。这就使得创建一组平衡的阶段非常困难。</li>
+</ul>
+</li>
+<li>流水线过深，收益反而下降</li>
+</ul>
+<p><strong>然后介绍为了提高指令效率所采用的各种策略</strong></p>
+<p>比如超标量，多发射等等，然后介绍各种关键算法，如 tomasolu 等等</p>
+<hr>
 <p>处理器包括用户可见的寄存器和控制/状态寄存器。用户可见寄存器是指，用户使用机器指令显式或隐式可访问的寄存器。它们可以是通用寄存器，也可以是用于定点或浮点数、地址、变址和段指针这样的专用寄存器。控制和状态寄存器用于控制 CPU 的操作。一个明显的例子是程序计数器。另一重要的例子是程序状态字（PSW），它包含各种状态和条件位，例如反映最近一次算术运算结果的标志位、中断允许位和指示 CPU 当前运行于特权模式下还是用户模式下的状态位。</p>
 <p>处理器采用指令流水方式来加速指令的执行。从本质上讲，流水是将指令周期分解成几个连续出现的阶段，如取指令、译码指令、确定操作数地址、取操作数、执行指令和写结果操作数。指令向前移动通过这些段，就像车间的一条装配线一样；于是，不同的指令能同时在各个段上工作。不过，转移和指令间相关性的出现，使流水线的设计和使用变得复杂了。</p>
+<p><img src="/images/14869515229412.jpg" alt=""></p>
+<p>依然是围绕这一幅图来进行说明</p>
+<p><img src="/images/14869538104785.jpg" alt=""></p>
 <h2 id="并行与并发的区别"><a href="#并行与并发的区别" class="headerlink" title="并行与并发的区别"></a>并行与并发的区别</h2><h2 id="话题"><a href="#话题" class="headerlink" title="话题"></a>话题</h2><ul>
 <li>流水线</li>
 <li>冒险</li>
@@ -415,12 +453,23 @@
 <li>预测执行</li>
 <li>寄存器重命名</li>
 </ul>
-<h2 id="并行层次"><a href="#并行层次" class="headerlink" title="并行层次"></a>并行层次</h2><ul>
+<h3 id="分支预测"><a href="#分支预测" class="headerlink" title="分支预测"></a>分支预测</h3><p>研究表明，使用总是选择(always taken)分支的预测策略的成功率大约是 60%，相反，从不选择(never taken, NT) 策略的成功率大约为 40%。稍微复杂一点的是反向选择、正向不选择(backward taken, forward not-taken, BTFNT)的策略，当分支地址比下一条呆滞低时就预测选择分支，而分支地址比较高时，就预测不选择分支。这种策略的成功率大约为 65%。这种改进源自于一个事实，即循环是由后想分支结束的，而循环通常会执行多次。前向分支用于条件操作，而这种选择的可能性较小。</p>
+<p><img src="/images/14869544005098.jpg" alt=""></p>
+<p>分支预测及对应算法</p>
+<p>既然编译器可以根据数据依赖关系调度代码，为什么还需要超标量处理器来进行动态调度呢？有三个原因。1）不是所有的阻塞都可以事先知道的。尤其是 cache 缺失会导致不可预测的阻塞。动态调度使得处理器可以调度并执行其他无关的指令以掩盖阻塞。2）如果处理器采用动态分支预测推测分支结果，那么由于这些信息依赖于预测和分支指令的真实情况，编译器无法得知指令的精确顺序。采用动态推测而不是动态调度，会极大地限制可开发的指令级并行度(ILP)。3）由于流水线延时和发射宽度根据处理器的具体实现的不同有很大而差别，所以最佳的编译代码顺序也并不固定。例如，调度一个相互依赖的指令序列的具体方式与发射宽度和延时存在着密切关系。流水线的结果同样会影响循环展开的尝试，才能避免可能的阻塞。它还回影响编译器进行寄存器重命名的过程。动态调度使得硬件将这些细节隐藏起来。因此，用户和软件发行商就不用针对同一指令集的不同处理器发行相应的软件了。同样的，以前的代码也能从更新的处理器上获得好处而不用重新编译。</p>
+<p>编译器经常创建一些在编程语言中没出现过的分支和标签。避免显式编写这些标签和分支是使用高级编程语言的好处之一，也是其编码速度块的一个原因。</p>
+<p>以分支指令结束的这类指令序列对编译非常重要，因此它们有对应的专用术语：基本块。基本块是没有分支（可能出现在末尾者除外）并且没有分支目标/分支标签（可能出现在开始者除外）的指令序列。编译最初阶段的任务之一就是将程序分解为若干基本块。</p>
+<p>虽然在 C 或 Java 这样的编程语言中有许多分支判断和循环语句，但是在指令集这一层次实现其功能的基本语句是条件分支。</p>
+<p>和算术运算一样，对取数指令来说有符号位和无符号位是有区别的。取回有符号数后需要使用符号位填充寄存器的所有剩余位，称为符号扩展，但其目的是在寄存器中放入数字正确的表示方式。</p>
+<p>编译器或汇编程序必须把大的常数分解为若干小的常数然后再合并到一个寄存器中。</p>
+<p>大多数条件分支都转移到一个附近的位置，但有时也会转移很远，距离超过位数可能表示的范围。汇编器的解决方法就像处理对大地址或大常数的方法一样：插入一个跳转到分支目标的无条件跳转，并将条件取反以便由分支决定是否跳过该无条件跳转指令。</p>
+<h3 id="流水线冒险"><a href="#流水线冒险" class="headerlink" title="流水线冒险"></a>流水线冒险</h3><h3 id="数据冒险"><a href="#数据冒险" class="headerlink" title="数据冒险"></a>数据冒险</h3><h2 id="并行层次"><a href="#并行层次" class="headerlink" title="并行层次"></a>并行层次</h2><ul>
 <li>位级并行</li>
 <li>指令集并行（标量、超标量）</li>
 <li>数据并行</li>
 <li>任务并行</li>
 </ul>
+<p><img src="/images/14869538365517.jpg" alt=""></p>
 <h3 id="超标量"><a href="#超标量" class="headerlink" title="超标量"></a>超标量</h3><p>超标量处理器是一种使用多条相互独立的指令流水线的处理器。每条流水线由多个段（stage）组成，因此每条流水线能同时处理多条指令。多流水线引入了新一级并行性，允许同时处理多个指令流。超标量处理器利用了所谓的指令级并行性（instruction-level parallelism），指令级并行性指的是程序中的指令可以并行执行。</p>
 <p>超标量处理器一次取多条指令，然后试图找出几条彼此不相关因而能够并行执行的指令。如果一条指令的输入取决于前面指令的输出，则这条指令不能同时，更不能先于前面指令完成执行。一旦这种相关性被确认，处理器可以以不同于原来代码的顺序发射和完成指令。</p>
 <p>通过使用更多的寄存器，或对原代码中的寄存器引用换名，处理器可取消某些不必要的相关性</p>
@@ -718,7 +767,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#并行与并发的区别"><span class="nav-number">1.</span> <span class="nav-text">并行与并发的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#话题"><span class="nav-number">2.</span> <span class="nav-text">话题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并行层次"><span class="nav-number">3.</span> <span class="nav-text">并行层次</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#超标量"><span class="nav-number">3.1.</span> <span class="nav-text">超标量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程"><span class="nav-number">4.</span> <span class="nav-text">线程</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#并行与并发的区别"><span class="nav-number">1.</span> <span class="nav-text">并行与并发的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#话题"><span class="nav-number">2.</span> <span class="nav-text">话题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分支预测"><span class="nav-number">2.1.</span> <span class="nav-text">分支预测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流水线冒险"><span class="nav-number">2.2.</span> <span class="nav-text">流水线冒险</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据冒险"><span class="nav-number">2.3.</span> <span class="nav-text">数据冒险</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并行层次"><span class="nav-number">3.</span> <span class="nav-text">并行层次</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#超标量"><span class="nav-number">3.1.</span> <span class="nav-text">超标量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程"><span class="nav-number">4.</span> <span class="nav-text">线程</span></a></li></ol></div>
             
 
           </div>
