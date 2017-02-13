@@ -86,16 +86,16 @@
 
 
 
-<meta name="description" content="公式">
+<meta name="description" content="草稿阶段，主要参考自己博客">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【计算机系统导论】4.5 层次结构">
 <meta property="og:url" content="http://wdxtub.com/1984/09/11/ics-draft-4-5/index.html">
 <meta property="og:site_name" content="小土刀">
-<meta property="og:description" content="公式">
-<meta property="og:updated_time" content="2016-10-06T11:29:41.000Z">
+<meta property="og:description" content="草稿阶段，主要参考自己博客">
+<meta property="og:updated_time" content="2017-02-13T03:41:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【计算机系统导论】4.5 层次结构">
-<meta name="twitter:description" content="公式">
+<meta name="twitter:description" content="草稿阶段，主要参考自己博客">
 
 
 
@@ -340,8 +340,8 @@
                 <i class="fa fa-calendar-check-o"></i>
               </span>
               <span class="post-meta-item-text">更新于</span>
-              <time title="更新于" itemprop="dateModified" datetime="2016-10-06T19:29:41+08:00">
-                2016-10-06
+              <time title="更新于" itemprop="dateModified" datetime="2017-02-13T11:41:16+08:00">
+                2017-02-13
               </time>
             
           </span>
@@ -402,10 +402,52 @@
       
 
       
-        <a id="more"></a>
+        <p>草稿阶段，主要参考自己博客</p>
+<a id="more"></a>
 <hr>
- 公式 
-
+<p>计算机的存储器被组织成层次结构。最顶层（最靠近处理器的一层）是处理器内的寄存器。接下来是一级或多级的高速缓存，当使用多级 cache 时，它们分别标记为 L1, L2 等。再往下的是主存，它通常由动态随机存储器 DRAM 构成，所有这些都被认为是系统内部的存储器。存储层次继续划分外部存储器，下一层通常是固定硬盘，再往下的是可装卸的存储设备，如光盘、磁带机等。</p>
+<p>沿着存储器层次结构自顶向下，存储器成本也逐层下降，其容量在变大，而存取时间在边长。只使用最快的存储器当然好，但是它也是最昂贵的，因此我们通过使用更多较慢的存储器，以便达到存取时间与成本之间的均衡。其中的技巧是，在存储器中恰当地组织程序和数据，使需要存取的数据通常在较快的存储器中。</p>
+<p>通常，处理器将要访问的主存位置极有可能是刚被访问过的或其临近的位置，所以 cache 会自动保存一些来自近期被使用过的 DRAM 字的副本（地址本身，或地址的一部分就是索引，索引的思维）。如果 cache 设计得合理，那么大多数时候处理器所需要的存储器数据便已经在 cache 中。</p>
+<hr>
+<p>使用存储器层次结构的可能性可回溯到 20 世纪 40 年代后期到 50 年代早期通用数字计算机的最早时期。20 世纪 60 年代早期，在研究计算机中引入了虚拟存储器，70 年代引入了 IBM 大型机。缓存大约在同一时间出现。随着时间的推移，这些基本概念已经进行了扩展和延伸，以帮助缩小主存储器与处理器在访问时间方面的差距，但基本概念没有根本性变化。</p>
+<p>有一个趋势可能会导致存储器层次结构设计的巨大改变，那就是 DRAM 密度和访问时间的持续变缓。尽管 DRAM 带宽有所提高，但访问时间的缩短速度要慢得多，部分原因是为了限制功耗，一直在降低电平。为了提高带宽，人们正在研究一种思路：在每一组存储器上重叠多个访问操作。这样就为增加分组数目提供了替代方案，同时还可以提供较高的带宽。传统的 DRAM 设计在每个单元中使用电容器，通常将它们放在一个深沟道中，这种设计在制造方面也有困难，从而减缓了 DRAM 密度的增长速度。</p>
+<p>闪存不受 DRAM 发展的限制，由于在功率和密度方面的潜在优势，很可能会扮演更重要的角色。闪存相对于 DRAM 的潜在优势（不需要逐位）晶体管来控制写操作也正是其唯一致命弱点。闪存必须采用批擦除重写周期（其速度相当缓慢）。因此，比如 iPad 就将较小的 SDRAM 主存储器与闪存结合使用，既充当文件系统，也充当页存储系统，用于处理虚拟存储器。</p>
+<p>尽管人们在预测计算技术的未来时一定要非常小心，但历史已经证明，缓存技术是一种强有力的、高度可扩展的思想，它有可能让我们继续建造更快速的计算机，确保存储器层次结构能够提供系统正常运转所需要的指令和数据。</p>
+<p>存储器层级结构设计所面临的挑战在于：任何一个改进缺失率的设计同时也可能对整体性能产生负面的影响。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">设计变化</th>
+<th style="text-align:center">对缺失率的影响</th>
+<th style="text-align:center">可能对性能产生的负面影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">增加 cache 容量</td>
+<td style="text-align:center">减少了容量缺失</td>
+<td style="text-align:center">可能增加访问时间</td>
+</tr>
+<tr>
+<td style="text-align:center">提高关联度</td>
+<td style="text-align:center">由于减少了冲突缺失，因此降低了缺失率</td>
+<td style="text-align:center">可能增加访问时间</td>
+</tr>
+<tr>
+<td style="text-align:center">增加块的容量</td>
+<td style="text-align:center">由于空间局部性，因此对很宽范围内变化的块大小，都能降低缺失率</td>
+<td style="text-align:center">增加缺失代价，块太大还会增加缺失率</td>
+</tr>
+</tbody>
+</table>
+<h2 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h2><p><strong>内部存储</strong></p>
+<p>半导体随机存取存储器的两种基本形式是动态 RAM（DRAM）和静态 RAM（SRAM）。SRAM 比 DRAM 存取速度快、价格更昂贵，并且集成度较低，一般用于 cache 存储器。而 DRAM 一般用于主存储器。</p>
+<p>存储器系统中通常都使用纠错技术，这包括添加一些与原数据位成函数关系的冗余位来构成纠错码。如果出现错误位，纠错码会检测并通常能纠正该错误位。</p>
+<p>为了补偿 DRAM 相对较低的速度，现已推出几种先进的 DRAM 组织。使用最普遍的两种是同步 DRAM 和总线式 DRAM(Rambus DRAM)。两者都使用系统时钟以支持数据块传送。</p>
+<p><strong>外部存储</strong></p>
+<p>磁盘至今仍然是最重要的外部存储器。从个人计算机到大型机，乃至超级计算机，都广泛使用活动式磁盘和固定式磁盘（硬盘）。</p>
+<p>为了实现更高的性能和更好的可用性，服务器以及更大的系统使用 RAID 磁盘技术。RAID 使用了多个磁盘座位数据存储设备的并行阵列的一系列技术，并具有内在冗余性来弥补磁盘故障。</p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2>
       
     </div>
 
@@ -545,8 +587,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/misc/avatar.jpg"
@@ -672,6 +723,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#设计思路"><span class="nav-number">1.</span> <span class="nav-text">设计思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特性"><span class="nav-number">2.</span> <span class="nav-text">特性</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>

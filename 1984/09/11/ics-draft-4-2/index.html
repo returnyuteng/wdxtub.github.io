@@ -86,16 +86,16 @@
 
 
 
-<meta name="description" content="公式">
+<meta name="description" content="广义来看，所有的存储设备都可以认为是某种意义上的缓存，我们把常用的数据保存下来方便以后使用，这样就可以让计算机的运行速度更快了。这样一个看起来很简单的系统其实有非常精妙的设计，本节我们就来详细了解一下。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【计算机系统导论】4.2 缓存">
 <meta property="og:url" content="http://wdxtub.com/1984/09/11/ics-draft-4-2/index.html">
 <meta property="og:site_name" content="小土刀">
-<meta property="og:description" content="公式">
-<meta property="og:updated_time" content="2016-10-06T11:29:27.000Z">
+<meta property="og:description" content="广义来看，所有的存储设备都可以认为是某种意义上的缓存，我们把常用的数据保存下来方便以后使用，这样就可以让计算机的运行速度更快了。这样一个看起来很简单的系统其实有非常精妙的设计，本节我们就来详细了解一下。">
+<meta property="og:updated_time" content="2017-02-13T03:35:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【计算机系统导论】4.2 缓存">
-<meta name="twitter:description" content="公式">
+<meta name="twitter:description" content="广义来看，所有的存储设备都可以认为是某种意义上的缓存，我们把常用的数据保存下来方便以后使用，这样就可以让计算机的运行速度更快了。这样一个看起来很简单的系统其实有非常精妙的设计，本节我们就来详细了解一下。">
 
 
 
@@ -340,8 +340,8 @@
                 <i class="fa fa-calendar-check-o"></i>
               </span>
               <span class="post-meta-item-text">更新于</span>
-              <time title="更新于" itemprop="dateModified" datetime="2016-10-06T19:29:27+08:00">
-                2016-10-06
+              <time title="更新于" itemprop="dateModified" datetime="2017-02-13T11:35:35+08:00">
+                2017-02-13
               </time>
             
           </span>
@@ -402,9 +402,24 @@
       
 
       
-        <a id="more"></a>
+        <p>广义来看，所有的存储设备都可以认为是某种意义上的缓存，我们把常用的数据保存下来方便以后使用，这样就可以让计算机的运行速度更快了。这样一个看起来很简单的系统其实有非常精妙的设计，本节我们就来详细了解一下。</p>
+<a id="more"></a>
 <hr>
  公式 
+<p>主要参考博客，这里列出大纲</p>
+<h2 id="Cache-原理"><a href="#Cache-原理" class="headerlink" title="Cache 原理"></a>Cache 原理</h2><p>程序不仅表现出时间局部性，即重复使用最近被访问的数据项的趋势，同时也表现出了空间局部性，即访问与最近被访问过的数据项地址空间相近的数据项的趋势。存储器层次结构利用了时间局部性，将最近被访问的数据放在靠近处理器的地方；同时也利用了空间局部性，将一些包含连续字的块移至存储器层次结构的较高层次。</p>
+<p>许多程序的变量个数要远多于计算机的寄存器个数。因此，编译器会尽量将最常用的变量保持在寄存器中，而将其他的变量放在存储器中，方法是使用取数/存数指令在寄存器和存储器之间传送变量。将不常使用的变量（或稍后才使用的变量）存回到存储器中的过程叫做寄存器溢出(spilling register)</p>
+<p>寄存器与存储器相比，访问时间短、吞吐率高，寄存器中的数据访问速度快并易于利用，访问寄存器相对于访问存储器功耗更小。因此，为了获取高性能和节约功耗，编译器必须高效率地利用寄存器</p>
+<p>存储器地址很自然地从 0 开始且一直连续增加到最大的地址，因此负地址是没有意义的。</p>
+<h3 id="局部性原理"><a href="#局部性原理" class="headerlink" title="局部性原理"></a>局部性原理</h3><h3 id="cache-读取"><a href="#cache-读取" class="headerlink" title="cache 读取"></a>cache 读取</h3><p>存储位与内存编址</p>
+<h3 id="cache-写入"><a href="#cache-写入" class="headerlink" title="cache 写入"></a>cache 写入</h3><h3 id="cache-缺失处理"><a href="#cache-缺失处理" class="headerlink" title="cache 缺失处理"></a>cache 缺失处理</h3><h2 id="4-4-Cache-性能与优化"><a href="#4-4-Cache-性能与优化" class="headerlink" title="4.4 Cache 性能与优化"></a>4.4 Cache 性能与优化</h2><p>无论最快的计算机还是最慢的计算机中，构成主存的原材料——DRAM 本质是相同的，并且是最便宜的，这使得构建一个和快速处理器保持同步的存储系统变得更加困难。局部性原理可以用来克服存储器访问的长延迟——这个策略的正确性已经在存储器层次结构的各级都得到了证明。尽管层次结构中的各级从量的角度来看非常不同，但是在它们的执行过程中都遵循相似的策略，并且利用相同的局部性原理。</p>
+<p>多级 cache 可以更方便地使用更多的优化，这有两个原因。第一，较低级 cache 的设计参数与一级 cache 不同。例如，由于较低级 cache 的容量一般很大，因此可能使用更大容量的块。第二，较低级 cache 并不像一级 cache 那样经常被处理器用到。这让我们考虑当较低级 cache 空闲时让它做一些事情以预防将来的缺失。</p>
+<p>另一个趋势是寻求软件的帮助。使用大量的程序转换和硬件设备有效地管理存储器层次结构是增强编译器作用的主要焦点。现在有两种不同的观点。一种是重新组织程序结构以增强它的空间和时间局部性。这种方法主要针对以大数组为主要数据结构的面向循环的程序；大规模的线性代数问题就是一个典型的例子。通过重新组织访问数组的循环增强了局部性，也因此改进了 cache 的性能。</p>
+<p>还有一种方法是预取。在预取机制中，一个数据块在真正被访问之前就被取入 cache 肿了。许多微处理器使用硬件预取尝试预测访问，这对软件可能比较困难。</p>
+<p>第三种方法是使用优化存储器传输的特殊 cache 感知指令。微处理器使用了一个优化设计：当发生写缺失时，由于程序要写整个块，因而并不从主存中取回一个块。对于一个内核来说，这种优化明显减少了存储器的传输。对并行处理器来说，存储系统也是一个重要的设计问题。存储器层次结构决定系统性能的重要性在不断增长，这也意味着在未来，这一领域对设计者和研究者来说将成为焦点。</p>
+<h3 id="缓存性能评估"><a href="#缓存性能评估" class="headerlink" title="缓存性能评估"></a>缓存性能评估</h3><h3 id="缓存性能的高级优化方法"><a href="#缓存性能的高级优化方法" class="headerlink" title="缓存性能的高级优化方法"></a>缓存性能的高级优化方法</h3><p>10 种</p>
+<h2 id="Cache-一致性"><a href="#Cache-一致性" class="headerlink" title="Cache 一致性"></a>Cache 一致性</h2><h3 id="一致性的起因"><a href="#一致性的起因" class="headerlink" title="一致性的起因"></a>一致性的起因</h3><p>并行情况</p>
+<h3 id="MESI-规则"><a href="#MESI-规则" class="headerlink" title="MESI 规则"></a>MESI 规则</h3><p>MESI 算法介绍</p>
 
       
     </div>
@@ -545,8 +560,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/misc/avatar.jpg"
@@ -672,6 +696,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cache-原理"><span class="nav-number">1.</span> <span class="nav-text">Cache 原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#局部性原理"><span class="nav-number">1.1.</span> <span class="nav-text">局部性原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cache-读取"><span class="nav-number">1.2.</span> <span class="nav-text">cache 读取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cache-写入"><span class="nav-number">1.3.</span> <span class="nav-text">cache 写入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cache-缺失处理"><span class="nav-number">1.4.</span> <span class="nav-text">cache 缺失处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-Cache-性能与优化"><span class="nav-number">2.</span> <span class="nav-text">4.4 Cache 性能与优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存性能评估"><span class="nav-number">2.1.</span> <span class="nav-text">缓存性能评估</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存性能的高级优化方法"><span class="nav-number">2.2.</span> <span class="nav-text">缓存性能的高级优化方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cache-一致性"><span class="nav-number">3.</span> <span class="nav-text">Cache 一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一致性的起因"><span class="nav-number">3.1.</span> <span class="nav-text">一致性的起因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MESI-规则"><span class="nav-number">3.2.</span> <span class="nav-text">MESI 规则</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
