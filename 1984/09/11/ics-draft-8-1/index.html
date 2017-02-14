@@ -86,16 +86,21 @@
 
 
 
-<meta name="description" content="公式">
+<meta name="description" content="并行计算包括了很多，这一节主要介绍并行的基本原理和重要规则。后面分三节介绍三个重要分支：通用计算、分布式计算 和 云计算。
+并行离不开调度，介绍调度的重要思路和经典问题。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【计算机系统导论】8.1 概述">
+<meta property="og:title" content="【计算机系统导论】8.1 深入理解并行">
 <meta property="og:url" content="http://wdxtub.com/1984/09/11/ics-draft-8-1/index.html">
 <meta property="og:site_name" content="小土刀">
-<meta property="og:description" content="公式">
-<meta property="og:updated_time" content="2016-10-06T11:45:23.000Z">
+<meta property="og:description" content="并行计算包括了很多，这一节主要介绍并行的基本原理和重要规则。后面分三节介绍三个重要分支：通用计算、分布式计算 和 云计算。
+并行离不开调度，介绍调度的重要思路和经典问题。">
+<meta property="og:image" content="http://wdxtub.com/images/14870414599927.jpg">
+<meta property="og:updated_time" content="2017-02-14T03:39:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="【计算机系统导论】8.1 概述">
-<meta name="twitter:description" content="公式">
+<meta name="twitter:title" content="【计算机系统导论】8.1 深入理解并行">
+<meta name="twitter:description" content="并行计算包括了很多，这一节主要介绍并行的基本原理和重要规则。后面分三节介绍三个重要分支：通用计算、分布式计算 和 云计算。
+并行离不开调度，介绍调度的重要思路和经典问题。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14870414599927.jpg">
 
 
 
@@ -129,7 +134,7 @@
 
 
 
-  <title> 【计算机系统导论】8.1 概述 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 【计算机系统导论】8.1 深入理解并行 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -313,7 +318,7 @@
             
             
               
-                【计算机系统导论】8.1 概述
+                【计算机系统导论】8.1 深入理解并行
               
             
           </h1>
@@ -340,8 +345,8 @@
                 <i class="fa fa-calendar-check-o"></i>
               </span>
               <span class="post-meta-item-text">更新于</span>
-              <time title="更新于" itemprop="dateModified" datetime="2016-10-06T19:45:23+08:00">
-                2016-10-06
+              <time title="更新于" itemprop="dateModified" datetime="2017-02-14T11:39:20+08:00">
+                2017-02-14
               </time>
             
           </span>
@@ -402,9 +407,126 @@
       
 
       
-        <a id="more"></a>
+        <p>并行计算包括了很多，这一节主要介绍并行的基本原理和重要规则。后面分三节介绍三个重要分支：通用计算、分布式计算 和 云计算。</p>
+<p>并行离不开调度，介绍调度的重要思路和经典问题。</p>
+<a id="more"></a>
 <hr>
- 公式 
+<p>并行存储，并发控制，并行计算</p>
+<p>为什么需要，不同的发展方向及对策</p>
+<p><img src="/images/14870414599927.jpg" alt=""></p>
+<p>为了获得更高性能，所有的桌面和服务器微处理器制造上正在构建多处理器，顺序应用程序不会像过去一样再有获取更高性能的捷径。因此，需要更高性能的程序员必须将自己的代码并行化，或者编写全新的并行处理程序</p>
+<hr>
+<p>计算机虽然只有一个 CPU，但操作系统能够将程序的执行单位细化，然后分开执行，从而实现伪并行执行。这种伪并行执行称为并发(concurrent)。使用多个 CPU 真的同时执行称为并行(parallel)</p>
+<p>锁模型：如果竞争足够少，多数情况下能保持较高性能。但是，对于资源的竞争，不能忘记加锁。要做到完美无缺较难。</p>
+<p>队列模型：在竞争少的时候，其性能比不上锁模型，但对于程序员来说，它比锁模型更容易贯彻。虽然各种处理系统的表现不尽相同，但这种方法很少会因为线程增多而带来性能低下的恶果。</p>
+<p>Actor 是（仅）通过消息(message)进行通信的实体，向 Actor 发送消息，仅仅是发送消息而不等返回结构，是一种异步方式。Actor 由于没有消息以外的信息传递手段，所以不用担心 Actor 之间的资源竞争。发送给 Actor 的消息，都配送到各个 Actor 所拥有的邮箱里。多个消息同时到达时的竞争，已经由内嵌系统中的排除机制来处理了。</p>
+<p>Actor 有一个很大的优点是安全，但更大的优点是易懂。Actor 根据消息进行进行处理，必要的话，会向其他 Actor 传递消息，或者向源 Actor 返回消息。</p>
+<p>多个控制流同时运行的线程，非常简单和容易实现，如果协调和同步方面不需要花费很大成本的话，就能够得到很高的性能。</p>
+<hr>
+<p>提高系统性能的传统方式是使用多个处理器，它们能并行执行，以支持给定的工作负载。两种最普遍的多处理器组织方式是对称多处理器（symmetric multiprocessor, SMP）和集群（cluster）。</p>
+<p>SMP 由多个相同或相类似的处理器组成，以总线或某种开关阵列互连成一台计算机。SMP 所需解决的最重要问题是 cache 一致性。每个处理器都有自己的 cache，于是某一行数据可能出现在不止一个 cache 中，如果该行在一个 cache 中被修改，则主存和其他 cache 保存的将是此行的无效版本。cache 一致性协议设计用来解决这个问题</p>
+<h2 id="为什么需要并行"><a href="#为什么需要并行" class="headerlink" title="为什么需要并行"></a>为什么需要并行</h2><p>并发与并行的概念 <a href="https://laike9m.com/blog/huan-zai-yi-huo-bing-fa-he-bing-xing,61/" target="_blank" rel="external">https://laike9m.com/blog/huan-zai-yi-huo-bing-fa-he-bing-xing,61/</a></p>
+<p>相关处理模型、异步模型、Actor Model、Communicating Sequential Processes、协程、Erlang</p>
+<p>并行处理主要会遇到的两个问题是数据完整性的丧失和死锁。</p>
+<p>分布式计算和集群是两个层面的东西</p>
+<h3 id="多核与多处理器"><a href="#多核与多处理器" class="headerlink" title="多核与多处理器"></a>多核与多处理器</h3><p>设计、架构</p>
+<p>多核环境中编程的共同点在于，在传统的编程风格中，程序是顺序执行的，因此只能用到单独一个狠心。而要充分发挥多核的优势，就必须通过某些方法，积极运用多个 CPU 的处理能力。包括 UNIX 进程的活用、通过异步 I/O 实现并行化、消息队列等，这些都是飞铲更有前途的技术</p>
+<p>多核计算机或者多核处理器，在一个计算机芯片上有两个或多个处理器。由于硬件性能问题，使用更多单个处理器芯片已达到一个极限，包括指令层并行和功耗的限制。另一方面，多核体系结构给软件开发者探索多核上的多线程能力提出挑战。多核结构的主要变量是芯片处理器的数目、cache 存储器级数、cache 共享的程度。多核系统中另一个结构上的设计决策是单个内核是超标量或者实现并发多线程（SMT）</p>
+<p>由于每个芯片上核心数目的增长，集群将会增长到包含数千个核心。云计算有许多附有吸引力的特性，其中之一就是从经济的角度来鼓励人们节省能源。对于给定的基础设施投入成本，很难说服云计算供应商关闭未使用设备而节省能量，不过，要说服云计算使用者放弃空闲实例是很轻松的，因为无论他们是不是在做有用的事情，都要为所使用的实例支付费用。榆次类似，按使用情况收费还回鼓励程序员高效地利用计算、通信和存储，如果没有一种容易理解的定价方案，是很难有大动力的。由于这种明确的定价方案使成本的测量现在变得很容易，而且测量结果也是可信的，所以研究人员就有可能从性价比的角度对创新激素进行评估，而不只是评估其性能。最后，云计算意味着研究人员可以在数千台计算机的规模上评估自己的想法，这在过去只有大型公司才能承受得起。</p>
+<p>未来世界是令人兴奋的，而架构师在它的各个方面都将扮演至关重要的角色。</p>
+<p>自从计算开始之日，人们就梦想着通过简单的集成若干处理器就可以构建计算机。然而，构建并充分有效利用并行处理器的进程是缓慢的。其原因一方面是受软件难点的限制，另一方面是为了提高可用性和效率，多处理器的体系结构在不断改进。不同并行体系结构之间往往存在巨大差异，所取得的性能提升也非常有限，而且过去许多并行体系结构的生命周期非常短暂，这些因素使得软件更加困难。</p>
+<p>相对于多芯片设计，同一芯片上的多处理器可提供完全不同的通信速率，具有更低的延迟和更高的带宽。这些改进可以使得高性能更易获得</p>
+<p>在过去，微处理器和多处理器在成功上的定义是不同的。当缩放单处理器性能时，如果单线程性能随着增加硅面积开方增长，微处理器设计者会感觉很满意。也就是说，他们满足于性能随资源数量的亚线性增长。多处理器的成功在过去通常定义为与处理器数量相关的线性加速比函数，并假定 n 个处理器的购买成本或管理成本是单一处理器的 n 倍。目前并行正在片上以多核的形式实现，我们可以使用已经获得成功的传统微处理器来获得亚线性的性能提升</p>
+<h2 id="并行层级"><a href="#并行层级" class="headerlink" title="并行层级"></a>并行层级</h2><h3 id="位级并行"><a href="#位级并行" class="headerlink" title="位级并行"></a>位级并行</h3><p>位元层级平行（英语：Bit-level parallelism，缩写为BLP，又译为位级并行） ，一种平行计算的模式，可以增加处理器每次处理的字组（word）大小。从1970年代至1986年之间，以超大型集成电路（VLSI）发展出的电脑芯片制造技术，利用位元层级平行的技术，使处理器的速度增加。<br>当处理器需要执行的指令，超过字组大小时，指令需要被拆成数次来存取；增加字组大小，减少了处理器需要执行的指令数量，从而增加了运算效率。</p>
+<h3 id="指令级并行"><a href="#指令级并行" class="headerlink" title="指令级并行"></a>指令级并行</h3><p>在 2000 年初，人们对开发指令级并行的关注达到顶峰。到 2005 年，Intel 和所有其他主要处理器制造商都调整了自己的方法，将重点放在多核心上。往往通过线程级并行而不是指令级并行来实现更高的性能，高效运用处理器的责任从硬件转移到软件和程序员身上。从流水线和指令级并行的早期发展以来（大约是 25 年之前），这是处理器体系结构的最重大变化。</p>
+<p>在同一时间，设计人员开始探索利用更多数据级并行来座位提高性能的另一方法。SIMD 扩展使桌面和服务器微处理器能够适当地提高图形功能及类似功能的性能。更重要的是，GPU 追求更积极地使用 SIMD，用大量数据级并行来实现应用程序的极大性能优势。对于科学应用程序，这些方法可以有效替代在多核心中开发的更具一般性但效率较低的线程级并行。</p>
+<p>许多研究人员预测 ILP 的应用会大幅减少，预计未来会是双发射超标量和更多核心的天下。但是，略高的发射率以及使用推测动态调度来处理意外事件（比如一级缓存缺失）的优势，使适度 ILP 成为多核心设计的主要构造模块。SMT 的添加及其有效性（无论是在性能方面还是在能耗效率方面）都进一步巩固了适度发射、乱序、推测方法的地位。事实上，即使是在嵌入市场领域，最新的处理器（例如 ARM Cortex-A9）已经引入了动态调度、推测和更宽的发射速率。</p>
+<p>未来处理器几乎不会尝试大幅提高发射宽度。因为从硅利用率和功率效率的角度来看，它的效率太低了。</p>
+<h3 id="任务级并行"><a href="#任务级并行" class="headerlink" title="任务级并行"></a>任务级并行</h3><p>在这个模型中，每一个线程执行一个分配到的任务，而这些线程则被分配（通常是操作系统内核）到该并行计算体系的各个计算节点中去。</p>
+<p>超线程</p>
+<p>30 多年来，研究人员和设计人员一直在预测单处理器会终结，会被多处理器超越。但直到本世纪的前几年，这一预测还总被证实是错误的。尝试寻找和利用更多 ILP 的成本在效率上是难以承受的（在硅面积和功率方面都是如此）。当然，多核并没有解决功率问题，因为它显然增加了晶体管数和晶体管开关的活动数目，而这正是功率消耗的两个主要因素。</p>
+<p>多核技术将保持处理器繁忙的重担更多地交给了 TLP，而不再是依靠 ILP，TLP 由应用程序和程序员负责确认，而 ILP 则由硬件负责。</p>
+<p>尽管多核技术为克服能耗效率方面的问题提供了一些直接帮助，并将大部分重担移交给软件系统，但仍然存在一些难度很大的挑战和尚未解决的问题。</p>
+<p>除了编程语言和编译器技术的重要问题之外，多核技术已经重新开放了计算机体系结构中另一个长期存在的问题：是否值得考虑异构处理器？尽管现在还没有提交这种多核处理器，而且异构多处理器仅在专用计算机或嵌入式系统中取得了有限的成功，但它在多核心环境中的可能性要高得多。和多重处理中的许多问题一样，其答案可能依赖于软件模型和编程系统。如果编译器和操作系统可以有效地使用同构处理器，它们将会变得更加主流。目前，对于许多应用程序来说，现有编译器的能力还不足以有效地应对中等数量的同构核心所带来的压力，但有一类拥有异构核心的多处理器变得越来越常见，它们在功能方面有明显不同，而且有一些用于分解应用程序的明确方法。这些多处理器包括诸如 GPU 和媒体处理器之类的专用处理单元。对能耗效率的重视还能促使多处理器中包含一些具有不同性能功率比的核心。</p>
+<p>1995 年极具争议的两个问题是：</p>
+<ol>
+<li>基于微处理器的超大规模多处理器将会使用哪种体系结构？</li>
+<li>多重处理器在未来的微处理器体系结构中扮演何种角色？</li>
+</ol>
+<p>这些年来，这两个问题已经大体得到解决。</p>
+<p>因为超大规模多处理器没有变成一个不断发展的主流市场，所以目前构建这种大规模多处理器的唯一具有成本效率的方法就是使用集群。</p>
+<p>第二个问题的答案在最近六七年前已经变得非常清晰：多处理器未来性能的增长将源于多核处理器对线程级并行的开发，而不是通过开发更多的 ILP。</p>
+<h3 id="数据级并行"><a href="#数据级并行" class="headerlink" title="数据级并行"></a>数据级并行</h3><p>随着个人移动设备上各种应用的普及，数据级并行对个人一栋设备的重要性也在增加。如果有一种比任务级并行更简单的编程模型，而且可能具有更佳的性能效率，很容易就能预测到数据级并行在接下来十年中的复兴。事实上，我们已经看到一些产品对数据级并行的重视，GPU 和传统处理器都已经在增加 SIMD 扯到的数目，其增加速度至少与添加处理器的速度一样快。</p>
+<p>因此，我们看到系统处理器正在拥有更多的 GPU 特性，反之亦然。传统处理器和 GPU 的一个最大性能差别是集中-分散寻址。传统的向量体系结构说明如何向 SIMD 指令添加此类寻址，我们希望随着时间的推移，越来越多的在向量体系结构中得到证明的好思想能够添加到 SIMD 扩展中。</p>
+<p>GPU 问题并不是简单问一句哪种体系结构最好，而是当硬件投入能够出色地完成图形处理时，如何对其进行改进以支持更具一般性的计算任务？尽管向量体系结构名义上有许多优势，但向量体系结构能否像 GPU 一样成为出色的图形处理基础，还有待证明。</p>
+<p>GPU SIMD 处理器和编译器仍然是相对简单的设计。为了提高 GPU 的利用率，特别是因为 GPU 计算应用程序刚刚开始进入开发阶段，所以随着时间的推移可能会引入更积极的技术。通过研究这些新程序，GPU 设计人员肯定会发现和实现新的机器优化方法。有这样一个问题：在向量处理器中用于节省硬件和能耗的标量处理器（或控制处理器），是否会出现在 GPU 中？</p>
+<p>Fermi 体系结构已经引入了传统处理器中的许多功能，使 GPU 更具主流特性，但两者之间还是有一些需要弥补的差距。以下是我们希望在不远的将来能够解决的问题。</p>
+<ul>
+<li>可虚拟化 GPU。虚拟化对于服务器非常重要，它是云计算的基础。为了在云中包括 GPU，它们也应当像它们要连接的处理器和存储器一样是可虚拟化的。</li>
+<li>GPU 存储器的容量较小。加快运算速度的意义就体现在解决更大规模的问题上，而大规模的问题通常需要更大的存储器。GPU 在速度与大小方面的这种不一致性可以通过增加存储器容量来解决。其挑战是要在提高容量的同时还能保持高带宽。</li>
+<li>直接对 GPU 存储器进行 I/O 操作。真实程序对存储器设备和帧缓冲区进行 I/O 操作，大型程序可能需要大量 I/O 操作和相当多的存储器。今天的 GPU 系统必须在 I/O 设备和系统存储器之间进行传送，然后在系统存储器和 GPU 存储器之间传送。这种额外的跳转会显著降低一些程序的 I/O 性能，降低 GPU 的吸引力。Amdahl 定律警告我们：如果在加快一项任务的处理速度时忽视其中一部分，可能会发生什么样的问题。我们希望未来的 GPU 将所有 I/O 都看作一等公民，就像它今天处理帧缓冲区 I/O 一样。</li>
+<li>统一的物理存储器。对于以上两个问题有一种替代解决方案：为系统和 GPU 采用同一个物理存储器。</li>
+</ul>
+<h3 id="内存级并行"><a href="#内存级并行" class="headerlink" title="内存级并行"></a>内存级并行</h3><h3 id="流水线并行"><a href="#流水线并行" class="headerlink" title="流水线并行"></a>流水线并行</h3><h2 id="并行理论"><a href="#并行理论" class="headerlink" title="并行理论"></a>并行理论</h2><p>PRAM model<br>Analysis of parallel algorithms<br>Amdahl’s law<br>Gustafson’s law<br>Cost efficiency<br>Karp–Flatt metric<br>Slowdown Speedup</p>
+<hr>
+<p>还在疑惑并发和并行？<a href="https://laike9m.com/blog/huan-zai-yi-huo-bing-fa-he-bing-xing,61/" target="_blank" rel="external">https://laike9m.com/blog/huan-zai-yi-huo-bing-fa-he-bing-xing,61/</a></p>
+<p>OK，如果你还在为并发（concurrency）和并行（parallesim）这两个词的区别而感到困扰，那么这篇文章就是写给你看的。搞这种词语辨析到底有什么意义？其实没什么意义，但是有太多人在混用错用这两个词（比如遇到的某门课的老师）。不论中文圈还是英文圈，即使已经有数不清的文章在讨论并行vs并发，却极少有能讲清楚的。让一个讲不清楚的人来解释，比不解释更可怕。比如我随便找了个网上的解释：</p>
+<p>前者是逻辑上的同时发生（simultaneous），而后者是物理上的同时发生．</p>
+<p>并发性(concurrency)，又称共行性，是指能处理多个同时性活动的能力，并发事件之间不一定要同一时刻发生。</p>
+<p>并行(parallelism)是指同时发生的两个并发事件，具有并发的含义，而并发则不一定并行。</p>
+<p>来个比喻：并发和并行的区别就是一个人同时吃三个馒头和三个人同时吃三个馒头。</p>
+<p>看了之后，你懂了么？不懂，更晕了。写出这类解释的人，自己也是一知半解，却又把自己脑子里模糊的影像拿出来写成文章，让读者阅毕反而更加疑惑。当然也有可能他确实懂了，但是写出这种文字也不能算负责。至于本文，请相信，一定是准确的，我也尽量做到讲解清晰。</p>
+<p>OK，下面进入正题，concurrency vs parallesim</p>
+<p>让我们大声朗读下面这句话：</p>
+<p>“并发”指的是程序的结构，“并行”指的是程序运行时的状态<br>即使不看详细解释，也请记住这句话。下面来具体说说：</p>
+<p>并行（parallesim）</p>
+<p>这个概念很好理解。所谓并行，就是同时执行的意思，无需过度解读。判断程序是否处于并行的状态，就看同一时刻是否有超过一个“工作单位”在运行就好了。所以，单线程永远无法达到并行状态。</p>
+<p>要达到并行状态，最简单的就是利用多线程和多进程。但是 Python 的多线程由于存在著名的 GIL，无法让两个线程真正“同时运行”，所以实际上是无法到达并行状态的。</p>
+<p>并发（concurrency）</p>
+<p>要理解“并发”这个概念，必须得清楚，并发指的是程序的“结构”。当我们说这个程序是并发的，实际上，这句话应当表述成“这个程序采用了支持并发的设计”。好，既然并发指的是人为设计的结构，那么怎样的程序结构才叫做支持并发的设计？</p>
+<p>正确的并发设计的标准是：使多个操作可以在重叠的时间段内进行(two tasks can start, run, and complete in overlapping time periods)。</p>
+<p>这句话的重点有两个。我们先看“（操作）在重叠的时间段内进行”这个概念。它是否就是我们前面说到的并行呢？是，也不是。并行，当然是在重叠的时间段内执行，但是另外一种执行模式，也属于在重叠时间段内进行。这就是协程。</p>
+<p>使用协程时，程序的执行看起来往往是这个样子：</p>
+<p>task1, task2 是两段不同的代码，比如两个函数，其中黑色块代表某段代码正在执行。注意，这里从始至终，在任何一个时间点上都只有一段代码在执行，但是，由于 task1 和 task2 在重叠的时间段内执行，所以这是一个支持并发的设计。与并行不同，单核单线程能支持并发。</p>
+<p>经常看到这样一个说法，叫做并发执行。现在我们可以正确理解它。有两种可能：</p>
+<p>原本想说的是“并行执行”，但是用错了词<br>指多个操作可以在重叠的时间段内进行，即，真的并行，或是类似上图那样的执行模式。<br>我的建议是尽可能不使用这个词，容易造成误会，尤其是对那些并发并行不分的人。但是读到这里的各位显然能正确区分，所以下面为了简便，将使用并发执行这个词。</p>
+<p>第二个重点是“可以在重叠的时间段内进行”中的“可以”两个字。“可以”的意思是，正确的并发设计使并发执行成为可能，但是程序在实际运行时却不一定会出现多个任务执行时间段 overlap 的情形。比如：我们的程序会为每个任务开一个线程或者协程，只有一个任务时，显然不会出现多个任务执行时间段重叠的情况，有多个任务时，就会出现了。这里我们看到，并发并不描述程序执行的状态，它描述的是一种设计，是程序的结构，比如上面例子里“为每个任务开一个线程”的设计。并发设计和程序实际执行情况没有直接关联，但是正确的并发设计让并发执行成为可能。反之，如果程序被设计为执行完一个任务再接着执行下一个，那就不是并发设计了，因为做不到并发执行。</p>
+<p>那么，如何实现支持并发的设计？两个字：拆分。</p>
+<p>之所以并发设计往往需要把流程拆开，是因为如果不拆分也就不可能在同一时间段进行多个任务了。这种拆分可以是平行的拆分，比如抽象成同类的任务，也可以是不平行的，比如分为多个步骤。</p>
+<p>并发和并行的关系</p>
+<p>Different concurrent designs enable different ways to parallelize.</p>
+<p>这句话来自著名的talk: Concurrency is not parallelism。它足够concise，以至于不需要过多解释。但是仅仅引用别人的话总是不太好，所以我再用之前文字的总结来说明：并发设计让并发执行成为可能，而并行是并发执行的一种模式。</p>
+<p>最后，关于Concurrency is not parallelism这个talk再多说点。自从这个talk出来，直接引爆了一堆讨论并发vs并行的文章，并且无一例外提到这个talk，甚至有的文章直接用它的slide里的图片来说明。比如这张：</p>
+<p>以为我要解释这张图吗？NO。放这张图的唯一原因就是萌萌的gopher。</p>
+<p>再来张特写：</p>
+<p>之前看到知乎上有个关于go为什么流行的问题，有个答案是“logo萌”当时我就笑喷了。</p>
+<p>好像跑题了，继续说这个 talk。和很多人一样，我也是看了这个 talk 才开始思考 concurrency vs parallesim 的问题。为了研究那一堆推小车的 gopher 到底是怎么回事，我花费了相当多的时间。实际上后来我更多地是通过网上的只言片语（比如SO的回答）和自己的思考弄清了这个问题，talk 并没有很大帮助。彻底明白之后再回过头来看这个 talk，确实相当不错，Andrew Gerrand 对这个问题的理解绝对够深刻，但是太不新手向了。最大问题在于，那一堆 gopher 的例子不够好，太复杂。Andrew Gerrand 花了大把时间来讲述不同的并发设计，但是作为第一次接触这个话题的人，在没有搞清楚并发并行区别的情况下就去研究推小车的 gopher，太难了。“Different concurrent designs enable different ways to parallelize” 这句总结很精辟，但也只有那些已经透彻理解的人才能领会，比如我和看到这里的读者，对新手来说就和经文一样难懂。总结下来一句话，不要一开始就去看这个视频，也不要花时间研究推小车的gopher。Gopher is moe, but confusing.</p>
+<p>2015.8.14 更新</p>
+<p>事实上我之前的理解还是有错误。在《最近的几个面试》这篇文章里有提到。最近买了《七周七并发模型》这本书，发现其中有讲，在此摘录一下（英文版 p3~p4）：</p>
+<p>Although there’s a tendency to think that parallelism means multiple cores, modern computers are parallel on many different levels. The reason why individual cores have been able to get faster every year, until recently, is that they’ve been using all those extra transistors predicted by Moore’s law in parallel, both at the bit and at the instruction level.</p>
+<p>Bit-Level Parallelism<br>Why is a 32-bit computer faster than an 8-bit one? Parallelism. If an 8-bit computer wants to add two 32-bit numbers, it has to do it as a sequence of 8-bit operations. By contrast, a 32-bit computer can do it in one step, handling each of the 4 bytes within the 32-bit numbers in parallel. That’s why the history of computing has seen us move from 8- to 16-, 32-, and now 64-bit architectures. The total amount of benefit we’ll see from this kind of parallelism has its limits, though, which is why we’re unlikely to see 128-bit computers soon.</p>
+<p>Instruction-Level Parallelism<br>Modern CPUs are highly parallel, using techniques like pipelining, out-of-order execution, and speculative execution.<br>As programmers, we’ve mostly been able to ignore this because, despite the fact that the processor has been doing things in parallel under our feet, it’s carefully maintained the illusion that everything is happening sequentially. This illusion is breaking down, however. Processor designers are no longer able to find ways to increase the speed of an individual core. As we move into a multicore world, we need to start worrying about the fact that instructions aren’t handled sequentially. We’ll talk about this more in Memory Visibility, on page ?.</p>
+<p>Data Parallelism<br>Data-parallel (sometimes called SIMD, for “single instruction, multiple data”) architectures are capable of performing the same operations on a large quantity of data in parallel. They’re not suitable for every type of problem, but they can be extremely effective in the right circumstances. One of the applications that’s most amenable to data parallelism is image processing. To increase the brightness of an image, for example, we increase the brightness of each pixel. For this reason, modern GPUs (graphics processing units) have evolved into extremely powerful data-parallel processors.</p>
+<p>Task-Level Parallelism<br>Finally, we reach what most people think of as parallelism—multiple processors. From a programmer’s point of view, the most important distinguishing feature of a multiprocessor architecture is the memory model, specifically whether it’s shared or distributed.</p>
+<p>最关键的一点是，计算机在不同层次上都使用了并行技术。之前我讨论的实际上仅限于 Task-Level 这一层，在这一层上，并行无疑是并发的一个子集。但是并行并非并发的子集，因为在 Bit-Level 和 Instruction-Level 上的并行不属于并发——比如引文中举的 32 位计算机执行 32 位数加法的例子，同时处理 4 个字节显然是一种并行，但是它们都属于 32 位加法这一个任务，并不存在多个任务，也就根本没有并发。</p>
+<p>所以，正确的说法是这样：<br>并行指物理上同时执行，并发指能够让多个任务在逻辑上交织执行的程序设计</p>
+<p>按照我现在的理解，并发针对的是 Task-Level 及更高层，并行则不限。这也是它们的区别。</p>
+<h2 id="协调调度"><a href="#协调调度" class="headerlink" title="协调调度"></a>协调调度</h2><p>并行离不开调度，介绍调度的重要思路和经典问题。</p>
+<p>对硬件设计者来说，基于消息传递的计算机比需要维持缓存一致性的共享存储计算机更加容易设计。对程序员来说，消息传递的优点是显式通信，这意味着共享存储的隐式通信相比性能提升较少；缺点是难以将一个顺序程序移植到消息传递计算机中，因为每次通信必须提前标识出来，否则程序将无法工作。缓存一致的共享存储允许硬件判断哪些数据需要通信，这使得移至相对简单。现在对于如何最快地获得高性能有不同的观点，隐式通信有有大量的支持者和反对者。</p>
+<p>Multiprocessing Memory coherency Cache coherency Cache invalidation Barrier Synchronization Application checkpointing</p>
+<h2 id="创建并行处理程序的难点"><a href="#创建并行处理程序的难点" class="headerlink" title="创建并行处理程序的难点"></a>创建并行处理程序的难点</h2><p>进程同步，数据一致性</p>
+<p>Process Thread Fiber Instruction window</p>
+<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><p>共享变量<br>关键区域<br>信号量<br>锁</p>
+<h2 id="经典问题"><a href="#经典问题" class="headerlink" title="经典问题"></a>经典问题</h2><p>生产者-消费者问题</p>
+<p>读者-写者问题</p>
+<p>线程安全</p>
+<h2 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h2><p>MESI</p>
+<h3 id="内存一致性模型"><a href="#内存一致性模型" class="headerlink" title="内存一致性模型"></a>内存一致性模型</h3><p><a href="https://zh.wikipedia.org/wiki/%E5%86%85%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E6%A8%A1%E5%9E%8B" target="_blank" rel="external">https://zh.wikipedia.org/wiki/%E5%86%85%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E6%A8%A1%E5%9E%8B</a></p>
+<p>内存一致性模型的研究历史和分类[编辑]<br>按照传统冯诺依曼体系结构的计算模型来看，读操作应当返回最近的写操作所写入的结果，但是这里“最近”的含义是比较模糊的。因此必须将概念严格化，于是产生了线性一致性（或称做严格一致性Strict consistancy、原子一致性Atomic consistancy）的概念。但是线性一致性太难实现了，因为这里需要一个全局同步的时钟，于是Leslie Lamport提出了顺序一致性（Sequential consistency）的概念，这里全局的时钟变得不再需要，转而需要的是各个处理器局部的时钟，相应的，Maurice Herlihy和Nir Shavit等人后来又提出了静态一致性（Quiescent consistency）的概念。<br>然而，即使是顺序一致性在实际系统中也是很少使用的，主要是它严格限制了程序的优化执行，强行的使程序在本地处理器上按程序序（program order）执行在大多数情况下是没有必要的。于是在后来的研究中陆续提出了面向硬件的内存模型（Hardware-centric memory model），其中包含了弱序一致性模型（WO, Weak-order model），处理器一致性模型（PC, Processor-consistency model），松弛一致性模型（RC, Release consistency model）以及一系列相关的派生模型，如TSO一致性模型（Total store ordering），PSO一致性模型（Partial Store Ordering）等。使用前面的这些模型对于程序员来说无疑是非常困惑的，因为这要求程序员在编写程序时必须考虑到各种硬件体系结构所对应的不同内存模型，于是后来的研究进一步提出了面向程序员的内存模型（Programmer-centric model）的概念，主要包括SCNF模型（Sequntial consistency nomal form）和PL模型（Properly-Labeled Model）等等。<br>内存一致性模型列表[编辑]<br>线性一致性（Linearizability）或严格一致性（Strict consistancy）：任何对一个内存位置X的读操作，将返回最近一次对该内存位置的写操作所写入的值。<br>原子一致性(Atomic consistancy)：读操作未能立即读到此前最近一次写操作的结果，但多读几次还是获得了正确结果。所有对数据的修改操作都是原子的，不会产生竞态冲突。<br>顺序一致性（Sequential consistency ）:（并发程序在多处理器上的）任何一次执行结果都相同，就像所有处理器的操作按照某个顺序执行，各个微处理器的操作按照其程序指定的顺序进行。换句话说，所有的处理器以相同的顺序看到所有的修改。读操作未必能及时得到此前其他处理器对同一数据的写更新。但是各处理器读到的该数据的不同值的顺序是一致的。<br>缓存一致性（Cache Coherence）<br>静态一致性（Quiescent consistency）<br>处理器一致性（Processor consistency）/PRAM一致性（PRAM consistency，P指pipeline）：在一个处理器上完成的所有写操作，将会被以它实际发生的顺序通知给所有其它的处理器；但是在不同处理器上完成的写操作也许会被其它处理器以不同于实际执行的顺序所看到。这反映了网络中不同节点的延迟可能是不相同的。对于双处理器，处理器一致性与顺序一致性是等价的。<br>释放一致性（Release consistency ）：在对一个共享变量进行普通访问之前，进程在之前所有的获得锁而进行的操作必须成功的完成。在释放一个锁操作之前，进程之前的读和写操作必须已经完成。获得和释放锁的操作必须符合“FIFO一致性”。“释放一致性”仅仅关注被锁住的共享内存内存变量，仅仅只需要将对被锁住的共享变量的修改通知给其它的处理器。C#的VolatileWrite函数即实现了释放一致性语义。<br>因果一致性（Causal consistency ）<br>TSO一致性（Total store ordering）<br>PSO一致性（Partial store ordering）<br>弱序一致性（Weak-ordering consistency）<br>相关话题[编辑]<br>任务并行<br>面向硬件的内存模型<br>面向程序员的内存模型<br>参考文献[编辑]<br>Designing Memory Consistency Models For Shared-Memory Multiprocessors,Computer Sciences Technical Report #1198,University of Wisconsin-Madison December 1993,Sarita V. Adve<br>Distributed Computing,Principles, Algorithms, and Systems. Ajay D. Kshemkalyani University of Illinois at Chicago, Chicago and Mukesh Singhal University of Kentucky, Lexington</p>
+<h3 id="缓存一致性"><a href="#缓存一致性" class="headerlink" title="缓存一致性"></a>缓存一致性</h3><p><a href="https://zh.wikipedia.org/wiki/%E5%BF%AB%E5%8F%96%E4%B8%80%E8%87%B4%E6%80%A7" target="_blank" rel="external">https://zh.wikipedia.org/wiki/%E5%BF%AB%E5%8F%96%E4%B8%80%E8%87%B4%E6%80%A7</a></p>
+<p>在计算机科学中，缓存一致性（英语：Cache coherence，或cache coherency），又译为缓存连贯性、缓存同调，是指保留在高速缓存中的共享资源，保持数据一致性的机制。<br>在一个系统中，当许多不同的设备共享一个共同内存资源，在高速缓存中的数据不一致，就会产生问题。这个问题在有数个CPU的多处理机系统中特别容易出现。<br>缓存一致性可以分为三个层级：<br>在进行每个写入运算时都立刻采取措施保证数据一致性<br>每个独立的运算，假如它造成数据值的改变，所有进程都可以看到一致的改变结果<br>在每次运算之后，不同的进程可能会看到不同的值（这也就是没有一致性的行为）</p>
+<h3 id="同步屏障"><a href="#同步屏障" class="headerlink" title="同步屏障"></a>同步屏障</h3><p><a href="https://zh.wikipedia.org/wiki/%E5%90%8C%E6%AD%A5%E5%B1%8F%E9%9A%9C" target="_blank" rel="external">https://zh.wikipedia.org/wiki/%E5%90%8C%E6%AD%A5%E5%B1%8F%E9%9A%9C</a></p>
+<p>同步屏障(Barrier)是并行计算中的一种同步方法。对于一群进程或线程，程序中的一个同步屏障意味着任何线程/进程执行到此后必须等待，直到所有线程/进程都到达此点才可继续执行下文。<br>许多基于指示的并行机制(如OpenMP）实现了隐式的同步屏障。消息传递机制中，任何全局通信都是一个同步屏障。<br>pthread提供了直接实现同步屏障的函数。</p>
 
       
     </div>
@@ -470,8 +592,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/1984/09/11/ics-draft-8-2/" rel="prev" title="【计算机系统导论】8.2 协同">
-                【计算机系统导论】8.2 协同 <i class="fa fa-chevron-right"></i>
+              <a href="/1984/09/11/ics-draft-8-2/" rel="prev" title="【计算机系统导论】8.2 云计算">
+                【计算机系统导论】8.2 云计算 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -488,7 +610,7 @@
     <div class="post-spread">
       
         <div class="ds-share flat" data-thread-key="1984/09/11/ics-draft-8-1/"
-     data-title="【计算机系统导论】8.1 概述"
+     data-title="【计算机系统导论】8.1 深入理解并行"
      data-content=""
      data-url="http://wdxtub.com/1984/09/11/ics-draft-8-1/">
   <div class="ds-share-inline">
@@ -521,7 +643,7 @@
   <div class="comments" id="comments">
     
       <div class="ds-thread" data-thread-key="1984/09/11/ics-draft-8-1/"
-           data-title="【计算机系统导论】8.1 概述" data-url="http://wdxtub.com/1984/09/11/ics-draft-8-1/">
+           data-title="【计算机系统导论】8.1 深入理解并行" data-url="http://wdxtub.com/1984/09/11/ics-draft-8-1/">
       </div>
     
   </div>
@@ -545,8 +667,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/misc/avatar.jpg"
@@ -672,6 +803,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要并行"><span class="nav-number">1.</span> <span class="nav-text">为什么需要并行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多核与多处理器"><span class="nav-number">1.1.</span> <span class="nav-text">多核与多处理器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并行层级"><span class="nav-number">2.</span> <span class="nav-text">并行层级</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#位级并行"><span class="nav-number">2.1.</span> <span class="nav-text">位级并行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指令级并行"><span class="nav-number">2.2.</span> <span class="nav-text">指令级并行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任务级并行"><span class="nav-number">2.3.</span> <span class="nav-text">任务级并行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据级并行"><span class="nav-number">2.4.</span> <span class="nav-text">数据级并行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存级并行"><span class="nav-number">2.5.</span> <span class="nav-text">内存级并行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流水线并行"><span class="nav-number">2.6.</span> <span class="nav-text">流水线并行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并行理论"><span class="nav-number">3.</span> <span class="nav-text">并行理论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协调调度"><span class="nav-number">4.</span> <span class="nav-text">协调调度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建并行处理程序的难点"><span class="nav-number">5.</span> <span class="nav-text">创建并行处理程序的难点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步"><span class="nav-number">6.</span> <span class="nav-text">同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#经典问题"><span class="nav-number">7.</span> <span class="nav-text">经典问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一致性"><span class="nav-number">8.</span> <span class="nav-text">一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内存一致性模型"><span class="nav-number">8.1.</span> <span class="nav-text">内存一致性模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存一致性"><span class="nav-number">8.2.</span> <span class="nav-text">缓存一致性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步屏障"><span class="nav-number">8.3.</span> <span class="nav-text">同步屏障</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
