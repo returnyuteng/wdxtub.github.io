@@ -92,12 +92,13 @@
 <meta property="og:url" content="http://wdxtub.com/2017/02/01/bzs-dl-basis/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="深度学习作为时下最火热的话题，想必不少同学都非常感兴趣，但是看热闹容易，找门道难。如何能快速上手通过实战有个大概的认识呢？相信阅读完本文，大家会有自己的答案。">
-<meta property="og:image" content="http://wdxtub.com/images/14859207237013.gif">
-<meta property="og:updated_time" content="2017-02-24T14:20:05.000Z">
+<meta property="og:image" content="http://wdxtub.com/images/1484576229-3296-1667471-ec1e03205a5a5bf2.gif">
+<meta property="og:image" content="http://wdxtub.com/images/14879885768749.jpg">
+<meta property="og:updated_time" content="2017-02-25T02:54:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【不周山之机器学习】贰 深度学习入门指南（基于 TensorFlow）">
 <meta name="twitter:description" content="深度学习作为时下最火热的话题，想必不少同学都非常感兴趣，但是看热闹容易，找门道难。如何能快速上手通过实战有个大概的认识呢？相信阅读完本文，大家会有自己的答案。">
-<meta name="twitter:image" content="http://wdxtub.com/images/14859207237013.gif">
+<meta name="twitter:image" content="http://wdxtub.com/images/1484576229-3296-1667471-ec1e03205a5a5bf2.gif">
 
 
 
@@ -342,8 +343,8 @@
                 <i class="fa fa-calendar-check-o"></i>
               </span>
               <span class="post-meta-item-text">更新于</span>
-              <time title="更新于" itemprop="dateModified" datetime="2017-02-24T22:20:05+08:00">
-                2017-02-24
+              <time title="更新于" itemprop="dateModified" datetime="2017-02-25T10:54:56+08:00">
+                2017-02-25
               </time>
             
           </span>
@@ -409,7 +410,7 @@
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.02.24: 简单更新</li>
+<li>2017.02.25: 完成初稿（还少一些概念讲解）</li>
 <li>2017.02.01: 开始编写</li>
 </ul>
 <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>正所谓万事开头难，在我们学习新东西的时候，一开始往往是最迷茫的，因为我们甚至都不知道自己不知道些什么，于是便好像无头苍蝇般迷失方向。这里我总结了一下自己的学习经历，基于 TensorFlow 来和大家一起入门。</p>
@@ -439,15 +440,44 @@
 <p>激活之后我们输入 <code>python</code> 进入交互编程模式，然后输入下面的代码：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>hello = tf.constant(<span class="string">'Hello, TensorFlow. Visit wdxtub.com!'</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>sess = tf.Session()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(sess.run(hello))</div><div class="line"><span class="comment"># 如果出现下面这句，则说明安装成功</span></div><div class="line">Hello, TensorFlow. Visit wdxtub.com!</div></pre></td></tr></table></figure>
 <p>那么问题来了，我们刚才的例子做了啥呢？答案其实很简单，啥都没做，就是用 <code>tensorflow</code> 输出了一个字符串常量。不过接下来，我们就要搞点事情了（先搞事情，再讲原理）。</p>
-<h2 id="一个简单的例子"><a href="#一个简单的例子" class="headerlink" title="一个简单的例子"></a>一个简单的例子</h2><p><img src="/images/14859207237013.gif" alt=""></p>
+<h2 id="一个简单的例子"><a href="#一个简单的例子" class="headerlink" title="一个简单的例子"></a>一个简单的例子</h2><p>大家对解方程应该都很熟悉，比如 $y=ax+b$，我们可以根据任意三个变量（比如说 $a,x,b$）求出最后一个变量的值。至于这个公式的图像是一条直线，于是我们可以认为，$y$ 和 $x$ 之间是有<strong>线性</strong>关系的，我们只要知道 $a,b$ 就可以进行 $x,y$ 的互相推导。</p>
+<p>那么问题来了，如果我们不知道 $a,b$，只有 $x,y$ 的值怎么办呢？比如说现在我只知道 $x=2,y=7$，那么 $a,b$ 的可能值是 $a=3,b=1$，也可能是 $a=2,b=3$，还可能是 $a=1,b=5$（还有千万种可能）。如果这个时候又来了一个 $x=4$，我们怎么估算 $y$ 呢？这个时候我们说 $y$ 是 13($3x+1, x=4$)，11($2x+3, x=4$)或 9($x+5, x=4$)都是可以的。</p>
+<p>于是我们需要更多的证据，如果这个时候我们得知 $x=4$ 时，$y=11$，那么是不是就说明，$a=2,b=3$ 了呢？遗憾的是，仍然不能这么说，我们只能认为，在已知条件下，更可能是 $a=2,b=3$。至于为什么只能说『更可能』，因为我们通过数据来倒推系数（也就是 $a,b$）是一个盲人摸象的过程，我们连真实的值都不知道是什么，又如何能确定呢？</p>
+<p>不过不要泄气，我们只多知道了一组新的数据，就可以从千千万万种不同 $a,b$  值中找到更有可能的值，这就是进步，随着数据的增多，即使我们不能找到真实值，但只要我们估计的值跟真实值足够接近，很多场景下我们也够用了。</p>
+<p>别急，还没完，我们回过头来看看为什么我们知道了 $x=4,y=11$ 之后就可以提高 $a=2,b=3$ 的可能性呢？因为一个事情！就是当 $a=2,b=3$ 时，我们已知的两组数据都可以完美『对』上！而对于 $a=3,b=1$ 来说，虽然可以符合第一组数据 $x=2,y=7$，但对于 $x=4$ 时计算出来的 $y=13$，就和实际值 $y=11$ 有偏差了。那我们当然要选择一个偏差小的 $a,b$ 组合啦。</p>
+<p>这里注意，我们用来判断一组 $a,b$ 是否更符合的条件便是所谓的<strong>损失函数</strong>，我们寻找最佳 $a,b$ 的过程实际上就是让<strong>损失函数</strong>最小，也就是我们常说的优化过程。</p>
+<p>总结一下，机器学习的过程实际上是通过我们能够观察到的数据，通过一定规则（让损失函数最小）找到最可能的对应方式的过程（即找到 $y=ax+b$ 中的 $a,b$）。虽然机器学习的方法很多，但万变不离其宗，基本都是这个套路。</p>
+<p>注：这种应用方式通常称为『拟合』，也就是在给定数据源之后，找到一个最可能产生这样数据的模型（对应到上面的例子就是求 $a,b$）。另一种常见的应用称为『分类』，也就是给定数据之后，把它划分到某一类，比方说物体检测、人脸识别类似的应用，就是一个『分类』的过程。不过这里就不展开了。</p>
+<h2 id="接入神经网络"><a href="#接入神经网络" class="headerlink" title="接入神经网络"></a>接入神经网络</h2><p>说了这么多，终于可以进入正题了。神经网络是一种的数学模型，是受到生物学影响而逐步从生物学引申过来的概念，经过不断的发展，计算机领域的神经网络和生物学领域的神经网络已经不太能简单用<strong>神经网络</strong>这个词来概括了。我们不必过多纠结于名字，只要知道原理从高层概念上来看有点类似即可。</p>
+<p>计算机的每个神经元都非常简单（这和生物学是很像的），这些神经元的相互连接会根据外界的信息改变，非常适合对输入和输出间复杂的关系进行建模。</p>
+<p>和人类的学习过程一样，神经网络需要很多数据，这些数据会作用于不同的神经元，最终固化成某种『模式』，对应到具体问题的话，就是找到最可能的系数组合（即前面的 $a,b$，但实际上要复杂得多）。</p>
+<p>TensorFlow 就是由谷歌开发的神经网络计算框架，我们可以利用它来轻松完成许多计算，就不用重复做底层的工作了。一个简单的示意图为：</p>
+<p><img src="/images/1484576229-3296-1667471-ec1e03205a5a5bf2.gif" alt=""></p>
+<p>图中有不少概念，这个我们会专门在习题课中进行介绍，这里只要有一个简单的感觉即可。结合前面『一个简单的例子』中的总结，我们可以归纳出如下几个步骤</p>
+<blockquote>
+<p>1) 准备数据：获得有标签的样本数据（带标签的训练数据称为有监督学习）；</p>
+<p>2) 设置模型：先构建好需要使用的训练模型，可供选择的机器学习方法其实也挺多的，换而言之就是一堆数学函数的集合；</p>
+<p>3) 损失函数和优化方式：衡量模型计算结果和真实标签值的差距；</p>
+<p>4) 真实训练运算：训练之前构造好的模型，让程序通过循环训练和学习，获得最终我们需要的结果“参数”；</p>
+<p>5) 验证结果：采用之前模型没有训练过的测试集数据，去验证模型的准确率。</p>
+</blockquote>
+<p>这里我们把前四步过一遍，第五步同样会在习题课中进行介绍。前面我们已经安装好了 TensorFlow，这里我们直接上代码，请大家注意注释的讲解：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="comment"># -*- coding:utf-8 -*-  </span></div><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"></div><div class="line"><span class="comment"># 添加层</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_layer</span><span class="params">(inputs, in_size, out_size, activation_function=None)</span>:</span></div><div class="line">    <span class="comment"># add one more layer and return the output of this layer</span></div><div class="line">    <span class="comment"># 区别：大框架，定义层 layer，里面有 小部件</span></div><div class="line">    <span class="keyword">with</span> tf.name_scope(<span class="string">'layer'</span>):</div><div class="line">        <span class="comment"># 区别：小部件</span></div><div class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">'weights'</span>):</div><div class="line">            Weights = tf.Variable(tf.random_normal([in_size, out_size]), name=<span class="string">'W'</span>)</div><div class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">'biases'</span>):</div><div class="line">            biases = tf.Variable(tf.zeros([<span class="number">1</span>, out_size]) + <span class="number">0.1</span>, name=<span class="string">'b'</span>)</div><div class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">'Wx_plus_b'</span>):</div><div class="line">            Wx_plus_b = tf.add(tf.matmul(inputs, Weights), biases)</div><div class="line">        <span class="keyword">if</span> activation_function <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">            outputs = Wx_plus_b</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            outputs = activation_function(Wx_plus_b, )</div><div class="line">        <span class="keyword">return</span> outputs</div><div class="line"></div><div class="line"><span class="comment"># 1.训练的数据</span></div><div class="line"><span class="comment"># Make up some real data </span></div><div class="line">x_data = np.linspace(<span class="number">-1</span>,<span class="number">1</span>,<span class="number">300</span>)[:, np.newaxis]</div><div class="line">noise = np.random.normal(<span class="number">0</span>, <span class="number">0.05</span>, x_data.shape)</div><div class="line">y_data = np.square(x_data) - <span class="number">0.5</span> + noise</div><div class="line"></div><div class="line"><span class="comment"># 2.定义节点准备接收数据</span></div><div class="line"><span class="comment"># define placeholder for inputs to network  </span></div><div class="line"><span class="comment"># 区别：大框架，里面有 inputs x，y</span></div><div class="line"><span class="keyword">with</span> tf.name_scope(<span class="string">'inputs'</span>):</div><div class="line">    xs = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">1</span>], name=<span class="string">'x_input'</span>)</div><div class="line">    ys = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">1</span>], name=<span class="string">'y_input'</span>)</div><div class="line"></div><div class="line"><span class="comment"># 3.定义神经层：隐藏层和预测层</span></div><div class="line"><span class="comment"># add hidden layer 输入值是 xs，在隐藏层有 10 个神经元   </span></div><div class="line">l1 = add_layer(xs, <span class="number">1</span>, <span class="number">10</span>, activation_function=tf.nn.relu)</div><div class="line"><span class="comment"># add output layer 输入值是隐藏层 l1，在预测层输出 1 个结果</span></div><div class="line">prediction = add_layer(l1, <span class="number">10</span>, <span class="number">1</span>, activation_function=<span class="keyword">None</span>)</div><div class="line"></div><div class="line"><span class="comment"># 4.定义 loss 表达式</span></div><div class="line"><span class="comment"># the error between prediciton and real data    </span></div><div class="line"><span class="keyword">with</span> tf.name_scope(<span class="string">'loss'</span>):</div><div class="line">    loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys - prediction),</div><div class="line">                                        reduction_indices=[<span class="number">1</span>]))</div><div class="line"></div><div class="line"><span class="comment"># 5.选择 optimizer 使 loss 达到最小                   </span></div><div class="line"><span class="comment"># 这一行定义了用什么方式去减少 loss，学习率是 0.1       </span></div><div class="line"><span class="keyword">with</span> tf.name_scope(<span class="string">'train'</span>):</div><div class="line">    train_step = tf.train.GradientDescentOptimizer(<span class="number">0.1</span>).minimize(loss)</div><div class="line"></div><div class="line"><span class="comment"># important step 对所有变量进行初始化</span></div><div class="line">init = tf.global_variables_initializer()</div><div class="line">sess = tf.Session()</div><div class="line"><span class="comment"># 上面定义的都没有运算，直到 sess.run 才会开始运算</span></div><div class="line"><span class="comment"># 区别：sess.graph 把所有框架加载到一个文件中放到文件夹"logs/"里 </span></div><div class="line"><span class="comment"># 接着打开terminal，进入你存放的文件夹地址上一层，运行命令 tensorboard --logdir='logs/'</span></div><div class="line"><span class="comment"># 会返回一个地址，然后用浏览器打开这个地址，在 graph 标签栏下打开</span></div><div class="line">writer = tf.summary.FileWriter(<span class="string">"logs/"</span>, sess.graph)</div><div class="line"><span class="comment"># important step</span></div><div class="line">sess.run(init)</div><div class="line"></div><div class="line"><span class="comment"># 迭代 1000 次学习，sess.run optimizer</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</div><div class="line">    <span class="comment"># training train_step 和 loss 都是由 placeholder 定义的运算，所以这里要用 feed 传入参数</span></div><div class="line">    sess.run(train_step, feed_dict=&#123;xs: x_data, ys: y_data&#125;)</div><div class="line">    <span class="keyword">if</span> i % <span class="number">50</span> == <span class="number">0</span>:</div><div class="line">        <span class="comment"># to see the step improvement</span></div><div class="line">        print(i, sess.run(loss, feed_dict=&#123;xs: x_data, ys: y_data&#125;))</div></pre></td></tr></table></figure>
+<p>// TODO<br>解释代码</p>
+<p>我们运行一下，就可以得到如下结果（每次可能都不一样）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">(0, 0.83473957)</div><div class="line">(50, 0.022982161)</div><div class="line">(100, 0.010143606)</div><div class="line">(150, 0.0062472103)</div><div class="line">(200, 0.0054993271)</div><div class="line">(250, 0.0051222593)</div><div class="line">(300, 0.0048237662)</div><div class="line">(350, 0.0045826179)</div><div class="line">(400, 0.0043984707)</div><div class="line">(450, 0.0042431904)</div><div class="line">(500, 0.0041155368)</div><div class="line">(550, 0.0040093502)</div><div class="line">(600, 0.0039139241)</div><div class="line">(650, 0.0038403464)</div><div class="line">(700, 0.0037833541)</div><div class="line">(750, 0.0037375824)</div><div class="line">(800, 0.0036966042)</div><div class="line">(850, 0.0036602831)</div><div class="line">(900, 0.0036307489)</div><div class="line">(950, 0.0035978416)</div></pre></td></tr></table></figure>
+<p>这说明经过 1000 次的迭代之后，我们的误差已经从最开始的 0.834 降到了 0.003。与此同时，我们也生成了对应的网络结构，可以通过运行 <code>tensorboard --logdir=&#39;logs/&#39;</code> 后访问 <code>localhost:6006</code> 进行查看。我们就可以看到刚才这段代码所对应的结构，是不是跟之前的 gif 一样？</p>
+<p><img src="/images/14879885768749.jpg" alt=""></p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
 <li><a href="http://tensorflow.org/" target="_blank" rel="external">TensorFlow 官网</a></li>
 <li><a href="http://www.jiqizhixin.com/article/2196" target="_blank" rel="external">没有博士学位，照样玩转TensorFlow深度学习</a></li>
 <li><a href="http://www.slideshare.net/tw_dsconf/ss-62245351?qid=108adce3-2c3d-4758-a830-95d0a57e46bc&amp;v=&amp;b=&amp;from_search=3" target="_blank" rel="external">李宏毅 / 一天搞懂深度學習</a></li>
 <li><a href="http://mp.weixin.qq.com/s/FqL18z_t7NbrvmLI4Z9AvQ" target="_blank" rel="external">人人都可以做深度学习应用：入门篇</a></li>
 <li><a href="https://www.zhihu.com/question/49909565" target="_blank" rel="external">知乎 - TensorFlow 如何入门</a></li>
+<li><a href="http://www.jianshu.com/p/e112012a4b2d" target="_blank" rel="external">一文学会用 Tensorflow 搭建神经网络</a></li>
 <li><a href="https://www.quora.com/Where-can-I-start-learning-how-to-use-TensorFlow" target="_blank" rel="external">Quora - Where can I start learning how to use TensorFlow</a></li>
 <li><a href="http://colah.github.io/" target="_blank" rel="external">colah’s blog</a></li>
+<li><a href="http://wiki.jikexueyuan.com/project/tensorflow-zh/" target="_blank" rel="external">TensorFlow 官方文档中文版（不一定能跟上版本）</a></li>
 </ul>
 <hr>
 <p>老的</p>
@@ -740,7 +770,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-TensorFlow"><span class="nav-number">2.1.</span> <span class="nav-text">安装 TensorFlow</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证-TensorFlow"><span class="nav-number">2.2.</span> <span class="nav-text">验证 TensorFlow</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个简单的例子"><span class="nav-number">3.</span> <span class="nav-text">一个简单的例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-TensorFlow"><span class="nav-number">2.1.</span> <span class="nav-text">安装 TensorFlow</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证-TensorFlow"><span class="nav-number">2.2.</span> <span class="nav-text">验证 TensorFlow</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个简单的例子"><span class="nav-number">3.</span> <span class="nav-text">一个简单的例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接入神经网络"><span class="nav-number">4.</span> <span class="nav-text">接入神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>
