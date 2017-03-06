@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://wdxtub.com/2016/11/27/bzs-dm-internet/index.html">
 <meta property="og:site_name" content="小土刀">
 <meta property="og:description" content="上一讲中我们简单复习的概率和统计相关知识，现在我们就可以正式开始接触数据挖掘了。本文是接下来内容的大纲，让大家对互联网搜索与挖掘有一个宏观的了解，即知道要做什么和怎么做。">
-<meta property="og:updated_time" content="2017-03-03T07:23:29.000Z">
+<meta property="og:updated_time" content="2017-03-06T09:23:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【不周山之数据挖掘】壹 互联网数据挖掘导论">
 <meta name="twitter:description" content="上一讲中我们简单复习的概率和统计相关知识，现在我们就可以正式开始接触数据挖掘了。本文是接下来内容的大纲，让大家对互联网搜索与挖掘有一个宏观的了解，即知道要做什么和怎么做。">
@@ -340,8 +340,8 @@
                 <i class="fa fa-calendar-check-o"></i>
               </span>
               <span class="post-meta-item-text">更新于</span>
-              <time title="更新于" itemprop="dateModified" datetime="2017-03-03T15:23:29+08:00">
-                2017-03-03
+              <time title="更新于" itemprop="dateModified" datetime="2017-03-06T17:23:43+08:00">
+                2017-03-06
               </time>
             
           </span>
@@ -407,6 +407,7 @@
 <hr>
 <p>更新历史</p>
 <ul>
+<li>2017.03.06: 内容更新，Lecture 12-16 内容未增补，将分别成文</li>
 <li>2017.03.02: 增加搜索引擎优化、自然语言处理相关内容</li>
 <li>2016.11.27: 完成初稿</li>
 </ul>
@@ -509,6 +510,8 @@
 <p>分类指的是给定一个样例集合（即训练集，每个样例包含一个属性集合，其中一个属性是类标记/类号），基于训练集构建一个模型，该模型将类标记/类号属性看作是其他属性值的一个函数映射，目标是对新的样例尽可能准确地赋予类标记，我们一般会用一个测试集来评估模型的准确性。</p>
 <p>简单来说可以这样描述，首先我们拿到了一百个人的数据，包括身高体重性别爱好收入职业婚姻状况等等各种信息，我们的目标是拿到一个新的数据后（比如说不包括婚姻状况），需要能够把这个人分类到单身、已婚和离婚这三类中的一个。我们会用这一百个人的数据算出一个模型，这个模型接收的参数是一个人不包括婚姻状况的各种信息，然后输出一个值，这个值代表这个人被划分到的类别，这就是分类啦。</p>
 <p>在分类的具体应用中，最主要的场景是<strong>二类分类</strong>和<strong>多类分类</strong>，二类分类是最基本形式，多类分类转化为二类分类问题。具体实现中主要有基于规则的分类和基于统计的分类。</p>
+<p>基于规则的分类优势在于『透明』，即易于理解和修改。但主要依赖人工/专家的智能，比较复杂且耗时，因为人的参与程度高，所以不易扩展。而且类别是已经设定好的，不存在置信度这个概念。</p>
+<p>基于统计的分类优势在于『灵活』，可以输出置信概率，可以通过阈值控制结果，也易于扩展。但需要有已经标注好的训练数据，且很多时候模型约复杂，需要的数据越多。比较常见的方法有朴素贝叶斯, Rocchio, KNN 和 SVM。</p>
 <p><strong>回归</strong></p>
 <p>回归指的是基于若干变量的值预测一个给定的具有连续值的变量的值（假设一个线性或非线性的依赖模型）。常用于基于广告开支预测新产品的销售额、预测股票指数、预测空气质量等等。</p>
 <p><strong>偏差/异常检测</strong></p>
@@ -524,6 +527,37 @@
 </ol>
 <p><strong>摘要</strong></p>
 <p>摘要指的是为数据集进行总结，提供一个简洁/紧凑的表示，包括可视化与报表生成。</p>
+<h3 id="实例-文本统计分类流程"><a href="#实例-文本统计分类流程" class="headerlink" title="实例 - 文本统计分类流程"></a>实例 - 文本统计分类流程</h3><p>简单来说，分五个步骤：</p>
+<ol>
+<li>预处理: Tokenization, Filtering, Stemming</li>
+<li>特征计算: tf, Log(tf+l), tfidf</li>
+<li>特征选择: MI, Chi-Square, Information Gain</li>
+<li>分类学习: SVM, Recchio, Naive Bayes</li>
+<li>结果评估: Recall, Precision, F-Measure</li>
+</ol>
+<p>预处理的实质是去掉那些可能产生歧义与信息含量比较低的内容，在此基础上，我们把文本表示为特征向量，其中基本单元是词语(term)，权重则通常使用 $tf \times idf$（前面检索部分详细介绍过，这里不再赘述）。</p>
+<p>在的特征计算阶段，我们可以用一个例子来说明。假如一句话是 <code>This is a website made by wdxtub</code>，那么可以转化为 <code>{&lt;website, 1&gt;, &lt;make, 1&gt;, &lt;wdxtub, 1&gt;}</code>，其中我们可能会去掉一些停止词（如 this, is, a, by），并且把词性恢复(made -&gt; make)</p>
+<p>接下来就是特征选择，好处很多，可以减少特征维数，改善效果；同事防止过拟合，增强模型的泛化能力。而因为维数变少，学习效率和模型的可解释性也会对应提高。具体的方法有以下一些，主要目的就是从原有特征集合中找出一个更加有效的子集：</p>
+<ul>
+<li>文档频率 - Document Frequency<ul>
+<li>词语的 DF 小于或者大于某个阈值就去掉（太少则没有代表性，太多则没有区分度）</li>
+</ul>
+</li>
+<li>互信息 - Mutual Information<ul>
+<li>MI 越大则表示词语 t 和类别 c 共现程度越大</li>
+<li>$I(t,c)=log\frac{P(t \land c)}{P(t)P(c)}=log\frac{P(t\;|\;c)}{P(t)}$</li>
+</ul>
+</li>
+<li>信息增益 - Information Gain<ul>
+<li>即词语 t 为整个分类所能提供的信息里那个（<strong>不考虑任何特征的熵</strong>和<strong>考虑该特征后的熵</strong>的差值）</li>
+<li>$Gain(t)=Entropy(S)-Expected Entropy(S_t)$</li>
+</ul>
+</li>
+<li>信息比率 - Information Ratio</li>
+<li>卡法统计 - Chi Square</li>
+<li>OR 值 - Odd Ratio</li>
+</ul>
+<p>至于分类学习和结果评估，大多数时候可以直接采用已有的分类算法和工具，主要是调整多个参数，找到最合适的组合（不需要自己开发新的算法）。于是对于具体问题来说，最重要的是<strong>特征工程</strong>，即针对特定应用问题寻找合理、有效的特征集，当然，这个也是最困难的一步。至于哪种分类方法最好？这个答案不存在的，只能是具体问题具体分析。</p>
 <h3 id="常用工具"><a href="#常用工具" class="headerlink" title="常用工具"></a>常用工具</h3><p>开源的工具有：</p>
 <ul>
 <li>Weka</li>
@@ -592,8 +626,6 @@
 </li>
 </ul>
 <p>注：中文词性标注总体水平(Accuracy)超过 90%</p>
-<h3 id="句法分析"><a href="#句法分析" class="headerlink" title="句法分析"></a>句法分析</h3><p>句法分析是一个很大的话题，主要包含<strong>句法/成分/短语结构分析</strong>和<strong>依存关系分析</strong>，在分析的层次上分为<strong>完全分析</strong>和<strong>局部分析/浅层分析</strong>。</p>
-<p>TODO</p>
 <h2 id="常见应用"><a href="#常见应用" class="headerlink" title="常见应用"></a>常见应用</h2><p>接下来介绍数据挖掘的积累常见应用</p>
 <h3 id="智能问答技术"><a href="#智能问答技术" class="headerlink" title="智能问答技术"></a>智能问答技术</h3><p>智能问答技术起源于信息检索社区，简单来说就是根据用户的提问给出简短的答案或提供答案的证据。根据不同的划分标准，我们可以总结出如下的几类问题类型</p>
 <ul>
@@ -616,7 +648,7 @@
 </ul>
 </li>
 </ul>
-<p>遗憾的是，目前大部分理解问题的技术都是基于正则表达式的，毕竟在自然语言理解这块，暂时还没有突破性进展。</p>
+<p>遗憾的是，目前大部分理解问题的技术都是基于正则表达式的，毕竟在自然语言理解这块，暂时还没有突破性进展。不过目前非常火热的深度学习技术，可能会给智能问答处理带来一些不一样的机会（比如说我就来了一家做这个方向的创业公司啦）</p>
 <p>传统自动问答技术主要是基于语料库的自动问答或基于知识库的自动问答，基本包括三个步骤：</p>
 <ol>
 <li>问题分析(分类、模板匹配、语义分析)</li>
@@ -660,7 +692,15 @@
 </ul>
 </li>
 </ul>
-<h3 id="信息摘要"><a href="#信息摘要" class="headerlink" title="信息摘要"></a>信息摘要</h3><p>信息摘要指的是对海量数据内容进行<strong>提炼与总结</strong>，以<strong>简洁、直观</strong>的摘要来概括用户所关注的主要内容，方便用户快速了解与浏览海量内容。遗憾的是，研究 50 多年，有一定进展，但仍不能令人满意。一般来说实现思路有两种</p>
+<h3 id="信息摘要"><a href="#信息摘要" class="headerlink" title="信息摘要"></a>信息摘要</h3><p>在这个信息爆炸的年代（哇这句话看得我眼睛都起茧了），人们非常需要一个过滤和筛选信息的工具，搜索引擎原来承担了这个角色，但随着信息的增多，越来越多的冗余、片面和杂质出现了，很多时候我们搜出来了结果，还是不知道要选啥。而且现在大家花在手机上的时间越来越多，传统的长文章已经不适合这样的新浏览模式，也需要一些新东西出来。</p>
+<p>信息摘要指的是对海量数据内容进行<strong>提炼与总结</strong>，以<strong>简洁直观</strong>的摘要来概括用户所关注的主要内容，方便用户快速了解与浏览海量内容。遗憾的是，研究 50 多年，有一定进展，但仍不能令人满意。因为摘要写作是一项高度智能的任务，更麻烦的是，这玩意儿还没办法精确评价。相关的评测有</p>
+<ul>
+<li>DUC(2000-2007)，比较传统，做得是单文档、多文档、查询相关摘要</li>
+<li>TAC Summarization Track(2008-2011, 2014)，主要做的是 Update Summarization, Opinion Summarization, Guided Summarization, AESOP(摘要自动评价), Biomedical Summarization</li>
+<li>NTCIR-9~10: 1click(新型)</li>
+<li>TREC2013: Temporal Summarization Track(新型)</li>
+</ul>
+<p>一般来说实现思路有两种</p>
 <ol>
 <li><strong>抽取式</strong>：从文档中抽取已有句子形成摘要。这种方法实现简单，能保证句子的可读性</li>
 <li><strong>生成式/混合式</strong>：生成新的句子，或者对已有句子进行压缩、重构与融合。这种方法难度更大，但更接近摘要的本质</li>
@@ -972,7 +1012,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">1.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">2.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索"><span class="nav-number">3.</span> <span class="nav-text">搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文档表示"><span class="nav-number">3.1.</span> <span class="nav-text">文档表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文档索引"><span class="nav-number">3.2.</span> <span class="nav-text">文档索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文档检索"><span class="nav-number">3.3.</span> <span class="nav-text">文档检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#评价指标"><span class="nav-number">3.4.</span> <span class="nav-text">评价指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文档收集"><span class="nav-number">3.5.</span> <span class="nav-text">文档收集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链接分析"><span class="nav-number">3.6.</span> <span class="nav-text">链接分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搜索引擎优化"><span class="nav-number">3.7.</span> <span class="nav-text">搜索引擎优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据挖掘"><span class="nav-number">4.</span> <span class="nav-text">数据挖掘</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主要任务"><span class="nav-number">4.1.</span> <span class="nav-text">主要任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预测型任务"><span class="nav-number">4.2.</span> <span class="nav-text">预测型任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#描述型任务"><span class="nav-number">4.3.</span> <span class="nav-text">描述型任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用工具"><span class="nav-number">4.4.</span> <span class="nav-text">常用工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自然语言处理"><span class="nav-number">5.</span> <span class="nav-text">自然语言处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分词"><span class="nav-number">5.1.</span> <span class="nav-text">分词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#词性标注"><span class="nav-number">5.2.</span> <span class="nav-text">词性标注</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#句法分析"><span class="nav-number">5.3.</span> <span class="nav-text">句法分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见应用"><span class="nav-number">6.</span> <span class="nav-text">常见应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#智能问答技术"><span class="nav-number">6.1.</span> <span class="nav-text">智能问答技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#情感分析与观点挖掘"><span class="nav-number">6.2.</span> <span class="nav-text">情感分析与观点挖掘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信息摘要"><span class="nav-number">6.3.</span> <span class="nav-text">信息摘要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#社交网络分析"><span class="nav-number">6.4.</span> <span class="nav-text">社交网络分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">7.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#任务目标"><span class="nav-number">1.</span> <span class="nav-text">任务目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">2.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索"><span class="nav-number">3.</span> <span class="nav-text">搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文档表示"><span class="nav-number">3.1.</span> <span class="nav-text">文档表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文档索引"><span class="nav-number">3.2.</span> <span class="nav-text">文档索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文档检索"><span class="nav-number">3.3.</span> <span class="nav-text">文档检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#评价指标"><span class="nav-number">3.4.</span> <span class="nav-text">评价指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文档收集"><span class="nav-number">3.5.</span> <span class="nav-text">文档收集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链接分析"><span class="nav-number">3.6.</span> <span class="nav-text">链接分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搜索引擎优化"><span class="nav-number">3.7.</span> <span class="nav-text">搜索引擎优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据挖掘"><span class="nav-number">4.</span> <span class="nav-text">数据挖掘</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主要任务"><span class="nav-number">4.1.</span> <span class="nav-text">主要任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预测型任务"><span class="nav-number">4.2.</span> <span class="nav-text">预测型任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#描述型任务"><span class="nav-number">4.3.</span> <span class="nav-text">描述型任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-文本统计分类流程"><span class="nav-number">4.4.</span> <span class="nav-text">实例 - 文本统计分类流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用工具"><span class="nav-number">4.5.</span> <span class="nav-text">常用工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自然语言处理"><span class="nav-number">5.</span> <span class="nav-text">自然语言处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分词"><span class="nav-number">5.1.</span> <span class="nav-text">分词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#词性标注"><span class="nav-number">5.2.</span> <span class="nav-text">词性标注</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见应用"><span class="nav-number">6.</span> <span class="nav-text">常见应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#智能问答技术"><span class="nav-number">6.1.</span> <span class="nav-text">智能问答技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#情感分析与观点挖掘"><span class="nav-number">6.2.</span> <span class="nav-text">情感分析与观点挖掘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信息摘要"><span class="nav-number">6.3.</span> <span class="nav-text">信息摘要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#社交网络分析"><span class="nav-number">6.4.</span> <span class="nav-text">社交网络分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试一试"><span class="nav-number">7.</span> <span class="nav-text">试一试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
