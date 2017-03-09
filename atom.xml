@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2017-03-08T15:25:41.000Z</updated>
+  <updated>2017-03-09T13:37:34.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -14,6 +14,79 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>RESTful API 框架 HUG 指南</title>
+    <link href="http://wdxtub.com/2017/03/09/hug-guide/"/>
+    <id>http://wdxtub.com/2017/03/09/hug-guide/</id>
+    <published>2017-03-09T11:25:18.000Z</published>
+    <updated>2017-03-09T13:37:34.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>如果你在用 Python3，如果你需要搭建一个 API 服务，如果时间很紧，那么 HUG 可能就是你的最佳选择！本文将用轻松易懂的实例教程来带大家走入 HUG 的世界。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.09: 完成初稿</li>
+</ul>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>HUG 是基于 Python3 的，所以我们来安装一下。一般来说我们会使用 <code>virtualenv</code> 来隔离不同的环境，不然不同的包容易『打架』。比较简单，跟着敲命令即可。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 安装 Python3，其中 pip3 会随着 Python3 一并安装</span></div><div class="line"><span class="comment"># 编译时间会比较长，请耐心等待</span></div><div class="line">brew install python3</div><div class="line"><span class="comment"># 安装 VirtualEnv 方便隔离开发</span></div><div class="line">pip3 install virtualenv</div><div class="line"><span class="comment"># 新建一个 ~/hug 文件夹来保存</span></div><div class="line">virtualenv -p python3 ~/hug</div><div class="line"></div><div class="line"><span class="comment"># 激活环境</span></div><div class="line"><span class="built_in">source</span> ~/hug/bin/activate</div><div class="line"><span class="comment"># 离开环境</span></div><div class="line">deactivate</div></pre></td></tr></table></figure>
+<p>配置完成之后，我们就可以安装 <code>hug</code> 啦，直接 <code>pip3 install hug --upgrade</code> 即可。恭喜，一切完事儿！（如果你手滑，可以再 <code>pip3 install bottle</code> 一下，之后有用）</p>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><p>按照通常的 Hello World 惯例，我们就来写一个 API，给访问这个 API 的用户问好。就是如下 7 行（文件名为 <code>hello.py</code>）：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">import</span> hug</div><div class="line"></div><div class="line"><span class="meta">@hug.get('/hello')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name)</span>:</span></div><div class="line">    <span class="string">"""Say Hello to the User"""</span></div><div class="line">    ticks = time.time()</div><div class="line">    <span class="keyword">return</span> <span class="string">"Hello &#123;name&#125;! Now is &#123;ticks&#125;"</span>.format(**locals())</div></pre></td></tr></table></figure>
+<p>然后我们在命令行里输入 <code>hug -f hello.py</code>，就可以看到如下萌萌的启动界面：</p>
+<p><img src="/images/14890615607155.jpg" alt=""></p>
+<p>然后我们来访问一下 <code>127.0.0.1:8000</code>，发现返回的结果是这个：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"404"</span>: <span class="string">"The API call you tried to make was not defined. Here's a definition of the API to help you get going :)"</span>,</div><div class="line">    <span class="attr">"documentation"</span>: &#123;</div><div class="line">        <span class="attr">"handlers"</span>: &#123;</div><div class="line">            <span class="attr">"/hello"</span>: &#123;</div><div class="line">                <span class="attr">"GET"</span>: &#123;</div><div class="line">                    <span class="attr">"usage"</span>: <span class="string">"Say Hello to the User"</span>,</div><div class="line">                    <span class="attr">"outputs"</span>: &#123;</div><div class="line">                        <span class="attr">"format"</span>: <span class="string">"JSON (Javascript Serialized Object Notation)"</span>,</div><div class="line">                        <span class="attr">"content_type"</span>: <span class="string">"application/json"</span></div><div class="line">                    &#125;,</div><div class="line">                    <span class="attr">"inputs"</span>: &#123;</div><div class="line">                        <span class="attr">"name"</span>: &#123;</div><div class="line">                            <span class="attr">"type"</span>: <span class="string">"Basic text / string value"</span></div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个告诉我们，嘿这个 API 我们没有定义噢，但是我们很贴心的给你列出来已经定义的 API，剩下的你自己看咯！</p>
+<p>好，我们现在知道了，要访问的是 <code>127.0.0.1:8000/hello</code>，于是我们打开浏览器再试一次，发现结果是这个：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"errors"</span>: </div><div class="line">        &#123;</div><div class="line">            <span class="attr">"name"</span>: <span class="string">"Required parameter 'name' not supplied"</span></div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>噢，这个错误提醒我们，一定要给出 <code>name</code> 这个参数，好，那我们访问 <code>127.0.0.1:8000/hello?name=wdxtub</code>，结果终于对了，像这样（给出了名字，也给出了当前的时间戳）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&quot;Hello wdxtub! Now is 1489061160.552566&quot;</div></pre></td></tr></table></figure>
+<p>但是这个方法还有一点不好，就是我们改动了代码，并不会自动重新载入，每次都要手动重启很麻烦，那怎么办呢？下一节我们就来搞这个问题。</p>
+<h2 id="自动重启及-API-测试"><a href="#自动重启及-API-测试" class="headerlink" title="自动重启及 API 测试"></a>自动重启及 API 测试</h2><p>还记得我们之前手滑安装的 <code>bottle</code> 吗？接下来就有用啦，我们把代码改成如下（注意新增的 <code>import</code> 和下面的 <code>if</code> 部分）：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> hug</div><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> run</div><div class="line"></div><div class="line"><span class="meta">@hug.get('/hello')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name)</span>:</span></div><div class="line">    <span class="string">"""Say Hello to the User"""</span></div><div class="line">    ticks = time.time()</div><div class="line">    <span class="keyword">return</span> <span class="string">"Hello &#123;name&#125;! Now is &#123;ticks&#125;"</span>.format(**locals())</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    app = __hug__.http.server()</div><div class="line">    run(app=app, reloader=<span class="keyword">True</span>, port=<span class="number">8000</span>)</div></pre></td></tr></table></figure>
+<p>然后在命令行中输入 <code>python hello.py</code>，就可以看到我们的 API 服务器启动起来了，如果这个时候我们对 <code>hello.py</code> 做些修改，<code>bottle</code> 会自动帮我们重启，非常方便！比如我们可以加入下面几行：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="meta">@hug.get('/', output=hug.output_format.json)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">root</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> &#123;<span class="string">'msg'</span>: <span class="string">"欢迎来到 HUG 指南"</span>&#125;</div></pre></td></tr></table></figure>
+<p>稍等一下，就可以访问 <code>127.0.0.1:8000</code> 了。当然，使用浏览器测试 API 其实是不太方便的，这里推荐一下 Postman 这个 Chrome 应用，可以很方便地进行各类测试。比如像这样：</p>
+<p><img src="/images/14890651606772.jpg" alt=""></p>
+<h2 id="重新认识-HUG"><a href="#重新认识-HUG" class="headerlink" title="重新认识 HUG"></a>重新认识 HUG</h2><p>官方的标题起的很威武霸气 - 拥抱未来的 API(Embrace the APIs of the future)。借用其简介：</p>
+<blockquote>
+<p>Drastically simplify API development over multiple interfaces. With hug, design and develop your API once, then expose it however your clients need to consume it. Be it locally, over HTTP, or through the command line - hug is the fastest and most modern way to create APIs on Python3.</p>
+</blockquote>
+<p>从前面的例子中我们其实也可以简单领略到 HUG 的魅力，这里简单总结一下：</p>
+<ul>
+<li>性能高。在如此高的抽象层仍旧不损失太多性能，值得称赞（接近最快的 <code>falcon</code>）</li>
+<li>自带版本管理。简单制定所属的 API 版本，就可以用 <code>v1</code>, <code>v2</code> 这样的方式来切换，方便</li>
+<li>自动化文档。只要简单地在代码中写注释及标注好类型，文档就自动生成了，省事儿</li>
+<li>标记即验证。利用 Python 3 的 type annotation 能力，可以对每个参数进行验证和转换</li>
+<li>写一次到处用。只能用作 API 吗？错！还可以用在命令行和其他 python 代码中，因为业务逻辑很干净</li>
+</ul>
+<p>好了！现在你已经准备好了！可能教程不是特别『丰富』，但是相信你可以的，毕竟参考链接里可是有完整的教程呢！</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://www.hug.rest/" target="_blank" rel="external">包含教程及文档 - hug’s website</a></li>
+<li><a href="https://github.com/timothycrosley/hug" target="_blank" rel="external">Github - timothycrosley/hug</a></li>
+<li><a href="https://github.com/timothycrosley/hug/tree/develop/examples" target="_blank" rel="external">有用的代码样例</a></li>
+<li><a href="http://www.hug.rest/website/learn/" target="_blank" rel="external">必读 - 学习 HUG</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;如果你在用 Python3，如果你需要搭建一个 API 服务，如果时间很紧，那么 HUG 可能就是你的最佳选择！本文将用轻松易懂的实例教程来带大家走入 HUG 的世界。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="API" scheme="http://wdxtub.com/tags/API/"/>
+    
+      <category term="Python" scheme="http://wdxtub.com/tags/Python/"/>
+    
+      <category term="RESTful" scheme="http://wdxtub.com/tags/RESTful/"/>
+    
+  </entry>
   
   <entry>
     <title>Insanity Workout 指南</title>
@@ -1538,50 +1611,6 @@ $$\frac{\partial f}{\partial \mathbf{\iota}}=\mathbf{grad}f(x_0,y_0)\cdot\mathbf
       <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
     
       <category term="选择" scheme="http://wdxtub.com/tags/%E9%80%89%E6%8B%A9/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>第三十四周 - 青春大概</title>
-    <link href="http://wdxtub.com/2017/02/03/about-youth/"/>
-    <id>http://wdxtub.com/2017/02/03/about-youth/</id>
-    <published>2017-02-03T15:59:59.000Z</published>
-    <updated>2017-02-04T01:05:12.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>哭过笑过恋过恨过，仿佛是一梦蹉跎。迷惑失落忧愁寂寞，谁都是凡人一个。</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.02.04: 完成初稿</li>
-<li>2017.02.03: 完成大纲</li>
-</ul>
-<p>立春、初七、周五、新年第一个工作日、一个结束与一个开始。 </p>
-<p>辞职、交接、撸串、搬家收拾洗洗刷刷、一次转身与一次回望。</p>
-<p>要怎么样收尾呢？不知道。无论是跟老大解释要离开的原因还是跟同事交接工作相关事宜，莫名有了许多悲壮的感觉。悲是因为大疆是我非常喜欢的公司，却因为公司需要和个人发展目标有些不一致，没有办法再为之添砖加瓦；壮是因为相信自己到了新的行业和领域能够更充分的发挥自己的能力，反过来说不定今后还有合作的机会呢。</p>
-<p>虽然我也知道 business is business，但一起经历了各种各样的事情，忽然说要离开，真有些开不了口。可能我还没有成熟到能够『看山还是山，看水还是水』吧，所以我特别感谢老大对我的理解和鼓励，我一定会好好努力做出一点成绩，不给大家丢人。</p>
-<p>大疆对我来说有知遇之恩，同学朋友领导对我的关怀和信任让我意识到一群人努力把自己想要的东西从零到以做出来是多么让人快乐的过程。深圳是一个年轻的城市，大疆是一个年轻的公司，身边的小伙伴是一群年轻的梦想家，身处其中所感受到的朝气蓬勃，真有种『数风流人物还看今朝』的气势。</p>
-<p>可是对于硬件相关知之甚少的我，很多时候只能以辅助的形式参与到各项工作中。但对于年轻人来说，没有什么比冲到第一线去披荆斩棘建功立业更有吸引力的。现在的工作固然安稳固然轻松，可是换个角度想，没有了挑战，日子也有些无趣。所以，接下来的日子会把之前给自己挖的坑填一下，然后轻装上阵，去新的战场接受新的挑战。</p>
-<p>带着诸多不舍和眷恋，春节期间有些矫枉过正地在飞飞机，几乎把广州飞了个遍：从生物岛到二沙岛，从执信中学到中山大学，从体育学院到猎德大桥。尝试了各种拍摄方式，甚至还做了五秒钟的定格动画，在密集地拍摄中完成了从记录到创作的进化，感觉再次打开了新世界的大门。</p>
-<p>在珠江边用无人机给爸妈拍视频的时候忽然意识到，科技和工程最重要的还是要回归到人，脱离了人本身去追求载体很快便会厌倦，但是人如果是快乐的，有了更好的载体，就能让幸福感更长久的延续下去。</p>
-<p>新的一年还有很多事情等着我去完成，既然做了决定，就要一如既往全力以赴下去。</p>
-<p>数着等着望着怕着，青春已时日无多；在遗忘中不舍，醉熏交错，青春大概如你所说；在花落时结果，期望很多，青春大概都这样过；</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;哭过笑过恋过恨过，仿佛是一梦蹉跎。迷惑失落忧愁寂寞，谁都是凡人一个。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
-    
-    
-      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
-    
-      <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
-    
-      <category term="结束" scheme="http://wdxtub.com/tags/%E7%BB%93%E6%9D%9F/"/>
     
   </entry>
   
