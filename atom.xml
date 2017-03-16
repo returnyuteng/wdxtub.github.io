@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2017-03-16T01:51:50.000Z</updated>
+  <updated>2017-03-16T11:15:37.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -14,6 +14,658 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HBase 快速指南</title>
+    <link href="http://wdxtub.com/2017/03/16/hbase-guide/"/>
+    <id>http://wdxtub.com/2017/03/16/hbase-guide/</id>
+    <published>2017-03-16T02:31:15.000Z</published>
+    <updated>2017-03-16T11:15:37.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>HBase 作为大数据平台中非常知名的 NoSQL 数据库之一，经过长时间的发展已经非常强大和稳定。强大的同时也意味着复杂，光把官方的入门指南看完都已经是非常不容易的事情，本文力图从实践的角度出发，让大家能够快速把 HBase『用』起来。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.13: 完成初稿</li>
+</ul>
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>HBase 是一个开源的、分布式的、数据多版本的，列式存储的 NoSQL 数据库（基于 Google 的 Bigtable 论文）。依托 Hadoop 的分布式文件系统 HDFS 作为底层存储, 能够为数十亿行数百万列的海量数据表提供随机、实时的读写访问。</p>
+<p>因为现在创业公司，所以从运维到开发都要自己来，针对 DevOps 中的各种奇怪问题，是需要有一个简单明了的快速指南方便查阅的。而且随着 HBase 的版本迭代，老的中文文档已经跟不上时代，需要基于新版本做一定的更新。本指南所测试的平台及软件配置如下</p>
+<ul>
+<li>HBase 版本: 1.2.1</li>
+<li>Hadoop 版本: 2.5.1</li>
+<li>ZooKeeper 客户端版本: 3.4.6</li>
+<li>集群规模: 3 台云服务器</li>
+</ul>
+<p>注：安装配置见参考链接中的官方文档，这里不赘述</p>
+<h2 id="日常运维"><a href="#日常运维" class="headerlink" title="日常运维"></a>日常运维</h2><p>日常运维需要知道的内容如下，只要熟悉了就可以</p>
+<ul>
+<li>检查 HDFS 状况 <code>hdfs dfsadmin -report</code></li>
+<li>启动/停止 HBase 的 Master 节点 <code>$bin/hbase-daemon.sh [start|stop] master</code>（<code>[start|stop]</code> 表示这两个词任选一个，对应不同操作，后同）</li>
+<li>启动/停止 RegionServer <code>$bin/hbase-daemon.sh [start|stop] regionserver</code></li>
+<li>启动 HBase 的 Rest 服务 <code>$bin/hbase-daemon.sh start rest -p 16080</code>（端口号随意，默认为 8080，可以通过 <code>netstat -tln</code> 查看在使用的端口号）<ul>
+<li>或 <code>$bin/hbase rest start -p 16080</code> 前台启动</li>
+</ul>
+</li>
+<li>停止 HBase 的 Rest 服务 <code>$bin/hbase-daemon.sh stop rest</code><ul>
+<li>或 <code>$bin/hbase rest stop</code></li>
+</ul>
+</li>
+<li>进入 HBase Shell <code>hbase shell</code></li>
+<li>HBase Web UI <code>localhost:16010</code>（如果有暴露公网 IP，在公网也可以访问）</li>
+<li>HBase Region Server UI <code>localhost:16030</code></li>
+</ul>
+<h2 id="HBase-Shell-常用命令"><a href="#HBase-Shell-常用命令" class="headerlink" title="HBase Shell 常用命令"></a>HBase Shell 常用命令</h2><ul>
+<li>如果在 <code>hbase shell</code> 中输入 <code>status</code> 有 dead 的机器，那么需要去找到并启动起来</li>
+<li>使用 <code>help</code> 了解命令详情</li>
+<li>使用脚本的方式 <code>hbase shell filename</code></li>
+</ul>
+<p>更多</p>
+<ul>
+<li><a href="http://blog.pureisle.net/archives/1887.html" target="_blank" rel="external">hbase shell基础和常用命令详解</a></li>
+<li><a href="http://blog.csdn.net/lifuxiangcaohui/article/details/40042117" target="_blank" rel="external">HBase总结（十三）HBase Shell 常用命令及例子</a></li>
+</ul>
+<h2 id="RESTful-API-使用"><a href="#RESTful-API-使用" class="headerlink" title="RESTful API 使用"></a>RESTful API 使用</h2><p>Header 中设置 <code>Accept</code> 可以选择返回格式，比如 <code>Accept: text/xml</code> 就是返回文本，<code>Accept: application/json</code> 就是返回 Json</p>
+<p>集群</p>
+<ul>
+<li>[GET] <code>/version/cluster</code> 查询 HBase 版本信息</li>
+<li>[GET] <code>/status/cluster</code>    查询集群状态</li>
+<li>[GET] <code>/</code>    获取所有用户的表名</li>
+<li>[GET] <code>/table_name/rowkey</code> 获取对应的条目（BASE64 编码）</li>
+</ul>
+<p>更多</p>
+<ul>
+<li><a href="https://www.cloudera.com/documentation/enterprise/5-9-x/topics/admin_hbase_rest_api.html" target="_blank" rel="external">Configuring and Using the HBase REST API</a></li>
+</ul>
+<h2 id="Schema-设计"><a href="#Schema-设计" class="headerlink" title="Schema 设计"></a>Schema 设计</h2><p>Rowkey 和 Schema 设计得好坏，有很多时候是有决定性意义的。</p>
+<p>基本概念</p>
+<ul>
+<li>每张表只有一个索引，这个索引就是 rowkey，并没有二级索引</li>
+<li>行按照 rowkey 排序，rowkey 按照字典序排序</li>
+<li>行级别的操作都是原子的（更新两行可能出现一行成功一行失败）</li>
+<li>读写应该均匀分布到整个表</li>
+<li>通常，应该把单个实体的所有信息保存在单行中</li>
+<li>相关的实体应该存储在临近的行（读写更高效，压缩数据更有效）</li>
+<li>HBase 表是稀疏的。空的列不会占据任何空间</li>
+<li>确定 rowkey，最有效的查询就是使用 rowkey 获取特定行，或者多行数据，其他类型查询会触发全表扫描，效率比较低下（具体设计应该基于需求）</li>
+<li>让 rowkey 尽可能短，长的 rowkey 会占据更多空间，也会增加 HBase 的响应时间</li>
+<li>反转域名。如果你要存储的数据可表示为域名的形式，可以考虑反转域名作为 rowkey 。（例如：com.example.products）反转域名是很不错的方法，尤其是相邻域名相似度很大, 同时这种方法也便于更有效的压缩数据。</li>
+<li>字符串标识符。如果你要存储的数据可以被一个字符串简单的标识（例如： user IDs），你可以使用标识符作为 rowkey 或是 rowkey 的一部分。考虑使用 标识符的哈希而不是它本身，以便 标识符的长度永远可以预测。</li>
+<li>时间戳。如果你经常需要基于时间读取数据，将时间戳作为 rowkey 的一部分是不错的方法。不推荐直接使用时间戳本身作为 rowkey,因为会造成热点问题，同样的原因，也不应该将时间戳作为 rowkey 的开始。例如：你的应用可能需要记录性能相关的数据，例如每秒的CPU，内存使用情况。对于这种情况，你可以将数据类型的标识符和时间戳组合为 rowkey.(例如：cpu#1425330757685）如果你需要经常获取最新的记录，你可以使用相反时间戳作为 rwokey,用你的编程语言中长整形的最大值(in Java, java.lang.Long.MAX_VALUE)减去现在的时间戳。有了相反的时间戳，记录将会按照从新到旧的顺序排列。</li>
+<li>避免这样的 rowkey：域名、连续的数字（应该反转用户数字 ID）、频繁更新的标识符（应该先将数据保存在内存中，再周期性批量写入 HBase）</li>
+<li>高表与宽表的不同</li>
+<li>columnfamily 尽量少，多了会互相影响</li>
+<li>对于列相对固定的应用，最好采用将一行记录封装到一个 column 中的方式，可以节省存储空间。封装方式推荐  protocolbuffer</li>
+<li>column 数目不要超过百万</li>
+<li>利用好 scan(startkey, endkey) 这种方式</li>
+<li>设计原则 Denormalization, Duplication 和 Intelligent Keys</li>
+<li>rowkey 和 column name 都要尽可能短</li>
+<li>考虑用字节来表示编号</li>
+<li>可以设置 column family 的存活时间 TTL</li>
+<li>rowkey 可以进行 hash 和编号，这样把变长搞成定长，然后原始值可以放到 column 中，不影响，主要是方便 scan</li>
+<li>新版本支持 reverse scan，所以对于 schema 的设计不用特意倒过来</li>
+<li>Rowkeys cannot be changed. The only way they can be “changed” in a table is if the row is deleted and then re-inserted. This is a fairly common question on the HBase dist-list so it pays to get the rowkeys right the first time (and/or before you’ve inserted a lot of data).</li>
+<li>Keep your column family names as short as possible. The column family names are stored for every value (ignoring prefix encoding). They should not be self-documenting and descriptive like in a typical RDBMS.</li>
+<li>If you are storing time-based machine data or logging information, and the row key is based on device ID or service ID plus time, you can end up with a pattern where older data regions never have additional writes beyond a certain age. In this type of situation, you end up with a small number of active regions and a large number of older regions which have no new writes. For these situations, you can tolerate a larger number of regions because your resource consumption is driven by the active regions only.</li>
+<li>If only one column family is busy with writes, only that column family accomulates memory. Be aware of write patterns when allocating resources.</li>
+<li>Try to make do with one column family if you can in your schemas. Only introduce a second and third column family in the case where data access is usually column scoped; i.e. you query one column family or the other but usually not both at the one time.</li>
+<li>To prevent hotspotting on writes, design your row keys such that rows that truly do need to be in the same region are, but in the bigger picture, data is being written to multiple regions across the cluster, rather than one at a time. Some common techniques for avoiding hotspotting are described below, along with some of their advantages and drawbacks.</li>
+</ul>
+<p>技巧</p>
+<ul>
+<li>Salting. salting attempts to increase throughput on writes, but has a cost during reads.</li>
+<li>Hashing. Instead of a random assignment, you could use a one-way hash that would cause a given row to always be “salted” with the same prefix, in a way that would spread the load across the RegionServers, but allow for predictability during reads. Using a deterministic hash allows the client to reconstruct the complete rowkey and use a Get operation to retrieve that row as normal.</li>
+<li>Reversing the Key. A third common trick for preventing hotspotting is to reverse a fixed-width or numeric row key so that the part that changes the most often (the least significant digit) is first. This effectively randomizes row keys, but sacrifices row ordering properties.</li>
+</ul>
+<p>关于 <a href="http://hbase.apache.org/1.2/book.html#secondary.indexes" target="_blank" rel="external">Secondary Index</a></p>
+<p>This section could also be titled “what if my table rowkey looks like this but I also want to query my table like that.” A common example on the dist-list is where a row-key is of the format “user-timestamp” but there are reporting requirements on activity across users for certain time ranges. Thus, selecting by user is easy because it is in the lead position of the key, but time is not.</p>
+<ul>
+<li>使用 Query Filter，过滤掉部分数据</li>
+<li>Periodic-Update Secondary Index, A secondary index could be created in another table which is periodically updated via a MapReduce job. The job could be executed intra-day, but depending on load-strategy it could still potentially be out of sync with the main data table.</li>
+<li>Dual-Write Secondary Index, Another strategy is to build the secondary index while publishing data to the cluster (e.g., write to data table, write to index table). If this is approach is taken after a data table already exists, then bootstrapping will be needed for the secondary index with a MapReduce job (see secondary.indexes.periodic).</li>
+<li>Summary Tables, Where time-ranges are very wide (e.g., year-long report) and where the data is voluminous, summary tables are a common approach. These would be generated with MapReduce jobs into another table.</li>
+<li>Coprocessor Secondary Index, Coprocessors act like RDBMS triggers. These were added in 0.92. For more information, see <a href="http://hbase.apache.org/1.2/book.html#cp" target="_blank" rel="external">coprocessors</a></li>
+</ul>
+<h3 id="How-I-Learned-To-Stop-Worrying-And-Love-Denormalization"><a href="#How-I-Learned-To-Stop-Worrying-And-Love-Denormalization" class="headerlink" title="How I Learned To Stop Worrying And Love Denormalization"></a>How I Learned To Stop Worrying And Love Denormalization</h3><ul>
+<li>Schema Design 实际上就是 Logical Data Modeling + Physical Implementation</li>
+<li>Relational DBs work well because they are close to the pure logical model</li>
+<li>Any byte array in HBase can represent more than one logical attribute</li>
+<li>The basic concept of denormalization is simple: two <strong>logical</strong> entities share one <strong>physical</strong> representation</li>
+<li>This is a fundamental modeling property of HBase: nesting entities。即，在 rowkey 对应的一行中，某个 column 可以是另一个 rowkey，值对应是另一个 entity</li>
+</ul>
+<p><img src="/images/14896626408250.jpg" alt=""></p>
+<ul>
+<li>The row key design is the single most important decision you will make. This is also true for the “key” you’re putting in the column family name of nested entities.</li>
+<li>Design for the questions not the answers.</li>
+<li>Bu isn’t NoSQL more flexible than a relational DB? For column schema? YES! For row key structures, NO!</li>
+<li>Be compact. You can squeeze a lot into a little space</li>
+<li>Use row atomicity as a design tool. Rows are updated atomically, which gives you a form of relational integrity in HBase</li>
+<li>Attributes can move into the row key. Even if it’s not “identifying” (part of the uniqueness of an entity), adding an attribute into the row key can make access more efficient in some cases.</li>
+<li>If you nest entities, you can transactionally pre-aggregate data. You can recalculate aggregates on write, or periodically with a map/reduce job.</li>
+</ul>
+<h3 id="HBase-Schema-Design-and-Cluster-Sizing-Notes"><a href="#HBase-Schema-Design-and-Cluster-Sizing-Notes" class="headerlink" title="HBase Schema Design and Cluster Sizing Notes"></a>HBase Schema Design and Cluster Sizing Notes</h3><p>ApacheCon Europe, November 2012, by Lars George, Director EMEA Services @Cloudera, Apache Committer, lars@cloudera.com, @larsgeorge(twitter) </p>
+<h4 id="HBase-Architecture"><a href="#HBase-Architecture" class="headerlink" title="HBase Architecture"></a>HBase Architecture</h4><p>HBase Tables 每行由 Row Keys 索引，每列名称为 Column Names(Column Qualifiers, Column Keys)，由 Row Key 和 Column Name 可以确定一个 cell，每个 cell 包含不同的数据版本。而不同的 row 可能在不同的 region 中，不同的 column 可能在不同的 column family 中。</p>
+<ul>
+<li>Table is made up of any number of regions</li>
+<li>Region is specified by its startKey and endKey</li>
+<li>Each region may live on a different node and is made up of several HDFS files and blocks, each of which is replicated by Hadoop</li>
+<li>Tables are sorted by Row in lexicographical order</li>
+<li>Table schema only defines its column families<ul>
+<li>Each family consists of any number of columns</li>
+<li>Each column consists of any number of versions</li>
+<li>Columns only exist when inserted, NULLs are free</li>
+<li>Columns within a family are sorted and stored together</li>
+<li>Everything except table names are byte[]</li>
+</ul>
+</li>
+<li>HBase uses HDFS(or similar) as its reliable storage layer<ul>
+<li>Handles checksums, replication, failover</li>
+</ul>
+</li>
+<li>Native Java API, Gateway for REST, Thrift, Avro</li>
+<li>Master manages cluster</li>
+<li>RegionServer manage data</li>
+<li>Zookeeper is used the “neural network”<ul>
+<li>Crucial for HBase</li>
+<li>Bootstraps and coordinates cluster</li>
+</ul>
+</li>
+<li>Based on Log-Structured Merge-Trees (LSM-Trees)</li>
+<li>Inserts are done in write-ahead log first</li>
+<li>Data is stored in memory and flushed to disk on regular intervals or based on size</li>
+<li>Small flushes are merged in the background to keep number of files small</li>
+<li>Reads red memory stores first and then disk based files second</li>
+<li>Deletes are handled with “tombstone” markers</li>
+<li>Atomicity on row level no matter how many columns<ul>
+<li>keeps locking model easy</li>
+</ul>
+</li>
+</ul>
+<p>MemStores</p>
+<ul>
+<li>After data is written to the WAL the RegionServer saves KeyValues in <strong>memory store</strong></li>
+<li>Flush to disk based on size, see <code>hbase.hregion.memstore.flush.size</code></li>
+<li>Default size is <strong>64MB</strong></li>
+<li>Uses <strong>snapshot</strong> mechanism to write flush to disk while still serving from it and accepting new data at the same time</li>
+<li>Snapshots are released when flush has succeeded</li>
+</ul>
+<p>Compactions</p>
+<ul>
+<li>General Concepts<ul>
+<li>Two types: <strong>Minor</strong> and <strong>Major</strong> Compactions</li>
+<li>Asynchronous and transparent to client</li>
+<li>Manage file bloat from MemStore flushes</li>
+</ul>
+</li>
+<li>Minor Compactions<ul>
+<li>Combine last “few” flushes</li>
+<li>Triggered by number of storage files</li>
+</ul>
+</li>
+<li>Major Compactions<ul>
+<li>Rewrite <strong>all</strong> storage files</li>
+<li>Drop deleted data and those values exceeding TTL and/or number of versions</li>
+<li>Triggered by time threshold</li>
+<li>Cannot be scheduled automatically starting at a specific time(bummer!)</li>
+<li>May(most definitely) tax overall HDFS IO performance</li>
+</ul>
+</li>
+<li>Tip: Disable major compactions and schedule to run manually(e.g. cron) at off-peak times</li>
+</ul>
+<p>Block Cache</p>
+<ul>
+<li>Acts as very large, in-memory <strong>distributed cache</strong></li>
+<li>Assigned a large part of JVM <strong>heap</strong> in the RegionServer process, see <code>hfile.block.cache.size</code></li>
+<li>Optimized <strong>reads</strong> on subsequent columns and rows</li>
+<li>Has <strong>priority</strong> to keep “in-memory” column families in cache</li>
+<li>Cache needs to be used properly to get best read performance<ul>
+<li>Turn off block cache on operations that cause large churn</li>
+<li>Store related data “close” to each other</li>
+</ul>
+</li>
+<li>Uses <strong>LRU</strong> cache with threaded (asynchronous) evictions based on priorities</li>
+</ul>
+<p>Region Splits</p>
+<ul>
+<li>Triggered by configured maximum file size of any store file<ul>
+<li>This is checked directly <strong>after</strong> the compaction call to ensure store files are actually approaching the threshold.</li>
+</ul>
+</li>
+<li>Runs as <strong>asynchronous</strong> thread on RegionServer</li>
+<li>Splits are <strong>fast</strong> and nearly instant<ul>
+<li>Reference files point to original region files and represent each half of the split</li>
+</ul>
+</li>
+<li>Compactions take care of splitting original files into new region directories</li>
+</ul>
+<p>Auto Sharding and Distribution</p>
+<ul>
+<li>Unit of scalability in HBase is the Region</li>
+<li>Sorted, contiguous range of rows</li>
+<li>Spread “randomly” across RegionServer</li>
+<li>Moved around for load balancing and failover</li>
+<li>Split automatically or manually to scale with growing data</li>
+<li>Capacity is solely a factor of cluster nodes vs. regions per node</li>
+</ul>
+<p>Column Family vs. Column</p>
+<ul>
+<li>Use only a few column families<ul>
+<li>Causes many files that need to stay open per region plus class overhead per family</li>
+</ul>
+</li>
+<li>Best used when logical separation between data and meta columns</li>
+<li>Sorting per family can be used to convey application logic or access pattern</li>
+</ul>
+<p>Storage Separation</p>
+<ul>
+<li>Column Families allow for separation of data<ul>
+<li>Used by Columnar Databases for fast analytical queries, but on column level only</li>
+<li>Allows different or compression depending on the content type</li>
+</ul>
+</li>
+<li>Segregate information based on access pattern</li>
+<li>Data is stored in one or more storage file, called HFiles</li>
+</ul>
+<h4 id="Schema-Design"><a href="#Schema-Design" class="headerlink" title="Schema Design"></a>Schema Design</h4><p>Key Cardinality(基数)</p>
+<p><img src="/images/14896626633656.jpg" alt=""></p>
+<ul>
+<li>The best performance is gained from using row keys</li>
+<li>Time range bound reads can skip store files<ul>
+<li>So can Bloom Filter</li>
+</ul>
+</li>
+<li>Selecting column families reduces the amount of data to be scanned</li>
+<li>Pure value based filtering is a full table scan<ul>
+<li>Filters often are too, but reduce network traffic</li>
+</ul>
+</li>
+</ul>
+<p>Fold, Store, and Shift</p>
+<ul>
+<li>Logical layout does not match physical one</li>
+<li>All values are stored with the full coordinates, including: Row Key, Column Family, Column Qualifier, and Timestamp</li>
+<li>Folds columns into “row per column”</li>
+<li>NULLs are cost free as nothing is stored</li>
+<li>Versions are multiple “rows” in folded table</li>
+</ul>
+<p>Key/Table Design</p>
+<ul>
+<li>Crucial to gain best performance<ul>
+<li>Why do I need to know? Well, you also need to know that RDBMS is only working well when columns are indexed and query plan is OK</li>
+</ul>
+</li>
+<li>Absence of secondary indexes forces use of row key or column name sorting</li>
+<li>Transfer multiple indexes into on<ul>
+<li>Generate large table -&gt; Good since fits architecture and spreads across cluster </li>
+</ul>
+</li>
+</ul>
+<p>DDI</p>
+<ul>
+<li>Stands for Denormalization, Duplication and Intelligent Keys</li>
+<li>Needed to overcome shortcomings of architecture</li>
+<li>Denormalization -&gt; Replacement for JOINs</li>
+<li>Duplication -&gt; Design for reads</li>
+<li>Intelligent Keys -&gt; Implement indexing and sorting, optimize reads</li>
+</ul>
+<p>Pre-materialized Everything</p>
+<ul>
+<li>Achieve one read per customer request is possible</li>
+<li>Otherwise keep at lowest number</li>
+<li>Reads between 10ms(cache miss) and 1ms(cache hit)</li>
+<li>Use MapReduce to compute exacts in batch</li>
+</ul>
+<p><strong>Motto: Design for Reads!!!</strong></p>
+<p>Tall-Narrow vs. Flat-Wide Tables</p>
+<ul>
+<li>Rows do not split<ul>
+<li>Might end up with one row per region</li>
+</ul>
+</li>
+<li>Same storage footprint</li>
+<li>Put more details into the row key<ul>
+<li>Sometimes dummy column only</li>
+<li>Make use of partial key scans</li>
+</ul>
+</li>
+<li>Tall with Scans, Wide with Gets<ul>
+<li>Atomicity only on row level</li>
+</ul>
+</li>
+<li>Example: Large graphs, stored as adjacency matrix</li>
+</ul>
+<p>Hashing vs. Sequential Keys</p>
+<ul>
+<li>Uses hashes for best spread<ul>
+<li>Use for example MD5 to be able to recreate key, Key = MD5(customerID)</li>
+<li>Counter productive for range scans</li>
+</ul>
+</li>
+<li>Use sequential keys for locality<ul>
+<li>Makes use of block caches</li>
+<li>May tax one server overly, may be avoided by salting or splitting regions while keeping them small</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14896627115025.jpg" alt=""></p>
+<p>Key Design Summary</p>
+<ul>
+<li>Based on access pattern, either use sequential or random keys</li>
+<li>Often a combination of both is needed<ul>
+<li>Overcome architectural limitations</li>
+</ul>
+</li>
+<li>Neither is necessarily bad<ul>
+<li>Use bulk import for sequential keys and reads</li>
+<li>Random keys are good for random access patterns</li>
+</ul>
+</li>
+</ul>
+<p>Key Design</p>
+<ul>
+<li>Reversed Domains<ul>
+<li>Examples: “com.wdxtub.www”, “cn.wdxtub.www”</li>
+<li>Helps keeping pages per site close, as HBase efficiently scans blocks of sorted keys</li>
+</ul>
+</li>
+<li>Domain Row Key = MD5(Reversed Domain) + Reversed Domain<ul>
+<li>Leading MD5 hash spreads keys randomly across all regions for load balancing reasons</li>
+<li>Only hashing the domain groups per site (and per subdomain if needed)</li>
+</ul>
+</li>
+<li>URL Row Key = MD5(Reversed Domain) + Reversed Domain + URL ID<ul>
+<li>Unique ID per URL already available, make use of it </li>
+</ul>
+</li>
+</ul>
+<p>Summary</p>
+<ul>
+<li>Design for Use-Case<ul>
+<li>Read, Write, or Both?</li>
+</ul>
+</li>
+<li>Avoid Hotspotting</li>
+<li>Consider using IDs instead of full text</li>
+<li>Leverage Column Family to HFile relation</li>
+<li>Shift details to appropriate position<ul>
+<li>Composite Keys</li>
+<li>Column Qualifiers</li>
+</ul>
+</li>
+<li>Schema design is a combination of<ul>
+<li>Designing the keys (row and column)</li>
+<li>Segregate data into column families</li>
+<li>Choose compression and block sizes</li>
+</ul>
+</li>
+<li>Similar techniques are needed to scale most systems<ul>
+<li>Add indexes, partition data, consistent hashing</li>
+</ul>
+</li>
+<li>Denormalization, Duplication, and Intelligent Keys(DDI)</li>
+</ul>
+<h4 id="Cluster-Sizing-Notes"><a href="#Cluster-Sizing-Notes" class="headerlink" title="Cluster Sizing Notes"></a>Cluster Sizing Notes</h4><p>Competing Resources</p>
+<ul>
+<li>Reads and Writes compete for the same low-level resources<ul>
+<li>Disk(HDFS) and Network I/O</li>
+<li>RPC Handlers and Threads</li>
+</ul>
+</li>
+<li>Otherwise the do exercise completely separate code paths</li>
+</ul>
+<p>Memory Sharing</p>
+<ul>
+<li>By default every region server is dividing its memory (i.e. given maximum heap) into<ul>
+<li>40% for in-memory stores (write ops)</li>
+<li>20% for block caching (read ops)</li>
+<li>remaining space (here 40%) go towards usual Java heap usage(objects etc.)</li>
+<li>Share of memory needs to be tweaked</li>
+</ul>
+</li>
+</ul>
+<p>Reads</p>
+<ul>
+<li>Locate and route request to appropriate region server<ul>
+<li>Client caches information for faster lookups -&gt; consider prefetching option for fast warmups</li>
+</ul>
+</li>
+<li>Eliminate store files if possible using time ranges or Bloom filter</li>
+<li>Try <strong>block cache</strong>, if block is missing then load from disk</li>
+</ul>
+<p>Block Cache</p>
+<ul>
+<li>Use exported metrics to see effectiveness of block cache<ul>
+<li>Check fill and eviction rate, as well as hit ratios -&gt; random reads are not ideal</li>
+</ul>
+</li>
+<li>Tweak up or down as needed, but watch overall heap usage</li>
+<li>You absolutely need the block cache<ul>
+<li>Set to 10% at least for short term benefits</li>
+</ul>
+</li>
+</ul>
+<p>Writes</p>
+<ul>
+<li>The cluster size is often determined by the write performance</li>
+<li>Log structured merge trees like<ul>
+<li>Store mutation in <strong>in-memory store</strong> and <strong>write-ahead log</strong></li>
+<li>Flush out aggregated, sorted maps at specified threshold - or - when under pressure</li>
+<li>Discard logs with no pending edits</li>
+<li>Perform regular compactions of store files</li>
+</ul>
+</li>
+</ul>
+<p>Write Performance</p>
+<ul>
+<li>There are many factors to the overall write performance of a cluster<ul>
+<li>Key Distribution -&gt; Avoid region hotspot</li>
+<li>Handlers -&gt; Do not pile up too early</li>
+<li>Write-ahead log -&gt; Bottleneck #1</li>
+<li>Compactions -&gt; Badly tuned can cause ever increasing background noise</li>
+</ul>
+</li>
+</ul>
+<p>Write-Ahead Log</p>
+<ul>
+<li>Currently only one per region server<ul>
+<li>Shared across all stores (i.e. column families)</li>
+<li>Synchronized on file append calls</li>
+</ul>
+</li>
+<li>Work being done on mitigating this<ul>
+<li>WAL compression</li>
+<li>Multiple WAL’s per region server -&gt; Start more than one region server per node?</li>
+</ul>
+</li>
+<li>Size set to 95% of default block size<ul>
+<li>64MB or 128MB, but check config!</li>
+</ul>
+</li>
+<li>Keep number low to reduce recovery time<ul>
+<li>Limit set to 32, but can be increased</li>
+</ul>
+</li>
+<li>Increase size of logs - and/or - increase the number of logs before blocking</li>
+<li>Compute number based on fill distribution and flush frequencies</li>
+<li>Writes are synchronized across all stores<ul>
+<li>A large cell in one family can strop all writes of another</li>
+<li>In this case the RPC handlers go binary, i.e. either work or all block</li>
+</ul>
+</li>
+<li>Can be bypassed on writes, but means no real durability and no replication<ul>
+<li>Maybe use coprocessor to restore dependent data sets(preWALRestore)</li>
+</ul>
+</li>
+</ul>
+<p>Flushes</p>
+<ul>
+<li>Every mutation call (put, delete etc.) cause a check for a flush</li>
+<li>If threshold is met, flush file to disk and schedule a compaction<ul>
+<li>Try to compact newly flushed files quickly</li>
+</ul>
+</li>
+<li>The compaction returns - if necessary - where a region should be split</li>
+</ul>
+<p>Compaction Storms</p>
+<ul>
+<li>Premature flushing because of # of logs or memory pressure<ul>
+<li>Files will be smaller than the configured flush size</li>
+</ul>
+</li>
+<li>The background compactions are hard at work merging small flush files into the existing, larger store files<ul>
+<li>Rewrite hundreds of MB over and over</li>
+</ul>
+</li>
+</ul>
+<p>Dependencies</p>
+<ul>
+<li>Flushes happen across all stores/column families, even if just one triggers it</li>
+<li>The flush size is compared to the size of all stores combined<ul>
+<li>Many column families dilute the size</li>
+<li>Example: 55MB + 5MB + 4MB</li>
+</ul>
+</li>
+</ul>
+<p>Some Numbers</p>
+<ul>
+<li>Typical Write performance of HDFS is 35-50MB/s</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Cell Size</th>
+<th style="text-align:center">OPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0.5MB</td>
+<td style="text-align:center">70-100</td>
+</tr>
+<tr>
+<td style="text-align:center">100KB</td>
+<td style="text-align:center">350-500</td>
+</tr>
+<tr>
+<td style="text-align:center">10KB</td>
+<td style="text-align:center">3500-5000 ??</td>
+</tr>
+<tr>
+<td style="text-align:center">1KB</td>
+<td style="text-align:center">35000-50000 ????</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>?? - This is Way to high in practice - Contention</p>
+</blockquote>
+<ul>
+<li>Under real world conditions the rate is less, more like 15MB/s or less<ul>
+<li>Thread contention is cause for massive slow down</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Cell Size</th>
+<th style="text-align:center">OPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0.5MB</td>
+<td style="text-align:center">10</td>
+</tr>
+<tr>
+<td style="text-align:center">100KB</td>
+<td style="text-align:center">100</td>
+</tr>
+<tr>
+<td style="text-align:center">10KB</td>
+<td style="text-align:center">800</td>
+</tr>
+<tr>
+<td style="text-align:center">1KB</td>
+<td style="text-align:center">6000</td>
+</tr>
+</tbody>
+</table>
+<p>Notes</p>
+<ul>
+<li>Compute memstore sizes based on number of regions x flush size</li>
+<li>Compute number of logs to keep based on fill and flush rate</li>
+<li><p>Ultimately the capacity is driven by</p>
+<ul>
+<li>Java Heap</li>
+<li>Region Count and Size</li>
+<li>Key Distribution</li>
+</ul>
+<p>Cheat Sheet</p>
+<ul>
+<li>Ensure you have enough or large enough write-ahead logs</li>
+<li>Ensure you do not oversubscribe available memstore space</li>
+<li>Ensure to set flush size large enough but not too large</li>
+<li>Check write-ahead log usage carefully</li>
+<li>Enable compression to store more data per node</li>
+<li>Tweak compaction algorithm to peg background I/O at some level</li>
+<li>Consider putting uneven column families in separate tables</li>
+<li>Check metrics carefully for block cache, memstore, and all queues</li>
+</ul>
+</li>
+</ul>
+<p>Example</p>
+<ul>
+<li>Java Xmx heap at 10GB</li>
+<li>Memstore share at 40% (default)<ul>
+<li>10GB Headp x 0.4 = 4GB</li>
+</ul>
+</li>
+<li>Desired flush size at 128MB<ul>
+<li>4GB / 128MB = 32 regions max!</li>
+</ul>
+</li>
+<li>For WAL size of 128MB x 0.95%<ul>
+<li>4GB / (128MB x 0.95) = ~33 partially uncommitted logs to keep around</li>
+</ul>
+</li>
+<li>Region size at 20GB<ul>
+<li>20GB x 32 regions = 640 GB raw storage used</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p>文档</p>
+<ul>
+<li><a href="http://hbase.apache.org/" target="_blank" rel="external">HBase 官方网站</a></li>
+<li><a href="http://hbase.apache.org/1.2/book.html" target="_blank" rel="external">Apache HBase™ 1.2 Reference Guide</a></li>
+<li><a href="http://abloz.com/hbase/book.html" target="_blank" rel="external">HBase 0.97 官方文档中文版</a> - 较老，但有参考意义</li>
+<li><a href="https://www.cloudera.com/documentation.html" target="_blank" rel="external">Cloudera 文档库</a> - 各类文档应有尽有</li>
+</ul>
+<p>与其他数据库对比</p>
+<ul>
+<li><a href="http://db-engines.com/en/system/Elasticsearch%3BHBase%3BMongoDB" target="_blank" rel="external">System Properties Comparison Elasticsearch vs. HBase vs. MongoDB</a></li>
+<li><a href="https://www.mongodb.com/compare/mongodb-hbase" target="_blank" rel="external">MongoDB and HBase Compared</a></li>
+</ul>
+<p>原始论文</p>
+<ul>
+<li><a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/bigtable-osdi06.pdf" target="_blank" rel="external">Bigtable: A Distributed Storage System for Structured Data</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;HBase 作为大数据平台中非常知名的 NoSQL 数据库之一，经过长时间的发展已经非常强大和稳定。强大的同时也意味着复杂，光把官方的入门指南看完都已经是非常不容易的事情，本文力图从实践的角度出发，让大家能够快速把 HBase『用』起来。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="NoSQL" scheme="http://wdxtub.com/tags/NoSQL/"/>
+    
+      <category term="数据库" scheme="http://wdxtub.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
   
   <entry>
     <title>【人工智能的未来】读书笔记</title>
@@ -1202,11 +1854,11 @@ $$Sync\;Rate=\frac{Love_{x\to y}+Love_{y\to x} - Std_{xy}}{2}$$
   </entry>
   
   <entry>
-    <title>【不周山之人工智能】人工智能常用数据集</title>
+    <title>【不周山之数据科学】常用数据集</title>
     <link href="http://wdxtub.com/2017/02/15/bzs-ai-dataset/"/>
     <id>http://wdxtub.com/2017/02/15/bzs-ai-dataset/</id>
     <published>2017-02-15T08:35:50.000Z</published>
-    <updated>2017-03-11T01:46:08.000Z</updated>
+    <updated>2017-03-16T13:15:28.000Z</updated>
     
     <content type="html"><![CDATA[<p>人工智能最离不开的恐怕就是数据集了，有的数据集被学术界用来当做各种算法测试的基准，有的数据集非常接地气常被用在各类产品中。本文就来介绍一下各个领域的经典常用数据集。</p>
 <a id="more"></a>
@@ -1311,258 +1963,6 @@ $$Sync\;Rate=\frac{Love_{x\to y}+Love_{y\to x} - Std_{xy}}{2}$$
       <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
     
       <category term="告别" scheme="http://wdxtub.com/tags/%E5%91%8A%E5%88%AB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【不周山之机器学习】习题课 壹 线性代数</title>
-    <link href="http://wdxtub.com/2017/02/08/linear-algebra/"/>
-    <id>http://wdxtub.com/2017/02/08/linear-algebra/</id>
-    <published>2017-02-07T23:19:50.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文主要介绍线性代数中与机器学习相关的重要概念，方便不懂的时候进行查阅。</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.02.18: 完成初稿</li>
-<li>2017.02.08: 开始编写</li>
-</ul>
-<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>线性代数是是代数学的一个分支，主要处理线性关系问题，即数学对象之间的关系是以<strong>一次形式</strong>来表达的。线性关系问题简称线性问题，解线性方程组的问题是最简单的线性问题。</p>
-<p>很多实际问题的处理，最后往往归结为线性问题，它比较容易处理。因此，线性代数在许多领域都有着广泛的应用，是一门基本且重要的学科。</p>
-<h2 id="向量-Vector"><a href="#向量-Vector" class="headerlink" title="向量 Vector"></a>向量 Vector</h2><p>向量的可以用列的形式表示，但是为了书写和打印方便，一般会用圆括号括起来，转换为行的形式。如：$\mathbf{v}=(v_1,v_2)$。</p>
-<p>若有向量 $\mathbf{v}=(v_1,v_2),\; \mathbf{w}=(w_1, w_2)$ 和常数 $c, d$，则</p>
-<ul>
-<li>向量相加 $\mathbf{v+w}=(v_1+w_1,v_2+w_2)$</li>
-<li>向量数乘 $c\mathbf{v}=(cv_1,cv_2)$</li>
-<li>$c\mathbf{v}+d\mathbf{w}$ 是向量 $\mathbf{v}$ 和 $\mathbf{w}$ 的线性组合</li>
-<li>$\mathbf{v\cdot w}$ 是向量 $\mathbf{v}$ 和 $\mathbf{w}$ 的内积（点积），值为 $\mathbf{v\cdot w}=\sum v_iw_i$，显然 $\mathbf{v\cdot w}=\mathbf{w\cdot v}$</li>
-<li>$\Vert \mathbf{v} \Vert$ 是向量 $\mathbf{v}$ 的长度，$\Vert\mathbf{v}=\sqrt{\mathbf{v\cdot v}}\Vert$</li>
-<li>单位向量 $\mathbf{u}$ 的长度为1，$\mathbf{u}=\frac{\mathbf{v}}{\Vert\mathbf{v} \Vert}$ 是与 $\mathbf{v}$ 同方向的单位向量</li>
-</ul>
-<p>如果 $\mathbf{v}$ 和 $\mathbf{w}$ 是非零向量，则有</p>
-<p>$$\frac{\mathbf{v\cdot w}}{\Vert\mathbf{v} \Vert \Vert\mathbf{w} \Vert}=cos\;\theta$$</p>
-<p>据此我们可以得到两个重要不等式：</p>
-<ul>
-<li>$|\mathbf{v\cdot w}| \le \Vert\mathbf{v}\Vert \Vert\mathbf{w} \Vert$</li>
-<li>$\Vert\mathbf{v+w}\Vert \le \Vert\mathbf{v}\Vert + \Vert\mathbf{w} \Vert$</li>
-</ul>
-<p><strong>有关向量的线性表示，下面的说法是等价的：</strong></p>
-<ul>
-<li>向量 $b$ 能由向量组 $\mathbf{a_1,a_2,\cdots,a_m }$ 线性表示</li>
-<li>线性方程组 $x_1\mathbf{a_1}+x_2\mathbf{a_2}+\cdots+x_m\mathbf{a_m}=\mathbf{b}$ 有解</li>
-<li>秩相同 $R(\mathbf{a_1,a_2,\cdots,a_m }) = R(\mathbf{a_1,a_2,\cdots,a_m,b})$，因为 $\mathbf{b}$ 可以被向量组 $\mathbf{a_1,a_2,\cdots,a_m }$ 线性表示</li>
-</ul>
-<p>如果向量组 $A: \mathbf{a_1,a_2,\cdots,a_m }(m \ge 2)$ 线性相关，下面说法等价：</p>
-<ul>
-<li>向量组 $A$ 至少存在一个向量是其余 $m-1$ 个向量的线性组合</li>
-<li>线性方程组 $x_1\mathbf{a_1}+x_2\mathbf{a_2}+\cdots+x_m\mathbf{a_m}=0$ 有非零解</li>
-<li>$\mathbf{a_1,a_2,\cdots,a_m }$ 的秩小于向量的个数 $m$，即 $R(\mathbf{a_1,a_2,\cdots,a_m })&lt;m$</li>
-</ul>
-<p>如果向量组 $A: \mathbf{a_1,a_2,\cdots,a_m }(m \ge 2)$ 线性无关，下面说法等价：</p>
-<ul>
-<li>线性方程组 $x_1\mathbf{a_1}+x_2\mathbf{a_2}+\cdots+x_m\mathbf{a_m}=0$ 只有零解</li>
-<li>$\mathbf{a_1,a_2,\cdots,a_m }$ 的秩等于向量的个数 $m$，即 $R(\mathbf{a_1,a_2,\cdots,a_m })=m$</li>
-</ul>
-<p>这里我们可以看到向量、方程组和矩阵问题实际上是可以相互转换的。但需要注意<strong>向量组等价，可得矩阵等价</strong>，但<strong>矩阵等价不能得到向量组等价</strong></p>
-<h2 id="行列式-Determinant"><a href="#行列式-Determinant" class="headerlink" title="行列式 Determinant"></a>行列式 Determinant</h2><blockquote>
-<p>线性代数中最重要的内容就是行列式和矩阵，虽然表面上看，行列式和矩阵不过是一种符号或速记，但从数学史上来看，优良的数学符号和生动的概念是数学思想产生的动力和钥匙。</p>
-</blockquote>
-<p>行列式最初用于求解线性方程，行列式是否为零可用来判定一个线性方程是否有解。</p>
-<p><strong>行列式的三种变换：</strong></p>
-<ul>
-<li>互换某两行（列），记为 $r_i \leftrightarrow r_j\;(c_i \leftrightarrow c_j)$</li>
-<li>提出某一行（列）的公因子，记为 $r_i \div k\;(c_i \div k)$</li>
-<li>把某一行（列）的 $k$ 倍加到另一行（列），记为 $r_i+kr_j\;(c_i+kc_j)$</li>
-</ul>
-<p>计算行列式最常用的一种方法就是利用变换 $r_i+kr_j\;(c_i+kc_j)$ 和 $r_i \leftrightarrow r_j\;(c_i \leftrightarrow c_j)$，把行列式转化为上三角形行列式，从而算得行列式的值。</p>
-<p>行列式为零，要么是两行（列）相同，要么是两行（列）成比例。</p>
-<p>行列式按某行展开可以按任一行展开，而一行元素乘以另一行对应元素的代数余子式，其和为零。综合起来是：</p>
-$$a_{k1}A_{i1}+a_{k2}A_{i2}+ \cdots + a_{kn}A_{in}=\sum_{s=1}^n a_{ks}A_{is}=\begin{cases}D&, k=i\\ 0&,k\ne i\end{cases}$$
-<p>另外 $D^T=D$ 也是行列式的性质，这里提一下。</p>
-<h2 id="矩阵-Matrix"><a href="#矩阵-Matrix" class="headerlink" title="矩阵 Matrix"></a>矩阵 Matrix</h2><p>若有矩阵 $A$ 和矩阵 $B$，那么</p>
-<ul>
-<li>两个大小相同的矩阵才可以相加，记为 $A+B$，是对应位置的元素进行相加</li>
-<li>如果矩阵 $A$ 有 $n$ 列且矩阵 $B$ 有 $n$ 行，这两个矩阵可以相乘得到 $AB$</li>
-</ul>
-<p>一个 $m \times n$ 的矩阵与一个 $n\times p$ 的矩阵相乘所需的乘法次数是 $mnp$ 次，一般我们会采用动态规划的方法来对乘法进行优化。</p>
-<p>矩阵加法满足：</p>
-<ul>
-<li>交换率 $A+B=B+A$</li>
-<li>分配率 $c(A+B)=cA+cB$</li>
-<li>结合律 $A+(B+C)=(A+B)+C$</li>
-</ul>
-<p>矩阵乘法满足：</p>
-<ul>
-<li>左分配率 $C(A+B)=CA+CB$</li>
-<li>右分配率 $(A+B)C=AC+BC$</li>
-<li>结合律 $A(BC)=(AB)C$</li>
-</ul>
-<p>矩阵 $A$ 可逆当且仅当存在矩阵 $A^{-1}$，使得 $A^{-1}A=I$ 和 $AA^{-1}=I$，其中 $A^{-1}$ 称为 $A$ 的逆矩(inverse)阵。如果 $A$ 不可逆，称 $A$ 为奇异(singular)矩阵。</p>
-<p>转置(transpose)是把一个矩阵行与列进行互换，如对于矩阵 $A$ 转置为 $(A^T)_{ij}=A_{ji}$。</p>
-<p>对于矩阵 $A$ 和 $B$，$(A+B)^T=A^T+B^T,\;(AB)^T=B^TA^T,\;(A^{-1})^T=(A^T)^{-1}$</p>
-<p>如果对于矩阵 $A$ 有 $a_{ij}=a_{ji}$，则称 $A$ 为对称矩阵。对称矩阵 $A$ 可分解为 $A=LDL^T$</p>
-<p>对任意矩阵 $R$，$R^TR$ 和 $RR^T$ 都是对称矩阵且它们对角线上元素非负，大多数科学问题都是从一个矩阵 $R$ 开始，以 $R^TR$ 或 $RR^T$ 结束。</p>
-<p>对于非零矩阵 $A$，$A^2$ 可以是零矩阵，但 $A^TA$ 不可能是零矩阵。</p>
-<p><strong>求解线性方程组是线性代数的核心问题。</strong></p>
-<p>求解 $A\mathbf{x}=\mathbf{b}$ 是寻找一个特定组合来产生 $\mathbf{b}$，其中 $\mathbf{A}$ 被称为系数矩阵。这个求解的过程，从另外一个角度来看是寻找多条线（平面或超平面）的交点。</p>
-<p>每个超级计算机都会拿求解 $A\mathbf{x}=\mathbf{b}$ 来测试速度，计算机编程中应该直接进行消元或者置换，而不应该采用矩阵相乘来实现，因为矩阵相乘的方式带来更多冗余计算。</p>
-<p>$n$ 阶矩阵 $A$，可以认为下列说法是等价的：</p>
-<ol>
-<li>$\mathbf{A}$ 是满秩矩阵</li>
-<li>$\mathbf{A}$ 的标准形是 $E$</li>
-<li>$\mathbf{A}$ 可以表达为有限个初等矩阵的乘积</li>
-<li>齐次线性方程组 $Ax=0$ 只有零解</li>
-<li>非齐次线性方程组 $Ax=b$ 有唯一解</li>
-</ol>
-<p><strong>对称矩阵</strong></p>
-<p>对称矩阵是线性代数中（无论理论还是实践）最重要的矩阵。</p>
-<ul>
-<li>实对称矩阵的特征向量一定可以选为相互正交（不同特征值对应的特征向量相互正交），而特征值一定是实数，同时特征值的符号与主元符号相符</li>
-<li>所有实对称矩阵都可以对角化，对角化变为 $A=Q\Lambda Q^T$，其中 $Q$ 是正交矩阵</li>
-<li>每个方阵都可以分解为 $A=QTQ^{-1}$，如果A的特征值是实数则存在实数矩阵 $Q$ 和 $T$</li>
-</ul>
-<p><strong>正定矩阵 Positive Definite Matrix</strong></p>
-<ul>
-<li>对任何非零向量 $\mathbf{x}$ 都有 $\mathbf{x}^TA\mathbf{x}&gt;0$ 时，我们称 $A$ 为正定矩阵</li>
-<li>矩阵 $A$ 正定当且仅当它的特征值或主元都为正数，正定矩阵的对角线上不会出现零</li>
-<li>如果 $A$ 与 $B$ 都对称正定，则 $A+B$ 也对称正定</li>
-<li>如果 $R$ 的列向量线性无关，则 $A=R^TR$ 不但是对称矩阵，而且正定</li>
-<li>椭圆 $\mathbf{x}^TA\mathbf{x}=1$ 的轴沿着 $A$ 的特征向量方向，轴长为 $\frac{1}{\sqrt \lambda}$</li>
-</ul>
-<p><strong>相似矩阵 Similar Matrix</strong></p>
-<ul>
-<li>如果存在任一矩阵 $M$ 使得 $B=M^{-1}AM$，则 $B$ 与 $A$ 相似，从定义上就可以看出相似是可逆的</li>
-<li>没有被 $M$ 改变的有：特征值、迹、行列式、秩和无关特征向量个数</li>
-<li>被 $M$ 改变的有：特征向量、NULL空间、列空间、行空间、左NULL空间和奇异值；</li>
-<li>如果 $A$ 有 n 个线性无关的特征向量，则 $A$ 与 $\Lambda$ 相似且 $M=S$，这里 $S$ 为特征向量矩阵，并且$AS=SA,\;S^{-1}AS=\Lambda$（其实这也就是对角化的过程）</li>
-</ul>
-<h2 id="向量空间和子空间"><a href="#向量空间和子空间" class="headerlink" title="向量空间和子空间"></a>向量空间和子空间</h2><p>空间 $R^n$ 包含任何含有 $n$ 个实数元素的列向量 $\mathbf{v}$，我们可以把 $R^n$ 中任意向量加在一起，也可以为任何向量乘上一个数字 $c$，得到的结果都在这个空间中。</p>
-<ul>
-<li>对于一个集合，如果集合中元素对加法和数乘（即向量乘以一个常数）是封闭的，那么这个集合构成一个空间。</li>
-<li>只包含一个零向量的空间称为空间 $Z$</li>
-</ul>
-<p>一个向量空间的子空间(Subspace)满足如下条件：如果 $\mathbf{v}$ 和 $\mathbf{w}$ 都在这个子空间中，则 $\mathbf{v+w}$ 与 $c\mathbf{v}$ 也在这个子空间中，而他们的线性组合 $c\mathbf{v}+d\mathbf{w}$ 也在子空间中。</p>
-<ul>
-<li>矩阵 $A$ 列向量的线性组合构成它的列空间，一般记为 $C(A)$，当 $\mathbf{b}$ 在 $C(A)$ 时 $A\mathbf{x}=\mathbf{b}$ 有解。</li>
-<li>矩阵 $A$ 的 NULL 空间包括满足 $A\mathbf{x}=0$ 的所有 $\mathbf{x}$，记为 $N(A)$</li>
-<li>一个矩阵的行空间和它的 NULL 空间相互正交</li>
-<li>矩阵的秩是矩阵主元的数量，可以记为 $r$，它不但是行向量的维度还是列向量的维度，而且 NULL 空间的维度是列空间的维度减去 $r$</li>
-<li>对于矩阵 $A$ 和 $B$，存在结论 $rank(AB) \le min(rank(A),rank(B))$</li>
-</ul>
-<p><strong>$A\mathbf{x}=\mathbf{b}$ 的全部解</strong></p>
-<ul>
-<li>求解 $A\mathbf{x}=\mathbf{b}$ 可以看做求以 $A$ 列向量为坐标轴时 $\mathbf{b}$ 的坐标值 $\mathbf{x}$</li>
-<li>$A\mathbf{x}=\mathbf{b}$ 可解当且仅当最后 $m-r$ 个等式变成 $0=0$</li>
-<li>$A\mathbf{x}=\mathbf{b}$ 的所有解是满足 $A\mathbf{x}=\mathbf{b}$ 的一个特解 $x_p$ 加上 $A\mathbf{x}=0$ </li>
-<li>根据秩 $r$ 的取值，线性方程组有如下四种可能（其中 $m,n$ 为行数、列数）<ul>
-<li>$r=m,r=n$，方阵且可逆，$A\mathbf{x}=\mathbf{b}$ 有且只有一个解</li>
-<li>$r=m,r&lt;n$，矮又宽型，$A\mathbf{x}=\mathbf{b}$ 有无穷多解</li>
-<li>$r&lt;m,r=n$，高又瘦型，$A\mathbf{x}=\mathbf{b}$ 有一个解或无解</li>
-<li>$r&lt;m,r&lt;n$，行和列都不满秩，$A\mathbf{x}=\mathbf{b}$ 有无穷多解或无解</li>
-</ul>
-</li>
-</ul>
-<p>一组向量 $\mathbf{v_1,\cdots,v_n}$ <strong>线性无关</strong>，当且仅当 $x_1\mathbf{v_1}+x_2\mathbf{v_2}+\cdots+x_n\mathbf{v_n}=\mathbf{0}$ 中的 $x$ 全为零。</p>
-<ul>
-<li>一组向量的线性组合所构成的空间是这组向量所张成的空间，空间中线性无关且能张成这一空间的一组向量可以作为这一空间的基。</li>
-<li>所有基包含向量个数相同，我们把这个数称为该空间的维度，矩阵 $A$ 列向量所张成空间的维度等于矩阵的秩</li>
-<li>空间中每个向量表示为一组基线性组合是唯一的</li>
-<li>空间 $Z$ 只包含零向量，这一空间的维度为 0，空集构成此空间的一组基</li>
-<li>对于空间 $V$ 和 $W$ 有 $dim(V)+dim(W)=dim(V\cap W)+dim(V\cup W)$</li>
-</ul>
-<p><strong>最小二乘法</strong></p>
-<p>求解$A\mathbf{x}=\mathbf{b}$时经常会遇到无解的情况，这个时候我们就需要近似找到一个<strong>最小二乘解</strong>（也就是让误差最小的解），一般来说可以直接对 $\Vert A\mathbf{x-b}\Vert ^2$ 求导并令其等于 0 就可以求的最小二乘解（有最小的平方误差）</p>
-<p>注：一般这里的 $A$ 的列向量需要线性无关，这样才能保证 $A^TA$ 是可逆的，否则有多个解。</p>
-<h2 id="特征值与特征向量"><a href="#特征值与特征向量" class="headerlink" title="特征值与特征向量"></a>特征值与特征向量</h2><blockquote>
-<p>矩阵乘以向量，在功能上相当于把一个向量变换为另一个向量。一个矩阵的特征向量是这样一种特定的向量，它经过这种变换后方向不变（或正好相反），只发生长度上的伸缩，特征值则反映了特征向量的伸缩倍数（及方向）。</p>
-</blockquote>
-<p>用公式表示为：</p>
-<p>$$\mathbf{Ax}=\lambda \mathbf{x}$$</p>
-<ul>
-<li>满足上式的向量 $\mathbf{x}$ 称为矩阵 $\mathbf{A}$ 的特征向量</li>
-<li>数 $\lambda$ 反应了伸缩的倍数及方向，称为与 $\mathbf{x}$ 对应的特征值</li>
-</ul>
-<p>一些重要性质</p>
-<p>设 $\lambda_1,\lambda_2,\cdots,\lambda_n$ 是 n 阶矩阵 $\mathbf{A}$ 的 $n$ 个特征值，则：</p>
-<ul>
-<li>$\lambda_1,\lambda_2,\cdots,\lambda_n=a_{11}+a_{22}+\cdots+a_{nn}$</li>
-<li>$\lambda_1\lambda_2\cdots\lambda_n=|\mathbf{A}|$</li>
-<li>当对 $A$ 平方时特征向量不会发生改变，而特征值会被平方，另外拥有特殊性质的矩阵会有特殊的特征值与特征向量</li>
-<li>对一个矩阵进行消元或者行变换都会改变这个矩阵的特征值</li>
-<li>n 个特征值的乘积等于矩阵的行列式的值，n 个特征值的和等于矩阵的迹，矩阵的迹是矩阵对角线元素之和</li>
-</ul>
-<p><strong>特征向量之间的关系：</strong></p>
-<ul>
-<li>矩阵 $\mathbf{A}$ 的属于不同特征值的特征向量是线性无关的</li>
-<li>设 $\lambda_1,\lambda_2,\cdots,\lambda_n$ 是矩阵 $\mathbf{A}$ 的 $m$ 个互异特征值，对应于 $\lambda_i\;(i=1,2,\cdots,m)$ 的线性无关的特征向量有 $r_i$ 个，则→所有这些特征向量构成的向量组是线性无关的</li>
-<li>对称矩阵 $\mathbf{A}$ 的属于不同特征值的特征向量是两两相交的</li>
-</ul>
-<p><strong>特征值所对应的特征向量的个数：</strong></p>
-<ul>
-<li>每个特征值都对应着至少一个特征向量</li>
-<li>$k$ 重特征值对应的线性无关的特征向量的个数不超过 $k$</li>
-<li>若 $A$ 为对称矩阵，则 $A$ 的每个特征值对应的线性无关特征向量的个数恰好等于该特征值的重数</li>
-</ul>
-<p><strong>奇异值分解 Singular Value Decomposition</strong></p>
-<p>奇异值分解在线性代数中非常重要，它可以对角化任意矩阵，有很多实际用途，如降维等。把秩为 $r$ 的 $A$ 通过 SVD 分解为 $U\Sigma V^T$，$\Sigma$ 对角线上是奇异值 $\sigma_1 \ge \sigma_2 \ge \cdots \sigma_r > 0$:</p>
-<ul>
-<li>$\sigma_1^2,\cdots,\sigma_r^2$ 是 $AA^T$ 或 $A^TA$ 特征值（两者特征值相同）</li>
-<li>$U$ 是 $AA^T$ 的特征向量，前 $r$ 列来源于 $A$ 的列空间，后 $m−r$ 列来源于 $N(A^T)$</li>
-<li>$V$ 是 $A^TA$ 的特征向量，$r$ 列是 $A$ 的行空间，后$n−r$ 列来源于 $N(A)$</li>
-<li>$\Sigma$ 对角线上奇异值从小到大排列，奇异值越大对整个矩阵的重要性也越大</li>
-<li>$U$ 和 $V$ 的列向量分别是输出空间和输入空间的坐标轴</li>
-</ul>
-<p>对任意实数方阵 $A$ 根据 SVG 且 $V^TV$ 分解有</p>
-<p>$$A=U\Sigma V^T=UV^TV\Sigma V^T=(UV^T)(V\Sigma V^T)=(Q)(H)$$</p>
-<p>其中 $Q$ 是正交阵，$H$ 是对称半正定的，如果 $A$ 可逆则 $H$ 是对称正定的。这个过程便是极分解，它把线性变换中旋转（在 $Q$ 中）与伸展（在 $H$ 中）分开</p>
-<h2 id="行列式-Determinant-1"><a href="#行列式-Determinant-1" class="headerlink" title="行列式 Determinant"></a>行列式 Determinant</h2><p>方阵 $A$ 主元的乘积称为这个方阵的行列式，它包含大量关于 $A$ 的信息，一般记为 $det\;A$ 或 $|A|$，我们需要了解关于行列式的十个性质：</p>
-<ol>
-<li>$n\times n$ 单位阵的行列式为 1</li>
-<li>当两行交换时行列式符号会改变</li>
-<li>行列式是分别关于每一行的线性函数</li>
-<li>如果矩阵中两行相等则行列式等于 0</li>
-<li>从一行中减去另外一行的若干倍整个行列式不变</li>
-<li>如果矩阵中有一行都等于零则行列式等于 0</li>
-<li>如果矩阵是对焦矩阵则行列式等于对角元素的乘积</li>
-<li>如果矩阵奇异则行列式等于 0，非奇异时行列式不为 0</li>
-<li>$|AB|=|A|\;|B|$</li>
-<li>$|A^T|=|A|$</li>
-</ol>
-<p>行列式是分别关于每一行的线性函数。例如：在其他行不变的情况下，当第一行数乘t时行列式数乘t，当第一行相加是行列式相加。</p>
-<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><ul>
-<li>工程问题常常产生对称矩阵 $K$，它通常是正定的，一般来源于 $K=A^TA$ 或 $K=A^TCT$，矩阵 $C$ 往往是对角的，包含一些正的物理常数</li>
-<li>图关联矩阵告诉我们 $m$ 条边与 $n$ 个结点的连接情况，通常情况下 $m&gt;n$，关联矩阵的元素是 -1、0 或者 1。对关联矩阵进行消元就是把对应的图变成树（树是没有闭环的图）</li>
-<li>如果一个矩阵 $A$ 每个元素都是非负的且每一列的和都为 1，则它是一个马尔科夫矩阵<ul>
-<li>如果 $A$ 是一个正马尔科夫矩阵（$a_{ij}>0$），则 $\lambda_1=1$ 比其它特征值都大，与之对应的特征向量 $x_1=1$ 是稳态</li>
-<li>马尔科夫矩阵 $A$ 的第二大特征值的绝对值 $|\lambda_2|$ 控制收敛到稳态的收敛速度，非正马尔科夫矩阵中可能有 $|\lambda_2|=1$，则不存在稳态</li>
-</ul>
-</li>
-<li>假设现在有一代价向量 $\mathbf{c}$，线性规划是在满足 $A\mathbf{x}=\mathbf{b}$ 与 $\mathbf{x} \ge 0$ 的情况下，使得 $\mathbf{c \cdot x}$最小；上述问题的对偶问题是在满足 $A^T\mathbf{y} \le \mathbf{c}$情况下，使得 $\mathbf{b \cdot y}$最大，令代价 $\mathbf{c \cdot x^*}$ 最小等价于 $\mathbf{b \cdot y^*}$ 最大</li>
-<li>校正矩阵（Correct Matrix）、均值（Mean）、方差（Variance）、协方差矩阵（Covariance Matrix）、主成分分析（Principal Component Analysis）</li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li>理解矩阵 <a href="http://blog.csdn.net/myan/article/details/647511" target="_blank" rel="external">一</a> <a href="http://blog.csdn.net/myan/article/details/649018" target="_blank" rel="external">二</a> <a href="http://blog.csdn.net/myan/article/details/1865397" target="_blank" rel="external">三</a></li>
-<li><a href="https://hujiaweibujidao.github.io/files/linear_algebra_huangzhenghua.pdf" target="_blank" rel="external">线性代数·总结与复习</a></li>
-<li><a href="http://www.zhaokv.com/wiki/book/ila/review" target="_blank" rel="external">线性代数总结</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文主要介绍线性代数中与机器学习相关的重要概念，方便不懂的时候进行查阅。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
-    
-    
-      <category term="基础" scheme="http://wdxtub.com/tags/%E5%9F%BA%E7%A1%80/"/>
-    
-      <category term="机器学习" scheme="http://wdxtub.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-      <category term="线性代数" scheme="http://wdxtub.com/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/"/>
     
   </entry>
   

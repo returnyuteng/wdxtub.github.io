@@ -1,0 +1,1555 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="NoSQL,数据库," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小土刀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="HBase 作为大数据平台中非常知名的 NoSQL 数据库之一，经过长时间的发展已经非常强大和稳定。强大的同时也意味着复杂，光把官方的入门指南看完都已经是非常不容易的事情，本文力图从实践的角度出发，让大家能够快速把 HBase『用』起来。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HBase 快速指南">
+<meta property="og:url" content="http://wdxtub.com/2017/03/16/hbase-guide/index.html">
+<meta property="og:site_name" content="小土刀">
+<meta property="og:description" content="HBase 作为大数据平台中非常知名的 NoSQL 数据库之一，经过长时间的发展已经非常强大和稳定。强大的同时也意味着复杂，光把官方的入门指南看完都已经是非常不容易的事情，本文力图从实践的角度出发，让大家能够快速把 HBase『用』起来。">
+<meta property="og:image" content="http://wdxtub.com/images/14896626408250.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14896626633656.jpg">
+<meta property="og:image" content="http://wdxtub.com/images/14896627115025.jpg">
+<meta property="og:updated_time" content="2017-03-16T11:15:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HBase 快速指南">
+<meta name="twitter:description" content="HBase 作为大数据平台中非常知名的 NoSQL 数据库之一，经过长时间的发展已经非常强大和稳定。强大的同时也意味着复杂，光把官方的入门指南看完都已经是非常不容易的事情，本文力图从实践的角度出发，让大家能够快速把 HBase『用』起来。">
+<meta name="twitter:image" content="http://wdxtub.com/images/14896626408250.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '4016951',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wdxtub.com/2017/03/16/hbase-guide/"/>
+
+
+
+
+
+  <title> HBase 快速指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=59042340";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小土刀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Agony is my triumph</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-work">
+          <a href="/2016/09/11/work-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wifi"></i> <br />
+            
+            不周山
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tech">
+          <a href="/2009/09/11/tech-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-gear"></i> <br />
+            
+            通天塔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-life">
+          <a href="/1990/09/11/life-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-compass"></i> <br />
+            
+            好望角
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-booklist">
+          <a href="/1997/09/11/booklist-page" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-diamond"></i> <br />
+            
+            书影音
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-thanks">
+          <a href="/thanks" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://wdxtub.com/2017/03/16/hbase-guide/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="wdxtub">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/misc/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="小土刀">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="小土刀" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                HBase 快速指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-16T10:31:15+08:00">
+                2017-03-16
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              <span class="post-meta-item-text">更新于</span>
+              <time title="更新于" itemprop="dateModified" datetime="2017-03-16T19:15:37+08:00">
+                2017-03-16
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Technique/" itemprop="url" rel="index">
+                    <span itemprop="name">Technique</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/03/16/hbase-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/16/hbase-guide/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>HBase 作为大数据平台中非常知名的 NoSQL 数据库之一，经过长时间的发展已经非常强大和稳定。强大的同时也意味着复杂，光把官方的入门指南看完都已经是非常不容易的事情，本文力图从实践的角度出发，让大家能够快速把 HBase『用』起来。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.13: 完成初稿</li>
+</ul>
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>HBase 是一个开源的、分布式的、数据多版本的，列式存储的 NoSQL 数据库（基于 Google 的 Bigtable 论文）。依托 Hadoop 的分布式文件系统 HDFS 作为底层存储, 能够为数十亿行数百万列的海量数据表提供随机、实时的读写访问。</p>
+<p>因为现在创业公司，所以从运维到开发都要自己来，针对 DevOps 中的各种奇怪问题，是需要有一个简单明了的快速指南方便查阅的。而且随着 HBase 的版本迭代，老的中文文档已经跟不上时代，需要基于新版本做一定的更新。本指南所测试的平台及软件配置如下</p>
+<ul>
+<li>HBase 版本: 1.2.1</li>
+<li>Hadoop 版本: 2.5.1</li>
+<li>ZooKeeper 客户端版本: 3.4.6</li>
+<li>集群规模: 3 台云服务器</li>
+</ul>
+<p>注：安装配置见参考链接中的官方文档，这里不赘述</p>
+<h2 id="日常运维"><a href="#日常运维" class="headerlink" title="日常运维"></a>日常运维</h2><p>日常运维需要知道的内容如下，只要熟悉了就可以</p>
+<ul>
+<li>检查 HDFS 状况 <code>hdfs dfsadmin -report</code></li>
+<li>启动/停止 HBase 的 Master 节点 <code>$bin/hbase-daemon.sh [start|stop] master</code>（<code>[start|stop]</code> 表示这两个词任选一个，对应不同操作，后同）</li>
+<li>启动/停止 RegionServer <code>$bin/hbase-daemon.sh [start|stop] regionserver</code></li>
+<li>启动 HBase 的 Rest 服务 <code>$bin/hbase-daemon.sh start rest -p 16080</code>（端口号随意，默认为 8080，可以通过 <code>netstat -tln</code> 查看在使用的端口号）<ul>
+<li>或 <code>$bin/hbase rest start -p 16080</code> 前台启动</li>
+</ul>
+</li>
+<li>停止 HBase 的 Rest 服务 <code>$bin/hbase-daemon.sh stop rest</code><ul>
+<li>或 <code>$bin/hbase rest stop</code></li>
+</ul>
+</li>
+<li>进入 HBase Shell <code>hbase shell</code></li>
+<li>HBase Web UI <code>localhost:16010</code>（如果有暴露公网 IP，在公网也可以访问）</li>
+<li>HBase Region Server UI <code>localhost:16030</code></li>
+</ul>
+<h2 id="HBase-Shell-常用命令"><a href="#HBase-Shell-常用命令" class="headerlink" title="HBase Shell 常用命令"></a>HBase Shell 常用命令</h2><ul>
+<li>如果在 <code>hbase shell</code> 中输入 <code>status</code> 有 dead 的机器，那么需要去找到并启动起来</li>
+<li>使用 <code>help</code> 了解命令详情</li>
+<li>使用脚本的方式 <code>hbase shell filename</code></li>
+</ul>
+<p>更多</p>
+<ul>
+<li><a href="http://blog.pureisle.net/archives/1887.html" target="_blank" rel="external">hbase shell基础和常用命令详解</a></li>
+<li><a href="http://blog.csdn.net/lifuxiangcaohui/article/details/40042117" target="_blank" rel="external">HBase总结（十三）HBase Shell 常用命令及例子</a></li>
+</ul>
+<h2 id="RESTful-API-使用"><a href="#RESTful-API-使用" class="headerlink" title="RESTful API 使用"></a>RESTful API 使用</h2><p>Header 中设置 <code>Accept</code> 可以选择返回格式，比如 <code>Accept: text/xml</code> 就是返回文本，<code>Accept: application/json</code> 就是返回 Json</p>
+<p>集群</p>
+<ul>
+<li>[GET] <code>/version/cluster</code> 查询 HBase 版本信息</li>
+<li>[GET] <code>/status/cluster</code>    查询集群状态</li>
+<li>[GET] <code>/</code>    获取所有用户的表名</li>
+<li>[GET] <code>/table_name/rowkey</code> 获取对应的条目（BASE64 编码）</li>
+</ul>
+<p>更多</p>
+<ul>
+<li><a href="https://www.cloudera.com/documentation/enterprise/5-9-x/topics/admin_hbase_rest_api.html" target="_blank" rel="external">Configuring and Using the HBase REST API</a></li>
+</ul>
+<h2 id="Schema-设计"><a href="#Schema-设计" class="headerlink" title="Schema 设计"></a>Schema 设计</h2><p>Rowkey 和 Schema 设计得好坏，有很多时候是有决定性意义的。</p>
+<p>基本概念</p>
+<ul>
+<li>每张表只有一个索引，这个索引就是 rowkey，并没有二级索引</li>
+<li>行按照 rowkey 排序，rowkey 按照字典序排序</li>
+<li>行级别的操作都是原子的（更新两行可能出现一行成功一行失败）</li>
+<li>读写应该均匀分布到整个表</li>
+<li>通常，应该把单个实体的所有信息保存在单行中</li>
+<li>相关的实体应该存储在临近的行（读写更高效，压缩数据更有效）</li>
+<li>HBase 表是稀疏的。空的列不会占据任何空间</li>
+<li>确定 rowkey，最有效的查询就是使用 rowkey 获取特定行，或者多行数据，其他类型查询会触发全表扫描，效率比较低下（具体设计应该基于需求）</li>
+<li>让 rowkey 尽可能短，长的 rowkey 会占据更多空间，也会增加 HBase 的响应时间</li>
+<li>反转域名。如果你要存储的数据可表示为域名的形式，可以考虑反转域名作为 rowkey 。（例如：com.example.products）反转域名是很不错的方法，尤其是相邻域名相似度很大, 同时这种方法也便于更有效的压缩数据。</li>
+<li>字符串标识符。如果你要存储的数据可以被一个字符串简单的标识（例如： user IDs），你可以使用标识符作为 rowkey 或是 rowkey 的一部分。考虑使用 标识符的哈希而不是它本身，以便 标识符的长度永远可以预测。</li>
+<li>时间戳。如果你经常需要基于时间读取数据，将时间戳作为 rowkey 的一部分是不错的方法。不推荐直接使用时间戳本身作为 rowkey,因为会造成热点问题，同样的原因，也不应该将时间戳作为 rowkey 的开始。例如：你的应用可能需要记录性能相关的数据，例如每秒的CPU，内存使用情况。对于这种情况，你可以将数据类型的标识符和时间戳组合为 rowkey.(例如：cpu#1425330757685）如果你需要经常获取最新的记录，你可以使用相反时间戳作为 rwokey,用你的编程语言中长整形的最大值(in Java, java.lang.Long.MAX_VALUE)减去现在的时间戳。有了相反的时间戳，记录将会按照从新到旧的顺序排列。</li>
+<li>避免这样的 rowkey：域名、连续的数字（应该反转用户数字 ID）、频繁更新的标识符（应该先将数据保存在内存中，再周期性批量写入 HBase）</li>
+<li>高表与宽表的不同</li>
+<li>columnfamily 尽量少，多了会互相影响</li>
+<li>对于列相对固定的应用，最好采用将一行记录封装到一个 column 中的方式，可以节省存储空间。封装方式推荐  protocolbuffer</li>
+<li>column 数目不要超过百万</li>
+<li>利用好 scan(startkey, endkey) 这种方式</li>
+<li>设计原则 Denormalization, Duplication 和 Intelligent Keys</li>
+<li>rowkey 和 column name 都要尽可能短</li>
+<li>考虑用字节来表示编号</li>
+<li>可以设置 column family 的存活时间 TTL</li>
+<li>rowkey 可以进行 hash 和编号，这样把变长搞成定长，然后原始值可以放到 column 中，不影响，主要是方便 scan</li>
+<li>新版本支持 reverse scan，所以对于 schema 的设计不用特意倒过来</li>
+<li>Rowkeys cannot be changed. The only way they can be “changed” in a table is if the row is deleted and then re-inserted. This is a fairly common question on the HBase dist-list so it pays to get the rowkeys right the first time (and/or before you’ve inserted a lot of data).</li>
+<li>Keep your column family names as short as possible. The column family names are stored for every value (ignoring prefix encoding). They should not be self-documenting and descriptive like in a typical RDBMS.</li>
+<li>If you are storing time-based machine data or logging information, and the row key is based on device ID or service ID plus time, you can end up with a pattern where older data regions never have additional writes beyond a certain age. In this type of situation, you end up with a small number of active regions and a large number of older regions which have no new writes. For these situations, you can tolerate a larger number of regions because your resource consumption is driven by the active regions only.</li>
+<li>If only one column family is busy with writes, only that column family accomulates memory. Be aware of write patterns when allocating resources.</li>
+<li>Try to make do with one column family if you can in your schemas. Only introduce a second and third column family in the case where data access is usually column scoped; i.e. you query one column family or the other but usually not both at the one time.</li>
+<li>To prevent hotspotting on writes, design your row keys such that rows that truly do need to be in the same region are, but in the bigger picture, data is being written to multiple regions across the cluster, rather than one at a time. Some common techniques for avoiding hotspotting are described below, along with some of their advantages and drawbacks.</li>
+</ul>
+<p>技巧</p>
+<ul>
+<li>Salting. salting attempts to increase throughput on writes, but has a cost during reads.</li>
+<li>Hashing. Instead of a random assignment, you could use a one-way hash that would cause a given row to always be “salted” with the same prefix, in a way that would spread the load across the RegionServers, but allow for predictability during reads. Using a deterministic hash allows the client to reconstruct the complete rowkey and use a Get operation to retrieve that row as normal.</li>
+<li>Reversing the Key. A third common trick for preventing hotspotting is to reverse a fixed-width or numeric row key so that the part that changes the most often (the least significant digit) is first. This effectively randomizes row keys, but sacrifices row ordering properties.</li>
+</ul>
+<p>关于 <a href="http://hbase.apache.org/1.2/book.html#secondary.indexes" target="_blank" rel="external">Secondary Index</a></p>
+<p>This section could also be titled “what if my table rowkey looks like this but I also want to query my table like that.” A common example on the dist-list is where a row-key is of the format “user-timestamp” but there are reporting requirements on activity across users for certain time ranges. Thus, selecting by user is easy because it is in the lead position of the key, but time is not.</p>
+<ul>
+<li>使用 Query Filter，过滤掉部分数据</li>
+<li>Periodic-Update Secondary Index, A secondary index could be created in another table which is periodically updated via a MapReduce job. The job could be executed intra-day, but depending on load-strategy it could still potentially be out of sync with the main data table.</li>
+<li>Dual-Write Secondary Index, Another strategy is to build the secondary index while publishing data to the cluster (e.g., write to data table, write to index table). If this is approach is taken after a data table already exists, then bootstrapping will be needed for the secondary index with a MapReduce job (see secondary.indexes.periodic).</li>
+<li>Summary Tables, Where time-ranges are very wide (e.g., year-long report) and where the data is voluminous, summary tables are a common approach. These would be generated with MapReduce jobs into another table.</li>
+<li>Coprocessor Secondary Index, Coprocessors act like RDBMS triggers. These were added in 0.92. For more information, see <a href="http://hbase.apache.org/1.2/book.html#cp" target="_blank" rel="external">coprocessors</a></li>
+</ul>
+<h3 id="How-I-Learned-To-Stop-Worrying-And-Love-Denormalization"><a href="#How-I-Learned-To-Stop-Worrying-And-Love-Denormalization" class="headerlink" title="How I Learned To Stop Worrying And Love Denormalization"></a>How I Learned To Stop Worrying And Love Denormalization</h3><ul>
+<li>Schema Design 实际上就是 Logical Data Modeling + Physical Implementation</li>
+<li>Relational DBs work well because they are close to the pure logical model</li>
+<li>Any byte array in HBase can represent more than one logical attribute</li>
+<li>The basic concept of denormalization is simple: two <strong>logical</strong> entities share one <strong>physical</strong> representation</li>
+<li>This is a fundamental modeling property of HBase: nesting entities。即，在 rowkey 对应的一行中，某个 column 可以是另一个 rowkey，值对应是另一个 entity</li>
+</ul>
+<p><img src="/images/14896626408250.jpg" alt=""></p>
+<ul>
+<li>The row key design is the single most important decision you will make. This is also true for the “key” you’re putting in the column family name of nested entities.</li>
+<li>Design for the questions not the answers.</li>
+<li>Bu isn’t NoSQL more flexible than a relational DB? For column schema? YES! For row key structures, NO!</li>
+<li>Be compact. You can squeeze a lot into a little space</li>
+<li>Use row atomicity as a design tool. Rows are updated atomically, which gives you a form of relational integrity in HBase</li>
+<li>Attributes can move into the row key. Even if it’s not “identifying” (part of the uniqueness of an entity), adding an attribute into the row key can make access more efficient in some cases.</li>
+<li>If you nest entities, you can transactionally pre-aggregate data. You can recalculate aggregates on write, or periodically with a map/reduce job.</li>
+</ul>
+<h3 id="HBase-Schema-Design-and-Cluster-Sizing-Notes"><a href="#HBase-Schema-Design-and-Cluster-Sizing-Notes" class="headerlink" title="HBase Schema Design and Cluster Sizing Notes"></a>HBase Schema Design and Cluster Sizing Notes</h3><p>ApacheCon Europe, November 2012, by Lars George, Director EMEA Services @Cloudera, Apache Committer, lars@cloudera.com, @larsgeorge(twitter) </p>
+<h4 id="HBase-Architecture"><a href="#HBase-Architecture" class="headerlink" title="HBase Architecture"></a>HBase Architecture</h4><p>HBase Tables 每行由 Row Keys 索引，每列名称为 Column Names(Column Qualifiers, Column Keys)，由 Row Key 和 Column Name 可以确定一个 cell，每个 cell 包含不同的数据版本。而不同的 row 可能在不同的 region 中，不同的 column 可能在不同的 column family 中。</p>
+<ul>
+<li>Table is made up of any number of regions</li>
+<li>Region is specified by its startKey and endKey</li>
+<li>Each region may live on a different node and is made up of several HDFS files and blocks, each of which is replicated by Hadoop</li>
+<li>Tables are sorted by Row in lexicographical order</li>
+<li>Table schema only defines its column families<ul>
+<li>Each family consists of any number of columns</li>
+<li>Each column consists of any number of versions</li>
+<li>Columns only exist when inserted, NULLs are free</li>
+<li>Columns within a family are sorted and stored together</li>
+<li>Everything except table names are byte[]</li>
+</ul>
+</li>
+<li>HBase uses HDFS(or similar) as its reliable storage layer<ul>
+<li>Handles checksums, replication, failover</li>
+</ul>
+</li>
+<li>Native Java API, Gateway for REST, Thrift, Avro</li>
+<li>Master manages cluster</li>
+<li>RegionServer manage data</li>
+<li>Zookeeper is used the “neural network”<ul>
+<li>Crucial for HBase</li>
+<li>Bootstraps and coordinates cluster</li>
+</ul>
+</li>
+<li>Based on Log-Structured Merge-Trees (LSM-Trees)</li>
+<li>Inserts are done in write-ahead log first</li>
+<li>Data is stored in memory and flushed to disk on regular intervals or based on size</li>
+<li>Small flushes are merged in the background to keep number of files small</li>
+<li>Reads red memory stores first and then disk based files second</li>
+<li>Deletes are handled with “tombstone” markers</li>
+<li>Atomicity on row level no matter how many columns<ul>
+<li>keeps locking model easy</li>
+</ul>
+</li>
+</ul>
+<p>MemStores</p>
+<ul>
+<li>After data is written to the WAL the RegionServer saves KeyValues in <strong>memory store</strong></li>
+<li>Flush to disk based on size, see <code>hbase.hregion.memstore.flush.size</code></li>
+<li>Default size is <strong>64MB</strong></li>
+<li>Uses <strong>snapshot</strong> mechanism to write flush to disk while still serving from it and accepting new data at the same time</li>
+<li>Snapshots are released when flush has succeeded</li>
+</ul>
+<p>Compactions</p>
+<ul>
+<li>General Concepts<ul>
+<li>Two types: <strong>Minor</strong> and <strong>Major</strong> Compactions</li>
+<li>Asynchronous and transparent to client</li>
+<li>Manage file bloat from MemStore flushes</li>
+</ul>
+</li>
+<li>Minor Compactions<ul>
+<li>Combine last “few” flushes</li>
+<li>Triggered by number of storage files</li>
+</ul>
+</li>
+<li>Major Compactions<ul>
+<li>Rewrite <strong>all</strong> storage files</li>
+<li>Drop deleted data and those values exceeding TTL and/or number of versions</li>
+<li>Triggered by time threshold</li>
+<li>Cannot be scheduled automatically starting at a specific time(bummer!)</li>
+<li>May(most definitely) tax overall HDFS IO performance</li>
+</ul>
+</li>
+<li>Tip: Disable major compactions and schedule to run manually(e.g. cron) at off-peak times</li>
+</ul>
+<p>Block Cache</p>
+<ul>
+<li>Acts as very large, in-memory <strong>distributed cache</strong></li>
+<li>Assigned a large part of JVM <strong>heap</strong> in the RegionServer process, see <code>hfile.block.cache.size</code></li>
+<li>Optimized <strong>reads</strong> on subsequent columns and rows</li>
+<li>Has <strong>priority</strong> to keep “in-memory” column families in cache</li>
+<li>Cache needs to be used properly to get best read performance<ul>
+<li>Turn off block cache on operations that cause large churn</li>
+<li>Store related data “close” to each other</li>
+</ul>
+</li>
+<li>Uses <strong>LRU</strong> cache with threaded (asynchronous) evictions based on priorities</li>
+</ul>
+<p>Region Splits</p>
+<ul>
+<li>Triggered by configured maximum file size of any store file<ul>
+<li>This is checked directly <strong>after</strong> the compaction call to ensure store files are actually approaching the threshold.</li>
+</ul>
+</li>
+<li>Runs as <strong>asynchronous</strong> thread on RegionServer</li>
+<li>Splits are <strong>fast</strong> and nearly instant<ul>
+<li>Reference files point to original region files and represent each half of the split</li>
+</ul>
+</li>
+<li>Compactions take care of splitting original files into new region directories</li>
+</ul>
+<p>Auto Sharding and Distribution</p>
+<ul>
+<li>Unit of scalability in HBase is the Region</li>
+<li>Sorted, contiguous range of rows</li>
+<li>Spread “randomly” across RegionServer</li>
+<li>Moved around for load balancing and failover</li>
+<li>Split automatically or manually to scale with growing data</li>
+<li>Capacity is solely a factor of cluster nodes vs. regions per node</li>
+</ul>
+<p>Column Family vs. Column</p>
+<ul>
+<li>Use only a few column families<ul>
+<li>Causes many files that need to stay open per region plus class overhead per family</li>
+</ul>
+</li>
+<li>Best used when logical separation between data and meta columns</li>
+<li>Sorting per family can be used to convey application logic or access pattern</li>
+</ul>
+<p>Storage Separation</p>
+<ul>
+<li>Column Families allow for separation of data<ul>
+<li>Used by Columnar Databases for fast analytical queries, but on column level only</li>
+<li>Allows different or compression depending on the content type</li>
+</ul>
+</li>
+<li>Segregate information based on access pattern</li>
+<li>Data is stored in one or more storage file, called HFiles</li>
+</ul>
+<h4 id="Schema-Design"><a href="#Schema-Design" class="headerlink" title="Schema Design"></a>Schema Design</h4><p>Key Cardinality(基数)</p>
+<p><img src="/images/14896626633656.jpg" alt=""></p>
+<ul>
+<li>The best performance is gained from using row keys</li>
+<li>Time range bound reads can skip store files<ul>
+<li>So can Bloom Filter</li>
+</ul>
+</li>
+<li>Selecting column families reduces the amount of data to be scanned</li>
+<li>Pure value based filtering is a full table scan<ul>
+<li>Filters often are too, but reduce network traffic</li>
+</ul>
+</li>
+</ul>
+<p>Fold, Store, and Shift</p>
+<ul>
+<li>Logical layout does not match physical one</li>
+<li>All values are stored with the full coordinates, including: Row Key, Column Family, Column Qualifier, and Timestamp</li>
+<li>Folds columns into “row per column”</li>
+<li>NULLs are cost free as nothing is stored</li>
+<li>Versions are multiple “rows” in folded table</li>
+</ul>
+<p>Key/Table Design</p>
+<ul>
+<li>Crucial to gain best performance<ul>
+<li>Why do I need to know? Well, you also need to know that RDBMS is only working well when columns are indexed and query plan is OK</li>
+</ul>
+</li>
+<li>Absence of secondary indexes forces use of row key or column name sorting</li>
+<li>Transfer multiple indexes into on<ul>
+<li>Generate large table -&gt; Good since fits architecture and spreads across cluster </li>
+</ul>
+</li>
+</ul>
+<p>DDI</p>
+<ul>
+<li>Stands for Denormalization, Duplication and Intelligent Keys</li>
+<li>Needed to overcome shortcomings of architecture</li>
+<li>Denormalization -&gt; Replacement for JOINs</li>
+<li>Duplication -&gt; Design for reads</li>
+<li>Intelligent Keys -&gt; Implement indexing and sorting, optimize reads</li>
+</ul>
+<p>Pre-materialized Everything</p>
+<ul>
+<li>Achieve one read per customer request is possible</li>
+<li>Otherwise keep at lowest number</li>
+<li>Reads between 10ms(cache miss) and 1ms(cache hit)</li>
+<li>Use MapReduce to compute exacts in batch</li>
+</ul>
+<p><strong>Motto: Design for Reads!!!</strong></p>
+<p>Tall-Narrow vs. Flat-Wide Tables</p>
+<ul>
+<li>Rows do not split<ul>
+<li>Might end up with one row per region</li>
+</ul>
+</li>
+<li>Same storage footprint</li>
+<li>Put more details into the row key<ul>
+<li>Sometimes dummy column only</li>
+<li>Make use of partial key scans</li>
+</ul>
+</li>
+<li>Tall with Scans, Wide with Gets<ul>
+<li>Atomicity only on row level</li>
+</ul>
+</li>
+<li>Example: Large graphs, stored as adjacency matrix</li>
+</ul>
+<p>Hashing vs. Sequential Keys</p>
+<ul>
+<li>Uses hashes for best spread<ul>
+<li>Use for example MD5 to be able to recreate key, Key = MD5(customerID)</li>
+<li>Counter productive for range scans</li>
+</ul>
+</li>
+<li>Use sequential keys for locality<ul>
+<li>Makes use of block caches</li>
+<li>May tax one server overly, may be avoided by salting or splitting regions while keeping them small</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/14896627115025.jpg" alt=""></p>
+<p>Key Design Summary</p>
+<ul>
+<li>Based on access pattern, either use sequential or random keys</li>
+<li>Often a combination of both is needed<ul>
+<li>Overcome architectural limitations</li>
+</ul>
+</li>
+<li>Neither is necessarily bad<ul>
+<li>Use bulk import for sequential keys and reads</li>
+<li>Random keys are good for random access patterns</li>
+</ul>
+</li>
+</ul>
+<p>Key Design</p>
+<ul>
+<li>Reversed Domains<ul>
+<li>Examples: “com.wdxtub.www”, “cn.wdxtub.www”</li>
+<li>Helps keeping pages per site close, as HBase efficiently scans blocks of sorted keys</li>
+</ul>
+</li>
+<li>Domain Row Key = MD5(Reversed Domain) + Reversed Domain<ul>
+<li>Leading MD5 hash spreads keys randomly across all regions for load balancing reasons</li>
+<li>Only hashing the domain groups per site (and per subdomain if needed)</li>
+</ul>
+</li>
+<li>URL Row Key = MD5(Reversed Domain) + Reversed Domain + URL ID<ul>
+<li>Unique ID per URL already available, make use of it </li>
+</ul>
+</li>
+</ul>
+<p>Summary</p>
+<ul>
+<li>Design for Use-Case<ul>
+<li>Read, Write, or Both?</li>
+</ul>
+</li>
+<li>Avoid Hotspotting</li>
+<li>Consider using IDs instead of full text</li>
+<li>Leverage Column Family to HFile relation</li>
+<li>Shift details to appropriate position<ul>
+<li>Composite Keys</li>
+<li>Column Qualifiers</li>
+</ul>
+</li>
+<li>Schema design is a combination of<ul>
+<li>Designing the keys (row and column)</li>
+<li>Segregate data into column families</li>
+<li>Choose compression and block sizes</li>
+</ul>
+</li>
+<li>Similar techniques are needed to scale most systems<ul>
+<li>Add indexes, partition data, consistent hashing</li>
+</ul>
+</li>
+<li>Denormalization, Duplication, and Intelligent Keys(DDI)</li>
+</ul>
+<h4 id="Cluster-Sizing-Notes"><a href="#Cluster-Sizing-Notes" class="headerlink" title="Cluster Sizing Notes"></a>Cluster Sizing Notes</h4><p>Competing Resources</p>
+<ul>
+<li>Reads and Writes compete for the same low-level resources<ul>
+<li>Disk(HDFS) and Network I/O</li>
+<li>RPC Handlers and Threads</li>
+</ul>
+</li>
+<li>Otherwise the do exercise completely separate code paths</li>
+</ul>
+<p>Memory Sharing</p>
+<ul>
+<li>By default every region server is dividing its memory (i.e. given maximum heap) into<ul>
+<li>40% for in-memory stores (write ops)</li>
+<li>20% for block caching (read ops)</li>
+<li>remaining space (here 40%) go towards usual Java heap usage(objects etc.)</li>
+<li>Share of memory needs to be tweaked</li>
+</ul>
+</li>
+</ul>
+<p>Reads</p>
+<ul>
+<li>Locate and route request to appropriate region server<ul>
+<li>Client caches information for faster lookups -&gt; consider prefetching option for fast warmups</li>
+</ul>
+</li>
+<li>Eliminate store files if possible using time ranges or Bloom filter</li>
+<li>Try <strong>block cache</strong>, if block is missing then load from disk</li>
+</ul>
+<p>Block Cache</p>
+<ul>
+<li>Use exported metrics to see effectiveness of block cache<ul>
+<li>Check fill and eviction rate, as well as hit ratios -&gt; random reads are not ideal</li>
+</ul>
+</li>
+<li>Tweak up or down as needed, but watch overall heap usage</li>
+<li>You absolutely need the block cache<ul>
+<li>Set to 10% at least for short term benefits</li>
+</ul>
+</li>
+</ul>
+<p>Writes</p>
+<ul>
+<li>The cluster size is often determined by the write performance</li>
+<li>Log structured merge trees like<ul>
+<li>Store mutation in <strong>in-memory store</strong> and <strong>write-ahead log</strong></li>
+<li>Flush out aggregated, sorted maps at specified threshold - or - when under pressure</li>
+<li>Discard logs with no pending edits</li>
+<li>Perform regular compactions of store files</li>
+</ul>
+</li>
+</ul>
+<p>Write Performance</p>
+<ul>
+<li>There are many factors to the overall write performance of a cluster<ul>
+<li>Key Distribution -&gt; Avoid region hotspot</li>
+<li>Handlers -&gt; Do not pile up too early</li>
+<li>Write-ahead log -&gt; Bottleneck #1</li>
+<li>Compactions -&gt; Badly tuned can cause ever increasing background noise</li>
+</ul>
+</li>
+</ul>
+<p>Write-Ahead Log</p>
+<ul>
+<li>Currently only one per region server<ul>
+<li>Shared across all stores (i.e. column families)</li>
+<li>Synchronized on file append calls</li>
+</ul>
+</li>
+<li>Work being done on mitigating this<ul>
+<li>WAL compression</li>
+<li>Multiple WAL’s per region server -&gt; Start more than one region server per node?</li>
+</ul>
+</li>
+<li>Size set to 95% of default block size<ul>
+<li>64MB or 128MB, but check config!</li>
+</ul>
+</li>
+<li>Keep number low to reduce recovery time<ul>
+<li>Limit set to 32, but can be increased</li>
+</ul>
+</li>
+<li>Increase size of logs - and/or - increase the number of logs before blocking</li>
+<li>Compute number based on fill distribution and flush frequencies</li>
+<li>Writes are synchronized across all stores<ul>
+<li>A large cell in one family can strop all writes of another</li>
+<li>In this case the RPC handlers go binary, i.e. either work or all block</li>
+</ul>
+</li>
+<li>Can be bypassed on writes, but means no real durability and no replication<ul>
+<li>Maybe use coprocessor to restore dependent data sets(preWALRestore)</li>
+</ul>
+</li>
+</ul>
+<p>Flushes</p>
+<ul>
+<li>Every mutation call (put, delete etc.) cause a check for a flush</li>
+<li>If threshold is met, flush file to disk and schedule a compaction<ul>
+<li>Try to compact newly flushed files quickly</li>
+</ul>
+</li>
+<li>The compaction returns - if necessary - where a region should be split</li>
+</ul>
+<p>Compaction Storms</p>
+<ul>
+<li>Premature flushing because of # of logs or memory pressure<ul>
+<li>Files will be smaller than the configured flush size</li>
+</ul>
+</li>
+<li>The background compactions are hard at work merging small flush files into the existing, larger store files<ul>
+<li>Rewrite hundreds of MB over and over</li>
+</ul>
+</li>
+</ul>
+<p>Dependencies</p>
+<ul>
+<li>Flushes happen across all stores/column families, even if just one triggers it</li>
+<li>The flush size is compared to the size of all stores combined<ul>
+<li>Many column families dilute the size</li>
+<li>Example: 55MB + 5MB + 4MB</li>
+</ul>
+</li>
+</ul>
+<p>Some Numbers</p>
+<ul>
+<li>Typical Write performance of HDFS is 35-50MB/s</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Cell Size</th>
+<th style="text-align:center">OPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0.5MB</td>
+<td style="text-align:center">70-100</td>
+</tr>
+<tr>
+<td style="text-align:center">100KB</td>
+<td style="text-align:center">350-500</td>
+</tr>
+<tr>
+<td style="text-align:center">10KB</td>
+<td style="text-align:center">3500-5000 ??</td>
+</tr>
+<tr>
+<td style="text-align:center">1KB</td>
+<td style="text-align:center">35000-50000 ????</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>?? - This is Way to high in practice - Contention</p>
+</blockquote>
+<ul>
+<li>Under real world conditions the rate is less, more like 15MB/s or less<ul>
+<li>Thread contention is cause for massive slow down</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Cell Size</th>
+<th style="text-align:center">OPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0.5MB</td>
+<td style="text-align:center">10</td>
+</tr>
+<tr>
+<td style="text-align:center">100KB</td>
+<td style="text-align:center">100</td>
+</tr>
+<tr>
+<td style="text-align:center">10KB</td>
+<td style="text-align:center">800</td>
+</tr>
+<tr>
+<td style="text-align:center">1KB</td>
+<td style="text-align:center">6000</td>
+</tr>
+</tbody>
+</table>
+<p>Notes</p>
+<ul>
+<li>Compute memstore sizes based on number of regions x flush size</li>
+<li>Compute number of logs to keep based on fill and flush rate</li>
+<li><p>Ultimately the capacity is driven by</p>
+<ul>
+<li>Java Heap</li>
+<li>Region Count and Size</li>
+<li>Key Distribution</li>
+</ul>
+<p>Cheat Sheet</p>
+<ul>
+<li>Ensure you have enough or large enough write-ahead logs</li>
+<li>Ensure you do not oversubscribe available memstore space</li>
+<li>Ensure to set flush size large enough but not too large</li>
+<li>Check write-ahead log usage carefully</li>
+<li>Enable compression to store more data per node</li>
+<li>Tweak compaction algorithm to peg background I/O at some level</li>
+<li>Consider putting uneven column families in separate tables</li>
+<li>Check metrics carefully for block cache, memstore, and all queues</li>
+</ul>
+</li>
+</ul>
+<p>Example</p>
+<ul>
+<li>Java Xmx heap at 10GB</li>
+<li>Memstore share at 40% (default)<ul>
+<li>10GB Headp x 0.4 = 4GB</li>
+</ul>
+</li>
+<li>Desired flush size at 128MB<ul>
+<li>4GB / 128MB = 32 regions max!</li>
+</ul>
+</li>
+<li>For WAL size of 128MB x 0.95%<ul>
+<li>4GB / (128MB x 0.95) = ~33 partially uncommitted logs to keep around</li>
+</ul>
+</li>
+<li>Region size at 20GB<ul>
+<li>20GB x 32 regions = 640 GB raw storage used</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p>文档</p>
+<ul>
+<li><a href="http://hbase.apache.org/" target="_blank" rel="external">HBase 官方网站</a></li>
+<li><a href="http://hbase.apache.org/1.2/book.html" target="_blank" rel="external">Apache HBase™ 1.2 Reference Guide</a></li>
+<li><a href="http://abloz.com/hbase/book.html" target="_blank" rel="external">HBase 0.97 官方文档中文版</a> - 较老，但有参考意义</li>
+<li><a href="https://www.cloudera.com/documentation.html" target="_blank" rel="external">Cloudera 文档库</a> - 各类文档应有尽有</li>
+</ul>
+<p>与其他数据库对比</p>
+<ul>
+<li><a href="http://db-engines.com/en/system/Elasticsearch%3BHBase%3BMongoDB" target="_blank" rel="external">System Properties Comparison Elasticsearch vs. HBase vs. MongoDB</a></li>
+<li><a href="https://www.mongodb.com/compare/mongodb-hbase" target="_blank" rel="external">MongoDB and HBase Compared</a></li>
+</ul>
+<p>原始论文</p>
+<ul>
+<li><a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/bigtable-osdi06.pdf" target="_blank" rel="external">Bigtable: A Distributed Storage System for Structured Data</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>捧个钱场？</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/misc/wechat.jpg" alt="wdxtub WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/misc/alipay.jpg" alt="wdxtub Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NoSQL/" rel="tag"># NoSQL</a>
+          
+            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/16/future-of-ai-clip/" rel="next" title="【人工智能的未来】读书笔记">
+                <i class="fa fa-chevron-left"></i> 【人工智能的未来】读书笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/03/16/hbase-guide/"
+     data-title="HBase 快速指南"
+     data-content=""
+     data-url="http://wdxtub.com/2017/03/16/hbase-guide/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/16/hbase-guide/"
+           data-title="HBase 快速指南" data-url="http://wdxtub.com/2017/03/16/hbase-guide/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/misc/avatar.jpg"
+               alt="wdxtub" />
+          <p class="site-author-name" itemprop="name">wdxtub</p>
+          <p class="site-description motion-element" itemprop="description">Engineer Blogger Creator Runner | ML DM NLP Web | 航拍 旅行 电影 音乐 | 有朋自远方来不亦乐乎 | @CMU @SYSU</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">806</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">932</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wdxtub" target="_blank" title="GitHub">
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/wdxtub" target="_blank" title="微博">
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/wdx" target="_blank" title="豆瓣">
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/wdxtub" target="_blank" title="知乎">
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-nd.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              不妨看看
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zhchbin.github.io/" title="zhchbin" target="_blank">zhchbin</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.algorithmdog.com/" title="算法狗" target="_blank">算法狗</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.52cs.org/" title="我爱计算机" target="_blank">我爱计算机</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.lofter.com/" title="我的 Lofter" target="_blank">我的 Lofter</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wdxtub.com/interview/" title="刷题笔记" target="_blank">刷题笔记</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#日常运维"><span class="nav-number">2.</span> <span class="nav-text">日常运维</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase-Shell-常用命令"><span class="nav-number">3.</span> <span class="nav-text">HBase Shell 常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RESTful-API-使用"><span class="nav-number">4.</span> <span class="nav-text">RESTful API 使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Schema-设计"><span class="nav-number">5.</span> <span class="nav-text">Schema 设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#How-I-Learned-To-Stop-Worrying-And-Love-Denormalization"><span class="nav-number">5.1.</span> <span class="nav-text">How I Learned To Stop Worrying And Love Denormalization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HBase-Schema-Design-and-Cluster-Sizing-Notes"><span class="nav-number">5.2.</span> <span class="nav-text">HBase Schema Design and Cluster Sizing Notes</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HBase-Architecture"><span class="nav-number">5.2.1.</span> <span class="nav-text">HBase Architecture</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Schema-Design"><span class="nav-number">5.2.2.</span> <span class="nav-text">Schema Design</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cluster-Sizing-Notes"><span class="nav-number">5.2.3.</span> <span class="nav-text">Cluster Sizing Notes</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wdxtub</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"wdxblog"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js?v=5.1.0"></script>
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+
+</body>
+</html>
