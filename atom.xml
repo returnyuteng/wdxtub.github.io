@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wdxtub.com/"/>
-  <updated>2017-03-16T11:15:37.000Z</updated>
+  <updated>2017-03-17T07:12:35.000Z</updated>
   <id>http://wdxtub.com/</id>
   
   <author>
@@ -16,1953 +16,796 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>HBase 快速指南</title>
-    <link href="http://wdxtub.com/2017/03/16/hbase-guide/"/>
-    <id>http://wdxtub.com/2017/03/16/hbase-guide/</id>
-    <published>2017-03-16T02:31:15.000Z</published>
-    <updated>2017-03-16T11:15:37.000Z</updated>
+    <title>Docker 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-docker/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-docker/</id>
+    <published>2017-03-17T07:11:01.000Z</published>
+    <updated>2017-03-17T07:12:35.000Z</updated>
     
-    <content type="html"><![CDATA[<p>HBase 作为大数据平台中非常知名的 NoSQL 数据库之一，经过长时间的发展已经非常强大和稳定。强大的同时也意味着复杂，光把官方的入门指南看完都已经是非常不容易的事情，本文力图从实践的角度出发，让大家能够快速把 HBase『用』起来。</p>
+    <content type="html"><![CDATA[<p>学习一门技术最好的方式就是博采众长，知行合一。本文我精选的一些 Docker 入门和进阶资源。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.03.13: 完成初稿</li>
-</ul>
-<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>HBase 是一个开源的、分布式的、数据多版本的，列式存储的 NoSQL 数据库（基于 Google 的 Bigtable 论文）。依托 Hadoop 的分布式文件系统 HDFS 作为底层存储, 能够为数十亿行数百万列的海量数据表提供随机、实时的读写访问。</p>
-<p>因为现在创业公司，所以从运维到开发都要自己来，针对 DevOps 中的各种奇怪问题，是需要有一个简单明了的快速指南方便查阅的。而且随着 HBase 的版本迭代，老的中文文档已经跟不上时代，需要基于新版本做一定的更新。本指南所测试的平台及软件配置如下</p>
-<ul>
-<li>HBase 版本: 1.2.1</li>
-<li>Hadoop 版本: 2.5.1</li>
-<li>ZooKeeper 客户端版本: 3.4.6</li>
-<li>集群规模: 3 台云服务器</li>
-</ul>
-<p>注：安装配置见参考链接中的官方文档，这里不赘述</p>
-<h2 id="日常运维"><a href="#日常运维" class="headerlink" title="日常运维"></a>日常运维</h2><p>日常运维需要知道的内容如下，只要熟悉了就可以</p>
-<ul>
-<li>检查 HDFS 状况 <code>hdfs dfsadmin -report</code></li>
-<li>启动/停止 HBase 的 Master 节点 <code>$bin/hbase-daemon.sh [start|stop] master</code>（<code>[start|stop]</code> 表示这两个词任选一个，对应不同操作，后同）</li>
-<li>启动/停止 RegionServer <code>$bin/hbase-daemon.sh [start|stop] regionserver</code></li>
-<li>启动 HBase 的 Rest 服务 <code>$bin/hbase-daemon.sh start rest -p 16080</code>（端口号随意，默认为 8080，可以通过 <code>netstat -tln</code> 查看在使用的端口号）<ul>
-<li>或 <code>$bin/hbase rest start -p 16080</code> 前台启动</li>
-</ul>
-</li>
-<li>停止 HBase 的 Rest 服务 <code>$bin/hbase-daemon.sh stop rest</code><ul>
-<li>或 <code>$bin/hbase rest stop</code></li>
-</ul>
-</li>
-<li>进入 HBase Shell <code>hbase shell</code></li>
-<li>HBase Web UI <code>localhost:16010</code>（如果有暴露公网 IP，在公网也可以访问）</li>
-<li>HBase Region Server UI <code>localhost:16030</code></li>
-</ul>
-<h2 id="HBase-Shell-常用命令"><a href="#HBase-Shell-常用命令" class="headerlink" title="HBase Shell 常用命令"></a>HBase Shell 常用命令</h2><ul>
-<li>如果在 <code>hbase shell</code> 中输入 <code>status</code> 有 dead 的机器，那么需要去找到并启动起来</li>
-<li>使用 <code>help</code> 了解命令详情</li>
-<li>使用脚本的方式 <code>hbase shell filename</code></li>
-</ul>
-<p>更多</p>
-<ul>
-<li><a href="http://blog.pureisle.net/archives/1887.html" target="_blank" rel="external">hbase shell基础和常用命令详解</a></li>
-<li><a href="http://blog.csdn.net/lifuxiangcaohui/article/details/40042117" target="_blank" rel="external">HBase总结（十三）HBase Shell 常用命令及例子</a></li>
-</ul>
-<h2 id="RESTful-API-使用"><a href="#RESTful-API-使用" class="headerlink" title="RESTful API 使用"></a>RESTful API 使用</h2><p>Header 中设置 <code>Accept</code> 可以选择返回格式，比如 <code>Accept: text/xml</code> 就是返回文本，<code>Accept: application/json</code> 就是返回 Json</p>
-<p>集群</p>
-<ul>
-<li>[GET] <code>/version/cluster</code> 查询 HBase 版本信息</li>
-<li>[GET] <code>/status/cluster</code>    查询集群状态</li>
-<li>[GET] <code>/</code>    获取所有用户的表名</li>
-<li>[GET] <code>/table_name/rowkey</code> 获取对应的条目（BASE64 编码）</li>
-</ul>
-<p>更多</p>
-<ul>
-<li><a href="https://www.cloudera.com/documentation/enterprise/5-9-x/topics/admin_hbase_rest_api.html" target="_blank" rel="external">Configuring and Using the HBase REST API</a></li>
-</ul>
-<h2 id="Schema-设计"><a href="#Schema-设计" class="headerlink" title="Schema 设计"></a>Schema 设计</h2><p>Rowkey 和 Schema 设计得好坏，有很多时候是有决定性意义的。</p>
-<p>基本概念</p>
-<ul>
-<li>每张表只有一个索引，这个索引就是 rowkey，并没有二级索引</li>
-<li>行按照 rowkey 排序，rowkey 按照字典序排序</li>
-<li>行级别的操作都是原子的（更新两行可能出现一行成功一行失败）</li>
-<li>读写应该均匀分布到整个表</li>
-<li>通常，应该把单个实体的所有信息保存在单行中</li>
-<li>相关的实体应该存储在临近的行（读写更高效，压缩数据更有效）</li>
-<li>HBase 表是稀疏的。空的列不会占据任何空间</li>
-<li>确定 rowkey，最有效的查询就是使用 rowkey 获取特定行，或者多行数据，其他类型查询会触发全表扫描，效率比较低下（具体设计应该基于需求）</li>
-<li>让 rowkey 尽可能短，长的 rowkey 会占据更多空间，也会增加 HBase 的响应时间</li>
-<li>反转域名。如果你要存储的数据可表示为域名的形式，可以考虑反转域名作为 rowkey 。（例如：com.example.products）反转域名是很不错的方法，尤其是相邻域名相似度很大, 同时这种方法也便于更有效的压缩数据。</li>
-<li>字符串标识符。如果你要存储的数据可以被一个字符串简单的标识（例如： user IDs），你可以使用标识符作为 rowkey 或是 rowkey 的一部分。考虑使用 标识符的哈希而不是它本身，以便 标识符的长度永远可以预测。</li>
-<li>时间戳。如果你经常需要基于时间读取数据，将时间戳作为 rowkey 的一部分是不错的方法。不推荐直接使用时间戳本身作为 rowkey,因为会造成热点问题，同样的原因，也不应该将时间戳作为 rowkey 的开始。例如：你的应用可能需要记录性能相关的数据，例如每秒的CPU，内存使用情况。对于这种情况，你可以将数据类型的标识符和时间戳组合为 rowkey.(例如：cpu#1425330757685）如果你需要经常获取最新的记录，你可以使用相反时间戳作为 rwokey,用你的编程语言中长整形的最大值(in Java, java.lang.Long.MAX_VALUE)减去现在的时间戳。有了相反的时间戳，记录将会按照从新到旧的顺序排列。</li>
-<li>避免这样的 rowkey：域名、连续的数字（应该反转用户数字 ID）、频繁更新的标识符（应该先将数据保存在内存中，再周期性批量写入 HBase）</li>
-<li>高表与宽表的不同</li>
-<li>columnfamily 尽量少，多了会互相影响</li>
-<li>对于列相对固定的应用，最好采用将一行记录封装到一个 column 中的方式，可以节省存储空间。封装方式推荐  protocolbuffer</li>
-<li>column 数目不要超过百万</li>
-<li>利用好 scan(startkey, endkey) 这种方式</li>
-<li>设计原则 Denormalization, Duplication 和 Intelligent Keys</li>
-<li>rowkey 和 column name 都要尽可能短</li>
-<li>考虑用字节来表示编号</li>
-<li>可以设置 column family 的存活时间 TTL</li>
-<li>rowkey 可以进行 hash 和编号，这样把变长搞成定长，然后原始值可以放到 column 中，不影响，主要是方便 scan</li>
-<li>新版本支持 reverse scan，所以对于 schema 的设计不用特意倒过来</li>
-<li>Rowkeys cannot be changed. The only way they can be “changed” in a table is if the row is deleted and then re-inserted. This is a fairly common question on the HBase dist-list so it pays to get the rowkeys right the first time (and/or before you’ve inserted a lot of data).</li>
-<li>Keep your column family names as short as possible. The column family names are stored for every value (ignoring prefix encoding). They should not be self-documenting and descriptive like in a typical RDBMS.</li>
-<li>If you are storing time-based machine data or logging information, and the row key is based on device ID or service ID plus time, you can end up with a pattern where older data regions never have additional writes beyond a certain age. In this type of situation, you end up with a small number of active regions and a large number of older regions which have no new writes. For these situations, you can tolerate a larger number of regions because your resource consumption is driven by the active regions only.</li>
-<li>If only one column family is busy with writes, only that column family accomulates memory. Be aware of write patterns when allocating resources.</li>
-<li>Try to make do with one column family if you can in your schemas. Only introduce a second and third column family in the case where data access is usually column scoped; i.e. you query one column family or the other but usually not both at the one time.</li>
-<li>To prevent hotspotting on writes, design your row keys such that rows that truly do need to be in the same region are, but in the bigger picture, data is being written to multiple regions across the cluster, rather than one at a time. Some common techniques for avoiding hotspotting are described below, along with some of their advantages and drawbacks.</li>
-</ul>
-<p>技巧</p>
-<ul>
-<li>Salting. salting attempts to increase throughput on writes, but has a cost during reads.</li>
-<li>Hashing. Instead of a random assignment, you could use a one-way hash that would cause a given row to always be “salted” with the same prefix, in a way that would spread the load across the RegionServers, but allow for predictability during reads. Using a deterministic hash allows the client to reconstruct the complete rowkey and use a Get operation to retrieve that row as normal.</li>
-<li>Reversing the Key. A third common trick for preventing hotspotting is to reverse a fixed-width or numeric row key so that the part that changes the most often (the least significant digit) is first. This effectively randomizes row keys, but sacrifices row ordering properties.</li>
-</ul>
-<p>关于 <a href="http://hbase.apache.org/1.2/book.html#secondary.indexes" target="_blank" rel="external">Secondary Index</a></p>
-<p>This section could also be titled “what if my table rowkey looks like this but I also want to query my table like that.” A common example on the dist-list is where a row-key is of the format “user-timestamp” but there are reporting requirements on activity across users for certain time ranges. Thus, selecting by user is easy because it is in the lead position of the key, but time is not.</p>
-<ul>
-<li>使用 Query Filter，过滤掉部分数据</li>
-<li>Periodic-Update Secondary Index, A secondary index could be created in another table which is periodically updated via a MapReduce job. The job could be executed intra-day, but depending on load-strategy it could still potentially be out of sync with the main data table.</li>
-<li>Dual-Write Secondary Index, Another strategy is to build the secondary index while publishing data to the cluster (e.g., write to data table, write to index table). If this is approach is taken after a data table already exists, then bootstrapping will be needed for the secondary index with a MapReduce job (see secondary.indexes.periodic).</li>
-<li>Summary Tables, Where time-ranges are very wide (e.g., year-long report) and where the data is voluminous, summary tables are a common approach. These would be generated with MapReduce jobs into another table.</li>
-<li>Coprocessor Secondary Index, Coprocessors act like RDBMS triggers. These were added in 0.92. For more information, see <a href="http://hbase.apache.org/1.2/book.html#cp" target="_blank" rel="external">coprocessors</a></li>
-</ul>
-<h3 id="How-I-Learned-To-Stop-Worrying-And-Love-Denormalization"><a href="#How-I-Learned-To-Stop-Worrying-And-Love-Denormalization" class="headerlink" title="How I Learned To Stop Worrying And Love Denormalization"></a>How I Learned To Stop Worrying And Love Denormalization</h3><ul>
-<li>Schema Design 实际上就是 Logical Data Modeling + Physical Implementation</li>
-<li>Relational DBs work well because they are close to the pure logical model</li>
-<li>Any byte array in HBase can represent more than one logical attribute</li>
-<li>The basic concept of denormalization is simple: two <strong>logical</strong> entities share one <strong>physical</strong> representation</li>
-<li>This is a fundamental modeling property of HBase: nesting entities。即，在 rowkey 对应的一行中，某个 column 可以是另一个 rowkey，值对应是另一个 entity</li>
-</ul>
-<p><img src="/images/14896626408250.jpg" alt=""></p>
-<ul>
-<li>The row key design is the single most important decision you will make. This is also true for the “key” you’re putting in the column family name of nested entities.</li>
-<li>Design for the questions not the answers.</li>
-<li>Bu isn’t NoSQL more flexible than a relational DB? For column schema? YES! For row key structures, NO!</li>
-<li>Be compact. You can squeeze a lot into a little space</li>
-<li>Use row atomicity as a design tool. Rows are updated atomically, which gives you a form of relational integrity in HBase</li>
-<li>Attributes can move into the row key. Even if it’s not “identifying” (part of the uniqueness of an entity), adding an attribute into the row key can make access more efficient in some cases.</li>
-<li>If you nest entities, you can transactionally pre-aggregate data. You can recalculate aggregates on write, or periodically with a map/reduce job.</li>
-</ul>
-<h3 id="HBase-Schema-Design-and-Cluster-Sizing-Notes"><a href="#HBase-Schema-Design-and-Cluster-Sizing-Notes" class="headerlink" title="HBase Schema Design and Cluster Sizing Notes"></a>HBase Schema Design and Cluster Sizing Notes</h3><p>ApacheCon Europe, November 2012, by Lars George, Director EMEA Services @Cloudera, Apache Committer, lars@cloudera.com, @larsgeorge(twitter) </p>
-<h4 id="HBase-Architecture"><a href="#HBase-Architecture" class="headerlink" title="HBase Architecture"></a>HBase Architecture</h4><p>HBase Tables 每行由 Row Keys 索引，每列名称为 Column Names(Column Qualifiers, Column Keys)，由 Row Key 和 Column Name 可以确定一个 cell，每个 cell 包含不同的数据版本。而不同的 row 可能在不同的 region 中，不同的 column 可能在不同的 column family 中。</p>
-<ul>
-<li>Table is made up of any number of regions</li>
-<li>Region is specified by its startKey and endKey</li>
-<li>Each region may live on a different node and is made up of several HDFS files and blocks, each of which is replicated by Hadoop</li>
-<li>Tables are sorted by Row in lexicographical order</li>
-<li>Table schema only defines its column families<ul>
-<li>Each family consists of any number of columns</li>
-<li>Each column consists of any number of versions</li>
-<li>Columns only exist when inserted, NULLs are free</li>
-<li>Columns within a family are sorted and stored together</li>
-<li>Everything except table names are byte[]</li>
-</ul>
-</li>
-<li>HBase uses HDFS(or similar) as its reliable storage layer<ul>
-<li>Handles checksums, replication, failover</li>
-</ul>
-</li>
-<li>Native Java API, Gateway for REST, Thrift, Avro</li>
-<li>Master manages cluster</li>
-<li>RegionServer manage data</li>
-<li>Zookeeper is used the “neural network”<ul>
-<li>Crucial for HBase</li>
-<li>Bootstraps and coordinates cluster</li>
-</ul>
-</li>
-<li>Based on Log-Structured Merge-Trees (LSM-Trees)</li>
-<li>Inserts are done in write-ahead log first</li>
-<li>Data is stored in memory and flushed to disk on regular intervals or based on size</li>
-<li>Small flushes are merged in the background to keep number of files small</li>
-<li>Reads red memory stores first and then disk based files second</li>
-<li>Deletes are handled with “tombstone” markers</li>
-<li>Atomicity on row level no matter how many columns<ul>
-<li>keeps locking model easy</li>
-</ul>
-</li>
-</ul>
-<p>MemStores</p>
-<ul>
-<li>After data is written to the WAL the RegionServer saves KeyValues in <strong>memory store</strong></li>
-<li>Flush to disk based on size, see <code>hbase.hregion.memstore.flush.size</code></li>
-<li>Default size is <strong>64MB</strong></li>
-<li>Uses <strong>snapshot</strong> mechanism to write flush to disk while still serving from it and accepting new data at the same time</li>
-<li>Snapshots are released when flush has succeeded</li>
-</ul>
-<p>Compactions</p>
-<ul>
-<li>General Concepts<ul>
-<li>Two types: <strong>Minor</strong> and <strong>Major</strong> Compactions</li>
-<li>Asynchronous and transparent to client</li>
-<li>Manage file bloat from MemStore flushes</li>
-</ul>
-</li>
-<li>Minor Compactions<ul>
-<li>Combine last “few” flushes</li>
-<li>Triggered by number of storage files</li>
-</ul>
-</li>
-<li>Major Compactions<ul>
-<li>Rewrite <strong>all</strong> storage files</li>
-<li>Drop deleted data and those values exceeding TTL and/or number of versions</li>
-<li>Triggered by time threshold</li>
-<li>Cannot be scheduled automatically starting at a specific time(bummer!)</li>
-<li>May(most definitely) tax overall HDFS IO performance</li>
-</ul>
-</li>
-<li>Tip: Disable major compactions and schedule to run manually(e.g. cron) at off-peak times</li>
-</ul>
-<p>Block Cache</p>
-<ul>
-<li>Acts as very large, in-memory <strong>distributed cache</strong></li>
-<li>Assigned a large part of JVM <strong>heap</strong> in the RegionServer process, see <code>hfile.block.cache.size</code></li>
-<li>Optimized <strong>reads</strong> on subsequent columns and rows</li>
-<li>Has <strong>priority</strong> to keep “in-memory” column families in cache</li>
-<li>Cache needs to be used properly to get best read performance<ul>
-<li>Turn off block cache on operations that cause large churn</li>
-<li>Store related data “close” to each other</li>
-</ul>
-</li>
-<li>Uses <strong>LRU</strong> cache with threaded (asynchronous) evictions based on priorities</li>
-</ul>
-<p>Region Splits</p>
-<ul>
-<li>Triggered by configured maximum file size of any store file<ul>
-<li>This is checked directly <strong>after</strong> the compaction call to ensure store files are actually approaching the threshold.</li>
-</ul>
-</li>
-<li>Runs as <strong>asynchronous</strong> thread on RegionServer</li>
-<li>Splits are <strong>fast</strong> and nearly instant<ul>
-<li>Reference files point to original region files and represent each half of the split</li>
-</ul>
-</li>
-<li>Compactions take care of splitting original files into new region directories</li>
-</ul>
-<p>Auto Sharding and Distribution</p>
-<ul>
-<li>Unit of scalability in HBase is the Region</li>
-<li>Sorted, contiguous range of rows</li>
-<li>Spread “randomly” across RegionServer</li>
-<li>Moved around for load balancing and failover</li>
-<li>Split automatically or manually to scale with growing data</li>
-<li>Capacity is solely a factor of cluster nodes vs. regions per node</li>
-</ul>
-<p>Column Family vs. Column</p>
-<ul>
-<li>Use only a few column families<ul>
-<li>Causes many files that need to stay open per region plus class overhead per family</li>
-</ul>
-</li>
-<li>Best used when logical separation between data and meta columns</li>
-<li>Sorting per family can be used to convey application logic or access pattern</li>
-</ul>
-<p>Storage Separation</p>
-<ul>
-<li>Column Families allow for separation of data<ul>
-<li>Used by Columnar Databases for fast analytical queries, but on column level only</li>
-<li>Allows different or compression depending on the content type</li>
-</ul>
-</li>
-<li>Segregate information based on access pattern</li>
-<li>Data is stored in one or more storage file, called HFiles</li>
-</ul>
-<h4 id="Schema-Design"><a href="#Schema-Design" class="headerlink" title="Schema Design"></a>Schema Design</h4><p>Key Cardinality(基数)</p>
-<p><img src="/images/14896626633656.jpg" alt=""></p>
-<ul>
-<li>The best performance is gained from using row keys</li>
-<li>Time range bound reads can skip store files<ul>
-<li>So can Bloom Filter</li>
-</ul>
-</li>
-<li>Selecting column families reduces the amount of data to be scanned</li>
-<li>Pure value based filtering is a full table scan<ul>
-<li>Filters often are too, but reduce network traffic</li>
-</ul>
-</li>
-</ul>
-<p>Fold, Store, and Shift</p>
-<ul>
-<li>Logical layout does not match physical one</li>
-<li>All values are stored with the full coordinates, including: Row Key, Column Family, Column Qualifier, and Timestamp</li>
-<li>Folds columns into “row per column”</li>
-<li>NULLs are cost free as nothing is stored</li>
-<li>Versions are multiple “rows” in folded table</li>
-</ul>
-<p>Key/Table Design</p>
-<ul>
-<li>Crucial to gain best performance<ul>
-<li>Why do I need to know? Well, you also need to know that RDBMS is only working well when columns are indexed and query plan is OK</li>
-</ul>
-</li>
-<li>Absence of secondary indexes forces use of row key or column name sorting</li>
-<li>Transfer multiple indexes into on<ul>
-<li>Generate large table -&gt; Good since fits architecture and spreads across cluster </li>
-</ul>
-</li>
-</ul>
-<p>DDI</p>
-<ul>
-<li>Stands for Denormalization, Duplication and Intelligent Keys</li>
-<li>Needed to overcome shortcomings of architecture</li>
-<li>Denormalization -&gt; Replacement for JOINs</li>
-<li>Duplication -&gt; Design for reads</li>
-<li>Intelligent Keys -&gt; Implement indexing and sorting, optimize reads</li>
-</ul>
-<p>Pre-materialized Everything</p>
-<ul>
-<li>Achieve one read per customer request is possible</li>
-<li>Otherwise keep at lowest number</li>
-<li>Reads between 10ms(cache miss) and 1ms(cache hit)</li>
-<li>Use MapReduce to compute exacts in batch</li>
-</ul>
-<p><strong>Motto: Design for Reads!!!</strong></p>
-<p>Tall-Narrow vs. Flat-Wide Tables</p>
-<ul>
-<li>Rows do not split<ul>
-<li>Might end up with one row per region</li>
-</ul>
-</li>
-<li>Same storage footprint</li>
-<li>Put more details into the row key<ul>
-<li>Sometimes dummy column only</li>
-<li>Make use of partial key scans</li>
-</ul>
-</li>
-<li>Tall with Scans, Wide with Gets<ul>
-<li>Atomicity only on row level</li>
-</ul>
-</li>
-<li>Example: Large graphs, stored as adjacency matrix</li>
-</ul>
-<p>Hashing vs. Sequential Keys</p>
-<ul>
-<li>Uses hashes for best spread<ul>
-<li>Use for example MD5 to be able to recreate key, Key = MD5(customerID)</li>
-<li>Counter productive for range scans</li>
-</ul>
-</li>
-<li>Use sequential keys for locality<ul>
-<li>Makes use of block caches</li>
-<li>May tax one server overly, may be avoided by salting or splitting regions while keeping them small</li>
-</ul>
-</li>
-</ul>
-<p><img src="/images/14896627115025.jpg" alt=""></p>
-<p>Key Design Summary</p>
-<ul>
-<li>Based on access pattern, either use sequential or random keys</li>
-<li>Often a combination of both is needed<ul>
-<li>Overcome architectural limitations</li>
-</ul>
-</li>
-<li>Neither is necessarily bad<ul>
-<li>Use bulk import for sequential keys and reads</li>
-<li>Random keys are good for random access patterns</li>
-</ul>
-</li>
-</ul>
-<p>Key Design</p>
-<ul>
-<li>Reversed Domains<ul>
-<li>Examples: “com.wdxtub.www”, “cn.wdxtub.www”</li>
-<li>Helps keeping pages per site close, as HBase efficiently scans blocks of sorted keys</li>
-</ul>
-</li>
-<li>Domain Row Key = MD5(Reversed Domain) + Reversed Domain<ul>
-<li>Leading MD5 hash spreads keys randomly across all regions for load balancing reasons</li>
-<li>Only hashing the domain groups per site (and per subdomain if needed)</li>
-</ul>
-</li>
-<li>URL Row Key = MD5(Reversed Domain) + Reversed Domain + URL ID<ul>
-<li>Unique ID per URL already available, make use of it </li>
-</ul>
-</li>
-</ul>
-<p>Summary</p>
-<ul>
-<li>Design for Use-Case<ul>
-<li>Read, Write, or Both?</li>
-</ul>
-</li>
-<li>Avoid Hotspotting</li>
-<li>Consider using IDs instead of full text</li>
-<li>Leverage Column Family to HFile relation</li>
-<li>Shift details to appropriate position<ul>
-<li>Composite Keys</li>
-<li>Column Qualifiers</li>
-</ul>
-</li>
-<li>Schema design is a combination of<ul>
-<li>Designing the keys (row and column)</li>
-<li>Segregate data into column families</li>
-<li>Choose compression and block sizes</li>
-</ul>
-</li>
-<li>Similar techniques are needed to scale most systems<ul>
-<li>Add indexes, partition data, consistent hashing</li>
-</ul>
-</li>
-<li>Denormalization, Duplication, and Intelligent Keys(DDI)</li>
-</ul>
-<h4 id="Cluster-Sizing-Notes"><a href="#Cluster-Sizing-Notes" class="headerlink" title="Cluster Sizing Notes"></a>Cluster Sizing Notes</h4><p>Competing Resources</p>
-<ul>
-<li>Reads and Writes compete for the same low-level resources<ul>
-<li>Disk(HDFS) and Network I/O</li>
-<li>RPC Handlers and Threads</li>
-</ul>
-</li>
-<li>Otherwise the do exercise completely separate code paths</li>
-</ul>
-<p>Memory Sharing</p>
-<ul>
-<li>By default every region server is dividing its memory (i.e. given maximum heap) into<ul>
-<li>40% for in-memory stores (write ops)</li>
-<li>20% for block caching (read ops)</li>
-<li>remaining space (here 40%) go towards usual Java heap usage(objects etc.)</li>
-<li>Share of memory needs to be tweaked</li>
-</ul>
-</li>
-</ul>
-<p>Reads</p>
-<ul>
-<li>Locate and route request to appropriate region server<ul>
-<li>Client caches information for faster lookups -&gt; consider prefetching option for fast warmups</li>
-</ul>
-</li>
-<li>Eliminate store files if possible using time ranges or Bloom filter</li>
-<li>Try <strong>block cache</strong>, if block is missing then load from disk</li>
-</ul>
-<p>Block Cache</p>
-<ul>
-<li>Use exported metrics to see effectiveness of block cache<ul>
-<li>Check fill and eviction rate, as well as hit ratios -&gt; random reads are not ideal</li>
-</ul>
-</li>
-<li>Tweak up or down as needed, but watch overall heap usage</li>
-<li>You absolutely need the block cache<ul>
-<li>Set to 10% at least for short term benefits</li>
-</ul>
-</li>
-</ul>
-<p>Writes</p>
-<ul>
-<li>The cluster size is often determined by the write performance</li>
-<li>Log structured merge trees like<ul>
-<li>Store mutation in <strong>in-memory store</strong> and <strong>write-ahead log</strong></li>
-<li>Flush out aggregated, sorted maps at specified threshold - or - when under pressure</li>
-<li>Discard logs with no pending edits</li>
-<li>Perform regular compactions of store files</li>
-</ul>
-</li>
-</ul>
-<p>Write Performance</p>
-<ul>
-<li>There are many factors to the overall write performance of a cluster<ul>
-<li>Key Distribution -&gt; Avoid region hotspot</li>
-<li>Handlers -&gt; Do not pile up too early</li>
-<li>Write-ahead log -&gt; Bottleneck #1</li>
-<li>Compactions -&gt; Badly tuned can cause ever increasing background noise</li>
-</ul>
-</li>
-</ul>
-<p>Write-Ahead Log</p>
-<ul>
-<li>Currently only one per region server<ul>
-<li>Shared across all stores (i.e. column families)</li>
-<li>Synchronized on file append calls</li>
-</ul>
-</li>
-<li>Work being done on mitigating this<ul>
-<li>WAL compression</li>
-<li>Multiple WAL’s per region server -&gt; Start more than one region server per node?</li>
-</ul>
-</li>
-<li>Size set to 95% of default block size<ul>
-<li>64MB or 128MB, but check config!</li>
-</ul>
-</li>
-<li>Keep number low to reduce recovery time<ul>
-<li>Limit set to 32, but can be increased</li>
-</ul>
-</li>
-<li>Increase size of logs - and/or - increase the number of logs before blocking</li>
-<li>Compute number based on fill distribution and flush frequencies</li>
-<li>Writes are synchronized across all stores<ul>
-<li>A large cell in one family can strop all writes of another</li>
-<li>In this case the RPC handlers go binary, i.e. either work or all block</li>
-</ul>
-</li>
-<li>Can be bypassed on writes, but means no real durability and no replication<ul>
-<li>Maybe use coprocessor to restore dependent data sets(preWALRestore)</li>
-</ul>
-</li>
-</ul>
-<p>Flushes</p>
-<ul>
-<li>Every mutation call (put, delete etc.) cause a check for a flush</li>
-<li>If threshold is met, flush file to disk and schedule a compaction<ul>
-<li>Try to compact newly flushed files quickly</li>
-</ul>
-</li>
-<li>The compaction returns - if necessary - where a region should be split</li>
-</ul>
-<p>Compaction Storms</p>
-<ul>
-<li>Premature flushing because of # of logs or memory pressure<ul>
-<li>Files will be smaller than the configured flush size</li>
-</ul>
-</li>
-<li>The background compactions are hard at work merging small flush files into the existing, larger store files<ul>
-<li>Rewrite hundreds of MB over and over</li>
-</ul>
-</li>
-</ul>
-<p>Dependencies</p>
-<ul>
-<li>Flushes happen across all stores/column families, even if just one triggers it</li>
-<li>The flush size is compared to the size of all stores combined<ul>
-<li>Many column families dilute the size</li>
-<li>Example: 55MB + 5MB + 4MB</li>
-</ul>
-</li>
-</ul>
-<p>Some Numbers</p>
-<ul>
-<li>Typical Write performance of HDFS is 35-50MB/s</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Cell Size</th>
-<th style="text-align:center">OPS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">0.5MB</td>
-<td style="text-align:center">70-100</td>
-</tr>
-<tr>
-<td style="text-align:center">100KB</td>
-<td style="text-align:center">350-500</td>
-</tr>
-<tr>
-<td style="text-align:center">10KB</td>
-<td style="text-align:center">3500-5000 ??</td>
-</tr>
-<tr>
-<td style="text-align:center">1KB</td>
-<td style="text-align:center">35000-50000 ????</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>?? - This is Way to high in practice - Contention</p>
-</blockquote>
-<ul>
-<li>Under real world conditions the rate is less, more like 15MB/s or less<ul>
-<li>Thread contention is cause for massive slow down</li>
-</ul>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Cell Size</th>
-<th style="text-align:center">OPS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">0.5MB</td>
-<td style="text-align:center">10</td>
-</tr>
-<tr>
-<td style="text-align:center">100KB</td>
-<td style="text-align:center">100</td>
-</tr>
-<tr>
-<td style="text-align:center">10KB</td>
-<td style="text-align:center">800</td>
-</tr>
-<tr>
-<td style="text-align:center">1KB</td>
-<td style="text-align:center">6000</td>
-</tr>
-</tbody>
-</table>
-<p>Notes</p>
-<ul>
-<li>Compute memstore sizes based on number of regions x flush size</li>
-<li>Compute number of logs to keep based on fill and flush rate</li>
-<li><p>Ultimately the capacity is driven by</p>
-<ul>
-<li>Java Heap</li>
-<li>Region Count and Size</li>
-<li>Key Distribution</li>
-</ul>
-<p>Cheat Sheet</p>
-<ul>
-<li>Ensure you have enough or large enough write-ahead logs</li>
-<li>Ensure you do not oversubscribe available memstore space</li>
-<li>Ensure to set flush size large enough but not too large</li>
-<li>Check write-ahead log usage carefully</li>
-<li>Enable compression to store more data per node</li>
-<li>Tweak compaction algorithm to peg background I/O at some level</li>
-<li>Consider putting uneven column families in separate tables</li>
-<li>Check metrics carefully for block cache, memstore, and all queues</li>
-</ul>
-</li>
-</ul>
-<p>Example</p>
-<ul>
-<li>Java Xmx heap at 10GB</li>
-<li>Memstore share at 40% (default)<ul>
-<li>10GB Headp x 0.4 = 4GB</li>
-</ul>
-</li>
-<li>Desired flush size at 128MB<ul>
-<li>4GB / 128MB = 32 regions max!</li>
-</ul>
-</li>
-<li>For WAL size of 128MB x 0.95%<ul>
-<li>4GB / (128MB x 0.95) = ~33 partially uncommitted logs to keep around</li>
-</ul>
-</li>
-<li>Region size at 20GB<ul>
-<li>20GB x 32 regions = 640 GB raw storage used</li>
-</ul>
-</li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p>文档</p>
-<ul>
-<li><a href="http://hbase.apache.org/" target="_blank" rel="external">HBase 官方网站</a></li>
-<li><a href="http://hbase.apache.org/1.2/book.html" target="_blank" rel="external">Apache HBase™ 1.2 Reference Guide</a></li>
-<li><a href="http://abloz.com/hbase/book.html" target="_blank" rel="external">HBase 0.97 官方文档中文版</a> - 较老，但有参考意义</li>
-<li><a href="https://www.cloudera.com/documentation.html" target="_blank" rel="external">Cloudera 文档库</a> - 各类文档应有尽有</li>
-</ul>
-<p>与其他数据库对比</p>
-<ul>
-<li><a href="http://db-engines.com/en/system/Elasticsearch%3BHBase%3BMongoDB" target="_blank" rel="external">System Properties Comparison Elasticsearch vs. HBase vs. MongoDB</a></li>
-<li><a href="https://www.mongodb.com/compare/mongodb-hbase" target="_blank" rel="external">MongoDB and HBase Compared</a></li>
-</ul>
-<p>原始论文</p>
-<ul>
-<li><a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/bigtable-osdi06.pdf" target="_blank" rel="external">Bigtable: A Distributed Storage System for Structured Data</a></li>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/04/02/docker-first-step/">Docker 快速入门</a></li>
+<li><a href="http://wdxtub.com/2016/04/03/docker-basic-concept/">Docker 基本概念</a></li>
+<li><a href="http://wdxtub.com/2016/04/03/docker-gossip/">Docker 碎碎念</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Docker</a></li>
 </ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;HBase 作为大数据平台中非常知名的 NoSQL 数据库之一，经过长时间的发展已经非常强大和稳定。强大的同时也意味着复杂，光把官方的入门指南看完都已经是非常不容易的事情，本文力图从实践的角度出发，让大家能够快速把 HBase『用』起来。&lt;/p&gt;
+      &lt;p&gt;学习一门技术最好的方式就是博采众长，知行合一。本文我精选的一些 Docker 入门和进阶资源。&lt;/p&gt;
     
     </summary>
     
       <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
     
-      <category term="NoSQL" scheme="http://wdxtub.com/tags/NoSQL/"/>
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
-      <category term="数据库" scheme="http://wdxtub.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【人工智能的未来】读书笔记</title>
-    <link href="http://wdxtub.com/2017/03/16/future-of-ai-clip/"/>
-    <id>http://wdxtub.com/2017/03/16/future-of-ai-clip/</id>
-    <published>2017-03-16T01:50:57.000Z</published>
-    <updated>2017-03-16T01:51:50.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>用传统的方式研究出的人工智能可以生产出实用的，产品，但绝不可能制造出真正的智能机器。</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.03.16: 完成初稿</li>
-</ul>
-<p>用传统的方式研究出的人工智能可以生产出实用的，产品，但绝不可能制造出真正的智能机器。</p>
-<p>在任何情况下，无论多么成功的人工智能程序也只是擅长于那些经过专门设计的领域。它们不会总结归纳，缺乏灵活性；甚至它们的创造者也认为它们不会像人一样思考。</p>
-<p>相对于人工智能而言，神经网络是一个真正的进步，因为它的基础是建立在真正的神经系统之上的，尽管不牢固。</p>
-<p>对于大脑的解读，有三种标准必不可少：</p>
-<ol>
-<li>大脑功能的时间概念。真正的大脑快速地处理大量不断变化的信息流，在这些输入和输出的信息流中没有任何东西是静止不动的</li>
-<li>反馈的重要性。神经解剖学家早已发现大脑是浸润在反馈连接之中的，比如说，在连接新大脑皮层和视丘之间的神经中，反向床底的信息（与输入相对）要比向前传递的信息大一个数量级。也就是说，如果有 1 根神经纤维向大脑皮层输入信息，就有 10 根神经纤维在向感觉器官传递信息。反馈也通过大脑皮层控制了大部分的连接。虽然反馈的确切作用还不为人所指，但从已发表的一些研究可以看出它们无处不在</li>
-<li>任何大脑模型或理论都应该能够解释大脑的物理结构</li>
-</ol>
-<p>大多数神经网络和人工智能都有一个共同的特点——它们只注重行为，而这正是神经网络的问题所在。不论这些行为被称为『回应』『模式』还是『输出』，人工智能和神经网络研究者都认为智能存在与行为之中，而这种行为是执行一个输入后，由一个程序或神经网络产生出来的。电脑程序和神经网络最重要的属性就是能否进行正确的、令人满意的输出，即『智能等同于行为』</p>
-<p>而实际上，智能并不是一种动作，也不是某种聪明的行为。行为只是智能的一种表现，绝不是智能的主要特征或对于智能的首要解释。如果忽略了头脑中的活动贰只关心行为，将对智能的理解和智能机器的发明造成障碍。</p>
-<hr>
-<p>正当神经网络大出风头时，一小部分理论学家从中分离出来，发明了一种不以行为为中心的网络，称为『自-匹配记忆』(auto-associative memories)。它也是由相互连接的简单神经元构成，这些神经元在达到某个临界点时可以自动激活。但它们之间的连接方式不同，其中涉及大量的反馈。与只能正向传输的反向传播网络不同，自-匹配记忆可以将各个神经元的输出传回给输入——就像给自己大袋安化。这种反馈回路形成了一些有趣的特点。当一种行为模式施加在人造神经元上之后，它们就会对这种模式形成记忆，这种记忆网络将行为模式和它自身联系在一起，因此被称为『自-匹配记忆』。（这其实就是 DL, RNN 啊）</p>
-<p>第一点，其最重要的特征是：要检索某个模式，不必要有这个模式的全部，只要有其中的一个部分或一个乱作一团的模式，即使你从一个混乱的形式开始，自-匹配记忆都可以检索到以原始形式存储的正确模式。</p>
-<p>第二点，和其他大部分神经网络不同，自-匹配记忆可以存储多序列模式，也被称作时间模式。要实现这一特征只要在反馈上设计一个延时即可，这样你就可以输入一个序列模式，比如一段旋律，自-匹配记忆就可以记住它。</p>
-<hr>
-<p>在观察大脑，尤其是新大脑皮层的过程中，我们必须仔细甄别什么是以前进化过程中形成的多余的『冻结的偶然事件』，并且肯定在大脑的重要特性之中混杂有许多无用之物。但正如我们将要看到的，神经回路之中一定潜藏有某种精确的巨大能量等待我们去发掘，而这种能量将超过任何最先进的计算机。</p>
-<p>所有大脑皮层的功能区域都遵循一个共同的算法，视觉、听觉、甚至运动输出之间没有任何差异。（蒙卡斯尔观点）</p>
-<p>大脑是模式机器，用听觉或视觉来表述它的功能并非不正确，但从根本来看，模式才是实质。不论大脑皮层的各个区域的行为如何不同，其中起作用的基本皮层算法是相同的。</p>
-<p>大脑认识世界要借助一系列的感觉，而这些感觉并不能发现这个绝对世界的全部。感觉形成模式传入大脑皮层，经过相同的皮层算法处理之后就形成了世界的模型。</p>
-<p>不论从并行还是其他方面，大脑皮层都不像计算机，它不会计算问题的答案，而是用存储的记忆来解决问题，做出反应。大脑皮层的记忆和电脑的记忆有以下四点根本区别：</p>
-<ul>
-<li>大脑皮层可以存储模式序列</li>
-<li>大脑皮层以自 - 联想方式回忆起模式</li>
-<li>大脑皮层以恒定的形式存储模式</li>
-<li>大脑皮层按照层级结构存储模式</li>
-</ul>
-<p>我们的大脑在利用记忆不断地对我们看到的、听到的和感觉到的东西进行预测。当某种在大脑皮层中没有被存储的视觉模式输入时，这种预测就会被破坏，我的注意力就会被这个差错所吸引。</p>
-<p>智能是通过记忆能力和对周围环境中模式的预测能力来衡量的，包括语言、数学、物体的物理特性以及社会环境。你的大脑是从外部世界获得信息并将它们存储起来，然后将它们以前的杨泽和正在发生的情况进行比较，并以此为基础进行预测的。</p>
-<p>人之所以能顺利完成许多与语言有关的任务，是因为我们的大脑皮层不但能理解单词，还能理解它们所在的句子和上下文。</p>
-<p>宇航员卡尔·萨根曾说过，对一件事物的理解并不会有损其神奇性、减少其神秘感。随着理解的加深，我们越来越适应自己在宇宙中的角色；同时，宇宙也越发社会米妖娆。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;用传统的方式研究出的人工智能可以生产出实用的，产品，但绝不可能制造出真正的智能机器。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Reading" scheme="http://wdxtub.com/categories/Reading/"/>
-    
-    
-      <category term="人工智能" scheme="http://wdxtub.com/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
-    
-      <category term="大脑" scheme="http://wdxtub.com/tags/%E5%A4%A7%E8%84%91/"/>
+      <category term="Docker" scheme="http://wdxtub.com/tags/Docker/"/>
     
   </entry>
   
   <entry>
-    <title>第三十九周 - 小王子的旅</title>
-    <link href="http://wdxtub.com/2017/03/10/travel-of-little-prince/"/>
-    <id>http://wdxtub.com/2017/03/10/travel-of-little-prince/</id>
-    <published>2017-03-10T08:06:07.000Z</published>
-    <updated>2017-03-11T06:11:27.000Z</updated>
+    <title>存储与流资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-storage-stream/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-storage-stream/</id>
+    <published>2017-03-17T07:10:54.000Z</published>
+    <updated>2017-03-17T07:14:46.000Z</updated>
     
-    <content type="html"><![CDATA[<p>我不知道从哪里来，路过沙漠和一道道麦田，莫名的沙划过指尖，是冒险还是为了成全？</p>
+    <content type="html"><![CDATA[<p>学习一门技术最好的方式就是博采众长，知行合一。本文我精选的一些存储与流的入门和进阶资源。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.03.11 修正错别字（感谢向子）</li>
-<li>2017.03.10 完成初稿</li>
+<li>2017.03.17: 完成初稿</li>
 </ul>
-<p>转眼正式恢复上班的第一周就要过去了，我也基本适应了新的工作节奏。虽然在家的时间不多，不过在四面八方快递的『支援』下，虽然依然是租房住，但总算有了『家』的模样。尤其是几盆绿色植物的强势加盟，平添了许多生活气息。</p>
-<p>离开校园之前就一直觉得自己更加适合创业公司，因为我并不是想找一份工作，而是想找一群人。这群人好奇心爆棚，把兴趣爱好当做事业，用自己的双手去描绘想要的未来。转念一想，这其实就是我心中的『工程师文化』，至于其他水太深的套路，我不喜欢，也不想参与其中。</p>
-<p>因为是创业公司，有各种各样的事情要做，我得努力推动一个完整的需求尽快上线。从为什么做、做什么到怎么做，每一步都需要快速思考，找到不一定那么完美，但是能高效运转的方式。目标不是搞什么技术实验或其他花里胡哨的东西，就是多快好省把事情完成。</p>
-<p>产品经理、前端、后端围在一起讨论产品要怎么做，短平快效率高。这种大家都带脑子来开得会就代表了先进生产力，因为在不断的质疑和解释中彼此都更加了解对方的想法，也正是通过这样的思维碰撞，才能真正把产品做好，起到四两拨千斤的效果。</p>
-<p>身处这样一个分工明确，大家都知道如何正确做事也愿意花时间沟通的团队，是特别舒服的事情。我当然也不能拖大家后腿，工作的时候不再听歌，更加专注地一次只做一件事情，更加节制地进行信息筛选。我觉得一个好工程师的基本能力就是要会借力打力，也不能太有个人英雄色彩，毕竟软件工程早已不是靠单打独斗就能杀出一片天的时代了，不站在巨人肩上，是看不到远方的。</p>
-<p>因为把家搬到了公司附近，路上可能的不可能的意外因素几乎都被排除了，摸索出一套稳定且灵活的生活节奏之后，一是感觉每天变长了，二是能做的事情变多了，每一个阶段都能感受到自己的加速度在增大，其实是非常幸福的事情，这意味着我仍旧处在火箭发射的加速阶段，还远远没有到达极限。一想到这个，就感觉斗志昂扬。</p>
-<p>现在的生活又回归到了校园的节奏：</p>
-<ul>
-<li>早上：7 点起床，跳 insanity，洗澡，吃早餐，浇水，上班</li>
-<li>中午：煮饭热菜（用预约功能到家即可开饭），午休，上班</li>
-<li>晚上：吃点水果，工作一会儿，回家再写写博客，想想明天要做什么，睡觉</li>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2017/03/16/hbase-guide/">HBase 指南</a></li>
+<li><a href="http://wdxtub.com/2016/07/05/redis-guide/">Redis 指南</a></li>
+<li><a href="http://wdxtub.com/2016/08/15/kafka-guide/">Kafka 指南</a></li>
 </ul>
-<p>这样坚持了十天之后，体重恢复到了去年同期水平，精力和创造力都大幅度提升。工作开始围绕着特定主题深度挖掘，探索技能升级，能够靠自己的思考和设计去解决新问题满足新需求，是特别开心的事情。</p>
-<p>今天是发布 wdxtub.com beta 版的第 100 天，今天也突破了七十万访问量。在这一百天里，我对算法和工程有了更深的认识和理解，也逐步在完善自己的知识体系。唯一不变的是想把这种开放和分享的态度通过自己的努力传播出去。因为我相信藏着掖着并不能凸显自己的好，水真正涨起来了，船自然就高了。</p>
-<p>我不知道从哪里来，飘过大海和一座座山脉，莫名的风吹过午夜，记得在我住的星球上面有一座梦的乐园。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;我不知道从哪里来，路过沙漠和一道道麦田，莫名的沙划过指尖，是冒险还是为了成全？&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
-    
-    
-      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
-    
-      <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>RESTful API 框架 HUG 指南</title>
-    <link href="http://wdxtub.com/2017/03/09/hug-guide/"/>
-    <id>http://wdxtub.com/2017/03/09/hug-guide/</id>
-    <published>2017-03-09T11:25:18.000Z</published>
-    <updated>2017-03-09T13:37:34.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>如果你在用 Python3，如果你需要搭建一个 API 服务，如果时间很紧，那么 HUG 可能就是你的最佳选择！本文将用轻松易懂的实例教程来带大家走入 HUG 的世界。</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.03.09: 完成初稿</li>
-</ul>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>HUG 是基于 Python3 的，所以我们来安装一下。一般来说我们会使用 <code>virtualenv</code> 来隔离不同的环境，不然不同的包容易『打架』。比较简单，跟着敲命令即可。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 安装 Python3，其中 pip3 会随着 Python3 一并安装</span></div><div class="line"><span class="comment"># 编译时间会比较长，请耐心等待</span></div><div class="line">brew install python3</div><div class="line"><span class="comment"># 安装 VirtualEnv 方便隔离开发</span></div><div class="line">pip3 install virtualenv</div><div class="line"><span class="comment"># 新建一个 ~/hug 文件夹来保存</span></div><div class="line">virtualenv -p python3 ~/hug</div><div class="line"></div><div class="line"><span class="comment"># 激活环境</span></div><div class="line"><span class="built_in">source</span> ~/hug/bin/activate</div><div class="line"><span class="comment"># 离开环境</span></div><div class="line">deactivate</div></pre></td></tr></table></figure>
-<p>配置完成之后，我们就可以安装 <code>hug</code> 啦，直接 <code>pip3 install hug --upgrade</code> 即可。恭喜，一切完事儿！（如果你手滑，可以再 <code>pip3 install bottle</code> 一下，之后有用）</p>
-<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><p>按照通常的 Hello World 惯例，我们就来写一个 API，给访问这个 API 的用户问好。就是如下 7 行（文件名为 <code>hello.py</code>）：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">import</span> hug</div><div class="line"></div><div class="line"><span class="meta">@hug.get('/hello')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name)</span>:</span></div><div class="line">    <span class="string">"""Say Hello to the User"""</span></div><div class="line">    ticks = time.time()</div><div class="line">    <span class="keyword">return</span> <span class="string">"Hello &#123;name&#125;! Now is &#123;ticks&#125;"</span>.format(**locals())</div></pre></td></tr></table></figure>
-<p>然后我们在命令行里输入 <code>hug -f hello.py</code>，就可以看到如下萌萌的启动界面：</p>
-<p><img src="/images/14890615607155.jpg" alt=""></p>
-<p>然后我们来访问一下 <code>127.0.0.1:8000</code>，发现返回的结果是这个：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"404"</span>: <span class="string">"The API call you tried to make was not defined. Here's a definition of the API to help you get going :)"</span>,</div><div class="line">    <span class="attr">"documentation"</span>: &#123;</div><div class="line">        <span class="attr">"handlers"</span>: &#123;</div><div class="line">            <span class="attr">"/hello"</span>: &#123;</div><div class="line">                <span class="attr">"GET"</span>: &#123;</div><div class="line">                    <span class="attr">"usage"</span>: <span class="string">"Say Hello to the User"</span>,</div><div class="line">                    <span class="attr">"outputs"</span>: &#123;</div><div class="line">                        <span class="attr">"format"</span>: <span class="string">"JSON (Javascript Serialized Object Notation)"</span>,</div><div class="line">                        <span class="attr">"content_type"</span>: <span class="string">"application/json"</span></div><div class="line">                    &#125;,</div><div class="line">                    <span class="attr">"inputs"</span>: &#123;</div><div class="line">                        <span class="attr">"name"</span>: &#123;</div><div class="line">                            <span class="attr">"type"</span>: <span class="string">"Basic text / string value"</span></div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这个告诉我们，嘿这个 API 我们没有定义噢，但是我们很贴心的给你列出来已经定义的 API，剩下的你自己看咯！</p>
-<p>好，我们现在知道了，要访问的是 <code>127.0.0.1:8000/hello</code>，于是我们打开浏览器再试一次，发现结果是这个：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"errors"</span>: </div><div class="line">        &#123;</div><div class="line">            <span class="attr">"name"</span>: <span class="string">"Required parameter 'name' not supplied"</span></div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>噢，这个错误提醒我们，一定要给出 <code>name</code> 这个参数，好，那我们访问 <code>127.0.0.1:8000/hello?name=wdxtub</code>，结果终于对了，像这样（给出了名字，也给出了当前的时间戳）：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">&quot;Hello wdxtub! Now is 1489061160.552566&quot;</div></pre></td></tr></table></figure>
-<p>但是这个方法还有一点不好，就是我们改动了代码，并不会自动重新载入，每次都要手动重启很麻烦，那怎么办呢？下一节我们就来搞这个问题。</p>
-<h2 id="自动重启及-API-测试"><a href="#自动重启及-API-测试" class="headerlink" title="自动重启及 API 测试"></a>自动重启及 API 测试</h2><p>还记得我们之前手滑安装的 <code>bottle</code> 吗？接下来就有用啦，我们把代码改成如下（注意新增的 <code>import</code> 和下面的 <code>if</code> 部分）：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> hug</div><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">from</span> bottle <span class="keyword">import</span> run</div><div class="line"></div><div class="line"><span class="meta">@hug.get('/hello')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name)</span>:</span></div><div class="line">    <span class="string">"""Say Hello to the User"""</span></div><div class="line">    ticks = time.time()</div><div class="line">    <span class="keyword">return</span> <span class="string">"Hello &#123;name&#125;! Now is &#123;ticks&#125;"</span>.format(**locals())</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    app = __hug__.http.server()</div><div class="line">    run(app=app, reloader=<span class="keyword">True</span>, port=<span class="number">8000</span>)</div></pre></td></tr></table></figure>
-<p>然后在命令行中输入 <code>python hello.py</code>，就可以看到我们的 API 服务器启动起来了，如果这个时候我们对 <code>hello.py</code> 做些修改，<code>bottle</code> 会自动帮我们重启，非常方便！比如我们可以加入下面几行：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><div class="line"><span class="meta">@hug.get('/', output=hug.output_format.json)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">root</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> &#123;<span class="string">'msg'</span>: <span class="string">"欢迎来到 HUG 指南"</span>&#125;</div></pre></td></tr></table></figure>
-<p>稍等一下，就可以访问 <code>127.0.0.1:8000</code> 了。当然，使用浏览器测试 API 其实是不太方便的，这里推荐一下 Postman 这个 Chrome 应用，可以很方便地进行各类测试。比如像这样：</p>
-<p><img src="/images/14890651606772.jpg" alt=""></p>
-<h2 id="重新认识-HUG"><a href="#重新认识-HUG" class="headerlink" title="重新认识 HUG"></a>重新认识 HUG</h2><p>官方的标题起的很威武霸气 - 拥抱未来的 API(Embrace the APIs of the future)。借用其简介：</p>
-<blockquote>
-<p>Drastically simplify API development over multiple interfaces. With hug, design and develop your API once, then expose it however your clients need to consume it. Be it locally, over HTTP, or through the command line - hug is the fastest and most modern way to create APIs on Python3.</p>
-</blockquote>
-<p>从前面的例子中我们其实也可以简单领略到 HUG 的魅力，这里简单总结一下：</p>
-<ul>
-<li>性能高。在如此高的抽象层仍旧不损失太多性能，值得称赞（接近最快的 <code>falcon</code>）</li>
-<li>自带版本管理。简单制定所属的 API 版本，就可以用 <code>v1</code>, <code>v2</code> 这样的方式来切换，方便</li>
-<li>自动化文档。只要简单地在代码中写注释及标注好类型，文档就自动生成了，省事儿</li>
-<li>标记即验证。利用 Python 3 的 type annotation 能力，可以对每个参数进行验证和转换</li>
-<li>写一次到处用。只能用作 API 吗？错！还可以用在命令行和其他 python 代码中，因为业务逻辑很干净</li>
-</ul>
-<p>好了！现在你已经准备好了！可能教程不是特别『丰富』，但是相信你可以的，毕竟参考链接里可是有完整的教程呢！</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="http://www.hug.rest/" target="_blank" rel="external">包含教程及文档 - hug’s website</a></li>
-<li><a href="https://github.com/timothycrosley/hug" target="_blank" rel="external">Github - timothycrosley/hug</a></li>
-<li><a href="https://github.com/timothycrosley/hug/tree/develop/examples" target="_blank" rel="external">有用的代码样例</a></li>
-<li><a href="http://www.hug.rest/website/learn/" target="_blank" rel="external">必读 - 学习 HUG</a></li>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Storage &amp; Stream</a></li>
 </ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;如果你在用 Python3，如果你需要搭建一个 API 服务，如果时间很紧，那么 HUG 可能就是你的最佳选择！本文将用轻松易懂的实例教程来带大家走入 HUG 的世界。&lt;/p&gt;
+      &lt;p&gt;学习一门技术最好的方式就是博采众长，知行合一。本文我精选的一些存储与流的入门和进阶资源。&lt;/p&gt;
     
     </summary>
     
       <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
     
-      <category term="API" scheme="http://wdxtub.com/tags/API/"/>
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
-      <category term="Python" scheme="http://wdxtub.com/tags/Python/"/>
+      <category term="存储" scheme="http://wdxtub.com/tags/%E5%AD%98%E5%82%A8/"/>
     
-      <category term="RESTful" scheme="http://wdxtub.com/tags/RESTful/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Insanity Workout 指南</title>
-    <link href="http://wdxtub.com/2017/03/08/insanity-workout-guide/"/>
-    <id>http://wdxtub.com/2017/03/08/insanity-workout-guide/</id>
-    <published>2017-03-08T14:03:06.000Z</published>
-    <updated>2017-03-16T00:01:32.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>如果我说，有一个 63 天彻底改变自己体型的机会，但是很苦很累，你要不要试一下？</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.03.16: 更新 Fit Test 成绩(Day15)</li>
-<li>2017.03.08: 完成初稿</li>
-</ul>
-<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>作为一个喝水都胖的人，各种运动减肥的方法我大概都试过，从骑车到跑步到健身房，没有一个特别立竿见影的。直到有一个暑假，我练起了 Insanity，以一周一公斤的速度迅速完成了体型的『优化』，我才意识到这个世界上还真的有特效药，只是这味药，好苦。</p>
-<p>所以 Insanity 到底是啥？这里有一个来自<a href="http://www.iqiyi.com/a_19rrhb30a5.html" target="_blank" rel="external">爱奇艺</a>的介绍：</p>
-<blockquote>
-<p>Insanity 60 Day Total Body Workout(疯狂60天健身)，是一套在美国持续热销的塑身减脂健身操，系著名健身教练Shaun T出品。Insanity共有14集，每集大概40分钟左右，在63天健身计划内无需任何器械，男女均可练习。Insanity 健身操主要通过间歇训练法，并逐步增强运动强度。</p>
-</blockquote>
-<p>其实运动这个事儿，最重要的方法是『坚持』，但是 Insanity 真的能算得上是身体的一场修行，什么马甲线人鱼线，真的有可能在短短两个月时间练出来的。建议有条件的朋友们都试试。</p>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>虽然说是无器械的，但是如果你像我一样在家练习，还是需要一些东西的：</p>
-<ul>
-<li>一块空地，大约四到五平米即可</li>
-<li>一个厚一点的瑜伽垫，一来保护脚，二来不会有太大动静，不给楼下造成困扰</li>
-<li>一瓶水，因为会出大量的汗，要保证水分供应</li>
-</ul>
-<p>最重要的就是决心了，因为从第一天起就会直接进入地狱模式，但其实坚持一周之后，就觉得很爽了。</p>
-<h2 id="身体测试"><a href="#身体测试" class="headerlink" title="身体测试"></a>身体测试</h2><p>身体测试是每隔半个月左右会进行的身体运动能力检测，通过下面这个八个动作来进行横向比较。作为第一天训练的内容，非常有『劝退』的效果。因为一般来说接下来两三天都是肌肉剧痛无比的。遇到这种情况，等疼痛可以忍耐的时候继续训练即可，很快就可以适应这样的运动量了。</p>
-<p><img src="/images/14889856657106.jpg" alt=""></p>
-<p>别忘了每次测试之后记录下数值，这样就能看到自己的进步啦。这里记录我每次的测试数据。</p>
-<p>注：</p>
-<ul>
-<li>T = TEST</li>
-<li>D = DAY</li>
-<li>SK = Switch Kicks</li>
-<li>PJA = Power Jacks</li>
-<li>PK = Power Knees</li>
-<li>PJU = Power Jumps</li>
-<li>GJ = Globe Jumps</li>
-<li>SJ = Suicide Jumps</li>
-<li>PUJ = Push-Up Jacks</li>
-<li>LPO = Low Plank Oblique</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Move</th>
-<th style="text-align:center">T1(D1)</th>
-<th style="text-align:center">T2(D15)</th>
-<th style="text-align:center">T3(DAY36)</th>
-<th style="text-align:center">T4(D50)</th>
-<th style="text-align:center">T5(D63)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"><strong>17.02.28</strong></td>
-<td style="text-align:center"><strong>17.03.16</strong></td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>SK</strong></td>
-<td style="text-align:center">112</td>
-<td style="text-align:center">125</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>PJA</strong></td>
-<td style="text-align:center">59</td>
-<td style="text-align:center">66</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>PK</strong></td>
-<td style="text-align:center">105</td>
-<td style="text-align:center">117</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>PJU</strong></td>
-<td style="text-align:center">35</td>
-<td style="text-align:center">52</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>GJ</strong></td>
-<td style="text-align:center">10</td>
-<td style="text-align:center">12</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>SJ</strong></td>
-<td style="text-align:center">18</td>
-<td style="text-align:center">23</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>PUJ</strong></td>
-<td style="text-align:center">21</td>
-<td style="text-align:center">30</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"><strong>LPO</strong></td>
-<td style="text-align:center">40</td>
-<td style="text-align:center">49</td>
-<td style="text-align:center"></td>
-</tr>
-</tbody>
-</table>
-<h2 id="第一个月"><a href="#第一个月" class="headerlink" title="第一个月"></a>第一个月</h2><p>第一个月的内容主要是适应性训练，核心是 02, 03, 05 三个训练，都是<strong>热身+拉伸+具体训练内容+拉伸</strong>这样的编排，其中只有<strong>具体训练内容</strong>会有变化，其他的都大同小异。大约每个训练 40 分钟，适应之后还是比较轻松的。</p>
-<p><img src="/images/14889848226662.jpg" alt=""></p>
-<h2 id="第二个月"><a href="#第二个月" class="headerlink" title="第二个月"></a>第二个月</h2><p>第二个月就真的是把自己推向极限了，约 60 分钟的训练基本能让人无论如何都死去活来，但是也正是这个时候，才是最塑形的时候。坚持啊！核心课程是 09, 10, 13</p>
-<p><img src="/images/14889848369094.jpg" alt=""></p>
-<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
-<li>注意发力的点，不要过度用脚弓、小腿或大腿，不然很容易造成运动损伤</li>
-<li>量力而行，监控自己的心率，保证在合适的范围内，太低没效果，太高危险</li>
-<li>如果是肌肉疼，可以忍受的情况下可以继续</li>
-<li>如果是筋或者关节疼，一定要等完全舒服了才继续</li>
-<li>饮食也需要对应的调整，清淡，但是要保证营养和蛋白质供应</li>
-<li>保证睡眠时间，每天 7 个小时至少的，熬夜？不存在的</li>
-</ul>
-<p>好了废话不多说，祝大家拥有自己想要的迷人身材。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;如果我说，有一个 63 天彻底改变自己体型的机会，但是很苦很累，你要不要试一下？&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Life" scheme="http://wdxtub.com/categories/Life/"/>
-    
-    
-      <category term="运动" scheme="http://wdxtub.com/tags/%E8%BF%90%E5%8A%A8/"/>
-    
-      <category term="HIIT" scheme="http://wdxtub.com/tags/HIIT/"/>
-    
-      <category term="塑形" scheme="http://wdxtub.com/tags/%E5%A1%91%E5%BD%A2/"/>
+      <category term="流" scheme="http://wdxtub.com/tags/%E6%B5%81/"/>
     
   </entry>
   
   <entry>
-    <title>第三十八周 - 老楼</title>
-    <link href="http://wdxtub.com/2017/03/04/old-building/"/>
-    <id>http://wdxtub.com/2017/03/04/old-building/</id>
-    <published>2017-03-04T14:34:19.000Z</published>
-    <updated>2017-03-04T16:21:01.000Z</updated>
+    <title>资源调度管理资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-resource-management/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-resource-management/</id>
+    <published>2017-03-17T07:10:42.000Z</published>
+    <updated>2017-03-17T07:16:18.000Z</updated>
     
-    <content type="html"><![CDATA[<p>薄雾银霜染琉璃，未名流月光。湖光摇曳漾塘湾，涟漪映竹窗。</p>
+    <content type="html"><![CDATA[<p>学习一门技术最好的方式就是博采众长，知行合一。本文我精选的一些资源调度管理的入门和进阶资源。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.03.04 完成初稿</li>
+<li>2017.03.17: 完成初稿</li>
 </ul>
-<p>在家休息了这么久，终于重新开始工作了。因为离职手续办理需要时间，严格来说我只休息了两周（但实际上是一个多月）。如果说之前工作的大半年让我明白了自己能够做到什么，那么这两周的走走停停则让我更加清楚自己想要什么。</p>
-<p>新大楼，新环境，新同事，新工作，我不在有去年刚走上社会时的不知所措。知道自己在哪里，知道自己要到哪里去，剩下的就是坚持走下去了。这对我来说是一个新的蛰伏期，厚积薄发，在更加紧张刺激的环境中快速成长。</p>
-<p>让我不解的是，刚开始上班的前几天，并没有所谓的『新官上任三把火』，反而状态平平，不算糟糕，但称不上好。经历了几天走路上下班之后，我意识到想要治标治本，可能换个环境。</p>
-<p>之前从公司帮忙租的房间里搬出来是因为离职了要退房，就暂且在同事刚好空出来的房间住着。离新公司还是不近不远的四公里多，地铁一个站但是要走的路很长，所以权衡一下还不如跑步呢。跑步二十多分钟意味着走路要五十多分钟，虽然可以穿过深大，但还有有尘土飞扬的一两公里，让我非常纠结。</p>
-<p>那么，为什么不住到公司附近呢？当初是想把工作和生活分得开一点，但是现在意识到对于我来说，工作和生活并不需要过分取舍，随心而动顺其自然即可。离公司近，每天不但可以省下来两个多小时，还可以告别外卖和快餐，按照自己的喜好和需求自由定制，甚至还可以直接租个一居室，从此拥有自己的窝！</p>
-<p>最初的念头其实来源于我在等电梯时想出来的一段话：</p>
-<p>Everybody can get something done sometime. Somebody can get everything done sometime. Somebody can get something done every time. But nobody can get everything done every time. So choose your type of somebody.</p>
-<p>一旦有这样的念头，就很难按捺住 just do it 的心情。周二入职、周四联系中介、周五看房签约、周六搬进新窝，简直比旋风冲锋龙卷风还要简单粗暴。一居室，自如（大家有租房需求可以找我推荐啊哈哈），离公司两百米。我是第一个房客，一天去三四五个超市收八九十个包裹，总算有了自己的锅碗瓢盆，像个家的样子了。</p>
-<p>这些年一直在以游子的身心漂泊，从未想到自己对『定』下来有如此的渴望。我才意识到为什么我大多数创造性的工作都是在广州家中完成的，对我来说，只有心定，反而才有创造力。在纷繁变化的乱世中，光是保持平衡就用掉了太多的精力，灵感可能还来不及敲我的门，就被吓跑了。</p>
-<p>唯一的例外是在匹兹堡的日子，虽然我住在帐篷里，大部分工作都是在用纸盒和小桌子搭成的『大桌子』上完成的，但去超市买菜，看路上花开花落，在家里做饭理发，日子很简单，却很有生活的气息。所以我想把『匹兹堡模式』搬到深圳来，自己买菜做饭，重新找回生活的主动权。我需要稳定规律的生活节奏，用一句话说就是：</p>
-<p>Life is short. Time is hot. So I need dynamic programming.</p>
-<p>接下来说说工作好了，在创业公司的感觉正如我之前预想得那样，很适合我。一切皆有可能，路和脚步都是自己的，或者说世上本没有路，通向远方的，都可以是路。好处在于没有什么历史包袱，我可以成为任何我想要成为的角色。坏处在于对于不太习惯自己找事儿做的人来说，可能这种状况就意味着不知所措了。记得之前 David 教授（注：我在 CMU 的英语老师）跟我提过，大意是好的公司是不会招那些只会执行命令的人的（当然这里不要咬文嚼字，理解意思为主），因为如果每个人都是这样，那要找多少管理者，这样就是不健康的。现在想想，还真的是这个理儿。相信在住处安定之后，我可以尽情释放自己的技能了（请打开『无限火力』模式）。</p>
-<p>生活上，最近为了完成月底的体重达标计划，重新开始跳 Insanity 系列了，很辛苦，但是能够感觉自己的身体在被调动起来，这样就值回票价了。另外我意识到了自己存在的一个非常严重的问题，就是由于长时间对自己的高标准严要求，有的时候对于身边的朋友反而也会有很高的要求，一旦达不到，便很容易出口伤人。但奇怪的是，我对陌生人更多时候是带着更多宽容的。这样不好，即使他们是关心我爱护我的人，我更应该在他们身上多花时间，多一些耐心与宽容，相信以后会越来越好，而不是遇到没有达到自己标准的，就随意伤害别人。</p>
-<p>接下来希望开个新栏目，每周尝试做一个新菜，这样一年下来我就可以做两大桌菜啦。</p>
-<p>南窗晚风送白驹，时日吹过隙。过眼云烟挽别离，回忆追莫及。</p>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/09/08/nginx-guide/">Nginx 指南</a> </li>
+</ul>
+<p>YANR, Mesos etc</p>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Resource Management</a></li>
+</ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;薄雾银霜染琉璃，未名流月光。湖光摇曳漾塘湾，涟漪映竹窗。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
-    
-    
-      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
-    
-      <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
-    
-      <category term="变化" scheme="http://wdxtub.com/tags/%E5%8F%98%E5%8C%96/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>直面世界，面对疾风</title>
-    <link href="http://wdxtub.com/2017/02/27/face-world-face-wind/"/>
-    <id>http://wdxtub.com/2017/02/27/face-world-face-wind/</id>
-    <published>2017-02-27T09:51:26.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>休息够了，出山。</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.02.27: 完成初稿</li>
-<li>2017.02.26: 完成大纲</li>
-</ul>
-<p>逃离沉重的旧世界容易，但构建新的理想国很难。当意识到自己与世界的差距，所谓潇洒和快意恩仇，都带有些隔江犹唱的味道。要想真正做成点微小的工作，只有实干一条路。可是这条路并不好走，有的人丢弃了勇气，成了懦夫；有的人丧失了理智，成了莽夫。真正成为大丈夫的，必然是经历过轰轰烈烈的启蒙运动后，脱离了自己的不成熟状态，学会去运用自己的理智和勇气。</p>
-<p>因为我们习惯了地面上的视角，所以才更向往天空，总是幻想着天空中那无拘无束的自由。可是看得到的是自由，看不到的是高空中暗藏汹涌的气流。今天在天台上飞无人机的时候，真正代入无人机的视角，才意识到什么是直面世界。也许直面世界，更多的是直面自己的过去、现在与将来，看到自己的局限，以平静、客观的角度正视周围一切。</p>
-<p><img src="/images/14882094975176.jpg" alt=""></p>
-<p><strong>我要勇敢试错。</strong></p>
-<p>首先得去『试』，才有机会『错』。试的前提是多看多听多学多表达多交流多思考，不必担心一错再错，因为对错本身不重要，重要的是去判断。错了，没问题，诚实地进行自省与纠错，找到错的地方和为什么会错的原因，进而改进自己判断的过程。这样一来错误的次数自然会减少，每次错的成本也会越来越低。</p>
-<p><strong>我要解决问题。</strong></p>
-<p>因为时间是最稀缺的资产，所以要在精准理解用户需求的基础上，去研究最重要的问题，并在正确的道路上持续改正持续积累，最终解决别人解决不了的问题。在探索到道路上思维活跃、勇于折腾、知行合一，用智力而不是蛮力。最重要的，<strong>永远不要去想着走捷径</strong>，也不要依赖运气做事情。</p>
-<p>前几天看到一句话，觉得特别好：</p>
-<blockquote>
-<p>我们微小的努力与世界的美好之间是有联系的。</p>
-</blockquote>
-<p>有些担子，自己不担着，是永远感受不到梦想的重量的。但当我意识到真的能凭借自己的本领做点什么的时候，就没有理由再躲在角落了。如果这个世界缺的是脚踏实地的傻瓜，那我就来做这样的傻瓜。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;休息够了，出山。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Thinking" scheme="http://wdxtub.com/categories/Thinking/"/>
-    
-    
-      <category term="思考" scheme="http://wdxtub.com/tags/%E6%80%9D%E8%80%83/"/>
-    
-      <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
-    
-      <category term="方向" scheme="http://wdxtub.com/tags/%E6%96%B9%E5%90%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【通天塔之团队建设】壹 团队文化指南</title>
-    <link href="http://wdxtub.com/2017/02/26/babel-team-culture/"/>
-    <id>http://wdxtub.com/2017/02/26/babel-team-culture/</id>
-    <published>2017-02-26T01:46:38.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>大家走到一起组成一个团队，一定是有共同愿景，想要搞点事情的。如果说『把事情做好』是团队的终极目标，那么团队文化就是最重要的『催化剂』了。本文是我的一些观察和思考，跟大家分享一下。</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.02.26: 完成初稿</li>
-</ul>
-<p>在大公司工作了一段时间之后，对于团队和管理也有了一些自己的想法。但想法终究是想法，真正开始着手去做的时候才意识到理论和真正落地之间就是无数的细节。对于小团队来说，因为资源有限，危机感是一直存在的。但『生于忧患，死于安乐』，面对各种困难，更需要好的团队文化来激发大家的主观能动性。</p>
-<p>话虽这么说，公司内部因为各种历史原因继承下来的惯性其实是很难扭转的，而这个惯性很多时候就是核心团队的气质所决定的。很多所谓的 KPI 项目和好大喜功其实不过是某种意义上的上行下效，对我来说，真的很难忍受，我始终觉得年轻人还是要去努力做一些有价值有意义的事情，而不是早早放弃年少的梦想随波逐流。</p>
-<p>于是在我自己参与到团队搭建的过程中时，第一个想到的便是团队文化，这个事儿不做好，就像地基没有夯实一样，注定是盖不成大厦的。</p>
-<p>所谓互联网精神，我觉得是对那些为传统生产制造量身定做并积累下来的规章制度的再思考，以适应新的发展阶段。所谓灵活和死板都是相对的，正因如此，一刀切，要不得。</p>
-<h2 id="三省吾身"><a href="#三省吾身" class="headerlink" title="三省吾身"></a>三省吾身</h2><p>链家创始人左晖在演讲中表现出的思考深度是我非常佩服的，他给自己和团队提出的两个问题我觉得非常有价值，值得团队中的每个人去思考：</p>
-<ol>
-<li>我们存在的意义是什么，到底给社会创造了什么价值，有我们和没有我们，有没有什么区别？</li>
-<li>我们到底是在什么场景下向什么人提供了什么价值？</li>
-</ol>
-<p>我们知道社会在发展的过程中肯定会出现各种各样的问题，但与此同时每个人和每个团队的力量都是有限的，一定要把注意力和资源集中于一点，才能真正把事情做好，当做好的事情足够多之后，才可能以点带面，一开始就幻想拯救世界是不现实的。</p>
-<p>夜修我们静下心来，先把基础的必须要做的事情做好，就已经很足够了。大家都想做高大上，但所谓高大上注定只是很小的一部分，更多的是承载这些高大上的基础。</p>
-<p>团队的发展实际上就是不断从『搞清楚自己在哪』到『要去哪儿』的循环，在这样螺旋上升的基础上，一定要反复思考。而在这个过程中，管理的落地、组织、绩效和 IT 支持都是必不可少的，这四项少了任何一个，都可能导致瞬间崩盘。</p>
-<p>不要因为走得太久而忘了自己为什么出发。</p>
-<h2 id="脚踏实地"><a href="#脚踏实地" class="headerlink" title="脚踏实地"></a>脚踏实地</h2><p>脚踏实地包括很多方面，一个很重要的方面就是团队的契约精神：不忽悠不画饼，保持沟通诚心诚意，聪明且正直地把事情做好。</p>
-<p>契约精神是基本的底线，但随着时间的推移最终会升华为一种低调务实的集体责任感，这样的团队就很有灵性。至于高帽子大旗子口号鸡血大饼忽悠什么的，不存在的。低调务实的团队文化本身就有很强的自我修复和改革能力，也可以有效筛选掉那些只会忽悠却没办法把事情做好的人。</p>
-<p>这样带来的另一个好处就是团队内部的关系非常简单，无论是个性非常独立的还是很喜欢打成一片的都可以轻松融入团队，这本身就是一种『做自己』。试想，自己都无法『成就自己』，又谈何『成就他人』呢？</p>
-<p>脚踏实地，走好每一步，千万不要想着走什么捷径，不存在的。</p>
-<p>在团队中边界是很重要的，第一方面是工作中要明确各人的职责，第二方面是明确上班与下班的范围，第三方面是划清不能做的事情的底线。</p>
-<p>明确职责是为了不扯皮推卸责任，大家各自独当一面把事情做好，避免公地困局。明确上下班的范围找回自己的生活，朋友圈尽是公司的公关软文，下班了反而开始讨论工作的事情，这都是非常不健康的状态。划清底线是维护团队文化的防火墙，一旦触犯，处罚决不手软。</p>
-<h2 id="实事求是"><a href="#实事求是" class="headerlink" title="实事求是"></a>实事求是</h2><p>先讲一个小故事，我们家的各类柜子的门都不是滑动的，而是需要『打开』的。门和柜子是用铰链连接的，铰链本身是有使用寿命的。用得久了，可能某一次开门的时候，铰链就彻底坏掉，那么开门的这个人就要负责把旧的拆下来再换上新的。那么问题来了，这个铰链真的是因为最后一次开门才坏的吗？</p>
-<p>既然是做事情，就肯定会出错，那么出错就一定要找人背锅吗？不一定，找到背锅的人看起来十分公平，但其实是掩耳盗铃的做法。事情没做好，有多大的可能是只某个人的问题呢，我想大部分时候这说明整个系统的机制和做事情的方法在不少环节都有纰漏。有人背锅就说明有人成功甩锅，甩出去的锅因为问题的根源不在背锅的人身上，类似的事情肯定会再次发生，你说这是不是掩耳盗铃。</p>
-<p>更可怕的是，柜子上的铰链永远会定时坏掉，而团队里的每个人都可能成为背锅侠，于是大家会因为怕背锅而少做事，或者让别人来做事，就好像不去开门，或者让别人帮忙开门，就是为了不要怪罪到自己头上。这种做多错多的机制，只能是让大家都开始忽悠，都不干活。</p>
-<p>正确的做法是什么，分析现象总结原因，从流程方法和做事情的思路上进行调整和解决，这才是治标治本的方法。事情没做好，先想办法把事情做好。至于没把事情做好的人是不是不称职，那需要具体问题具体分析，不能一概而论。更何况没把事情做好的人已经很自责难受了（如果不是这样的，就不该招入团队），继续让别人心塞，也没有多少意义嘛。</p>
-<h2 id="马踏飞燕"><a href="#马踏飞燕" class="headerlink" title="马踏飞燕"></a>马踏飞燕</h2><p>效率是团队的关键，第一味毒药是把效率当成了快速完成 KPI。KPI 在我看来是工作目标的劣化，很容易把过程导向的事情弄成结果导向。凡事都以成败论英雄，只会让大家进入『争相走捷径或歪门邪道』的恶性循环。</p>
-<p>第二味毒药是把加班当做一件值得骄傲的事情，把做事情变得好像『没有苦劳还有疲劳』般的境地。你说这是团队老大不靠谱，还是团队成员效率太低呢？扯不清楚吧。当然有些突发事件和临时的赶工是在所难免的，但是把加班当常态的团队，我建议就不要待了。</p>
-<p>第三味毒药是大会接小会，看起来大会可以一次同步所有的进度，但是就一个项目而言，不同的人关注的部分是不一样的，但公共的部分绝对是足以在邮件或者文档中说清楚的，这就意味着大量的时间浪费。即使是分批同步，因为每次重复也就是强迫大家参与和思考，其实效果会更好。</p>
-<p>我认为效率地提升有且只有一种方法，就是用正确的方法去做该做的事情，不是不允许试错，不是不允许四处张望，但是像无头苍蝇一样的团队，又能走多远呢？依靠运气做事情是不可持续的，就好比赌博一样，什么时候下注，理论上一定是要通过数学期望来决定的。凭感觉不是不行，感觉对了当然好，感觉错了呢？更可怕的是自己都不知道自己感觉是对是错，这就还不如谋定而后动。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;大家走到一起组成一个团队，一定是有共同愿景，想要搞点事情的。如果说『把事情做好』是团队的终极目标，那么团队文化就是最重要的『催化剂』了。本文是我的一些观察和思考，跟大家分享一下。&lt;/p&gt;
+      &lt;p&gt;学习一门技术最好的方式就是博采众长，知行合一。本文我精选的一些资源调度管理的入门和进阶资源。&lt;/p&gt;
     
     </summary>
     
       <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
     
-      <category term="团队" scheme="http://wdxtub.com/tags/%E5%9B%A2%E9%98%9F/"/>
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
-      <category term="文化" scheme="http://wdxtub.com/tags/%E6%96%87%E5%8C%96/"/>
+      <category term="资源" scheme="http://wdxtub.com/tags/%E8%B5%84%E6%BA%90/"/>
     
-  </entry>
-  
-  <entry>
-    <title>第三十七周 - 时过境迁</title>
-    <link href="http://wdxtub.com/2017/02/24/time-pass-env-change/"/>
-    <id>http://wdxtub.com/2017/02/24/time-pass-env-change/</id>
-    <published>2017-02-24T07:51:28.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
+      <category term="调度" scheme="http://wdxtub.com/tags/%E8%B0%83%E5%BA%A6/"/>
     
-    <content type="html"><![CDATA[<p>日出为了什么无力再放晴，你为了什么莽撞前行。你知道时间没办法暂停，别轻易把美好丢在曾经。</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.02.24: 完成初稿</li>
-</ul>
-<p>突如其来的冷空气把春天的气息又赶回了记忆中，就在这样的寒风中我不得不让接受这样的现实：赋闲在家的悠然时光就要结束了。在家的日子当然不如日复一日两点一线的工作那么高效，但是无与伦比的安全感和温暖的氛围，才能让我真正放下心来去做那些需要极高自由度的活 —— 比如创作。</p>
-<p>说到创作，经历过才会意识到 1% 的灵感和 99% 的汗水的关系。正如爱迪生所说，那百分之一的灵感甚至比百分之九十九的汗水还要重要，因为如果不是那 1% 的灵感，99% 的汗水便并没有任何不同。但话又说回来，即使灵感再妙，少了踏踏实实的汗水，便也一无是处，所以要把事情做得与众不同，要跳跃，也要苦干。好消息是，完成初稿之后的某一天忽然开窍，意识到了可以做一些前人没有尝试过的方法，这里卖个关子，之后会专门写文章细说的。</p>
-<p>可能是因为天冷，家里服役近十年的电视也退出了战斗序列，果断买了一台更大更薄的，终于能喊一句『索尼大法好』，我要守护『姨夫的微笑』。教会了爸爸妈妈如何使用电视盒子，从此不用守着电脑屏幕看电视剧啦，看到家人开心我就很舒服。</p>
-<p>作为『无业游民』，最大的优势就是时间灵活，和高中同学搭上线之后，认识了一群践行公益的小伙伴，一起爬了山，飞了无人机，也了解了生活和工作的另一种可能。以前我觉得，把事情做好最简单粗暴的评判标准就是让人看第一眼就 WOW 出来。但是跟公益小伙伴接触了之后，发现其实还有很多事情并不是一句 WOW 可以概括的。正如快手的故事那样，多的是我不知道的事，但与此同时，能用我微薄之力做到的事情也很多。</p>
-<p>也许这就是一个技术人的尊严与态度，因为机器的存在，一个人的力量可以被放大成千上万倍，好的不好的都是如此。在这样的时代，我们更应该去坚守那些好的，所以我一直坚信，信息、知识和教育应当更开放更平等。我也会一直努力让更多人听到看到我的努力，也希望更多的小伙伴能参与进来。</p>
-<p>昨天 Github 被墙，我也被迫启动了国内/国外两套部署方案的预案，借此机会清理了部分陈旧的日志和无用的文件，现在博客访问起来应该更加迅速快捷了，而且随着 Beta 版测试的深入（今天是发布之后的第 86 天），也逐渐形成了一套比较完整的写作、组织和运营的规则，会在结束 Beta 测试的时候一并分享给大家。</p>
-<p>这些天闹得沸沸扬扬的两件事一是华为变相裁员，二就是业内再因股权纠纷而沸沸扬扬。说白了其实就是一个道理，人在江湖，虽然很多时候可能身不由己，但也要尽量保护自己。一直在舒适区待着实际上就是不断在贬值，而勇敢接受挑战才是不断攀登的正道。多少梦想是拖着拖着拖没的，而多少成功是干着干着干出来的。不过还是想呼吁一句，如果大家都更加诚信更加相互信任，少了很多内耗和信任成本，其实对于整个社会来说都是很好的事情。</p>
-<p>下周就要重新启程了，有些紧张，有些期待，希望能像家人一直祝愿我的那样，在广阔天地里大有作为吧。</p>
-<p>就算苍老是少年命中注定，还有人继续经历年轻。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;日出为了什么无力再放晴，你为了什么莽撞前行。你知道时间没办法暂停，别轻易把美好丢在曾经。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
-    
-    
-      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
-    
-      <category term="闲散" scheme="http://wdxtub.com/tags/%E9%97%B2%E6%95%A3/"/>
+      <category term="管理" scheme="http://wdxtub.com/tags/%E7%AE%A1%E7%90%86/"/>
     
   </entry>
   
   <entry>
-    <title>【西线无战事】读书笔记</title>
-    <link href="http://wdxtub.com/2017/02/23/no-war-in-westline-clip/"/>
-    <id>http://wdxtub.com/2017/02/23/no-war-in-westline-clip/</id>
-    <published>2017-02-23T01:34:42.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
+    <title>数据处理引擎资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-process-engine/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-process-engine/</id>
+    <published>2017-03-17T07:10:25.000Z</published>
+    <updated>2017-03-17T07:20:13.000Z</updated>
     
-    <content type="html"><![CDATA[<p>岁月轮回、时光荏冉，可对于我它又能带走些什么呢？</p>
+    <content type="html"><![CDATA[<p>学习一门技术最好的方式就是博采众长，知行合一。本文我精选的一些数据处理引擎的入门和进阶资源。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.02.23: 完成初稿</li>
+<li>2017.03.17: 完成初稿</li>
 </ul>
-<p>西线无战事</p>
-<ul>
-<li>西线无战事 是他在一九二七年下半年利用业余晚上时间花六个星期完成的，小说一问世便引起了许多国家的轰动。而雷马克也也从此成为一名世界闻名的传奇作家。但到一九三〇年以后，纳粹分子便开始对他进行迫害。雷马克便离开德国，一九四七年入美国籍，一九四五年移居瑞士。一九七。年九月二十五日病逝于瑞士洛迦诺，终年七十二岁。</li>
-<li>雷马克一生共创作十一部长篇小说包括《归来》、《凯旋门》、《生命的火星》等等，而《西线无战事》既是他的成名作同样也是他的代表作。和其他作品一样，《西线无战事》在很大程度上是一部自传小说。作品主人公保罗·薄依慕和同班同学阿尔贝特·克络普、米罗、罗尔在校长坎通列克的沙文主义煽动下报名参加了志愿兵。在部队，他们又跟锁匠恰德、泥煤工海依、农民德特林以及斯坦尼斯劳斯·克托辛斯基结成好友。小说就写这八个普通士兵在西线战壕的生活和感受。全书十二章，可独立成篇又可综合成文。大体上可分三个部分和一段插曲，第一部分（第一章至第六章）叙述士兵前线及后方生活。第二部分（第七章，全书最长一章）写他们邂逅法国姑娘，对战后爱的渴望以及休假时的种种隔阖。（第八章）接着是一段插曲，写保罗看守俄国战俘时的各种联想。第三部分（第九章至十二章）依次交待了几个主要人物的结局。最后和平来临时主人公薄依慕也倒下死去了。 　　全书着重描绘了战争的残酷和恐怖，作者笔下既没有堂皇的军容，也没有壮丽的场面，有的只是毒雾硝烟，断肢残骸，以及战壕中的血泊，墙壁上的脑浆，树枝间的肠脏。让人读了如临其境，却充满了对战争的恐惧与憎恶。 　　总的说来该书气势恢弘、风格鲜明、构思井然，有其独到的艺术价值。</li>
-<li>本书既不是对战争的控诉，也不是内心的自白，仅仅想以此告知后人曾经有那么一些人，他们在罪恶的硝烟中苟延残喘着，却最终还是静静地倒下了。</li>
-<li>而我们这些才十八岁的毛头小伙，本把他们的观念知识看成是真心信赖的东西，看成是我们日趋成熟走向工作、生活、职责的进步的指导者，贝姆的死使那些泡沫最终破灭了。我们认识到我们这些人比起他们来更为正直，而他们只能去不停地空洞地叫喊和发出虚伪圆滑的声音。在硝烟炮火中他们教育的世界观彻底崩溃了。 　　我们在不停地一天天地向死亡靠近，而他们却仍然在写，在说。我们对死的恐惧与日俱增，尽管他们照旧在说，国家是最重要的。我们畏惧死亡，但我们却更忠于我们的祖国，从来不会背叛她，不管她。在英勇作战中我们学会观察认识问题，认清了他们的所指的世界的虚无，但对孤独的恐惧也日益强烈了。</li>
-<li>十个星期的军事训练是对经历了十年学生时代教育的重新塑造。我们明白了一颗明亮的纽扣要超过四卷叔本华的意义。起先是惊奇和懊恼，或无所谓。之后我们就渐渐懂得了在这里靴子、制度，操练的作用永远胜过精神主义、思想和自由。三个星期过去后，我们单纯的愿望和热情就被这些所抹杀掉了，而且最终便习以为常了。一个邮递员的感召力远远超出了父母、老师还有柏拉图和歌德的权威。我们渐渐认清了老师们口中那种对于祖国的传统观念在这里已成了对人性的侮辱和扼制，甚至还不如对待一个卑微的奴仆。敬礼、立正、举枪致意、向左转、靠脚并腿、辱骂再连同各种折磨被堂而皇之称为英雄主义训练，如同驯马一样。可是我们已经渐渐地习惯了。而且也认为有些事是理所应当如此的。在这方面，士兵们却是有着一个优秀的鼻子呀。</li>
-<li>“最主要的还不如此。举个例子，一只狗，天天训练它吃土豆，但你若再放一块肉，它还照样扑向那块肉，这都是天生的。就算给一个普通人，丁点权力，他也一样充分利用的。人首先是头牲畜，和动物区别在于他能给自己包装上一层面具，如抹了黄油的面包，变得道貌岸然一点而已。部队也同样：总要有人要利用权力，只是对权力的操纵太充分了了、兵受军士欺侮，军士被少尉欺侮，而一个上尉足可以把一个中尉折磨成疯子。久而久之彼此习以为常了。比方说我们经过痛苦的训练准备带回来了，可偏又要再唱歌，这也罢了，扛着枪有气无力地唱歌也还能忘了疲劳利于走路。但刚一会儿，上面又让带回去再训练一个钟头，之后回来时还要唱歌。这样无非是连长的权力欲在作梗。如此上面非但不会埋怨反而会更看重他了。好多事情也是这样的干篇一律。你想想在和平年代，哪有什么事情能让人随便来而不被约束呢？惟独军营！满脑子都是这些玩意！老百姓本无所谓的事情，但在他们那里却想的最多。” 　　“是啊，这不就是他们说的纪律吗？”克络普不屑地说。</li>
-<li>每一张面孔都在变化着。并不是惨白，也不是通红；不是紧张也非松懈，但它们确实变了样子。血液像潮水一样涌流沟通了各种感觉。是真的，只有前线才能有这样的沟通。就在第一批炮弹急驰着，撕开天幕的一瞬，我们的热血和双手，还有睁大的双眼都充满了期盼。预防警觉和本能的敏捷，浑身器官也都高度地戒备起来，每一根神经都绷得紧紧的。</li>
-<li>我记起医院所见的可怕一幕，中毒伤员不停地咳嗽着把烧伤的肺一块块吐出来，连续几天都是如此。因此开始几分钟，防毒面具是否封闭严密很可能决定着人的生死。 　　我轻轻地把嘴放到活瓣儿上呼吸。毒气在地面上舒展着，会集到每一个坑洞里。它懒懒地蜿蜒着像一条正游动着的巨大的水蛇，很快便潜到我们的弹坑里悠闲地徘徊着。我示意克托到上面去，因为高处要比这儿的毒气稀得多。可紧接着一次凶猛的炮击阻止了我们的行为。而这一次却更像是大地在愤怒地发泄。 　　随着“嘣”的一声响一个黑乎乎的东西从半空径直朝我们扑将过来。恰好就落到我们身旁：竟然是一口倒扣过来的棺材。</li>
-<li>我们已不习惯一周一周地计算时间了，刚来时还是冰封的冬日，炮弹炸起的弹片和冻土四处飞射都很危险，转眼间，却已草木嫩绿了。我们却在战场和营棚之间来回地调换生活着。我们对于战争和死亡之间的关系已经习以为常了。就像癌症和结核，重感冒和拉痢疾一样，只是在战场上死亡来的更快、更残酷、手段更多一些罢了。 　　我们大脑就像一块可以随意改变形状的泥团。平时它平平整整地很完好，一打仗上了战场它便被轰炸的光怪陆离了。 　　过去所知道的很多东西都毫无用处，差不多都淡忘了。所有的人都是如此。几乎每个人都没什么依据可以区别，学识、修养并没有什么不同了。这些东西有利的一面可以因此而占据一些环境；但也有不利的因素，会自然不自然地束缚人的思想。打个比方就如过去是每个省自己铸造发行硬币，后来统一了模式，把它们都溶化了。那就只能验明金属才能发现与过去的不同。我们也同样，先是个兵，再才是一个个具有温和而怪异等特性独立的人。</li>
-<li>敌军的大炮虽密集但我们却看不见，步兵也和我们一样是些活生生的人。但坦克却是能到处宛转驰骋的机器，它们若无其事地从弹坑里滚进爬出，一路锐不可挡，喷烟吐火，到处毁灭。它们身披铁甲，刀枪不入，像一支铁做的凶残饿兽。我们惊慌、恐惧、无可奈何，我们显得微不足道。面对这些庞然大物，我们的四肢不过是几根稻草，而手榴弹也变成了一支火柴罢了。 　　炮火，毒气硝烟和坦克群——粉碎，腐烂，死亡。 　　痢疾，流感，伤寒——喘病，发烧，死亡。 　　战壕，医院，奔向坟场——没有别的可能性。</li>
-<li>很快又逝去几个月的时；一九一八年的夏日血流成河，暴尸万里。日子一天天地像是身披蓝衣的天使静静地呆立在那个灾难深重的圆环上面。大家都明白，我们最终失败了。我们只是不停地溃退，至于那件事，都不愿提及，当我们发起这次攻势以后已经软弱无力了，兵员和弹药的严重不足注定我们不可能再发动什么进攻了。 　　但这一切都无法阻止战争的延续，无法阻止死亡的发生。 　　我们永远忘不了一九一八年那个残酷的夏天。我们迫切地渴望过去从未体验过的对生活的要求；红簇簇的罂粟环抱着营房周围，甲虫到处爬动，房间里阴森潮湿，傍晚时树木黑漆漆一片幽暗晦色。星星狡黠地眨动，下面细流哗哗地流淌；静静地酣睡和缤纷的梦乡；一切都如此，人生啊！ 　　我永远不能忘记一九一八年的那个夏日。我们对重返前线显得那么哀伤和悲凉，无言地抗争默默地承受。我们的心绪已被不时流传的战争与和平的呼声弄得烦乱如麻，竟如此地厌恶重返前线。 　　我永远都不会忘记一九一八年的那个夏日，暴力、血腥，在炮火的轰击中变得更加明显，令人心寒肉跳。脸色苍白惊恐地深埋在污泥之中。脑子里只有一个念头闪过：不会发生！现在不会发生！一切都要结束了！ 　　我永远都不会忘却一九一八年的那个夏天。战场上横尸遍野，硝烟弥散。暖人的轻风徐徐吹过。心情极度焦虑，期盼，等待，失落，对死亡的更加恐惧纷纷困扰。内心一直在大声置疑：为什么？他们还要往下打？为什么那么多人都说战争就要结束了？ 　　上空飞机成群结队的自由飞翔着。它们常常像苍鹰捕捉野兔一样追击一个仓惶逃跑的人。他们用五架以上英、美飞机围歼一架德国飞机，用五个身强力壮的士兵攻击一个精疲力竭的德国兵。我们仅有一条军粮面包，他们却享用五十听罐头肉。我们都是勇猛顽强、富有经验的优秀士兵，怕的并不是枪炮的攻击，我们是被敌人的气势给冲垮了。 　　好几个星期阴雨连绵。天空灰雾迷蒙，地上污泥遍野，死亡步步紧追。只要一出屋子外套和衣服就会被湿个透心。浑身雨水浸透地在前线窥视对方。好些日子，身上都一直湿淋淋的。有穿长统靴的为了减少泥沙流入就用沙袋缠在上面。雨水不停地流淌着、飘洒着锈蚀了枪筒。把军服粘在了一处。大地便成了一块烂水泥沟，黄澄澄地淤池和蜿蜒流动的血水在上面分割成乱七八糟的东西。它渐渐地吞没了那些已死去的，受伤的和幸存的人。 　　风雨交加，弹片夹杂在雨点中在阴暗的空气中和黄色的大地上到处飞溅。受伤的人在混乱中凄楚、尖锐地叫喊着。那些伤痕累累的躯体一到晚上便呻吟着向夜幕哭泣。</li>
-<li>秋风萧瑟。老兵已经寥寥无几了。我们一块七个人就剩下我自己了。 　　和平与停战已成为大家最热衷的话题。大家众目期盼着，惟独这点希望还给他们以生存的力量，都已经经不起失落的打击了。要是没有什么大的事件，这种众心所向的愿望是不会被破灭的。失去了和平，就很可能爆发内乱。 　　我中了点毒气，允许休息十四天。我便成天在一个小花园里沐浴着柔和的阳光。就要和平了，我也开始深信这一传闻。我们很快就能回家了。 　　我一直只想着这些，不愿意在思考其他。我的感情的潮水以巨大的能量让我为之遐想，为之等待。那里包含着对生命的珍惜，对家庭故乡的渴望，和对亲人们的思念之情。我终于开始沉浸在被解放的愉悦中，但却没有一个明确的目的。 　　一九一六年要是我回家，那么我会把所受的痛苦和磨练成的各种力量浓集成一场革命。但现在我们便只有疲倦、绝望、悲观、和无助了。我们脚下已经无路可去了。</li>
-<li>谁都无法理解我们此刻的心情。那些年纪大一点的，虽然和我们一块呆了这么多年，但他们很快会因工作、家庭把战争淡忘。而我们之后的年轻人，像我们那时一样，与我们无法沟通，会把我们置之不理。我们自己都觉得自己呆着是很索然无味的。我们会因年龄增长而去适应，去顺服，但我们终将有多半的人茫然若失在岁月的推移中毁灭。 　　但我的所有想像在我又站在沙沙作响的白杨树下时便成为过眼烟云了。我们久久地想那些温柔，那些朦朦胧胧、扑朔迷离的东西。五彩缤纷的世界，以及和女人们亲切偎依的感觉都在脑子里幻灭了，是不能的；但也并没有在强烈的炮火和怅然绝望或军官妓院中变得无影无踪了。 　　金黄色的树叶在秋风中闪放着亮丽夺目的色泽，通红的山楂的果子在一簇簇绿叶非常饱满地挺拔着。一条宽敞而笔直地大路光亮洁白地向远处地平的尽头延伸着。营房食堂像一窝蜂似的都在喋喋不休地争吵着种种有关和平的传闻。</li>
-<li>我站起来。 　　心情异常的平静。是啊，岁月轮回、时光荏冉，可对于我它又能带走些什么呢？孤寂、绝望已经使我非常坦然地面对着眼前的一切。脑海中所浮现起这些年来所饱尝的各种辛酸与痛苦，屈辱与愤怒，依旧历历在目。我并不在乎我是否已经把它征服，但只要它还存在，便总会有一条新的道路，也不管我内心里的那“真正的我”会想些什么。 　　他阵亡了，在一九一八年的十月。那里，整整一天都出奇的安静与沉寂。也就在当日的战报新闻上，仅仅用一句话做了概述：西线无战事。 　　他死时轻轻地向前扑倒，静静地躺着。像是沉睡在梦乡中一样。当人们把他翻过来时，他的表情那么从容、那么安详、那么惬意，没有流露出丝毫的痛苦与悲伤。毕竟从此一切也都结束了。</li>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/04/11/spark-guide/">Spark 指南</a></li>
+<li><a href="http://wdxtub.com/2016/03/20/hadoop-guide/">Hadoop 指南</a></li>
+<li><a href="http://wdxtub.com/2016/04/13/graphlab-guide/">GraphLab</a></li>
+<li><a href="http://wdxtub.com/2016/03/20/cuda-note/">CUDA 简明指南</a></li>
+<li><a href="http://wdxtub.com/2016/03/20/openmp-guide/">OpenMP 入门指南</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Data Process Engine</a></li>
 </ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;岁月轮回、时光荏冉，可对于我它又能带走些什么呢？&lt;/p&gt;
+      &lt;p&gt;学习一门技术最好的方式就是博采众长，知行合一。本文我精选的一些数据处理引擎的入门和进阶资源。&lt;/p&gt;
     
     </summary>
     
-      <category term="Reading" scheme="http://wdxtub.com/categories/Reading/"/>
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
     
-      <category term="战争" scheme="http://wdxtub.com/tags/%E6%88%98%E4%BA%89/"/>
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
-      <category term="书摘" scheme="http://wdxtub.com/tags/%E4%B9%A6%E6%91%98/"/>
+      <category term="数据处理" scheme="http://wdxtub.com/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/"/>
+    
+      <category term="引擎" scheme="http://wdxtub.com/tags/%E5%BC%95%E6%93%8E/"/>
     
   </entry>
   
   <entry>
-    <title>【未来简史】读书笔记</title>
-    <link href="http://wdxtub.com/2017/02/23/history-of-future-clip/"/>
-    <id>http://wdxtub.com/2017/02/23/history-of-future-clip/</id>
-    <published>2017-02-23T01:31:49.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
+    <title>Latex 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-latex/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-latex/</id>
+    <published>2017-03-17T06:50:39.000Z</published>
+    <updated>2017-03-17T06:53:50.000Z</updated>
     
-    <content type="html"><![CDATA[<p>幸福感的核心是你的收获和期望的差值，而不是收获的绝对值</p>
+    <content type="html"><![CDATA[<p>学习一个工具最好的方式就是博采众长，知行合一。本文我精选的一些 Latex 入门和进阶资源。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.02.23: 完成初稿</li>
+<li>2017.03.17: 完成初稿</li>
 </ul>
-<p>未来简史</p>
-<ul>
-<li>幸福感是一种大脑的一系列化学反应，无论外界的刺激如何提高，这种化学反应带给人类的体验总是有天花板的，而且很早就已经接近了上限。所以人类进入文明社会以来，无论科技如何发达，物质如何丰富，幸福感并没有提高多少。</li>
-<li>幸福感的核心是你的收获和期望的差值，而不是收获的绝对值；所以，我们要向内心寻找幸福，改变认知模型，降低期望值都有助于幸福感的提升。</li>
-<li>但是，事物都有两面性。人类的进步也得益于先辈们的冒险追求和持续探索，而内在的驱动力就是欲望、好奇心和不满足。如果全人类都降低期望值，很容易获得满足感，从而停止外在的追求、不再冒险，那么人类社会的进步速度也会大大降低。</li>
-<li>算法指的是进行计算、解决问题、做出决策的一套有条理的步骤。算法并不是单指某一次运算，而是运算时反复采用的方法。生物行为也是算法控制的，生物算法是通过感觉、情感和思想来运作的。</li>
-<li>那个所谓的理智的大脑只不过是为这个直觉算法的结论寻找一个逻辑上靠谱的因果关系而已，只是起到了“解释”的作用，并不主导决策。 一见钟情的本质就是生物算法，所以你不能预测你会对谁一见钟情；甚至当你遇到一见钟情的人之后，你会发现Ta跟你的很多所谓的爱情观并不完全吻合。当你跟一个恋人走到了尽头而分手以后，回看当初，你也不知道自己为什么会鬼迷心窍爱上Ta。这里的鬼迷心窍所提到的“鬼”就是“算法”。 不过呢，人类的决策算法相对于其他动物而言，具有强更大的“自我升级能力”，这个自我升级就像人工智能领域的“机器深度学习”一样，人类通过读书、思考、实践这个循环来不断训练并提高自己的决策算法，然后让自己在物种繁衍的过程中获得更多的优势。这个提高决策算法的过程就是认知升级、认知迭代的过程。</li>
-<li>图灵的同性恋行为本质是什么并不是关键，关键是社会中的其他人怎么想。这也是未来我们面对计算机人工智能的问题。人工智能是否有“意识和主观体验”，这不是关键，关键是我们人类会怎么想。这就是著名的难缠问题，他心问题（Problem of other minds）：</li>
-<li>人文主义认为是“人类体验”为宇宙赋予了意义。现代宗教革命并不是对神失去了信心，而是对人类更有信心了。过去我们需要宗教来帮助我们判断善恶、正误、美丑，宗教曾经让我们相信只有神可以定义道德标准。 而现在，人文主义的口号是：“要聆听自己的声音，对自己真诚，相信自己，追随自己的内心，让自己做快乐的事。”</li>
-<li>人类存在的目的就是在生命最广泛的体验中，提炼出智慧。 生命只有一座要征服的高峰——设法体验一切身为人的感觉。 You Only Live Once. 科学和人文主义，就像太极的阴阳一样默契配合，给我们提供前进的力量以及生命的意义和道德判断。人类史上，从没有任何文化如此重视人类的感受、欲望和体验。 虽然自由人文主义赢得了今天，但等到基因工程和人工智能彻底发挥潜力，自由主义、民主和自由市场的概念，可能又会想燧石刀和录音带一样过时。以后，科技人文主义可能从根本上会颠覆自由人文主义。因为我们发现，客户和选民从来就没有自由选择，我们可以用科技来计算、设计或者击败他们的个人感觉。在不久的未来，人类的主观体验也成了可以设计的产品，就像能在超市买到的任何商品。</li>
-<li>我们对“自由”的理解，背后有一套错误的逻辑。人的欲望不是一种选择，我们只能是感受到欲望，再据以行事。 看起来，我们所谓的“意志”，大部分时候是为了满足“欲望”而存在的。我们能否通过意志消除自己的欲望，能否通过某种训练让自己脑海中的所有想法都消失。 又或者，一个自控力强的人可以抵御美食美女的诱惑，但能否抵其他的情感刺激？比如看到杀人的场面不恐惧，看到感人的画面不落泪？这些情绪都会影响我们的决策，影响我们的投票。商业广告和总统大选都在用尽一切办法“引导、诱导、误导”我们做出看起来“自由”的选择。 我们的选择，从来就不是真正的自由意志主导的，所以我们经常会后悔昨日的决定。</li>
-<li>左脑还负责“合理解释”的功能，不管主人做出了什么样的决策和行为，左脑都会负责收拾摊子，给出看似逻辑合理的解释，为我们的生活找出意义。</li>
-<li>人类正在逐渐将手中的权利交给自由市场、群众智能和外部算法，部分原因就在于人类无力处理大量数据。 我们无法真正预测未来，因为科技并不会带来确定的结果。 至少我们有一点可以明确，未来，本质上就是不确定的。</li>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/03/26/latex-notation-table/">Latex 常用符号表</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Latex</a></li>
 </ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;幸福感的核心是你的收获和期望的差值，而不是收获的绝对值&lt;/p&gt;
+      &lt;p&gt;学习一个工具最好的方式就是博采众长，知行合一。本文我精选的一些 Latex 入门和进阶资源。&lt;/p&gt;
     
     </summary>
     
-      <category term="Reading" scheme="http://wdxtub.com/categories/Reading/"/>
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
     
-      <category term="书摘" scheme="http://wdxtub.com/tags/%E4%B9%A6%E6%91%98/"/>
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
-      <category term="历史" scheme="http://wdxtub.com/tags/%E5%8E%86%E5%8F%B2/"/>
-    
-      <category term="未来" scheme="http://wdxtub.com/tags/%E6%9C%AA%E6%9D%A5/"/>
+      <category term="Latex" scheme="http://wdxtub.com/tags/Latex/"/>
     
   </entry>
   
   <entry>
-    <title>【思考致富】读书笔记</title>
-    <link href="http://wdxtub.com/2017/02/23/think-and-grow-rich-clip/"/>
-    <id>http://wdxtub.com/2017/02/23/think-and-grow-rich-clip/</id>
-    <published>2017-02-23T01:27:27.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
+    <title>搜索技巧资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-search/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-search/</id>
+    <published>2017-03-17T06:50:28.000Z</published>
+    <updated>2017-03-17T06:52:31.000Z</updated>
     
-    <content type="html"><![CDATA[<p>一切成就、一切辛劳所得的财富，最初都不过源于一种想法！</p>
+    <content type="html"><![CDATA[<p>学习一个工具最好的方式就是博采众长，知行合一。本文我精选的一些搜索技巧入门和进阶资源。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.02.23: 完成初稿</li>
+<li>2017.03.17: 完成初稿</li>
 </ul>
-<p>思考致富 (成功大师经典) )</p>
-<ul>
-<li>请允许我最后提一条小小建议。这条建议也许能为你提供一条线索，而卡内基先生的秘诀也许能通过这条线索循踪而得。这条建议便是，一切成就、一切辛劳所得的财富，最初都不过源于一种想法！如果你为接受成功秘诀做好了准备，那么你就拥有了秘诀的一半，当另一半进入你的脑海时，你一眼便能认出它来。</li>
-<li>“人的想法是物质性的”，事实的确如此，而且当想法与明确目的、毅力和一种炽热欲望混合时，就会成为强有力的物质，因为此时，它们能转变成财富或其他有形物体。</li>
-<li>失败者之所以失败，最常见的原因就是在遇到短暂挫折时习惯于放弃。我们每个人都曾经因为犯过这样的错误而追悔莫及。</li>
-<li>人生是奇特的，往往还难以预计！无论成功还是失败，都能从简单的人生经历中找到根源。达比先生的经历平凡而简单，却蕴含着对他命运归宿的解答，因此对于达比而言，这两次经历和生命本身一样重要。这两次戏剧性的事件之所以让他获益，是因为他分析它们，并汲取其中的教训。但是，那些没有时间或不喜欢向失败学习，不能从失败中寻找成功或制胜真谛的人，又该怎么办呢？他们到哪里去学习，他们怎样学习反败为胜的艺术，将失败变成获得机遇的跳板</li>
-<li>将致富欲望转换成等量经济收益的方法，由６个明确而实用的步骤组成。 1. 在头脑里确定你渴望得到的准确金钱数量。仅仅说“我想要许多钱”是不够的，要指出具体数额（目标明确性有其心理方面的理由，下一章我们将讨论这个问题）。 2. 确定为了得到想要的钱，你打算付出多少代价（世上根本没有“不劳而获”这种事）。 3. 为你打算占有所渴望的金钱提出一个明确时限。 4. 为执行欲望目标制定一个明确计划，然后立即贯彻这一计划，无论是否做好了准备。 5. 为你打算获得的金钱数额写一句表述清晰、准确的话，为它的实现指明时限，说明为了得到这些钱你打算付出什么，并清晰描述你积攒下这些钱的计划。 6. 大声将写出的话读出来，每天读两遍，即将上床就寝之前一遍，早上起床时再读一遍。朗读时，要看到、感觉到并相信自己已经拥有那笔钱。</li>
-<li>怎样挖掘并运用欲望的力量呢？本书随后的各章已经回答了这个问题。 我希望在此传递一种思想：一切成就，无论本质如何、目的何在，一开始都必然是对某种明确事物的炽热欲望。大自然运用某种奇特而强大的“精神化学作用”原理，将我们对强烈欲望的冲动包裹起来，欲望“这东西”永远不会承认“不可能”这三个字，也永远不会接受失败的事实。</li>
-<li>信念是大脑的首席化学家。信念与思想的震波结合时，潜意识思维会立即探测出这种震动，将其转化为精神对等物；如果你许愿或祈祷，它还能将这种震动转化为无穷的智慧。 在所有主要的积极情绪中，信念、爱和性是三种力量最强大的情感。三者融为一体时，能以一种立即到达潜意识的特殊方式影响思想震动的“色彩”，并在潜意识思维中使自己变成精神对等物，而这种对等物也是诱使“无穷智慧”做出回应的唯一方式。 爱与信念是心灵层面的，与人的精神有关。而性则有生物层面的东西，与肉体有关。这三种情感融合或混合之后，能有效地在人的有限思维与宇宙的“无穷智慧”之间打开一条直达通道</li>
-<li>知识有两种。一种是通用知识，另一种是专业知识。通用知识无论数量和种类有多少，对于积累金钱用处都不大。著名大学的教职员工拥有现代文明所知的各种通用知识，但多数教授并没有什么钱。他们擅长传授知识，但并不擅长对知识进行组织和运用。 如果不通过切实可行的行动计划（即为了“挣钱”这个明确目的而制定的计划）将知识组织并支配起来，知识就不能吸引财富。无数人错误地相信“知识就是力量”，从而导致头脑不清，其根源都在于认识不到这一事实。其实根本不是这样！知识不过是潜在的力量，只有将它组织成明确的行动计划，并指引它朝着某个明确目的发挥作用的时候，知识才是力量。</li>
-<li>首先，要明确你需要哪种专业知识，需要它干什么。知道活着的主要目的是什么、正在努力奋斗的目标是什么，这在很大程度上有助于确定你需要什么知识。解决了这个问题，下一步你就要准确了解知识的可靠来源。重要的知识来源有： (1)自身的经验和所受教育； (2)通过与别人合作得到的经验和知识； (3)高校； (4)公共图书馆（通过那里的图书和期刊，你能找到历代文明中包含的全部知识）； (5)专业培训课程（特别是通过夜校和函授课程）。</li>
-<li>获取知识时，必须通过切实可行的计划，为某个明确的目标，将知识组织起来并结合实际加以运用。如果不通过运用知识为某个有意义的目的服务，那么知识就毫无价值可言。这也是大学毕业学历为什么不能确保职业生涯成功的原因。如果你打算多接受一些在校教育，首先要确定你需要多余知识的目的何在，然后再通过可靠渠道学习这些特定的知识。 各行各业的成功者永不放弃获取那些与他们主要志向、事业或职业相关的专业知识。没有成功的人经常错误地认为，人一旦上完了学，获取知识的阶段也就随之终止。其实，在校学校仅能教会你怎样获取实用知识。</li>
-<li>想象力像个工厂，一切计划都从这里诞生。在思维的想象能力帮助之下，冲动（即欲望）在这个工厂成型并付诸行动。</li>
-<li>想象力的形式有两种。一种叫做“综合性想象力”，另一种叫做“创造性想象力”。 1. 综合性想象力——通过这种能力，你能将过去的概念、观点或计划集成为新的综合体。合成性想象力并不能创造任何东西，只是对接收到的经验、教育和观察等原材料进行加工。这种想象力发明家用得最多，但也有一些例外的“天才”。不过，当这些“天才”运用综合性想象力无法解决问题时，便会运用创造性想象力。 2. 创造性想象力——在创造性想象力的作用下，人类有限的思维能与“无穷智慧”直接交流。“预感”和“灵感”就是通过这种能力接收的，基本观点和新思想也是通过这种能力形成的。正是通过这种能力，我们能够接收别人大脑发出的思想震波；正是通过这种能力，一个人可以做到与别人的潜意识思维“同步”或沟通。</li>
-<li>创造性想象力能以前几页介绍的方式自动起作用。只有当潜意识思维以一种极快的速度震动（例如，显意识思维受到某种强烈欲望造成的情绪的刺激）时，这种能力才会起作用。 人的创造能力越用越发达，从而对来自以上渠道的震波越灵敏、越易接收。实际上，无论是综合性想象力还是创造性想象力，都会越用越灵敏，就像人体的肌肉和器官越用越发达一样。长期的懈怠和懒散会削弱想象能力，而持续使用则能使这一能力不断加强而且更加敏感。尽管不运用想象力会使它处于潜伏状态，但它不会消失。这一道理非常重要！在继续读下去之前，不妨认真思考这句话。 贯彻这些原则时要始终记住：将欲望转化成金钱的全部故事无法用一句话说清楚。只有当我们掌握、吸收并开始运用所有这些原则时，这个故事才能完全讲清。 工商界、金融界伟大领导人以及伟大的艺术家、音乐家、诗人和作家之所以伟大，是因为他们开发了创造性思考的能力。 欲望仅仅是一种想法，一种冲动，既模糊又短暂。不变成与自身一致的客观对等物，欲望就是抽象的、毫无意义的。尽管综合性想象力最常运用于将欲望的冲动转化成金钱的过程中，但必须牢记，我们有时候也会面临一些急需运用创造性想象力的情况。</li>
-<li>现在，我们指导你怎样制定实用计划： 1. 根据需要集合尽可能多的一群人才，运用第九章介绍的“智囊团”原则，着手制定并实施计划，实现财富积累目标（遵守这条要求至关重要。千万不要小看它）。 2. 组成“智囊团”之前，先搞清你可以向所有团队成员提供什么好处或利益，以回报他们的合作。没有人会长期为你做事而不需要某种补偿，也没有哪个聪明人会在得不到恰当补偿的前提下，要求或指望另一个人为自己做事。当然，报酬不一定都以金钱形式存在。 3. 安排与“智囊团”成员聚会，每周至少两次（如可能，还可以多次），直到你们共同完成必不可少的一项或多项致富计划为止。 4. 与智囊团每个成员保持和谐的关系。如果无法严格遵循这一条，你就可能遭遇失败。“智囊团”原则是无法在关系不和谐顺畅的背景下发挥作用的。要牢记以下几点： （１）你正在从事的工作对你来说非常重要。要想确保成功，就必须拥有完美无缺的计划。 （２）你必须借助别人在经验、教育、天赋和想象力方面的优势。每个积累了巨额资财的人，都很好地使用了这种方法。</li>
-<li>半途而废者永不会成功，成功者永不会半途而废</li>
-<li>以下内容是成为领导者的重要因素： 1. 坚定的勇气。这种勇气建立在对自己、对自身职业的了解之上。没有哪个追随者愿意听命于不自信、无勇气的领导者，也没有哪个聪明的追随者会长期为这样的领导效力。 2. 自控能力。控制不了自己的人永远也无法控制别人。领导者的自控能力能为追随者树立榜样，从而使领导者愿意发挥更多聪明才智。 3. 强烈的正义感。没有强烈的公平感和正义感，任何领导者也无法强制并保持下属即追随者敬重自己。 4. 果断决策。决策优柔寡断的人不自信，因此不能成功地领导别人。 5. 明确的计划。成功的领导者必须善于筹划，并且善于落实计划。领导如果靠不切实际的推测行事，而没有明确实用的计划，那就好比一艘没有舵的船，迟早会搁浅在礁石上。 6. 工作不计个人得失的习惯。当领导有个不利之处，就是领导者要心甘情愿地以比要求部属更严格的标准来要求自己。</li>
-<li><ol>
-<li>乐观亲切的个性。没有哪个懒散而粗心的人能成为成功领导者。领导需要部属的尊敬，但任何追随者都不会尊敬那些不太注重培养随和个性的领导者。 8. 同情与体贴。成功领导者应该体恤部属，也应当理解部属和部属面临的问题。 9. 善于掌控细节。成功的领导者应该具有能力掌控领导职位各种的细节。 10. 愿意承担完全责任。成功的领导者应该愿意为部属的过错和缺点承担责任。如果试图转嫁这种责任，那么他们的领导位置就座不长久。如果部属犯了错并因此受罚，那么说明领导当得不成功。 11. 合作。成功的领导者应能理解并运用精诚合作原则，并能为部属做好表率。领导地位要有权力，而权力要通过合作体现。</li>
-</ol>
-</li>
-<li>领导方式有两种：第一种也是到目前为止最有效的一种，即让部属满意并引起共鸣的领导方式；第二种是通过高压和铁腕，而不顾部属是否满意、是否理解的领导方式。 高压领导方式不会长久，历史上这种例子不胜枚举。“大独裁者”和帝王之辈的垮台与覆亡就是最典型的例子。这说明，人民不会无限期地服从高压领导。当今世界已进入领导者和追随者改善关系的新时代，这个时代呼唤新型领导者，呼唤工商界问世一种新型领导关系。那些崇尚通过权力进行领导的守旧派，应该学会认识新型领导关系（即合作关系），学会与基层民众打成一片。对他们来说，除此之外没有别的出路。 将来，老板与员工之间的关系，或者领导者与追随者之间的关系，应该是一种基于平等的商业利益形成的互助合作关系。今后，老板与员工之间的关系与过去相比，更像是一种伙伴关系。希特勒等人就是通过铁腕实施统治的“领袖”。他们的领导方式已经过时。老百姓也许会暂时屈从于强权领导，但他们的内心不会屈服。让群众满意的领导才是能够长久存在的唯一领导方式！ 新型领导方式包括本章前述的11条特质，还包括一些其他因素。以这些特质作为领导基础的人，能在各个行业发现大量领导机会。</li>
-<li>现在，我们来看看领导者常犯的主要错误，因为知道不该做什么和了解该做什么同样重要。 1. 无力掌控细节。领导才能有效的领导者需要具备组织并驾驭细节的能力。真正的领导者不会由于“太忙”而不做该做的事。如果某个领导者或追随者由于“太忙”而不改变不合时宜的计划，或者不关注任何紧急情况时，那便表示他们无能。成功的领导者必须掌控与领导职位紧密相关的所有细节。当然，这也包括领导者需要学会将琐事委托给有能力的部属去做。 2. 不愿提供卑微的服务。真正伟大的领导者在形势需要时，乐意去做要求其他人去做的任何事。“我们当中最伟大的人，应该是为所有人服务的人”，这是所有精明能干的领导者都应该注意并遵循的道理。 3. 希望以自己的“学识”而不是运用学识去做的事，作为获取报酬的标准。这个世界不会因为你“有知识”就付给你报酬，只有那些真抓实干或激励别人真抓实干的人，才能得到应有的回报。 4. 害怕来自部属的竞争。害怕某个部属取代自己的领导者，迟早会让这种恐惧真的变成现实。有能力的领导者会培养接班人，而且经常给对方压担子、交任务。只有通过这种方式，领导者才可能学会“分身之术”，随时应付多种场合，同时关注许多大事。有能力让别人干活的人，比那些只能通过自身努力拿报酬的人，应得到更高的报酬，这是一条亘古不变的真理。能干的领导者能通过本职工作上的渊博学识和性格上的个人魅力，极大地提高部属的工作效率，激励部属提供比无人协助时更多更好的服务。 5. 缺乏想象力。没有想象力，领导者就无法应对紧急事件，无法制定指引部属高效贯彻执行的计划。 6. 自私。领导者如果将部属的一切功劳据为己有，必然会招致部属的怨恨。真正伟大的领导者从不邀功请赏，而是心满意足地看着荣誉的光环环绕着部属，因为他们知道，大多数人努力工作的目的在于赞赏和认可，而不是单纯为了钱。 7. 放纵。部属不会尊重放纵无度的领导者。此外，任何一种放纵都会削弱沉溺者的耐力和活力。 8. 不忠。也许这种错误应该放在第一条。如果领导者对信赖自己的人、对同事（包括比自己职位高和职位低的人）不忠，那么就无法在领导岗位长期待下去。不忠的品行会使人变得无足轻重，而且会让别人瞧不起。缺乏忠诚是各行各业的人失败的一个主要原因。 9. 过分强调领导“权威”。高效的领导者通过鼓励来实施领导，而不是给部属头脑中灌输惧怕的感觉以保住自身职位。企图通过“权威”给部属施压的领导者，只能归类于强权领导者行列。真正的领导者根本不必炫耀这一点，只需要用自身的行动、同情心、理解、公正以及对业务知识的展示来体现自身职位。 10. 看重头衔。能干的领导者不需要“头衔”来博得部属尊敬。过分看重头衔的领导者通常没有别的本事。真正的领导者的办公室大门始终向那些愿意进入的人敞开，而且工作场所非常简朴，而不附庸风雅。 这些只是失败的领导者最常见的部分原因。这些错误中，任何一条错误都足以招致失败。如果你立志当领导，不妨仔细研究以上各条，以便保证不犯这些错误。</li>
-<li>每个人都乐意从事最适合自己的工作。画家喜欢画画，手工艺匠喜欢动手，作家喜爱写作。那些天赋不明显的人则更加偏爱某些工商业领域。当今社会有制造、营销以及其他许多职业可供挑选。 1. 准确地决定你希望从事什么工作。如果当前不存在这种工作，也许你能独创它。 2. 挑选你想在其中工作的公司，或者你希望为其效力的人。 3. 研究“准”老板的就业政策、人事安排和晋升机会。 4. 分析你自己、你的天赋和能力，搞清楚你能提供什么，然后想办法展示你认为能够成功给予的优势、服务、推动作用和精妙的点子。 5. 不要老想着“有份工作”就行，也不要琢磨是否有机会。忘掉“能给我一个职位吗？”这种老掉牙的想法，而是注重你能做点什么。 6. 一旦脑子里有了计划，可以请一位经验丰富的作家，帮你把它变成条理清楚、内容翔实的文字。 7. 将以上文字呈给有决策权的当权派。每个公司都在寻找那些能提供有价值的东西的人才，无论有价值的东西是想法、服务还是“关系”。只要你能拿出对公司有利的明显行动计划，公司肯定会有你的一席之地。 完成以上过程可能要多花你几天或几周时间，但是收入、晋升机会和认可程度上的差别，可为你省去好几年干活多、拿钱少的艰难过程。这样做有许多优点，主要优点就是：它往往能让你实现某个既定目标的时间缩短１～５年。 每个人如果一开始或“半路上”进行这种精心筹划，都能收到事半功倍的效果。当然，老板的公子不必如此煞费苦心。</li>
-<li>前面清楚地介绍了高效而持久地推销个人服务为什么会成功。如果不对这些原因加以研究、分析、理解和运用，那么谁也无法高效而持久地推销个人服务。推销服务关键在于你自己。你所提供服务的质量、数量和服务中体现的精神，在很大程度上决定你的工资和聘用期限。若想高效地推销个人服务（“高效”意味着稳定的市场、满意的价格以及惬意的工作环境），你就必须采用并遵循“QQS”公式，意即：质量（Quallty）加上数量（Quantity），再加上一定的合作精神（Spirit），总和等于完美的服务推销。请记住“QQS”公式，不过，光记住它不够，你还要把它当一种习惯加以运用： 不妨分析一下这个公式，以便准确理解其中的含义： 1. 服务质量是指：随时牢记“更高效”的目标，尽可能以最有效的方式，使与你职位有关的各个细节都有最佳表现。 2. 服务数量是指：随时将尽可能提供所有服务当成一种习惯，目的在于通过实践和经验培养更娴熟的技能，以提高服务的数量。 3. 服务精神意味着合意而和谐的行为习惯，这种行为习惯能促进同事与上下级之间的合作。 合理的服务质量和数量尚不足以为你的服务保持长期市场。你所提供的服务的行为或曰精神，才是关系所得报酬和就业期限的决定性因素。 安德鲁•卡内基在讨论推销服务的成功因素时，最强调的就是这个观点。他再三强调和谐共处的必要性。他重申，倘若某人不本着和谐的精神做事，无论他的工作数量有多大，工作质量多有效，他都不会久留这种人。卡内基先生执意要求每个人都要“有人缘”。为证明这一点，他对这种品质极为重视，并让许多遵守这一标准要求的人变成富翁。而那些不能按此要求做事的人，则只能给别人让位。 我之所以再三强调随和个性的重要性，是因为它能使一个人本着恰当的服务精神提供服务。如果你的性格令人愉悦，并本着和谐的态度做事，那么这些优点往往能弥补服务质量和数量上的缺陷。而令人愉悦的行为是任何事物也无法成功取代的。</li>
-<li>我的研究结果表明，失败有30个主要原因。分析这些原因时，你可以逐一对照，看看这些失败的主因中，有多少个是你获得成功的“拦路虎”。 1. 倒霉的遗传背景。如果天生就有智力缺陷，那么几乎没有解决的办法。这一思想为补救这个缺陷提供了唯一的方法，即通过“智囊团”协助。然而，仔细观察另一个问题也许有好处，即这也是30个失败原因中任何人都不易纠正的唯一缺陷。 2. 缺乏明确的人生目标。没有中心目的或明确目标可以为之奋斗的人，绝对没有成功的希望。我分析过的人当中，98％的人都没有这样的目标。也许这正是他们失败的主因。 3. 缺少出人头地的雄心。冷漠得不想在人生中超越他人或者不愿意为成功付出代价的人，没有成功的希望。 4. 受教育不够。这个缺陷克服起来相对容易。经验表明，最有教养的人往往是那些以“白手起家”或“自学成才”闻名的人。光有个大学文凭并不足以使一个人显得有教养、有知识。任何受过教育的人都知道怎样在不侵犯他人权益的前提下实现人生抱负。教育程度不在于学到多少知识，而在于有效而持久地运用知识。得到报酬的原因不只是我们懂得了多少，更因为我们利用所学知识做了什么。 5. 缺乏自律。纪律源于自控。这意味着你必须控制所有负面品质。在控制环境之前，必须首先控制自己。自制最难做到。如果你不征服自己，那么必然会被自己征服。往镜子前一站，你看到的镜像既是你最要好的朋友，也是你最难对付的敌人。 6. 身体不佳。任何人都无法在身体欠安的情况下享受巨大成功。身体健康不佳的许多原因都是可以支配和控制的。其中一些主要原因是： 不利于健康的食物吃得太多； 错误的思考习惯；精神状态消极； 滥用或过分沉溺于性； 缺少必要的身体锻炼； 由于呼吸不正确而没有得到足够的新鲜空气。 7. 小时候不合意环境的影响。“苗弯树必斜”。多数存在犯罪倾向的人，其倾向的形成都是小时候糟糕的环境和不当的交往造成的结果。 8. 拖拉。这是最常见的失败原因之一。“拖拉老人”呆在每个人心中的某个角落，伺机破坏这些人的成功机遇。大多数人一辈子失败的原因，是因为坐等“恰当时机”来临，才着手做某件有意义的事。千万不要坐等，因为不存在“恰好”的时机。从现在做起，用手头可用的工具做起；取得进展之后，你会找到更好的工具。 9. 没有毅力。不管着手干什么，多数人都是优秀的“起始者”，而不是杰出的“终结者”。此外，人们喜欢在刚刚出现失败征兆时便放弃罢手。没有什么东西能代替毅力。有毅力的人发现，“失败老人”最终会由于疲惫不堪而离开。失败打不过毅力。</li>
-<li><ol>
-<li>消极的个性。由于个性消极而拒人于千里之外的人没有成功的希望。成功源于对力量的运用，而力量是通过与他人努力合作获得的。消极的个性不会吸引合作。 11. 缺乏对性冲动的控制。在激励人们采取行动的一切刺激物中，性的力量最为强大。由于性是最强有力的情感，因此必须通过将这种能量转化为别的能量，或通过其他渠道宣泄出去，来达到控制的目的。 12. 无法控制“不劳而获”的欲望。这种投机本能导致数百万人失败。研究2000年初的网络投资大崩盘也许能找到这方面证据。当时，数百万人试图通过向昙花一现的冒险公司投资而一夜暴富。 13. 缺乏果断的决策力。成功者善于果断决策，即使改变决策，也改变得很慢；失败者即便决策，也决策得很慢，但改变起来既频繁又迅速。犹豫和拖拉是一对孪生兄弟，能找到一个，一般就能找到另一个。你要在这对双胞胎完全捆上失败的车轮之前便杀死它们。 14. 具有６种基本恐惧中的一种或多种。我们将在第十五章分析这些恐惧。在高效推销自己的服务之前，你必须先左右住它们。 15. 结婚时错选配偶。这是失败最常见的原因。婚姻关系使两个人保持亲密联系。如果这种关系不和谐，那么失败很可能会接踵而至。此外，这种失败形式的显著特点是痛苦和不幸，这会摧毁一切雄心壮志的迹象。 16. 谨小慎微。力求万全的人只能在别人挑选完毕之后，随便拣一点剩下的东西。谨小慎微和毫不谨慎一样糟糕，二者都是我们必须防范的极端表现。人生本身就充满偶然成分。 17. 选错事业伙伴。这是事业失败最常见的原因之一。推销个人服务时，你应当非常谨慎地选择老板，对方不仅要有志向，而且睿智而成功。我们总是效仿那些和自己联系最紧密的人，所以，要挑一个值得效仿的老板。 18. 迷信与偏见。迷信是一种恐惧，也是无知的表现。成功者思想开明、无所畏惧。 19. 行业选择不当。谁也无法在不喜欢的行业获得成功。推销服务最关键的一步，就是选择一个你能全身心投入的行业。 20. 努力方向不专一。“万事通”很难有一己之长。要将所有精力集中在某个明确的主目标上。 21.肆意挥霍的习惯。挥霍者无法成功，这主要是由于他们永远都害怕贫穷。要养成将收入的固定比例存入银行、以便有计划地节俭的好习惯。当你为推销服务讨价还价时，存在银行里的钱让你更有底气。手头没有钱，你就必须听命于他人，而且敢怒而不敢言。 22.缺乏激情。没有激情就没有说服力。此外，激情能够传染，拥有激情并能控制激情的人，在任何集体中通常都受人欢迎。</li>
-</ol>
-</li>
-<li>23.心胸狭隘。心胸不豁达的人不论干什么都难以取得进步。狭隘意味着你不再获取知识。最有害的狭隘形式与宗教、种族和政治上的分歧有关。 24.放纵。最有害的放纵形式通常关系到暴饮暴食、性欲无度。这几种放纵的任何一种对成功都是致命威胁。 25.没有与他人合作的能力。人们丧失生活中的职位和好机会，多半都是因为有这个缺点，它的作用效果比所有其他原因加起来的效果都要大。任何有水平的商业主管或领导者都无法容忍这一缺点。 26.通过自身努力以外的方式得到的力量。这一主要出现在有钱人家的儿女以及那些继承他人财产的人身上，不通过一步步个人奋斗得到的力量，往往对于成功是致命的。暴富比贫困更危险。 27.故意不诚实。任何品质都无法取代诚实。你也许在无力控制的局面逼迫下短期不诚实，不会造成长期负面影响。但是，故意不诚实的人就不可救药了。他们的伎俩迟早会露馅，而且会遭受名誉损失，甚至可能失去自由。 28.自负与虚荣。这两种东西就像警告别人要当心的红灯，是妨碍成功的致命因素。 29.臆断而不是思考。多数人太过懒散或懒惰，懒得通过深思熟虑了解事实真相。相比之下，他们更喜欢根据主观猜测或仓促判断得出的“看法”行事。 30.缺少资金。对那些首次创业又没有足够资金储备来承受可能失败的打击，无法在树立名声之前继续创业的人来说，这是失败的常见原因。 31.在这里，你还可以举出前面没有列出，但你曾经遇到过的任何具体败因。 以上31条主要败因是对悲惨人生的生动写照。实际上，每个尝试过并失败过的人对它们都不陌生。如果能劝说某个了解你的人与你一起逐一对照这些原因，并帮助你分析这一列表，你将大受裨益；如果你独立试着这样做，那价值就更大。因为多数人都不能按照别人的眼光看待自己，你也许就是这种人之一。 有句古话叫“知己知彼”，要想成功出售商品，就必须了解商品；同样，要想成功地推销服务，就必须对提供的服务心中有数。你应当了解自身的全部弱点，以便弥补或者完全改正；你也应当了解自己的强点，那样，当你推销服务时，也许就能关注这些弱点了。只有通过鞭辟入里的分析，你才能真正了解自己。</li>
-<li>个人盘点自评问卷 1.我是否实现了自己确定的年度目标？（你应当为实现某个明确的年度目标而奋斗，把它作为你人生主要奋斗目标的一部分。） 2.我是否尽最大努力提供了最优质的服务，还能对该服务的某些方面加以改进吗？ 3.我是否尽最大努力提供了数量最大的服务？ 4.我的行为是否从头至尾体现了和谐合作的精神？ 5.我是否听任拖拉的坏习惯降低工作效率，如果是，它的影响有多大？ 6.我的性格是否有所改进，如果有，在哪些方面有改进？ 7.我是否做到了将计划自始至终贯彻到底？ 8.我是否在各种条件下都做到了果断而明确地决策？ 9.我是否允许６种基本恐惧中的一种或多种（参考第十五章）降低我的工作效率？ 10.我是“谨小慎微”呢，还是“力求万全”？ 11.我与同事之间的关系是否融洽？如果不融洽，我对这个缺点负部分责任还是完全责任？ 12.我是否由于奋斗目标不专一而浪费了精力？ 13.我在面对各种问题时是否开明豁达？ 14.我用什么方式提高了提供服务的能力？ 15.我对各种习惯是否听之任之？ 16.我是否公开或暗地里表现出某种形式的自私？ 17.我对同事的所作所为是否能赢得他们对我的尊敬？ 18.我的看法和决定建立在主观臆断的基础上，还是建立在准确分析和深思熟虑的基础上？ 19.我是否遵守了提前安排时间、对支出和收入早计划的好习惯，在安排这些事项时是否保守？ 20.我有多少时间本可以更好地利用，却花在了徒劳的努力上？ 21.要想在来年提高效率，我应该怎样重新安排时间、改变习惯？ 22.我是否为某件违背良心的事而愧疚？ 23.我通过什么方式提供了比分内要求更多更好的服务？ 24.我是否对人不公？如果有，在哪些方面？ 25.如果这一年我的服务对象是自己，那么我对得到的服务满意吗？ 26.服务对象对我提供的服务是否满意，如果不满意，为什么？ 27.我是否入对了行，如果没有，为什么？ 28.依照成功的基本原则看，我当前对自己评价如何？（评价时要公正坦白，而且评价完之后，要让某个敢于对你作出准确评价的人来把关。）</li>
-<li>你有自己的头脑，有自己的思维。为什么不用它们来决策呢？如果你需要从别人那里得到事实或信息来帮助自己决策（你可能在很多情况下都会遇到这种情况），可以不动声色地得到这些事实和信息，但不要暴露目的。 知识浅薄、水平不高的人有个最大特点，就是总想给人留下才高八斗、学富五车的印象。这种人通常说得太多、听得太少。如果你想形成果断决策的习惯，就应该竖起耳朵、睁大眼睛、紧闭双唇。说得太多的人总是天桥的把式——光说不练。如果说得多、听得少，你就不仅失去了许多积累有用知识的机会，而且还会向那些由于嫉妒而以战胜你为乐的人泄露计划和目的。 还要记住，每次在学识渊博的人面前一张嘴，你的水平深浅可就一点遮不住！真正的智慧往往通过谦逊和沉默彰显出来。 要牢记的是，和你一样，与你交往的每个人都在寻觅致富的良机。如果你口无遮拦地大谈自己的致富计划，那么，当听说某个人由于抢在你前面、将你无意中泄露出去的计划付诸实施而达到自己目的时，你一定会大吃一惊、欲哭无泪。 竖起耳朵、睁大眼睛、闭上嘴，让这些成为你最先下定的决定吧。 为提醒你遵守这条建议，你不妨用大号字体将下面这句警句抄下来，放在每天都能看到的地方： 要让全世界都知道你打算干什么，但是首先要干了再说。 这句话等于是说“至关重要的不是言辞，而是行动”。</li>
-<li>犹豫是一种习惯，通常源于青少年时期。如果青少年在中学时代甚至大学时代始终没有明确目标，那么这一习惯就会根深蒂固。当前一切教育制度的主要缺点，在于既没有教会、也没有鼓励青少年养成果断决策的习惯。 如果入学的新生不说清毕业的主要目的是什么，那么所有高校都不会录取他们。如果每名学生入学伊始就必须接受培养决策习惯方面的训练，而且在该门课程考试时必须成绩满意方可进入高年级就读，那么他们受到的益处也许更大。 学生之所以养成处事犹豫的习惯，是因为他们将学校教育存在的缺陷一直带到选定的职业当中（如果能找到职业的话）。一般说来，刚刚走出校门的学生对工作从不挑剔，一找到工作就欣然接受，因为他们已经养成犹豫的习惯。如今的工薪阶层每１００个人中就有９８个人长期处在同一职位原地踏步，因为他们缺少为得到某个确定职位而精心筹划的明确决心，而且不知道怎样选择雇主。</li>
-<li>在将欲望转化成金钱对等物的过程中，毅力是必不可少的要素。毅力的基础是意志力。 意志力和欲望如果适当组合，将成为一对不可阻挡的黄金搭档。积累巨额财富的人通常都以冷酷著称，有时甚至是无情。其实，他们往往遭到人误解。他们拥有的是意志力，这种力量一旦与毅力结合，就可以为他们实现渴望的目标打下基础。</li>
-<li>毅力是一种精神状态，因此可以培养。像所有精神状态一样，培养毅力要有明确的动因，包括以下几种： 1.明确的目的。知道自己想要什么，这是培养毅力的第一步，可能也是最重要的一步。强烈的动机能激励你战胜许多困难。 2.欲望。若追求强烈渴望的某个目标，那么在追求过程中，获得并保持毅力相对容易。 3.自立。相信自己有能力贯彻某项计划，这种信任会激励你坚持不懈地将计划贯彻到底（通过第４章“自我暗示”中描述的原则可培养自立）。 4.明确的计划。严密的计划即便有很多缺点甚至根本不切实际，也能鼓舞人的毅力。 5.准确认识自己。根据积累的经验和日常观察，知道自己的计划很可靠，这样的认识能鼓舞毅力；相反，“主观臆断”而非“真知灼见”，只能破坏毅力的培养。 6.合作。与别人的共鸣、对别人的理解与合作，往往也有助于毅力的培养。 7.意志力。集中精力为实现某个具体目标而拟订计划，这种习惯会使人产生毅力。 8.习惯。毅力是习惯的直接产物。我们每天向大脑输入什么样的日常经历，大脑就会记住这些经历，并成为其中的一部分。强迫自己重复勇敢行为，能够有效治愈恐惧，战胜这个最大的天敌。每个亲赴战场的人都知道这一点。</li>
-<li>缺乏毅力的表现 在这一部分，你将发现横亘在你和成功之间的真正敌人；在这一部分，你不仅会了解反映毅力不足的“症状”，而且能找到导致这种不足存在的深层潜意识根源。如果你真想知道自己是什么样的人、能做点什么，就应当认真分析以下条目，客观地正视自己。 1.无法认清并清晰准确地界定自己想要什么。 2.拖拉，无论有无理由（通常有一大堆托词和借口）。 3.对获取专业知识没兴趣。 4.优柔寡断，习惯于任何时候都“推卸责任”而不是正视问题（同样有很多托词）。 5.解决问题时，习惯于靠推托而不是制订明确计划。 6.自满。这种毛病基本无可救药，骄傲自满的人没有成功的希望。 7.冷淡，通常表现为无论何时都愿意妥协，而不是直面阻力、针锋相对。 8.习惯于嫁祸于人，将不利局面当成不可避免的情况接受。 9.由于选择行动动机时没有激情，导致欲望不强烈。 10.一出现失败迹象就打算放弃甚至迫不及待地退出（由于６种恐惧中的一种或多种）。 11.缺乏周密筹划，不将计划写在纸上详细分析。 12.习惯于朝令夕改，或者在机会出现时无动于衷。 13.有愿望而无意志。 14.习惯于安于贫穷而不是努力致富，其原因通常是缺少做想做之人、行想做之事、有想要之物的雄心。 15.四处寻找致富捷径，总想索取而不付出等量的努力，通常表现为赌博习惯或者绞尽脑汁一夜暴富。 16.害怕批评，受别人所思、所行或所言的影响，而不制订并实施计划。这个缺点应位于所有缺点之首，因为它通常存在于潜意识思维中，不易辨认（参考第十五章“６种基本恐惧”）</li>
-<li>养成坚忍不拔的习惯只需要经过４个简单步骤。实现这些步骤不需要你有过人的智力，不需要特殊的受教育水平，也不需要多少时间或精力。这些关键步骤是： 1.以炽热欲望作为实现动力的明确目的。 2.不停地用行动体现出来的明确计划。 3.所有消极或不良影响均无法攻破的思想堡垒，这些影响包括亲戚、朋友和熟人的消极暗示。 4.结交一个或多个能鼓励你将计划和意愿贯彻到底的人。</li>
-<li>致富需要力量！财富积累之后，守住财富也需要力量！ 让我们看看怎样才能获得力量。如果力量是“有组织的知识”，那么我们可以分析获取知识的渠道： 1.无限智慧。在创造性想象力的帮助下，运用第六章描述的步骤，可以获得这种求知渠道。 2.致富的经验。人积累的经验（或者是经过整理并记载下来的那部分经验）可以在任何资料完备的公共图书馆找到。这种积累的经验有些重要的部分在中小学和高校已进行分类整理，并传授给学生。 3.实验和研究。在科学领域，事实上在各行各业，人们都在搜集新鲜的日常事件，加以分类和组织。当一个人通过“积累的经验”无法获取知识时，就应当求助于这一渠道。人们往往也在这种情况下运用创造性想象力。</li>
-<li>积累巨额财富的每一个人都能发现这股生命之流的存在。它由一个人的思想过程所组成。积极的思想情感会形成力量流中为你带来财富的那一边，而消极的思想情感则会形成只为你带来贫穷的另一边。这便为那些怀着致富目标阅读这本书的人带来一个极其重要的观点。 如果你处在力量流中带来贫穷的那一边，那么这股力量流可以起到“桨”的作用，你可以用它将自己向上推到力量流的另一边。但是，只有通过运用，它才能为你效力。如果你只是简单读一读，不加分析判断，那么，无论你呆在力量流的哪一边，这股力量都不会让你受益。</li>
-<li>性激情中蕴含着三种潜在的建设性力量，即： 1.人类繁衍后代。 2.保持健康（是一种无可比拟的治疗手段）。 3.通过性转换将庸才变成天才。</li>
-<li>性转换既很简单，也好解释，意思是指精神从通过生理表现出的想法转变成其他类型想法。 性欲是人最强烈的欲望。人在受到这种欲望驱使时，会增强想象力、勇气、意志力、毅力和平时不曾发现的创造力。性接触的欲望有时能强烈和有力到你全然不顾丧命和毁誉的危险，而执著地沉溺其中。如果将这种动力的积极面用于其他方面，又可当成强大的创造力，在文学、艺术以及其他职业和行业（当然也包括致富）中应用。 诚然，性能量的转换要求我们磨炼意志力，但是这种磨炼是有回报的。人的性表达欲望与生俱来、自然形成。这种欲望不能也不应该被埋没或消除。但是，要给这种欲望一个恰当的出口，使它能通过有益人身、心和精神的方式发泄出来。如果不通过转换为它提供这种发泄渠道，它就会通过纯生理的渠道寻找出口。 我们可以修筑堤坝，在一段时间内控制河水泛滥，但它最终总能冲开一道缺口。性激情也不例外。我们也许能埋没、控制它一时，但是，本质决定了它必然要找到宣泄的手段和方式。如果不将它转换成某种创造性劳动，那么它就会找到一条没有多大价值的出路。</li>
-<li>激励精神的十大源泉 人脑能对许多外界刺激产生反应。这些刺激源能激励人脑“产生”高频震波，即激情、创造性想象力、强烈欲望等。人脑回应的最直接刺激源有： 1.表达性的欲望； 2.爱； 3.对名声、权力、经济收益及金钱的炽热欲望； 4.音乐； 5.同性或异性之间的友谊； 6.通过两个或两个以上的人，以一种和谐精神、为实现客观效益或精神升华而联合起来的“智囊团”； 7.双向的遭遇，比如受过虐待的人曾有的经历； 8.自我暗示； 9.恐惧； 10.毒品和酒精。</li>
-<li>“第六感”的客观存在性已经得到广泛公认。这第六种感觉是“创造性想象”。大部分人一辈子从不运用创造性想象力，就算运用了，通常也只是偶然运用。只有相对很少的人在深思熟虑、事先预谋的情况下运用创造性想象力。主动运用这种能力且认识到它作用的人便是天才。创造性想象力能将人类的有限思维与“无穷智慧”直接联系起来。宗教领域提到的所有所谓“神灵启示”以及发明界对所有基本原理或新定理的发现，都是通过创造性想象力才实现的。想法或观念通过我们常说的“预感”进入人脑时，一般来源于以下渠道中的一种或多种： 1.无穷智慧。 2.潜意识思维，这里存储着每种经由五官进入大脑的感觉印象和思想冲动。 3.另一些人的思维，这种人通过显意识想法，刚刚释放出某种构想，或者形成想法或观念的概貌。 4.其他人的潜意识宝库。</li>
-<li>通过对2.5万多人进行分析，我发现，功成名就的人取得的成功，几乎极少实现于40岁之前。比较常见的情况是，这些人直到50多岁之后才真正找到成功的感觉。这个事实让我如此震惊，以至于促使我极其认真地着手研究它的根源，并在长达12年多的时间里一直进行这项调查。 研究结果表明，大部分人之所以在40～50岁之间尚未开始成功，主要是因为他们往往过于沉湎于对性激情的生理表现，从而将精力挥霍殆尽。多数人永远不知道性冲动除了纯生理上的体现之外，还有什么其他用处意义远超于此。大部分在发现这一点时，已经在性能量的高峰期（在45～50岁之前）度过之后浪费了很多年。发现了这一点，瞩目的成就也就指日可待。 许多将近40岁（有的甚至40好几岁）的人生活颓废、无所作为。他们的生活体现出对精力的持续浪费，而他们本来完全可以通过恰当的引导，将青春用在更有意义的事业上。他们的情感曾经那么美好和强烈，但却从来不珍视青春，久而久之，青春韶华就这样挥霍掉了。 迄今为止，对性表现的欲望是人类情感中最强烈、最有力的情感。鉴于此，这种欲望一经运用，并转变成生理表达之外的其他行为，它就能将我们提升到天才的高度。</li>
-<li>有这样一位教师，他培训并指点的推销员超过3000人。他惊奇地发现，最有效的推销员都非常性感。其原因可能是：被称为“个人魅力”的性格因素其实就是性能量。性感者总是有更强的吸引力。通过培养和认知，我们可以利用这种生命力，并在处理人际关系时发挥其最大效用。这种能量可以通过以下媒介传递给他人： 1.握手。双手接触能立即让你感到对方有没有吸引力。 2.语调。吸引力（或者性能量）能够为语调增色，或者变得悦耳迷人。 3.手势和体态。非常性感的人动作轻巧、优雅而悠闲。 4.思想震动。非常性感的人能够将性激情融入自身思想，而且融合起来驾轻就熟，并通过这种方式影响周围的人。 5.外表修饰。性感者通常很在意个人外表。他们通常选择样式能体现自身个性、体格、肤色等特点的衣服。</li>
-<li>通往天才之路包含着性、爱和浪漫的形成、控制和运用多个过程。简言之，可以将这一过程描述如下： 鼓励这些情感作为占主导地位的想法在你头脑中出现，同时阻止所有其他破坏性情感出现。头脑是习惯的产物，你给它注入什么样的主导性想法，它就会让这些想法茁壮成长。凭借意志力的帮助，你可以阻止某种情感出现，同时鼓励另一种情感出现。通过意志的力量控制头脑并不难。控制力源于毅力和习惯，控制的奥秘在于对转换过程的认识。当某种消极情绪主动出现于脑海时，通过简单的思想转换过程，你就能将它转化成某种积极的或建设性的想法。 除了主观努力之外，成为天才别无他途！有人也许能单凭性的驱动力在金融或商业方面成就斐然，但历史中也随处可以找到证据证明：这些人往往在取得巨大成就的同时，可能会由于性格上的某些特质，丧失了保留或享受巨额财富的能力。这一点很值得分析、考虑和深思，因为它阐述了一个可能有益于所有人的道理。正是由于忽视了这个道理，成千上万的人即便占有了财富，也失去了享受幸福的权利。 爱与性这两种情感能给人留下明确无误的印记，这些印记非常明显，所有人只要愿意，都能体验到。仅以性欲为基础，受到狂暴激情驱动的人通过眼睛的神采和脸上的皱纹，便能向整个世界清晰表明这一点。爱这种情感一旦与性的情感融为一体，就能使人的面部表情变得柔和、美丽。你不需要任何个性分析专家来告诉你这一点，完全可以通过自身观察了解到。 爱这种情感能给人带来艺术美并发展这种美。它会在人的心灵深处打下烙印；即便在其火苗由于时间流逝和环境更替而渐渐熄灭之后，烙印仍然清晰可见。 爱的记忆永不消逝。即使外部刺激源消失之后很久，它们仍然徘徊不去，指引着人，影响着人。这并不新鲜。每个曾经被真爱打动过的人都知道，真爱能在人的心灵中留下永久痕迹。爱的影响之所以长久，是因为爱本质上是精神层面的东西。在爱的刺激下仍然无法到达成功之巅的人无可救药——如同行尸走肉，看似活着，其实已死。 即便对爱的回忆，也足以将一个人提升到能进行更高创造性劳动的层次。爱的主要力量可能会由于内耗而用完，就像火苗最终燃尽，却留下不可磨灭的印记，让后来者知道它是怎样燃尽的。它的离开往往使人的心灵为接受更伟大的爱做好了准备。</li>
-<li>积极的情绪主要有以下７种： 欲望； 信念； 爱； 性； 激情； 浪漫； 希望。 此外也有别的积极情绪，但是以上７种最为强大，在创造性劳动中也最经常使用。只要掌握了这７种情感（你只能通过运用掌握它们），其他积极情绪就会在你需要的时候招之即来。在这个问题上，不要忘了，你现在读的这本书旨在帮助你通过给大脑装填积极情绪，来使你形成“金钱意识”。通过给大脑装填消极情绪，你是不会产生“金钱意识”的。</li>
-<li>消极的情绪也主要有以下７种，应当尽量避免产生这些情绪： 恐惧； 嫉妒； 憎恨； 报复； 贪婪； 迷信； 愤怒。 积极情绪和消极情绪不能同时占据大脑，而必须有某一种类型的情绪占据统治地位。你有责任保证让积极情绪在头脑中具有统治性影响。在这个问题上，习惯法则可以帮你的忙。你要养成采纳并运用积极情绪的习惯！总有一天，积极情绪会完全支配你的思维，让消极情绪无法进入其中。</li>
-<li>恐惧贫穷的症状 漠不关心。主要表现为没有志向、甘于忍受贫穷、接受生活提供的任何赏赐却毫无怨言、生理和心理均懒散懈怠，以及缺乏主动性、想象力、激情和自控能力。 犹豫。习惯于让别人替自己思考、总是“保持中立”。 怀疑。一般表现为处心积虑地用托词或借口掩饰、解释或辩解自己的过错，有时候表现为对成功者表示嫉妒或批评。 担忧。通过表现为对别人吹毛求疵；花钱有入不敷出的倾向；对个人外表不在乎；愁容满面或眉头紧锁；酗酒；有时候使用毒品；紧张不安；缺乏镇定自若；难为情或缺少自力更生精神。 过于小心。习惯于在遇到任何事情时都寻找负面、思考并提及可能来临的失败，而不是集中精力寻找成功的途径；对通往不幸的途径了如指掌，但从来不想办法避免失败；等待将想法和计划付诸实施的“恰当时机”，直到等待成为一种积习；记得那些失败者，却忘了那些曾经成功的人；只见树木，不见森林。 拖拉。喜欢将去年就应该完成的事推迟到明天再说；花足以完成工作的时间用于制造托词和借口，这种表现与过于小心、怀疑和担忧密切相关；只要能够逃避，就拒绝承担责任；情愿妥协而不愿奋起抗争；向困难低头，而不是将困难作为进步的阶梯来使用；为一分钱和生活讨价还价，而不去追求繁荣、富裕、富足、满足和幸福；总盘算着遭受失败时怎么办，而不是破釜沉舟、自断退路，这又进一步表现为自信心、目的的明确性、自控能力、主动精神、激情、志向、节俭意识和健全的推理能力很脆弱甚至完全缺乏；期待贫穷而不是渴望致富，以及与那些甘愿受穷的人交往，而不是想办法与那些渴求并得到财富的人为伴。</li>
-<li>自我分析测试题 1.你是否经常抱怨自己老是“感觉糟糕”？如果是，原因何在？ 2.是否别人对你稍有冒犯你便对他们吹毛求疵？ 3.你在工作中是否经常犯错误？如果是，为什么？ 4.你在与人谈话时是否刻薄而无礼？ 5.你是否有意避免与某人打交道？如果是，为什么？ 6.你是否经常不理解别人的意思？如果是，原因何在？ 7.你是否觉得人活着没有意义、未来毫无希望？如果是，为什么？ 8.你喜欢所从事的职业吗？如果不喜欢，为什么？ 9.你是否往往觉得顾影自怜？如果是，为什么？ 10.你嫉妒那些比你更强的人吗？ 11.思考成功或思考失败，你在这两件事中的哪一件上花时间最多？ 12.随着年龄的增长，你的自信心越来越强还是越来越弱？ 13.你能从所有错误中都吸取有价值的教训吗？ 14.你允许某个亲戚或熟人烦扰你吗？如果是，为什么？ 15.你是否有时候“心比天高”，另一些时候则极度沮丧？ 16.谁的鼓励对你最有影响？原因何在？ 17.你容忍自己能够避免的消极影响或让人灰心的影响吗？ 18.你对自己的外表是否满不在乎？如果是，什么时候是，为什么？ 19.你是否学会了让自己忙得没有功夫想烦心事，以此来“消愁”？ 20.如果你任由别人来替你思考，是否肯将自己称作“没有骨气的懦夫”？ 21.你是否不注意心灵的净化，直到自我中毒使你脾气火暴、性格易怒？ 22.有多少可以防止的干扰让你烦恼，为什么你要容忍它们？ 23.你是否借助于酒精、毒品或香烟来“安定情绪”？如果你不试着运用意志力来达到同一个目的呢？ 24.是否有人在你耳朵旁边“唠唠叨叨”，如果有，是什么原因？ 25.你是否有个明确的主目标，如果有，是什么？你为实现这一目标制定了什么计划？ 26.你受到６种基本恐惧中的某种之苦吗？如果有，是哪一种或几种？ 27.你是否有办法保护自己免受别人的消极影响？ 28.你是否有意采用自我暗示法，来使自己的心态积极向上？ 29.占有物质财富或者有能力控制自身想法，这两件事中哪一件你最看重？ 30.别人很容易影响你、很容易推翻你自己的判断吗？ 31.你的知识宝库或精神状态今天有没有收获有价值的东西？ 32.如果某些环境让你不幸，那么你是勇敢地直接面对呢，还是逃避责任？ 33.你是认真分析一切错误和失败并设法从中受益，还是采取一幅“责任并不在我”的态度？ 34.你能说出对自己最有害的３个缺点吗？你在采取哪些补救措施？ 35.你鼓励别人向你倾诉苦水以博得你的同情吗？ 36.你是否从日常经历中挑选出那些有助于你个人进步的教训或影响？ 37.总体上看，你的在场是否会给别人带去消极影响？ 38.别人的哪些习惯最让你看不惯？ 39.在受到别人影响时，你是形成自己的意见，还是听之任之？ 40.你是否学会了形成一种积极的心态，能用它来使自己免受一切令人沮丧的影响？ 41.你的职业能激励你坚定信念、满怀希望吗？ 42.你是否意识到自己拥有强大的精神力量，这种力量强大到能使你的大脑将各种形式的恐惧拒之门外的程度？ 43.你信奉的宗教能否帮助你保持积极的心态？ 44.你是否觉得向别人诉苦是你的责任？如果是，为什么？ 45.你是否相信“物以类聚？通过分析与你交好的朋友，你对自己又有了哪些了解？ 46.与你交往最密切的人与你体验到的幸福之间有无联系？如果有，有什么联系？ 47.有些人你以为是个朋友，但实际上却是你最大的敌人，因为他们对你的头脑产生了消极影响。这种事可能发生吗？ 48.你通过什么标准来判断谁对你有帮助、谁对你造成伤害？ 49.从心理上讲，你最亲密的同事与你孰优孰劣？ 50.每天２４个小时中，你花多少时间做以下事情： a.干工作 b.睡觉 c.玩耍和放松 d.获取有用的知识 e.完全在混日子？ 51.你的熟人当中，哪些人 a.对你的鼓励最多 b.对你的告诫最多 c.对你的阻挠最多 d.以其他方式帮助你最多？ 52.你最担忧的事是什么？为什么你在容忍它？ 53.当别人大方地、主动地向你提建议时，你是毫不质疑地接受呢，还是先分析他们的动机？ 54.在多种欲望当中，你最大的欲望是什么？你打算获得它吗？你愿意让所有其他欲望都服从这一欲望吗？你每天花多长时间用来获得它？ 55.你经常改变自己的想法吗？如果是，为什么？ 56.你是否经常是做任何事都浅尝辄止？ 57.别人在商界或职业领域的头衔、大学学位或财富是否很容易让你动心？ 58.别人关于你的所想或所言是否会轻易影响你？ 59.你是否因为某些人位高权重或有钱有势便对他们阿谀奉承？ 60.你认为当今最伟大的人是谁？此人在哪些方面你比更强？ 61.你分析并回答这些问题用了多长时间？（将所有列出的问题完整地分析并回答一遍，至少需要一天时间。） 如果你诚恳地回答了所有这些问题，那么你就比大多数人都更加了解你自己。要认真分析以上问题。每个星期回头温习一遍，连续坚持几个月。只需通过诚恳回答问题这一简单的方法，你就会为自己获得了那么多宝贵的知识而吃惊。如果某些问题的答案你拿不准，就向那些非常了解你的人咨询（尤其是那些没有讨好你动机的人），通过他们的眼光来认识自己。这种体验会有令人惊奇的效果。</li>
-<li>有位性格分析专家将最常用的借口整理成了一张清单。阅读这张清单时，你要认真分析自己，看看这些借口中有多少（如果有的话）你曾使用。还不要忘记，本书提出的成功哲学将使所有这些借口全都无法应用： 1.要是我没有老婆和家庭就…… 2.要是我有很硬的关系就…… 3.要是我有钱就…… 4.要是我受过良好的教育就…… 5.要是我有份工作就…… 6.要是我有副好身体就…… 7.要是我有时间就…… 8.要是我赶上好时代就…… 9.要是别人理解了就…… 10.要是我所处的环境是另一副样子就…… 11.要是我能再活一次就…… 12.要是我不怕“他们”说什么就…… 13.要是我能有个机会就…… 14.要是我现在有个机会就…… 15.要是别人不“讨厌我”就…… 16.要是没什么东西阻止我就…… 17.要是我年轻一点就…… 18.要是我能做自己想做的事就…… 19.要是我天生就有钱就…… 20.要是我能遇到“贵人”就…… 21.要是我有某某人那样的天赋就…… 22.要是我敢于崭露头角就…… 23.要是我抓住过去的机遇就…… 24.要是别人不会让我不安就…… 25.要是我不必料理家务、照看孩子就…… 26.要是我能存些钱就…… 27.要是老板欣赏我就…… 28.要是有人帮助我就…… 29.要是家人能理解我就…… 30.要是我住在大城市就…… 31.要是我刚刚开始创业就…… 32.要是我什么什么能免费就…… 33.要是我有某某人那样的个性就…… 34.要是我没有现在这么胖就…… 35.要是我的才华有人知晓就…… 36.要是我能得到一个“良机”就…… 37.要是我能还清债务就…… 38.要是我没有失败就…… 39.要是我知道怎样做就…… 40.要是每个人都不反对我就…… 41.要是我没有那么多担忧就…… 42.要是我嫁（娶）对了人就…… 43.要是别人不是那样不愿替我说话就…… 44.要是家人没有那么铺张浪费就…… 45.要是我满怀信心就…… 46.要是运气不和我作对就…… 47.要是我没有出生在错误的星球就…… 48.要是“想怎样就怎样”这句话不是真的就…… 49.要是我不必那么辛苦地工作就…… 50.要是我没有损失那么多钱就…… 51.要是我住在另一个不同的社区就…… 52.要是我没有“过去那段历史”就…… 53.要是我有自己的事业就…… 54.要是别人会听我的话就…… 55.要是……（这是所有借口中最重要的一个）。 制造借口为失败辩解，这是一个与人类同样古老的习惯，对成功却是致命的！为什么人们要死抱着自己宠爱的借口不放呢？其答案显而易见。人们会捍卫自己的借口，因为他们制造了这些借口！ 借口是人自身想象的产物。捍卫自己的脑力劳动成果，这是人性所在。</li>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/03/26/google-tip/">Google 搜索技巧</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Search</a></li>
 </ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;一切成就、一切辛劳所得的财富，最初都不过源于一种想法！&lt;/p&gt;
+      &lt;p&gt;学习一个工具最好的方式就是博采众长，知行合一。本文我精选的一些搜索技巧入门和进阶资源。&lt;/p&gt;
     
     </summary>
     
-      <category term="Reading" scheme="http://wdxtub.com/categories/Reading/"/>
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
     
-      <category term="思考" scheme="http://wdxtub.com/tags/%E6%80%9D%E8%80%83/"/>
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
-      <category term="成长" scheme="http://wdxtub.com/tags/%E6%88%90%E9%95%BF/"/>
+      <category term="搜索技巧" scheme="http://wdxtub.com/tags/%E6%90%9C%E7%B4%A2%E6%8A%80%E5%B7%A7/"/>
     
   </entry>
   
   <entry>
-    <title>【乐者为王】读书笔记</title>
-    <link href="http://wdxtub.com/2017/02/23/just-for-fun-clip/"/>
-    <id>http://wdxtub.com/2017/02/23/just-for-fun-clip/</id>
-    <published>2017-02-23T01:20:48.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
+    <title>版本控制资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-version-control/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-version-control/</id>
+    <published>2017-03-17T06:48:06.000Z</published>
+    <updated>2017-03-17T06:49:41.000Z</updated>
     
-    <content type="html"><![CDATA[<p>我们曾经所做的一切事情，似乎最终都是为了我们自己的乐趣</p>
+    <content type="html"><![CDATA[<p>学习一个工具最好的方式就是博采众长，知行合一。本文我精选的一些版本控制入门和进阶资源。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.02.23: 完成初稿</li>
+<li>2017.03.17: 完成初稿</li>
 </ul>
-<p>乐者为王</p>
-<ul>
-<li>李纳斯：我对生命的意义有种理论。我们可以在第一章里对人们解释生命的意义何在。这样可以吸引住他们。一旦他们被吸引住，并且付钱买了书，剩下的章节里我们就可以胡扯了。 大卫：哦，是的。这倒像个计划。有人对我说，人类自从诞生起就一直有两个悬而未决的问题。第一个是：“生命的意义何在？”第二个是：“在一天结束时，我攒下的所有零花钱能干些什么？</li>
-<li>李纳斯：我有对第一个问题的回答。 大卫：答案是什么？ 李纳斯：这个答案基本上简单而漂亮。它不会给你的生活以任何意义，但可以告诉你将发生什么。有三件事具有生命的意义。它们是你生活当中所有事情的动机，包括你所做的任何事情和一个生命体该做的所有事情。第一是生存，第二是社会秩序，第三是娱乐。生活中所有的事情都是按这个顺序发展的。娱乐之后便一无所的。因此从某种意义上说，这意味着生活的意义就是要达到第三个阶段。你一旦达到了第三个阶段，就算成功了。但首先要越过前两个阶段。</li>
-<li>李纳斯：我们还是来谈谈战争吧。很明显，它最初起源于生存，因为在你和水源之间有一个高个子家伙挡道。再后来，你必须和那个家伙为争夺一个妻子而搏斗。之后，就成了一种社会秩序。中世纪之前很长一段时间里战争就是这个样子。 大卫：战争是建立社会秩序的手段。 李纳斯：没错。但它也是把人自己塑造成社会秩序中一部分的手段 大卫：如今战争已成为娱乐？ 李纳斯：对。 大卫：也许那些在电视上观看战争节目的人，会觉得战争非常有意思。 李纳斯：电脑游戏。战争游戏。有线电视新闻网。战争的原因也常常很有意思。对战争的看法也是娱乐。对性的需求其原因也常常是娱乐。当然，生存的功能没有泯灭，尤其是当你是一个天主教徒的时候，对不对？但即使你是一个天主教徒，有时你想到性的时候也包含享乐的需要。所以这并非只是纯粹的娱乐。在所有的事物中，一部分动机可能是生存，另一部分可能是社会秩序，剩下的就是娱乐。好，我说说技术。技术最初也是生存。生存的意思并非只是生存而已，而是为了生存得更好。为了从井里打水人类才发明了风车…… 大卫：火的发明也是这样。 李纳斯：对。这仍是为了生存，还没有达到社会秩序和娱乐的阶段。</li>
-<li>李纳斯：对。过去所有技术都是为了使生活更容易一些。是为了快点达到一个地点，货品更便宜一些，住进更好的房子等等。那么信息技术与过去的技术有何区别呢？人人都建立起联系后又会怎样呢，还有什么可做的？当然人们之间的联系可以建立得很好，但从根本上说与过去没什么区别。因此技术将把我们引向何处？依我看，下一个巨大的步伐就是迈向娱乐。 大卫：你的意思是，一切的一切最终都将演变成娱乐…… 李纳斯：这就是为什么Linux在某种程度上如此成功的原因。想一下那三个动机。第一个是生存，拥有计算机的人把这个视为理所当然。坦白地说，假如你有一台电脑，就意味着你已经不会再为基本的生计问题发愁了。第二个是社会秩序，建立社会秩序的动机显然是为了使各种各样的人能够各安其位。 大卫：你在Comdex电脑业会议上说的话非常不错，当时你说Linux的开发是一个全球性团队的体育项目。这一点基本上是由你创立的，伙计。 李纳斯：Linux表明了人们为什么喜欢团队体育项目，尤其是想成为团队中的一员。 大卫：是的，每天坐在电脑前，你大概希望觉得你是一个大团体中的一分子，任何事情中的一分子。 李纳斯：这就是社会层面，和其他团队体育项目一样。想象一下一支足球队里面的人，特别是高中的足球队。Linux的社会层面是非常非常重要的。但 Linux也是娱乐，这种娱乐是金钱很难买到的。当你处在生存阶段时，金钱是一个非常强大的动机，因为用金钱换取生存是件容易的事情。换取生存之类的东西是很容易的，但突然之间你进入了娱乐阶段，金钱就…… 大卫：金钱就没用了？ 李纳斯：不是，并不是没用，因为显然你可以用钱买电影影碟、速度更快的汽车、更豪华的假期。还有许多东西你也可以买，从而改善你的处境。</li>
-<li>李纳斯：我们所说的都非常宏观，但我们指的不光是人，而且是生活。和熵的定律相似。根据“生活的熵定律”，一切事物都将从生存走向娱乐，但这并不意味着在某个局部地区没有倒退的现象，而且毫无疑问许多地方都有这种情况。有时事物往往会分裂开来。 大卫：但作为一个体系，一切事物都朝着一个方向发展…… 李纳斯：一切事物都朝着一个方向发展，但并不是同步的。所以从根本上说，性已经达到了娱乐阶段，战争已经快接近娱乐阶段了，技术也已经达到了这一阶段。新生的事物开始是为了生存，比如太空旅行，它在某个阶段是为了生存，然后成为一种社会秩序，最后达到娱乐的目的。可以用膜拜的角度看一下文明。我是说，文明也是以同样的格局出现的。文明最早是为了生存，比如大家聚在一起就会生存得更好，于是建立起了社会结构。最后，文明的存在是为了纯粹的娱乐，当然也并非完全纯粹，而且这种娱乐也并非有什么不好。古希腊人是以强大的社会秩序而著称的，他们也有不少娱乐。人人都知道那个时代产生了不少一流的哲学家。 大卫：那么这些和生活的意义有什么联系呢？ 李纳斯：并非有何联系……只是说……存在着这类问题。 大卫：这其间的小小联系你还得想一想。 帕特里夏：妈妈，瞧那些牛。 李纳斯：所以，要是你知道生活的走向是这样的，那么毫无疑问，你的生活目标就中促成这一走向。而且这种走向并非是一个单一的行程。你做的一切都是许多走向中的一部分。你也可以问自己：“我做些什么才能使社会变得更好？”你知道你是这个社会的一部分。你知道社会正在朝这个方向发展，你也能帮助它朝这个方向走。 塔芙 (扬起鼻子)：什么味？真难闻。 李纳斯：所以归根结底，我们都是为了开心。我们也可以坐在这里，完全放松，享受着汽车旅行。 大卫：仅仅为了开心？ Just for Fun</li>
-<li>VIC-20是最早的家用计算机之一。它不需要自己组装。你只须把它和电视连接上，打开，它便开始工作了，电视屏幕的上方会显示出大写字母“已准备好”的字样，然后是一个一闪一闪的光标，在等着你开始操作。 最大的问题是，当时在个人计算机上你没什么可做的事情。尤其是在早期，开发商业程序的条件在当时并不具备，你能做的唯一的事情就是在它上面用 BASIC语言编程序。我外公当时就是这么干的。 我外公把这个新家伙仅仅看作是个玩具而已，同时也是一台升级的计算器。它不仅在求正弦值等方面比老式的电子计算器快得多，而且你还可以让它自动地反复执行同一条指令。这样，我外公可以用它在家里完成一些过去只能在大学的大型机上完成的事情。</li>
-<li>。只要你做，你就可以做到。 这种感觉棒极了。 然后，我开始自己写程序。 但是，我编写的第一个程序与其他人编写的第一个程序没什么不同。 10 PRINT “HELLO” 20 GOTO 10 它将严格按照你所期待的那样去做。屏幕上显示出一行又一行的“HELLO”，并且无休无止，除非你因为厌烦而中止它。 然而这仅仅是在计算机上的第一步，也是许多人的最后一步。在这些人眼里，这样的程序非常愚蠢，因为你为什么要把“HELLO”显示上一百万次呢？但这个程序也是许多早期家用计算机的用户操作手册里面必然会有的第一个示范程序。 但让人惊奇的是，你可以改变程序的内容。我妹妹萨拉让我对这个程序作了修改，从而产生了这个程序的第二个版本，屏幕上显示的不再是“HELLO”的字样，而是无休无止的“SARA IS THE BEST” (萨拉是最棒的)这行字。其实在平时，我并非是一个拥有如此爱心的哥哥。很显然这种显示方式 (满屏滚动的一行行字)给她留下了深刻的印象。 然而此事我却记不真切了。因为每当我写完一个程序后就会把它忘记，然后再去编写下一个。</li>
-<li>我也用我的零花钱购买电脑杂志，其中有一本写着关于莫尔斯电码 (Morse Code)的程序。而这个特殊程序的特别之处在于，它并非用BASIC语言写成，而是由一组数字写成，这些数字可以用手工方式将其转变为计算机可以读懂的许多0和1。 这样，我便发现了电子计算机并非真的讲BASIC语言，它所赖以操作的是一种更加简单的语言。赫尔辛基的孩子们都和他们的父母在树林子里玩曲棍球和滑雪，而我却在琢磨一台电脑在怎样工作。当时有一些程序，能把人们可读和数码转换成电脑看得懂的0和1，但我并不晓得有这样的程序，于是我就开始用数字形式编写程序，然后再用手工进行转换。这就是用机器语言编程序，这样做时，我便开始做起了我过去以为是完全不可能的事情。我已经能够驱使电脑做事情，对一切细节我都能够加以控制。我开始思索，如何能在更小的空间里让事情做得更快一些。由于在我和电脑之间没有抽象的屏障，我很快地就能接受目标，这便是和一台机器变得亲密的感受</li>
-<li>只要屋里摆着电脑，晚上不睡觉都没关系。每个男孩子晚上都睡得很晚，以便躲在被窝里“阅读”《花花公子》。但我却不是这样，而是佯装睡着，等我妈妈走了以后便跳将起来，一屁股坐在电脑跟前。那个时候可还没有网上聊天这回事呢。“李纳斯，该吃饭了!”有时妈妈这么叫我时我不愿意出去，于是妈妈就对她的一些记者朋友们说，我是个非常好养的孩子，以至她只要把我放在一个黑咕隆咚的储藏柜里，再配上一台电脑，偶尔朝里扔一些意大利面条，我就会感到格外高兴了。她的话不无道理。谁也不会担心这个孩子出外时遭到绑架 (你听说过这样的事吗？)。个人计算机在变得像今天这样复杂之前，尤其是在像我这样呆头呆脑的青少年还可以打开电脑的盖子自己动手修理的时候，其实对孩子们很有好处。今天的电脑所面临的问题和汽车一样：它们变得越来越复杂，于是人们很难将他们拆开再自己组装在一起，所以也就很难弄清那里面究竟是回事。过去人们可以简单地换掉汽车上的桐油过滤器，但你最后一次修车肯定要比那个活儿复杂得多吧？</li>
-<li>总的来讲，我在学校里比萨拉的功课要好。萨拉更爱社交，看上去很随和，对别人特别友好。我还得说一句，这本书就是别人雇她翻译成瑞典语的。但最后她在学习上超过了我，因为她考的科目比我多。我的兴趣比她窄。别人都知道我只是个偏爱数学的家伙。 其实，我能把女生带回家的唯一原因就是她们希望得到我的辅导。即使这样她们来的也不多，而且每次都不是我的主意。我爸爸总觉得那些女生感兴趣的并非仅仅是补习数学 (在他看来，她们都认同他伟人般的鼻子，好像这等于认同他是个伟人)。假如她们在寻找一个数学尖子，她们肯定没有一个固定的男友。我的意思是，我从未弄明白他们说的“深度爱抚”是什么意思。我曾经花了不少时间照顾邻居家一只十五磅重的猫，就是不明白这有什么了不起的。 不错，我绝对是一个呆傻之徒，这一点毫无疑问。那个时候呆傻尚有性感的含义；不过我猜并不是真正的性感。你们所看到的是一个既呆傻又腼腆的学生，他是不是有点多余？于是我便坐在电脑旁，感到无限的快乐。 中学毕业时，我头上戴着一顶白色毛茸茸的挂着黑穗的帽子。毕业典礼上，他们把文凭发给我，然后我就回家。所有的亲戚都在那里等着你，到处都是香槟、花卉和蛋糕。此外，全年级还要在当地的一家餐厅里举行庆贺聚会。这些我们都做了，而且我猜我很开心，不过具体的细节全忘了。然而你要是问我那台68008 芯片的电脑的规格，我却记得非常清楚。</li>
-<li>我上大学第一年的成绩斐然，需要拿到的学分我都拿到了。然而我仅仅在第一年收获颇丰，也许是新的环境让我感到特别兴奋，或是因为突然拥有了深入学习某些学科的机会，再不然就是读书使我感到很舒服，这总比隔三差五地进行社交活动、把酒吐在朋友们身上好得多。第一年我表现得非常好，实在无可挑剔。然而你放心，这种表现从此再没有发生过。我的学术生涯来了个一百八十度的大转弯。 那时还没有选择专业，最后计算机成了我的主修课，物理和数学是副修。我的问题之一是，在整个赫尔辛基大学，除我之外，希望主修电脑的讲瑞典语的学生只有一个，他名叫拉尔斯·韦尔泽尼斯。我们俩参加了一个为讲瑞典语的理科学生举办的组织，在那里觉得非常开心。这个俱乐部的盛况都是由学“硬科学”的学生们组成的，比如物理和化学。顺便提一句，成员都是男生。</li>
-<li>我已经选好我的秋季课程，其中最让我期待的是C程序语言和UNIX操作系统。在等待着上课期间，我还买了一本上面提到的教科书，希望能先读一下。在这本书中，住在阿姆斯特丹的大学教授安德鲁·塔南鲍姆讨论了MINIX，那是他为UNIX撰写的教学辅助软件。MINIX也是UNIX的小型翻版。一旦读完了介绍，了解到UNIX背后的理念以及那个强大、利索、漂亮的操作系统所能做到的事情后，我便决定弄一台机器来操作UNIX。我将操作MINIX，那是我所能找到的惟一版本。 通过阅读和对UNIX的了解愈来愈深，我的热情高涨起来。 说实话，我的热情从来没有低落过（我希望你在做某件事时也能说出同样的话）。</li>
-<li>那年夏天我做了两件事。第一件是什么都没做。第二件事是读完了七百一十九页的《操作系统：设计和执行》。那本红色的简装本教科书差不多等于睡在了我的床上。 赫尔辛基大学为微型VAX电脑购买了十六个客户执照。这意味着“C语言和UNIX”课程的选修学生人数被控制在了三十二名—我想学校的想法是十六个学生白天使用机器，另外十六个学生晚上使用。教师和我们一样，对UNIX也不太熟悉。他对此公开承认，因此也没构成什么问题。但他每次都比学生先读一个章节。有时学生也会提前跳读三个章节，因而上课成了一种游戏，学生们问的问题都是在三个章节之后才能学到的，目的是为了难住教师，看他是否已经读了那么多。 我们在UNIX的大世界中都是婴儿，一边学习一边完善这门课程。然而关于这门课最明显的是，在UNIX背后有一个非常独特的理念。你在这门课的第一个小时就抓住了这一点，剩下来就是解释细节了。</li>
-<li>UNIX的独到之处在于它所追求的基本理想。它是一个干净利索、非常漂亮的操作系统。UNIX具有程序的观点，凡是做任何事情都是一个过程。这里有一个简单的例子。shell command是为进入操作系统而键入的一种指令，在UNIX中，它并不像在DOS中似的被装在操作系统里。它只是一个任务，同其他的任务相同。这个任务是从你的键盘中读出的，然后再写回到显示器。任何能做的事情的东西在UNIX里面都是一个程序，此外还有文件。 吸引我的就是这个简单的设计，它也吸引着大多数对UNIX感兴趣的人（至少对我们电脑迷们颇有吸引力）。你在UNIX上完成的大部分任务都是通过六个基本操作完成的，它们被称作“系统呼叫”（system call），因为它们是你对操作系统的呼叫，你便让它为你完成任务。通过这六个基本的系统呼叫，任何事情你都可以完成。 此外还有“创建子进程”（fork）的概念，它是UNIX的基本操作之一。当一个程序创建子进程时，它便把自身完全复制出来。这样你就有了两个相同的拷贝。复制拷贝多数情况下再去执行另一个程序—用一个新项目替换自己。这便是第二个基本操作。其他四个基本系统呼叫—打开、关闭、读和写—都是为了访问文件的。这六个系统呼叫便组成了UNIX的简单操作。 当然，从细节方面讲，还有数不清的其他系统呼叫。然而一旦你明白了这六个基本系统呼叫，你就了UNIX。UNIX的好处之一是，你并不需要拥有复杂的连接去创立复杂的事物。你可以通过简单事情的互动来建立任何程度的复杂任务。你只需在简单的程序之间创造出交流渠道，在UNIX中叫做“管道”（pipes），就能解决复杂的问题。 一个差劲的系统在做任何你想做的事情时都需要有特殊的连接。UNIX则恰相反。它提供给你执行任务的材料，这些材料足以让你完成任何事情。这就是所谓的干净利索的设计。 语言其实也是如此。英语有二十六个字母，你可以用这些字母创造出任何单字。另一种语言是汉语。在汉语中，你所想到的任何一件事都由一个字来代替。你一开始用的就是复杂的形态，然后在有限的方式中将复杂的形态组合起来。VMS的大体上也是这种思路，Windows的方法也是如此。而UNIX的理念是越小越漂亮。一小堆简单基本的建筑材料，结合起来就能创造出无限的复杂表述。 物理的规则亦是如此。你努力找出基本的规则，而这些规则都是相对简单的。从那些简单的规则中，通过相互作用产生令人不可思议的复杂性。</li>
-<li>那种简单的设计并非是自然产生的。UNIX是美国电报电话公司贝尔实验室的丹尼斯·里奇（Dennis Richie）和肯·汤普森（Ken Thompson）花了很大力气设计完成的。你也不能认为简单就是容易。简单需要特别的设计和很高的品味。 让我们再回到人类语言的例子上。像图画似的中国象形文字是最先产生的，然后再追求“简化”。而建筑材料似的做法则需要更多的抽象思维。同样，你不能将UNIX的简洁同上不了档次混淆起来—事情正好相反。 但这并不是说，创造UNIX的最初原因有多么复杂。它和计算机的许多其他事情一样，都是以游戏开始的。最初有人想在等离子显示器上玩电脑游戏，那就是UNIX发展起来的原因。正因为当时人们觉得这个操作系统不是一个严肃的项目，美国电话电报公司才认为它并非是商业上的冒险尝试。事实上，美国电话电报公司的垄断受到制约，对其限制之一是不能推销电子计算机。所以创造UNIX的人有很大的，尤其在为大学服务方面没遇到什么阻碍。</li>
-<li>住在阿姆斯特丹的、撰写MINIX的安德鲁·塔南鲍姆想把这个操作系统作为教学工具，于是在一些不利的方面它都被故意损坏了。MINIX也得到了一些改进，最出名的一个改进是一个叫布鲁斯·伊文斯（Bruce Evans）的澳大利亚人进行的，他使用的是MINIX386。他的改进使MINIX在386上运行起来更方便。在我购买这台电脑之前，我就一直在网上跟踪MINIX的消息，所以从一开始我就想使用它的升级版。但是，你不得不买MINIX的正版，然后再做大量的工作，引入伊文斯的改进—这是工作的主要任务之一。 MINIX有一些性能令我很不满意，其中最大的失望是终端仿真（terminal emulation）。仿真很重要，因为我只能依赖这个程序，才能让我家里的电脑模仿大学的电脑。每当我拨电话接通大学的电脑，使用强大的UNIX工作或仅仅是上网时，都使用终端仿真程序。</li>
-<li>于是我开始做一个项目，制作自己的终端仿真程序。我不想在MINIX底下做这个项目，而是想在硬件水平上完成它。这个终端仿真项目也是一个很好的机会，可以让我了解386硬件的工作性能。我前面已经说过，这时正值赫尔辛基的冬天。我的电脑又笨又大。这个项目最重要的部分就是悟出这台机器都能做些什么，并从中获得乐趣。 我不得不从BIOS开始，BIOS是计算机启动的早期ROM编码。它可读软盘和硬盘。所以这次我在软盘上操作。它读出软盘的一个扇区并跳到那里。这是我的第一台PC，我不得不学着如何进行这种操作。386是以“常规模式”启动的。但为了充分利用全部的CPU和进入32比特模式，你只得进入“保护模式”。在此之前，你得进行大量的复杂的测试。 为了制作仿真程序，你需要了解CPU是怎样工作的。其实，我用汇编语言收发室的部分原因就是为了了解CPU。其他你还需要了解的事情包括：怎样写入显示器，怎样读键盘输入，怎样读写调制解调器—但愿我的这些文字不会把非电脑迷们吓跑。 我想出两条独立的线程。一条线程从调制解调器读出，然后在显示器上显示。另一条线程从键盘上读出，然后写入调制解调器，这样就会在两条线程上运行着两条管道。这叫做任务转换，386有支持这一程度的硬件。 我写的最早的试验程序是使用一个线程将字母A写到显示器上。另一个线程写B。我知道，这听起来没有什么奇怪的。我把此编入程序，让其在一秒钟之内出现若干次。在定时器的帮助下，我使这个程序这样运转：显示器上先出现一连串的字母A，然后突然之间，转变成一连串的字母B。从实际的角度看，这是一个完全没有任何用处的练习。但却是一个很好的方式，显示出我的任务转换是可行的。做到这一点大约花了我一个月左右的时间，因为我必须一边做一边学习。 于是，最终我便能改变由一连串A和一连串B组成的两个线程，从而使数据一个读自调制解调器，再写入显示器，另一个读自键盘，再写入调制解调器。我有了自己的终端仿真程序。 每当我想读新闻，我就运行自己的程序。我把自己的软盘插进，重新启动机器，就能从大学的计算机里读新闻了。倘若我想改进终端仿真组合程序，我就启动MINIX，用它进行编程。 对此我感到非常骄傲。</li>
-<li>我实在是没有钱。我一向认为不应该向别人要钱或乞求钱，这一点非常重要，但事实上我却得到了钱，所以……让我激动得无话可说。 Linux操作系统就是这样开始的</li>
-<li>我真不知道该如何阐释自己对编程的狂热，但我可以试试。 对于任何编程的人来说，编程是世界上最有趣的事。它比下棋之类的游戏更有乐趣得多，因为它可以由你自己来制订游戏规则。而你制定什么样的规则，也就会导出与此规则相符合的结果。 然而，对于编程外行的人来说，它却似乎是世上最枯燥的事。 编程给人带来的最初兴奋的原因有部分是显而易见的，那就是：通过编程你可以支配一台计算机，你叫计算机做什么，它就做什么，永远准确无误，而且毫无怨言。 这本身就很有意思。 但是计算机在一开始让你入迷的盲从性，显然不得它成为招人喜爱的伙伴。事实上，这种特性很快就让人厌烦了。真正使编程令人欲罢不能的是：你能让电脑做你想做的事，但是你还必须想出怎样做到的办法。 我个人认为，计算机科学和物理科学有很多相似之处。两门学科都是在一个相当基础的层面上探讨一个体系是怎样运行的。当然，区别在于，在物理学中，你探究的是一个已经存在的客观世界的构成。而在计算机科学中，你却是在创造一个前所未有的体系。 在电脑世界中，你就是创世者，你对所发生的一切拥有最终的控制。如果你功力深厚，你可以是上帝――在一个较小的层面上</li>
-<li>编程是对创造的训练。 探究计算机工作原理的过程，是吸引我走进编程世界的最初原因。在这其中获得的最大的乐趣在于，我认识到了计算机科学与数学的类似：你必须从该体系自身的规则出发，推演出整个世界，在物理科学中，你被客观规律所束缚。但是在数学和编程中，只要能合乎逻辑地推演，就可以成立。思考数学问题，不会受到客观世界的逻辑的限制，数学只是逻辑自洽的符号体系。正如任何一名数学家都明白的，人完全可以建构出一套数学等式，以证明三加三等于二。事实上，你想有什么样的体系就可以什么样的体系。但是，随着复杂程度的提高，你必须多加小心，不要弄出什么与你创造的体系不一致的东西。 好的体系容不得任何错误。编程也与数学一样是这么回事儿。</li>
-<li>在大部分时间中你却不能欣赏自己创造的美妙世界。你只不过是在编写执行某一任务的程序。这时你就不是在创造一个新世界，而是在电脑世界中解决一个具体的问题。问题通过将思考结果应用到问题中而得到解决。而能够坐下来，盯着电脑屏幕，将一个问题彻头彻尾地贯穿思考，就需要某种特定的人。 比如，需要像我这种书呆子气十足的人。 操作系统是计算机的所有功能的基础。而创造一个操作系统则是最终的挑战。</li>
-<li>创造操作系统，就是去创造一个所有应用程序赖以运行的基础环境――从根本上来说，就是在制定规则：什么可以接受，什么可以做，什么不可以做。事实上，所有的程序都是在制定规则，只不过操作系统是在制定最根本的规则。 创造操作系统就像在为你创造的这片土地制订宪法，而其他在电脑上运行的程序则是为宪法所允许的普通法律。 有时，这些法律根本讲不能，但这正是你要面对的问题。你需要找到解决办法，并能够意识到自己以正确的方法找到了正确的答案</li>
-<li>一个伟大的数学家不会采用平庸而繁琐的方法，因为他能看到隐藏在问题背后的真正内涵，并应用这一理解去找到更为简便的方法。 在计算机科学中也绝对如此。 没错，你能写一个程序来求出总数。这对于今天的电脑来说不过小事一桩。但是一个伟大的编程者能凭借其聪明的头脑就知道答案是什么。他知道怎样写出漂亮的程序，知道怎样采用一种全新的但最终会被证明是正确的方法。 不过还是很难说清楚，闭门冥思苦想地要找到解决某个问题的漂亮答案，为什么竟然有如此巨大的魅力？但是，你要是曾经有过找到更好方法的经历，你就会明白，这简直是无与伦比的感觉。</li>
-<li>我写了一个磁盘驱动程序。因为我想把文件保存在我的MINIX文件系统中，也因为MINIX文件系统本身整理得很好，于是我让自己的文件系统可以和MINIX文件系统兼容。这样，我就可以在MINIX系统下阅读我建立的文件并将它们存入同一张磁盘，以便MINIX系统也可以通过我的终端仿真器阅读到我建立的文件。 这花费了我大量的精力：编程――睡觉――编程――睡觉――编程――吃饭（饼干）――编程――睡觉――编程――洗澡（冲冲了事）――编程。随着工作的进展，这个项目很明显正在成长为一个操作系统。所以我转变了看法，不再把它看成一个终端仿真器，而是一个操作系统。这个转变出现在我马拉松似的编程过程中的哪个时间段，是在白天还是晚上，我已经想不起来了。也许在这一刻之前我还穿着破旧的睡袍奋力敲击着键盘，在为终端仿真器更多的功能；而转瞬之前我拥有的功能是如此之多，以至于整个体系已经变成了一个。</li>
-<li>不过我发的那个邮件并没有石沉大海。任何一个有相应知识的人 (只有具备相应知识的人才会上MINIX的网站)都能看出我的计划是要开发一个操作系统，否则，我会需要POSIX规则呢？我的邮件引起了赫尔辛基工学院 (我若不是对研究理论这么感兴趣，可能会在这儿求学)一个助教阿里·莱姆克 (Ari Lemke)的好奇。阿里善意地给我回信说，他愿意为我在他们学校的FTP地址上建一个子目录，这样到时我可以把自己的操作系统发布上去，让感兴趣的人们下载</li>
-<li>阿里·莱姆克一定是一个相当乐观的人。在我能拿出什么可以发布的东西之前，他就为我建立了一个子目录：ftp.funel.fi。我有了密码，一切都准备就绪，就等着我去登录然后上传内容了。但是我要再花上四个月才能找到一点我愿与世人分离的东西，或者至少与阿里或几个与我保持邮件往来的热衷于操作系统的狂热分子分离的东西。 我最初的目录是想开发出一个最终可以取代MINIX的操作系统。 这个系统不必比MINIX能干，但必须能胜任我最喜欢用MINIX做的事，以及其他我想做的事。比如，MINIX的终端仿真不仅太不方便，而且也不能进行任务控制――即把暂不用的程序放入背景中，同时内存管理也太简化。顺便说一下，它还是以苹果的操作系统 (Mac OS)而不是以DOS为支持的。 开发操作系统就是搞明白系统呼叫应该做什么，然后以你自己的方式编出能使系统呼叫得以执行的程序。总有来说，共有几百个系统呼叫。有些是多功能的，其余的则很单一。有些更基本的系统呼叫确实是十分复杂的，并需要有大量的基础作为支持。比如，为完成“写”和“读”这两种系统呼叫，你就必须建立一个磁盘驱动程序，以便能够在磁盘里读或写东西。又比如“打开文件”的系统呼叫，你就必须创建一整套文件系统层，以便分析文件名和在磁盘上查找文件。要编写“找开文件”的系统呼叫，更需要几个月的工作。但这个程序一旦编写出来，用于别的功能的程序都可以借鉴。 早期的创建工作就是这样。我不但从Sun服务器的操作系统手册中查找标准，也从其他书中查到可用的标准，挑出一个一个的系统呼叫，然后为它们再编出可行的软件。 这工作很容易让人感到灰心丧气。 原因是：表面上一切如故，你看不到任何进展。你可以做几个试验性的程序，检验自己刚刚加上的东西是否可行。但这并不真的有什么用。在有的阶段你不得不放弃刚才的想法，那一长串的系统呼叫都白干了。一个真正的程序在运行之前，必须已经接近完成。你必须首先运行的程序是外壳 (shell)程序，而在有这个外壳程序之前，要运行什么很难的。而且，这个外壳程序包括了很多你所需的系统呼叫。它运行起来之后，你才会从中找到一长串你尚需完成的功能</li>
-<li>在UNIX中，外壳程序是一切程序之母。它的作用是引发以后的一系列二进制语言程序 (二进制程序是以计算机可识别的1和0为符号编写的程序。以机器语言编程，就是将二进制的源代码组合起来)，这个外壳程序使你首先能登录 (当然在真正的UNIX系统中，你运行的第一个程序传统上被称为init，而init的确需要很多基础的支持才能运行。它是一种对正在运行着的程序的控制工具。当没有任何程序运行时，init就没有用了)。 因此，我做的第一件事不是创建init，而是建一个外壳程序。我执行了约二十五个系统呼叫，正如我所说，这也是我要运行的第一个真正的程序。这个外壳程序不是我自己编的。我下载了一个叫Borne Shell的外壳程序。它是UNIX的初始外壳程序之一，可以从互联网上免费下载，名字来源于一个难听的双关语。编写该外壳程序的家伙名叫波恩，所以这个程序就叫做“Borne Again Shell”，或一般被称为BASH</li>
-<li>我的外壳程序可以运行后，我马上开始着手其他几个程序，比如拷贝程序和列表程序，这些都比外壳程序简单得多。你所需的一发，外壳程序早就具备好了，所以一旦外壳程序完成，就好像是从0飞跃到100一样，因为一切都已就绪。这时，我已经拥有了一切必要的条件，感觉就像上帝创世纪那样，执掌一切地说：“让那里有光”，那里就真的有了光。在此之前，的确是一无所有。 是的，我深感满意。 这种满意很重要，因为那个夏天我除了伏在电脑面前，其他什么都没做。这么说一点也不夸张。芬兰四月到八月的日子是一年中最美好的时光。人们到布满小岛的海上航船，去海滩上晒日光浴，到夏日小木屋中消闲。但是我却在没日没夜地工作，不知哪一天是周末，哪一天是工作日。学生的黑色窗帘遮蔽了几乎昼夜灿烂的阳光，也遮蔽了整修世界。有些天――或夜晚？――我会从床上爬起来后直接坐到离床仅几英尺远的电脑旁。 爸爸显然在不断催促妈妈让我在暑假找份工作，但妈妈却不在乎：我并没有打搅她。萨拉会因为我有时上网使电话战线而有点恼火。她也许会写些毫不客气的话。毫不夸张地说，我和电脑之外的世界几乎没有任何联系。 当然，也许每周有一次，一个朋友会敲敲我的窗户，而我如果没在捣腾什么重要的编码时，会请他进来。我们会喝杯茶，也许还会挤在窄小的厨房里看一小时的MTV。现在回想起来，对了，有时乔科会来敲我的窗户，我们会出去喝点啤酒或玩司诺克台球。但是，诚实地说，那时我的生活也就这么简单了。 而我一点儿都不感觉自己是那种面色苍白、可怜兮兮的失败者。 外壳程序成功了。这意味着，我事实上已经建立起了可行的操作系统的基础，而我自己则乐趣无穷</li>
-<li>外壳程序能运行时，我已为操作系统初步编了几个程序。其实还不能做什么，但你能看出和UNIX很相似。事实上，它运行起来像一个有点残疾的UNIX。 所以我决定将其发布出去。但我不会公开地告诉任何人，而是通过私人邮件告诉几个人――也许总共只有五到十个人吧――告诉他们我已将其上传到FTP地址上。其中包括阿里·莱姆克，布鲁斯·伊文斯，以及其他几个人。我还上传了Linux的源代码和几个用于初始运行的小程序。我告诉人们要运行这个系统应该怎样做。人们还是MINIX386版本――还必须有GCC编译器，事实上是我自己版本的GCC。所以我把这些也传了上去。 我们有了一个给发布的内容编号的协议。它其实只有心理意义。如果我认为自己的东西已经完善，我愿意将其定为1.0版本，而在此之前，我给出的编号就表示出距离1.0版本还有多远的距离。所以，我将上传发布的那个版本的操作系统定为0.01版，让大家知道它离最后完善还有很大的距离。 对了，我想起了上传那天的日期：1991年9月17日。</li>
-<li>你是否渴望回到那样的时代，当男人像男子汉并且能自己编写驱动程序？ ――Linux0.02版本的上载宣言 十月初我发布了0.02版，包括了几个对瑕疵做的补丁程序和一些增加的新程序。十一月我又发布了0.03版。 我本来可能会在1991年底之前就洗手不干了。我已经做了很多自认为有意思的事。并非一切都绝对圆满，但在软件世界中，一旦你已解决了最根本的问题，兴趣就容易很快地消失。我也是那样。解决软件中存在的小问题并不是什么吸引人的工作。但接下来发生了两件让我继续下去的事，第一：由于失误，我破坏了我的MINIX分区；第二，人们不停地传给我反馈的意见。 那时，我在导入Linux时仍要把MINIX作为主要的开发环境。我在Linux系统下做的大部分事只是这我写的终端仿真器从学校的电脑上读邮件和新闻</li>
-<li>学校的电脑总是很难登录，所以我编了个可以自动拨号的程序。但是在十二月时，我本想自动拨devtty1――这是系列电话线，但却错误地拨成了devhda1，既硬盘分区，结果是我无意中覆盖了保存的MINIX中最重要东西的空间。是的，这也就意味着我不能再进入MINIX的环境了。 那就是我要做出抉择的一刻。 我可以重新装入MINIX系统，或者也可以将错就错，自认Linux已是足够的好，以至不再需要MINIX了。我将通过在Linux下编程来编译Linux，而只要我觉得需要MINIX中好的功能，我就把这些MINIX的优点编到Linux中。无疑，这是观念上重要的一步，因为你要摆脱原有的系统环境，使新的系统真的能够自我包容。这一步十分重大，因此我将十一月底发布的版本命名为0.10版。几个星期之后，就升级到了0.11版。 正是从那时起，开始有人使用这个系统并可以用它来做一些事了。 到那时为止，我已经修补了一系列的漏洞。但没有人向我提出新的建议。我记得为了满足更多存储的需要，我曾出过门，并将机器的内存从4兆升级到8兆。我还出去买了个浮点协同处理器 (floating point co-processor)，因为人们开始问我Linux是否能支持他们的浮点协同处理器。 这个附加硬件使我的电脑能执行浮点运算 (floating point math)</li>
-<li>Page-to-disk是一个相当庞大的程序，因为它是MINIX没有涉及到的东西。该程序出现在0.12版中，于1992年1月的第一个星期发布。人们马上开始不仅仅把Linux和MINIX相比较，而且开始和Coherent相比。后者是由TK开发的小型UNIXclone。从一开始，增加page-to-disk就使Linux在竞争中脱颖而出。 那是Linux起飞的开始。 突然间，人们纷纷从MINIX转向Linux。那时Linux尚不能胜任MINIX的所有工作，但是它还是可以做人们真正需要的大部分重要的工作。而它拥有一项人们特别喜欢的功能：有了page-to-disk，你可以运行超过你内存的巨大程序。这意味着，当超出内存之后，你可以将一块旧的内存存到磁盘上，要记存到了哪儿，仍然使用那块内存来解决你的问题。这在1992年的第一个星期是一件不寻常的事。 正是那个月，Linux的用户从我知道名字并与其有邮件往来的五到十个人，增加到了成百上千我不知是谁的人。我并不认识每一个Linux的用户，这多有意思。</li>
-<li>无论如何，我不想把Linux卖掉，我也不想失去对它的控制权。也就是说，我不想别人把它买掉。早在九月上传每一个版本时，我就在有关复制的文件中表明了这个版权声明。根据十九世纪的波恩公约，除非你将其出卖，你拥有自己所创造的一切东西的版权。作为版权所有者，我开始定下了以下关于Linux的规则： 1、人们可以免费使用该操作系统，但不得将它作为商品。 2、 对其所作的改动和改进，必须以源代码的形式将其公开（而不是二进制，这是不公开的。) 3、如果不同意以上规定，则无权对它进行复制或从事任何行为。 你不妨自己设想一下。你为这个程序倾注了六个月的心血，你希望它是有用的，并且自己也能从中有所收获，但你肯定不想让它白白被人占去便宜。我想让大家都能够看到它和使用它，同时也可以随意对其进行改动和改进。但是，我也希望能确保我自己可以及时了解他们做过哪些改动。我希望自己有权使用源程序，这样，假如别人做了什么改进，我也可以利用它。我认为，要使Linux发展成最完美的技术就必须保持它的纯洁性。如果有铜臭渗透进来，事情就要变黑暗了。所以，如果不让钱的问题掺和进来，就不会有贪欲的参与</li>
-<li>在1992年，Linux从一个更像是游戏的玩意变成了一些人生活中不可或缺的一部分，成为他们的生计和生意。 变化发生在1992年春天。过了大约一年半后，当第一个X视窗系统在Linux条件下运行时，我开始着手进行终端仿真。它意味着这个操作系统将有能力支持一个图形用户的界面，而用户也可以在多视窗条件下工作。这个工作应该归功于麻省理工学院的X视窗项目 (X Windowing Project)。这个工作的完成将带来一个很大的改变。我还记得在此之前的大约一年半，我还和拉尔斯开玩笑，说总有一天我们会完成一个在Linux下运行的X系统。但我绝没想到这一天这么快地来到。一个名叫奥瑞斯特·扎布罗斯基 (Orest Zborowski)的黑客能够把X视窗装载到Linux上去。 对于我们有了图形用户界面的事实，我有一个短暂的适应过程。在最初的一年里我甚至都没有把它作为通常的运行环境，但是现在我简直不能没有它了，在我工作时总是同时开着许多窗口。 奥瑞斯特的贡献不仅使我们有了窗口，同时它还打开了通向未来的大门。Domain Socket可以用于能够支持X视窗系统运行的本地网络，但我们可以指望这些同样的套接字 (Socket)能让Linux有能力跳出本地网络，而可以异地连接计算机。没有网络化的功能，Linux只能对那些从不上网或只是在家拨号上网的人还有点用。 靠着极大的乐观主义精神，我们开始在这些新颖的套接字上开发Linux的网络工作功能，哪怕这些套接字本来完全不是为网络工作而设计的。 我相信这很容易做到。我们有一个关于版本发表的编号进度表，原计划是在1992年5月发表0.13版，由于有了恰当的图形用户界面，我感到我们对一个完整、可靠并且支持网络工作的操作系统这一既定目标有了95%的把握，所以我把将要发表的新版重新命名为0.95版。</li>
-<li>我过分乐观地将新版本定名为0.95版，而不甚乐观的实际情况却将这种乐观变成了一种束缚。又花了我们将近两年的时间，1.0版才得以问世。在此期间，我们仍然需要不停地发布各种有关瑕疵修和添加功能的新版本。但在0.95和1.0之间，却没有那么多的数字可以作为序号，这让我们着实有些疯狂。等到0.99也用过之后，我们只好在它后面加上数字以简要表示附加的序列，接着又开始依靠字母来表示，比如0.99版第15A次后面紧接着0.99版第15B次，0.99第15Z次是最后一个以此方式命名的版本，因为，原本应该命名为0.99版第16A次的版本正是我们已经完成了的Linux 1.0版。</li>
-<li>当然，你首先要建立别人之所以信任你的基础。对我而言，我猜想主要不是因为我发明了Linux的核心部分，而是因为我最终做出了将它放到互联网上、并且对所有希望使用或改进它的人公开源代码的决定。 多从未想过自己在计算机之外的现实生活因为Linux而有所改变，我也从未想过要做一位领导者。这一切的发生完全是一种偶然。 在一些关键性的发展阶段中，一个五人核心开发小组开始担当大多数的开发任务，他们由此觉得自己好像是一个筛子，有责任维持这个领域的工作。 我很早就明白，最好的领导者不是让手下做他要求他们做的事情，而是让手下做他们自己想要做的事。同时，最好的领导者也明白，当手下犯错时，要让他们自己有能力纠正而不要总是自己出面纠正。最佳的领导者是能够让手下自作主张的人。</li>
-<li>让我换一个表述。 Linux所取得的许多成功，其实可以归结为我的缺点所致： 1、 我很懒散。 2、 我喜欢授权给其他人。</li>
-<li>美国之行对我还是有所触动的。 第一件让我有所感触的事情是，这里的一切相比旧大陆来说都是那么新鲜。我所参观的摩门教堂已有一百五十年的历史，但却经过清洗，显出亮丽的白色。要是在欧洲，所有的教堂都是老旧不堪的，并蒙上了一层岁月的斑痕。看着这洁白亮丽的教堂，我脑海里产生的唯一联想竟然是迪斯尼乐园。因为它看起来太像是童话故事中的城堡，而不太像是一个教堂了</li>
-<li>真正影响那些公司决定层的是这样一个技术上的事实：Linux比它的那些包括Windows NT和各种不同版本的UNIX的竞争对手们都要强大。而更重要的是，人们不愿意严丝合缝地依照微软或其他什么人所制定出的规则行事。你可以随心所欲地使用Linux，这一点是别的操作系统完全做不到的。那些富于独创性的人使用Linux的理由是：他们可以自由进入Linux的源代码，而其他的商业软件却从没有提供过这种方便。 从这个角度讲，这一点从我在我的卧室里发布了Linux0.01版以来还没有改变过。Linux就是比世界上的其他系统更灵活。你可以是自己的老板。而且，至少从网络服务器的解雇讲，它不包含那些“肿块”（bloat）或其他不成功的设计。 Linux系统的另一个优点是：尽管作为网络服务器的操作系统Linux已经越来越知名了，但它从来不是一个为赚钱而生的产物。这一点对于理解Linux的成功非常重要。 主流电子计算机是一个能赚钱的东西，UNIX一般来讲能产生一系列可以赚钱的方向：服务于国防部的超级电子计算机，或应用于银行系统。人们通过向主流机器或其他大型系统销售操作系统赚了大钱，因为收费奇高。接着微软进场了，只卖九十美元一套的操作系统。它不向银行或其他大型系统之类的市场进军。但是突然间，到处都是微软的产品了，就像市场被蝗虫入侵了似的。你知道，那样的入侵是很难抵抗的。 我并不是说蝗虫是坏蛋。我喜欢所有的动物和昆虫。 到处都是并且占领赚钱的机会简直太好了，微软就是这么干的。想想看，一种流动的生物流进每一处它能找到的地方是什么情景。如果它推动一个地方，并不是什么大不了的事，它充斥着全世界，流进喜欢让它进去的地方。 同样的事情正在Linux事上发生。它正流进每一处喜欢它的地方。 但Linux没有赚钱的方向。Linux小而灵活，总会找到它应该占领的地方。你可以在超级市场里、在重要的地方如美国政府的费米实验室或国家航天局里发现Linux。不过在那些地方它只是一种服务器空间的流出物，或一种桌面空间里的流出物，那里就是我开始创造Linux的地方。同时，你也能在植入式的装置里面找到Linux，比如防抱死刹车系统或手表里。</li>
-<li>请注意Linux的流动。 Linux给大众带来了巨大的好处。年轻一代中最聪明、最卓越的那些人都在使用Linux的产品，因为正是Linux才激起了这一代人的狂热。而在早一辈人当中，激起人们狂热的与其说是微软和DOS倒不如说是PC。如果你要操作PC，就一定要用到DOS系统，在当时这是没什么选择的。所以，这种情况对微软操作系统的传播非常有利。 如果你环顾一下你周围最聪颖的那些孩子们，你会发现他们中的绝大多数都在参与对Linux的开发。有一个很明显的现象是，无论是开放源代码的理念还是Linux操作系统都在各大学里赢得了最广泛的支持，其原因之一是：青年学子们大多都抱有对主流与权威的逆反心理（正是这样一种心理曾经极大地影响了我父亲的生活）。 在这场操作系统之争中，一方是庞大而邪恶的微软公司与刻毒、贪婪却他妈富得流油的比尔·盖茨，另一方则是以无私的爱心致力于自由软件的谦逊的民间英雄李纳斯·托沃兹。这些学生们毕业后到各大公司谋职，同时也把在大学期间培养出来的对Linux的喜爱带了过去。</li>
-<li>Linux没有官方版本，有我的版本也有任何人的版本。事情是大多数人都相信我的版本，并把它看作事实上的官方版本，因为我为之工作了九年。我是发起人，人们都认为我的工作十分出色。但我们可以说，即使我刮成光头冲他们大喊“向我鞠躬，否则，我打死你们”，他们也不会搭理我的。 人们相信我，而他们相信我的唯一原因就是我曾经值得信任。 那不意味着我愿意去听语音邮件，或者愿意我在办公室里时人们正好打电话进来。 我并不认为人们应该把我看成是一个所谓的好人，任何给我打电话或发电子邮件的人回话。想来这事的确奇怪，到底是哪些廉洁把我描给成了一个不爱钱财的谦恭的和尚或圣人。几年来，我一直想驱散这个神话，我不想成为新闻界所希望的那种人。 事实是，我从来憎恨那个谦恭的和尚形象，因为那个形象实在太不酷了。那是个沉闷的形象，而且，那不是事实。</li>
-<li>成功不是试着去控制人们。 麻烦之处在于，人们经常会被纯粹的贪婪所驱使，而这一点从长期来看最终会导致失败。贪婪导致了决定被偏执和控制欲所统治。那些错误的、短视的决策，导致了最终的灾难。一个简单例子就是以美国公司的失败为代价的欧洲无线技术的初期成功。当美国公司还在试图利用他们的所有权独自控制市场时，欧洲公司已经围绕着一个单一标准，即GMS而联合在一起了，并且选择了竞争。竞争的结果促使公司提供最好的产品和最佳的服务。美国公司被抛在了后面，他们为自己的竞争标准而困扰着。在一个有着共同标准的市场里，欧洲公司都拥有了自己的一席之地。这也就是为什么布拉格的孩子们要比美国的孩子们早几年就已开始用手机来交换文本信息了。 如果你想通过控制某一资源来赚钱的话，那么你终将发现自己会被市场淘汰。 这是一种专制的形式，历史上曾经有过大量的例子，它们的影响是负面的。比如说1800年在美国西部你控制了当地农民的水源。你对于用水很吝啬，因而要价很高。于是某一天，其他人设计出从其他地方引入水源的方法，而这种方法在你的高价水政策下不可避免地会变成是有利可图的事业，这时你的市场就会崩溃。技术在进步，可以被利用来将远方的水输送过来，或者促使环境发生改变。不管是哪种方式，你的垄断局面将会被打破，而你将会一无所有。这样的事情随时都在发生着。然而可笑的是，人们却依然没有看到。</li>
-<li>技术是我们所藉以利用的东西，不管是商业还是技术，都不可能改变人类的基本需求与向往。与其他事情一样，进货是缓慢的，但却不可避免地会导致技术越来越进步，从简单生存到基于交流的社会，直至最终进入娱乐社会 (似曾相识的提醒：是的，此前在这些页中你已经见识过这个理论了，假如你坚持看完本书末尾的话，你将会再一次遇到这一理论)。 人类注定是社会动物，技术也注定要进步。 因此毋须再去想有关十年内技术能够做些什么之类的种种预言。从根本上说，这些是无关痛痒的事情。三十年前我们就能将人送到月球上，但从那以后我们却再也没有送人去过月球了。我个人以为，这只不过是因为月球被证实了是一个很单调的地方，基本上没有夜生活，这有点像圣何塞。于是人们并不想再回到月球 上去了。与此同时，我们所聚集的大量技术都对其不起任何作用。月球依然是空空如也。当你谈及技术的未来时，真正有意义的是人们起要什么？一旦能够描绘出这一点，剩下的事情就是如何大规模地生产它，并使它足够便宜，以便人们能够在不牺牲另外也想要的东西的同时获得它。除此而外，没有任何事情真正有意义。 这里再说一些小插曲。真正的卖点当然是洞察力而不是现实。豪华游轮所出售的是对于自由的感知，对于盐海的感受，对于佳肴的观感和爱舟的浪漫。如果你感觉自己像小鸟般自由的话，有谁会在意船舱是否狭窄呢？</li>
-<li>公开源代码的理论基础就是：简单化。在操作系统这一情形里，源代码――即那些构成系统的程序指令――是自由的，任何人都可以改进它、改变它和利用它。但这些改进、改变和利用后的源代码也必须是可以自由获得的。项目不属于任何个人，而是属于每一个人。通过将其开放，会产生迅速和边疆的改进。比之于封闭起来开发，其结果会出得更快、更成功。 那正是我们开发Linux时所经历的。想像一下：你旁边是一个庞大的开发队伍，而不是一个以秘密小组形式组成的开发团队。潜在地拥有数百万更加聪明的头脑来参与同一项目，并且有同行评论过程的支持，啊，这力量简直是无以匹敌的。 人们第一次听说公开源代码的方式，听起来有些滑稽。这也就是为什么经过了这么多年以后它的优点才被人们所了解。开放源代码的“思想观念”并不是传播这一模式的动力，而是因为人们开始注意到一个显然的事实，那就是公开源代码是开发和提高最佳质量技术的最好方法。现在这种方式也在逐渐赢得市场，而市场的成功才使公开源代码获得了最为广泛的接受。围绕着无数的增值服务已经创建了许多公司。当钱财滚滚而来时，人们开始相信公开源代码的魅力了</li>
-<li>那么，社会为什么要进化？其驱动因素是什么？技术的发展驱动着社会前进这一观点大家能够达到共识吗？是否真的是蒸汽机的发明使欧洲开始进入工业社会，并最终通过诺基亚和移动电话将我们带入了信息社会？看起来那就是哲学家的看法，他们的兴趣主要集中于技术是如何改变社会的。 而我，作为一名技术专家，知道技术是不能够驱动任何事物的。是社会在改变着技术而不是相反。技术仅仅是限定了我们所能够做的事物的边界，以及能够以多大的成本来做。 技术，就像它所创造的设备一样，至少迄今为止是天生愚蠢的。它之所以令人感兴趣的是仰仗着你所能够用它来实现的东西，它背后的驱动力实际上是人类的需求和兴趣。 如今我们沟通和交流得到更多不是因为我们有了这样做的手段，而是因为人们从来就喜欢喋喋不休，他们想要交流，如果不存在通讯的手段，则人类就把它们创造出来。于是，便有了诺基亚。 因此，我的论点是，为了理解社会将向何处进化，你就必须去理解是什么东西真正驱动着人们。是金钱？是性？是什么在根本上使人们正从事着他们的工作？ 有一个很显然的激励因素，这个因素可能没有人会持有异议，那就是：生存。生存于是确定了生命的含义，毕竟――人是要生存的。这并不仅仅是盲目地跟从热力学第二定律，而是要在一个看起来对于构成生命基础的复杂与秩序充满了敌意的宇宙中生存。因此生存可谓是一号激励因素。 为了给其他的激励因素排序，我不得不考虑它们将如何与那简单的生存意愿相比较。问题不能是“你是否会为了钱财去杀人？”而是“你是否会为了钱财去死？”答案显然是不会。因此我们可以很有把握地将“金钱”从根本的激励因素列表中排除。 然而显然有些事情人们是愿意为之付出生命的。有许多关于人们――甚至是关于动物――的英雄故事，这些人们或者动物事实上愿意为了更大的事业而献出自己的生命。因此，仅仅生存这一因素并不能够解释推动我们社会发展的激励要素。 我</li>
-<li>那么，社会为什么要进化？其驱动因素是什么？技术的发展驱动着社会前进这一观点大家能够达到共识吗？是否真的是蒸汽机的发明使欧洲开始进入工业社会，并最终通过诺基亚和移动电话将我们带入了信息社会？看起来那就是哲学家的看法，他们的兴趣主要集中于技术是如何改变社会的。 而我，作为一名技术专家，知道技术是不能够驱动任何事物的。是社会在改变着技术而不是相反。技术仅仅是限定了我们所能够做的事物的边界，以及能够以多大的成本来做。 技术，就像它所创造的设备一样，至少迄今为止是天生愚蠢的。它之所以令人感兴趣的是仰仗着你所能够用它来实现的东西，它背后的驱动力实际上是人类的需求和兴趣。 如今我们沟通和交流得到更多不是因为我们有了这样做的手段，而是因为人们从来就喜欢喋喋不休，他们想要交流，如果不存在通讯的手段，则人类就把它们创造出来。于是，便有了诺基亚。 因此，我的论点是，为了理解社会将向何处进化，你就必须去理解是什么东西真正驱动着人们。是金钱？是性？是什么在根本上使人们正从事着他们的工作？ 有一个很显然的激励因素，这个因素可能没有人会持有异议，那就是：生存。生存于是确定了生命的含义，毕竟――人是要生存的。这并不仅仅是盲目地跟从热力学第二定律，而是要在一个看起来对于构成生命基础的复杂与秩序充满了敌意的宇宙中生存。因此生存可谓是一号激励因素。 为了给其他的激励因素排序，我不得不考虑它们将如何与那简单的生存意愿相比较。问题不能是“你是否会为了钱财去杀人？”而是“你是否会为了钱财去死？”答案显然是不会。因此我们可以很有把握地将“金钱”从根本的激励因素列表中排除。 然而显然有些事情人们是愿意为之付出生命的。有许多关于人们――甚至是关于动物――的英雄故事，这些人们或者动物事实上愿意为了更大的事业而献出自己的生命。因此，仅仅生存这一因素并不能够解释推动我们社会发展的激励要素。 我在伯克莱的那次座谈会上提出的其他因素都是简单明白的，因此并不是非常有说服力。但至少有人对此表示赞同（哦，出于对芬兰领事馆的尊敬，他们还是很有礼貌的）。事实上，能让人们为之付出自己生命的东西并不多，但人的社会关系显然是其中之一。 足以让人们奉献生命的社会激励实例数不胜数，从文学中的罗密欧与朱丽叶（他们之所以死亡，并非由于他们想要诸如性这般愚蠢的事情，而是因为如果失去他们的特殊社会关系，他们宁愿死亡），到愿意为了自己的国家和家庭而付出生命的爱国战士。因此，我记下“社会关系”作为第二号激励因素。 第三个也是最后一个激励因素是“快乐”。这听起来有些陈腐，不过它毫无疑问地是一股非常强劲的力量。人们每天需要快乐，做仅仅是出于乐趣才做的各种事情。 快乐并不必然是陈腐的。它可以是下棋，或者是试图想出世界实际是如何运转的。它可以是对于新世界的好奇和探索。能够使一个人坐在末端捆有数千万磅计的烈性爆炸物质的火箭上的动机，仅仅是为了能从太空中看到地球。 对了，就是这三件事：生存、你在社会中的位置、还有快乐。 这三件事就是我们正在做着的事情。任何其他的事物，都是社会学家可能会称之为“突发行为”的东西，它们源于那些规则更为简单的行为模式。</li>
-<li>令人感兴趣的，这三种激励因素有着内在的次序，而这一次序表明了生命的所在。事情并不仅仅是，我们人类被这三种事物所驱使――对于人类以外的其他生命行为也是如此。 这一次序是：生存；社会交往；寻找乐趣。 它也是进化的次序。这就是我们选择了“Just for Fun”作为本书名称的原因。 因为我们曾经所做的一切事情，似乎最终都是为了我们自己的乐趣。</li>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/08/23/git-guide/">Git</a> </li>
+<li><a href="http://wdxtub.com/2016/03/24/svn-guide/">SVN</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Version Control</a></li>
 </ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;我们曾经所做的一切事情，似乎最终都是为了我们自己的乐趣&lt;/p&gt;
+      &lt;p&gt;学习一个工具最好的方式就是博采众长，知行合一。本文我精选的一些版本控制入门和进阶资源。&lt;/p&gt;
     
     </summary>
     
-      <category term="Reading" scheme="http://wdxtub.com/categories/Reading/"/>
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+      <category term="版本控制" scheme="http://wdxtub.com/tags/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>个人博客搭建管理资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-blog/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-blog/</id>
+    <published>2017-03-17T06:44:51.000Z</published>
+    <updated>2017-03-17T06:46:57.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习一个工具最好的方式就是博采众长，知行合一。本文我精选的一些博客搭建入门和进阶资源。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/08/17/add-coding-platform/">静态博客 Coding.net 托管</a></li>
+<li><a href="http://wdxtub.com/2016/01/05/hexo-github-site/">静态博客 Github 并存</a></li>
+<li><a href="http://wdxtub.com/2015/12/06/hexo-plugins-guide/">Hexo 插件指南</a></li>
+<li><a href="http://wdxtub.com/2016/03/05/maupassant-icon-config/">Hexo 主题 Maupassant 换图标教程</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Blog</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习一个工具最好的方式就是博采众长，知行合一。本文我精选的一些博客搭建入门和进阶资源。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="博客" scheme="http://wdxtub.com/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>编辑器资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-editor/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-editor/</id>
+    <published>2017-03-17T06:41:48.000Z</published>
+    <updated>2017-03-17T06:43:38.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习一个工具最好的方式就是博采众长，知行合一。本文我精选的一些常用编辑器入门和进阶资源。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/03/24/visual-code-guide/">VS Code 指南</a></li>
+<li><a href="http://wdxtub.com/2016/03/24/vim-basic-op/">Vim 基础指南</a></li>
+<li><a href="http://wdxtub.com/2016/03/24/sublime-guide/">Sublime 指南</a></li>
+<li><a href="http://wdxtub.com/2015/12/08/md-editor-ios/">iOS 上 Markdown 编辑器简评</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Editor</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习一个工具最好的方式就是博采众长，知行合一。本文我精选的一些常用编辑器入门和进阶资源。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+      <category term="编辑器" scheme="http://wdxtub.com/tags/%E7%BC%96%E8%BE%91%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Unix 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-unix/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-unix/</id>
+    <published>2017-03-17T06:38:59.000Z</published>
+    <updated>2017-03-17T06:40:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习一个平台最好的方式就是博采众长，知行合一。本文我精选的一些 Unix 入门和进阶资源。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/02/18/mac-tips/">Mac 技巧指南</a></li>
+<li><a href="http://wdxtub.com/2016/08/08/mac-work-env/">Mac 工作环境搭建</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Unix</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习一个平台最好的方式就是博采众长，知行合一。本文我精选的一些 Unix 入门和进阶资源。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+      <category term="Unix" scheme="http://wdxtub.com/tags/Unix/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Shell 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-shell/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-shell/</id>
+    <published>2017-03-17T04:01:29.000Z</published>
+    <updated>2017-03-17T06:35:08.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习一个平台最好的方式就是博采众长，知行合一。本文我精选的一些 Shell 入门和进阶资源。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/08/02/shell-guide/">Shell 指南</a></li>
+<li><a href="http://wdxtub.com/2016/03/30/tmux-guide/">tmux 指南</a></li>
+<li><a href="http://wdxtub.com/2016/09/21/byobu-guide/">Byobu 指南</a></li>
+<li><a href="http://wdxtub.com/2016/02/18/oh-my-zsh/">zsh 指南</a></li>
+<li><a href="http://wdxtub.com/2016/03/20/iterm2-guide/">iTerm2 指南</a></li>
+<li><a href="http://wdxtub.com/2016/02/21/iterm-v3-preview/">iTerm2 Version3 动手玩</a></li>
+<li><a href="http://wdxtub.com/2016/09/12/mac-cli-guide/">Mac CLI 指南</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Shell</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习一个平台最好的方式就是博采众长，知行合一。本文我精选的一些 Shell 入门和进阶资源。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+      <category term="Shell" scheme="http://wdxtub.com/tags/Shell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-linux/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-linux/</id>
+    <published>2017-03-17T04:01:20.000Z</published>
+    <updated>2017-03-17T06:40:14.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习一个平台最好的方式就是博采众长，知行合一。本文我精选的一些 Linux 入门和进阶资源。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/03/20/ubuntu-work-env/">Ubuntu 工作环境搭建</a></li>
+<li><a href="http://wdxtub.com/2016/09/28/linux-server-check-guide/">Linux 服务器检查指南</a></li>
+<li><a href="http://wdxtub.com/2016/07/26/crontab-guide/">Crontab 指南</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Linux</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习一个平台最好的方式就是博采众长，知行合一。本文我精选的一些 Linux 入门和进阶资源。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
       <category term="Linux" scheme="http://wdxtub.com/tags/Linux/"/>
     
-      <category term="热爱" scheme="http://wdxtub.com/tags/%E7%83%AD%E7%88%B1/"/>
-    
   </entry>
   
   <entry>
-    <title>【游戏改变世界】读书笔记</title>
-    <link href="http://wdxtub.com/2017/02/23/game-changes-the-world-clip/"/>
-    <id>http://wdxtub.com/2017/02/23/game-changes-the-world-clip/</id>
-    <published>2017-02-23T01:20:38.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
+    <title>Android 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-android/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-android/</id>
+    <published>2017-03-17T04:01:07.000Z</published>
+    <updated>2017-03-17T06:34:04.000Z</updated>
     
-    <content type="html"><![CDATA[<p>在未来25年里，见证某个游戏开发员赢得诺贝尔和平奖，似乎并不那么遥不可及了。</p>
+    <content type="html"><![CDATA[<p>学习一个平台最好的方式就是博采众长，知行合一。本文我精选的一些 Android 入门和进阶资源。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.02.23: 完成初稿</li>
+<li>2017.03.17: 完成初稿</li>
 </ul>
-<p>游戏改变世界</p>
-<ul>
-<li>我们常常以为全身心地投入游戏是“逃避现实”，即被动地撤离现实。但通过希罗多德的历史镜头我们可以看到，游戏也可以是有目的的逃脱、经过深思熟虑的主动逃离，更重要的一点在于，它是极为有益的逃生。对吕底亚人而言，全天候地展开集体游戏，成了一种高度适应困难条件的行为。游戏把生活变得可以承受，它让饥饿的人群在无力的环境下生出了力量感、在混乱的环境下生出了秩序感；让他们能够忍受本来完全不足以为生、不适合居住的环境。</li>
-<li>2009年，游戏开发者大会再次邀请我做主题报告，阐明游戏开发者需要在未来完成哪些工作来重塑现实。这一回，“致力于个人和社会改变的游戏”、“创造积极影响的游戏”、“社会现实游戏”、“严肃游戏”及“撬动地球的游戏”成为大会最受欢迎的环节，对此，我并不感到意外。因为每当我转身，都会看到证据，证明这场驾驭游戏的力量为人类谋求福祉的运动已经拉开了序幕。突然之间，我的梦想：在未来25年里，见证某个游戏开发员赢得诺贝尔和平奖，似乎并不那么遥不可及了。 看着游戏开发人员从事的改变世界的伟大工作，我看到了一个为21世纪重塑古代游戏史的机遇。</li>
-<li>希罗多德认为，游戏是一种介入社会危机的有效方式，它出人意料，极具创造性；而我则认为，游戏是应对当前最迫切共同问题的一种潜在解决方案。 ●希罗多德认为，游戏可以挖掘出人类最顽强的生存本能；而我则认为，游戏能再次把人类的进化优势发挥出来。 ●希罗多德告诉我们，过去，人们创造游戏，以虚拟的方式解决不堪忍受的饥饿；而我则看到，未来，游戏继续满足着我们的另一种饥渴：接受更强的挑战和奖励，变得更有创造力、更成功，参与到比自己本身更宏大的事业中去。但我同时也看到，未来我们所玩的游戏调动了我们参与其中的胃口，推动、促使我们建立更强的联系，为周围的世界做出更大的贡献。</li>
-<li>游戏塑造体验的方式，在本质上有一些独特的地方。抛开类型的差异和复杂的技术，所有的游戏都有4个决定性特征：目标、规则、反馈系统和自愿参与。 目标（goal），指的是玩家努力达成的具体结果。它吸引了玩家的注意力，不断调整他们的参与度。目标为玩家提供了“目的性”（sense of purpose）。 规则（rules），为玩家如何实现目标做出限制。它消除或限制了达成目标最明显的方式，推动玩家去探索此前未知的可能空间。规则可以释放玩家的创造力，培养玩家的策略性思维。 反馈系统（feedback system），告诉玩家距离实现目标还有多远。它通过点数、级别、得分、进度条等形式来反映。反馈系统最基本也最简单的形式，就是让玩家认识到一个客观结果：“等……的时候，游戏就结束了。”对玩家而言，实时反馈是一种承诺：目标绝对是可以达到的，它给了人们继续玩下去的动力。 自愿参与（voluntary participation），要求所有玩游戏的人都了解并愿意接受目标、规则和反馈。了解是建立多人游戏的共同基础。任意参与和离去的自由，则是为了保证玩家把游戏中蓄意设计的高压挑战工作视为安全且愉快的活动。</li>
-<li>已故的伟大哲学家伯纳德·苏茨（Bernard Suits）对游戏下了一个定义，将上述4个决定性特征涵盖在内。在我看来，这是有史以来最有用也最具说服力的游戏定义：玩游戏，就是自愿尝试克服种种不必要的障碍。</li>
-<li>REALITY IS BROKEN 1号补丁：主动挑战障碍 与游戏相比，现实太容易了。游戏激励我们主动挑战障碍，帮助我们更好地发挥个人强项。</li>
-<li>在优秀的电脑和视频游戏中，现象要随时发挥出技能的最高水平，并一直游走在濒临失败的边缘。但等你真的失败了，会产生一种重新攀登高峰的冲动。这是因为人在能力极限下进行工作时所达到的投入状态，是没有什么能够比得上的，这种状态就是游戏设计师和心理学家所谓的“心流”（flow）。一旦进入了心流状态，人们就想长久地停留在那里，不管是放弃还是获胜，两种结果都同样无法让你心满意足</li>
-<li>所有的游戏都有4个决定性特征：目标、规则、反馈系统和自愿参与。目标指的是玩家努力达成的具体结果；规则为玩家如何实现目标做出限制；反馈系统告诉玩家距离实现目标还有多远；自愿参与则要求所有玩家都了解并愿意接受目标、规则和反馈。</li>
-<li>游戏让我们开心，因为它是我们主动选择要从事的艰苦工作。事实证明，没有什么能比出色而艰苦的工作更能让我们开心。我们一般不把游戏看成艰苦的工作。毕竟，我们是在“玩”游戏，而一直以来我们又被告知，“玩”跟工作是对立的。但这与实际情况相去甚远。事实上，杰出的游戏心理学家布莱恩·萨顿史密斯（Brian Sutton-Smith）就说过：“玩的对立面不是工作，而是抑郁。” 根据临床定义，当我们情绪低落时，缺乏信心的悲观感和缺乏活动力的沮丧感都在折磨着我们。要扭转这两种情绪，我们必须拥有对自身能力的乐观态度以及充沛的活动力。目前还没有描述这种积极状态的临床心理学术语，但它完美地描述了玩游戏时的情绪状态。</li>
-<li>所有优秀的游戏都是艰苦的工作，它是我们主动选择且乐在其中的工作。而当我们从事自己喜欢的工作时，就点燃了头脑里的那根快乐雷管。</li>
-<li>合适的艰苦工作在不同的时间、对不同的人有各种不同的形式。为了满足这些个性化需求，数十年来，游戏业已经为我们提供了越来越多的多元化工作。 第一类是高风险工作。在谈到视频游戏时，很多人马上就会想起它。它速度快、多以动作为导向，用成功和惨败的可能性对我们施以双重刺激。不管是在《GT赛车》一类的竞速游戏里全速漂移，还是在《求生之路》（Left4Dead）等第一人称射击游戏里打僵尸，撞车、燃烧、脑子被僵尸吸掉的风险都让我们感觉活起来更带劲。 第二类是重复工作。这类工作单调，完全可以预测。在现实生活中，重复工作的名声很糟，可如果我们主动选择从事这样的工作，其实有助于让我们感到自得而多产。在《宝石迷阵》（Bejeweled）等休闲游戏里调换五彩宝石、在《农场小镇》（FarmVille）等社交游戏里收割虚拟庄稼时，我们很乐于让自己的手脚和思维都集中在一项能产生明确结果的活动上。 第三类是脑力工作。这类工作主要是调动我们的认知能力。它可以是快速而简单的，类似任天堂《大脑时代》里的30秒数学题；也可以是漫长而复杂的，类似即时战略游戏《帝国时代》（Age of Empires）模拟10000多年来的征战。不管是哪种方式，只要我们把大脑很好地利用起来，都能体会到奔涌而来的成就感。 第四类是体力工作。这类工作让我们心跳加快、呼吸急促、汗水狂洒。如果工作足够辛苦，我们的大脑会分泌大量的内啡肽，这种化学物质能让人自我感觉良好。但更重要的是，不管我们是在《Wii拳击》上狠狠出拳，还是在《劲舞革命》（Dance Dance Revolution）里跳来跳去，我们都分外享受让自己精疲力竭的整个过程。 第五类是探索性工作。这类工作通过主动调查不熟悉的物体和空间带来乐趣。探索类工作让我们感到自信、强大，激励我们积极进取。我们在神秘的3D环境[6]下探索时，或是和陌生人[7]互动时，总是分外享受对所有东西展现好奇心的机会。 第六类是团队工作。如今，这类工作在电脑和视频游戏中越来越多，它强调协力合作，为群体做出贡献。当我们在复杂任务[8]中承担起个人的职责，或是在4人合作游戏[9]中保护朋友的性命时，我们总是备感满足，因为我们知道自己要在集体行动中发挥独特而重要的作用。 第七类是创造性工作。从事创造性工作时，我们要做出有意义的决定，会为自己已经做好的事情感到自豪。创造性工作可以是在《模拟人生》（Sims）游戏里设计自己的家，可以是把自己做好的卡拉OK视频表演上传到《歌星》（SingStar）网络，也可以是在《疯狂美式橄榄球》（Madden NFL）里组建和管理在线大联盟。我们每完成一轮创造性工作，都会觉得自己更加能干了。</li>
-<li>高风险工作、重复工作、脑力工作、体力工作、探索性工作、团队工作和创造性工作，所有这些艰苦工作都出现在了我们心爱的游戏里，这让我不禁想起了剧作家诺埃尔·科沃德（Noel Coward）说过的一句话：“工作比娱乐更有趣。</li>
-<li>但面对良性压力，我们不会恐惧或悲观。我们有目的地进入紧张环境，充满信心、积极向上。当我们主动选择艰苦的工作时，就会享受这种刺激和激励的乐趣。它让我们想要投入进去，与人携手合作，把事情做好。这种乐观的精神振奋，比单纯的娱乐更能带动心情。只要觉得自己有能力迎接挑战，我们就会报告说，压力环境让自己动力十足、极感兴趣、乐于参与。这些都是与整体幸福和生活满意度相对应的关键情绪状态。 从可测量的指标上看，艰苦的乐趣让我们的感觉比刚开始时变好了。因此，玩游戏，包括体育运动、棋牌游戏、桌面游戏及电脑和视频游戏，毫无疑问都属于这样一种活动。经验取样受试者在游戏持续中和完成后都报告说，他们对该活动最感兴趣，态度最积极。研究证实了玩家早就明白的观点：在承受能力范围内，我们宁肯艰苦工作，也不愿无聊娱乐。或许，这就是为什么较之其他人，游戏玩家用于看电视的时间全球最少。</li>
-<li>REALITY IS BROKEN 2号补丁：保持不懈的乐观 与游戏相比，现实令人沮丧。游戏让我们保持不懈的乐观态度，把精力放在自己擅长且享受的事情上。</li>
-<li>心流是令人振奋的一刹那，它让我们感受到了激励。一次强烈的心流体验，可以在此后几个小时、甚至几天让我们心情愉悦。但它是一种极端的投入状态，最终会耗尽我们的体力和精力。我们不能随心所欲无限制地一直处在心流中。按照凯斯的说法，这就是为什么人类繁荣需要一种更“持续”的幸福方法，不能只有心流。我们必须找到享受世界和生活的方法，不一定非得随时随地全力以赴地发挥自己潜能的极限</li>
-<li>我们真正需要的，是游戏能够超越让人短暂幸福的心流和自豪，提供一种更为持久的情感奖励；我们真正需要的，是哪怕不玩的时候仍能让我们幸福的游戏。只有这样，才能在游戏和现实生活中实现恰当的平衡。 幸运的是，这正是电脑和视频游戏市场如今的走向。游戏教给了我们创造幸福的4个秘密，还带给了我们随时随地创造幸福的力量。</li>
-<li>一方面，如果我们尝试在自身之外寻找幸福，就把焦点放在了积极心理学家称为“外在”奖励的东西上，即金钱、物质、地位或赞许。等我们得到了自己想要的东西，就会感觉很好。可惜，幸福的愉悦感不会持续太久。我们会对自己喜欢的东西产生耐受性，开始想要更多，需要更大、更好的回报才能触发同等水平的满足感和愉悦感。我们越是尝试“找到”幸福，就越难找到。积极心理学家称这个过程为“享乐适应”[11]，它是长期保持生活满意的最大障碍之一。我们消费得越多、获得的越多、地位提升得越高，就越难感受到幸福。不管我们想要的是金钱、地位、晋升、名气、眼球，或是单纯的物质，科学家们一致同意：追求外在奖励，注定会妨碍我们达成自身的幸福。</li>
-<li>另一方面，如果我们着手自己创造幸福，就把焦点放在了产生内在奖励的活动上，即通过强烈投入周围世界所产生的积极情绪、个人优势和社会联系。我们不是在寻找赞美或付出，我们所做的事情，能因充分投入而带来享受，就足够了。 我们越是尝试“找到”幸福，就越难找到。追求外在奖励，注定会妨碍我们达成自身的幸福。 这种自我激励、自我奖励的活动，其科学术语为“自成目的”[12]。我们从事自成目的类工作，是因为它能让我们完全投入，而强烈的投入感又是我们能体验到的最愉悦、最满足、最有意义的情绪状态。</li>
-<li>要经常沉浸在自我奖励的艰苦工作当中，我们就会更频繁地感受到幸福，不管我们在生活中还遭遇了其他什么事情。这是积极心理学最初期的一个假设，也是一个大胆激进的设想。它和我们通常所知的那一套正好相反，传统观点认为：我们需要按照某种方式来生活才能幸福，生活越轻松，我们越幸福。但艰苦工作、内在奖励与持久幸福之间的关系已经得到了验证，并通过数以百计的研究和实验得到了证实</li>
-<li>那么，哪一种内在奖励对我们的幸福最重要呢？目前还没有确切的答案，但以往的研究成果为我们提供了若干关键思路和案例。我对过去10年积极心理学的主要发现做了分析，认为内在奖励可分为4大类型。 第一，我们每一天都在渴望满意的工作。“满意工作”的确切性质每个人都有不同的看法，但不管对谁来说，它都意味着沉浸在有着清晰定义、能看到直接努力结果的苛刻工作中。 第二，我们渴望体验成功，至少也是希望成功。我们希望感觉到自己在生活中的强大，向他人展示我们的强项。我们希望对成功的机会保持乐观态度，胸怀渴望，随着时间的推移，觉得自己越来越好。 第三，我们渴望与社会建立联系。人是极端的社会生物，哪怕是最内敛的人，也有很大一部分幸福来自与心爱的人共度美好时光。我们渴望分享经验，建立纽带，一起完成所有人都看重的事。 第四，我们渴望过得有意义，渴望成为超越自身的宏伟事业的一部分。我们希望对即将展开的宏伟事业感到好奇和敬畏。最重要的是，我们希望能投入某种超越个人生活、能产生持久影响的事情中去，并为之做出贡献。 这4种内在奖励是最佳人类体验的基础，是除基本生存需求（食物、安全和性）之外最强大的动机。所有这些奖励的共同点在于，它们都是深度投入周围世界，如环境、他人、超越自身的宏伟事业和项目的途径。</li>
-<li>REALITY IS BROKEN 3号补丁：更满意的工作 较之游戏，现实毫无生产力。游戏给了我们更明确的任务，更满意的实操工作。</li>
-<li>满意的工作总是从两件事开始的：一是明确的目标，二是实现这一目标的可操作性步骤。明确的目标激励我们采取行动：我们知道自己该做什么，而可操作性步骤确保我们立刻朝着目标前进。</li>
-<li>动机和合理的进度是满意工作的初始点。但要真正满意，还必须能够明确地完成自己的工作。为了以满意的方式完成工作，我们又需要尽可能直接、立刻、生动地看到自己努力的结果。可见的结果令人满意，是因为它们正面反映了我们的能力。我们看到自己已经取得的成就，就会产生一种自我价值感。积极心理学创始人之一马丁·塞利格曼指出：“最重要的人类资源建设特征，就是工作生产力。”这里的关键是资源建设：我们喜欢富有成效的工作，因为它使我们感到自己正在开发个人资源。</li>
-<li>积极的感觉和较强的能动感相结合，让玩家渴望再次尝试。既然他们能把一只猴子送入外太空，那么下一次，他们肯定能多击倒几个保龄球瓶、多吃掉几根香蕉。游戏以这种积极的方式调动我们的能动性，这让人们很难不乐观。这就是M.I.N.D.实验室的研究人员测量到的积极效应：兴奋、快乐、有趣。</li>
-<li>REALITY IS BROKEN 4号补丁：更有把握的成功 与游戏相比，现实令人绝望。游戏消除了我们对失败的恐惧，提高了我们成功的机会。</li>
-<li>很多时候，成功的希望比成功本身更刺激。成功固然愉快，但一旦成功，就少了好些有意思的事情可做。如果我们失败了，又如果我们可以再次尝试，那么我们就仍有任务在身。</li>
-<li>胜利往往终结乐趣，但失败能够维持乐趣。在线游戏和虚拟世界顶级创意总监拉夫·科斯特（Raph Koster）说：“游戏维持不了太久，我玩自己擅长的东西，走得很远，玩得很好，接着我就厌倦了。”这时候，他就不再玩下去，而转入下一个游戏。为什么？因为真正擅长某件事，还不如没有那么擅长时有意思。 科斯特写了一本在游戏行业大受欢迎的书，名叫《游戏设计的黄金法则》（A Theory of Fun for Game Design），他在书中提出，只有在还没有完全掌握游戏的时候，游戏才“有趣”。“游戏的乐趣来自掌握，来自理解……有了游戏，学习玩游戏就像毒品般让人上瘾。”这就是为什么，游戏的乐趣只能持续到我们尚未成功之时。这是个自相矛盾的事实。</li>
-<li>和游戏相比，现实是疏离的。游戏建立了更强的社会纽带，创造了更活跃的社交网络。我们在社交网络用于互动的时间越多，越有可能产生一种积极的“亲社会情感”。 我们越是一起玩游戏，越是会产生创造全球社群的感觉。玩家并不只是想在游戏里赢，他们还肩负着更大的使命。</li>
-<li>REALITY IS BROKEN 5号补丁：更强的社会联系 和游戏相比，现实是疏离的。游戏建立了更强的社会纽带，创造了更活跃的社交网络。我们在社交网络用于互动的时间越多，就越有可能产生一种积极的“亲社会情感”。</li>
-<li>首先，内向的人一般对外部的感官刺激更敏感，处理对象、空间、他人等外部世界信息的大脑皮层区域对任何刺激都都会产生强烈反应。反过来说，性格外向的人，皮层唤起较低。他们需要更多的刺激，才能感觉投入外部世界。这就让外向的人更有可能去寻求高度的社交刺激，而内向的人哪怕参与社会投入度较低的活动，也容易在精神上感觉疲惫不堪。 其次，外向的人往往会产生更多的多巴胺回应社会奖励，如笑容、笑声、对话和抚摸。反过来，性格内向的人对这些社会奖励较不敏感，但对心理活动，如解决疑难杂症和单独探索等高度敏感。研究人员说，这可以解释为什么外向的人似乎在周围有人、环境刺激时更快乐，他们比内向的人有着明显更为强烈的积极情绪。</li>
-<li>意义是我们置身比个人更宏大的事业所产生的感觉，是我们的行动比个人性命还重要的信念。说一件事有意义，意味着它不只对我们自己，对我们最亲密的朋友和家人、对一个更宏大的群体如社群或组织，甚至对整个人类有值得一做的必要。 意义是我们所有人都渴望获得更多的东西：更多的在宏观图景中创造奇迹的方法，更多的在世界留下痕迹的机会，以及更多的在自己所属的社群或项目中迎来敬畏和好奇的时刻。 我们怎样才能在生活中获得更多意义？其实很简单。哲学家、心理学家和精神领袖都赞同：为生活增加意义的最佳途径，就是把自己的日常行动与一件超出自身的事情联系起来，事情越大，效果越好。正如马丁·塞利格曼所说：“自我是一个意义匮乏的地方。”在宏大的社会背景之下，我们无关紧要。你附着的实体越大，获得的意义越多</li>
-<li>REALITY IS BROKEN 6号补丁：更宏大的意义 与游戏相比，现实微不足道。游戏让我们投身到更宏伟的事业当中，并为游戏赋予了宏大的意义。</li>
-<li>“宏伟”的准确定义是指，某种在规模、大小和强度等方面远远超越平凡的东西。热门视频游戏在营造宏伟规模上远比当今任何媒介都要出色，它们主要依靠3种关键方式来体现宏伟： 它们为行动创造宏伟的背景：帮助我们将个人游戏和更大的使命联系起来的集体故事。 它们让我们沉浸在宏伟的环境当中：唤起好奇心和惊讶感的庞大互动空间。 它们鼓励我们参与宏伟的项目：玩家在数月甚至数年的时间里通力合作展开集体活动。</li>
-<li>首先，游戏的故事需要成为行动的集体背景，由其他玩家所共享，不能只是单个人的体验。这就是为什么真正的宏伟游戏总跟大型在线玩家社群联系在一起——成千上万，甚至数百万玩家在同一背景下行动，他们在论坛、维基上彼此谈论自己所做的事情。 其次，玩家在集体背景下采取的行动需要让人感觉是在奉献：单个玩家的每一轮努力，必须最终有利于其他所有玩家。换句话说，游戏里的每一次个人行为，必须最终累积成某种更宏大的事物。</li>
-<li>宏伟的环境，是指一个凭借自身的极端规模唤起人们深刻的敬畏和惊奇感的空间。世界上有许多天然的宏伟环境：珠穆朗玛峰、大峡谷、维多利亚瀑布、大堡礁，等等。这些地方展示了大自然的伟力，置身于此，我们显得渺小而卑微。 然而，人为建造出来的宏伟环境有所不同：它不是大自然的鬼斧神工，而是设计和工程的壮举，它是人类取得的成就。它既让人类感到谦卑，又赋予了人类力量；它既让我们感到个体的渺小，又让我们觉得只要团结一心就能完成宏伟的事业。这是因为，建造出来的宏伟环境是人类大规模合作的成果，也是人类团结起来实现超常壮举的证据，如中国的长城、印度的泰姬陵、秘鲁的马丘比丘。</li>
-<li>心理学家亚伯拉罕·马斯洛（Abraham Maslow）说过一句名言：“了解自己想要什么并非常态，它是罕见而艰巨的心理成就。”但今天最优秀的游戏为我们提供了强大的工具，帮助我们获得这一罕见的自我认知。</li>
-<li>整个人生就是一场实验，尝试得越多，就越好。</li>
-<li>采用游戏的形式去做，哪怕是打扫清洁这种最平凡的事情也能让人体验到自豪感，只要你让它变得更具挑战性，或是要求我们在做的时候更具创新性。 在现实生活中，做家务活儿能看到明显的效果：闪闪发光的厨房或是井井有条的车库。这是一种反馈，而且肯定令人满意。但《家务战争》巧妙地用一种更强烈的反馈，扩大了这种常见的小满足：虚拟化身升级。玩过在线角色扮演游戏的玩家都知道，练级是最让人满意的一种反馈形式。看着虚拟化身的形象越来越强大、越来越灵巧，每一项家务琐事都让人感受到了额外的满足，但如果单纯只是房间变得更干净了，起不到这样的效果。你不是为了别人在做这些工作，在游戏过程中也发展了自身的强项。</li>
-<li>REALITY IS BROKEN 7号补丁：全情投入 与游戏相比，现实难以投入。游戏激励我们更积极主动、热情洋溢、自我激励地参与到自己正在做的事情当中。</li>
-<li>全情投入一件事，意味着自我激励、自我导向、浓厚的兴趣和真正的热情。如果我们是被迫做的，或是三心二意，就没有真正参与；如果我们不在乎事情的结果会怎样，就没有真正参与；如果我们被动地等待，同样没有真正参与。我们在日常生活中越是无法充分参与，获得幸福的机会就越少。事实就是这么简单直白。 我们真正渴望的情感和社会回报，需要积极主动、热情洋溢、自我激励地参与。平行实境游戏，就是为了帮助玩家更充分地投入当下，而不是逃避它、忍受它。</li>
-<li>第一，与任何一款优秀游戏一样，平行实境游戏必须始终有选择的余地。我敢担保，如果你非得要谁来玩《家务战争》，它的吸引力和效果就损失了一大半。平行实境游戏要发挥效果，必须真正跟现实“平行”。 第二，只有选择的余地还不够，一旦活动上路，优秀的平行实境游戏还需要令人信服的目标、有趣的障碍以及精心设计的反馈系统，这也跟任何优秀游戏都一样。这3种特征打通了我们征服挑战、发挥创造力、推进能力极限的天然欲望，鼓励我们更充分地参与。这就是最优游戏设计的用武之地。毫无疑问，总有一些平行实境游戏比其他的更有趣、更能激励人，正如传统游戏里也总有最出类拔萃的一样。最好的平行实境游戏跟最好的传统电脑和视频游戏相同，能帮助我们为自己创造更满意的工作，培养更大的成功希望，强化我们的社会纽带，激活我们的社交网络，让我们有机会为宏伟事业做出贡献。</li>
-<li>在确定优秀平行实境游戏有哪些不同的构成元素时，总会出现三重附加标准。 第一，我们在什么时候、什么地方需要平行实境？哪些环境、什么样的空间需要它？什么时候抛开现实会更好过？ 第二，我们应该把什么人纳入自己的平行实境游戏？除了亲朋好友，我们还想邀请什么人来一起玩，并因之受益？ 第三，我们应该采用什么活动作为平行实境游戏的核心机制？游戏设计讲究结构性：目标、规则和反馈，但在符合要求的结构当中，我们可以要求玩家做任何事情。我们应当鼓励哪些习惯？我们应该增加哪些活动？</li>
-<li>与游戏相比，现实不得要领，而且费力不讨好。游戏帮助我们感受到更多的奖励，让我们全力以赴。 瞬时的积极反馈让玩家更为努力，更成功地完成艰巨的挑战。把我们本来就喜欢的事情变得更像游戏值得一试，它能让我们做得更好，把目光放得更为高远。</li>
-<li>REALITY IS BROKEN 8号补丁：人生的升级 与游戏相比，现实不得要领，而且费力不讨好。游戏帮助我们感受到更多的奖励，让我们全力以赴。</li>
-<li>玩家为什么能把几乎每一款游戏都越玩越好？实时数据和定量基准就是原因所在：他们的绩效以进度条、点数、级别和成就的形式，持续地得到测量和反馈，玩家很容易看到自己什么时候得到了怎样的进展。瞬时的积极反馈让玩家更加努力，并成功完成更艰巨的挑战。 因此，把我们本来就喜欢的事情变得更像游戏值得一试。它能让我们做得更好，帮助我们把目光放得更为高远。</li>
-<li>挑战项目把跑步爱好者的个人目标放到了更大的社会背景中，让每一次慢跑都变得更有意义了。每一次跑步都累积成了另一种东西：根据最能激励自己的因素，我可以选择参加调动了我战斗灵魂的挑战赛，也可以参加唤起了我对队友责任感的挑战赛。</li>
-<li>游戏化的团队机制 与游戏相比，现实孤独而隔离。游戏帮助我们团结起来，从无到有创造更强大的社群。 我们其实真心愿意与最陌生的陌生人分享。只要我们愿意，只要我们需要，就能够和别人建立关系。人类再也没有理由在这个世界上感到孤独，不管是在虚拟世界，还是在现实世界。</li>
-<li>REALITY IS BROKEN 9号补丁：和陌生人结盟 与游戏相比，现实孤独而隔离。游戏帮助我们团结起来，从无到有创建更强大的社群。</li>
-<li>社群让人感觉很好，就像是有了归属，融入其中，一起积极地关心某样东西。一群有着共同利益的人开始互动以促进这一利益时，社群就出现了。它要求群体里的每个人都积极参与。 为了把一群陌生人变成社群，必须遵循两个基本步骤：第一，培养陌生人之间的共同利益；第二，给他们机会和途径围绕这一利益开展交流和互动。 这正是优秀的多人游戏最擅长的事情。它把一群人的注意力集中在共同的目标上，哪怕他们认为彼此之间毫无共同之处。它还给了他们追求这一目标的手段和动力，哪怕他们此前毫无互动的意图。</li>
-<li>游戏化的持续性 与游戏相比，现实令人难以忍受。游戏让我们更容易接受好的建议，并尝试培养更快乐的习惯。 我们不能让幸福知道我们来了，只能偷偷摸摸地从侧面包抄。好的游戏具有强大的力量，能永远地改变你看待自己和自身能力的方式。</li>
-<li>REALITY IS BROKEN 10号补丁：幸福的黑客 与游戏相比，现实令人难以忍受。游戏让我们更容易接受好的建议，并尝试培养更幸福的习惯。</li>
-<li>幸福黑客之一：残忍的善意 科学文献最常建议的两种幸福活动是表达感激、实践善行。最近的研究表明，哪怕我们根本不认识自己感谢的人、善待的人，也能体验到由此产生的好处。哪怕感激之情和对陌生人的友善行为稍纵即逝，也会对我们的幸福造成深刻影响。来自陌生人的积极姿态，能极大地丰富、满足我们的日常生活感受。 社会学家将我们与陌生人之间的积极关系称为“短暂的公共社交”。我们在各种公共场所都能体验到它：人行道、公园、火车、餐厅、体育馆、咖啡厅，等等。这种短暂的社会互动持续时间很短，大多具有匿名性：与另一个人目光相对、互相微笑、为别人让出地方、捡起别人掉落的东西、各自走在路上。但这些简短的接触，日积月累地对我们的心情产生了极大的影响。</li>
-<li>幸福黑客之三：戴着面具跳舞 “这一堂幸福课再简单不过了：如果你有机会在圆圈里跳舞，那就从椅子上站起来跳吧。”这是珍妮弗·迈克尔·赫克特在《幸福神话》里的建议，它有着充分的理由。纵观人类历史，一起跳舞就是一种特殊幸福的可靠来源：舞者快感（dancer’s high）。 舞者快感是内啡肽与后叶催产素相结合，再加上迷走神经受到强烈刺激时带给我们的感受，即我们成为一起活动的群体中的一员，在音乐的节奏中“失去自我”的感觉。[28]这是一种充满兴奋、心流涌动和喜爱之情的复杂感觉，很难通过其他途径体验到。 但团体舞蹈也让很多人觉得尴尬。从自我意识到社交焦虑，再到对一切群体活动的不屑，所有这一切都可能妨碍我们参加或享受跳舞。对很多人而言，当着其他人的面投入地跳舞、全无保留，是一个艰巨的任务。它需要你放得开，向人们展示你一般情况下都藏起来的那一面：热情洋溢、毫无戒备。对一部分人来说，展现这一面需要对周围的人充分信任。实际上，按照积极心理学研究人员的说法，跳舞之所以是如此强大的幸福活动，信任正是其中的一个原因。</li>
-<li>首先，维基百科是一个良好的游戏世界。它的超大规模激起了我们的敬畏和惊奇感，它藤蔓错节的导航又鼓励了我们的好奇、探索和合作。以下是维基百科在最新版维基页面中所做的详细描述： 维基百科拥有一个让人身临其境的游戏世界，玩家超过1070万（注册的贡献者，或“维基百科人”），独特位置超过306万（维基百科文章），还包括137356个未被发现的秘密地区（“孤独页面”，没有与其他任何文章链接的文章，因此无法通过浏览找到），7500个完全探明的地牢（“好文章”，引文出色、证据详尽的文章），2700个终极关卡（“精选文章”，在准确度、完整性和风格上得分最高的文章）。 换句话说，维基百科，就像所有引人入胜的多人游戏世界一样，有一个宏大的建筑环境，它邀请参与者花大量时间对其进行探索、采取行动。</li>
-<li>其次，维基百科有着良好的游戏机制。玩家的行动有直接和明确的结果：编辑后的文章即刻显示在网站上，带给用户强有力的环境控制感，给用户提供了强大的环境控制意识。这种即时的影响创造了乐观精神和强烈的自我效能感，展示了难度递增的无限工作机会。 维基百科人形容说：“玩家可以接受任务（维基项目，将多篇文章组织成一篇更长的文章），打关卡式的战斗（精选文章采用的标准比普通文章要高），进入战斗竞技场（阻止故意破坏文章的行为）。”它还有一套帮助维基百科人在做出贡献的过程中感觉进步的个人反馈系统。“玩家可以积累经验点（编辑次数），进入更高级别（按编辑次数排名的一流维基百科人榜单）。” 同时，和所有出色的游戏一样，要实现这一目标，有着重重阻力。这里不只是需要出色的编辑工作，游戏里还有着明确界定的敌人：对网站进行无益编辑的破坏者。据说，持有不同观点的贡献者之间会爆发“编辑之战”，玩家们已经开发了合作技术和对战工具来解决这些高级挑战。作为编辑之战的升级，越来越多的编辑会加入对话，一起努力工作、寻求解决之道。</li>
-<li>最后，维基百科拥有良好的游戏社群。良好的游戏社群要具备两个条件：丰富的积极社交互动以及集体努力的有意义背景，而维基百科两者都具备。维基百科人是这样形容它的： 游戏世界的每一个独特位置（文章）都开着一家小酒馆（“讨论页”或讨论区），玩家们有机会跟其他玩家进行实时互动。他们往往会成为朋友，有些甚至还安排了线下的见面（“网聚”，维基百科高频贡献者的现实社交聚会活动）。 讨论页面鼓励社交竞争（对新版编辑展开争论）和协作（改进和组织现有文章）。围绕共同目标持续进行的积极社交互动建立了信任和强有力的纽带，自然而然地延伸到了面对面的关系当中。事实上，每年各地大约会举办100场维基百科网聚，从雷克雅未克、开普敦、慕尼黑、布宜诺斯艾利斯，到珀斯、京都、雅加达和纳什维尔，都曾有过。</li>
-<li>REALITY IS BROKEN 11号补丁：可持续的参与式经济 与游戏相比，现实难以持续。然而从玩游戏中得到的满足感，是一种无限的可再生资源。</li>
-<li>REALITY IS BROKEN 12号补丁：人人时代的华丽制胜 与游戏相比，现实毫无雄心壮志。游戏帮助我们确立令人敬畏的目标，一起达成看似不可能完成的社会使命。</li>
-<li>合作是一起工作的特别方式。它需要3种不同的一致努力：配合，有针对性地朝着一个共同的目标行动；协调，同步努力、资源共享；共同创造，一起生产出新颖的结果。其中，共同创造是合作与其他集体努力有所区别的关键：从根本上说，共同创造是一种生产行为。合作不仅是实现某个目标或力量联手，还是人们一起创造一种单个人无法创造出来的事物。 你可以合作创造任何东西：团队体验、知识资源、艺术作品。玩家们越来越多地合作创造所有这一切。事实上，哪怕彼此正在争输赢的时候，他们也会合作。甚至，哪怕在独自游戏的时候，他们也会合作。 这似乎有违直觉：你在跟某人对抗时，又怎么跟他们合作呢？更难想象的是：你一个人该怎么合作呢？对此，网络游戏玩家凭借两点因素，正做得越来越多：第一，玩任何优秀的游戏，究其根本都存在合作；第二，新的游戏技术和设计模式支持全新的共同工作途径。</li>
-<li>自古以来，和他人一起游戏就一贯要求做出协调一致的努力。不管是骰子游戏、打牌、下棋、体育运动，或者其他任何一种你想得出的多人游戏，莫不如此。 每一种多人游戏都始于合作的协议。玩家同意按照相同的规则和相同的目标来玩，为一起工作奠定了共同的基础。 游戏还要求我们协调注意力和参与资源。玩家必须在同一时间出现并采用相同的思维模式一同玩耍。他们主动把注意力对准游戏，在玩的过程中忽视其他的一切。他们维持着一致的专心度，也同步参与。 玩家尽其所能地彼此依赖，因为没有挑战，赢了也没有乐趣。通过这种方式，玩家促进了相互的尊重。出于对对方的尊重，他们会全力以赴，并衷心期待能碰到势均力敌的对手、惺惺相惜的伙伴。玩家们随时都依赖彼此将游戏进行下去，哪怕游戏的局面自己并不占上风。玩家每次玩完一场游戏，都是在锻炼自己履行集体承诺的能力。 但最重要的或许是，玩家主动一起工作、假装游戏真的至关重要。他们同心协力赋予游戏真正的意义，互相帮助彼此对玩耍的行为投入情感，获得玩一款优秀游戏带来的积极奖励。无论输赢，他们都是在创造互惠的回报。 总之，出色的游戏不是平白无故出现的，是玩家们一起努力让它出现的。每次跟别人玩游戏，除非要故意破坏这次经历，否则都会积极地做出高度协调、亲近社会的行为。没有人强迫玩家遵守规则、专心致志、倾尽全力地玩游戏，维持游戏的进度，或是假装自己在乎游戏的结果，他们完全是为了每个参与者的相互利益自愿这么做的，因为这样才能造就一个更好的游戏。即便涉及激烈竞争的游戏也一样。</li>
-<li>REALITY IS BROKEN 13号补丁：认知盈余的红利 与游戏相比，现实混乱而分裂。游戏帮我们做出更加协调一致的努力，随着时间的推移，它们还将赋予我们合作超能力。</li>
-<li>描述了为团队贡献价值的独特方式： Sofia（古希腊语中智慧、哲学之意）：我为我们的使命带来智慧、创造力和聪颖。我是寻求知识的人。 Thumos（血气）：我为我们的使命带来勇气、活力和决心。我是探险者。 Chariton（仁德）：我为我们的使命带来感情、人性和吸引力。我是联络人。 Dikaiosune（正义）：我为我们的使命带来引导、方向和焦点。我是领航员。 Sophrosune（节制）：我为我们的使命带来平衡、自控和开放态度。我是指导者。 Mythopoeia（乐观）：我为我们的使命带来乐观精神、远见和艺术美感。我是发现真理的人。</li>
-<li>随着游戏产业继续强调合作、集体智慧和协作生产模式，合作超能力会在整个玩家文化中变得更加普及。再加上越来越多的人开始自认为是玩家，这些非凡的新技巧和新能力会变得寻常起来，不再为一小部分人所独有。更何况，玩家也想发展超能力。 那么，10年之后，我们能用合作超能力干些什么呢？对世界各地的玩家而言，最宏伟的一个目标或许只是在21世纪生存下去。在2006年出版的《维基经济学》（Wikinomics）一书中，唐·塔普斯科特（Don Tapscott）和安东尼·威廉斯（Anthony Williams）论述了现实世界超大规模合作的突破指南，他们言辞恳切地呼吁：“我们必须与大规模群体展开跨国界、跨文化、跨学科、跨企业的合作，否则只有灭亡</li>
-<li>长远的眼光，意味着在远远大于日常生活规模的层面上工作。上帝视角游戏的玩家必须从非常长远的未来考虑自己此刻的行动：整个模拟人生、一个文明的崛起和衰落，甚至人类历史的整个进程。 生态系统思维，是指将世界看成多个相互联系、相互依存的环节构成的复杂网络。良好的生态系统思维，就是要学习、钻研怎样预测生态系统某一部分改变对其他部分真实、长远的影响。 试点实验，指的是采用多种策略和解决办法，设计、运行小型试验，以便找出最合适的行动。当你成功地检验了一项策略，就可以扩大其使用范围，发挥更大的影响。由于上帝视角游戏的玩家们希望将成功最大化，他们不会设计一种方案，死守着不变。相反，他们会仔细地感受整个系统，探测、推敲，直到找出能可靠地将成功最大化的策略。 3种思考和行为方式结合起来，正好跟布兰德在《地球的法则》中所提出的建议相吻合。布兰德说，不要只争“朝夕”，要“寄望百年。”他建议：“要微妙、试探性地参与，朝着正确的方向不断前进。如果我们在正确的时间采取了正确的行动，说不定一切都会顺利。</li>
-<li>REALITY IS BROKEN 14号补丁：超级合作者 现实凝滞在眼前，而游戏让我们共同想象和创造未来。</li>
-<li>检疫隔离：民众健康状况下降和各种流行性疾病的出现，包括当前的呼吸窘迫综合征（respiratory distress syndrome）危机。挑战：面对各种流行疾病，我们如何才能保护并改善全球健康？ 大饥荒：全球粮食系统即将崩溃，将会出现世界范围的短缺。挑战：我们如何才能以可持续性更强、更安全的方式养活自己？ 能源斗争：在整个社会从依赖石油转向使用太阳能、风能和生物能的过程中，可能会出现巨大的政治经济动荡，现有的生活彻底瓦解。挑战：我们该如何重塑创造能源、消耗能源的方式？ 数据违法活动：破解、干扰、恐吓或以其他方式利用在生活中越发依赖的通信、传感和数据网络。挑战：在一个全球联网的社会，我们该如何提高安全性？ 大流亡：由于气候变化、经济动荡和战争，3亿难民和移民失去了安全的栖息地，被迫离开家园，社会组织和政府面临巨大的难题。挑战：我们该如何跨越传统的地理政治边界，该如何进行自我治理，更好地照料彼此？</li>
-<li>答：超级结构是一种建立在现有团体和组织之上的高度协作网络。 超级结构有4项关键特征： 1.超级结构能让两个或两个以上从来没有合作过的不同组织结合到一起。 2.超级结构旨在解决现有组织无法解决的庞大而复杂的问题。 3.超级结构能驾驭下属单个团体的独特资源、技术和活动。人人都贡献出不同的东西，并一起创造解决方案。 4.超级结构从根本上是全新的，它听起来像是个从前没有人尝试过的念头</li>
-<li>问：我应该怎样创建新的超级结构呢？ 答：从一个你本来就属于其中的社群入手。你的社群可以为解决一个或多个超级威胁做出怎样的独特贡献呢？你希望和谁合作实现这一点呢？ 等你准备好分享自己的想法，创建一篇新的维基文章。使用维基的字段来描述你的全新超级结构，如名称、格言、使命、我们需要什么人、我们如何运作、我们可以取得什么样的成绩等。</li>
-<li>发明超级结构最重要的规则是，它应该不同于现有的任何组织。它应该是人、技能和工作的全新组合，同时也是一种看似可以解决问题的方法，能让通常与饥荒、流行病、气候变化、经济崩溃或网络安全等挑战无关的人创造奇迹。 创造超级结构是这款游戏的核心元素，也是玩家获取生存能力点数（总计100点）的方式，玩家的点数总和则成为生存能力总分。超级结构越是设想周到、解释清晰、富有创造力、令人惊奇，玩家赚到的点数就越多。玩家还可以加入其他玩家的超级结构，并为之献计献策来赚取点数。生存能力总分到底是怎么一回事呢？我们对玩家做了如下描述： 你的生存能力得分会出现在你的生存资料当中，范围是0～100。你刚加入时，分值为0。高于0的得分，意味着你对人类物种的生存变得越来越重要。如果得到了100分，你就是人类未来的绝对核心了。 换句话说，我们的计分制并不是要大家竞争，而只是代表个人的进步。以下是对部分高分超级结构以及创造它们的超强希望者的简要描述。</li>
-<li>游戏不会带我们走向文明的灭亡，它们会带领我们重塑人类文明。我们今天及以后所面临的巨大挑战，就是将游戏更紧密地整合到日常生活当中，把它们当成协力重塑地球的努力平台。如果我们肯真心尝试驾驭游戏，以创造真正的幸福和重塑现实的力量，那么，“现实变得更美好”就不再只是一句空话，而是真的有可能发生。如果确实如此，我们的未来将焕然一新。</li>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2015/12/03/actionbar-basic/">Android 开发笔记 ActionBar</a></li>
+<li><a href="http://wdxtub.com/2015/12/03/android-map-v2-basic/">Android 开发笔记 Google Map V2</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Anroid</a></li>
 </ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;在未来25年里，见证某个游戏开发员赢得诺贝尔和平奖，似乎并不那么遥不可及了。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Reading" scheme="http://wdxtub.com/categories/Reading/"/>
-    
-    
-      <category term="书摘" scheme="http://wdxtub.com/tags/%E4%B9%A6%E6%91%98/"/>
-    
-      <category term="游戏" scheme="http://wdxtub.com/tags/%E6%B8%B8%E6%88%8F/"/>
-    
-      <category term="合作" scheme="http://wdxtub.com/tags/%E5%90%88%E4%BD%9C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【无姓之人】选择的意义</title>
-    <link href="http://wdxtub.com/2017/02/20/mr-nobody/"/>
-    <id>http://wdxtub.com/2017/02/20/mr-nobody/</id>
-    <published>2017-02-20T12:18:24.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>选择之所以困难，是因为我们深知在做出决定的瞬间，其他的可能性便完全坍缩了。但如果往事并不如烟一切皆可重来，我们又会做出怎么样的选择呢？</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.02.20: 完成初稿</li>
-</ul>
-<p>好久没有看过如此漫长且零碎的电影了，导演把一个人的生活拆开掰成了七八种活法，要不是因为女主角实在美得让人不可自拔，我肯定早就放弃了。看完之后细细品味一下，才发现，虽然逻辑有些绕，但故事和道理本身倒是完整地展现了出来。我不是那种死钻牛角尖的人，对剧情的理解也不一定准确，就按照自己的想法，随便写点吧。</p>
-<p><img src="/images/14875931365161.jpg" alt=""></p>
-<p>第<strong>一</strong>个需要强调的是（此段需要中文十级阅读理解水平），当你喜欢的妹子看到独自坐在一旁的你来问你要不要一起游泳的时候，千万不要强行装逼说『其他小伙伴傻而自己不跟笨蛋一起游泳』这样的话，妹子会觉得你才傻让你注孤生。最好的方式是说自己不会游泳，这样妹子可能就在小伙伴叫她去游泳的时候找借口不去，这样你就可以和妹子二人世界啦（当然这个前提是妹子本来就对你有好感）。</p>
-<p>第<strong>二</strong>个需要强调的是，年轻人不要随便就立什么『我会娶舞会上第一个跟我跳舞的妹子』这样天真的 flag，最后娶了一个自己不喜欢的人。也不要因为表白被拒绝而独自荒野飙车最后摔成植物人，毕竟两个人缘起缘灭本是缘分就不要强求。更不要利用套路让一个有更喜欢的人的妹子强行跟自己在一起，强扭的瓜不甜，迟早会出问题的。</p>
-<p>第<strong>三</strong>个需要强调的是，很多时候我们是没有能力判断所谓真爱的，毕竟主角在两个不同的平行世界里就爱上了两个不同的妹子。而且真爱是双向的，双方如果节奏不一致很容易出现问题。那么问题来了，互为真爱是很难的事情，我们要怎么判断呢？这里我强行发明了一个公式：</p>
-$$Sync\;Rate=\frac{Love_{x\to y}+Love_{y\to x} - Std_{xy}}{2}$$
-<p>其中：</p>
-<ul>
-<li>该公式计算情侣的同步率，单位是 <code>%</code></li>
-<li>$Love_{x\to y}$ 表示女方在男方心中的真爱度，取值范围 [0, 100]</li>
-<li>$Love_{y\to x}$ 表示男方在女方心中的真爱度，取值范围 [0, 100]</li>
-<li>$V_{xy}$ 是双方真爱度的的标准差，根据真爱度可知值域为 [0, 70]（即一方为 100，一方为 0，方差为 5000，数值向下取整）</li>
-<li>最好的情况下，双方的真爱度都是 100，那么计算出来的同步率就是 100%</li>
-<li>最坏情况下，一方是 100，一方是 0，计算出来的同步率是 30%</li>
-<li>同步率在 75% 之上为达标，满足这个条件的组合有 (75, 75), (100, 71)，也就是说，如果双方互相的真爱度都大于 75，那么同步率妥妥达标。但是如果一方下降了 4 分，另一方需要达到 100，才可以达标（这意味着什么不用我说了吧，下面是具体的列表）</li>
-</ul>
-<p><img src="/images/14875978022004.jpg" alt=""></p>
-<p>第<strong>四</strong>个需要强调的是即使情侣互为真爱且同步率达标，因为现实生活的不确定性，双方还是要非常非常努力才能好好过日子的，如果觉得一切都是理所当然，那么离失去这样的『理所当然』也就不远了。如果因为客观条件分离，要么就真正做点什么去努力改变，要么就没必要凄惨兮兮搞得自己超级可怜的感觉。虽不能说人定胜天，但是一点努力不做（比如连电话号码都记不住），还怎么好意思说什么真爱呢？</p>
-<p>说了半天，怎么看起来完全没有什么『选择』呢？其实一切都是选择，说什么话，爱什么人，做什么事，许什么愿，等等等等。电影通过展现主角不同选择不同人生来引发观众思考，虽然零碎，却也是挺好的描述（我们的思维很多时候也是如此）不过正如片尾说的那样，每种选择都是有意义的。因为我们没有办法重新来过，所以很多时候完美是不存在的，那为什么不潇洒一点 Just Do IT （这里没有怂恿大家学 IT 的意思）呢？那些犹豫徘徊浪费大把时间精力的人，才是最可悲的。</p>
-<p>海报上的宣传语写着：如果你从未做出选择，那么一切皆有可能。但不选择也是一种选择，不是么？所以对于和我一样有选择困难症的朋友来说，也许这句话是最『完美』的解药：</p>
-<p><strong>随心而动，随梦而行</strong>。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;选择之所以困难，是因为我们深知在做出决定的瞬间，其他的可能性便完全坍缩了。但如果往事并不如烟一切皆可重来，我们又会做出怎么样的选择呢？&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Movie" scheme="http://wdxtub.com/categories/Movie/"/>
-    
-    
-      <category term="电影" scheme="http://wdxtub.com/tags/%E7%94%B5%E5%BD%B1/"/>
-    
-      <category term="时间" scheme="http://wdxtub.com/tags/%E6%97%B6%E9%97%B4/"/>
-    
-      <category term="选择" scheme="http://wdxtub.com/tags/%E9%80%89%E6%8B%A9/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【人件】读书笔记</title>
-    <link href="http://wdxtub.com/2017/02/19/peopleware-clip/"/>
-    <id>http://wdxtub.com/2017/02/19/peopleware-clip/</id>
-    <published>2017-02-19T02:40:21.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>也许，软件系统的主要问题不在于技术，而在于社会性因素。</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.02.18: 完成初稿</li>
-</ul>
-<p>在大多数项目中，社会性的复杂度远比技术上的挑战要难处理得多。而且，不可避免地，我们还要面临一个更加严峻的问题：即便我们意识到社会性因素比技术上的因素重要得多，也从来没有用这样的思维观念管理过团队。</p>
-<h2 id="管理人力资源"><a href="#管理人力资源" class="headerlink" title="管理人力资源"></a>管理人力资源</h2><p>作为管理者，我们多数人很容易陷入一种典型的失败情境：习惯把人当作固定的模块来管理。</p>
-<p>很少有公司会考察新晋管理者在工作中是否展示出相应的能力与良好的心态来胜任管理工作。他们缺乏管理经验，也没有具体的实践。</p>
-<p>倘若你发现自己更加关注技术问题而非社会问题，那你就像是一名杂耍演员，在一条昏黑的街道丢失了钥匙，却逡巡至临近的街道去寻找，并美其名曰：『那里的灯光更明亮』。</p>
-<p>开发的本质完全迥异于生产。然而，开发管理者的思想却通常被生产环境衍生而来的管理哲学所左右。</p>
-<p><strong>错误在所难免</strong></p>
-<ul>
-<li>对大多数脑力劳动者来说，工作偶尔出错再自然不过，也很健康，没什么危害。但总有教条主义者会把工作中的错误和罪恶联系起来。我们需要采取措施去改变这种态度。</li>
-<li>营造一个不容许任何失误的氛围会让大家持有戒心。他们不愿去尝试那些有可能变坏的事情。</li>
-<li>在不允许犯错的规定下，或许平均的技术水平会稳步提高，但团队的社会氛围却会遭受可悲的伤害。</li>
-<li>相反的做法是鼓励大家犯错（Break things and Move fast）</li>
-</ul>
-<p><strong>管理：傻瓜定义</strong></p>
-<p>即使向人们施压可以增加短期产出，长远来看还是无效的。最可悲的是，这种管理手段几乎永远都会让生产过剩。你根本不需要使用严格的度量来促使大家工作——大部分人是热爱他们的工作的。</p>
-<p><strong>人力商店</strong></p>
-<p>正是因为开发经理害怕关键人物会离去，于是强迫自己相信没有所谓的关键人物。</p>
-<p>对于盲目尊崇生产世界风格的管理者来说，员工的独特个性是一种持续的困扰。人性化的管理者却能认识到正式这种独特性使得项目团队产生了化学反应，是团队充满活力与高效的源泉。这是需要培养的。</p>
-<p><strong>稳定的项目濒临死亡</strong></p>
-<p>稳定的生产思维对项目工作尤为有害。我们很容易忘记项目生命周期的最终目标就是要结束自己。一个项目唯一的稳定期就是将死之时。除非你正在一个被取消或将要取消的项目中，所有的项目管理关注点都应该投入到开发的动态调整上。然而在一个新项目中，我们衡量员工的价值却使用了稳定状态下的特征：他们写了多少代码或者产出了多少文档。我们对于每个员工在整个开发中投入的切合度关注甚少。</p>
-<p><strong>西班牙理论</strong></p>
-<p>历史学家很早之前就抽象出了不同的价值理论：西班牙理论认为世界上的价值总量是定额的，因而财富积累的道路就是学会从大地或者别人的背上去攫取。另一种英国理论则认为，价值是通过智慧和科技创造出来的。</p>
-<p>生产效率本应该是让单位时间内的工作产生更高的价值，然而它却常被看作是如何在单位付酬的情况下攫取更多价值。奉行西班牙理论的管理者梦想通过不付薪酬的加班来获得生产效率的提高。</p>
-<p>加班就像冲刺，若一开始就冲刺，那纯粹就是浪费时间。让人过度冲刺，只能让大家失去对管理者的尊重。</p>
-<p><strong>工作狂</strong></p>
-<p>工作狂会做很多不记薪酬的加班。他们的工作时间长得夸张，虽然效率可能在下降。给他们足够的压力，他们会工作到完全丢掉自己的个人生活。为了不那么重要的价值（工作），而牺牲了生命中更重要的价值（家人、爱情、家庭、青春），这种认识让人备受打击。</p>
-<p><strong>工作效率：赢得战斗，输掉战争</strong></p>
-<p>在获得高生产效率时，一定要考虑可能的人员流失，不然所谓的『提高』可能会因重要人员的流失而被抵消。</p>
-<p>压力不会让人工作得更好——只是工作得更快。为了工作快点，他们不得不牺牲产品质量以及自身的工作体验。</p>
-<p><strong>飞离卓越的航班</strong></p>
-<p>管理人员设定的不可达到的期限威胁着产品的质量，但他们不会这样去思考这一问题——他们自认为给了团队一个有趣的挑战，可以激发他们去追求卓越。</p>
-<p>质量，远远不只是最终用户的要求，而是达到高产能的一种方法。价格和质量的对立在日本并不存在；相反，高质量带来成本的降低却是被广泛接受的想法。只有愿为质量倾其所有的人，质量才是免费的。</p>
-<p><strong>帕金森定律</strong></p>
-<p>帕金森定律指的是工作会自动膨胀，占满一个人可以用的所有时间。但帕金森定律基本不可能运用到你的工作中。只要大家热爱工作，就不可能让一项工作变得遥遥无期，这会推迟获得他们向往的满足感。在不需要降低标准、牺牲质量的时候，他们和你一样，期望工作能快点完成。</p>
-<p><strong>软件管理的七个假象</strong></p>
-<ol>
-<li>有一个你不知道的新窍门可以让产能飙升。<ul>
-<li>没有一个方法能够真正让产能飙升。我们要做的就是让大家能够健康发展：人们愿意全身心参与、去学习、去提高</li>
-</ul>
-</li>
-<li>其他管理者正在收获 100%, 200% 乃至更多的增长！</li>
-<li>技术日新月异，你已经过时啦！<ul>
-<li>软件业的产能每年也就增长 3%~5%</li>
-</ul>
-</li>
-<li>改变程序语言会给你带来巨大提升</li>
-<li>因为库存的缘故，你需要马上让产能翻倍</li>
-<li>你自动化了其他所有东西；难道不是要你自动化掉你的软件开发人员吗？</li>
-<li>你的员工在巨大的压力下工作得更好<ul>
-<li>他们根本不会</li>
-</ul>
-</li>
-</ol>
-<p><strong>这就是管理</strong></p>
-<p>管理者的作用不是让大家去工作，而是创造环境，让大家可以顺利开展工作。</p>
-<h2 id="办公环境"><a href="#办公环境" class="headerlink" title="办公环境"></a>办公环境</h2><p>在衡量个体能力差异时都适用的三条经验法则是：</p>
-<ul>
-<li>能力最强的人与最差的人的产出比大概是 10:1</li>
-<li>能力最强的人比中间的人的产出高 2.5 倍左右</li>
-<li>能力靠前一半的人与后一半的产出比大于 2:1</li>
-</ul>
-<p><strong>生产效率的非相关因素</strong></p>
-<ul>
-<li><strong>语言</strong>：唯一例外的是汇编语言</li>
-<li><strong>经验年限</strong>：拥有十年编程经验的人并没有超过只有两年经验的人。经验和产出效率完全没有关系，除了在一种语言下少于 6 个月经验的人要差于其他人意外</li>
-<li><strong>缺陷个数</strong>：零缺陷的人通过更精准的工作避免了缺陷对产出效率的惩罚</li>
-<li><strong>薪酬</strong>：薪酬和产出效率的关系很弱</li>
-</ul>
-<p>更加安静、私密、不受打扰的工作环境更能提高效率。</p>
-<p>在信息处理环境中，采用开放式办公环境设计的根本考虑因素在于：系统的电力分配能力、计算机支持能力及制造商和分销商服务。完全不考虑一个活生生的人要在这样的环境中工作。</p>
-<p>当环境中个别的局部需求与总体需求达到完美平衡时，自然或者有机的控制就开始显现。在有机的环境里，每一处都是独特的，同时又都是协作的，没有一个组成部分会显得格格不入，而是形成一个统一的整体。</p>
-<p>空间过于封闭或开放，人们都不能有效工作。一个好的工作空间需要找到二者的平衡。</p>
-<h2 id="正确的人"><a href="#正确的人" class="headerlink" title="正确的人"></a>正确的人</h2><p>现代管理学仍然没有足够重视雇佣和留用正确的人。</p>
-<p>管理热力学第二定律：组织力的熵总是增加的。</p>
-<p>如果不靠职位的授权来领导，需要做的事情是：</p>
-<ul>
-<li>主动承担任务</li>
-<li>明显地胜任工作</li>
-<li>为任务准备提前做足必要的功课</li>
-<li>让每个人创造最大的价值</li>
-<li>实施过程中保持幽默和明显的善意</li>
-</ul>
-<p>即使最好的创新也需要一点离经叛道才能产生影响：离经叛道的领导力。创新者自己可以不是一个伟大的领导者，但必须有人是。在这个创新过程中，这种离经叛道的领导力带来的是时间——让一个关键人物不去做产生利润的工作，而去尝试处于萌芽中的想法——同时，为了能够让创新发挥效力，即使再难，也需要对组织进行重组。</p>
-<p>大部分技能测试都针对左脑。这是因为一名新员工的任务大部分都依赖左脑。但在接下来的职业生涯中，他们做的事情会很大程度依靠右脑，比如说管理就需要整体思考、启发性判断和基于经验的直觉判断。所以，技能测试可能造成你招进来的人，短期表现良好却无法获得长期成功。</p>
-<p>团队磨合需要时间，而在磨合期内，团队的组成不能轻易改变。</p>
-<p><strong>离职的隐形成本</strong></p>
-<p>员工离职的代价是总人力成本的 20%，但这还只是显式成本。隐性成本其实更高。在离职率高的公司里，员工大多很短视，因为他们知道自己不会在这个地方待很长时间。</p>
-<p>最优秀的组织会有意识地去追求成为最佳。这样的共同目标提供了一致的方向、合作的满足感和强大的凝聚力。</p>
-<h2 id="高效团队养成"><a href="#高效团队养成" class="headerlink" title="高效团队养成"></a>高效团队养成</h2><p>好的工作体验总是伴随着一定的挑战性。在那些能够让大家尽情发挥到自己极限的工作团队里，团队互动就是全部工作。这是大家坚守在一起的原因，所有人都全身心投入工作，克服各种各样的困难。</p>
-<p><strong>团队存在的目标不是达成目标，而是让目标一致。</strong></p>
-<p>团队自毁『技巧』清单：</p>
-<ul>
-<li><strong>防御式管理</strong>：因为想保证成功而采取的任何防御性措施都只会让事情变得更糟糕，即使短期能够给你一些宽慰，长期看一定没有帮助，相反会成为团队凝聚的毒药</li>
-<li><strong>官僚主义</strong>：无聊的文案写手不可能视自己为追求成功的奋斗者</li>
-<li><strong>物理分隔</strong>：团队的日常交流没有了，也就不可能形成团队文化</li>
-<li><strong>时间碎片</strong>：没有人可以同时是多个有凝聚力团队的一员。紧密协作的有凝聚力团队是排他的</li>
-<li><strong>牺牲产品质量</strong>：团队建立起来的自我认知在决定牺牲质量时就荡然无存了</li>
-<li><strong>伪造截止日期</strong>：对于员工来说唯一的作用就是让他们知道老板是一个帕金森式的机器人，就别想有什么有凝聚力的团队了</li>
-<li><strong>团伙控制</strong>：团队活动的愉悦以及团队互动产生的动力是我们建立互信的基础，但高层往往对此非常无知</li>
-</ul>
-<p>内部竞争会直接造成辅导工作异常艰难，甚至根本就不可能。由于辅导是健康团队工作的核心，管理者做的任何增强团队内部竞争的事情都是在进行团队自毁。比如：</p>
-<ul>
-<li>年度薪酬评审</li>
-<li>目标管理法</li>
-<li>表彰个别员工的突出成就</li>
-<li>跟绩效相关的证书、奖励和奖金</li>
-<li>任何形式的绩效考核</li>
-</ul>
-<p>下面是一个简化了的健康组织构成策略的化学元素清单：</p>
-<ul>
-<li><strong>建立对质量的执着追求</strong>：评价一件不完美的产品『足够好』，就等于敲响了团队融合的丧钟。对质量的执着追求是催生团队形成的最强催化剂。它之所以让团队凝聚起来，是因为它拉远了团队每个人与其余世界的距离。不得不说，其余的世界并不会为质量鸣笛</li>
-<li><strong>提供诸多满意的闭环</strong>：人类自己就是需要不停确认他是否正沿着正确的方向前进。人类团队同样如此。在哲学上，这种确认称之为闭环(Closure)。闭环就是整体的每一部分需要一致满足的『过程』。每个新版本都是一次闭环的机会。团队不停地预热，直到那个时刻到来，团队临近最后凝聚，在成功中达到顶峰</li>
-<li><strong>建立精英意识</strong>：大家都需要一种独特感来体察内心的宁静，从而在宁静之中发酵出团队的凝聚力</li>
-<li><strong>允许和鼓励差异性</strong>：普通的管理者没有安全感，以至于走不出管理的陷阱。一流的管理者知道人们不能被任何合理方法控制。成功管理的核心是让大家齐心协力，然后助推大家到一个连管理者自己都无法让他们停止的点</li>
-<li><strong>维护和保护成功团队</strong>：如果团队已经凝聚，就不要拆散团队</li>
-<li><strong>提供战略而不是战术方向</strong>：在最棒的团队中，不同的个体时不时会展现出领导力，在自己擅长的专业领域带领大家</li>
-</ul>
-<p>没有人是永远的领导者，因为这样的领导者不会是团队中平等的一分子，团队里的互动也会由此瓦解。团队的结构是一个网络，而非分层结构。</p>
-<h2 id="沃土"><a href="#沃土" class="headerlink" title="沃土"></a>沃土</h2><p>项目与团队置身于更大的组织结构提供的环境中。我们称此环境为企业文化。最坏情况下，你需要认识什么是上层强加于你的；最好的情况下，你可能会在某一天能够身居其位，并对其进行改造，以利于下面的团队开展工作。</p>
-<p><strong>确定性与非确定性系统</strong></p>
-<p>当你对之前全人工的系统进行自动化时，系统会变成确定性的。新系统只能响应制造者设计的那些显式的命令。于是，自我治愈的能力就丧失了。</p>
-<p><strong>不要逃避风险</strong></p>
-<p>我们需要澄清项目风险是一件好事情，这说明项目是有价值的。真正有价值却几乎没有风向的项目早就绝迹了。如今，重要的项目都需要冒点风险。</p>
-<p><strong>神经硬化</strong></p>
-<p>随着一个组织的老化，会议时间逐渐增多，到组织弥留阶段，就只剩下开会了。</p>
-<p><strong>终极的管理罪恶是浪费大家的时间。</strong></p>
-<p>有些组织具备学习能力，有些却未必。有些组织能够学习，却不能学以致用。要理解组织型学习，首先需要知道的是，它并不能和经验的单纯积累画等号。</p>
-<p>学习受限于宇哥组织留住员工的能力。如果人员离职率过高，学习便无法维持下去，或者根本无法进行。在这样的组织里，试图改变技能或者引入重新设计的过程都是徒劳之举，甚至有可能使员工离职率更高。</p>
-<p>组织型学习的关键问题不在于如何开展学习，而在于在何处开展。成功的学习型组织通常都拥有一支非常强大的中间管理层。为了形成一个重要的学习中心，中层管理者需要相互交流，并在一起高效融洽地工作。这是一个极为罕见的现象。</p>
-<p>能够成功构建社区的组织更能留住人。当员工有了足够的社区意识时，他们就不想离开了。你对人力资本的投资由此也得到了回报，进而愿意投资更多，再进而你的员工将会表现得更好，也更喜欢你的公司。这种正面的增强会形成一种良性循环。</p>
-<h2 id="快乐地工作"><a href="#快乐地工作" class="headerlink" title="快乐地工作"></a>快乐地工作</h2><p>所谓工作，就是要使员工的效率最大化，而这已经足以剥夺他们的快乐了。</p>
-<p>最好的管理者就在于有能力找出少数几个关键的苗子，这些苗子既成熟稳重，又视野开阔。找到后，就放手让他们去干。</p>
-<p>一个人若是单独行动，那就没办法产生有意义的变化，而且，你也没有必要这样单独行动。当事情的发展超出常态时，你就能轻而易举地让人们意识到这一点。于是，你不再是一个人。所有人都和你在一起。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;也许，软件系统的主要问题不在于技术，而在于社会性因素。&lt;/p&gt;
+      &lt;p&gt;学习一个平台最好的方式就是博采众长，知行合一。本文我精选的一些 Android 入门和进阶资源。&lt;/p&gt;
     
     </summary>
     
       <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
     
-      <category term="书摘" scheme="http://wdxtub.com/tags/%E4%B9%A6%E6%91%98/"/>
+      <category term="Android" scheme="http://wdxtub.com/tags/Android/"/>
     
-      <category term="软件工程" scheme="http://wdxtub.com/tags/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【达拉斯买家俱乐部】八十五倍回报</title>
-    <link href="http://wdxtub.com/2017/02/18/dallas-buyers-club/"/>
-    <id>http://wdxtub.com/2017/02/18/dallas-buyers-club/</id>
-    <published>2017-02-18T11:54:20.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>一个德州电工，一个艾滋病患者，怎么就成了与死神顽强斗争 2557 天的斗士？一个人的命运啊，在历史行程不够快的时候，更要拼命靠个人奋斗了。</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.02.18: 完成初稿</li>
-</ul>
-<p>只看了十分钟，我已经觉得演技是影帝级别的。看完后一查，果然吧，三个奥斯卡大奖+三项提名，我居然拖到现在才看完，罪过罪过。</p>
-<p><img src="/images/14874230265017.jpg" alt=""></p>
-<p>剧情并不算复杂，讲述一个绝症病人如何努力求生并拯救成千上万面临同样境遇的人的故事。从一开始被告知只能活 30 天，到最后顽强抗争了 2557 个日夜，虽然时间不长（差几天七年），这位德州电工罗恩竟爆发出了耀眼的生命光彩，不但战胜了原来堕落的自己，更是在与艾滋病、药管局(FDA)和制药公司的斗争中不落下风。他成立的『达拉斯买家俱乐部』，为当时无助到近乎绝望的艾滋病患者提供了一线生机，最终也真正实现了自己的愿望：<strong>活得有价值</strong>。</p>
-<p>看完之后我甚至冒出这样的念头：<strong>艾滋病与其说是毁了罗恩，不如说是救了他，让他最后的 2557 个日子，活出了不一样的自己。</strong></p>
-<p>从最初的无法接受自己得病到找关系搞到实验药物 AZT，罗恩的生命轨迹因为墨西哥的一位被吊销执照的医生彻底改变，在这里他第一次接触到了『简陋版』鸡尾酒疗法，并动起了走私(FDA)未批准上市药品赚钱的小九九。</p>
-<p>可以想见他最初的想法，既然有门道，药品也有效，为什么要被丝毫不顾自己死活的官僚和资本家所限制呢？从路边兜售到最终发展成为『俱乐部』，罗恩成了某种意义上的对抗艾滋病的『先锋』与『专家』，在这个过程中他也逐渐蜕变，不再是那个酗酒吸毒滥交暴躁没文化的电工，成为许多人的依靠与救命恩人。</p>
-<p>如果说得艾滋病是对他之前所作所为的『惩罚』的话，那么之后罗恩的自助自救，则是完美的救赎。他不再吃加工过和充满各种添加剂的食品，他逐渐理解了同性恋群体并拥有了真正的友谊，他派传单告诉大家制药公司和药管局(FDA)的不作为，他敢于站上台前为艾滋病和同性恋群体争取权益。</p>
-<p>如果你觉得生活不应该如此，那么停止自怜，去做点事情。</p>
-<p>如果你觉得这个世界不够好，那么停止埋怨，去做点事情。</p>
-<p>影片终于罗恩骑牛的画面，在最暴躁的牛背上坚持八秒钟的确很难很难，但正是因为如此，才更能凸现出牛仔的坚持与骄傲。从 30 天到 2557 天，罗恩的努力得到了八十五倍的回报。</p>
-<p>忽然想到刺客信条中的一句话: When other men blindly follow the truth, remember. Nothing is TRUE. When other men are limited, by morality or law, remember. Everything is PERMITTED.（当其他人盲目的追寻真相和真实的时候，记住。万物皆虚。当其他人受到法律和道德的束缚的时候，记住。万事皆允。）</p>
-<p>注：上面这句话不是让人去做违法和违背道德的事情，而是说当法律和道德明显有失公允的时候（比如 FDA 不允许罗恩使用那些有效却并未批准的药物时），去尽自己的努力，做点事情（伤害他人的事情不在这个范围内）。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;一个德州电工，一个艾滋病患者，怎么就成了与死神顽强斗争 2557 天的斗士？一个人的命运啊，在历史行程不够快的时候，更要拼命靠个人奋斗了。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Movie" scheme="http://wdxtub.com/categories/Movie/"/>
-    
-    
-      <category term="艾滋" scheme="http://wdxtub.com/tags/%E8%89%BE%E6%BB%8B/"/>
-    
-      <category term="道德" scheme="http://wdxtub.com/tags/%E9%81%93%E5%BE%B7/"/>
-    
-      <category term="奥斯卡" scheme="http://wdxtub.com/tags/%E5%A5%A5%E6%96%AF%E5%8D%A1/"/>
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
   </entry>
   
   <entry>
-    <title>第三十六周 - 追光</title>
-    <link href="http://wdxtub.com/2017/02/17/chase-light/"/>
-    <id>http://wdxtub.com/2017/02/17/chase-light/</id>
-    <published>2017-02-17T08:23:01.000Z</published>
-    <updated>2017-03-01T11:41:44.000Z</updated>
+    <title>iOS 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-ios/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-ios/</id>
+    <published>2017-03-17T04:00:54.000Z</published>
+    <updated>2017-03-17T06:39:54.000Z</updated>
     
-    <content type="html"><![CDATA[<p>你在听吗，我莽撞的故事，和你的一样。我们一样，不顾一切奔跑，不在乎受伤。</p>
+    <content type="html"><![CDATA[<p>学习一个平台最好的方式就是博采众长，知行合一。本文我精选的一些 iOS 入门和进阶资源。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.02.17: 完成初稿</li>
+<li>2017.03.17: 完成初稿</li>
 </ul>
-<p>离职后的第一周，状态总算是随着天气的变暖而逐渐回升。虽然这一周大部分的时间都坐在电脑前码字儿，但时不时出去走走拍拍见见朋友，也倒是颇为自得其乐，整个人的气色也好了很多。</p>
-<p><img src="/images/chase-light.jpg" alt="chase-light"></p>
-<p>难得赋闲在家，第一次有了『采菊东篱下，悠然见南山』的感觉。现在回过头来想想，工作上的大部分事情，我不做，也总是能找到人来做的，区别可能就是我能做得更快更好一些，但是，真的放到全局来看，这一点点差别其实无关痛痒。重要的是方向，方向对了，再傻的团队，也能摸索着找到终点，怕就怕朝三暮四朝令夕改，时间都在变来变去中蹉跎了，反而啥都没搞成。</p>
-<p>终于找到了比较大段的空闲时间，写书的进程也大大加快了，本周重新修订了章节目录、完成了材料的筛选、整理出了初稿还要初稿的初稿。实话说，我很满意，因为有了这个基本稳定的骨架，剩下的工作就不用在占用如此多的大段空白时间了，就可以一步一步化整为零精雕细琢了。写书真的像古诗里说的那样『正入万山圈子里，一山放过一山拦』，如何求新求变，如何能跟传统的课本不一样，说实话我还没有特别好的思路，仍旧需要一段时间的沉淀与思考。</p>
-<p>不由得想起路过客厅无意间看到的电视节目，说的正是钧窑传人如何求新求变，如何知行合一的过程。有一个地方让我非常触动，大意是这样的：哪怕是钧窑的碎片，明眼人也能看出是出自哪个朝代的，为什么呢？一是因为窑变的存在，使得钧窑就是钧窑，二是各朝代都会在此基础上发展出自己的特色，而不只是仿照前朝，这就是独门的手艺了。</p>
-<p>窑变很有意思，《景德镇陶录》有记为『窑变之器有三：二为天工，一为人巧。其由天工者，火性幻化，天然而成；其由人巧者，则工故以釉作幻色物态，直名之曰窑变，殊数见不鲜耳』。我这么一想，其实写书，尤其是教科书，同样是这个道理。作为入门的导论类书籍，大部分的知识点其实基本已经确定了，我能做的绝非『天工』，而是『人巧』。至于怎么个『巧』法，我暂时还真的没完全想好，可以师承经典，却不能囿于传统，<a href="http://wdxtub.com/1984/09/11/ics-draft-0-1/">这里</a>有一些零碎的念头，还需要继续探索。</p>
-<p>我一直觉得，能有这么多靠谱的朋友结伴成长，是非常幸运的事情。有的并无血缘却胜似亲生兄弟，有的潇洒大方带我认识世界，还有的追逐梦想极富行动力敢想敢做。他们的人生轨迹各自不同却精彩纷呈，却都有一个共同的特点 — 选定了方向便不再退缩犹豫。很多时候我看到他们，便会意识到原来人生还有这么多的可能，于是也想试着去真正做自己，去按照自己的想法，走自己的路。</p>
-<p>看繁星散落在头顶，落在背着的行囊，连雨水打在我的身上，也会化成我们的衣裳。我在发声，喊出骄傲坚持，不甘心流浪。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;你在听吗，我莽撞的故事，和你的一样。我们一样，不顾一切奔跑，不在乎受伤。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
-    
-    
-      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
-    
-      <category term="闲散" scheme="http://wdxtub.com/tags/%E9%97%B2%E6%95%A3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【不周山之数据科学】常用数据集</title>
-    <link href="http://wdxtub.com/2017/02/15/bzs-ai-dataset/"/>
-    <id>http://wdxtub.com/2017/02/15/bzs-ai-dataset/</id>
-    <published>2017-02-15T08:35:50.000Z</published>
-    <updated>2017-03-16T13:15:28.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>人工智能最离不开的恐怕就是数据集了，有的数据集被学术界用来当做各种算法测试的基准，有的数据集非常接地气常被用在各类产品中。本文就来介绍一下各个领域的经典常用数据集。</p>
-<a id="more"></a>
-<hr>
-<p>更新历史</p>
-<ul>
-<li>2017.02.15: 完成初稿</li>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2015/12/13/strange-ios-1/">iOS 杂病论 1 Library not loaded</a></li>
+<li><a href="http://wdxtub.com/2015/12/17/strange-ios-2/">iOS 杂病论 2 HTTP? HTTPS!</a></li>
 </ul>
-<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>英文数据集部分出自 <a href="https://medium.com/startup-grind/fueling-the-ai-gold-rush-7ae438505bc2?swoff=true#.fovvrec9c" target="_blank" rel="external">Fueling the Gold Rush: The Greatest Public Datasets for AI</a>，我简单翻译了一下并更新了部分中文的内容。另外原文使用 emoji 来表示各个数据集的特点我觉得非常有效，这里也一并搬运过来。</p>
-<ul>
-<li>📜 经典 — 人工智能领域最出名的数据集，没听过这些都不好意思说自己是搞人工智能的</li>
-<li>🛠 实用 - 接近真实世界的已清洗的数据集，非常通用，常用于现实世界的产品中 </li>
-<li>📚 学术基准 — 这些数据集通常被学术界用于验证算法与比较算法性能的基准</li>
-</ul>
-<p>注：因为我现在主要搞自然语言处理了，所以其他领域的数据集只挑选最重要的。</p>
-<h2 id="自然语言处理-NLP"><a href="#自然语言处理-NLP" class="headerlink" title="自然语言处理 NLP"></a>自然语言处理 NLP</h2><p>中文的开放资源还是比较少的，主要是各个高校和搜狗、数据堂的数据。希望能有人牵头来把中文的数据集搞起来，这样对学术界和工业界都是极大的利好。</p>
-<ul>
-<li>🛠📚 <a href="https://drive.google.com/drive/u/0/folders/0Bz8a_Dbh9Qhbfll6bVpmNUtUcFdjYmF2SEpmZUZUcVNiMUw1TWN6RDV3a0JHT3kxLVhVR2M" target="_blank" rel="external">Text Classification Datasets</a>: 为文本分类准备的八个数据集，常被用于基准。数据来自 DBPedia, Amazon, Yelp, Yahoo!, Sogou, 和 AG</li>
-<li>🛠📚 <a href="http://metamind.io/research/the-wikitext-long-term-dependency-language-modeling-dataset/" target="_blank" rel="external">WikiText</a>: 清洗过的维基文本数据</li>
-<li>🛠📚 <a href="https://rajpurkar.github.io/SQuAD-explorer/" target="_blank" rel="external">SQuAD</a>: 斯坦福问题回答数据集，被广泛使用与自动问答</li>
-<li>🛠📚 <a href="http://www.statmt.org/lm-benchmark/" target="_blank" rel="external">Billion Words</a>: 巨大的通用语言建模数据集，通常用于 <a href="https://www.tensorflow.org/tutorials/word2vec/" target="_blank" rel="external">word2vec</a> 或者 <a href="http://nlp.stanford.edu/projects/glove/" target="_blank" rel="external">GloVe</a></li>
-<li>📚📜 <a href="https://research.fb.com/projects/babi/" target="_blank" rel="external">bAbi</a>: 来自 Facebook 的语义理解和问题回答数据集</li>
-<li>📜 <a href="https://www.sogou.com/labs/resource/list_lan.php" target="_blank" rel="external">搜狗实验室开放数据资源</a>: 包含评测、语料、新闻、图片、词库、搭配等数据集，算是中文领域比较全的</li>
-<li><a href="http://thuctc.thunlp.org/#%E4%B8%AD%E6%96%87%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E6%95%B0%E6%8D%AE%E9%9B%86THUCNews" target="_blank" rel="external">中文文本分类数据集THUCNews</a>: THUCNews是根据新浪新闻RSS订阅频道2005~2011年间的历史数据筛选过滤生成，包含74万篇新闻文档，划分出 14 个候选分类</li>
-</ul>
-<h2 id="计算机视觉-CV"><a href="#计算机视觉-CV" class="headerlink" title="计算机视觉 CV"></a>计算机视觉 CV</h2><ul>
-<li>🛠📚📜 <a href="http://image-net.org/" target="_blank" rel="external">ImageNet</a>: 最常用的新算法验证的数据集</li>
-<li>🛠📚📜 <a href="http://vis-www.cs.umass.edu/lfw/" target="_blank" rel="external">Labeled Faces in the Wild</a>: 日常照片中剪切出来的带标记的人脸图片（不只是正脸 + 纯净背景）</li>
-<li>📚📜 <a href="http://pjreddie.com/projects/mnist-in-csv/" target="_blank" rel="external">MNIST</a>: 非常经典的数据集，比方说 TensorFlow 的官方教程就用这个来做演示。里面包含大小为 25x25 的黑白居中手写数字</li>
-<li>📜 <a href="https://www.cs.toronto.edu/~kriz/cifar.html" target="_blank" rel="external">CIFAR 10 &amp; CIFAR 100</a>: 现在已不再常用，部分学校的课程还在使用（比如 CMU 的机器学习入门课程 10601）。里面包含大小为 32x32 的彩色图像，10 和 100 表示分类数量，一般用于图像分类</li>
-</ul>
-<h2 id="推荐系统-Recommendation"><a href="#推荐系统-Recommendation" class="headerlink" title="推荐系统 Recommendation"></a>推荐系统 Recommendation</h2><ul>
-<li>🛠📚📜 <a href="https://grouplens.org/datasets/movielens/" target="_blank" rel="external">MovieLens</a>: 跟电影相关的评价数据，通常用于协同过滤的基准</li>
-<li>🛠 <a href="http://grouplens.org/datasets/hetrec-2011/" target="_blank" rel="external">Last.fm</a>: 音乐推荐数据集</li>
-<li>📜 <a href="http://www.netflixprize.com/" target="_blank" rel="external">Netflix Challenge</a>: 最早的类似 Kaggle 的数据挖掘挑战</li>
-</ul>
-<h2 id="语音识别-Speech"><a href="#语音识别-Speech" class="headerlink" title="语音识别 Speech"></a>语音识别 Speech</h2><ul>
-<li>🛠📚 <a href="http://www.voxforge.org/" target="_blank" rel="external">VoxForge</a>: 带口音的英文语音数据集，通常可以用于训练系统的鲁棒性</li>
-<li>📚 <a href="http://www.openslr.org/12/" target="_blank" rel="external">LibriSpeech</a>: 带文本与音频的有声书数据集</li>
-</ul>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>数据集毕竟是现实世界的一个理想化情况，如果要做出好的产品，可以从这些数据集开始，但是更重要的能力是如何获取和处理新数据。要知道，现实世界可是要比实验室中混乱无序复杂得多呀！</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="https://medium.com/startup-grind/fueling-the-ai-gold-rush-7ae438505bc2?swoff=true#.fovvrec9c" target="_blank" rel="external">Fueling the Gold Rush: The Greatest Public Datasets for AI</a></li>
-<li><a href="https://www.sogou.com/labs/" target="_blank" rel="external">搜狗实验室</a></li>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome iOS</a></li>
 </ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;人工智能最离不开的恐怕就是数据集了，有的数据集被学术界用来当做各种算法测试的基准，有的数据集非常接地气常被用在各类产品中。本文就来介绍一下各个领域的经典常用数据集。&lt;/p&gt;
+      &lt;p&gt;学习一个平台最好的方式就是博采众长，知行合一。本文我精选的一些 iOS 入门和进阶资源。&lt;/p&gt;
     
     </summary>
     
       <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
     
-      <category term="不周山" scheme="http://wdxtub.com/tags/%E4%B8%8D%E5%91%A8%E5%B1%B1/"/>
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
-      <category term="人工智能" scheme="http://wdxtub.com/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
-    
-      <category term="数据集" scheme="http://wdxtub.com/tags/%E6%95%B0%E6%8D%AE%E9%9B%86/"/>
+      <category term="iOS" scheme="http://wdxtub.com/tags/iOS/"/>
     
   </entry>
   
   <entry>
-    <title>第三十五周 - 云</title>
-    <link href="http://wdxtub.com/2017/02/10/cloud/"/>
-    <id>http://wdxtub.com/2017/02/10/cloud/</id>
-    <published>2017-02-10T07:27:21.000Z</published>
-    <updated>2017-02-10T10:07:43.000Z</updated>
+    <title>SQL 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-sql/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-sql/</id>
+    <published>2017-03-17T03:23:04.000Z</published>
+    <updated>2017-03-17T03:24:12.000Z</updated>
     
-    <content type="html"><![CDATA[<p>来则来，去则去，没有忘记你是天空的标记。来的来，去的去，没消息说今天不会下雨。</p>
+    <content type="html"><![CDATA[<p>学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 SQL 入门和进阶资源。</p>
 <a id="more"></a>
 <hr>
 <p>更新历史</p>
 <ul>
-<li>2017.02.10: 完成初稿</li>
+<li>2017.03.17: 完成初稿</li>
 </ul>
-<p>离职手续陆陆续续办了一周，除了不停地在楼梯间跑上跑下到处要签名，最让人感动的就是大家对我的祝福了。若要促成一次改变，希望、勇气和信心缺一不可。如果说希望是一张藏宝图，那么勇气是船员，信心是船体，三位一体才能找到真正的宝藏。</p>
-<p>不过话说回来，当我迈出寻宝之旅的第一步时，其实就已经开始收获宝藏了，因为每一次的尝试和探险都是宝藏，回过头来看时都会是特别有意思的回忆。</p>
-<p>离职的原因在之前的文章<a href="http://wdxtub.com/2017/02/05/how-to-choose-career/">《如何做职业选择》</a>中已经做了说明，简单概括就是大疆已经行业老大了，在硬件公司里做软件开发，我能做的更多只是修修补补了（但是总有点不甘心）。想趁着年轻多折腾，看看自己有多少本身，能搞出多大动静。</p>
-<p>纵然有千万般不舍，我以员工身份留在大疆的回忆终究得在还工牌的时刻截止，从此之后我就以热心用户的身份继续见证大疆的成长了，航拍是大疆帮我点开的全新爱好，要一直坚持下去。</p>
-<p>要感谢的人就太多太多了，为了符合大疆一贯的保密约定，这里不一一致谢了，简单说一下自己的成长。技术上参与了产品的各个环节，把之前在校园里学到的知识打通了一遍，无论是做方案还是解决技术问题都积累了不少经验。产品上因为飞飞机的次数比较多，成为了爱好者之后更能站在用户的角度去审视技术，了解了痛点才有了对应的思路。项目上既扮演了 PM 也需要参与开发，无论是争取资源还是按计划推动项目，虽然我是菜鸟，但身边坐着各种大牛，我也的的确确偷师了不少。做人上更加让我坚定了踏实努力、不占小便宜、负责到底的信念，诚心诚意交朋友，坦坦荡荡混江湖。</p>
-<p>深圳是一个年轻的城市，机会很多，挑战也很多。我始终觉得，如果大家都能去做自己喜欢的事情，把聪明才智真正发挥出来，就可以让天更蓝，让想象成为现实，让人们能感受到科技发展和社会进步，让人们更开心幸福，生活更美好。很多时候我们因为这样那样的原因停下了前进的脚步，不妨先想想『天下兴亡，匹夫有责』，再想想『人生难得几回搏』。</p>
-<p>趁着离职的间隙和高中同学又来了一次聚会，看到大家朝气蓬勃的样子，着实为大家骄傲。我也要好好努力，不被甩开太多。</p>
-<p>南非前总统曼德拉曾经说：『如果你隐藏自己，不敢让别人看到你如何做自己喜欢的事，别人就会认为，他们也不能做到。但如果你让他们看见，就等于允许他们像你一样去做自己喜欢的事，就等于解放了他们的愿望。这并不是说要让他们去做和你一样的事，而是让每一个都做最适合自己、自己最希望做的事。』</p>
-<p>这也是为什么我要去改变和尝试，因为我总觉得自己的未来还有无限可能。</p>
-<p>来的来，去的去，很多人不习惯走路却抬头看白云。</p>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/03/20/sql-guide/">SQL 指南</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome SQL</a></li>
+</ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;来则来，去则去，没有忘记你是天空的标记。来的来，去的去，没消息说今天不会下雨。&lt;/p&gt;
+      &lt;p&gt;学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 SQL 入门和进阶资源。&lt;/p&gt;
     
     </summary>
     
-      <category term="Gossip" scheme="http://wdxtub.com/categories/Gossip/"/>
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
     
     
-      <category term="周记" scheme="http://wdxtub.com/tags/%E5%91%A8%E8%AE%B0/"/>
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
-      <category term="工作" scheme="http://wdxtub.com/tags/%E5%B7%A5%E4%BD%9C/"/>
+      <category term="SQL" scheme="http://wdxtub.com/tags/SQL/"/>
     
-      <category term="告别" scheme="http://wdxtub.com/tags/%E5%91%8A%E5%88%AB/"/>
+  </entry>
+  
+  <entry>
+    <title>Objective-C 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-objc/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-objc/</id>
+    <published>2017-03-17T03:05:34.000Z</published>
+    <updated>2017-03-17T03:15:56.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 Objective-C 入门和进阶资源。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/02/20/dive-in-objc-1/">Selector</a></li>
+<li><a href="http://wdxtub.com/2016/02/21/dive-in-objc-2/">Category</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Objective-C</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 Objective-C 入门和进阶资源。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+      <category term="Objective-C" scheme="http://wdxtub.com/tags/Objective-C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Ruby 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-ruby/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-ruby/</id>
+    <published>2017-03-17T03:05:28.000Z</published>
+    <updated>2017-03-17T03:46:58.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 Python 入门和进阶资源。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/06/16/my-ruby-style/">Ruby 编码风格指南</a></li>
+<li><a href="http://wdxtub.com/2016/06/16/my-rails-style/">Rails 编码风格指南</a></li>
+<li><a href="http://wdxtub.com/2016/03/30/ruby-first-step/">入门</a></li>
+<li><a href="http://wdxtub.com/2016/05/29/learn-ruby-the-hard-way/">我的笨办法学 Ruby</a></li>
+<li><a href="http://wdxtub.com/2016/06/17/rails-quick-guide/">Rails 快速指南</a></li>
+<li><a href="http://wdxtub.com/2016/07/06/ror-deploy-guide/">Ruby On Rails 部署指南</a></li>
+<li><a href="http://wdxtub.com/2016/07/06/sidekiq-guide/">异步队列 sidekiq</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Ruby</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 Python 入门和进阶资源。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+      <category term="Ruby" scheme="http://wdxtub.com/tags/Ruby/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Swift 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-swift/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-swift/</id>
+    <published>2017-03-17T03:05:22.000Z</published>
+    <updated>2017-03-17T03:12:14.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 Swift 入门和进阶资源。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2015/11/23/swift-2-overview/">概述</a></li>
+<li><a href="http://wdxtub.com/2015/11/24/swift-2-basic/">基础</a></li>
+<li><a href="http://wdxtub.com/2015/11/25/swift-2-advance/">进阶</a></li>
+<li><a href="http://wdxtub.com/2015/11/29/swift-2-master/">高级</a></li>
+<li><a href="http://wdxtub.com/2015/12/14/swift-tricks-1/">闭包</a></li>
+<li><a href="http://wdxtub.com/2015/12/18/swift-tricks-2/">Stanford CS193p 学习笔记</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Swift</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 Swift 入门和进阶资源。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+      <category term="Swift" scheme="http://wdxtub.com/tags/Swift/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-java/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-java/</id>
+    <published>2017-03-17T03:05:16.000Z</published>
+    <updated>2017-03-17T03:49:56.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 Java 入门和进阶资源。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2016/10/13/java-style-guide/">Java 编码风格指南</a></li>
+<li><a href="http://wdxtub.com/2016/03/20/java-note/">Java 学习笔记</a></li>
+<li><a href="http://wdxtub.com/2015/12/05/java-basic-review/">Java 概念/算法/设计模式 复习</a> </li>
+<li><a href="http://wdxtub.com/2016/07/20/spring-boot-quick-guide/">Spring Boot 框架快速入门</a></li>
+<li><a href="">Undertow 框架快速入门</a></li>
+<li><a href="">Vert.x 框架快速入门</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Java</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 Java 入门和进阶资源。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="Java" scheme="http://wdxtub.com/tags/Java/"/>
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>C++ 资源索引</title>
+    <link href="http://wdxtub.com/2017/03/17/awesome-cpp/"/>
+    <id>http://wdxtub.com/2017/03/17/awesome-cpp/</id>
+    <published>2017-03-17T03:05:11.000Z</published>
+    <updated>2017-03-17T06:37:39.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 C++ 入门和进阶资源。</p>
+<a id="more"></a>
+<hr>
+<p>更新历史</p>
+<ul>
+<li>2017.03.17: 完成初稿</li>
+</ul>
+<h2 id="我的文章"><a href="#我的文章" class="headerlink" title="我的文章"></a>我的文章</h2><ul>
+<li><a href="http://wdxtub.com/2017/01/29/cpp-style-guide/">C++ 编码风格指南</a></li>
+<li><a href="http://wdxtub.com/2016/03/20/cpp-note/">C++ 学习笔记</a></li>
+<li><a href="http://wdxtub.com/2016/03/20/make-gcc-guide/">Make 与 GCC 指南</a></li>
+</ul>
+<h2 id="精选网络资源"><a href="#精选网络资源" class="headerlink" title="精选网络资源"></a>精选网络资源</h2><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="">Awesome Cpp</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习一门编程语言最好的方式就是博采众长，知行合一。本文我精选的一些 C++ 入门和进阶资源。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Technique" scheme="http://wdxtub.com/categories/Technique/"/>
+    
+    
+      <category term="索引" scheme="http://wdxtub.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+      <category term="Cpp" scheme="http://wdxtub.com/tags/Cpp/"/>
     
   </entry>
   
