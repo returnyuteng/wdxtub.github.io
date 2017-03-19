@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -129,7 +129,7 @@
 
 
 
-  <title> Ruby 编码风格指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> Ruby 编码风格指南 | 小土刀 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -140,7 +140,7 @@
 
 
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+  <script type="text/javascript">
     (function() {
       var hm = document.createElement("script");
       hm.src = "//tajs.qq.com/stats?sId=59042340";
@@ -484,7 +484,7 @@
 <p>在多行 <code>while/until</code> 中，不要使用 <code>while/until condition do</code></p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line"><span class="keyword">while</span> x &gt; <span class="number">5</span> <span class="keyword">do</span></div><div class="line">  <span class="comment"># 省略主体</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="keyword">until</span> x &gt; <span class="number">5</span> <span class="keyword">do</span></div><div class="line">  <span class="comment"># 省略主体</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line"><span class="keyword">while</span> x &gt; <span class="number">5</span></div><div class="line">  <span class="comment"># 省略主体</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="keyword">until</span> x &gt; <span class="number">5</span></div><div class="line">  <span class="comment"># 省略主体</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 <p>对于后置条件循环语句，倾向使用 <code>Kernel#loop</code> 与 <code>break</code> 的组合，而不是 <code>begin/end/until</code> 或 <code>begin/end/while</code></p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line"><span class="keyword">begin</span></div><div class="line">  puts val</div><div class="line">  val += <span class="number">1</span></div><div class="line"><span class="keyword">end</span> <span class="keyword">while</span> val &lt; <span class="number">0</span></div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line">loop <span class="keyword">do</span></div><div class="line">  puts val</div><div class="line">  val += <span class="number">1</span></div><div class="line">  <span class="keyword">break</span> <span class="keyword">unless</span> val &lt; <span class="number">0</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line"><span class="keyword">begin</span></div><div class="line">  puts val</div><div class="line">  val += <span class="number">1</span></div><div class="line"><span class="keyword">end</span> <span class="keyword">while</span> val &lt; <span class="number">0</span></div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line">loop <span class="keyword">do</span></div><div class="line">  puts val</div><div class="line">  val += <span class="number">1</span></div><div class="line">  <span class="keyword">break</span> unless val &lt; <span class="number">0</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 <p>对于可选参数的哈希，省略其外围的花括号</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line">user.set(&#123; <span class="symbol">name:</span> <span class="string">'John'</span>, <span class="symbol">age:</span> <span class="number">45</span>, <span class="symbol">permissions:</span> &#123; <span class="symbol">read:</span> <span class="literal">true</span> &#125; &#125;)</div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line">user.set(<span class="symbol">name:</span> <span class="string">'John'</span>, <span class="symbol">age:</span> <span class="number">45</span>, <span class="symbol">permissions:</span> &#123; <span class="symbol">read:</span> <span class="literal">true</span> &#125;)</div></pre></td></tr></table></figure>
 <p>对于 DSL 的内部方法调用，同时省略其外围的圆括号与花括号</p>
@@ -514,7 +514,7 @@
 <p>倾向使用 <code>Array#join</code> 而不是相当晦涩的带字符参数的 <code>Array#*</code> 方法</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line"><span class="string">%w(one two three)</span> * <span class="string">', '</span></div><div class="line"><span class="comment"># =&gt; 'one, two, three'</span></div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line"><span class="string">%w(one two three)</span>.join(<span class="string">', '</span>)</div><div class="line"><span class="comment"># =&gt; 'one, two, three'</span></div></pre></td></tr></table></figure>
 <p>当你希望处理的变量类型是数组，但不太确定其是否真的是数组时，通过使用 <code>Array()</code> 来替代显式的数组类型检查与转换</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line">paths = [paths] <span class="keyword">unless</span> paths.is_a? Array</div><div class="line">paths.each &#123; <span class="params">|path|</span> do_something(path) &#125;</div><div class="line"></div><div class="line"><span class="comment"># 差 - 总是构建新的数组对象</span></div><div class="line">[*paths].each &#123; <span class="params">|path|</span> do_something(path) &#125;</div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line">Array(paths).each &#123; <span class="params">|path|</span> do_something(path) &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line">paths = [paths] unless paths.is_a? Array</div><div class="line">paths.each &#123; <span class="params">|path|</span> do_something(path) &#125;</div><div class="line"></div><div class="line"><span class="comment"># 差 - 总是构建新的数组对象</span></div><div class="line">[*paths].each &#123; <span class="params">|path|</span> do_something(path) &#125;</div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line">Array(paths).each &#123; <span class="params">|path|</span> do_something(path) &#125;</div></pre></td></tr></table></figure>
 <p>通过使用范围或 <code>Comparable#between?</code> 来替代复杂的比较逻辑</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line">do_something <span class="keyword">if</span> x &gt;= <span class="number">1000</span> &amp;&amp; x &lt;= <span class="number">2000</span></div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line">do_something <span class="keyword">if</span> (<span class="number">1000</span>..<span class="number">2000</span>).<span class="keyword">include</span>?(x)</div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line">do_something <span class="keyword">if</span> x.between?(<span class="number">1000</span>, <span class="number">2000</span>)</div></pre></td></tr></table></figure>
 <p>倾向使用谓词方法而不是 <code>==</code> 操作符。但数值比较除外</p>
@@ -524,9 +524,9 @@
 <p>避免使用 BEGIN 区块。永远不要使用 END 区块。使用 Kernel#at_exit 来替代</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line"><span class="keyword">END</span> &#123; puts <span class="string">'Goodbye!'</span> &#125;</div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line">at_exit &#123; puts <span class="string">'Goodbye!'</span> &#125;</div></pre></td></tr></table></figure>
 <p>倾向使用防御从句进行非法数据断言。防御从句是指处于方法顶部的条件语句，其能尽早地退出方法</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_thing</span><span class="params">(thing)</span></span></div><div class="line">  <span class="keyword">if</span> thing[<span class="symbol">:foo</span>]</div><div class="line">    update_with_bar(thing)</div><div class="line">    <span class="keyword">if</span> thing[<span class="symbol">:foo</span>][<span class="symbol">:bar</span>]</div><div class="line">      partial_compute(thing)</div><div class="line">    <span class="keyword">else</span></div><div class="line">      re_compute(thing)</div><div class="line">    <span class="keyword">end</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_thing</span><span class="params">(thing)</span></span></div><div class="line">  <span class="keyword">return</span> <span class="keyword">unless</span> thing[<span class="symbol">:foo</span>]</div><div class="line">  update_with_bar(thing[<span class="symbol">:foo</span>])</div><div class="line">  <span class="keyword">return</span> re_compute(thing) <span class="keyword">unless</span> thing[<span class="symbol">:foo</span>][<span class="symbol">:bar</span>]</div><div class="line">  partial_compute(thing)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_thing</span><span class="params">(thing)</span></span></div><div class="line">  <span class="keyword">if</span> thing[<span class="symbol">:foo</span>]</div><div class="line">    update_with_bar(thing)</div><div class="line">    <span class="keyword">if</span> thing[<span class="symbol">:foo</span>][<span class="symbol">:bar</span>]</div><div class="line">      partial_compute(thing)</div><div class="line">    <span class="keyword">else</span></div><div class="line">      re_compute(thing)</div><div class="line">    <span class="keyword">end</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_thing</span><span class="params">(thing)</span></span></div><div class="line">  <span class="keyword">return</span> unless thing[<span class="symbol">:foo</span>]</div><div class="line">  update_with_bar(thing[<span class="symbol">:foo</span>])</div><div class="line">  <span class="keyword">return</span> re_compute(thing) unless thing[<span class="symbol">:foo</span>][<span class="symbol">:bar</span>]</div><div class="line">  partial_compute(thing)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 <p>循环中，倾向使用 next 而不是条件区块</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].each <span class="keyword">do</span> <span class="params">|item|</span></div><div class="line">  <span class="keyword">if</span> item &gt; <span class="number">1</span></div><div class="line">    puts item</div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].each <span class="keyword">do</span> <span class="params">|item|</span></div><div class="line">  <span class="keyword">next</span> <span class="keyword">unless</span> item &gt; <span class="number">1</span></div><div class="line">  puts item</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 差</span></div><div class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].each <span class="keyword">do</span> <span class="params">|item|</span></div><div class="line">  <span class="keyword">if</span> item &gt; <span class="number">1</span></div><div class="line">    puts item</div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="comment"># 好</span></div><div class="line">[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].each <span class="keyword">do</span> <span class="params">|item|</span></div><div class="line">  <span class="keyword">next</span> unless item &gt; <span class="number">1</span></div><div class="line">  puts item</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 <h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><ul>
 <li>标识符使用英文命名</li>
 <li>符号、方法、变量使用蛇底式小写（<code>snake_case</code>）</li>
@@ -1149,24 +1149,7 @@
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
 </script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
 
 
   

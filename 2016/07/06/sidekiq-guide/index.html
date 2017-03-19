@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+  <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -129,7 +129,7 @@
 
 
 
-  <title> 异步队列 sidekiq 指南 | 小土刀 </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 异步队列 sidekiq 指南 | 小土刀 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -140,7 +140,7 @@
 
 
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
+  <script type="text/javascript">
     (function() {
       var hm = document.createElement("script");
       hm.src = "//tajs.qq.com/stats?sId=59042340";
@@ -443,18 +443,18 @@
 </ol>
 <p>更多详细信息参考<a href="https://github.com/mperham/sidekiq/wiki/Error-Handling" target="_blank" rel="external">这里</a></p>
 <h2 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h2><p>配置文件是 <code>config/sidekiq.yml</code>，只有在需要设置高级选项的时候才需要创建这个文件，一个例子为：</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="meta">---</span></div><div class="line">:concurrency: <span class="number">5</span></div><div class="line">:pidfile: tmp/pids/sidekiq.pid</div><div class="line"><span class="attr">staging:</span></div><div class="line">  :concurrency: <span class="number">10</span></div><div class="line"><span class="attr">production:</span></div><div class="line">  :concurrency: <span class="number">20</span></div><div class="line">:queues:</div><div class="line"><span class="bullet">  -</span> default</div><div class="line"><span class="bullet">  -</span> [myqueue, <span class="number">2</span>]</div></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="meta">---</span></div><div class="line"><span class="string">:concurrency:</span> <span class="number">5</span></div><div class="line"><span class="string">:pidfile:</span> <span class="string">tmp/pids/sidekiq.pid</span></div><div class="line"><span class="attr">staging:</span></div><div class="line">  <span class="string">:concurrency:</span> <span class="number">10</span></div><div class="line"><span class="attr">production:</span></div><div class="line">  <span class="string">:concurrency:</span> <span class="number">20</span></div><div class="line"><span class="string">:queues:</span></div><div class="line"><span class="bullet">  -</span> <span class="string">default</span></div><div class="line"><span class="bullet">  -</span> <span class="string">[myqueue,</span> <span class="number">2</span><span class="string">]</span></div></pre></td></tr></table></figure>
 <p>如果不这样命名，或者不放在这个位置的话，在命令行中用 <code>-C</code> 来指定 <code>sidekiq -C config/myapp_sidekiq.yml</code></p>
 <h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>默认情况中 sidekiq 会使用 Redis 中名为 default 的队列，如果想用多个队列的话，要么在命令行中指定，要么在配置文件中指定。每个队列都可以配置对应的权重，如果一个队列的权重是 2，另一个是 1 的化，那么检查前一个队列的频率是第二个的两倍。</p>
 <p>用命令行参数 <code>sidekiq -q critical,2 -q default</code></p>
 <p>用配置文件</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line">:queues:</div><div class="line"><span class="bullet">    -</span> [critical, <span class="number">2</span>]</div><div class="line"><span class="bullet">    -</span> default</div></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line"><span class="string">:queues:</span></div><div class="line"><span class="bullet">    -</span> <span class="string">[critical,</span> <span class="number">2</span><span class="string">]</span></div><div class="line"><span class="bullet">    -</span> <span class="string">default</span></div></pre></td></tr></table></figure>
 <p>如果想让队列按照特定顺序执行，在列出来的时候就要按顺序，先处理的就在前面。</p>
 <p>用命令行参数 <code>sidekiq -q critical -q default -q low</code></p>
 <p>用配置文件</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line">:queues:</div><div class="line"><span class="bullet">    -</span> critical</div><div class="line"><span class="bullet">    -</span> default</div><div class="line"><span class="bullet">    -</span> low</div></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line"><span class="string">:queues:</span></div><div class="line"><span class="bullet">    -</span> <span class="string">critical</span></div><div class="line"><span class="bullet">    -</span> <span class="string">default</span></div><div class="line"><span class="bullet">    -</span> <span class="string">low</span></div></pre></td></tr></table></figure>
 <p>如果想让队列随机执行的话，就把每个队列的权重都设为 1。比如：</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line">:queues:</div><div class="line"><span class="bullet">    -</span> [<span class="string">"wd"</span>, <span class="number">1</span>]</div><div class="line"><span class="bullet">    -</span> [<span class="string">"xt"</span>, <span class="number">1</span>]</div><div class="line"><span class="bullet">    -</span> [<span class="string">"ub"</span>, <span class="number">1</span>]</div></pre></td></tr></table></figure>
+<figure class="highlight yml"><table><tr><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line"><span class="string">:queues:</span></div><div class="line"><span class="bullet">    -</span> <span class="string">["wd",</span> <span class="number">1</span><span class="string">]</span></div><div class="line"><span class="bullet">    -</span> <span class="string">["xt",</span> <span class="number">1</span><span class="string">]</span></div><div class="line"><span class="bullet">    -</span> <span class="string">["ub",</span> <span class="number">1</span><span class="string">]</span></div></pre></td></tr></table></figure>
 <p>也可以给 worker 指定队列，如</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ImportantWorker</span></span></div><div class="line">  <span class="keyword">include</span> Sidekiq::Worker</div><div class="line">  sidekiq_options <span class="symbol">queue:</span> <span class="string">'critical'</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">perform</span><span class="params">(*important_args)</span></span></div><div class="line">    puts <span class="string">"Doing critical work"</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 <p>但是开发组并不建议用太多队列，设计之初就没有这么打算。更多具体的信息请参考<a href="https://github.com/mperham/sidekiq/wiki/Advanced-Options" target="_blank" rel="external">这里</a></p>
@@ -969,24 +969,7 @@
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
 </script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-  });
-</script>
-
-<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
 
 
   
